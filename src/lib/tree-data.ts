@@ -10,8 +10,8 @@ export type PersonView = {
   birthText: string | null; birthPlace: string | null; deathText: string | null; deathPlace: string | null;
   birthYear: number | null; deathYear: number | null; approx: boolean;
   living: boolean; claimed: boolean; occupation: string | null; biography: string | null; notes: string | null;
-  createdBy: string | null; claimedBy: string | null;
-  documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean }[];
+  createdBy: string | null; claimedBy: string | null; photoId: string | null;
+  documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean; description?: string | null; mimeType?: string | null }[];
 };
 
 export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = []): PersonView {
@@ -20,7 +20,7 @@ export function toView(p: typeof person.$inferSelect, docs: PersonView["document
     id: p.id, name: `${p.givenName} ${p.surname}`.trim(), givenName: p.givenName, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex,
     birthText: p.birthDateText, birthPlace: p.birthPlace, deathText: p.deathDateText, deathPlace: p.deathPlace,
     birthYear: b.year, deathYear: d.year, approx: b.approx, living: p.living, claimed: !!p.claimedByUserId,
-    occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, documents: docs,
+    occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, photoId: p.photoDocumentId, documents: docs,
   };
 }
 
@@ -42,7 +42,7 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   const relRows = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
   const ids = rows.map((p) => p.id);
   const links = ids.length
-    ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey })
+    ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey, description: document.description, mimeType: document.mimeType })
         .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
     : [];
   const people: Record<string, PersonView> = {};

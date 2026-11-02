@@ -14,6 +14,8 @@ const Meta = z.object({
   title: z.string().trim().min(1, "Dă un titlu documentului.").max(200),
   kind: z.enum(["act", "photo", "audio", "letter", "other"]),
   dateText: z.string().trim().max(60).optional(),
+  description: z.string().trim().max(2000).optional(),
+  asProfile: z.boolean().optional(),
 });
 
 /** Încarcă un document (act, fotografie, scrisoare) în bucket-ul „assets” și îl leagă de o persoană din arbore. */
@@ -28,7 +30,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   const form = await req.formData();
   const file = form.get("file");
-  const parsed = Meta.safeParse({ personId: form.get("personId"), title: form.get("title"), kind: form.get("kind"), dateText: form.get("dateText") || undefined });
+  const parsed = Meta.safeParse({ personId: form.get("personId"), title: form.get("title"), kind: form.get("kind"), dateText: form.get("dateText") || undefined,
+    description: form.get("description") || undefined, asProfile: form.get("asProfile") === "on" });
   if (!parsed.success) return Response.json({ error: parsed.error.issues[0].message }, { status: 400 });
   if (!(file instanceof File) || file.size === 0) return Response.json({ error: "Alege un fișier." }, { status: 400 });
   if (file.size > MAX_DOCUMENT_BYTES) return Response.json({ error: "Fișierul e mai mare de 4 MB." }, { status: 413 });
@@ -41,8 +44,13 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const key = documentKey(treeId, file.name);
   await putObject(key, new Uint8Array(await file.arrayBuffer()), file.type);
   const [d] = await db.insert(document).values({
-    treeId, kind: v.kind, title: v.title, dateText: v.dateText ?? null, fileKey: key, mimeType: file.type, uploadedBy: me.id,
+    treeId, kind: v.kind, title: v.title, dateText: v.dateText ?? null, description: v.description ?? null, fileKey: key, mimeType: file.type, uploadedBy: me.id,
   }).returning();
   await db.insert(documentLink).values({ documentId: d.id, personId: p.id });
+  // O fotografie poate deveni poza de profil; prima fotografie a unei persoane devine automat poza ei.
+  if (v.kind === "photo") {
+    const [cur] = await db.select({ photo: person.photoDocumentId }).from(person).where(eq(person.id, p.id));
+    if (v.asProfile || !cur?.photo) await db.update(person).set({ photoDocumentId: d.id, updatedAt: new Date() }).where(eq(person.id, p.id));
+  }
   return Response.json({ id: d.id, title: d.title, kind: d.kind, dateText: d.dateText, hasFile: true }, { status: 201 });
 }

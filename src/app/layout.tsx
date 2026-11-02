@@ -9,6 +9,8 @@ import "@fontsource/alegreya-sans/700.css";
 import "./globals.css";
 import { currentUser } from "@/lib/access";
 import UserMenu from "@/components/UserMenu";
+import { db } from "@/db";
+import { unreadCount } from "@/lib/chat";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
@@ -18,6 +20,7 @@ export const metadata: Metadata = { title: "Cartea Neamului", description: "Arbo
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
+  const unread = me ? await unreadCount(db, me.id).catch(() => 0) : 0;
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
@@ -26,7 +29,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="top">
             <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>
             <ThemeSwitch initial={theme} />
-            {me && <UserMenu name={me.name} />}
+            {me && <UserMenu name={me.name} unread={unread} />}
           </header>
           {children}
         </div>

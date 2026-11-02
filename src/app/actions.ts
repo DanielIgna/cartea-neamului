@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { eq, and, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { tree, person, relationship, treeMember, document, documentLink } from "@/db/schema";
+import { tree, person, relationship, treeMember, document, documentLink, message } from "@/db/schema";
+import { canMessage } from "@/lib/chat";
 import { importGedcom } from "@/lib/gedcom-db";
 import { parseFuzzyDate } from "@/lib/dates";
 import { ensureSchema } from "@/lib/bootstrap";
@@ -227,4 +228,58 @@ export async function saveBiography(treeId: string, personId: string, biography:
   if (!res.length) return { error: "Persoana nu există în acest arbore." };
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
+}
+
+/* ---------- Poze, album și mesaje ---------- */
+
+const DocRef = z.object({ treeId: z.string().uuid(), personId: z.string().uuid(), docId: z.string().uuid() });
+
+/** Alege poza de profil a unei persoane dintre fotografiile ei. */
+export async function setProfilePhoto(treeId: string, personId: string, docId: string): Promise<{ ok?: boolean; error?: string }> {
+  if (!DocRef.safeParse({ treeId, personId, docId }).success) return { error: "Date invalide." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să modifici acest arbore." };
+  const [link] = await db.select({ id: document.id }).from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId))
+    .where(and(eq(documentLink.personId, personId), eq(document.id, docId), eq(document.treeId, treeId), eq(document.kind, "photo")));
+  if (!link) return { error: "Fotografia nu e în albumul acestei persoane." };
+  await db.update(person).set({ photoDocumentId: docId, updatedAt: new Date() }).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
+}
+
+/** Descrierea unei poze sau a unui document: cine apare, unde, când, ce poveste are. */
+export async function updateDocumentDescription(treeId: string, docId: string, description: string): Promise<{ ok?: boolean; error?: string }> {
+  const parsed = z.object({ treeId: z.string().uuid(), docId: z.string().uuid(), description: z.string().trim().max(2000) }).safeParse({ treeId, docId, description });
+  if (!parsed.success) return { error: "Descrierea e prea lungă." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să modifici acest arbore." };
+  const res = await db.update(document).set({ description: parsed.data.description || null }).where(and(eq(document.id, docId), eq(document.treeId, treeId))).returning({ id: document.id });
+  if (!res.length) return { error: "Documentul nu există." };
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
+}
+
+/** Proprietarul arborelui alege până la ce grad de rudenie își pot scrie membrii. */
+export async function setChatLimit(treeId: string, degree: number): Promise<{ ok?: boolean; error?: string }> {
+  const parsed = z.object({ treeId: z.string().uuid(), degree: z.number().int().min(1).max(10) }).safeParse({ treeId, degree });
+  if (!parsed.success) return { error: "Alege un grad între I și X." };
+  const me = await currentUser();
+  if (!me || (await roleIn(db, treeId, me.id)) !== "owner") return { error: "Doar proprietarul arborelui schimbă această regulă." };
+  await db.update(tree).set({ chatMaxDegree: degree }).where(eq(tree.id, treeId));
+  revalidatePath(`/arbore/${treeId}`);
+  revalidatePath("/mesaje");
+  return { ok: true };
+}
+
+export async function sendMessage(_: unknown, form: FormData) {
+  const parsed = z.object({ treeId: z.string().uuid(), to: z.string().min(1).max(100), body: z.string().trim().min(1, "Scrie un mesaj.").max(4000) }).safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const v = parsed.data;
+  const me = await currentUser();
+  if (!me) return { error: "Intră în cont." };
+  const ok = await canMessage(db, v.treeId, me.id, v.to);
+  if (!ok.ok) return { error: ok.reason };
+  await db.insert(message).values({ treeId: v.treeId, fromUserId: me.id, toUserId: v.to, body: v.body });
+  revalidatePath(`/mesaje/${v.treeId}/${v.to}`);
+  return { ok: true, sentAt: Date.now() };
 }
