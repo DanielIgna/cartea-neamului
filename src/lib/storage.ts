@@ -1,19 +1,31 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /** Bucket-ul privat din neon.ts pentru poze și documente scanate. */
 export const BUCKET = "assets";
 
 /**
- * Neon Object Storage vorbește S3. Cheile, endpoint-ul și regiunea vin din AWS_* (scrise de `neon env pull`),
- * pe care clientul AWS le citește singur; Neon cere doar adresare „path-style”.
+ * Neon Object Storage vorbește S3. Local, cheile vin din AWS_* (scrise de `neon env pull`). Pe Vercel numele AWS_* sunt
+ * rezervate de platformă, așa că acolo le punem ca NEON_STORAGE_*; Neon cere și adresare „path-style”.
  */
+const env = (name: string) => process.env[`NEON_STORAGE_${name}`] || process.env[`AWS_${name}`];
+
 export function storageConfigured() {
-  return Boolean(process.env.AWS_ENDPOINT_URL_S3 && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY);
+  return Boolean(env("ENDPOINT_URL_S3") && env("ACCESS_KEY_ID") && env("SECRET_ACCESS_KEY"));
 }
 
 let client: S3Client | null = null;
-const s3 = () => (client ??= new S3Client({ forcePathStyle: true }));
+const s3 = () => (client ??= new S3Client({
+  forcePathStyle: true,
+  endpoint: env("ENDPOINT_URL_S3"),
+  region: env("REGION") ?? "eu-central-1",
+  credentials: { accessKeyId: env("ACCESS_KEY_ID")!, secretAccessKey: env("SECRET_ACCESS_KEY")! },
+}));
+
+export async function bucketReachable() {
+  await s3().send(new HeadBucketCommand({ Bucket: BUCKET }));
+  return { bucket: BUCKET };
+}
 
 export async function putObject(key: string, body: Uint8Array, contentType: string) {
   await s3().send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }));
