@@ -1,0 +1,438 @@
+<title>Cartea Neamului</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,500&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+/* Layout: app shell — top bar with views, main canvas + person panel side by side, stacking on phones */
+:root{
+  --bg:#eef1f2; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#1b2430; --muted:#5b6673; --line:#d5dbe0;
+  --accent:#1f5fa8; --accent-soft:#dbe7f5; --ochre:#b9822a; --ochre-soft:#f3e6cf; --red:#a8322a; --good:#2f7d4f;
+  --pat-1:#c9daef; --pat-2:#dbe6f4; --pat-3:#e8eff8; --pat-4:#f1f5fb;
+  --mat-1:#ecd8b4; --mat-2:#f2e4ca; --mat-3:#f6ecdb; --mat-4:#faf4ea;
+  --event:#1f5fa81a;
+  --display:"Alegreya", Georgia, "Times New Roman", serif;
+  --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171d; --surface:#1a2129; --surface-2:#202933; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2e3946;
+  --accent:#7fb0ea; --accent-soft:#1f3550; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#e58a80; --good:#7cc79a;
+  --pat-1:#28466b; --pat-2:#223b59; --pat-3:#1d3149; --pat-4:#19293b;
+  --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
+  --event:#7fb0ea22; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171d; --surface:#1a2129; --surface-2:#202933; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2e3946;
+  --accent:#7fb0ea; --accent-soft:#1f3550; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#e58a80; --good:#7cc79a;
+  --pat-1:#28466b; --pat-2:#223b59; --pat-3:#1d3149; --pat-4:#19293b;
+  --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
+  --event:#7fb0ea22; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 32px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;font-weight:700}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 12px}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand h1{font-size:26px;letter-spacing:.2px}
+.brand span{color:var(--muted);font-size:14px}
+nav.views{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px;flex-wrap:wrap}
+nav.views a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500}
+nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
+.notice{font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;margin-bottom:14px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+@media (max-width:900px){.layout{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.toolbar .title{font-family:var(--display);font-size:20px;font-weight:700;margin-right:auto}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 11px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.chartbox{overflow-x:auto}
+svg text{font-family:var(--body)}
+.sector{cursor:pointer;transition:opacity .15s}
+.sector:hover path{stroke:var(--accent);stroke-width:2}
+.sector.sel path{stroke:var(--accent);stroke-width:2.5}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-top:6px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+/* person panel */
+.panel h2{font-size:24px}
+.meta{color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.chip{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.chip.priv{background:var(--ochre-soft);border-color:transparent;color:var(--ink)}
+.chip.ok{background:var(--accent-soft);border-color:transparent;color:var(--ink)}
+.section-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 6px;font-weight:700}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0}
+.docs{display:grid;gap:8px}
+.doc{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
+.thumb{width:44px;height:44px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);
+  background:repeating-linear-gradient(135deg,var(--ochre-soft) 0 6px,var(--surface) 6px 12px);border:1px solid var(--line)}
+.doc small{display:block;color:var(--muted)}
+.audio{display:flex;align-items:center;gap:10px}
+.audio .bar{flex:1;height:6px;border-radius:3px;background:var(--line);position:relative;overflow:hidden}
+.audio .bar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--accent)}
+.rel{display:flex;flex-wrap:wrap;gap:6px}
+.rel button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 10px;font-size:13px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.feed{display:grid;gap:10px;font-size:14px}
+.feed div{border-left:2px solid var(--line);padding-left:10px}
+.feed small{color:var(--muted);display:block}
+.members{display:grid;gap:6px;font-size:14px}
+.members div{display:flex;justify-content:space-between;gap:8px}
+.members span{color:var(--muted);font-size:13px}
+.stack{display:grid;gap:16px;min-width:0}
+/* book */
+.book-grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.book-grid{grid-template-columns:minmax(0,1fr)}}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.page{aspect-ratio:1/1.414;max-width:100%;background:#fdfcf8;color:#2a2620;border-radius:4px;box-shadow:0 1px 3px #0003, 0 8px 24px #0001;
+  position:relative;overflow:hidden;padding:18px 16px;display:flex;flex-direction:column;gap:6px;font-family:var(--display)}
+.page .wm{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-family:var(--body);font-weight:700;letter-spacing:.2em;
+  color:#1f5fa826;font-size:22px;transform:rotate(-30deg)}
+.page.cover{background:#1d2a3a;color:#efe6d2;justify-content:center;text-align:center}
+.page.cover .orn{width:64px;height:64px;margin:0 auto 8px}
+.page h4{margin:0;font-size:18px}
+.page p{margin:0;font-size:11px;line-height:1.45;font-family:var(--body)}
+.page .cap{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#7a6f5d;font-family:var(--body)}
+.page.cover .cap{color:#c9b98f}
+.page .photo{height:70px;border-radius:3px;background:repeating-linear-gradient(135deg,#e9dfcc 0 6px,#f4eee1 6px 12px)}
+.pageno{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#9a8f7c;font-family:var(--body)}
+.opt{display:grid;gap:10px}
+.opt label{display:flex;gap:8px;align-items:center;font-size:14px}
+.price{font-family:var(--display);font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.confirm{border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:12px;font-size:14px}
+/* invite */
+.invite-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.linkbox{display:flex;gap:8px;flex-wrap:wrap}
+.linkbox input{flex:1;min-width:0;border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:6px 10px;font-size:13px}
+table.plain{width:100%;border-collapse:collapse;font-size:14px}
+table.plain td,table.plain th{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+table.plain th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.consent{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface-2)}
+.consent label{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-top:8px}
+.muted{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>Cartea Neamului</h1><span>Neamul Pop din Ieud</span></div>
+    <nav class="views" aria-label="Ecrane">
+      <a href="#arbore" data-view="arbore">Arbore</a>
+      <a href="#cronologie" data-view="cronologie">Cronologie</a>
+      <a href="#carte" data-view="carte">Cartea familiei</a>
+      <a href="#invita" data-view="invita">Invită rude</a>
+    </nav>
+  </header>
+  <div class="notice">Prototip de interfață cu date de exemplu: familia Pop este inventată. Butoanele arată fluxul, dar nu salvează și nu încasează nimic.</div>
+
+  <!-- ARBORE -->
+  <section id="v-arbore" class="layout">
+    <div class="stack">
+      <div class="card">
+        <div class="toolbar">
+          <div class="title" id="treeTitle">Ascendenții lui Andrei Pop</div>
+          <div class="seg" role="group" aria-label="Vizualizare">
+            <button id="bFan" aria-pressed="true">Evantai</button>
+            <button id="bClassic" aria-pressed="false">Clasic</button>
+          </div>
+          <button class="btn" id="bHome" hidden>Înapoi la Andrei</button>
+        </div>
+        <div class="chartbox"><svg id="tree" role="img" aria-label="Arbore genealogic"></svg></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--pat-1)"></i>Linia tatălui</span>
+          <span><i class="sw" style="background:var(--mat-1)"></i>Linia mamei</span>
+          <span><i class="sw" style="border:1.5px dashed var(--muted)"></i>Necunoscut, de completat</span>
+          <span>Click pe o persoană pentru fișă. Dublu click o pune în centru.</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-label" style="margin-top:0">Activitate recentă în arbore</div>
+        <div class="feed">
+          <div><b>Maria Pop</b> a încărcat <i>Fotografie de nuntă, Bârsana 1957</i><small>azi, 14:20 · la Vasile Dunca</small></div>
+          <div><b>Ioan Pop</b> a adăugat înregistrarea audio <i>Bunica Ana despre război</i><small>ieri · la Ana Pop</small></div>
+          <div><b>Elena Rus</b> a acceptat invitația și a revendicat profilul ei<small>acum 3 zile · rol: contributor</small></div>
+          <div><b>Andrei Pop</b> a importat 18 persoane din fișierul GEDCOM<small>acum 5 zile</small></div>
+        </div>
+      </div>
+    </div>
+    <aside class="card panel" id="panel" aria-live="polite"></aside>
+  </section>
+
+  <!-- CRONOLOGIE -->
+  <section id="v-cronologie" hidden>
+    <div class="card">
+      <div class="toolbar"><div class="title">Viețile familiei pe fundalul istoriei</div></div>
+      <p class="muted" style="margin:0 0 10px;max-width:70ch">Fiecare bară este viața unei persoane din arbore. Benzile albastre sunt evenimente istorice din Maramureș și Transilvania, alese automat după regiunea arborelui.</p>
+      <div class="chartbox"><svg id="timeline" role="img" aria-label="Cronologie sincronologică"></svg></div>
+    </div>
+  </section>
+
+  <!-- CARTE -->
+  <section id="v-carte" hidden>
+    <div class="book-grid">
+      <div class="card opt">
+        <h2 style="font-size:22px">Cartea familiei</h2>
+        <p class="muted" style="margin:0">Previzualizarea e gratuită. Versiunea fără filigran, la 300 dpi, se descarcă după plată.</p>
+        <div class="section-label">Ce tipăresc</div>
+        <label><input type="radio" name="fmt" id="fBook" value="book" checked> Carte PDF, format A4, gata de tipar</label>
+        <label><input type="radio" name="fmt" id="fPoster" value="poster"> Poster evantai PDF, format A2</label>
+        <label><input type="radio" name="fmt" id="fBoth" value="both"> Ambele</label>
+        <div class="section-label">Câte generații</div>
+        <select id="gens" style="border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px">
+          <option value="3">3 generații</option><option value="4" selected>4 generații</option><option value="5">5 generații (cu ramurile completate)</option>
+        </select>
+        <div class="section-label">Capitole</div>
+        <label><input type="checkbox" id="c1" checked> Prefață scrisă de familie</label>
+        <label><input type="checkbox" id="c2" checked> Evantaiul generațiilor</label>
+        <label><input type="checkbox" id="c3" checked> O pagină pentru fiecare persoană</label>
+        <label><input type="checkbox" id="c4" checked> Documente de arhivă și transcrieri</label>
+        <label><input type="checkbox" id="c5"> Cronologie istorică</label>
+        <div class="section-label">Total</div>
+        <div><span class="price" id="price">79 lei</span> <span class="muted" id="pages">· aprox. 42 de pagini</span></div>
+        <button class="btn primary" id="pay">Plătește și descarcă</button>
+        <div class="confirm" id="confirm" hidden>
+          <b>Aici s-ar deschide plata Stripe.</b> În aplicația reală, după plată, cartea se generează în 1–2 minute și primești linkul de descărcare pe email. Fiecare rudă din arbore își poate comanda propriul exemplar.
+          <div class="actions"><button class="btn" id="confirmClose">Am înțeles</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="toolbar"><div class="title">Previzualizare</div><span class="muted" style="font-size:13px">filigran în previzualizare</span></div>
+        <div class="pages" id="pagesBox"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVITA -->
+  <section id="v-invita" hidden>
+    <div class="invite-grid">
+      <div class="card">
+        <h2 style="font-size:22px">Invită o rudă</h2>
+        <p class="muted" style="margin:6px 0 12px">Linkul e personal, expiră în 14 zile și dă acces doar la acest arbore.</p>
+        <div class="opt">
+          <label for="invName" style="display:block">Pe cine inviți</label>
+          <select id="invName" style="border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px">
+            <option>Maria Pop (mama)</option><option>Ioan Pop (tata)</option><option>O rudă care nu e încă în arbore</option>
+          </select>
+          <label for="invRole" style="display:block">Ce poate face</label>
+          <select id="invRole" style="border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px">
+            <option>Contributor: adaugă persoane, poze, documente</option><option>Editor: poate corecta tot arborele</option><option>Vizitator: doar vede</option>
+          </select>
+          <div class="linkbox">
+            <input id="invLink" readonly value="https://cartea-neamului.ro/i/7Kq2-pop-ieud">
+            <button class="btn" id="copy">Copiază</button>
+          </div>
+          <small class="muted" id="copyMsg"></small>
+        </div>
+      </div>
+      <div class="card">
+        <h2 style="font-size:22px">Membrii arborelui</h2>
+        <table class="plain" style="margin-top:8px">
+          <thead><tr><th>Membru</th><th>Rol</th><th>Stare</th></tr></thead>
+          <tbody>
+            <tr><td>Andrei Pop</td><td>Proprietar</td><td><span class="chip ok">activ</span></td></tr>
+            <tr><td>Ioan Pop</td><td>Editor</td><td><span class="chip ok">activ</span></td></tr>
+            <tr><td>Maria Pop</td><td>Contributor</td><td><span class="chip ok">activ</span></td></tr>
+            <tr><td>Elena Rus</td><td>Contributor</td><td><span class="chip ok">profil revendicat</span></td></tr>
+            <tr><td>Vasile Dunca (văr)</td><td>Contributor</td><td><span class="chip priv">invitat, așteaptă</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2 style="font-size:22px">Ce vede ruda când intră</h2>
+        <div class="consent" style="margin-top:10px">
+          <b>Andrei Pop te-a adăugat în arborele „Neamul Pop din Ieud”.</b>
+          <p class="muted" style="margin:6px 0 0">Iată ce au scris rudele despre tine. Tu decizi ce rămâne.</p>
+          <dl class="facts" style="margin:10px 0">
+            <dt>Nume</dt><dd>Maria Pop, născută Dunca</dd>
+            <dt>Născută</dt><dd>1961, Bârsana</dd>
+            <dt>Fotografii</dt><dd>3, încărcate de Andrei</dd>
+          </dl>
+          <label><input type="checkbox" checked> Datele de mai sus sunt corecte, le preiau ca profilul meu</label>
+          <label><input type="checkbox" checked> Pot apărea în cartea familiei tipărită de rudele din acest arbore</label>
+          <label><input type="checkbox"> Vreau un profil profesional vizibil rudelor (meserie, oraș)</label>
+          <label><input type="checkbox"> Sincronizez profilul profesional cu platforma parteneră (separat, se poate retrage oricând)</label>
+          <div class="actions"><button class="btn primary">Confirm</button><button class="btn">Ascunde-mă din arbore</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+const P = {
+ 1:{n:"Andrei Pop",b:1988,p:"Cluj-Napoca",live:true,claimed:true,job:"Inginer software, Cluj-Napoca",bio:"A pornit arborele în 2026, din caietul de amintiri al bunicii Ana."},
+ 2:{n:"Ioan Pop",b:1958,p:"Sighetu Marmației",live:true,claimed:true,job:"Tâmplar, Sighetu Marmației",bio:"Tâmplar, ca bunicul Toader. Păstrează lada de zestre a familiei."},
+ 3:{n:"Maria Pop",born:"Dunca",b:1961,p:"Bârsana",live:true,claimed:true,bio:"Învățătoare. A adunat fotografiile neamului Dunca."},
+ 4:{n:"Gheorghe Pop",b:1929,d:2004,p:"Ieud",dp:"Ieud",bio:"Agricultor. A lucrat la CAP Ieud după 1962."},
+ 5:{n:"Ana Pop",born:"Bud",b:1932,d:2015,p:"Botiza",dp:"Ieud",bio:"Țesătoare. Povestea despre anii războiului și despre tatăl ei, Mihai.",audio:"Bunica Ana despre război, 12 min"},
+ 6:{n:"Vasile Dunca",b:1934,d:1999,p:"Bârsana",dp:"Bârsana",bio:"Meșter lemnar, a lucrat la turla bisericii din sat."},
+ 7:{n:"Floare Dunca",born:"Hotea",b:1936,d:2011,p:"Rozavlea",dp:"Bârsana"},
+ 8:{n:"Toader Pop",b:1898,d:1967,p:"Ieud",dp:"Ieud",bio:"Tâmplar și cântăreț de strană. A luptat pe frontul italian în 1917.",docs:[["Act de botez","1898 · Parohia greco-catolică Ieud"],["Livret militar","1916 · Regimentul 85 Infanterie"],["Fotografie cu familia","cca. 1935"]]},
+ 9:{n:"Irina Pop",born:"Bizău",b:1902,d:1980,p:"Ieud",dp:"Ieud"},
+ 10:{n:"Mihai Bud",b:1900,d:1944,p:"Botiza",dp:"front, Ungaria",bio:"Căzut în toamna lui 1944. Scrisorile lui de pe front sunt în arhiva familiei.",docs:[["Scrisoare de pe front","august 1944 · transcrisă"]]},
+ 11:{n:"Paraschiva Bud",born:"Tivadar",b:1905,d:1988,p:"Botiza",dp:"Botiza"},
+ 12:{n:"Grigore Dunca",b:1903,d:1971,p:"Bârsana",dp:"Bârsana"},
+ 13:{n:"Ileana Dunca",born:"Rednic",b:1908,d:1990,p:"Bârsana",dp:"Bârsana"},
+ 14:{n:"Petru Hotea",b:1905,d:1977,p:"Rozavlea",dp:"Rozavlea"},
+ 15:{n:"Sofia Hotea",born:"Marchiș",b:1910,d:1995,p:"Rozavlea",dp:"Rozavlea"},
+ 16:{n:"Ilie Pop",b:1870,d:1931,p:"Ieud",dp:"Ieud",docs:[["Extras de carte funciară","1908 · teren în composesoratul Ieud"]]},
+ 17:{n:"Măriuța Pop",born:"Iuga",b:1874,d:1940,p:"Ieud",dp:"Ieud"},
+ 18:{n:"Simion Bizău",b:1868,d:1920,p:"Ieud",dp:"Ieud",approx:true},
+ 20:{n:"Ștefan Bud",b:1872,d:1916,p:"Botiza",dp:"front, Galiția"},
+ 21:{n:"Ana Bud",born:"Codrea",b:1876,d:1950,p:"Botiza",dp:"Botiza"},
+ 24:{n:"Nicolae Dunca",b:1875,d:1939,p:"Bârsana",dp:"Bârsana"},
+ 25:{n:"Rozalia Dunca",born:"Pașca",b:1879,d:1945,p:"Bârsana",dp:"Bârsana"},
+ 26:{n:"Dumitru Rednic",b:1880,d:1951,p:"Bârsana",dp:"Bârsana"},
+ 30:{n:"Ioan Marchiș",b:1882,d:1960,p:"Rozavlea",dp:"Rozavlea"},
+ 31:{n:"Varvara Marchiș",born:"Ilieș",b:1885,d:1968,p:"Rozavlea",dp:"Rozavlea"}
+};
+const NS="http://www.w3.org/2000/svg";
+let center=1, sel=1, view="fan";
+const $=s=>document.querySelector(s);
+const el=(t,a={},txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;};
+const orig=d=>{const g=Math.floor(Math.log2(d));return center*2**g+(d-2**g);};
+const years=p=>p? (p.approx?"cca. ":"")+p.b+(p.d?"–"+p.d:p.live?"":"–?") : "";
+const gender=i=>i===1?(P[1]?"m":"m"):(i%2===0?"m":"f");
+function side(d){const g=Math.floor(Math.log2(d));if(g<1)return null;return (d>>(g-1))===2?"pat":"mat";}
+function fill(d){const g=Math.floor(Math.log2(d));if(g===0)return "var(--surface)";return `var(--${side(d)}-${Math.min(g,4)})`;}
+
+function arcPath(r1,r2,a1,a2,cx,cy){const r=x=>x*Math.PI/180;const p=(rr,a)=>[cx+rr*Math.cos(r(a)),cy+rr*Math.sin(r(a))];
+ const [x1,y1]=p(r2,a1),[x2,y2]=p(r2,a2),[x3,y3]=p(r1,a2),[x4,y4]=p(r1,a1);const lg=(a2-a1)>180?1:0;
+ return `M${x1} ${y1}A${r2} ${r2} 0 ${lg} 1 ${x2} ${y2}L${x3} ${y3}A${r1} ${r1} 0 ${lg} 0 ${x4} ${y4}Z`;}
+
+function drawFan(svg,opts={}){
+ svg.innerHTML="";const W=720,H=540,cx=360,cy=350;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.style.width="100%";svg.style.maxWidth=opts.max||"760px";svg.style.display="block";svg.style.margin="0 auto";
+ const R=[0,72,148,214,276,340],A0=-210,SPAN=240;
+ for(let g=1;g<=4;g++){const n=2**g;for(let k=0;k<n;k++){const d=n+k,o=orig(d),p=P[o];
+   const a1=A0+SPAN*k/n,a2=A0+SPAN*(k+1)/n,grp=el("g",{class:"sector"+(o===sel&&!opts.static?" sel":""),tabindex:opts.static?-1:0,role:"button","aria-label":p?p.n:"Persoană necunoscută"});
+   const path=el("path",{d:arcPath(R[g],R[g+1],a1,a2,cx,cy),fill:p?fill(d):"var(--surface)",stroke:p?"var(--line)":"var(--muted)","stroke-width":1.2});
+   if(!p)path.setAttribute("stroke-dasharray","4 4");grp.appendChild(path);
+   const mid=(a1+a2)/2,rm=(R[g]+R[g+1])/2,rad=mid*Math.PI/180,tx=cx+rm*Math.cos(rad),ty=cy+rm*Math.sin(rad);
+   let rot,anchor="middle";
+   if(g<=2){rot=mid+90;}else{rot=mid;if(mid<-90){rot=mid+180;}}
+   const t=el("text",{x:tx,y:ty,"text-anchor":anchor,transform:`rotate(${rot} ${tx} ${ty})`,fill:"var(--ink)","font-size":g<=2?13:g===3?11:10});
+   if(p){const parts=p.n.split(" ");const first=parts.slice(0,-1).join(" "),last=parts.at(-1);
+     const l1=el("tspan",{x:tx,dy:g<=2?-8:-6,"font-weight":700},g>=3?first:first+" "+last);t.appendChild(l1);
+     if(g>=3){t.appendChild(el("tspan",{x:tx,dy:11,"font-weight":700},last));}
+     t.appendChild(el("tspan",{x:tx,dy:g<=2?16:12,fill:"var(--muted)"},years(p)));}
+   else{t.appendChild(el("tspan",{x:tx,dy:4,fill:"var(--muted)"},"+ adaugă"));}
+   grp.appendChild(t);
+   if(!opts.static){grp.addEventListener("click",()=>{sel=o;render();});grp.addEventListener("dblclick",()=>{if(p){center=o;sel=o;render();}});
+     grp.addEventListener("keydown",e=>{if(e.key==="Enter"){sel=o;render();}});}
+   svg.appendChild(grp);}}
+ const p=P[center],cg=el("g",{class:"sector"+(sel===center&&!opts.static?" sel":"")});
+ cg.appendChild(el("circle",{cx,cy,r:R[1]-2,fill:"var(--accent-soft)",stroke:"var(--accent)","stroke-width":1.5}));
+ const ct=el("text",{x:cx,y:cy-4,"text-anchor":"middle",fill:"var(--ink)","font-size":15,"font-weight":700,style:"font-family:var(--display)"});
+ const parts=p.n.split(" ");ct.appendChild(el("tspan",{x:cx},parts.slice(0,-1).join(" ")));ct.appendChild(el("tspan",{x:cx,dy:17},parts.at(-1)));
+ cg.appendChild(ct);cg.appendChild(el("text",{x:cx,y:cy+32,"text-anchor":"middle",fill:"var(--muted)","font-size":12},years(p)));
+ if(!opts.static)cg.addEventListener("click",()=>{sel=center;render();});
+ svg.appendChild(cg);
+ if(!opts.static){[["Generația 1 · părinți",1],["Generația 4 · stră-străbunici",4]].forEach(([lab,g])=>{});}
+}
+
+function drawClassic(svg){
+ svg.innerHTML="";const colW=176,bw=160,bh=38,rowH=44,H=16*rowH+20,W=5*colW;svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.style.width="100%";svg.style.minWidth="640px";svg.style.maxWidth="900px";
+ const pos={};
+ for(let g=0;g<=4;g++){const n=2**g;for(let k=0;k<n;k++){const d=n+k;const span=H/n;pos[d]={x:10+g*colW,y:span*k+span/2};}}
+ for(let d=2;d<32;d++){const c=Math.floor(d/2),a=pos[c],b=pos[d];const mx=a.x+bw+(colW-bw)/2;
+   svg.appendChild(el("path",{d:`M${a.x+bw} ${a.y}H${mx}V${b.y}H${b.x}`,fill:"none",stroke:"var(--line)","stroke-width":1.2}));}
+ for(let d=1;d<32;d++){const o=orig(d),p=P[o],{x,y}=pos[d],g=Math.floor(Math.log2(d));
+   const grp=el("g",{class:"sector"+(o===sel?" sel":""),tabindex:0,role:"button","aria-label":p?p.n:"Persoană necunoscută"});
+   const r=el("path",{d:`M${x+6} ${y-bh/2}H${x+bw-6}Q${x+bw} ${y-bh/2} ${x+bw} ${y-bh/2+6}V${y+bh/2-6}Q${x+bw} ${y+bh/2} ${x+bw-6} ${y+bh/2}H${x+6}Q${x} ${y+bh/2} ${x} ${y+bh/2-6}V${y-bh/2+6}Q${x} ${y-bh/2} ${x+6} ${y-bh/2}Z`,
+     fill:p?(d===1?"var(--accent-soft)":fill(d)):"var(--surface)",stroke:p?"var(--line)":"var(--muted)","stroke-width":1.2});
+   if(!p)r.setAttribute("stroke-dasharray","4 4");grp.appendChild(r);
+   if(p){grp.appendChild(el("text",{x:x+10,y:y-3,fill:"var(--ink)","font-size":12.5,"font-weight":700},p.n));grp.appendChild(el("text",{x:x+10,y:y+12,fill:"var(--muted)","font-size":11},years(p)+(p.p?" · "+p.p:"")));}
+   else grp.appendChild(el("text",{x:x+10,y:y+4,fill:"var(--muted)","font-size":12},"+ adaugă"));
+   grp.addEventListener("click",()=>{sel=o;render();});grp.addEventListener("dblclick",()=>{if(p){center=o;sel=o;render();}});
+   grp.addEventListener("keydown",e=>{if(e.key==="Enter"){sel=o;render();}});
+   svg.appendChild(grp);}
+}
+
+function relName(i){return P[i]?P[i].n:null;}
+function panel(){
+ const box=$("#panel"),p=P[sel];
+ if(!p){const child=P[Math.floor(sel/2)];const role=sel%2===0?"tatăl":"mama";
+   box.innerHTML=`<div class="section-label" style="margin-top:0">Loc liber în arbore</div><h2>Necunoscut</h2><p class="meta">Aici ar fi ${role} lui ${child?child.n:"…"}.</p>
+   <div class="actions"><button class="btn primary">Adaugă ${role}</button><button class="btn">Caută în alte arbori</button></div>
+   <p class="muted" style="font-size:13px;margin-top:12px">„Caută în alte arbori” propune potriviri doar dintre persoanele decedate publicate ca memorial. Legătura se face numai dacă ambii proprietari aprobă.</p>`;return;}
+ const parents=[sel*2,sel*2+1].filter(relName),child=sel>1?Math.floor(sel/2):null;
+ const docs=(p.docs||[]).map(([t,s])=>`<div class="doc"><div class="thumb">act</div><div><b>${t}</b><small>${s}</small></div></div>`).join("")||`<p class="muted" style="margin:0;font-size:14px">Niciun document încă.</p>`;
+ box.innerHTML=`
+  <div class="section-label" style="margin-top:0">Fișa persoanei</div>
+  <h2>${p.n}</h2>
+  <div class="meta">${p.born?"născut(ă) "+p.born+" · ":""}${years(p)}</div>
+  <div class="chips">${p.live?`<span class="chip priv">în viață · vizibil doar în acest arbore</span>`:`<span class="chip">decedat(ă)</span>`}${p.claimed?`<span class="chip ok">profil revendicat</span>`:""}${p.approx?`<span class="chip">dată aproximativă</span>`:""}</div>
+  <dl class="facts"><dt>Născut(ă)</dt><dd>${p.approx?"cca. ":""}${p.b}, ${p.p}</dd>${p.d?`<dt>Decedat(ă)</dt><dd>${p.d}, ${p.dp||"?"}</dd>`:""}${p.job?`<dt>Profesie</dt><dd>${p.job}</dd>`:""}</dl>
+  ${p.bio?`<p style="margin:10px 0 0">${p.bio}</p>`:""}
+  <div class="section-label">Documente și fotografii</div><div class="docs">${docs}</div>
+  ${p.audio?`<div class="section-label">Istorie orală</div><div class="audio"><button class="btn" id="play" aria-label="Ascultă">▶</button><div class="bar"><i id="prog"></i></div><span class="muted" style="font-size:13px">${p.audio}</span></div>`:""}
+  <div class="section-label">Rude</div>
+  <div class="rel">${parents.map(i=>`<button data-go="${i}">${i%2===0?"Tată":"Mamă"}: ${P[i].n}</button>`).join("")}${child&&P[child]?`<button data-go="${child}">Copil: ${P[child].n}</button>`:""}</div>
+  <div class="actions"><button class="btn primary" id="toCenter">Pune în centru</button><button class="btn">Adaugă document</button><button class="btn">Editează</button></div>`;
+ box.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{sel=+b.dataset.go;render();});
+ $("#toCenter").onclick=()=>{center=sel;render();};
+ const play=$("#play");if(play){let t=null,w=0;play.onclick=()=>{if(t){clearInterval(t);t=null;play.textContent="▶";return;}play.textContent="❚❚";t=setInterval(()=>{w=Math.min(100,w+1.5);$("#prog").style.width=w+"%";if(w>=100){clearInterval(t);t=null;play.textContent="▶";}},120);};}
+}
+
+function render(){
+ const svg=$("#tree");view==="fan"?drawFan(svg):drawClassic(svg);
+ $("#treeTitle").textContent="Ascendenții lui "+P[center].n;$("#bHome").hidden=center===1;panel();
+}
+$("#bFan").onclick=()=>{view="fan";$("#bFan").setAttribute("aria-pressed","true");$("#bClassic").setAttribute("aria-pressed","false");render();};
+$("#bClassic").onclick=()=>{view="classic";$("#bClassic").setAttribute("aria-pressed","true");$("#bFan").setAttribute("aria-pressed","false");render();};
+$("#bHome").onclick=()=>{center=1;sel=1;render();};
+
+/* timeline */
+function drawTimeline(){
+ const svg=$("#timeline"),ids=Object.keys(P).map(Number).sort((a,b)=>P[a].b-P[b].b),y0=72,rh=22,W=920,L=170,Rr=900,H=y0+ids.length*rh+30;
+ svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.style.width="100%";svg.style.minWidth="720px";svg.innerHTML="";
+ const X=y=>L+(y-1860)/(2030-1860)*(Rr-L);
+ const ev=[[1867,1867,"Dualismul austro-ungar",0],[1914,1918,"Primul Război Mondial",1],[1918,1918,"Marea Unire",0],[1940,1944,"Ocupația horthystă",2],[1949,1962,"Colectivizarea",0],[1989,1989,"Revoluția",0]];
+ ev.forEach(([a,b,t,row])=>{const x1=X(a),x2=Math.max(X(b),x1+3);svg.appendChild(el("rect",{x:x1,y:y0-10,width:x2-x1,height:H-y0-14,fill:"var(--event)"}));
+   svg.appendChild(el("text",{x:x1,y:18+row*15,fill:"var(--accent)","font-size":11,"font-weight":700},t+(a===b?" "+a:" "+a+"–"+b)));});
+ for(let y=1860;y<=2030;y+=20){svg.appendChild(el("line",{x1:X(y),x2:X(y),y1:y0-10,y2:H-24,stroke:"var(--line)","stroke-dasharray":"2 4"}));svg.appendChild(el("text",{x:X(y),y:H-8,"text-anchor":"middle",fill:"var(--muted)","font-size":11},y));}
+ ids.forEach((i,k)=>{const p=P[i],y=y0+k*rh,end=p.d||2026,s=["pat","mat"].includes(side(i))?side(i):null;
+   svg.appendChild(el("text",{x:L-8,y:y+4,"text-anchor":"end",fill:"var(--ink)","font-size":12},p.n));
+   svg.appendChild(el("rect",{x:X(p.b),y:y-6,width:X(end)-X(p.b),height:12,rx:6,fill:s?`var(--${s}-1)`:"var(--accent)",stroke:p.live?"var(--accent)":"none"}));
+   svg.appendChild(el("text",{x:X(end)+6,y:y+4,fill:"var(--muted)","font-size":10.5},years(p)));});
+}
+
+/* book */
+function price(){const f=document.querySelector('input[name=fmt]:checked').value;const g=+$("#gens").value;
+ const base={book:79,poster:39,both:99}[f];const extra=g===5?20:0;$("#price").textContent=(base+extra)+" lei";
+ const n=Object.keys(P).length;const pages=f==="poster"?1:6+($("#c3").checked?n:0)+($("#c4").checked?8:0)+($("#c5").checked?4:0)+($("#c1").checked?2:0);
+ $("#pages").textContent=f==="poster"?"· 1 poster A2":`· aprox. ${pages} de pagini`;}
+function drawBook(){
+ const box=$("#pagesBox");box.innerHTML=`
+ <div class="page cover"><svg class="orn" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#c9b98f" stroke-width="2"><path d="M32 6l8 14-8 14-8-14z"/><path d="M32 30l8 14-8 14-8-14z"/><path d="M6 32l14-8 14 8-14 8z"/><path d="M30 32l14-8 14 8-14 8z"/></g></svg>
+   <div class="cap">Cartea Neamului</div><h4 style="font-size:24px">Neamul Pop</h4><p style="color:#c9b98f">Ieud · Botiza · Bârsana · Rozavlea</p><p style="color:#c9b98f">1868 – 2026</p><div class="wm">PREVIZUALIZARE</div></div>
+ <div class="page"><div class="cap">Capitolul I</div><h4>Evantaiul generațiilor</h4><svg id="miniFan"></svg><p>Patru generații, 25 de persoane cunoscute și 6 locuri încă de completat.</p><div class="wm">PREVIZUALIZARE</div><div class="pageno">3</div></div>
+ <div class="page"><div class="cap">Ramura Pop · Generația 3</div><h4>Toader Pop</h4><p style="color:#7a6f5d">1898 – 1967 · Ieud</p><div class="photo"></div>
+   <p>Tâmplar și cântăreț de strană. A luptat pe frontul italian în 1917 și s-a întors acasă în primăvara lui 1919. Cu Irina Bizău a avut cinci copii, dintre care Gheorghe a rămas în casa părintească.</p>
+   <p class="cap" style="margin-top:4px">Documente</p><p>Act de botez, 1898 · Livret militar, 1916</p><div class="wm">PREVIZUALIZARE</div><div class="pageno">17</div></div>
+ <div class="page"><div class="cap">Istorie orală</div><h4>Bunica Ana despre război</h4><p style="font-style:italic;font-family:var(--display);font-size:12px">„Tata a plecat în august și n-a mai venit. Am rămas cu mama și cu vaca, și cu scrisorile lui, pe care le țin și acum în ladă.”</p><p>Transcriere din înregistrarea făcută de Ioan Pop, 2009.</p><div class="wm">PREVIZUALIZARE</div><div class="pageno">28</div></div>`;
+ const keep={center,sel};center=1;sel=0;drawFan($("#miniFan"),{static:true,max:"100%"});center=keep.center;sel=keep.sel;
+}
+document.querySelectorAll('input[name=fmt],#gens,#c1,#c2,#c3,#c4,#c5').forEach(i=>i.addEventListener("change",price));
+$("#pay").onclick=()=>{$("#confirm").hidden=false;};
+$("#confirmClose").onclick=()=>{$("#confirm").hidden=true;};
+$("#copy").onclick=()=>{const v=$("#invLink").value;try{navigator.clipboard.writeText(v).then(()=>{$("#copyMsg").textContent="Link copiat.";},()=>{$("#invLink").select();$("#copyMsg").textContent="Selectat, apasă Ctrl+C.";});}catch(e){$("#invLink").select();}};
+
+/* routing */
+const views=["arbore","cronologie","carte","invita"];
+function route(){const v=views.includes(location.hash.slice(1))?location.hash.slice(1):"arbore";
+ views.forEach(x=>{$("#v-"+x).hidden=x!==v;document.querySelector(`[data-view=${x}]`).setAttribute("aria-current",x===v?"page":"false");});
+ if(v==="cronologie")drawTimeline();if(v==="carte"){drawBook();price();}if(v==="arbore")render();}
+window.addEventListener("hashchange",route);
+route();
+})();
+</script>

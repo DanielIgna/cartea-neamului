@@ -1,0 +1,24 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { Alegreya, Alegreya_Sans } from "next/font/google";
+import "./globals.css";
+
+const display = Alegreya({ subsets: ["latin", "latin-ext"], weight: ["500", "700"], variable: "--font-display" });
+const body = Alegreya_Sans({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "700"], variable: "--font-body" });
+
+export const metadata: Metadata = { title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte." };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ro" className={`${display.variable} ${body.variable}`}>
+      <body>
+        <div className="wrap">
+          <header className="top">
+            <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>
+          </header>
+          {children}
+        </div>
+      </body>
+    </html>
+  );
+}
