@@ -105,10 +105,19 @@ export async function addRelative(_: unknown, form: FormData) {
   if (v.kind === "father" || v.kind === "mother") {
     sex = v.kind === "father" ? "M" : "F";
     const existing = await parentsOf(anchor.id);
-    if (existing.some((e) => e.sex === sex)) return { error: `${anchor.givenName} are deja ${v.kind === "father" ? "un tată" : "o mamă"} în arbore.` };
+    if (existing.some((e) => e.sex === sex)) return { error: `${anchor.givenName} are deja ${v.kind === "father" ? "un tată" : "o mamă"} în arbore. Deschide-i fișa și editeaz-o dacă vrei să-i schimbi numele.` };
   } else if (v.kind === "sibling") {
     parentIds = (await parentsOf(anchor.id)).map((p) => p.id);
-    if (!parentIds.length) return { error: `Adaugă întâi un părinte al lui ${anchor.givenName}; fratele sau sora se leagă de aceiași părinți.` };
+    // Fără părinți cunoscuți, frații se leagă printr-un tată încă fără nume, pe care îl poți completa mai târziu.
+    if (!parentIds.length) {
+      const [father] = await db.transaction(async (tx) => {
+        const r = await tx.insert(person).values({ treeId: v.treeId, sex: "M", createdBy: me.id, givenName: "Tată necunoscut", surname: anchor.birthSurname || anchor.surname,
+          notes: `Adăugat automat ca să-i lege pe frații lui ${anchor.givenName}. Completează numele când îl afli.` }).returning();
+        await tx.insert(relationship).values({ treeId: v.treeId, type: "parent_child", personA: r[0].id, personB: anchor.id, subtype: "biologic" });
+        return r;
+      });
+      parentIds = [father.id];
+    }
   } else if (v.kind === "child") {
     parentIds = [anchor.id];
     if (v.otherParentId) {

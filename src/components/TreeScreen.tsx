@@ -249,7 +249,7 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
           {!hasMother && <button className="btn" onClick={() => setForm("mother")}>+ Mamă</button>}
           <button className="btn" onClick={() => setForm("spouse")}>+ Soț / soție</button>
           <button className="btn" onClick={() => setForm("child")}>+ Copil</button>
-          {fam.parents.length > 0 && <button className="btn" onClick={() => setForm("sibling")}>+ Frate / soră</button>}
+          <button className="btn" onClick={() => setForm("sibling")}>+ Frate / soră</button>
         </div>
       )}
 

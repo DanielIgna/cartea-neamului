@@ -213,7 +213,7 @@ export function LineageTree({ root, people, selectedId, egoPath, onSelectPerson,
             {card(person, px, true)}
             {partner && card(partner, sx, false)}
             {partner && <circle cx={x} cy={y + 9} r={7} fill="var(--tree-bark-dark)" stroke="var(--surface)" strokeWidth={1.2}><title>{`Familia ${person.givenName} și ${partner.givenName}${kids(n.node) ? `: ${kids(n.node)}` : ""}`}</title></circle>}
-            {n.node.children.length > 0 && <text x={n.trunk ? x + (partner ? half : 0) + (partner ? 0 : 60) : x} y={y + (n.trunk && !partner ? 4 : 36)} textAnchor="middle" fill="var(--muted)" fontSize={9} fontWeight={600}>{kids(n.node)}</text>}
+            {n.node.children.length > 0 && <text x={n.trunk && !partner ? x + 56 : n.trunk ? x + half : x} y={y + (n.trunk && !partner ? 4 : 36)} textAnchor={n.trunk && !partner ? "start" : "middle"} fill="var(--muted)" fontSize={9} fontWeight={600}>{kids(n.node)}</text>}
           </g>
         );
       })}

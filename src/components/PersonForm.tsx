@@ -18,7 +18,7 @@ export default function PersonForm(props: Props) {
   const kind = props.mode === "add" ? props.kind : null;
   const askSex = kind === "child" || kind === "spouse" || kind === "sibling" || props.mode === "edit";
   const anchor = props.mode === "add" ? props.anchor : null;
-  const defaultSurname = p ? p.surname : kind === "father" || kind === "child" || kind === "sibling" ? anchor!.surname : "";
+  const defaultSurname = p ? p.surname : kind === "sibling" ? anchor!.birthSurname || anchor!.surname : kind === "father" || kind === "child" ? anchor!.surname : "";
   const who = p ? p.givenName : "persoana";
   return (
     <form action={action} className="form" style={{ marginTop: 10 }}>
