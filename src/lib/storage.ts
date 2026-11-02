@@ -1,3 +1,5 @@
+import path from "node:path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -10,8 +12,13 @@ export const BUCKET = "assets";
  */
 const env = (name: string) => process.env[`NEON_STORAGE_${name}`] || process.env[`AWS_${name}`];
 
+const s3Configured = () => Boolean(env("ENDPOINT_URL_S3") && env("ACCESS_KEY_ID") && env("SECRET_ACCESS_KEY"));
+/** Fără chei S3, pe calculatorul de dezvoltare fișierele stau în ./.data/files (niciodată pe Vercel). */
+export const localStorageMode = () => !s3Configured() && !process.env.VERCEL && process.env.NODE_ENV !== "test";
+const localPath = (key: string) => path.join(process.cwd(), ".data", "files", key);
+
 export function storageConfigured() {
-  return Boolean(env("ENDPOINT_URL_S3") && env("ACCESS_KEY_ID") && env("SECRET_ACCESS_KEY"));
+  return s3Configured() || localStorageMode();
 }
 
 let client: S3Client | null = null;
@@ -28,10 +35,15 @@ export async function bucketReachable() {
 }
 
 export async function putObject(key: string, body: Uint8Array, contentType: string) {
+  if (localStorageMode()) {
+    await mkdir(path.dirname(localPath(key)), { recursive: true });
+    return writeFile(localPath(key), body);
+  }
   await s3().send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }));
 }
 
 export async function getObjectBytes(key: string) {
+  if (localStorageMode()) return new Uint8Array(await readFile(localPath(key)));
   const res = await s3().send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
   return res.Body!.transformToByteArray();
 }

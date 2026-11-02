@@ -11,6 +11,7 @@ import InvitePanel from "./InvitePanel";
 import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
+import { Album, Avatar } from "./Album";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
@@ -129,7 +130,7 @@ export default function TreeScreen(props: Props) {
             ) : showsLineage ? (
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
-                <span>Sub fiecare nume: anul nașterii și câți copii a avut. ⚭ soțul sau soția.</span>
+                <span>{view === "tree" ? "Trunchiul e linia neamului. Soțul și soția (⚭) se unesc într-un nod, iar din el pornesc ramurile copiilor; vârfurile cu lăstari sunt cei mai tineri." : "Sub fiecare nume: anul nașterii și câți copii a avut. ⚭ soțul sau soția."}</span>
               </>
             ) : (
               <>
@@ -192,8 +193,14 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
   return (
     <>
       <div className="section-label" style={{ marginTop: 0 }}>Fișa persoanei</div>
-      <h2>{p.name}</h2>
-      <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}</div>
+      <div className="person-head">
+        <Avatar p={p} size={72} />
+        <div>
+          <h2>{p.name}</h2>
+          <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}</div>
+          <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>Deschide profilul și albumul →</Link>
+        </div>
+      </div>
       <div className="chips">
         {p.living ? <span className="chip priv">în viață · vizibil doar în acest arbore</span> : <span className="chip">decedat(ă)</span>}
         {p.claimed && <span className="chip ok">profil revendicat</span>}
@@ -246,15 +253,8 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
         </div>
       )}
 
-      <div className="section-label">Documente și fotografii</div>
-      <div className="docs">
-        {p.documents.length ? p.documents.map((d) => (
-          <div className="doc" key={d.id}>
-            <div className="thumb">{d.kind}</div>
-            <div><b>{d.hasFile ? <a href={`/api/document/${d.id}`} target="_blank" rel="noopener">{d.title}</a> : d.title}</b><small>{d.dateText}</small></div>
-          </div>
-        )) : <p className="muted" style={{ margin: 0, fontSize: 14 }}>Niciun document încă.</p>}
-      </div>
+      <div className="section-label">Album: poze și documente</div>
+      <Album p={p} treeId={treeId} canEdit={canAdd} onChanged={onChanged} />
       {storageEnabled && canAdd && <DocumentUpload key={`doc-${p.id}`} treeId={treeId} personId={p.id} personName={p.givenName} onUploaded={onChanged} />}
       {p.living && !p.claimed && canInvite && (
         <>

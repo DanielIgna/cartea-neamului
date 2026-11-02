@@ -61,6 +61,8 @@ export const tree = pgTable("tree", {
   visibility: treeVisibility("visibility").notNull().default("private"),
   region: text("region"),
   rootPersonId: uuid("root_person_id"),
+  // Până la ce grad de rudenie își pot scrie mesaje membrii arborelui (soții pot oricând). Îl alege proprietarul.
+  chatMaxDegree: integer("chat_max_degree").notNull().default(4),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -106,7 +108,8 @@ export const person = pgTable("person", {
   deathPlace: text("death_place"),
   living: boolean("living").notNull().default(false),
   biography: text("biography"),
-  notes: text("notes"), // note suplimentare: surse, întrebări deschise, ce mai trebuie verificat
+  notes: text("notes"),
+  photoDocumentId: uuid("photo_document_id"), // poza de profil: o fotografie din albumul persoanei // note suplimentare: surse, întrebări deschise, ce mai trebuie verificat
   occupation: text("occupation"),
   claimedByUserId: text("claimed_by_user_id").references(() => user.id, { onDelete: "set null" }),
   privacy: privacyLevel("privacy").notNull().default("private_tree"),
@@ -146,6 +149,7 @@ export const document = pgTable("document", {
   fileKey: text("file_key"), // cheia obiectului în Neon Object Storage (bucket „assets”)
   mimeType: text("mime_type"),
   transcription: text("transcription"),
+  description: text("description"), // ce se vede în poză, cine, unde, când
   dateText: text("date_text"),
   place: text("place"),
   uploadedBy: text("uploaded_by").references(() => user.id, { onDelete: "set null" }),
@@ -195,3 +199,14 @@ export const auditLog = pgTable("audit_log", {
   diff: jsonb("diff"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("audit_tree_idx").on(t.treeId, t.createdAt)]);
+
+/* ---------- Mesaje între rude ---------- */
+export const message = pgTable("message", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  fromUserId: text("from_user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  toUserId: text("to_user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  readAt: timestamp("read_at"),
+}, (t) => [index("message_pair_idx").on(t.treeId, t.fromUserId, t.toUserId), index("message_to_idx").on(t.toUserId, t.readAt)]);

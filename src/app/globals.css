@@ -6,7 +6,7 @@
   --pat-1:#c9daef; --pat-2:#dbe6f4; --pat-3:#e8eff8; --pat-4:#f1f5fb;
   --mat-1:#ecd8b4; --mat-2:#f2e4ca; --mat-3:#f6ecdb; --mat-4:#faf4ea;
   --event:#1f5fa81a;
-  --tree-bark:#7a5a3a; --tree-ground:#d9e4cf; --leaf-pat:#cfe3c0; --leaf-mat:#e6e3b5; --leaf-edge:#7f9a6a; --desc:#e4eef8;
+  --tree-bark:#7a5a3a; --tree-ground:#d9e4cf; --leaf-pat:#cfe3c0; --leaf-mat:#e6e3b5; --leaf-edge:#7f9a6a; --tree-bark-dark:#553b22; --foliage-1:#a9c98f; --foliage-2:#8fbf7a; --foliage-3:#c4d99a; --leaf-spouse:#f1e4d0; --desc:#e4eef8;
   --display:"Alegreya", Georgia, "Times New Roman", serif;
   --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
 }
@@ -15,14 +15,14 @@
   --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
   --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
-  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --desc:#183a5c;
+  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --tree-bark-dark:#5a4128; --foliage-1:#1f4a30; --foliage-2:#2c5e3c; --foliage-3:#3b5a26; --leaf-spouse:#4a3a2a; --desc:#183a5c;
   --event:#7fb0ea22; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0b1626; --surface:#112136; --surface-2:#162a44; --ink:#e8eef6; --muted:#9db0c6; --line:#24405f;
   --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
   --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
-  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --desc:#183a5c;
+  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --tree-bark-dark:#5a4128; --foliage-1:#1f4a30; --foliage-2:#2c5e3c; --foliage-3:#3b5a26; --leaf-spouse:#4a3a2a; --desc:#183a5c;
   --event:#7fb0ea22; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -146,3 +146,26 @@ a{color:var(--accent)}
 .gen-select{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
 .gen-select select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 8px}
 .linklike{border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit}
+/* poze de profil și album */
+.avatar{border-radius:50%;object-fit:cover;border:2px solid var(--line);display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--surface-2)}
+.avatar-empty{color:var(--muted);font-family:var(--display);font-weight:700}
+.person-head{display:flex;gap:14px;align-items:center}
+.album{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.album.large{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.album figure{margin:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.album img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--surface-2)}
+.album figcaption{padding:6px 8px;font-size:13px;display:grid;gap:3px}
+.album .desc{color:var(--ink);white-space:pre-wrap}
+.fig-actions{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px}
+/* profil */
+.profile-hero{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.profile-hero h2{font-size:32px;margin:0}
+.kin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.kin-card{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px;text-decoration:none;color:inherit;background:var(--surface)}
+.kin-card small{display:block;color:var(--muted)}
+/* mesaje */
+.chat{display:grid;gap:8px;max-height:60vh;overflow:auto;padding:4px}
+.bubble{max-width:75%;padding:8px 12px;border-radius:14px;background:var(--surface-2);white-space:pre-wrap;font-size:15px}
+.bubble.me{justify-self:end;background:var(--accent-soft)}
+.bubble small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.badge{display:inline-block;min-width:18px;padding:0 6px;border-radius:999px;background:var(--red);color:#fff;font-size:12px;text-align:center;margin-left:4px}

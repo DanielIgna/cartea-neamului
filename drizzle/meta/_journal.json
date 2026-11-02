@@ -15,6 +15,13 @@
       "when": 1793652276832,
       "tag": "0001_person_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793656860939,
+      "tag": "0002_poze_mesaje",
+      "breakpoints": true
     }
   ]
 }

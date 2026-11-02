@@ -7,7 +7,7 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
   const [open, setOpen] = useState(false);
   const [msg, setMsg] = useState<{ ok?: string; error?: string }>({});
   const [pending, start] = useTransition();
-  if (!open) return <div className="actions"><button className="btn" onClick={() => setOpen(true)}>Adaugă document</button></div>;
+  if (!open) return <div className="actions"><button className="btn" onClick={() => setOpen(true)}>Adaugă poză sau document</button></div>;
   const submit = (form: FormData) => start(async () => {
     form.set("personId", personId);
     const res = await fetch(`/api/arbore/${treeId}/documente`, { method: "POST", body: form });
@@ -22,14 +22,16 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
       <label>Titlu<input name="title" required placeholder={`ex. Certificat de naștere, ${personName}`} /></label>
       <div className="row">
         <label>Tip
-          <select name="kind" defaultValue="act">
+          <select name="kind" defaultValue="photo">
             <option value="act">Act</option><option value="photo">Fotografie</option><option value="letter">Scrisoare</option>
             <option value="audio">Înregistrare</option><option value="other">Altceva</option>
           </select>
         </label>
         <label>Data<input name="dateText" placeholder="1916 sau cca. 1900" /></label>
       </div>
+      <label>Descriere (cine apare, unde, când, ce poveste are)<textarea name="description" style={{ minHeight: 60 }} /></label>
       <label>Fișier (poză, PDF sau audio, max. 4 MB)<input type="file" name="file" required accept="image/*,application/pdf,audio/*" /></label>
+      <label style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" name="asProfile" /> Dacă e o fotografie, folosește-o ca poză de profil</label>
       {msg.error && <p className="err">{msg.error}</p>}
       <div className="actions">
         <button className="btn primary" disabled={pending}>{pending ? "Se încarcă…" : "Încarcă"}</button>
