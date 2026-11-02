@@ -8,6 +8,7 @@ import { parseFuzzyDate } from "./dates";
 export type PersonView = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: "M" | "F" | "U";
   birthText: string | null; birthPlace: string | null; deathText: string | null; deathPlace: string | null;
+  birthCountry: string | null; deathCountry: string | null; residencePlace: string | null; residenceCountry: string | null;
   birthYear: number | null; deathYear: number | null; approx: boolean;
   living: boolean; claimed: boolean; occupation: string | null; biography: string | null; notes: string | null;
   createdBy: string | null; claimedBy: string | null; photoId: string | null;
@@ -19,12 +20,19 @@ export function toView(p: typeof person.$inferSelect, docs: PersonView["document
   return {
     id: p.id, name: `${p.givenName} ${p.surname}`.trim(), givenName: p.givenName, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex,
     birthText: p.birthDateText, birthPlace: p.birthPlace, deathText: p.deathDateText, deathPlace: p.deathPlace,
+    birthCountry: p.birthCountry, deathCountry: p.deathCountry, residencePlace: p.residencePlace, residenceCountry: p.residenceCountry,
     birthYear: b.year, deathYear: d.year, approx: b.approx, living: p.living, claimed: !!p.claimedByUserId,
     occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, photoId: p.photoDocumentId, documents: docs,
   };
 }
 
 export const MAX_GENERATIONS = 10;
+
+/** „Huedin” sau „Torino, Italia”: țara se scrie doar când nu e România. */
+export function where(place: string | null | undefined, country: string | null | undefined) {
+  const c = country?.trim();
+  return [place?.trim(), c && !/^rom[aâ]nia$/i.test(c) ? c : null].filter(Boolean).join(", ");
+}
 
 /**
  * Tot ce are nevoie ecranul arborelui: toate persoanele și relațiile arborelui (pentru frați, soți, copii,

@@ -19,6 +19,10 @@ const ADDITIVE = [
   sql`ALTER TABLE "tree" ADD COLUMN IF NOT EXISTS "chat_max_degree" integer DEFAULT 4 NOT NULL`,
   sql`CREATE INDEX IF NOT EXISTS "message_pair_idx" ON "message" ("tree_id","from_user_id","to_user_id")`,
   sql`CREATE INDEX IF NOT EXISTS "message_to_idx" ON "message" ("to_user_id","read_at")`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "birth_country" text`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "death_country" text`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_place" text`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_country" text`,
 ];
 
 export async function applySchema(target: Db) {

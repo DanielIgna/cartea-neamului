@@ -4,7 +4,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FanChart, ClassicTree, DescendantsChart, years, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass } from "./lineage-charts";
-import type { PersonView } from "@/lib/tree-data";
+import { where, type PersonView } from "@/lib/tree-data";
 import type { TreeLive } from "@/lib/realtime";
 import { buildGraph, family, kinship, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, CLOSE_KIN_DEGREE, type Graph, type Rel } from "@/lib/kinship";
 import InvitePanel from "./InvitePanel";
@@ -13,6 +13,8 @@ import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album, Avatar } from "./Album";
 import ParentChange from "./ParentChange";
+import DeletePerson from "./DeletePerson";
+import SpouseChildren from "./SpouseChildren";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
@@ -30,6 +32,17 @@ function descendants(g: Graph, people: Record<string, PersonView>, id: string, d
   const born = (x: string) => people[x]?.birthYear ?? 9999;
   const kids = depth >= 30 ? [] : (g.children.get(id) ?? []).filter((c) => !seen.has(c)).sort((a, b) => born(a) - born(b));
   return { id, partners: g.partners.get(id) ?? [], children: kids.map((c) => descendants(g, people, c, depth + 1, seen)) };
+}
+
+/** La „+ Tată”/„+ Mamă”: frații care nu au încă un asemenea părinte; la „+ Soț/soție”: copiii fără al doilea părinte. */
+function shareFor(g: Graph, people: Record<string, PersonView>, id: string, k: RelKind): PersonView[] {
+  const fam = family(g, id);
+  const by = (ids: string[]) => ids.map((x) => people[x]).filter(Boolean);
+  if (k === "father" || k === "mother") {
+    const sex = k === "father" ? "M" : "F";
+    return by(fam.siblings).filter((x) => !(g.parents.get(x.id) ?? []).some((pid) => people[pid]?.sex === sex));
+  }
+  return k === "spouse" ? by(fam.children).filter((x) => (g.parents.get(x.id) ?? []).length === 1) : [];
 }
 
 export default function TreeScreen(props: Props) {
@@ -70,7 +83,7 @@ export default function TreeScreen(props: Props) {
   const lineage = useMemo(() => descendants(graph, people, trunkId), [graph, people, trunkId]);
   const mine = useMemo(() => descendants(graph, people, centerId), [graph, people, centerId]);
   const showsLineage = view === "tree" || view === "desc" || (view === "fan" && fanDir === "down");
-  const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
+  const lineageProps = { root: lineage, people, parentsOf: graph.parents, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
 
   return (
     <section className="layout">
@@ -162,7 +175,8 @@ export default function TreeScreen(props: Props) {
         {selectedId && people[selectedId]
           ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} graph={graph} ego={ego} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
-            ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]} onDone={() => router.refresh()} />
+            ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
+                shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
             : <p className="muted">{canAdd ? "Alege o persoană din arbore." : "Ca vizitator poți vedea arborele, dar nu poți adăuga persoane."}</p>}
       </aside>
     </section>
@@ -187,7 +201,7 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
   if (form) {
     return form === "edit"
       ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished("Fișa a fost salvată.")} onCancel={() => setForm(null)} />
-      : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={by(fam.partners)} onDone={() => finished("Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
+      : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={by(fam.partners)} shareWith={shareFor(graph, people, p.id, form)} onDone={() => finished("Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
   }
 
   const group = (label: string, list: PersonView[]) => list.length > 0 && (
@@ -225,8 +239,12 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
       )}
       {!kin && ego && ego.id !== p.id && <div className="kin">Nu am găsit încă o legătură de sânge cu {ego.givenName} în arbore.</div>}
       <dl className="facts" style={{ marginTop: 10 }}>
-        {(p.birthText || p.birthPlace) && <><dt>Născut(ă)</dt><dd>{[p.birthText, p.birthPlace].filter(Boolean).join(", ")}</dd></>}
-        {(p.deathText || p.deathPlace) && <><dt>Decedat(ă)</dt><dd>{[p.deathText, p.deathPlace].filter(Boolean).join(", ")}</dd></>}
+        {(() => {
+          const born = [p.birthText, where(p.birthPlace, p.birthCountry)].filter(Boolean).join(", ");
+          const died = [p.deathText, where(p.deathPlace, p.deathCountry)].filter(Boolean).join(", ");
+          const lives = p.living ? where(p.residencePlace, p.residenceCountry) || p.residenceCountry || "" : "";
+          return <>{born && <><dt>Născut(ă)</dt><dd>{born}</dd></>}{died && <><dt>Decedat(ă)</dt><dd>{died}</dd></>}{lives && <><dt>Locuiește în</dt><dd>{lives}</dd></>}</>;
+        })()}
         {p.occupation && <><dt>Ocupație</dt><dd>{p.occupation}</dd></>}
       </dl>
       <div className="section-label">Ce se știe despre {p.givenName}</div>
@@ -235,6 +253,8 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
       <div className="actions">
         {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>Editează</button>}
         {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>Pune în centru</button>}
+        {(isEditor || (canAdd && p.createdBy === meId)) && (!p.claimed || p.claimedBy === meId) && ego?.id !== p.id &&
+          <DeletePerson key={`del${p.id}`} treeId={treeId} p={p} onDeleted={() => { onSelect(ego?.id ?? p.id); finished(`${p.name} a fost ștearsă din arbore.`); }} />}
       </div>
       {done && <p className="muted" style={{ fontSize: 14 }}>{done}</p>}
       {aiEnabled && canAdd && !p.living && <BiographySuggest key={`bio-${p.id}`} treeId={treeId} personId={p.id} canSave={isEditor} onSaved={onChanged} />}
@@ -246,6 +266,11 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
         {group(`Copii (${fam.children.length})`, by(fam.children))}
         {group(`Frați (${fam.siblings.length})`, by(fam.siblings))}
       </dl>
+      {canAdd && by(fam.partners).map((sp) => {
+        // Copiii soțului/soției care au un singur părinte trecut: propunem să fie și ai acestei persoane.
+        const kids = by(graph.children.get(sp.id) ?? []).filter((c) => (graph.parents.get(c.id) ?? []).length === 1 && c.id !== p.id);
+        return kids.length > 0 && <SpouseChildren key={`sc${sp.id}`} treeId={treeId} p={p} spouse={sp} kids={kids} onDone={finished} />;
+      })}
       {!fam.parents.length && !fam.partners.length && !fam.children.length && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nicio rudă legată încă.</p>}
       {canAdd && (
         <div className="actions" style={{ flexWrap: "wrap" }}>

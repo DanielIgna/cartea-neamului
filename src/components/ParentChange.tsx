@@ -34,7 +34,7 @@ export default function ParentChange({ treeId, p, current, candidates, role, onA
           <button key={c.id} className="btn" disabled={pending} onClick={() => run(c.id, `${c.name} este acum ${word} lui ${p.givenName}.`)}>{c.name}{c.birthYear ? ` (${c.birthYear})` : ""}</button>
         ))}
         <button className="btn primary" disabled={pending} onClick={() => run(null, "", onAddNew)}>Altă persoană, o adaug acum</button>
-        {current && <button className="btn" disabled={pending} onClick={() => run(null, `Am scos legătura cu ${current.name}.`)}>Nu știu, scoate-o pe {current.givenName}</button>}
+        {current && <button className="btn" disabled={pending} onClick={() => run(null, `Am scos legătura cu ${current.name}.`)}>Nu știu, scoate legătura cu {current.givenName}</button>}
         <button className="btn" disabled={pending} onClick={() => setOpen(false)}>Renunță</button>
       </div>
       {others.length > 0 && <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>Am propus {role === "mother" ? "soțiile" : "soții"} celuilalt părinte trecute în arbore.</p>}
