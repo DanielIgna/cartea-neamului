@@ -1,10 +1,9 @@
 import { sql } from "drizzle-orm";
-import { HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { aiConfigured } from "@/lib/ai";
 import { realtimeConfigured } from "@/lib/realtime";
-import { BUCKET, storageConfigured } from "@/lib/storage";
+import { bucketReachable, storageConfigured } from "@/lib/storage";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +25,7 @@ export async function GET() {
       const r = await db.execute(sql`select count(*)::int as persoane from person`);
       return { driver: process.env.DATABASE_URL ? "neon (node-postgres)" : "pglite (local)", ...(r.rows?.[0] ?? {}) };
     }),
-    storageConfigured() ? check(() => new S3Client({ forcePathStyle: true }).send(new HeadBucketCommand({ Bucket: BUCKET })).then(() => ({ bucket: BUCKET }))) : null,
+    storageConfigured() ? check(bucketReachable) : null,
     fnUrl ? check(() => fetch(fnUrl, { signal: AbortSignal.timeout(10_000) }).then((r) => r.json())) : null,
   ]);
   return Response.json({

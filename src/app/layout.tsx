@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Alegreya, Alegreya_Sans } from "next/font/google";
+// Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
+import "@fontsource/alegreya/500.css";
+import "@fontsource/alegreya/700.css";
+import "@fontsource/alegreya-sans/400.css";
+import "@fontsource/alegreya-sans/500.css";
+import "@fontsource/alegreya-sans/700.css";
 import "./globals.css";
 import { currentUser } from "@/lib/access";
 import UserMenu from "@/components/UserMenu";
@@ -8,8 +13,6 @@ import ThemeSwitch from "@/components/ThemeSwitch";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 
-const display = Alegreya({ subsets: ["latin", "latin-ext"], weight: ["500", "700"], variable: "--font-display" });
-const body = Alegreya_Sans({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "700"], variable: "--font-body" });
 
 export const metadata: Metadata = { title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte." };
 
@@ -17,7 +20,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const me = await currentUser();
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
-    <html lang="ro" className={`${display.variable} ${body.variable}`} data-theme={theme === "auto" ? undefined : theme}>
+    <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
       <body>
         <div className="wrap">
           <header className="top">

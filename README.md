@@ -55,6 +55,14 @@ npm run db:seed           # schema + familia de exemplu, direct în Neon
 
 Pe planul Free, Neon refuză `deploy` cât timp `neon.ts` conține `aiGateway`. Restul serviciilor merg;
 sugestiile de biografie apar doar când există variabilele `NEON_AI_GATEWAY_*` (după trecerea pe un plan plătit).
+## Online (Vercel)
+
+Aplicația e publicată la **https://cartea-neamului.vercel.app** (proiectul Vercel `cartea-neamului`, legat de acest repo:
+fiecare push pe `main` publică automat). Variabilele de producție sunt setate în Vercel, nu în cod:
+cele de la Neon (`DATABASE_URL`, `NEON_REALTIME_*`, `NEON_FUNCTION_HELLO_BASE_URL`, …), un `BETTER_AUTH_SECRET` propriu și
+cheile bucket-ului cu prefixul `NEON_STORAGE_` (Vercel rezervă numele `AWS_*`). `BETTER_AUTH_URL` nu e necesar pe Vercel:
+aplicația folosește domeniul de producție dat de Vercel.
+
 Better Auth rămâne în aplicație (tabelele `user`/`session` în același Postgres), cum recomandă skill-ul `neon-auth`
 pentru aplicații care au deja Better Auth.
 
