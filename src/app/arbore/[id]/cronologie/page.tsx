@@ -4,15 +4,16 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { tree } from "@/db/schema";
 import { loadTimeline } from "@/lib/tree-data";
-import { ensureSchema } from "@/lib/bootstrap";
+import { requireUser, roleIn } from "@/lib/access";
 import { HISTORICAL_EVENTS } from "@/lib/history";
 
 export const dynamic = "force-dynamic";
 
 export default async function Timeline({ params }: { params: Promise<{ id: string }> }) {
-  await ensureSchema();
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
+  const me = await requireUser(`/arbore/${id}/cronologie`);
+  if (!(await roleIn(db, id, me.id))) notFound();
   const [t] = await db.select().from(tree).where(eq(tree.id, id));
   if (!t) notFound();
   const people = await loadTimeline(db, id);

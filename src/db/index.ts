@@ -15,7 +15,9 @@ export type Db = PgliteDatabase<typeof schema>;
 export function createDb(): Db {
   const url = process.env.DATABASE_URL;
   if (url) return drizzleNeon(neon(url), { schema }) as unknown as Db;
-  const dir = process.env.PGLITE_DIR ?? "./.data/pg";
+  // În timpul `next build` mai mulți workeri importă modulul; nu deschidem baza locală reală de pe disc.
+  const building = process.env.NEXT_PHASE === "phase-production-build";
+  const dir = building ? "memory" : (process.env.PGLITE_DIR ?? "./.data/pg");
   if (dir !== "memory") mkdirSync(dir, { recursive: true });
   return drizzlePglite(dir === "memory" ? new PGlite() : new PGlite(dir), { schema });
 }

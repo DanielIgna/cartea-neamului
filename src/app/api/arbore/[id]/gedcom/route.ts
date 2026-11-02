@@ -1,9 +1,12 @@
 import { db } from "@/db";
-import { exportGedcom, treeExists } from "@/lib/gedcom-db";
+import { exportGedcom } from "@/lib/gedcom-db";
+import { currentUser, roleIn } from "@/lib/access";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!/^[0-9a-f-]{36}$/i.test(id) || !(await treeExists(db, id))) return new Response("Arborele nu există.", { status: 404 });
+  const me = await currentUser();
+  if (!me) return new Response("Intră în cont.", { status: 401 });
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !(await roleIn(db, id, me.id))) return new Response("Arborele nu există.", { status: 404 });
   const includeLiving = new URL(req.url).searchParams.get("living") === "1";
   const body = await exportGedcom(db, id, { includeLiving });
   return new Response(body, {

@@ -5,10 +5,11 @@ import Link from "next/link";
 import { FanChart, ClassicTree, years, type Slots } from "./charts";
 import { addParent } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
+import InvitePanel from "./InvitePanel";
 
-type Props = { treeId: string; treeName: string; slots: Slots; isRoot: boolean };
+type Props = { treeId: string; treeName: string; slots: Slots; isRoot: boolean; canAdd: boolean; canInvite: boolean };
 
-export default function TreeScreen({ treeId, treeName, slots, isRoot }: Props) {
+export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, canInvite }: Props) {
   const [view, setView] = useState<"fan" | "classic">("fan");
   const [selected, setSelected] = useState(1);
   const router = useRouter();
@@ -44,17 +45,25 @@ export default function TreeScreen({ treeId, treeName, slots, isRoot }: Props) {
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
           </div>
         </div>
+        {canInvite && (
+          <div className="card">
+            <div className="section-label" style={{ marginTop: 0 }}>Invită o rudă în arbore</div>
+            <InvitePanel treeId={treeId} />
+          </div>
+        )}
       </div>
       <aside className="card panel" aria-live="polite">
         {slots[selected]
-          ? <PersonPanel p={slots[selected]} n={selected} slots={slots} onSelect={setSelected} onCenter={center} />
-          : <EmptySlot treeId={treeId} n={selected} child={slots[Math.floor(selected / 2)]} onDone={() => router.refresh()} />}
+          ? <PersonPanel p={slots[selected]} n={selected} slots={slots} onSelect={setSelected} onCenter={center} treeId={treeId} canInvite={canInvite} />
+          : canAdd
+            ? <EmptySlot treeId={treeId} n={selected} child={slots[Math.floor(selected / 2)]} onDone={() => router.refresh()} />
+            : <p className="muted">Ca vizitator poți vedea arborele, dar nu poți adăuga persoane.</p>}
       </aside>
     </section>
   );
 }
 
-function PersonPanel({ p, n, slots, onSelect, onCenter }: { p: PersonView; n: number; slots: Slots; onSelect: (n: number) => void; onCenter: (id: string) => void }) {
+function PersonPanel({ p, n, slots, onSelect, onCenter, treeId, canInvite }: { p: PersonView; n: number; slots: Slots; onSelect: (n: number) => void; onCenter: (id: string) => void; treeId: string; canInvite: boolean }) {
   const parents = [2 * n, 2 * n + 1].filter((i) => slots[i]);
   const child = n > 1 ? Math.floor(n / 2) : null;
   return (
@@ -87,6 +96,13 @@ function PersonPanel({ p, n, slots, onSelect, onCenter }: { p: PersonView; n: nu
       <div className="actions">
         {n !== 1 && <button className="btn primary" onClick={() => onCenter(p.id)}>Pune în centru</button>}
       </div>
+      {p.living && !p.claimed && canInvite && (
+        <>
+          <div className="section-label">Profil nerevendicat</div>
+          <p className="muted" style={{ margin: "0 0 8px", fontSize: 14 }}>{p.givenName} poate intra în arbore, vedea ce s-a scris despre el sau ea și decide ce rămâne.</p>
+          <InvitePanel key={p.id} treeId={treeId} personId={p.id} personName={p.givenName} />
+        </>
+      )}
     </>
   );
 }
