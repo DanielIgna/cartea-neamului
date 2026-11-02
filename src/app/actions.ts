@@ -59,40 +59,107 @@ export async function createTree(_: unknown, form: FormData) {
   redirect(`/arbore/${t.id}`);
 }
 
-const Parent = z.object({
-  treeId: z.string().uuid(), childId: z.string().uuid(), role: z.enum(["father", "mother"]),
-  given: z.string().trim().min(1, "Scrie prenumele."), surname: z.string().trim(), birthSurname: z.string().trim().optional(),
-  birth: z.string().trim().optional(), birthPlace: z.string().trim().optional(),
-  death: z.string().trim().optional(), deathPlace: z.string().trim().optional(), living: z.string().optional(),
+const Fields = {
+  given: z.string().trim().min(1, "Scrie prenumele.").max(120), surname: z.string().trim().max(120), birthSurname: z.string().trim().max(120).optional(),
+  birth: z.string().trim().max(60).optional(), birthPlace: z.string().trim().max(160).optional(),
+  death: z.string().trim().max(60).optional(), deathPlace: z.string().trim().max(160).optional(), living: z.string().optional(),
+  sex: z.enum(["M", "F", "U"]).optional(), occupation: z.string().trim().max(160).optional(),
+  biography: z.string().trim().max(8000).optional(), notes: z.string().trim().max(8000).optional(),
+};
+const Relative = z.object({
+  treeId: z.string().uuid(), anchorId: z.string().uuid(), kind: z.enum(["father", "mother", "child", "spouse", "sibling"]),
+  otherParentId: z.string().uuid().optional().or(z.literal("")), ...Fields,
 });
 
-export async function addParent(_: unknown, form: FormData) {
-  const parsed = Parent.safeParse(Object.fromEntries(form));
+const personValues = (v: z.infer<typeof Relative> | z.infer<typeof Edit>) => {
+  const b = parseFuzzyDate(v.birth), d = parseFuzzyDate(v.death);
+  return {
+    givenName: v.given, surname: v.surname, birthSurname: v.birthSurname || null,
+    birthDateText: v.birth || null, birthFrom: b.from, birthTo: b.to, birthPlace: v.birthPlace || null,
+    deathDateText: v.death || null, deathFrom: d.from, deathTo: d.to, deathPlace: v.deathPlace || null,
+    living: v.living === "on", occupation: v.occupation || null, biography: v.biography || null, notes: v.notes || null,
+  };
+};
+
+const KIND_LABEL = { father: "tatăl", mother: "mama", child: "un copil", spouse: "soțul sau soția", sibling: "un frate sau o soră" } as const;
+
+/**
+ * Adaugă o rudă lângă o persoană din arbore: tată, mamă, copil, soț/soție sau frate/soră.
+ * Persoana și legăturile ei intră într-o singură tranzacție, ca rudele care urmăresc arborele live să nu vadă pe cineva „plutind”.
+ */
+export async function addRelative(_: unknown, form: FormData) {
+  const parsed = Relative.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const v = parsed.data;
   const me = await currentUser();
   if (!me || !can(await roleIn(db, v.treeId, me.id), "contributor")) return { error: "Nu ai drept să adaugi persoane în acest arbore." };
-  const [child] = await db.select().from(person).where(and(eq(person.id, v.childId), eq(person.treeId, v.treeId)));
-  if (!child) return { error: "Persoana nu mai există în acest arbore." };
-  const existing = await db.select({ sex: person.sex }).from(relationship)
+  const [anchor] = await db.select().from(person).where(and(eq(person.id, v.anchorId), eq(person.treeId, v.treeId)));
+  if (!anchor) return { error: "Persoana nu mai există în acest arbore." };
+  const parentsOf = async (id: string) => db.select({ id: person.id, sex: person.sex }).from(relationship)
     .innerJoin(person, eq(person.id, relationship.personA))
-    .where(and(eq(relationship.type, "parent_child"), eq(relationship.personB, v.childId)));
-  const sexWanted = v.role === "father" ? "M" : "F";
-  if (existing.some((e) => e.sex === sexWanted)) return { error: `${child.givenName} are deja ${v.role === "father" ? "un tată" : "o mamă"} în arbore.` };
-  const b = parseFuzzyDate(v.birth), d = parseFuzzyDate(v.death);
-  // Persoana și relația intră împreună, ca rudele care urmăresc arborele live să nu vadă un părinte „plutind”.
+    .where(and(eq(relationship.type, "parent_child"), eq(relationship.personB, id)));
+
+  let sex: "M" | "F" | "U" = v.sex ?? "U";
+  let parentIds: string[] = [];
+  if (v.kind === "father" || v.kind === "mother") {
+    sex = v.kind === "father" ? "M" : "F";
+    const existing = await parentsOf(anchor.id);
+    if (existing.some((e) => e.sex === sex)) return { error: `${anchor.givenName} are deja ${v.kind === "father" ? "un tată" : "o mamă"} în arbore.` };
+  } else if (v.kind === "sibling") {
+    parentIds = (await parentsOf(anchor.id)).map((p) => p.id);
+    if (!parentIds.length) return { error: `Adaugă întâi un părinte al lui ${anchor.givenName}; fratele sau sora se leagă de aceiași părinți.` };
+  } else if (v.kind === "child") {
+    parentIds = [anchor.id];
+    if (v.otherParentId) {
+      const [other] = await db.select({ id: person.id }).from(person).where(and(eq(person.id, v.otherParentId), eq(person.treeId, v.treeId)));
+      if (other) parentIds.push(other.id);
+    }
+  }
+
   const p = await db.transaction(async (tx) => {
-    const [p] = await tx.insert(person).values({
-      treeId: v.treeId, givenName: v.given, surname: v.surname, birthSurname: v.birthSurname || null, sex: sexWanted,
-      birthDateText: v.birth || null, birthFrom: b.from, birthTo: b.to, birthPlace: v.birthPlace || null,
-      deathDateText: v.death || null, deathFrom: d.from, deathTo: d.to, deathPlace: v.deathPlace || null,
-      living: v.living === "on", createdBy: me.id,
-    }).returning();
-    await tx.insert(relationship).values({ treeId: v.treeId, type: "parent_child", personA: p.id, personB: v.childId, subtype: "biologic" });
+    const [p] = await tx.insert(person).values({ treeId: v.treeId, sex, createdBy: me.id, ...personValues(v) }).returning();
+    if (v.kind === "father" || v.kind === "mother")
+      await tx.insert(relationship).values({ treeId: v.treeId, type: "parent_child", personA: p.id, personB: anchor.id, subtype: "biologic" });
+    else if (v.kind === "spouse")
+      await tx.insert(relationship).values({ treeId: v.treeId, type: "partnership", personA: anchor.id, personB: p.id, subtype: "casatorie" });
+    else for (const parent of parentIds)
+      await tx.insert(relationship).values({ treeId: v.treeId, type: "parent_child", personA: parent, personB: p.id, subtype: "biologic" });
+    // Doi părinți fără legătură între ei devin partenerii copilului comun, ca descendenții să-i arate împreună.
+    if (v.kind === "father" || v.kind === "mother") {
+      const [other] = (await tx.select({ id: person.id, sex: person.sex }).from(relationship).innerJoin(person, eq(person.id, relationship.personA))
+        .where(and(eq(relationship.type, "parent_child"), eq(relationship.personB, anchor.id)))).filter((x) => x.id !== p.id);
+      if (other) await tx.insert(relationship).values({ treeId: v.treeId, type: "partnership", personA: sex === "M" ? p.id : other.id, personB: sex === "M" ? other.id : p.id, subtype: "casatorie" }).onConflictDoNothing();
+    }
     return p;
   });
   revalidatePath(`/arbore/${v.treeId}`);
-  return { ok: true, id: p.id };
+  return { ok: true, id: p.id, message: `Am adăugat ${KIND_LABEL[v.kind]}: ${p.givenName} ${p.surname}`.trim() };
+}
+
+/** Compatibilitate: formularul de loc liber din evantai trimite `childId` și `role`. */
+export async function addParent(prev: unknown, form: FormData) {
+  form.set("anchorId", String(form.get("childId") ?? ""));
+  form.set("kind", String(form.get("role") ?? ""));
+  return addRelative(prev, form);
+}
+
+const Edit = z.object({ treeId: z.string().uuid(), personId: z.string().uuid(), ...Fields });
+
+/** Corectează fișa unei persoane. Editorii pot corecta pe oricine; contributorii, persoanele adăugate de ei; fiecare, propriul profil. */
+export async function updatePerson(_: unknown, form: FormData) {
+  const parsed = Edit.safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const v = parsed.data;
+  const me = await currentUser();
+  const role = me ? await roleIn(db, v.treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: "Nu ai drept să modifici acest arbore." };
+  const [p] = await db.select().from(person).where(and(eq(person.id, v.personId), eq(person.treeId, v.treeId)));
+  if (!p) return { error: "Persoana nu mai există în acest arbore." };
+  if (!can(role, "editor") && p.createdBy !== me.id && p.claimedByUserId !== me.id)
+    return { error: "Poți corecta doar persoanele adăugate de tine. Cere unui editor al arborelui să facă schimbarea." };
+  await db.update(person).set({ ...personValues(v), sex: v.sex ?? p.sex, updatedAt: new Date() }).where(eq(person.id, p.id));
+  revalidatePath(`/arbore/${v.treeId}`);
+  return { ok: true, message: "Fișa a fost salvată." };
 }
 
 const Invite = z.object({ treeId: z.string().uuid(), role: z.enum(["editor", "contributor", "viewer"]), personId: z.string().uuid().optional().or(z.literal("")) });

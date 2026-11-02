@@ -106,6 +106,7 @@ export const person = pgTable("person", {
   deathPlace: text("death_place"),
   living: boolean("living").notNull().default(false),
   biography: text("biography"),
+  notes: text("notes"), // note suplimentare: surse, întrebări deschise, ce mai trebuie verificat
   occupation: text("occupation"),
   claimedByUserId: text("claimed_by_user_id").references(() => user.id, { onDelete: "set null" }),
   privacy: privacyLevel("privacy").notNull().default("private_tree"),

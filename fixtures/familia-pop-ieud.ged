@@ -225,6 +225,7 @@
 1 DEAT
 2 DATE 1931
 2 PLAC Ieud
+1 FAMC @F16@
 1 FAMS @F8@
 0 @I17@ INDI
 1 NAME Măriuța /Pop/
@@ -239,6 +240,7 @@
 1 DEAT
 2 DATE 1940
 2 PLAC Ieud
+1 FAMC @F17@
 1 FAMS @F8@
 0 @I18@ INDI
 1 NAME Simion /Bizău/
@@ -251,6 +253,7 @@
 1 DEAT
 2 DATE 1920
 2 PLAC Ieud
+1 FAMC @F18@
 1 FAMS @F9@
 0 @I20@ INDI
 1 NAME Ștefan /Bud/
@@ -263,6 +266,7 @@
 1 DEAT
 2 DATE 1916
 2 PLAC front, Galiția
+1 FAMC @F20@
 1 FAMS @F10@
 0 @I21@ INDI
 1 NAME Ana /Bud/
@@ -289,6 +293,7 @@
 1 DEAT
 2 DATE 1939
 2 PLAC Bârsana
+1 FAMC @F24@
 1 FAMS @F12@
 0 @I25@ INDI
 1 NAME Rozalia /Dunca/
@@ -327,6 +332,7 @@
 1 DEAT
 2 DATE 1960
 2 PLAC Rozavlea
+1 FAMC @F30@
 1 FAMS @F15@
 0 @I31@ INDI
 1 NAME Varvara /Marchiș/
@@ -342,6 +348,337 @@
 2 DATE 1968
 2 PLAC Rozavlea
 1 FAMS @F15@
+0 @I32@ INDI
+1 NAME Vasile /Pop/
+2 GIVN Vasile
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1841
+2 PLAC Ieud
+1 DEAT
+2 DATE 1903
+2 PLAC Ieud
+1 OCCU Agricultor
+1 FAMC @F32@
+1 FAMS @F16@
+0 @I33@ INDI
+1 NAME Anuța /Pop/
+2 GIVN Anuța
+2 SURN Pop
+1 NAME Anuța /Mihali/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1846
+2 PLAC Ieud
+1 DEAT
+2 DATE 1910
+2 PLAC Ieud
+1 FAMS @F16@
+0 @I34@ INDI
+1 NAME Grigore /Iuga/
+2 GIVN Grigore
+2 SURN Iuga
+1 SEX M
+1 BIRT
+2 DATE 1844
+2 PLAC Ieud
+1 DEAT
+2 DATE 1899
+2 PLAC Ieud
+1 FAMC @F34@
+1 FAMS @F17@
+0 @I35@ INDI
+1 NAME Rusalina /Iuga/
+2 GIVN Rusalina
+2 SURN Iuga
+1 NAME Rusalina /Știr/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE ABT 1850
+2 PLAC Ieud
+1 DEAT
+2 DATE 1921
+2 PLAC Ieud
+1 FAMS @F17@
+0 @I36@ INDI
+1 NAME Alexandru /Bizău/
+2 GIVN Alexandru
+2 SURN Bizău
+1 SEX M
+1 BIRT
+2 DATE ABT 1840
+2 PLAC Ieud
+1 DEAT
+2 DATE 1897
+2 PLAC Ieud
+1 FAMS @F18@
+0 @I40@ INDI
+1 NAME Petru /Bud/
+2 GIVN Petru
+2 SURN Bud
+1 SEX M
+1 BIRT
+2 DATE 1845
+2 PLAC Botiza
+1 DEAT
+2 DATE 1912
+2 PLAC Botiza
+1 OCCU Morar
+1 FAMC @F40@
+1 FAMS @F20@
+0 @I41@ INDI
+1 NAME Ileana /Bud/
+2 GIVN Ileana
+2 SURN Bud
+1 NAME Ileana /Pop/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1850
+2 PLAC Botiza
+1 DEAT
+2 DATE 1918
+2 PLAC Botiza
+1 FAMS @F20@
+0 @I48@ INDI
+1 NAME Simion /Dunca/
+2 GIVN Simion
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE 1848
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1915
+2 PLAC Bârsana
+1 FAMC @F48@
+1 FAMS @F24@
+0 @I49@ INDI
+1 NAME Marina /Dunca/
+2 GIVN Marina
+2 SURN Dunca
+1 NAME Marina /Hojda/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1852
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1930
+2 PLAC Bârsana
+1 FAMS @F24@
+0 @I60@ INDI
+1 NAME Gavrilă /Marchiș/
+2 GIVN Gavrilă
+2 SURN Marchiș
+1 SEX M
+1 BIRT
+2 DATE ABT 1855
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 1925
+2 PLAC Rozavlea
+1 FAMS @F30@
+0 @I64@ INDI
+1 NAME Ioan /Pop/
+2 GIVN Ioan
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1812
+2 PLAC Ieud
+1 DEAT
+2 DATE 1871
+2 PLAC Ieud
+1 NOTE Trecut în conscripția urbarială din 1820 ca fiu de iobag.
+1 FAMC @F64@
+1 FAMS @F32@
+0 @I65@ INDI
+1 NAME Floare /Pop/
+2 GIVN Floare
+2 SURN Pop
+1 NAME Floare /Gherman/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1816
+2 PLAC Ieud
+1 DEAT
+2 DATE 1880
+2 PLAC Ieud
+1 FAMS @F32@
+0 @I68@ INDI
+1 NAME Toader /Iuga/
+2 GIVN Toader
+2 SURN Iuga
+1 SEX M
+1 BIRT
+2 DATE ABT 1815
+2 PLAC Ieud
+1 DEAT
+2 DATE 1870
+2 PLAC Ieud
+1 FAMS @F34@
+0 @I80@ INDI
+1 NAME Mihai /Bud/
+2 GIVN Mihai
+2 SURN Bud
+1 SEX M
+1 BIRT
+2 DATE 1818
+2 PLAC Botiza
+1 DEAT
+2 DATE 1879
+2 PLAC Botiza
+1 FAMC @F80@
+1 FAMS @F40@
+0 @I96@ INDI
+1 NAME Nicolae /Dunca/
+2 GIVN Nicolae
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE ABT 1820
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1888
+2 PLAC Bârsana
+1 FAMC @F96@
+1 FAMS @F48@
+0 @I128@ INDI
+1 NAME Gheorghe /Pop/
+2 GIVN Gheorghe
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1783
+2 PLAC Ieud
+1 DEAT
+2 DATE 1848
+2 PLAC Ieud
+1 OCCU Cantor
+1 FAMC @F128@
+1 FAMS @F64@
+0 @I129@ INDI
+1 NAME Maria /Pop/
+2 GIVN Maria
+2 SURN Pop
+1 NAME Maria /Balea/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE ABT 1788
+2 PLAC Ieud
+1 DEAT
+2 DATE 1852
+2 PLAC Ieud
+1 FAMS @F64@
+0 @I160@ INDI
+1 NAME Ilie /Bud/
+2 GIVN Ilie
+2 SURN Bud
+1 SEX M
+1 BIRT
+2 DATE ABT 1790
+2 PLAC Botiza
+1 DEAT
+2 DATE 1850
+2 PLAC Botiza
+1 FAMS @F80@
+0 @I192@ INDI
+1 NAME Vasile /Dunca/
+2 GIVN Vasile
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE ABT 1790
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1856
+2 PLAC Bârsana
+1 FAMC @F192@
+1 FAMS @F96@
+0 @I256@ INDI
+1 NAME Toader /Pop/
+2 GIVN Toader
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE ABT 1752
+2 PLAC Ieud
+1 DEAT
+2 DATE 1817
+2 PLAC Ieud
+1 NOTE Apare în registrul parohial greco-catolic, primul păstrat la Ieud.
+1 FAMC @F256@
+1 FAMS @F128@
+0 @I257@ INDI
+1 NAME Ana /Pop/
+2 GIVN Ana
+2 SURN Pop
+1 NAME Ana /Chindriș/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE ABT 1757
+2 PLAC Ieud
+1 DEAT
+2 DATE 1820
+2 PLAC Ieud
+1 FAMS @F128@
+0 @I384@ INDI
+1 NAME Ștefan /Dunca/
+2 GIVN Ștefan
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE ABT 1760
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1824
+2 PLAC Bârsana
+1 FAMS @F192@
+0 @I512@ INDI
+1 NAME Ion /Pop/
+2 GIVN Ion
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE ABT 1721
+2 PLAC Ieud
+1 DEAT
+2 DATE 1784
+2 PLAC Ieud
+1 FAMC @F512@
+1 FAMS @F256@
+0 @I513@ INDI
+1 NAME Paraschiva /Pop/
+2 GIVN Paraschiva
+2 SURN Pop
+1 SEX F
+1 BIRT
+2 DATE ABT 1726
+2 PLAC Ieud
+1 DEAT
+2 DATE 1790
+2 PLAC Ieud
+1 FAMS @F256@
+0 @I1024@ INDI
+1 NAME Petru /Pop/
+2 GIVN Petru
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE ABT 1690
+2 PLAC Ieud
+1 DEAT
+2 DATE AFT 1750
+2 PLAC Ieud
+1 NOTE Cel mai vechi strămoș cunoscut, pomenit într-o conscripție a Maramureșului din 1715.
+1 FAMS @F512@
 0 @F1@ FAM
 1 HUSB @I2@
 1 WIFE @I3@
@@ -392,4 +729,63 @@
 1 HUSB @I30@
 1 WIFE @I31@
 1 CHIL @I15@
+0 @F16@ FAM
+1 HUSB @I32@
+1 WIFE @I33@
+1 CHIL @I16@
+0 @F17@ FAM
+1 HUSB @I34@
+1 WIFE @I35@
+1 CHIL @I17@
+0 @F18@ FAM
+1 HUSB @I36@
+1 CHIL @I18@
+0 @F20@ FAM
+1 HUSB @I40@
+1 WIFE @I41@
+1 CHIL @I20@
+0 @F24@ FAM
+1 HUSB @I48@
+1 WIFE @I49@
+1 CHIL @I24@
+0 @F30@ FAM
+1 HUSB @I60@
+1 CHIL @I30@
+0 @F32@ FAM
+1 HUSB @I64@
+1 WIFE @I65@
+1 CHIL @I32@
+0 @F34@ FAM
+1 HUSB @I68@
+1 CHIL @I34@
+0 @F40@ FAM
+1 HUSB @I80@
+1 CHIL @I40@
+0 @F48@ FAM
+1 HUSB @I96@
+1 CHIL @I48@
+0 @F64@ FAM
+1 HUSB @I128@
+1 WIFE @I129@
+1 CHIL @I64@
+0 @F80@ FAM
+1 HUSB @I160@
+1 CHIL @I80@
+0 @F96@ FAM
+1 HUSB @I192@
+1 CHIL @I96@
+0 @F128@ FAM
+1 HUSB @I256@
+1 WIFE @I257@
+1 CHIL @I128@
+0 @F192@ FAM
+1 HUSB @I384@
+1 CHIL @I192@
+0 @F256@ FAM
+1 HUSB @I512@
+1 WIFE @I513@
+1 CHIL @I256@
+0 @F512@ FAM
+1 HUSB @I1024@
+1 CHIL @I512@
 0 TRLR
