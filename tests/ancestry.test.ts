@@ -21,8 +21,8 @@ beforeAll(async () => {
 });
 
 describe("ascendenți pe generații", () => {
-  it("găsește toți cei 25 de ascendenți cunoscuți pe 4 generații, cu numerotare Ahnentafel corectă", async () => {
-    const rows = await fetchAncestorRows(db, byXref.get("@I1@")!, 4);
+  it("găsește toți ascendenții din exemplu pe 10 generații (până la cca. 1690), cu numerotare Ahnentafel corectă", async () => {
+    const rows = await fetchAncestorRows(db, byXref.get("@I1@")!, 10);
     const ahnen = toAhnentafel(rows);
     expect(ahnen.size).toBe(Object.keys(DEMO).length);
     for (const n of Object.keys(DEMO).map(Number)) expect(ahnen.get(n)).toBe(byXref.get(`@I${n}@`));
@@ -43,7 +43,7 @@ describe("export GEDCOM", () => {
   });
   it("păstrează toate familiile și legăturile", async () => {
     const ged = parseGedcom(await exportGedcom(db, treeId, { includeLiving: true }));
-    expect(ged.individuals).toHaveLength(25);
+    expect(ged.individuals).toHaveLength(Object.keys(DEMO).length);
     expect(ged.families.reduce((n, f) => n + f.children.length, 0)).toBe(demoGedcom().families.length);
   });
 });

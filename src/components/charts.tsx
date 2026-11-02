@@ -19,43 +19,63 @@ function arc(r1: number, r2: number, a1: number, a2: number, cx: number, cy: num
 
 const keyAct = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
 
+/** Razele inelelor: primele 4 generații late, cu nume întregi; cele vechi tot mai înguste, cu text de-a lungul razei. */
+export function fanRadii(generations: number) {
+  const R = [0, 72, 148, 214, 276, 340];
+  for (let g = 5; g <= generations; g++) R[g + 1] = R[g] + (g <= 6 ? 74 : 64);
+  return R.slice(0, generations + 2);
+}
+
 /** Evantai: generațiile pe inele concentrice, 240°, tatăl în stânga, mama în dreapta. */
 export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
-  const cx = 360, cy = 350, R = [0, 72, 148, 214, 276, 340], A0 = -210, SPAN = 240;
+  const R = fanRadii(generations), maxR = R[generations + 1];
+  const cx = maxR + 20, cy = maxR + 10, A0 = -210, SPAN = 240;
+  const W = 2 * cx, H = cy + maxR * 0.5 + 20;
   const center = slots[1];
   const sectors = [];
   for (let g = 1; g <= generations; g++) {
     const count = 2 ** g;
+    const radial = g >= 5; // pe inelele subțiri textul merge de-a lungul razei
     for (let k = 0; k < count; k++) {
       const n = count + k, p = slots[n];
       const childKnown = !!slots[Math.floor(n / 2)];
+      const a1 = A0 + (SPAN * k) / count, a2 = A0 + (SPAN * (k + 1)) / count, mid = (a1 + a2) / 2, rm = (R[g] + R[g + 1]) / 2;
       if (!p && !childKnown) {
-        sectors.push(<path key={n} d={arc(R[g], R[g + 1], A0 + (SPAN * k) / count, A0 + (SPAN * (k + 1)) / count, cx, cy)} fill="none" stroke="var(--line)" strokeOpacity={0.5} />);
+        if (g >= 6) continue; // inelele vechi rămân curate: arătăm doar ramurile cunoscute și locurile de completat
+        sectors.push(<path key={n} d={arc(R[g], R[g + 1], a1, a2, cx, cy)} fill="none" stroke="var(--line)" strokeOpacity={0.35} />);
         continue;
       }
-      const a1 = A0 + (SPAN * k) / count, a2 = A0 + (SPAN * (k + 1)) / count, mid = (a1 + a2) / 2, rm = (R[g] + R[g + 1]) / 2;
       const tx = cx + rm * Math.cos((mid * Math.PI) / 180), ty = cy + rm * Math.sin((mid * Math.PI) / 180);
-      const rot = g <= 2 ? mid + 90 : mid < -90 ? mid + 180 : mid;
-      const fs = g <= 2 ? 13 : g === 3 ? 11 : 10;
+      const left = mid < -90;
+      const rot = radial ? (left ? mid + 180 : mid) : g <= 2 ? mid + 90 : left ? mid + 180 : mid;
+      const fs = g <= 2 ? 13 : g === 3 ? 11 : g === 4 ? 10 : g <= 6 ? 9 : 8;
+      let label;
+      if (!p) label = <tspan x={tx} dy={4} fill="var(--muted)">{radial ? "+" : "+ adaugă"}</tspan>;
+      else if (radial) label = (
+        <>
+          <tspan x={tx} dy={g >= 7 ? 3 : -2} fontWeight={700}>{p.givenName}</tspan>
+          {g < 7 && <tspan x={tx} dy={10} fill="var(--muted)">{p.birthYear ?? ""}</tspan>}
+        </>
+      );
+      else label = (
+        <>
+          <tspan x={tx} dy={g <= 2 ? -8 : -6} fontWeight={700}>{g >= 3 ? p.givenName : p.name}</tspan>
+          {g >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
+          <tspan x={tx} dy={g <= 2 ? 16 : 12} fill="var(--muted)">{years(p)}</tspan>
+        </>
+      );
       sectors.push(
         <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber, adaugă persoana"}
           onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
-          <path d={arc(R[g], R[g + 1], a1, a2, cx, cy)} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeWidth={1.2} strokeDasharray={p ? undefined : "4 4"} />
-          <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={fs}>
-            {p ? (
-              <>
-                <tspan x={tx} dy={g <= 2 ? -8 : -6} fontWeight={700}>{g >= 3 ? p.givenName : p.name}</tspan>
-                {g >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
-                <tspan x={tx} dy={g <= 2 ? 16 : 12} fill="var(--muted)">{years(p)}</tspan>
-              </>
-            ) : <tspan x={tx} dy={4} fill="var(--muted)">+ adaugă</tspan>}
-          </text>
+          <title>{p ? `${p.name} ${years(p)}` : "Loc liber: adaugă persoana"}</title>
+          <path d={arc(R[g], R[g + 1], a1, a2, cx, cy)} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeWidth={g >= 6 ? 0.8 : 1.2} strokeDasharray={p ? undefined : "4 4"} />
+          <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={fs}>{label}</text>
         </g>,
       );
     }
   }
   return (
-    <svg viewBox="0 0 720 540" role="img" aria-label="Arbore în evantai" style={{ width: "100%", maxWidth: 760, display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arbore în evantai" style={generations >= 7 ? { width: W, maxWidth: "none", display: "block", margin: "0 auto" } : { width: "100%", maxWidth: 760, display: "block", margin: "0 auto" }}>
       {sectors}
       {center && (
         <g className={`sector${selected === 1 ? " sel" : ""}`} tabIndex={0} role="button" aria-label={center.name} onClick={() => onSelect(1)} onKeyDown={keyAct(() => onSelect(1))}>
@@ -70,15 +90,23 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 
   );
 }
 
-/** Arbore clasic, de la stânga la dreapta. */
+/** Arbore clasic, de la stânga la dreapta. Rândurile se dau doar persoanelor și locurilor libere vizibile, deci rămâne compact. */
 export function ClassicTree({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
-  const colW = 176, bw = 160, bh = 38, rowH = 44, leaves = 2 ** generations, H = leaves * rowH + 20, W = (generations + 1) * colW;
+  const colW = 176, bw = 160, bh = 38, rowH = 44;
+  const visible = (n: number) => genOf(n) <= generations && (n === 1 || !!slots[n] || !!slots[Math.floor(n / 2)]);
   const pos: Record<number, { x: number; y: number }> = {};
-  for (let g = 0; g <= generations; g++) for (let k = 0; k < 2 ** g; k++) pos[2 ** g + k] = { x: 10 + g * colW, y: (H / 2 ** g) * k + H / 2 ** g / 2 };
-  const visible = (n: number) => n === 1 || !!slots[n] || !!slots[Math.floor(n / 2)];
-  const all = Object.keys(pos).map(Number).filter(visible);
+  let row = 0;
+  const place = (n: number): number => {
+    const kids = [2 * n, 2 * n + 1].filter((c) => !!slots[n] && visible(c));
+    const y = kids.length ? kids.map(place).reduce((a, b) => a + b, 0) / kids.length : 20 + rowH * row++ + rowH / 2;
+    pos[n] = { x: 10 + genOf(n) * colW, y };
+    return y;
+  };
+  place(1);
+  const all = Object.keys(pos).map(Number);
+  const H = rowH * row + 40, W = (Math.max(...all.map(genOf)) + 1) * colW + 10;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arbore clasic" style={{ width: "100%", minWidth: 640, maxWidth: 900 }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arbore clasic" style={{ width: W, maxWidth: "none", display: "block" }}>
       {all.filter((n) => n > 1).map((n) => {
         const a = pos[Math.floor(n / 2)], b = pos[n], mx = a.x + bw + (colW - bw) / 2;
         return <path key={`l${n}`} d={`M${a.x + bw} ${a.y}H${mx}V${b.y}H${b.x}`} fill="none" stroke="var(--line)" strokeWidth={1.2} />;
@@ -91,10 +119,108 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
             <rect x={x} y={y - bh / 2} width={bw} height={bh} rx={6} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeDasharray={p ? undefined : "4 4"} />
             {p ? (
               <>
-                <text x={x + 10} y={y - 3} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{p.name}</text>
-                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{years(p)}{p.birthPlace ? ` · ${p.birthPlace}` : ""}</text>
+                <text x={x + 10} y={y - 3} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 22)}</text>
+                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(`${years(p)}${p.birthPlace ? ` · ${p.birthPlace}` : ""}`, 26)}</text>
               </>
             ) : <text x={x + 10} y={y + 4} fill="var(--muted)" fontSize={12}>+ adaugă</text>}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+export const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
+
+/**
+ * Copacul: persoana din centru e trunchiul, ascendenții sunt ramuri care urcă și se despart la fiecare generație,
+ * iar fiecare persoană e o frunză. Tatăl spre stânga, mama spre dreapta.
+ */
+export function TreeIllustration({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
+  const gens = Math.min(generations, 6);
+  const W = 960, baseY = 640, trunkTop = 520, H = 680, cx = W / 2;
+  const radius = (g: number) => 120 + (g - 1) * (360 / Math.max(gens, 1));
+  const fx = (W / 2 - 46) / radius(Math.max(gens, 1)), fy = (trunkTop - 48) / radius(Math.max(gens, 1));
+  const pos = (n: number) => {
+    const g = genOf(n);
+    if (g === 0) return { x: cx, y: trunkTop };
+    const k = n - 2 ** g, count = 2 ** g;
+    const ang = Math.PI + (Math.PI * (k + 0.5)) / count; // de la stânga (180°) la dreapta (360°)
+    const r = radius(g);
+    return { x: cx + r * fx * Math.cos(ang), y: trunkTop + r * Math.sin(ang) * fy };
+  };
+  const nodes: number[] = [];
+  for (let g = 0; g <= gens; g++) for (let n = 2 ** g; n < 2 ** (g + 1); n++) if (n === 1 || slots[n] || (g <= 4 && slots[Math.floor(n / 2)])) nodes.push(n);
+  const leaf = (g: number) => (g <= 2 ? 30 : g === 3 ? 24 : g === 4 ? 18 : g === 5 ? 13 : 10);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arborele desenat ca un copac" style={{ width: "100%", maxWidth: 980, display: "block", margin: "0 auto" }}>
+      <ellipse cx={cx} cy={baseY + 8} rx={260} ry={22} fill="var(--tree-ground)" />
+      <path d={`M${cx - 34} ${baseY} C${cx - 22} ${baseY - 50} ${cx - 16} ${trunkTop + 50} ${cx - 12} ${trunkTop} L${cx + 12} ${trunkTop} C${cx + 16} ${trunkTop + 50} ${cx + 22} ${baseY - 50} ${cx + 34} ${baseY} Z`} fill="var(--tree-bark)" />
+      {nodes.filter((n) => n > 1).map((n) => {
+        const a = pos(Math.floor(n / 2)), b = pos(n), g = genOf(n);
+        const w = Math.max(14 - g * 2.4, 1.5);
+        return <path key={`b${n}`} d={`M${a.x} ${a.y} Q${(a.x + b.x) / 2} ${a.y - 6} ${b.x} ${b.y}`} fill="none" stroke="var(--tree-bark)" strokeWidth={slots[n] ? w : 1.2} strokeDasharray={slots[n] ? undefined : "3 4"} strokeLinecap="round" />;
+      })}
+      {nodes.map((n) => {
+        const p = slots[n], { x, y } = pos(n), g = genOf(n), r = leaf(g);
+        const rot = g === 0 ? 0 : ((Math.atan2(y - trunkTop, x - cx) * 180) / Math.PI) + 90;
+        return (
+          <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber, adaugă persoana"}
+            onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
+            <title>{p ? `${p.name} ${years(p)}` : "Loc liber: adaugă persoana"}</title>
+            {g === 0
+              ? <rect x={x - 70} y={y - 2} width={140} height={44} rx={10} fill="var(--accent-soft)" stroke="var(--accent)" />
+              : <ellipse cx={x} cy={y} rx={r * 1.35} ry={r} transform={`rotate(${rot} ${x} ${y})`} fill={p ? (n >> (g - 1) === 2 ? "var(--leaf-pat)" : "var(--leaf-mat)") : "var(--surface)"}
+                  stroke={p ? "var(--leaf-edge)" : "var(--muted)"} strokeDasharray={p ? undefined : "3 3"} />}
+            <text x={x} y={g === 0 ? y + 17 : y - (g >= 5 ? 0 : 2)} textAnchor="middle" fill="var(--ink)" fontSize={g === 0 ? 14 : g <= 2 ? 12 : g <= 4 ? 10 : 8.5} fontWeight={700}>
+              {p ? clip(g >= 3 ? p.givenName : p.name, g >= 5 ? 9 : 18) : "+"}
+            </text>
+            {p && g <= 4 && <text x={x} y={g === 0 ? y + 33 : y + 11} textAnchor="middle" fill="var(--muted)" fontSize={g <= 2 ? 10.5 : 9}>{g === 0 ? years(p) : p.birthYear ?? ""}</text>}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+/** Descendenții persoanei din centru, de sus în jos: fiecare cu soțul/soția alături și copiii dedesubt. */
+export type DescNode = { id: string; partners: string[]; children: DescNode[] };
+export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter }: {
+  root: DescNode; people: Record<string, PersonView>; selectedId: string | null; onSelectPerson: (id: string) => void; onCenter: (id: string) => void;
+}) {
+  const bw = 150, bh = 40, gapX = 16, rowH = 96, partnerW = 150;
+  const widthOf = (d: DescNode): number => Math.max(bw + d.partners.length * (partnerW + 6), d.children.reduce((s, c) => s + widthOf(c) + gapX, -gapX));
+  type Box = { id: string; x: number; y: number; partnerOf?: string; parent?: { x: number; y: number } };
+  const boxes: Box[] = [];
+  const lay = (d: DescNode, x0: number, depth: number, parent?: { x: number; y: number }) => {
+    const w = widthOf(d), y = 20 + depth * rowH;
+    const unitW = bw + d.partners.length * (partnerW + 6), ux = x0 + (w - unitW) / 2;
+    boxes.push({ id: d.id, x: ux, y, parent });
+    d.partners.forEach((pid, i) => boxes.push({ id: pid, x: ux + bw + 6 + i * (partnerW + 6), y, partnerOf: d.id }));
+    const anchor = { x: ux + (d.partners.length ? bw + 3 : bw / 2), y: y + bh };
+    let cx = x0;
+    for (const c of d.children) { lay(c, cx, depth + 1, anchor); cx += widthOf(c) + gapX; }
+  };
+  lay(root, 10, 0);
+  const W = widthOf(root) + 20, H = Math.max(...boxes.map((b) => b.y)) + bh + 30;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Descendenți" style={{ width: Math.max(W, 320), maxWidth: "none", display: "block", margin: "0 auto" }}>
+      {boxes.filter((b) => b.parent).map((b) => {
+        const mid = (b.parent!.y + b.y) / 2;
+        return <path key={`l${b.id}${b.x}`} d={`M${b.parent!.x} ${b.parent!.y}V${mid}H${b.x + bw / 2}V${b.y}`} fill="none" stroke="var(--line)" strokeWidth={1.2} />;
+      })}
+      {boxes.map((b) => {
+        const p = people[b.id];
+        if (!p) return null;
+        const isRoot = b.id === root.id && !b.partnerOf;
+        return (
+          <g key={`${b.id}${b.x}`} className={`sector${selectedId === b.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name}
+            onClick={() => onSelectPerson(b.id)} onDoubleClick={() => onCenter(b.id)} onKeyDown={keyAct(() => onSelectPerson(b.id))}>
+            {b.partnerOf && <text x={b.x - 3} y={b.y + bh / 2 + 4} textAnchor="end" fill="var(--muted)" fontSize={12}>⚭</text>}
+            <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6}
+              fill={isRoot ? "var(--accent-soft)" : b.partnerOf ? "var(--surface)" : "var(--desc)"} stroke={isRoot ? "var(--accent)" : "var(--line)"} strokeDasharray={b.partnerOf ? "4 3" : undefined} />
+            <text x={b.x + 9} y={b.y + 17} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 20)}</text>
+            <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{years(p)}</text>
           </g>
         );
       })}

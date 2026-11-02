@@ -7,6 +7,7 @@ import { auth } from "../src/lib/auth";
 import { writeGedcom } from "../src/lib/gedcom";
 import { demoGedcom } from "../src/lib/demo-data";
 import { importGedcom } from "../src/lib/gedcom-db";
+import { syncDemo } from "../src/lib/demo-sync";
 
 await runMigrations(db);
 const ged = writeGedcom(demoGedcom(), { source: "Neamul Pop din Ieud (exemplu)" });
@@ -14,7 +15,8 @@ writeFileSync("fixtures/familia-pop-ieud.ged", ged);
 
 const existing = await db.select().from(tree).where(eq(tree.name, "Neamul Pop din Ieud"));
 if (existing.length) {
-  console.log("Arborele de exemplu există deja:", existing[0].id);
+  const added = await syncDemo(db, existing[0].id);
+  console.log("Arborele de exemplu există deja:", existing[0].id, added ? `· am adăugat ${added} persoane noi din exemplu` : "");
   process.exit(0);
 }
 const DEMO_EMAIL = "demo@cartea-neamului.ro", DEMO_PASS = "demo-parola-123";
@@ -27,6 +29,7 @@ const [root] = await db.select().from(person).where(and(eq(person.treeId, t.id),
 await db.update(tree).set({ rootPersonId: root.id }).where(eq(tree.id, t.id));
 await db.update(person).set({ claimedByUserId: demo.id, privacy: "claimed" }).where(eq(person.id, root.id));
 
+await syncDemo(db, t.id);
 const [toader] = await db.select().from(person).where(and(eq(person.treeId, t.id), eq(person.gedcomXref, "@I8@")));
 for (const [title, kind, dateText] of [["Act de botez, Parohia greco-catolică Ieud", "act", "1898"], ["Livret militar, Regimentul 85 Infanterie", "act", "1916"]] as const) {
   const [d] = await db.insert(document).values({ treeId: t.id, kind, title, dateText }).returning();

@@ -6,6 +6,7 @@
   --pat-1:#c9daef; --pat-2:#dbe6f4; --pat-3:#e8eff8; --pat-4:#f1f5fb;
   --mat-1:#ecd8b4; --mat-2:#f2e4ca; --mat-3:#f6ecdb; --mat-4:#faf4ea;
   --event:#1f5fa81a;
+  --tree-bark:#7a5a3a; --tree-ground:#d9e4cf; --leaf-pat:#cfe3c0; --leaf-mat:#e6e3b5; --leaf-edge:#7f9a6a; --desc:#e4eef8;
   --display:"Alegreya", Georgia, "Times New Roman", serif;
   --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
 }
@@ -14,12 +15,14 @@
   --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
   --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
+  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --desc:#183a5c;
   --event:#7fb0ea22; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0b1626; --surface:#112136; --surface-2:#162a44; --ink:#e8eef6; --muted:#9db0c6; --line:#24405f;
   --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
   --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
+  --tree-bark:#8a6a4a; --tree-ground:#16301f; --leaf-pat:#24513a; --leaf-mat:#4a4a22; --leaf-edge:#5f8f6a; --desc:#183a5c;
   --event:#7fb0ea22; color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -130,3 +133,15 @@ a{color:var(--accent)}
 /* Comutator de temă din antet: Automat / Luminos / Întunecat */
 .theme-switch{font-size:13px}
 .theme-switch button{padding:4px 9px}
+
+/* fișa persoanei: rude, rudenie, editare */
+.kin{background:var(--ochre-soft);border-radius:8px;padding:6px 10px;font-size:14px;margin-top:8px}
+.rel-group{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:start;font-size:14px}
+.rel-group dt{color:var(--muted);padding-top:4px}
+.rel-group dd{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.notes{white-space:pre-wrap;font-size:14px;background:var(--surface-2);border-radius:8px;padding:8px 10px;margin:6px 0 0}
+.bio{white-space:pre-wrap;margin:10px 0 0}
+.chartbox.scroll{overflow:auto;max-height:78vh}
+.form textarea{font:inherit;min-height:90px;resize:vertical}
+.gen-select{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
+.gen-select select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 8px}
