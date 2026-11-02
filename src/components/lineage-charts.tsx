@@ -151,9 +151,10 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
   slots: Slots; generations: number; down: DescNode; people: Record<string, PersonView>; selectedId: string | null;
   onSelectPerson: (id: string) => void; onSelectSlot: (n: number) => void; onCenter: (id: string) => void;
 }) {
-  const bw = 128, bh = 40, rowH = 74, colW = bw + 14;
+  const bw = 118, bh = 40, rowH = 74, colW = bw + 10;
+  const upGens = Math.min(generations, 3); // părinți, bunici, străbunici: destul cât să rămână lizibil pe un ecran
   // Strămoșii ca un arbore „întors”: fiecare are loc doar cât îi trebuie, ca să nu rămână găuri pentru părinți necunoscuți.
-  const toNode = (n: number): DescNode => ({ id: String(n), partners: [], children: [2 * n, 2 * n + 1].filter((c) => slots[c] && genOf(c) <= generations).map(toNode) });
+  const toNode = (n: number): DescNode => ({ id: String(n), partners: [], children: [2 * n, 2 * n + 1].filter((c) => slots[c] && genOf(c) <= upGens).map(toNode) });
   const upTree = place(toNode(1));
   const topGen = upTree.depth;
   const { placed, leaves, depth } = place(down);
@@ -170,7 +171,7 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
     <g key={key} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name} onClick={onClick} onDoubleClick={onDbl} onKeyDown={keyAct(onClick)}>
       <title>{`${p.name} ${years(p)}`}</title>
       <rect x={x - bw / 2} y={y - bh / 2} width={bw} height={bh} rx={6} fill={fill} stroke="var(--line)" />
-      <text x={x} y={y - 3} textAnchor="middle" fill="var(--ink)" fontSize={11.5} fontWeight={700}>{clip(p.name, 19)}</text>
+      <text x={x} y={y - 3} textAnchor="middle" fill="var(--ink)" fontSize={11.5} fontWeight={700}>{clip(p.name, 17)}</text>
       <text x={x} y={y + 12} textAnchor="middle" fill="var(--muted)" fontSize={10}>{years(p)}</text>
     </g>
   );

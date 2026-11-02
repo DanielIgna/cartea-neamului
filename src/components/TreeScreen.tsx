@@ -94,7 +94,7 @@ export default function TreeScreen(props: Props) {
                 </select>
               </label>
             )}
-            {!showsLineage && (
+            {!showsLineage && view !== "hour" && (
               <label className="gen-select">Generații
                 <select value={generations} onChange={(e) => go({ g: e.target.value })}>
                   {[3, 4, 5, 6, 7, 8, 9, 10].map((g) => <option key={g} value={g}>{g}{g >= 8 ? " (până pe la 1700)" : ""}</option>)}
@@ -118,6 +118,13 @@ export default function TreeScreen(props: Props) {
               <>
                 <span><i className="sw" style={{ background: "var(--desc)" }} />Urmaș</span>
                 <span><i className="sw" style={{ border: "1.5px dashed var(--line)" }} />⚭ Soț / soție</span>
+              </>
+            ) : view === "hour" ? (
+              <>
+                <span><i className="sw" style={{ background: "var(--pat-1)" }} />Linia tatălui</span>
+                <span><i className="sw" style={{ background: "var(--mat-1)" }} />Linia mamei</span>
+                <span><i className="sw" style={{ background: "var(--desc)" }} />Urmași</span>
+                <span>Sus: 3 generații de strămoși. Pentru mai multe, alege Evantai sau Copac.</span>
               </>
             ) : showsLineage ? (
               <>
