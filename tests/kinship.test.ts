@@ -7,7 +7,7 @@ import { importGedcom } from "@/lib/gedcom-db";
 import { writeGedcom } from "@/lib/gedcom";
 import { demoGedcom, DEMO, DEMO_EXTRAS } from "@/lib/demo-data";
 import { syncDemo } from "@/lib/demo-sync";
-import { buildGraph, family, kinship, bloodLabel, romanDegree, type Graph } from "@/lib/kinship";
+import { buildGraph, family, kinship, bloodLabel, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, type Graph } from "@/lib/kinship";
 
 let db: Db, treeId: string, g: Graph, id: (x: string) => string;
 
@@ -47,7 +47,8 @@ describe("rude și grad de rudenie", () => {
     expect(f.parents.sort()).toEqual([id("@I2@"), id("@I3@")].sort());
     expect(f.partners).toEqual([id("@X1@")]);
     expect(f.children.sort()).toEqual([id("@X2@"), id("@X3@")].sort());
-    expect(f.siblings).toEqual([id("@X4@")]);
+    expect(f.siblings.sort()).toEqual(["@X4@", "@X13@", "@X14@", "@X15@"].map(id).sort());
+    expect(family(g, id("@I8@")).children).toHaveLength(13);
   });
 
   it("numește legătura și gradul față de persoana din centru", () => {
@@ -70,5 +71,20 @@ describe("rude și grad de rudenie", () => {
     expect(romanDegree(9)).toBe("IX");
     expect(bloodLabel(3, 3, "F")).toBe("vară de-al doilea");
     expect(bloodLabel(3, 1, "M")).toBe("frate al bunicului/bunicii");
+  });
+
+  it("dincolo de gradul VII arată ascendentul comun, ca afilierea „din neamul lui …”", () => {
+    const far = kinship(g, id("@I1@"), id("@X32@"))!;
+    expect(far.degree).toBe(10);
+    expect(far.ancestor).toBe(id("@I32@"));
+    const dragomiresti = kinship(g, id("@I1@"), id("@X36@"))!;
+    expect(dragomiresti.ancestor).toBe(id("@I512@"));
+    const { byDegree } = relativesByDegree(g, id("@I1@"));
+    expect(byDegree.get(1)!.map((x) => x.id).sort()).toEqual(["@I2@", "@I3@", "@X2@", "@X3@"].map(id).sort());
+  });
+
+  it("găsește cel mai vechi strămoș pentru trunchiul copacului", () => {
+    expect(oldestAncestor(g, id("@I1@"))).toBe(id("@I1024@"));
+    expect(ancestorsOf(g, id("@I1@"))[0][1]).toBe(10);
   });
 });

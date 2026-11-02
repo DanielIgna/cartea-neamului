@@ -132,57 +132,6 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
 
 export const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
-/**
- * Copacul: persoana din centru e trunchiul, ascendenții sunt ramuri care urcă și se despart la fiecare generație,
- * iar fiecare persoană e o frunză. Tatăl spre stânga, mama spre dreapta.
- */
-export function TreeIllustration({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
-  const gens = Math.min(generations, 6);
-  const W = 960, baseY = 640, trunkTop = 520, H = 680, cx = W / 2;
-  const radius = (g: number) => 120 + (g - 1) * (360 / Math.max(gens, 1));
-  const fx = (W / 2 - 46) / radius(Math.max(gens, 1)), fy = (trunkTop - 48) / radius(Math.max(gens, 1));
-  const pos = (n: number) => {
-    const g = genOf(n);
-    if (g === 0) return { x: cx, y: trunkTop };
-    const k = n - 2 ** g, count = 2 ** g;
-    const ang = Math.PI + (Math.PI * (k + 0.5)) / count; // de la stânga (180°) la dreapta (360°)
-    const r = radius(g);
-    return { x: cx + r * fx * Math.cos(ang), y: trunkTop + r * Math.sin(ang) * fy };
-  };
-  const nodes: number[] = [];
-  for (let g = 0; g <= gens; g++) for (let n = 2 ** g; n < 2 ** (g + 1); n++) if (n === 1 || slots[n] || (g <= 4 && slots[Math.floor(n / 2)])) nodes.push(n);
-  const leaf = (g: number) => (g <= 2 ? 30 : g === 3 ? 24 : g === 4 ? 18 : g === 5 ? 13 : 10);
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arborele desenat ca un copac" style={{ width: "100%", maxWidth: 980, display: "block", margin: "0 auto" }}>
-      <ellipse cx={cx} cy={baseY + 8} rx={260} ry={22} fill="var(--tree-ground)" />
-      <path d={`M${cx - 34} ${baseY} C${cx - 22} ${baseY - 50} ${cx - 16} ${trunkTop + 50} ${cx - 12} ${trunkTop} L${cx + 12} ${trunkTop} C${cx + 16} ${trunkTop + 50} ${cx + 22} ${baseY - 50} ${cx + 34} ${baseY} Z`} fill="var(--tree-bark)" />
-      {nodes.filter((n) => n > 1).map((n) => {
-        const a = pos(Math.floor(n / 2)), b = pos(n), g = genOf(n);
-        const w = Math.max(14 - g * 2.4, 1.5);
-        return <path key={`b${n}`} d={`M${a.x} ${a.y} Q${(a.x + b.x) / 2} ${a.y - 6} ${b.x} ${b.y}`} fill="none" stroke="var(--tree-bark)" strokeWidth={slots[n] ? w : 1.2} strokeDasharray={slots[n] ? undefined : "3 4"} strokeLinecap="round" />;
-      })}
-      {nodes.map((n) => {
-        const p = slots[n], { x, y } = pos(n), g = genOf(n), r = leaf(g);
-        const rot = g === 0 ? 0 : ((Math.atan2(y - trunkTop, x - cx) * 180) / Math.PI) + 90;
-        return (
-          <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber, adaugă persoana"}
-            onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
-            <title>{p ? `${p.name} ${years(p)}` : "Loc liber: adaugă persoana"}</title>
-            {g === 0
-              ? <rect x={x - 70} y={y - 2} width={140} height={44} rx={10} fill="var(--accent-soft)" stroke="var(--accent)" />
-              : <ellipse cx={x} cy={y} rx={r * 1.35} ry={r} transform={`rotate(${rot} ${x} ${y})`} fill={p ? (n >> (g - 1) === 2 ? "var(--leaf-pat)" : "var(--leaf-mat)") : "var(--surface)"}
-                  stroke={p ? "var(--leaf-edge)" : "var(--muted)"} strokeDasharray={p ? undefined : "3 3"} />}
-            <text x={x} y={g === 0 ? y + 17 : y - (g >= 5 ? 0 : 2)} textAnchor="middle" fill="var(--ink)" fontSize={g === 0 ? 14 : g <= 2 ? 12 : g <= 4 ? 10 : 8.5} fontWeight={700}>
-              {p ? clip(g >= 3 ? p.givenName : p.name, g >= 5 ? 9 : 18) : "+"}
-            </text>
-            {p && g <= 4 && <text x={x} y={g === 0 ? y + 33 : y + 11} textAnchor="middle" fill="var(--muted)" fontSize={g <= 2 ? 10.5 : 9}>{g === 0 ? years(p) : p.birthYear ?? ""}</text>}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
 /** Descendenții persoanei din centru, de sus în jos: fiecare cu soțul/soția alături și copiii dedesubt. */
 export type DescNode = { id: string; partners: string[]; children: DescNode[] };
 export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter }: {
