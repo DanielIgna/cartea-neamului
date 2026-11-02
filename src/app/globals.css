@@ -2,7 +2,7 @@
 /* Layout: app shell — top bar with views, main canvas + person panel side by side, stacking on phones */
 :root{
   --bg:#eef1f2; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#1b2430; --muted:#5b6673; --line:#d5dbe0;
-  --accent:#1f5fa8; --accent-soft:#dbe7f5; --ochre:#b9822a; --ochre-soft:#f3e6cf; --red:#a8322a; --good:#2f7d4f;
+  --accent:#1f5fa8; --on-accent:#ffffff; --accent-soft:#dbe7f5; --ochre:#b9822a; --ochre-soft:#f3e6cf; --red:#a8322a; --good:#2f7d4f;
   --pat-1:#c9daef; --pat-2:#dbe6f4; --pat-3:#e8eff8; --pat-4:#f1f5fb;
   --mat-1:#ecd8b4; --mat-2:#f2e4ca; --mat-3:#f6ecdb; --mat-4:#faf4ea;
   --event:#1f5fa81a;
@@ -10,15 +10,15 @@
   --body:var(--font-body), "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#12171d; --surface:#1a2129; --surface-2:#202933; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2e3946;
-  --accent:#7fb0ea; --accent-soft:#1f3550; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#e58a80; --good:#7cc79a;
-  --pat-1:#28466b; --pat-2:#223b59; --pat-3:#1d3149; --pat-4:#19293b;
+  --bg:#0b1626; --surface:#112136; --surface-2:#162a44; --ink:#e8eef6; --muted:#9db0c6; --line:#24405f;
+  --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
+  --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
   --event:#7fb0ea22; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#12171d; --surface:#1a2129; --surface-2:#202933; --ink:#e6ebf0; --muted:#9aa6b2; --line:#2e3946;
-  --accent:#7fb0ea; --accent-soft:#1f3550; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#e58a80; --good:#7cc79a;
-  --pat-1:#28466b; --pat-2:#223b59; --pat-3:#1d3149; --pat-4:#19293b;
+  --bg:#0b1626; --surface:#112136; --surface-2:#162a44; --ink:#e8eef6; --muted:#9db0c6; --line:#24405f;
+  --accent:#7fb0ea; --on-accent:#0b1626; --accent-soft:#1d3a5e; --ochre:#e0b469; --ochre-soft:#3d3020; --red:#f0958b; --good:#7cc79a;
+  --pat-1:#28507e; --pat-2:#224569; --pat-3:#1c3a58; --pat-4:#183049;
   --mat-1:#5c4523; --mat-2:#4c3a1f; --mat-3:#3e301c; --mat-4:#332818;
   --event:#7fb0ea22; color-scheme:dark}
 *{box-sizing:border-box}
@@ -45,9 +45,9 @@ nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
 .toolbar .title{font-family:var(--display);font-size:20px;font-weight:700;margin-right:auto}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:transparent;padding:5px 11px;color:var(--muted)}
-.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;text-decoration:none;color:var(--ink);display:inline-block}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
 .btn:hover{border-color:var(--accent)}
 .chartbox{overflow-x:auto}
 svg text{font-family:var(--body)}
@@ -126,3 +126,7 @@ table.plain th{font-size:12px;color:var(--muted);text-transform:uppercase;letter
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .err{color:var(--red);font-size:14px}
 a{color:var(--accent)}
+
+/* Comutator de temă din antet: Automat / Luminos / Întunecat */
+.theme-switch{font-size:13px}
+.theme-switch button{padding:4px 9px}

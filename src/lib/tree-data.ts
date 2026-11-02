@@ -9,7 +9,7 @@ export type PersonView = {
   birthText: string | null; birthPlace: string | null; deathText: string | null; deathPlace: string | null;
   birthYear: number | null; deathYear: number | null; approx: boolean;
   living: boolean; claimed: boolean; occupation: string | null; biography: string | null;
-  documents: { id: string; title: string; kind: string; dateText: string | null }[];
+  documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean }[];
 };
 
 export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = []): PersonView {
@@ -32,10 +32,10 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   const ids = [...new Set(ahnen.values())];
   const people = ids.length ? await db.select().from(person).where(inArray(person.id, ids)) : [];
   const links = ids.length
-    ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText })
+    ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey })
         .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
     : [];
-  const byId = new Map(people.map((p) => [p.id, toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, ...d }) => d))]));
+  const byId = new Map(people.map((p) => [p.id, toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })))]));
   const slots: Record<number, PersonView> = {};
   for (const [n, id] of ahnen) slots[n] = byId.get(id)!;
   return { tree: t, centerId: center, rootId: t.rootPersonId, slots };
