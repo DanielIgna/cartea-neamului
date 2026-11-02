@@ -1,0 +1,395 @@
+0 HEAD
+1 SOUR CARTEA_NEAMULUI
+2 NAME Neamul Pop din Ieud (exemplu)
+1 GEDC
+2 VERS 5.5.1
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+0 @I1@ INDI
+1 NAME Andrei /Pop/
+2 GIVN Andrei
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1988
+2 PLAC Cluj-Napoca
+1 OCCU Inginer software
+1 NOTE A pornit arborele în 2026, din caietul de amintiri al bunicii Ana.
+1 FAMC @F1@
+0 @I2@ INDI
+1 NAME Ioan /Pop/
+2 GIVN Ioan
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1958
+2 PLAC Sighetu Marmației
+1 OCCU Tâmplar
+1 NOTE Păstrează lada de zestre a familiei.
+1 FAMC @F2@
+1 FAMS @F1@
+0 @I3@ INDI
+1 NAME Maria /Pop/
+2 GIVN Maria
+2 SURN Pop
+1 NAME Maria /Dunca/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1961
+2 PLAC Bârsana
+1 OCCU Învățătoare
+1 FAMC @F3@
+1 FAMS @F1@
+0 @I4@ INDI
+1 NAME Gheorghe /Pop/
+2 GIVN Gheorghe
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1929
+2 PLAC Ieud
+1 DEAT
+2 DATE 2004
+2 PLAC Ieud
+1 OCCU Agricultor
+1 FAMC @F4@
+1 FAMS @F2@
+0 @I5@ INDI
+1 NAME Ana /Pop/
+2 GIVN Ana
+2 SURN Pop
+1 NAME Ana /Bud/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1932
+2 PLAC Botiza
+1 DEAT
+2 DATE 2015
+2 PLAC Ieud
+1 OCCU Țesătoare
+1 NOTE Povestea despre anii războiului și despre tatăl ei, Mihai.
+1 FAMC @F5@
+1 FAMS @F2@
+0 @I6@ INDI
+1 NAME Vasile /Dunca/
+2 GIVN Vasile
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE 1934
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1999
+2 PLAC Bârsana
+1 OCCU Meșter lemnar
+1 FAMC @F6@
+1 FAMS @F3@
+0 @I7@ INDI
+1 NAME Floare /Dunca/
+2 GIVN Floare
+2 SURN Dunca
+1 NAME Floare /Hotea/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1936
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 2011
+2 PLAC Bârsana
+1 FAMC @F7@
+1 FAMS @F3@
+0 @I8@ INDI
+1 NAME Toader /Pop/
+2 GIVN Toader
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1898
+2 PLAC Ieud
+1 DEAT
+2 DATE 1967
+2 PLAC Ieud
+1 OCCU Tâmplar, cântăreț de strană
+1 NOTE A luptat pe frontul italian în 1917.
+1 FAMC @F8@
+1 FAMS @F4@
+0 @I9@ INDI
+1 NAME Irina /Pop/
+2 GIVN Irina
+2 SURN Pop
+1 NAME Irina /Bizău/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1902
+2 PLAC Ieud
+1 DEAT
+2 DATE 1980
+2 PLAC Ieud
+1 FAMC @F9@
+1 FAMS @F4@
+0 @I10@ INDI
+1 NAME Mihai /Bud/
+2 GIVN Mihai
+2 SURN Bud
+1 SEX M
+1 BIRT
+2 DATE 1900
+2 PLAC Botiza
+1 DEAT
+2 DATE 1944
+2 PLAC front, Ungaria
+1 NOTE Căzut în toamna lui 1944.
+1 FAMC @F10@
+1 FAMS @F5@
+0 @I11@ INDI
+1 NAME Paraschiva /Bud/
+2 GIVN Paraschiva
+2 SURN Bud
+1 NAME Paraschiva /Tivadar/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1905
+2 PLAC Botiza
+1 DEAT
+2 DATE 1988
+2 PLAC Botiza
+1 FAMS @F5@
+0 @I12@ INDI
+1 NAME Grigore /Dunca/
+2 GIVN Grigore
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE 1903
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1971
+2 PLAC Bârsana
+1 FAMC @F12@
+1 FAMS @F6@
+0 @I13@ INDI
+1 NAME Ileana /Dunca/
+2 GIVN Ileana
+2 SURN Dunca
+1 NAME Ileana /Rednic/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1908
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1990
+2 PLAC Bârsana
+1 FAMC @F13@
+1 FAMS @F6@
+0 @I14@ INDI
+1 NAME Petru /Hotea/
+2 GIVN Petru
+2 SURN Hotea
+1 SEX M
+1 BIRT
+2 DATE 1905
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 1977
+2 PLAC Rozavlea
+1 FAMS @F7@
+0 @I15@ INDI
+1 NAME Sofia /Hotea/
+2 GIVN Sofia
+2 SURN Hotea
+1 NAME Sofia /Marchiș/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1910
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 1995
+2 PLAC Rozavlea
+1 FAMC @F15@
+1 FAMS @F7@
+0 @I16@ INDI
+1 NAME Ilie /Pop/
+2 GIVN Ilie
+2 SURN Pop
+1 SEX M
+1 BIRT
+2 DATE 1870
+2 PLAC Ieud
+1 DEAT
+2 DATE 1931
+2 PLAC Ieud
+1 FAMS @F8@
+0 @I17@ INDI
+1 NAME Măriuța /Pop/
+2 GIVN Măriuța
+2 SURN Pop
+1 NAME Măriuța /Iuga/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1874
+2 PLAC Ieud
+1 DEAT
+2 DATE 1940
+2 PLAC Ieud
+1 FAMS @F8@
+0 @I18@ INDI
+1 NAME Simion /Bizău/
+2 GIVN Simion
+2 SURN Bizău
+1 SEX M
+1 BIRT
+2 DATE ABT 1868
+2 PLAC Ieud
+1 DEAT
+2 DATE 1920
+2 PLAC Ieud
+1 FAMS @F9@
+0 @I20@ INDI
+1 NAME Ștefan /Bud/
+2 GIVN Ștefan
+2 SURN Bud
+1 SEX M
+1 BIRT
+2 DATE 1872
+2 PLAC Botiza
+1 DEAT
+2 DATE 1916
+2 PLAC front, Galiția
+1 FAMS @F10@
+0 @I21@ INDI
+1 NAME Ana /Bud/
+2 GIVN Ana
+2 SURN Bud
+1 NAME Ana /Codrea/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1876
+2 PLAC Botiza
+1 DEAT
+2 DATE 1950
+2 PLAC Botiza
+1 FAMS @F10@
+0 @I24@ INDI
+1 NAME Nicolae /Dunca/
+2 GIVN Nicolae
+2 SURN Dunca
+1 SEX M
+1 BIRT
+2 DATE 1875
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1939
+2 PLAC Bârsana
+1 FAMS @F12@
+0 @I25@ INDI
+1 NAME Rozalia /Dunca/
+2 GIVN Rozalia
+2 SURN Dunca
+1 NAME Rozalia /Pașca/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1879
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1945
+2 PLAC Bârsana
+1 FAMS @F12@
+0 @I26@ INDI
+1 NAME Dumitru /Rednic/
+2 GIVN Dumitru
+2 SURN Rednic
+1 SEX M
+1 BIRT
+2 DATE 1880
+2 PLAC Bârsana
+1 DEAT
+2 DATE 1951
+2 PLAC Bârsana
+1 FAMS @F13@
+0 @I30@ INDI
+1 NAME Ioan /Marchiș/
+2 GIVN Ioan
+2 SURN Marchiș
+1 SEX M
+1 BIRT
+2 DATE 1882
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 1960
+2 PLAC Rozavlea
+1 FAMS @F15@
+0 @I31@ INDI
+1 NAME Varvara /Marchiș/
+2 GIVN Varvara
+2 SURN Marchiș
+1 NAME Varvara /Ilieș/
+2 TYPE birth
+1 SEX F
+1 BIRT
+2 DATE 1885
+2 PLAC Rozavlea
+1 DEAT
+2 DATE 1968
+2 PLAC Rozavlea
+1 FAMS @F15@
+0 @F1@ FAM
+1 HUSB @I2@
+1 WIFE @I3@
+1 CHIL @I1@
+0 @F2@ FAM
+1 HUSB @I4@
+1 WIFE @I5@
+1 CHIL @I2@
+0 @F3@ FAM
+1 HUSB @I6@
+1 WIFE @I7@
+1 CHIL @I3@
+0 @F4@ FAM
+1 HUSB @I8@
+1 WIFE @I9@
+1 CHIL @I4@
+0 @F5@ FAM
+1 HUSB @I10@
+1 WIFE @I11@
+1 CHIL @I5@
+0 @F6@ FAM
+1 HUSB @I12@
+1 WIFE @I13@
+1 CHIL @I6@
+0 @F7@ FAM
+1 HUSB @I14@
+1 WIFE @I15@
+1 CHIL @I7@
+0 @F8@ FAM
+1 HUSB @I16@
+1 WIFE @I17@
+1 CHIL @I8@
+0 @F9@ FAM
+1 HUSB @I18@
+1 CHIL @I9@
+0 @F10@ FAM
+1 HUSB @I20@
+1 WIFE @I21@
+1 CHIL @I10@
+0 @F12@ FAM
+1 HUSB @I24@
+1 WIFE @I25@
+1 CHIL @I12@
+0 @F13@ FAM
+1 HUSB @I26@
+1 CHIL @I13@
+0 @F15@ FAM
+1 HUSB @I30@
+1 WIFE @I31@
+1 CHIL @I15@
+0 TRLR
