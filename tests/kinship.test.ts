@@ -88,3 +88,11 @@ describe("rude și grad de rudenie", () => {
     expect(ancestorsOf(g, id("@I1@"))[0][1]).toBe(10);
   });
 });
+
+describe("rude prin alianță fără legătură de sânge", () => {
+  it("nu ciclează la socrii unei persoane fără legătură de sânge cu centrul", () => {
+    const g = buildGraph([{ id: "eu", sex: "M" }, { id: "tata", sex: "M" }, { id: "x", sex: "M" }, { id: "y", sex: "F" }],
+      [{ type: "parent_child", a: "tata", b: "eu" }, { type: "partnership", a: "x", b: "y" }]);
+    expect(kinship(g, "eu", "x")).toBeNull();
+  });
+});

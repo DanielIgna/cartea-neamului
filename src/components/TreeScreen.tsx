@@ -12,6 +12,7 @@ import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album, Avatar } from "./Album";
+import ParentChange from "./ParentChange";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
@@ -178,6 +179,9 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
   const canEdit = isEditor || (canAdd && (p.createdBy === meId || p.claimedBy === meId));
   const by = (ids: string[]) => ids.map((id) => people[id]).filter(Boolean);
   const hasFather = fam.parents.some((id) => people[id]?.sex === "M"), hasMother = fam.parents.some((id) => people[id]?.sex === "F");
+  const father = by(fam.parents).find((x) => x.sex === "M"), mother = by(fam.parents).find((x) => x.sex === "F");
+  // Pentru „Schimbă mama”: soțiile tatălui (și invers), ca să alegi mama copiilor din altă căsătorie.
+  const partnersOf = (x: PersonView | undefined, sex: "M" | "F") => (x ? by(graph.partners.get(x.id) ?? []).filter((y) => y.sex === sex) : []);
   const finished = (msg: string) => { setForm(null); setDone(msg); onChanged(); };
 
   if (form) {
@@ -250,6 +254,12 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
           <button className="btn" onClick={() => setForm("spouse")}>+ Soț / soție</button>
           <button className="btn" onClick={() => setForm("child")}>+ Copil</button>
           <button className="btn" onClick={() => setForm("sibling")}>+ Frate / soră</button>
+        </div>
+      )}
+      {canAdd && fam.parents.length > 0 && (
+        <div className="actions" style={{ flexWrap: "wrap" }}>
+          {(mother || father) && <ParentChange key={`m${p.id}`} treeId={treeId} p={p} role="mother" current={mother} candidates={partnersOf(father, "F")} onAddNew={() => setForm("mother")} onChanged={finished} />}
+          {(father || mother) && <ParentChange key={`f${p.id}`} treeId={treeId} p={p} role="father" current={father} candidates={partnersOf(mother, "M")} onAddNew={() => setForm("father")} onChanged={finished} />}
         </div>
       )}
 

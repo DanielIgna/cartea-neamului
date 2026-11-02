@@ -45,6 +45,11 @@ export type Kinship = { label: string; degree: number | null; up: number; down: 
 
 /** Cum îi este `other` lui `ego`: „bunic”, „văr primar”, „soție”… și gradul de rudenie. */
 export function kinship(g: Graph, ego: string, other: string): Kinship | null {
+  return relate(g, ego, other, true);
+}
+
+/** `affinity` = încearcă și legăturile prin căsătorie; la pasul următor doar de sânge, ca socrii socrilor să nu cicleze la nesfârșit. */
+function relate(g: Graph, ego: string, other: string, affinity: boolean): Kinship | null {
   if (ego === other) return { label: "persoana din centru", degree: 0, up: 0, down: 0 };
   const a = ancestorsWithDepth(g, ego), b = ancestorsWithDepth(g, other);
   let best: { up: number; down: number; ancestor: string } | null = null;
@@ -54,14 +59,15 @@ export function kinship(g: Graph, ego: string, other: string): Kinship | null {
   }
   const sex = g.sex.get(other) ?? "U";
   if (best) return { label: bloodLabel(best.up, best.down, sex), degree: best.up + best.down, ...best };
+  if (!affinity) return null;
   // Fără ascendent comun: poate fi soț/soție sau rudă prin alianță (afin).
   if ((g.partners.get(ego) ?? []).includes(other)) return { label: pick(sex, "soț", "soție", "partener(ă)"), degree: null, up: 0, down: 0 };
   for (const partner of g.partners.get(other) ?? []) {
-    const k = kinship(g, ego, partner);
+    const k = relate(g, ego, partner, false);
     if (k && k.degree !== null) return { label: `${pick(sex, "soțul", "soția", "partenerul")} unei rude (${k.label})`, degree: null, up: k.up, down: k.down };
   }
   for (const partner of g.partners.get(ego) ?? []) {
-    const k = kinship(g, partner, other);
+    const k = relate(g, partner, other, false);
     if (k && k.degree !== null) return { label: `rudă prin alianță (${k.label} al soțului/soției)`, degree: null, up: k.up, down: k.down };
   }
   return null;
