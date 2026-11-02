@@ -41,16 +41,16 @@ function ancestorsWithDepth(g: Graph, id: string, max = 30) {
   return out;
 }
 
-export type Kinship = { label: string; degree: number | null; up: number; down: number };
+export type Kinship = { label: string; degree: number | null; up: number; down: number; ancestor?: string };
 
 /** Cum îi este `other` lui `ego`: „bunic”, „văr primar”, „soție”… și gradul de rudenie. */
 export function kinship(g: Graph, ego: string, other: string): Kinship | null {
   if (ego === other) return { label: "persoana din centru", degree: 0, up: 0, down: 0 };
   const a = ancestorsWithDepth(g, ego), b = ancestorsWithDepth(g, other);
-  let best: { up: number; down: number } | null = null;
+  let best: { up: number; down: number; ancestor: string } | null = null;
   for (const [anc, up] of a) {
     const down = b.get(anc);
-    if (down !== undefined && (!best || up + down < best.up + best.down)) best = { up, down };
+    if (down !== undefined && (!best || up + down < best.up + best.down)) best = { up, down, ancestor: anc };
   }
   const sex = g.sex.get(other) ?? "U";
   if (best) return { label: bloodLabel(best.up, best.down, sex), degree: best.up + best.down, ...best };
@@ -99,4 +99,45 @@ export function romanDegree(n: number) {
   let out = "";
   for (const [v, s] of r) while (n >= v) { out += s; n -= v; }
   return out;
+}
+
+/** Până la gradul VII se vorbește de „neam apropiat”; dincolo, legătura se recunoaște prin ascendentul comun și locul lui. */
+export const CLOSE_KIN_DEGREE = 7;
+
+/** Toate rudele de sânge ale lui `ego`, grupate pe grad, plus cele prin alianță. */
+export function relativesByDegree(g: Graph, ego: string) {
+  const byDegree = new Map<number, { id: string; k: Kinship }[]>();
+  const affinity: { id: string; k: Kinship }[] = [];
+  for (const id of g.sex.keys()) {
+    if (id === ego) continue;
+    const k = kinship(g, ego, id);
+    if (!k) continue;
+    if (k.degree === null) affinity.push({ id, k });
+    else byDegree.set(k.degree, [...(byDegree.get(k.degree) ?? []), { id, k }]);
+  }
+  return { byDegree, affinity };
+}
+
+/** Linia de urcare spre cel mai vechi strămoș cunoscut: întâi pe tată, apoi pe orice părinte. */
+export function oldestAncestor(g: Graph, id: string) {
+  let cur = id;
+  const seen = new Set([id]);
+  for (;;) {
+    const parents = (g.parents.get(cur) ?? []).filter((p) => !seen.has(p));
+    if (!parents.length) return cur;
+    cur = parents.find((p) => g.sex.get(p) === "M") ?? parents[0];
+    seen.add(cur);
+  }
+}
+
+/** Toți ascendenții lui `id`, cu generația, cei mai vechi primii. */
+export function ancestorsOf(g: Graph, id: string) {
+  const out = new Map<string, number>([[id, 0]]);
+  let frontier = [id];
+  for (let d = 1; frontier.length && d < 40; d++) {
+    const next: string[] = [];
+    for (const x of frontier) for (const p of g.parents.get(x) ?? []) if (!out.has(p)) { out.set(p, d); next.push(p); }
+    frontier = next;
+  }
+  return [...out].sort((a, b) => b[1] - a[1]);
 }
