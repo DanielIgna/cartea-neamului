@@ -5,11 +5,15 @@ import Link from "next/link";
 import { FanChart, ClassicTree, years, type Slots } from "./charts";
 import { addParent } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
+import type { TreeLive } from "@/lib/realtime";
 import InvitePanel from "./InvitePanel";
+import LiveTree from "./LiveTree";
+import { DocumentUpload, BiographySuggest } from "./PersonTools";
 
-type Props = { treeId: string; treeName: string; slots: Slots; isRoot: boolean; canAdd: boolean; canInvite: boolean };
+type Live = TreeLive & { url: string; userId: string };
+type Props = { treeId: string; treeName: string; slots: Slots; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean };
 
-export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, canInvite }: Props) {
+export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, canInvite, live, aiEnabled, storageEnabled }: Props) {
   const [view, setView] = useState<"fan" | "classic">("fan");
   const [selected, setSelected] = useState(1);
   const router = useRouter();
@@ -29,6 +33,7 @@ export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, ca
               <button aria-pressed={view === "classic"} onClick={() => setView("classic")}>Clasic</button>
             </div>
             {!isRoot && <button className="btn" onClick={() => router.push(path)}>Înapoi la început</button>}
+            {live && <LiveTree key={live.sealedQuery.queryFingerprint} url={live.url} treeId={treeId} userId={live.userId} sealedQuery={live.sealedQuery} initialData={live.initialData} />}
           </div>
           <div className="chartbox">{view === "fan" ? <FanChart {...chartProps} /> : <ClassicTree {...chartProps} />}</div>
           <div className="legend">
@@ -54,7 +59,8 @@ export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, ca
       </div>
       <aside className="card panel" aria-live="polite">
         {slots[selected]
-          ? <PersonPanel p={slots[selected]} n={selected} slots={slots} onSelect={setSelected} onCenter={center} treeId={treeId} canInvite={canInvite} />
+          ? <PersonPanel p={slots[selected]} n={selected} slots={slots} onSelect={setSelected} onCenter={center} treeId={treeId} canInvite={canInvite}
+              canAdd={canAdd} canEdit={canInvite} aiEnabled={aiEnabled} storageEnabled={storageEnabled} onChanged={() => router.refresh()} />
           : canAdd
             ? <EmptySlot treeId={treeId} n={selected} child={slots[Math.floor(selected / 2)]} onDone={() => router.refresh()} />
             : <p className="muted">Ca vizitator poți vedea arborele, dar nu poți adăuga persoane.</p>}
@@ -63,7 +69,12 @@ export default function TreeScreen({ treeId, treeName, slots, isRoot, canAdd, ca
   );
 }
 
-function PersonPanel({ p, n, slots, onSelect, onCenter, treeId, canInvite }: { p: PersonView; n: number; slots: Slots; onSelect: (n: number) => void; onCenter: (id: string) => void; treeId: string; canInvite: boolean }) {
+type PanelProps = {
+  p: PersonView; n: number; slots: Slots; onSelect: (n: number) => void; onCenter: (id: string) => void; treeId: string; canInvite: boolean;
+  canAdd: boolean; canEdit: boolean; aiEnabled: boolean; storageEnabled: boolean; onChanged: () => void;
+};
+
+function PersonPanel({ p, n, slots, onSelect, onCenter, treeId, canInvite, canAdd, canEdit, aiEnabled, storageEnabled, onChanged }: PanelProps) {
   const parents = [2 * n, 2 * n + 1].filter((i) => slots[i]);
   const child = n > 1 ? Math.floor(n / 2) : null;
   return (
@@ -82,12 +93,17 @@ function PersonPanel({ p, n, slots, onSelect, onCenter, treeId, canInvite }: { p
         {p.occupation && <><dt>Ocupație</dt><dd>{p.occupation}</dd></>}
       </dl>
       {p.biography && <p style={{ margin: "10px 0 0" }}>{p.biography}</p>}
+      {aiEnabled && canAdd && !p.living && <BiographySuggest key={`bio-${p.id}`} treeId={treeId} personId={p.id} canSave={canEdit} onSaved={onChanged} />}
       <div className="section-label">Documente și fotografii</div>
       <div className="docs">
         {p.documents.length ? p.documents.map((d) => (
-          <div className="doc" key={d.id}><div className="thumb">{d.kind}</div><div><b>{d.title}</b><small>{d.dateText}</small></div></div>
+          <div className="doc" key={d.id}>
+            <div className="thumb">{d.kind}</div>
+            <div><b>{d.hasFile ? <a href={`/api/document/${d.id}`} target="_blank" rel="noopener">{d.title}</a> : d.title}</b><small>{d.dateText}</small></div>
+          </div>
         )) : <p className="muted" style={{ margin: 0, fontSize: 14 }}>Niciun document încă.</p>}
       </div>
+      {storageEnabled && canAdd && <DocumentUpload key={`doc-${p.id}`} treeId={treeId} personId={p.id} personName={p.givenName} onUploaded={onChanged} />}
       <div className="section-label">Rude</div>
       <div className="rel">
         {parents.map((i) => <button key={i} onClick={() => onSelect(i)}>{i % 2 === 0 ? "Tată" : "Mamă"}: {slots[i].name}</button>)}
