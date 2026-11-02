@@ -29,14 +29,34 @@ Intră cu contul de exemplu `demo@cartea-neamului.ro`, parola `demo-parola-123` 
 | `npm run db:push` | Aplică migrațiile pe baza de date curentă |
 | `npm run db:seed` | Migrații + familia de exemplu |
 | `npx drizzle-kit generate` | Generează o migrație nouă după ce modifici `src/db/schema.ts` |
+| `npm run e2e:neon` | Verifică cap-coadă serviciile Neon pe aplicația pornită (`npm run start -- -p 3100`) |
 
 ## Stack (toate cu plan gratuit)
 
 - **Next.js 15** (App Router, React 19, TypeScript)
-- **PostgreSQL**: local cu PGlite; în cloud cu **Neon** (setezi `DATABASE_URL`, vezi `.env.example`)
+- **PostgreSQL**: local cu PGlite; în cloud cu **Neon** (node-postgres cu pool, recomandarea Neon pentru Vercel)
 - **Drizzle ORM** pentru schemă și migrații (`src/db/schema.ts`, `drizzle/`)
 - **Better Auth** pentru conturi (email + parolă), sesiuni în aceeași bază de date
-- Urmează: **Cloudflare R2** pentru fișiere, **Stripe** pentru plata cărții
+- **Neon Object Storage**: bucket privat `assets` pentru actele și fotografiile din fișe, deschise prin URL presemnat
+- **Neon Realtime**: arborele se actualizează singur când altă rudă adaugă sau corectează o persoană
+- **Neon Functions**: funcția `hello` (`hello.ts`), verificată de `/api/stare`
+- **Neon AI Gateway**: ciornă de biografie pentru persoanele decedate (necesită plan Neon plătit)
+- Urmează: **Stripe** pentru plata cărții
+
+## Neon
+
+Serviciile sunt declarate în `neon.ts`. Legătura cu proiectul e în `.neon` (nu intră în git).
+
+```bash
+npx neon@latest login     # o dată, în browser
+npx neon@latest deploy    # creează serviciile din neon.ts și scrie variabilele în .env.local
+npm run db:seed           # schema + familia de exemplu, direct în Neon
+```
+
+Pe planul Free, Neon refuză `deploy` cât timp `neon.ts` conține `aiGateway`. Restul serviciilor merg;
+sugestiile de biografie apar doar când există variabilele `NEON_AI_GATEWAY_*` (după trecerea pe un plan plătit).
+Better Auth rămâne în aplicație (tabelele `user`/`session` în același Postgres), cum recomandă skill-ul `neon-auth`
+pentru aplicații care au deja Better Auth.
 
 ## Structură
 
