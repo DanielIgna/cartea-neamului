@@ -142,7 +142,7 @@ export const document = pgTable("document", {
   treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
   kind: documentKind("kind").notNull(),
   title: text("title").notNull(),
-  fileKey: text("file_key"), // cheia obiectului în Cloudflare R2
+  fileKey: text("file_key"), // cheia obiectului în Neon Object Storage (bucket „assets”)
   mimeType: text("mime_type"),
   transcription: text("transcription"),
   dateText: text("date_text"),
