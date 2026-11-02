@@ -67,7 +67,7 @@ const Fields = {
   birthCountry: z.string().trim().max(80).optional(), deathCountry: z.string().trim().max(80).optional(),
   residencePlace: z.string().trim().max(160).optional(), residenceCountry: z.string().trim().max(80).optional(),
   sex: z.enum(["M", "F", "U"]).optional(), occupation: z.string().trim().max(160).optional(),
-  biography: z.string().trim().max(8000).optional(), notes: z.string().trim().max(8000).optional(),
+  biography: z.string().trim().max(8000).optional(), notes: z.string().trim().max(8000).optional(), discreet: z.string().optional(),
 };
 const Relative = z.object({
   treeId: z.string().uuid(), anchorId: z.string().uuid(), kind: z.enum(["father", "mother", "child", "spouse", "sibling"]),
@@ -83,6 +83,7 @@ const personValues = (v: z.infer<typeof Relative> | z.infer<typeof Edit>) => {
     birthCountry: v.birthCountry || null, deathCountry: v.living === "on" ? null : v.deathCountry || null,
     residencePlace: v.living === "on" ? v.residencePlace || null : null, residenceCountry: v.living === "on" ? v.residenceCountry || null : null,
     living: v.living === "on", occupation: v.occupation || null, biography: v.biography || null, notes: v.notes || null,
+    discreet: v.discreet === "on",
   };
 };
 
@@ -412,4 +413,57 @@ export async function linkChildren(treeId: string, parentId: string, childIds: s
   });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true, linked };
+}
+
+/** Cine poate corecta fișa unei persoane: editorii pe oricine, contributorii pe cei adăugați de ei, fiecare propriul profil. */
+async function canFix(treeId: string, personId: string) {
+  const me = await currentUser();
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: "Nu ai drept să modifici acest arbore." } as const;
+  const [p] = await db.select().from(person).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
+  if (!p) return { error: "Persoana nu mai există în acest arbore." } as const;
+  if (!can(role, "editor") && p.createdBy !== me.id && p.claimedByUserId !== me.id)
+    return { error: "Poți schimba doar persoanele adăugate de tine. Cere unui editor al arborelui să facă schimbarea." } as const;
+  return { me, p } as const;
+}
+
+/**
+ * Persoană discretă (de pildă o fostă soție): nu apare în desenele arborelui și nici în lista rudelor prin alianță,
+ * ci doar în fișele copiilor ei. Copiii ei pornesc în desen doar din celălalt părinte.
+ */
+export async function setDiscreet(treeId: string, personId: string, on: boolean): Promise<{ ok?: boolean; error?: string }> {
+  if (!z.object({ treeId: z.string().uuid(), personId: z.string().uuid(), on: z.boolean() }).safeParse({ treeId, personId, on }).success) return { error: "Date greșite." };
+  const r = await canFix(treeId, personId);
+  if ("error" in r) return { error: r.error };
+  await db.update(person).set({ discreet: on, updatedAt: new Date() }).where(eq(person.id, personId));
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
+}
+
+/**
+ * Copil dintr-o altă relație, cu cineva al cărui nume nu se știe (sau nu vrei să-l scrii): primește un părinte „necunoscut”, discret,
+ * în locul celui trecut greșit. Așa nu mai e socotit copilul soțului/soției de acum, iar frații lui apar „după tată” / „după mamă”.
+ */
+export async function otherRelation(treeId: string, childId: string, role: "father" | "mother"): Promise<{ ok?: boolean; error?: string }> {
+  if (!z.object({ treeId: z.string().uuid(), childId: z.string().uuid(), role: z.enum(["father", "mother"]) }).safeParse({ treeId, childId, role }).success) return { error: "Date greșite." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să schimbi legăturile din acest arbore." };
+  const [child] = await db.select().from(person).where(and(eq(person.id, childId), eq(person.treeId, treeId)));
+  if (!child) return { error: "Persoana nu mai există în acest arbore." };
+  const sex = role === "father" ? "M" : "F";
+  const parents = await db.select({ id: person.id, sex: person.sex, given: person.givenName }).from(relationship).innerJoin(person, eq(person.id, relationship.personA))
+    .where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personB, childId)));
+  const other = parents.find((x) => x.sex !== sex);
+  await db.transaction(async (tx) => {
+    for (const o of parents.filter((x) => x.sex === sex))
+      await tx.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personA, o.id), eq(relationship.personB, childId)));
+    const [ph] = await tx.insert(person).values({
+      treeId, sex, createdBy: me.id, discreet: true, givenName: role === "father" ? "Tată necunoscut" : "Mamă necunoscută", surname: "",
+      notes: `${role === "father" ? "Tatăl" : "Mama"} lui ${child.givenName}${other ? `, dintr-o altă relație a lui ${other.given}` : ""}. Scrie numele când îl afli; rămâne discret(ă): apare doar în fișa copilului.`,
+    }).returning();
+    await tx.insert(relationship).values({ treeId, type: "parent_child", personA: ph.id, personB: childId, subtype: "biologic" });
+    if (other) await linkPartners(tx, treeId, ph.id, other.id);
+  });
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
 }

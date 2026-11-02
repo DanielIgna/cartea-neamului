@@ -1,5 +1,7 @@
 "use client";
 import type { PersonView } from "@/lib/tree-data";
+import type { DescNode } from "@/lib/family";
+export type { DescNode };
 
 export type Slots = Record<number, PersonView>;
 type Props = { slots: Slots; selected: number; onSelect: (n: number) => void; onCenter: (id: string) => void; generations?: number };
@@ -132,31 +134,43 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
 
 export const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
-/** Descendenții persoanei din centru, de sus în jos: fiecare cu soțul/soția alături și copiii dedesubt. */
-export type DescNode = { id: string; partners: string[]; children: DescNode[] };
+/**
+ * Descendenții persoanei din centru, de sus în jos: fiecare cu soții desenați alături (în ordinea căsătoriilor) și copiii dedesubt.
+ * Copiii unei căsătorii coboară din linia dintre cei doi soți; copiii dintr-o altă relație (cu o persoană discretă) coboară, discret, doar din părinte.
+ */
 export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter }: {
   root: DescNode; people: Record<string, PersonView>; selectedId: string | null; onSelectPerson: (id: string) => void; onCenter: (id: string) => void;
 }) {
   const bw = 150, bh = 40, gapX = 16, rowH = 96, partnerW = 150;
-  const widthOf = (d: DescNode): number => Math.max(bw + d.partners.length * (partnerW + 6), d.children.reduce((s, c) => s + widthOf(c) + gapX, -gapX));
-  type Box = { id: string; x: number; y: number; partnerOf?: string; parent?: { x: number; y: number } };
+  const shown = (d: DescNode) => d.partners.filter((id) => people[id]);
+  // Întâi copiii fără celălalt părinte desenat (sub persoană), apoi cei din fiecare căsătorie, în ordine: liniile nu se mai încrucișează.
+  const rank = (d: DescNode, c: DescNode) => (c.via ? 1 + shown(d).indexOf(c.via) : 0);
+  const kidsOf = (d: DescNode) => [...d.children].sort((a, b) => rank(d, a) - rank(d, b));
+  const widthOf = (d: DescNode): number => Math.max(bw + shown(d).length * (partnerW + 6), d.children.reduce((s, c) => s + widthOf(c) + gapX, -gapX));
+  type Box = { id: string; x: number; y: number; partnerOf?: string; nth?: number; parent?: { x: number; y: number }; apart?: boolean };
   const boxes: Box[] = [];
-  const lay = (d: DescNode, x0: number, depth: number, parent?: { x: number; y: number }) => {
-    const w = widthOf(d), y = 20 + depth * rowH;
-    const unitW = bw + d.partners.length * (partnerW + 6), ux = x0 + (w - unitW) / 2;
-    boxes.push({ id: d.id, x: ux, y, parent });
-    d.partners.forEach((pid, i) => boxes.push({ id: pid, x: ux + bw + 6 + i * (partnerW + 6), y, partnerOf: d.id }));
-    const anchor = { x: ux + (d.partners.length ? bw + 3 : bw / 2), y: y + bh };
+  const lay = (d: DescNode, x0: number, depth: number, parent?: { x: number; y: number }, apart?: boolean) => {
+    const w = widthOf(d), y = 20 + depth * rowH, sh = shown(d);
+    const unitW = bw + sh.length * (partnerW + 6), ux = x0 + (w - unitW) / 2;
+    boxes.push({ id: d.id, x: ux, y, parent, apart });
+    sh.forEach((pid, i) => boxes.push({ id: pid, x: ux + bw + 6 + i * (partnerW + 6), y, partnerOf: d.id, nth: sh.length > 1 ? i + 1 : undefined }));
+    // De unde coboară copiii: din linia dintre persoană și soțul/soția cu care i-a avut, sau din persoană, dacă celălalt părinte nu e desenat.
+    const from = (c: DescNode) => {
+      const i = c.via ? sh.indexOf(c.via) : -1;
+      return i >= 0 ? { x: ux + bw + 3 + i * (partnerW + 6), y: y + bh / 2 } : { x: ux + bw / 2, y: y + bh };
+    };
     let cx = x0;
-    for (const c of d.children) { lay(c, cx, depth + 1, anchor); cx += widthOf(c) + gapX; }
+    for (const c of kidsOf(d)) { lay(c, cx, depth + 1, from(c), c.apart); cx += widthOf(c) + gapX; }
   };
   lay(root, 10, 0);
   const W = widthOf(root) + 20, H = Math.max(...boxes.map((b) => b.y)) + bh + 30;
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Descendenți" style={{ width: Math.max(W, 320), maxWidth: "none", display: "block", margin: "0 auto" }}>
       {boxes.filter((b) => b.parent).map((b) => {
-        const mid = (b.parent!.y + b.y) / 2;
-        return <path key={`l${b.id}${b.x}`} d={`M${b.parent!.x} ${b.parent!.y}V${mid}H${b.x + bw / 2}V${b.y}`} fill="none" stroke="var(--line)" strokeWidth={1.2} />;
+        // Copiii din altă relație au linia lor, puțin mai sus și mai subțire, separată de cea a copiilor cuplului.
+        const mid = b.y - (rowH - bh) / 2 - (b.apart ? 8 : 0);
+        return <path key={`l${b.id}${b.x}`} d={`M${b.parent!.x} ${b.parent!.y}V${mid}H${b.x + bw / 2}V${b.y}`} fill="none"
+          stroke="var(--line)" strokeWidth={b.apart ? 0.9 : 1.2} opacity={b.apart ? 0.75 : 1} />;
       })}
       {boxes.map((b) => {
         const p = people[b.id];
@@ -165,7 +179,7 @@ export function DescendantsChart({ root, people, selectedId, onSelectPerson, onC
         return (
           <g key={`${b.id}${b.x}`} className={`sector${selectedId === b.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name}
             onClick={() => onSelectPerson(b.id)} onDoubleClick={() => onCenter(b.id)} onKeyDown={keyAct(() => onSelectPerson(b.id))}>
-            {b.partnerOf && <text x={b.x - 3} y={b.y + bh / 2 + 4} textAnchor="end" fill="var(--muted)" fontSize={12}>⚭</text>}
+            {b.partnerOf && <text x={b.x - 3} y={b.y + bh / 2 + 4} textAnchor="end" fill="var(--muted)" fontSize={12}>⚭{b.nth ?? ""}</text>}
             <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6}
               fill={isRoot ? "var(--accent-soft)" : b.partnerOf ? "var(--surface)" : "var(--desc)"} stroke={isRoot ? "var(--accent)" : "var(--line)"} strokeDasharray={b.partnerOf ? "4 3" : undefined} />
             <text x={b.x + 9} y={b.y + 17} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 20)}</text>

@@ -1,0 +1,1 @@
+ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "discreet" boolean DEFAULT false NOT NULL;

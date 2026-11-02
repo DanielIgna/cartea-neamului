@@ -23,6 +23,7 @@ const ADDITIVE = [
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "death_country" text`,
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_place" text`,
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_country" text`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "discreet" boolean DEFAULT false NOT NULL`,
 ];
 
 export async function applySchema(target: Db) {

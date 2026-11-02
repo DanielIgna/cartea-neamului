@@ -1,6 +1,6 @@
 "use client";
 import { useState, useTransition } from "react";
-import { setParent } from "@/app/actions";
+import { otherRelation, setParent } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
 
 /**
@@ -34,6 +34,12 @@ export default function ParentChange({ treeId, p, current, candidates, role, onA
           <button key={c.id} className="btn" disabled={pending} onClick={() => run(c.id, `${c.name} este acum ${word} lui ${p.givenName}.`)}>{c.name}{c.birthYear ? ` (${c.birthYear})` : ""}</button>
         ))}
         <button className="btn primary" disabled={pending} onClick={() => run(null, "", onAddNew)}>Altă persoană, o adaug acum</button>
+        <button className="btn" disabled={pending} title="Pune un părinte fără nume, discret: copilul apare din altă relație" onClick={() => start(async () => {
+          const r = await otherRelation(treeId, p.id, role);
+          if (r.error) return setErr(r.error);
+          setOpen(false);
+          onChanged(`${p.givenName} apare acum dintr-o altă relație; ${word} fără nume e discret${role === "mother" ? "ă" : ""} și se vede doar în fișa lui ${p.givenName}.`);
+        })}>Din altă relație, nu-i știu numele</button>
         {current && <button className="btn" disabled={pending} onClick={() => run(null, `Am scos legătura cu ${current.name}.`)}>Nu știu, scoate legătura cu {current.givenName}</button>}
         <button className="btn" disabled={pending} onClick={() => setOpen(false)}>Renunță</button>
       </div>
