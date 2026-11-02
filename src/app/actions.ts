@@ -292,3 +292,40 @@ export async function sendMessage(_: unknown, form: FormData) {
   revalidatePath(`/mesaje/${v.treeId}/${v.to}`);
   return { ok: true, sentAt: Date.now() };
 }
+
+/**
+ * Schimbă tatăl sau mama unei persoane: scoate legătura greșită și, dacă e ales cineva, o pune pe cea bună
+ * (de pildă copiii dintr-o altă căsătorie a tatălui). Cei doi părinți devin parteneri, dacă nu erau deja.
+ */
+export async function setParent(treeId: string, childId: string, role: "father" | "mother", parentId: string | null): Promise<{ ok?: boolean; error?: string }> {
+  const parsed = z.object({ treeId: z.string().uuid(), childId: z.string().uuid(), role: z.enum(["father", "mother"]), parentId: z.string().uuid().nullable() })
+    .safeParse({ treeId, childId, role, parentId });
+  if (!parsed.success) return { error: "Date greșite." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să schimbi legăturile din acest arbore." };
+  const inTree = async (id: string) => (await db.select({ id: person.id, sex: person.sex }).from(person).where(and(eq(person.id, id), eq(person.treeId, treeId))))[0];
+  const child = await inTree(childId);
+  if (!child) return { error: "Persoana nu mai există în acest arbore." };
+  const newParent = parentId ? await inTree(parentId) : null;
+  if (parentId && !newParent) return { error: "Părintele ales nu e în acest arbore." };
+  if (parentId === childId) return { error: "O persoană nu poate fi propriul părinte." };
+  const sex = role === "father" ? "M" : "F";
+  const parents = await db.select({ id: person.id, sex: person.sex }).from(relationship).innerJoin(person, eq(person.id, relationship.personA))
+    .where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personB, childId)));
+  const old = parents.filter((p) => p.sex === sex);
+  const other = parents.find((p) => p.sex !== sex && p.id !== parentId);
+  await db.transaction(async (tx) => {
+    for (const o of old)
+      await tx.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personA, o.id), eq(relationship.personB, childId)));
+    if (!newParent) return;
+    await tx.insert(relationship).values({ treeId, type: "parent_child", personA: newParent.id, personB: childId, subtype: "biologic" }).onConflictDoNothing();
+    if (other) {
+      const [a, b] = sex === "M" ? [newParent.id, other.id] : [other.id, newParent.id];
+      const existing = await tx.select({ id: relationship.id }).from(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "partnership"),
+        or(and(eq(relationship.personA, a), eq(relationship.personB, b)), and(eq(relationship.personA, b), eq(relationship.personB, a)))));
+      if (!existing.length) await tx.insert(relationship).values({ treeId, type: "partnership", personA: a, personB: b, subtype: "casatorie" });
+    }
+  });
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
+}
