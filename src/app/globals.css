@@ -6,8 +6,8 @@
   --pat-1:#c9daef; --pat-2:#dbe6f4; --pat-3:#e8eff8; --pat-4:#f1f5fb;
   --mat-1:#ecd8b4; --mat-2:#f2e4ca; --mat-3:#f6ecdb; --mat-4:#faf4ea;
   --event:#1f5fa81a;
-  --display:var(--font-display), Georgia, "Times New Roman", serif;
-  --body:var(--font-body), "Segoe UI", system-ui, sans-serif;
+  --display:"Alegreya", Georgia, "Times New Roman", serif;
+  --body:"Alegreya Sans", "Segoe UI", system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0b1626; --surface:#112136; --surface-2:#162a44; --ink:#e8eef6; --muted:#9db0c6; --line:#24405f;
