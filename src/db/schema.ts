@@ -112,6 +112,8 @@ export const person = pgTable("person", {
   residencePlace: text("residence_place"),
   residenceCountry: text("residence_country"),
   living: boolean("living").notNull().default(false),
+  // Discret(ă): o fostă soție / un fost soț apare doar în fișele copiilor, nu și în desenele arborelui
+  discreet: boolean("discreet").notNull().default(false),
   biography: text("biography"),
   notes: text("notes"),
   photoDocumentId: uuid("photo_document_id"), // poza de profil: o fotografie din albumul persoanei // note suplimentare: surse, întrebări deschise, ce mai trebuie verificat

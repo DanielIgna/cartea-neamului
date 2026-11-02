@@ -79,7 +79,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />
       </div>
       <div className="card">
-        {group(p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", fam.partners)}
+        {/* Soții discreți (de pildă o fostă soție) nu apar aici; se văd doar în profilurile copiilor lor, la „Părinți”. */}
+        {group(p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", fam.partners.filter((x) => !data.people[x]?.discreet))}
         {group(`Copii (${fam.children.length})`, fam.children)}
         {group("Părinți", fam.parents)}
         {group(`Frați (${fam.siblings.length})`, fam.siblings)}

@@ -1,17 +1,19 @@
 "use client";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FanChart, ClassicTree, DescendantsChart, years, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass } from "./lineage-charts";
 import { where, type PersonView } from "@/lib/tree-data";
 import type { TreeLive } from "@/lib/realtime";
-import { buildGraph, family, kinship, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, CLOSE_KIN_DEGREE, type Graph, type Rel } from "@/lib/kinship";
+import { buildGraph, family, kinship, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, ordinalOf, CLOSE_KIN_DEGREE, type Graph, type Rel } from "@/lib/kinship";
 import InvitePanel from "./InvitePanel";
 import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album, Avatar } from "./Album";
+import { descendants, childrenByUnion } from "@/lib/family";
+import { setDiscreet } from "@/app/actions";
 import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
@@ -25,14 +27,6 @@ type View = "fan" | "classic" | "tree" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
 
 const VIEWS: [View, string][] = [["hour", "Clepsidră"], ["fan", "Evantai"], ["classic", "Clasic"], ["tree", "Copac"], ["desc", "Descendenți"]];
-
-/** Urmașii unei persoane, pe oricâte generații, copiii în ordinea nașterii. */
-function descendants(g: Graph, people: Record<string, PersonView>, id: string, depth = 0, seen = new Set<string>()): DescNode {
-  seen.add(id);
-  const born = (x: string) => people[x]?.birthYear ?? 9999;
-  const kids = depth >= 30 ? [] : (g.children.get(id) ?? []).filter((c) => !seen.has(c)).sort((a, b) => born(a) - born(b));
-  return { id, partners: g.partners.get(id) ?? [], children: kids.map((c) => descendants(g, people, c, depth + 1, seen)) };
-}
 
 /** La „+ Tată”/„+ Mamă”: frații care nu au încă un asemenea părinte; la „+ Soț/soție”: copiii fără al doilea părinte. */
 function shareFor(g: Graph, people: Record<string, PersonView>, id: string, k: RelKind): PersonView[] {
@@ -80,10 +74,12 @@ export default function TreeScreen(props: Props) {
   const ancestors = useMemo(() => ancestorsOf(graph, centerId), [graph, centerId]);
   const egoPath = useMemo(() => new Set(ancestors.map(([id]) => id)), [ancestors]);
   const trunkId = trunk && egoPath.has(trunk) ? trunk : oldestAncestor(graph, centerId);
-  const lineage = useMemo(() => descendants(graph, people, trunkId), [graph, people, trunkId]);
-  const mine = useMemo(() => descendants(graph, people, centerId), [graph, people, centerId]);
+  // În desene apar soții care nu sunt discreți; copiii celor discreți pornesc doar din părintele din neam.
+  const drawn = useMemo(() => (id: string) => !!people[id] && !people[id].discreet, [people]);
+  const lineage = useMemo(() => descendants(graph, drawn, trunkId), [graph, drawn, trunkId]);
+  const mine = useMemo(() => descendants(graph, drawn, centerId), [graph, drawn, centerId]);
   const showsLineage = view === "tree" || view === "desc" || (view === "fan" && fanDir === "down");
-  const lineageProps = { root: lineage, people, parentsOf: graph.parents, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
+  const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
 
   return (
     <section className="layout">
@@ -133,6 +129,7 @@ export default function TreeScreen(props: Props) {
               <>
                 <span><i className="sw" style={{ background: "var(--desc)" }} />Urmaș</span>
                 <span><i className="sw" style={{ border: "1.5px dashed var(--line)" }} />⚭ Soț / soție</span>
+                <span>Copiii unei căsătorii coboară din linia dintre soți; cei dintr-o altă relație, doar din părinte.</span>
               </>
             ) : view === "hour" ? (
               <>
@@ -144,7 +141,7 @@ export default function TreeScreen(props: Props) {
             ) : showsLineage ? (
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
-                <span>{view === "tree" ? "Trunchiul e linia neamului. Soțul și soția (⚭) se unesc într-un nod, iar din el pornesc ramurile copiilor; vârfurile cu lăstari sunt cei mai tineri." : "Sub fiecare nume: anul nașterii și câți copii a avut. ⚭ soțul sau soția."}</span>
+                <span>{view === "tree" ? "Trunchiul e linia neamului. Soțul și soția (⚭) se unesc într-un nod, iar din el pornesc ramurile copiilor; copiii dintr-o altă relație pornesc doar din părinte, pe o ramură mai subțire. Vârfurile cu lăstari sunt cei mai tineri." : "Fiecare inel e o generație, iar fiecare felie e cât urmașii acelei ramuri."}</span>
               </>
             ) : (
               <>
@@ -188,6 +185,7 @@ type PanelProps = Props & { p: PersonView; graph: Graph; ego?: PersonView; onSel
 function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, onSelect, onCenter, onChanged }: PanelProps) {
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
   const [done, setDone] = useState<string | null>(null);
+  const [toggling, startToggle] = useTransition();
   const fam = family(graph, p.id);
   const kin = ego && ego.id !== p.id ? kinship(graph, ego.id, p.id) : null;
   const canEdit = isEditor || (canAdd && (p.createdBy === meId || p.claimedBy === meId));
@@ -197,15 +195,42 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
   // Pentru „Schimbă mama”: soțiile tatălui (și invers), ca să alegi mama copiilor din altă căsătorie.
   const partnersOf = (x: PersonView | undefined, sex: "M" | "F") => (x ? by(graph.partners.get(x.id) ?? []).filter((y) => y.sex === sex) : []);
   const finished = (msg: string) => { setForm(null); setDone(msg); onChanged(); };
+  // Soții în ordinea căsătoriilor; cei discreți nu se numesc aici, copiii lor apar „din altă relație”.
+  const drawn = (id: string) => !!people[id] && !people[id].discreet;
+  const spouseIds = unionsOf(graph, p.id).map((u) => u.spouse).filter((s): s is string => !!s && !!people[s]);
+  const shownSpouses = by(spouseIds.filter(drawn));
+  const kidsBy = childrenByUnion(graph, drawn, p.id);
+  // Pentru „+ Copil”: întâi soțul/soția de acum (ultima căsătorie desenată), apoi ceilalți.
+  const childPartners = [...by(spouseIds.filter(drawn)).reverse(), ...by(spouseIds.filter((s) => !drawn(s))).reverse()];
+  // O mamă (un tată) nouă, adăugată ca persoană nouă lângă un tată (o mamă) care are deja soție (soț) în desen, e dintr-o altă relație: o propunem discretă.
+  // (Soția de acum se alege din „Schimbă mama”, nu se adaugă din nou.)
+  const discreetFor = (k: RelKind) => {
+    const op = k === "mother" ? father : k === "father" ? mother : undefined;
+    return !!op && (graph.partners.get(op.id) ?? []).some((sp) => drawn(sp) && sp !== p.id);
+  };
+  const half = (x: PersonView) => {
+    const mine = graph.parents.get(p.id) ?? [], theirs = graph.parents.get(x.id) ?? [], shared = mine.filter((y) => theirs.includes(y));
+    if (mine.length !== 2 || theirs.length !== 2 || shared.length !== 1) return "";
+    return people[shared[0]]?.sex === "M" ? "după tată" : people[shared[0]]?.sex === "F" ? "după mamă" : "după un părinte";
+  };
+  const toggleDiscreet = () => startToggle(async () => {
+    const r = await setDiscreet(treeId, p.id, !p.discreet);
+    if (r.error) setDone(r.error);
+    else finished(p.discreet ? `${p.givenName} apare din nou în desenele arborelui.` : `${p.givenName} nu mai apare în desene; ${p.sex === "M" ? "îl" : "o"} văd doar copiii ${p.sex === "M" ? "lui" : "ei"}, în fișele lor.`);
+  });
 
   if (form) {
     return form === "edit"
       ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished("Fișa a fost salvată.")} onCancel={() => setForm(null)} />
-      : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={by(fam.partners)} shareWith={shareFor(graph, people, p.id, form)} onDone={() => finished("Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
+      : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={childPartners} shareWith={shareFor(graph, people, p.id, form)} discreet={discreetFor(form)}
+          onDone={() => finished("Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
   }
 
-  const group = (label: string, list: PersonView[]) => list.length > 0 && (
-    <><dt>{label}</dt><dd>{list.map((x) => <button key={x.id} onClick={() => onSelect(x.id)}>{x.name}{x.birthYear ? ` (${x.birthYear})` : ""}</button>)}</dd></>
+  const group = (label: string, list: PersonView[], note?: (x: PersonView, i: number) => string) => list.length > 0 && (
+    <div key={label} style={{ display: "contents" }}><dt>{label}</dt><dd>{list.map((x, i) => {
+      const n = note?.(x, i);
+      return <button key={x.id} onClick={() => onSelect(x.id)}>{x.name}{x.birthYear ? ` (${x.birthYear})` : ""}{n ? ` · ${n}` : ""}</button>;
+    })}</dd></div>
   );
 
   return (
@@ -223,6 +248,13 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
         {p.living ? <span className="chip priv">în viață · vizibil doar în acest arbore</span> : <span className="chip">decedat(ă)</span>}
         {p.claimed && <span className="chip ok">profil revendicat</span>}
         {p.approx && <span className="chip">dată aproximativă</span>}
+        {p.discreet && <span className="chip">discret(ă) · apare doar în fișele copiilor</span>}
+        {canEdit && fam.partners.length > 0 && (p.discreet || fam.children.length > 0) && (
+          <button className="linklike" style={{ fontSize: 13 }} disabled={toggling} onClick={toggleDiscreet}
+            title={p.discreet ? "Va apărea din nou în desene, lângă soțul/soția din neam" : "Nu mai apare în desenele arborelui; copiii pornesc doar din celălalt părinte"}>
+            {p.discreet ? "Arată din nou în desene" : "Ascunde din desene (doar în fișele copiilor)"}
+          </button>
+        )}
       </div>
       {kin && ego && (
         <div className="kin">
@@ -262,9 +294,15 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
       <div className="section-label">Rude</div>
       <dl className="rel-group rel">
         {group("Părinți", by(fam.parents))}
-        {group(p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", by(fam.partners))}
-        {group(`Copii (${fam.children.length})`, by(fam.children))}
-        {group(`Frați (${fam.siblings.length})`, by(fam.siblings))}
+        {group(shownSpouses.length > 1 ? (p.sex === "F" ? "Soți" : "Soții") : p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", shownSpouses,
+          shownSpouses.length > 1 ? (_, i) => `${ordinalOf(i + 1)} căsătorie` : undefined)}
+        {kidsBy.named.length > 0
+          ? <>
+              {kidsBy.named.map((u) => group(`Copii cu ${people[u.spouse]?.givenName} (${u.children.length})`, by(u.children)))}
+              {group(`Din altă relație (${kidsBy.other.length})`, by(kidsBy.other))}
+            </>
+          : group(`Copii (${fam.children.length})`, by(kidsBy.other))}
+        {group(`Frați (${fam.siblings.length})`, by(fam.siblings), half)}
       </dl>
       {canAdd && by(fam.partners).map((sp) => {
         // Copiii soțului/soției care au un singur părinte trecut: propunem să fie și ai acestei persoane.
@@ -307,7 +345,11 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
 /** Neamul persoanei din centru pe grade de rudenie: I–VII nominal, dincolo de VII grupat după ascendentul comun și locul lui. */
 function KinByDegree({ graph, people, ego, onSelect }: { graph: Graph; people: Record<string, PersonView>; ego: PersonView; onSelect: (id: string) => void }) {
   const [open, setOpen] = useState<number | null>(null);
-  const { byDegree, affinity } = useMemo(() => relativesByDegree(graph, ego.id), [graph, ego.id]);
+  // Rudele prin alianță fără cei discreți (o fostă soție apare doar în fișele copiilor ei).
+  const { byDegree, affinity } = useMemo(() => {
+    const r = relativesByDegree(graph, ego.id);
+    return { byDegree: r.byDegree, affinity: r.affinity.filter((x) => !people[x.id]?.discreet) };
+  }, [graph, ego.id, people]);
   const degrees = [...byDegree.keys()].sort((a, b) => a - b);
   const close = degrees.filter((d) => d <= CLOSE_KIN_DEGREE);
   const far = degrees.filter((d) => d > CLOSE_KIN_DEGREE).flatMap((d) => byDegree.get(d)!);

@@ -21,7 +21,7 @@ export type RelKind = "father" | "mother" | "child" | "spouse" | "sibling";
 const TITLE: Record<RelKind, string> = { father: "Adaugă tatăl", mother: "Adaugă mama", child: "Adaugă un copil", spouse: "Adaugă soțul sau soția", sibling: "Adaugă un frate sau o soră" };
 
 type Props =
-  | { mode: "add"; kind: RelKind; treeId: string; anchor: PersonView; partners?: PersonView[]; shareWith?: PersonView[]; onDone: () => void; onCancel?: () => void }
+  | { mode: "add"; kind: RelKind; treeId: string; anchor: PersonView; partners?: PersonView[]; shareWith?: PersonView[]; discreet?: boolean; onDone: () => void; onCancel?: () => void }
   | { mode: "edit"; treeId: string; person: PersonView; onDone: () => void; onCancel?: () => void };
 
 /** Un singur formular pentru „adaugă o rudă” și „editează fișa”: date, locuri, ce se știe despre persoană și note. */
@@ -85,9 +85,16 @@ export default function PersonForm(props: Props) {
       {kind === "child" && props.mode === "add" && !!props.partners?.length && (
         <label>Celălalt părinte
           <select name="otherParentId" defaultValue={props.partners[0].id}>
-            {props.partners.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+            {props.partners.map((x) => <option key={x.id} value={x.id}>{x.name}{x.discreet ? " (din altă relație)" : ""}</option>)}
             <option value="">nu știu / altcineva</option>
           </select>
+        </label>
+      )}
+      {(props.mode === "edit" || kind === "spouse" || kind === "father" || kind === "mother") && (
+        <label style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+          <input type="checkbox" name="discreet" defaultChecked={p ? p.discreet : props.mode === "add" && !!props.discreet} style={{ marginTop: 4 }} />
+          <span>Discret(ă): nu apare în desenele arborelui, ci doar în fișele copiilor
+            <small className="muted" style={{ display: "block" }}>De pildă o fostă soție sau mama unui copil dintr-o altă relație. Copiii pornesc în desen doar din celălalt părinte.</small></span>
         </label>
       )}
       {props.mode === "add" && !!props.shareWith?.length && (
