@@ -46,7 +46,7 @@ nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .seg button{border:0;background:transparent;padding:5px 11px;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
-.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;text-decoration:none;color:var(--ink);display:inline-block}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
 .btn:hover{border-color:var(--accent)}
 .chartbox{overflow-x:auto}

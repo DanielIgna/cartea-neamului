@@ -16,6 +16,8 @@ npm run db:seed     # creează schema și familia de exemplu „Neamul Pop din I
 npm run dev         # http://localhost:3000
 ```
 
+Intră cu contul de exemplu `demo@cartea-neamului.ro`, parola `demo-parola-123` (există doar în baza ta locală).
+
 ## Comenzi
 
 | Comandă | Ce face |
@@ -33,7 +35,8 @@ npm run dev         # http://localhost:3000
 - **Next.js 15** (App Router, React 19, TypeScript)
 - **PostgreSQL**: local cu PGlite; în cloud cu **Neon** (setezi `DATABASE_URL`, vezi `.env.example`)
 - **Drizzle ORM** pentru schemă și migrații (`src/db/schema.ts`, `drizzle/`)
-- Urmează: **Better Auth** pentru conturi, **Cloudflare R2** pentru fișiere, **Stripe** pentru plata cărții
+- **Better Auth** pentru conturi (email + parolă), sesiuni în aceeași bază de date
+- Urmează: **Cloudflare R2** pentru fișiere, **Stripe** pentru plata cărții
 
 ## Structură
 
@@ -46,7 +49,19 @@ tests/           teste Vitest (rulează pe un Postgres în memorie)
 fixtures/        familia de exemplu în format GEDCOM
 ```
 
+## Conturi, roluri și invitații
+
+| Rol | Ce poate face |
+| --- | --- |
+| proprietar | tot, inclusiv să invite rude |
+| editor | corectează tot arborele, invită rude |
+| contributor | adaugă persoane, poze, documente |
+| vizitator | doar vede |
+
+Invitațiile sunt linkuri valabile 14 zile, folosibile o singură dată; în baza de date se păstrează doar hash-ul lor.
+O invitație poate fi legată de o persoană în viață din arbore: când o acceptă, ruda își revendică fișa.
+
 ## Confidențialitate
 
-Persoanele în viață sunt private în arbore. Exportul GEDCOM le ascunde implicit (`?living=1` le include,
-pentru membrii arborelui, după ce adăugăm conturile).
+Arborii sunt vizibili doar membrilor. Persoanele în viață sunt private în arbore, iar exportul GEDCOM
+le ascunde implicit (`?living=1` le include, tot doar pentru membri).
