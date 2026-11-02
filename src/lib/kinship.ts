@@ -58,7 +58,17 @@ function relate(g: Graph, ego: string, other: string, affinity: boolean): Kinshi
     if (down !== undefined && (!best || up + down < best.up + best.down)) best = { up, down, ancestor: anc };
   }
   const sex = g.sex.get(other) ?? "U";
-  if (best) return { label: bloodLabel(best.up, best.down, sex), degree: best.up + best.down, ...best };
+  if (best) {
+    let label = bloodLabel(best.up, best.down, sex);
+    // Frați doar după un părinte (din altă căsătorie): „frate după tată”, „soră după mamă”.
+    if (best.up === 1 && best.down === 1) {
+      const mine = g.parents.get(ego) ?? [], theirs = g.parents.get(other) ?? [];
+      const shared = mine.filter((x) => theirs.includes(x));
+      if (shared.length === 1 && mine.length === 2 && theirs.length === 2)
+        label += g.sex.get(shared[0]) === "M" ? " după tată" : g.sex.get(shared[0]) === "F" ? " după mamă" : " după un părinte";
+    }
+    return { label, degree: best.up + best.down, ...best };
+  }
   if (!affinity) return null;
   // Fără ascendent comun: poate fi soț/soție sau rudă prin alianță (afin).
   if ((g.partners.get(ego) ?? []).includes(other)) return { label: pick(sex, "soț", "soție", "partener(ă)"), degree: null, up: 0, down: 0 };

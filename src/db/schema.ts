@@ -102,10 +102,15 @@ export const person = pgTable("person", {
   birthFrom: date("birth_from"),
   birthTo: date("birth_to"),
   birthPlace: text("birth_place"),
+  birthCountry: text("birth_country"), // țara, ca să putem trece și pe cei născuți în străinătate
   deathDateText: text("death_date_text"),
   deathFrom: date("death_from"),
   deathTo: date("death_to"),
   deathPlace: text("death_place"),
+  deathCountry: text("death_country"),
+  // Unde locuiește acum (pentru cei în viață): localitate și țară
+  residencePlace: text("residence_place"),
+  residenceCountry: text("residence_country"),
   living: boolean("living").notNull().default(false),
   biography: text("biography"),
   notes: text("notes"),

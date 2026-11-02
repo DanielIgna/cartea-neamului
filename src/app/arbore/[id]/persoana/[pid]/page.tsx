@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { person } from "@/db/schema";
-import { loadTreeView } from "@/lib/tree-data";
+import { loadTreeView, where } from "@/lib/tree-data";
 import { requireUser, roleIn, can } from "@/lib/access";
 import { buildGraph, family, kinship, romanDegree } from "@/lib/kinship";
 import { canMessage } from "@/lib/chat";
@@ -53,7 +53,8 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
           <Avatar p={p} size={128} />
           <div>
             <h2>{p.name}</h2>
-            <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}{p.birthPlace ? ` · ${p.birthPlace}` : ""}</div>
+            <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}{where(p.birthPlace, p.birthCountry) ? ` · n. ${where(p.birthPlace, p.birthCountry)}` : ""}
+              {p.living && (p.residencePlace || p.residenceCountry) ? ` · locuiește în ${where(p.residencePlace, p.residenceCountry) || p.residenceCountry}` : ""}</div>
             <div className="chips">
               {p.living ? <span className="chip priv">în viață · vizibil doar în acest arbore</span> : <span className="chip">în amintirea familiei</span>}
               {p.claimed && <span className="chip ok">profil revendicat</span>}

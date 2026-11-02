@@ -96,3 +96,12 @@ describe("rude prin alianță fără legătură de sânge", () => {
     expect(kinship(g, "eu", "x")).toBeNull();
   });
 });
+
+describe("frați din altă căsătorie", () => {
+  it("îi numește frați după tată, tot de gradul II", () => {
+    const g = buildGraph([{ id: "avram", sex: "M" }, { id: "floarea", sex: "F" }, { id: "a2", sex: "F" }, { id: "ioan", sex: "M" }, { id: "lenuta", sex: "F" }],
+      [{ type: "parent_child", a: "avram", b: "ioan" }, { type: "parent_child", a: "floarea", b: "ioan" },
+       { type: "parent_child", a: "avram", b: "lenuta" }, { type: "parent_child", a: "a2", b: "lenuta" }]);
+    expect(kinship(g, "ioan", "lenuta")).toMatchObject({ label: "soră după tată", degree: 2 });
+  });
+});
