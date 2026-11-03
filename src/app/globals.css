@@ -173,3 +173,32 @@ a{color:var(--accent)}
 .share{border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;margin:0}
 .share legend{font-size:14px;padding:0 4px}
 .share label{display:flex;gap:8px;align-items:center;font-size:14px}
+/* Harta neamului */
+.mapbox{height:min(68vh,640px);min-height:360px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);overflow:hidden;z-index:0}
+.mapbox.picking{cursor:crosshair}
+.mapbox.picking .leaflet-interactive{cursor:crosshair}
+/* „.mapbox.leaflet-container” bate stilul din leaflet.css, care se încarcă după al nostru */
+.mapbox.leaflet-container{font-family:var(--body);background:var(--surface-2)}
+.mapbox.leaflet-container a{color:var(--accent)}
+.mapbox .leaflet-tooltip.map-label{background:transparent;border:0;box-shadow:none;padding:0 2px;color:var(--ink);font-weight:700;font-size:12px;
+  text-shadow:0 0 3px var(--surface),0 0 3px var(--surface),0 0 2px var(--surface)}
+.mapbox .leaflet-tooltip.map-label::before{display:none}
+.mapbox .leaflet-tooltip:not(.map-label){background:var(--surface);color:var(--ink);border-color:var(--line)}
+.mapbox .leaflet-bar a,.mapbox.leaflet-container .leaflet-control-attribution{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.mapbox .leaflet-bar a:hover{background:var(--surface-2)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .mapbox .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}}
+:root[data-theme="dark"] .mapbox .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}
+.place-list{display:grid;gap:2px}
+.place-row{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:transparent;padding:6px 8px;border-radius:8px;color:var(--ink)}
+.place-row:hover,.place-row[aria-current="true"]{background:var(--accent-soft)}
+.place-row .n{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.place-row .bar{display:inline-block;height:6px;border-radius:3px;background:var(--accent);opacity:.55}
+.people-list{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14px}
+.people-list a{color:var(--ink)}
+.people-list small{color:var(--muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:0;margin-right:6px}
+.suggest{display:grid;gap:4px;margin-top:6px}
+.suggest button{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;color:var(--ink)}
+.suggest button:hover{border-color:var(--accent)}
+.suggest small{display:block;color:var(--muted)}
+.mapbox .leaflet-tooltip-top:not(.map-label)::before{border-top-color:var(--surface)}

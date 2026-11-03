@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FanChart, ClassicTree, DescendantsChart, years, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass } from "./lineage-charts";
 import { where, type PersonView } from "@/lib/tree-data";
+import { placeKey } from "@/lib/place-key";
 import type { TreeLive } from "@/lib/realtime";
 import { buildGraph, family, kinship, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, ordinalOf, CLOSE_KIN_DEGREE, type Graph, type Rel } from "@/lib/kinship";
 import InvitePanel from "./InvitePanel";
@@ -162,6 +163,7 @@ export default function TreeScreen(props: Props) {
         <div className="card">
           <div className="toolbar" style={{ marginBottom: 0 }}>
             <div className="title" style={{ fontSize: 17 }}>{treeName} · {Object.keys(people).length} persoane</div>
+            <Link className="btn" href={`/arbore/${treeId}/harta`}>Harta neamului</Link>
             <Link className="btn" href={`/arbore/${treeId}/cronologie`}>Cronologie</Link>
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
           </div>
@@ -313,9 +315,15 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
       {!kin && ego && ego.id !== p.id && <div className="kin">Nu am găsit încă o legătură de sânge cu {ego.givenName} în arbore.</div>}
       <dl className="facts" style={{ marginTop: 10 }}>
         {(() => {
-          const born = [p.birthText, where(p.birthPlace, p.birthCountry)].filter(Boolean).join(", ");
-          const died = [p.deathText, where(p.deathPlace, p.deathCountry)].filter(Boolean).join(", ");
-          const lives = p.living ? where(p.residencePlace, p.residenceCountry) || p.residenceCountry || "" : "";
+          // Locul duce pe harta neamului, la satul acela, cu toți cei de acolo.
+          const place = (text: string | null, country: string | null, fallback = "") => {
+            const w = where(text, country) || fallback, k = placeKey(text, country);
+            return w && k ? <Link href={`/arbore/${treeId}/harta?loc=${encodeURIComponent(k)}`} title="Vezi locul pe harta neamului">{w}</Link> : w;
+          };
+          const fact = (date: string | null, pl: React.ReactNode) => (date || pl ? <>{date}{date && pl ? ", " : ""}{pl}</> : null);
+          const born = fact(p.birthText, place(p.birthPlace, p.birthCountry));
+          const died = fact(p.deathText, place(p.deathPlace, p.deathCountry));
+          const lives = p.living ? place(p.residencePlace, p.residenceCountry, p.residenceCountry ?? "") : null;
           return <>{born && <><dt>Născut(ă)</dt><dd>{born}</dd></>}{died && <><dt>Decedat(ă)</dt><dd>{died}</dd></>}{lives && <><dt>Locuiește în</dt><dd>{lives}</dd></>}</>;
         })()}
         {p.occupation && <><dt>Ocupație</dt><dd>{p.occupation}</dd></>}

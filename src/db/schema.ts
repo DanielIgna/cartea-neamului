@@ -1,5 +1,5 @@
 import {
-  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date,
+  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date, doublePrecision,
 } from "drizzle-orm/pg-core";
 
 /* ---------- Conturi (tabelele cerute de Better Auth) ---------- */
@@ -217,3 +217,18 @@ export const message = pgTable("message", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   readAt: timestamp("read_at"),
 }, (t) => [index("message_pair_idx").on(t.treeId, t.fromUserId, t.toUserId), index("message_to_idx").on(t.toUserId, t.readAt)]);
+
+/* ---------- Harta neamului ---------- */
+// Un loc pus de mână pe hartă (sau ales dintre mai multe cu același nume): toate fișele cu același text de loc îl folosesc.
+export const placePin = pgTable("place_pin", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  key: text("key").notNull(), // textul locului, fără diacritice, plus țara: „domosu|RO”
+  placeId: text("place_id"), // „RO:59470” (cod SIRUTA) când a fost ales din listă; gol când a fost pus cu un click pe hartă
+  name: text("name").notNull(),
+  detail: text("detail"),
+  lat: doublePrecision("lat").notNull(),
+  lng: doublePrecision("lng").notNull(),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("place_pin_key").on(t.treeId, t.key)]);
