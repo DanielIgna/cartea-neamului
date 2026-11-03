@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { suggestBiography, saveBiography } from "@/app/actions";
+import { shrinkPhoto } from "./PhotoPick";
 
 /** Încarcă un act, o fotografie sau o înregistrare în arhiva persoanei (Neon Object Storage, bucket privat). */
 export function DocumentUpload({ treeId, personId, personName, onUploaded }: { treeId: string; personId: string; personName: string; onUploaded: () => void }) {
@@ -10,6 +11,9 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
   if (!open) return <div className="actions"><button className="btn" onClick={() => setOpen(true)}>Adaugă poză sau document</button></div>;
   const submit = (form: FormData) => start(async () => {
     form.set("personId", personId);
+    // Pozele mari din telefon le micșorăm în browser, ca să încapă sub limita de 4 MB.
+    const file = form.get("file");
+    if (file instanceof File && file.type.startsWith("image/")) form.set("file", await shrinkPhoto(file));
     const res = await fetch(`/api/arbore/${treeId}/documente`, { method: "POST", body: form });
     const json = (await res.json().catch(() => ({}))) as { error?: string; title?: string };
     if (!res.ok) return setMsg({ error: json.error ?? "Încărcarea a eșuat." });
@@ -30,7 +34,7 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
         <label>Data<input name="dateText" placeholder="1916 sau cca. 1900" /></label>
       </div>
       <label>Descriere (cine apare, unde, când, ce poveste are)<textarea name="description" style={{ minHeight: 60 }} /></label>
-      <label>Fișier (poză, PDF sau audio, max. 4 MB)<input type="file" name="file" required accept="image/*,application/pdf,audio/*" /></label>
+      <label>Fișier (poză, PDF sau audio; pozele mari le micșorăm singuri, PDF-ul și audio până la 4 MB)<input type="file" name="file" required accept="image/*,application/pdf,audio/*" /></label>
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" name="asProfile" /> Dacă e o fotografie, folosește-o ca poză de profil</label>
       {msg.error && <p className="err">{msg.error}</p>}
       <div className="actions">

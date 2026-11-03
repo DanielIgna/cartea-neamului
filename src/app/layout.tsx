@@ -16,6 +16,9 @@ import { pendingJoins } from "@/lib/join";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
+import { and, eq, isNotNull } from "drizzle-orm";
+import { person } from "@/db/schema";
+import { safeAccountImage } from "@/lib/tree-data";
 
 
 export const metadata: Metadata = { title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte." };
@@ -25,6 +28,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
   const unread = me ? (await Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0)))).reduce((a, b) => a + b, 0) : 0;
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
+  // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
+  const myPhoto = me
+    ? await db.select({ photo: person.photoDocumentId }).from(person).where(and(eq(person.claimedByUserId, me.id), isNotNull(person.photoDocumentId))).limit(1)
+        .then((r) => r[0]?.photo ?? null).catch(() => null)
+    : null;
+  const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   return (
     <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
       <body>
@@ -32,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="top">
             <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>
             <ThemeSwitch initial={theme} />
-            {me && <UserMenu name={me.name} unread={unread} />}
+            {me && <UserMenu name={me.name} unread={unread} image={avatar} />}
           </header>
           {children}
         </div>

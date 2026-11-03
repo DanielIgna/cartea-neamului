@@ -145,6 +145,32 @@ a{color:var(--accent)}
 .notes{white-space:pre-wrap;font-size:14px;background:var(--surface-2);border-radius:8px;padding:8px 10px;margin:6px 0 0}
 .bio{white-space:pre-wrap;margin:10px 0 0}
 .chartbox.scroll{overflow:auto;max-height:78vh}
+/* Zoom pe desene: unelte deasupra colțului din dreapta, desenul se derulează și se trage cu mouse-ul */
+.zoom-wrap{position:relative;min-width:0}
+.zoom-tools{position:absolute;top:6px;right:6px;z-index:3;display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 1px 4px #0000001f}
+.zoom-tools button{border:0;background:transparent;min-width:34px;height:32px;border-radius:7px;font-size:20px;line-height:1;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+.zoom-tools button.zt-text{font-size:14px;font-weight:500}
+.zoom-tools button:hover{background:var(--accent-soft)}
+.zt-pct{font-size:12px;color:var(--muted);min-width:38px;text-align:center}
+.chartbox.zoomable{overflow:auto;max-height:78vh;touch-action:pan-x pan-y;cursor:grab;overscroll-behavior:contain}
+.chartbox.zoomable.dragging{cursor:grabbing;user-select:none}
+.chartbox.zoomable .sector,.chartbox.zoomable [role="button"]{cursor:pointer}
+.zoom-inner.zoomed{width:max-content;min-width:100%}
+.zoom-inner.zoomed > svg{width:var(--zw)!important;max-width:none!important;height:auto!important}
+/* Pe tot ecranul: desenul ocupă fereastra, cu bara de vederi deasupra și persoana aleasă dedesubt */
+.card.chart-full{position:fixed;inset:0;z-index:60;border-radius:0;border:0;display:flex;flex-direction:column;padding:10px max(10px, env(safe-area-inset-right, 0px)) max(10px, env(safe-area-inset-bottom, 0px)) max(10px, env(safe-area-inset-left, 0px))}
+.card.chart-full .zoom-wrap{flex:1;min-height:0;display:flex;flex-direction:column}
+.card.chart-full .chartbox.zoomable{flex:1;max-height:none}
+.card.chart-full .legend{display:none}
+.full-sel{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;font-size:14px}
+.full-sel b{font-family:var(--display);font-size:16px}
+/* Poza de lângă nume */
+.photo-pick{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
+.photo-pick .err{margin:0;font-size:13px}
+.user-chip{display:inline-flex;align-items:center;gap:8px}
+.google-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:500;padding:9px 12px}
+.or-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.or-line::before,.or-line::after{content:"";flex:1;border-top:1px solid var(--line)}
 .form textarea{font:inherit;min-height:90px;resize:vertical}
 .gen-select{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted)}
 .gen-select select{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 8px}
