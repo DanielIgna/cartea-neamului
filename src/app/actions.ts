@@ -14,6 +14,7 @@ import { createInvitation, acceptInvitation } from "@/lib/invitations";
 import { headers } from "next/headers";
 import { toView } from "@/lib/tree-data";
 import { aiConfigured, biographyPrompt, chat } from "@/lib/ai";
+import { mergeInto } from "@/lib/merge";
 
 const MAX_GEDCOM_BYTES = 10 * 1024 * 1024;
 
@@ -466,4 +467,24 @@ export async function otherRelation(treeId: string, childId: string, role: "fath
   });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
+}
+
+/**
+ * Unește două fișe ale aceleiași persoane, trecută de două ori din greșeală (de pildă bunica, o dată cu 8 copii și încă o dată cu 3).
+ * Doar proprietarul și editorii; nu se unesc oameni de sex diferit, fișe revendicate de oameni diferiți sau un om cu urmașul lui.
+ */
+export async function mergePeople(treeId: string, keepId: string, dropId: string): Promise<{ ok?: boolean; error?: string; message?: string }> {
+  if (!z.object({ treeId: z.string().uuid(), keepId: z.string().uuid(), dropId: z.string().uuid() }).safeParse({ treeId, keepId, dropId }).success || keepId === dropId) return { error: "Date greșite." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "editor")) return { error: "Doar proprietarul și editorii arborelui pot uni două fișe." };
+  const two = await db.select().from(person).where(and(eq(person.treeId, treeId), inArray(person.id, [keepId, dropId])));
+  const keep = two.find((x) => x.id === keepId), drop = two.find((x) => x.id === dropId);
+  if (!keep || !drop) return { error: "Una dintre fișe nu mai există în acest arbore." };
+  if (keep.sex !== "U" && drop.sex !== "U" && keep.sex !== drop.sex) return { error: "Una dintre fișe e trecută bărbat, cealaltă femeie. Corectează întâi sexul, dacă e aceeași persoană." };
+  if (keep.claimedByUserId && drop.claimedByUserId && keep.claimedByUserId !== drop.claimedByUserId) return { error: "Fiecare fișă e revendicată de alt om din familie; nu pot fi aceeași persoană." };
+  if ((await isDescendant(treeId, keepId, dropId)) || (await isDescendant(treeId, dropId, keepId))) return { error: "Una dintre persoane e urmașul celeilalte; nu pot fi aceeași persoană." };
+  const r = await mergeInto(db, treeId, keepId, dropId);
+  revalidatePath(`/arbore/${treeId}`);
+  const warn = r.twoFathers ? " Atenție: acum are doi tați trecuți; alege-l pe cel bun cu „Schimbă tatăl”." : r.twoMothers ? " Atenție: acum are două mame trecute; alege-o pe cea bună cu „Schimbă mama”." : "";
+  return { ok: true, message: `Gata: ${r.name} are acum o singură fișă, cu toate legăturile, pozele și datele.${warn}` };
 }

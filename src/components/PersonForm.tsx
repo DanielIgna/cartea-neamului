@@ -2,6 +2,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { addRelative, updatePerson } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
+import { sameLooking } from "@/lib/family";
 
 /** Sexul ghicit după prenumele românesc: cele terminate în „a” sunt de obicei feminine (cu câteva excepții bărbătești). */
 const MALE_A = new Set(["toma", "luca", "mihăiță", "mihaita", "nicola", "costea", "sava", "ilia", "jean-luca", "andrea", "gheorghiță", "gheorghita", "ionuță", "ionuta", "costică", "costica", "nicușa", "nicusa", "mitrea", "petrea", "vasilică", "vasilica", "dumitra"]);
@@ -21,7 +22,12 @@ export type RelKind = "father" | "mother" | "child" | "spouse" | "sibling";
 const TITLE: Record<RelKind, string> = { father: "Adaugă tatăl", mother: "Adaugă mama", child: "Adaugă un copil", spouse: "Adaugă soțul sau soția", sibling: "Adaugă un frate sau o soră" };
 
 type Props =
-  | { mode: "add"; kind: RelKind; treeId: string; anchor: PersonView; partners?: PersonView[]; shareWith?: PersonView[]; discreet?: boolean; onDone: () => void; onCancel?: () => void }
+  | {
+      mode: "add"; kind: RelKind; treeId: string; anchor: PersonView; partners?: PersonView[]; shareWith?: PersonView[]; discreet?: boolean;
+      /** Oamenii deja trecuți care ar putea fi chiar persoana pe care o adaugi (ca să nu apară de două ori) și, la mamă/tată, cum o legi pe cea existentă. */
+      lookalikes?: PersonView[]; useExisting?: (x: PersonView) => Promise<string | null>;
+      onDone: (msg?: string) => void; onCancel?: () => void;
+    }
   | { mode: "edit"; treeId: string; person: PersonView; onDone: () => void; onCancel?: () => void };
 
 /** Un singur formular pentru „adaugă o rudă” și „editează fișa”: date, locuri, ce se știe despre persoană și note. */
@@ -40,6 +46,13 @@ export default function PersonForm(props: Props) {
   // Cât timp nu alegi tu sexul, îl potrivim după prenume (Ana → femeie, Ion → bărbat).
   const sexRef = useRef<HTMLSelectElement>(null);
   const sexTouched = useRef(props.mode === "edit");
+  // Pe măsură ce scrii numele, verificăm dacă persoana nu e deja în arbore lângă aceeași rudă (de pildă bunica trecută a doua oară).
+  const [typed, setTyped] = useState({ given: "", surname: defaultSurname });
+  const [linking, setLinking] = useState(false);
+  const [linkErr, setLinkErr] = useState<string | null>(null);
+  const matches = props.mode === "add" && typed.given.trim().length > 1
+    ? (props.lookalikes ?? []).filter((x) => sameLooking({ id: "", givenName: typed.given, surname: typed.surname, birthSurname: null, sex: x.sex, birthYear: null }, x))
+    : [];
   return (
     <form action={action} className="form" style={{ marginTop: 10 }}>
       <div className="section-label" style={{ marginTop: 0 }}>{p ? `Editează fișa lui ${p.givenName}` : `${TITLE[kind!]} lui ${anchor!.givenName}`}</div>
@@ -47,8 +60,11 @@ export default function PersonForm(props: Props) {
       {p ? <input type="hidden" name="personId" value={p.id} /> : <><input type="hidden" name="anchorId" value={anchor!.id} /><input type="hidden" name="kind" value={kind!} /></>}
       <div className="row">
         <label>Prenume<input name="given" required defaultValue={p?.givenName}
-          onChange={(e) => { if (!sexTouched.current && sexRef.current && (kind === "child" || kind === "sibling")) sexRef.current.value = guessSex(e.target.value); }} /></label>
-        <label>Nume<input name="surname" defaultValue={defaultSurname} /></label>
+          onChange={(e) => {
+            setTyped((t) => ({ ...t, given: e.target.value }));
+            if (!sexTouched.current && sexRef.current && (kind === "child" || kind === "sibling")) sexRef.current.value = guessSex(e.target.value);
+          }} /></label>
+        <label>Nume<input name="surname" defaultValue={defaultSurname} onChange={(e) => setTyped((t) => ({ ...t, surname: e.target.value }))} /></label>
       </div>
       <div className="row">
         <label>Nume de fată (dacă e cazul)<input name="birthSurname" defaultValue={p?.birthSurname ?? ""} /></label>
@@ -112,6 +128,30 @@ export default function PersonForm(props: Props) {
       <label>Note suplimentare
         <textarea name="notes" defaultValue={p?.notes ?? ""} placeholder="Surse (registre, acte), lucruri de verificat, cine a povestit…" style={{ minHeight: 60 }} />
       </label>
+      {props.mode === "add" && matches.length > 0 && (
+        <div className="confirm">
+          {matches.map((x) => (
+            <div key={x.id} style={{ marginBottom: 6 }}>
+              <b>{x.name}{x.birthYear ? `, ${x.birthYear}` : ""}</b>{" "}
+              {kind === "mother" || kind === "father" ? `e deja în arbore, lângă familia lui ${props.anchor.givenName}. E aceeași persoană?`
+                : kind === "spouse" ? `e deja trecut(ă) lângă ${props.anchor.givenName}.`
+                : kind === "child" ? `e deja copilul lui ${props.anchor.givenName}.` : `e deja ${x.sex === "F" ? "sora" : "fratele"} lui ${props.anchor.givenName}.`}
+              {props.useExisting && (
+                <div className="actions" style={{ marginTop: 4 }}>
+                  <button type="button" className="btn primary" disabled={linking} onClick={async () => {
+                    setLinking(true); setLinkErr(null);
+                    const err = await props.useExisting!(x);
+                    setLinking(false);
+                    if (err) setLinkErr(err); else props.onDone(`${x.name} este acum ${kind === "mother" ? "mama" : "tatăl"} lui ${props.anchor.givenName}.`);
+                  }}>{linking ? "Se leagă…" : `Da, e ${x.givenName}: ${x.sex === "M" ? "leagă-l" : "leag-o"} pe ${x.sex === "M" ? "el" : "ea"}`}</button>
+                </div>
+              )}
+            </div>
+          ))}
+          <small className="muted">Dacă e altă persoană, cu același nume, continuă cu „Adaugă”.</small>
+          {linkErr && <p className="err">{linkErr}</p>}
+        </div>
+      )}
       {state && "error" in state && state.error && <p className="err">{state.error}</p>}
       <div className="actions">
         <button className="btn primary" disabled={pending}>{pending ? "Se salvează…" : p ? "Salvează" : "Adaugă"}</button>

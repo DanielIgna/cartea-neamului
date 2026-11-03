@@ -12,8 +12,9 @@ import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album, Avatar } from "./Album";
-import { descendants, childrenByUnion } from "@/lib/family";
-import { setDiscreet } from "@/app/actions";
+import { descendants, childrenByUnion, likelyDuplicates, sameLooking, normName, type Duplicate } from "@/lib/family";
+import Duplicates, { MergeWith } from "./Duplicates";
+import { setDiscreet, setParent } from "@/app/actions";
 import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
@@ -45,6 +46,7 @@ export default function TreeScreen(props: Props) {
   const [fanDir, setFanDir] = useState<"up" | "down">("up");
   const [trunk, setTrunk] = useState<string | null>(null);
   const [sel, setSel] = useState<Sel>({ n: 1 });
+  const [notice, setNotice] = useState<string | null>(null);
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
@@ -79,6 +81,10 @@ export default function TreeScreen(props: Props) {
   const lineage = useMemo(() => descendants(graph, drawn, trunkId), [graph, drawn, trunkId]);
   const mine = useMemo(() => descendants(graph, drawn, centerId), [graph, drawn, centerId]);
   const showsLineage = view === "tree" || view === "desc" || (view === "fan" && fanDir === "down");
+  // Fișe care par aceeași persoană trecută de două ori (doar proprietarul și editorii le pot uni).
+  const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
+  const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
+  const merged = (msg: string, keptId: string) => { setNotice(msg); setSel({ id: keptId }); router.refresh(); };
   const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
 
   return (
@@ -160,6 +166,8 @@ export default function TreeScreen(props: Props) {
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
           </div>
         </div>
+        {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}
+        {pairs.length > 0 && <Duplicates treeId={treeId} pairs={pairs} people={people} kids={kidsCount} onDone={merged} />}
         {ego && <KinByDegree graph={graph} people={people} ego={ego} onSelect={(id) => setSel({ id })} />}
         {canInvite && (
           <div className="card">
@@ -170,7 +178,7 @@ export default function TreeScreen(props: Props) {
       </div>
       <aside className="card panel" aria-live="polite">
         {selectedId && people[selectedId]
-          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} graph={graph} ego={ego} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
+          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} graph={graph} ego={ego} pairs={pairs} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
             ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
                 shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
@@ -180,9 +188,27 @@ export default function TreeScreen(props: Props) {
   );
 }
 
-type PanelProps = Props & { p: PersonView; graph: Graph; ego?: PersonView; onSelect: (id: string) => void; onCenter: (id: string) => void; onChanged: () => void };
+type PanelProps = Props & {
+  p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[];
+  onSelect: (id: string) => void; onCenter: (id: string) => void; onChanged: () => void; onMerged: (msg: string, keptId: string) => void;
+};
 
-function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, onSelect, onCenter, onChanged }: PanelProps) {
+/** Pentru „Unește cu altă fișă”: oamenii de același sex care nu sunt rude directe cu persoana, întâi cei care arată la fel, apoi cei cu aceeași inițială. */
+function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: PersonView): PersonView[] {
+  const skip = new Set<string>([p.id, ...(g.partners.get(p.id) ?? [])]);
+  for (const [dir, start] of [[g.parents, p.id], [g.children, p.id]] as const)
+    for (let frontier = [start]; frontier.length; ) {
+      const next: string[] = [];
+      for (const x of frontier) for (const y of dir.get(x) ?? []) if (!skip.has(y)) { skip.add(y); next.push(y); }
+      frontier = next;
+    }
+  const first = normName(p.givenName)[0];
+  const rank = (x: PersonView) => (sameLooking(p, x) ? 0 : normName(x.givenName)[0] === first ? 1 : 2);
+  return Object.values(people).filter((x) => !skip.has(x.id) && (x.sex === p.sex || x.sex === "U" || p.sex === "U"))
+    .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, "ro"));
+}
+
+function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [toggling, startToggle] = useTransition();
@@ -213,6 +239,20 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
     if (mine.length !== 2 || theirs.length !== 2 || shared.length !== 1) return "";
     return people[shared[0]]?.sex === "M" ? "după tată" : people[shared[0]]?.sex === "F" ? "după mamă" : "după un părinte";
   };
+  // Cine ar putea fi deja în arbore când adaugi o rudă: soțiile tatălui (mamele fraților) la „+ Mamă”, soții la „+ Soț”, copiii la „+ Copil”, frații la „+ Frate”.
+  const lookalikesFor = (k: RelKind): PersonView[] => {
+    if (k === "mother" || k === "father") {
+      const ids = new Set<string>();
+      for (const par of fam.parents) for (const c of [...(graph.partners.get(par) ?? []), ...(graph.children.get(par) ?? []).flatMap((x) => graph.parents.get(x) ?? [])]) ids.add(c);
+      for (const sib of fam.siblings) for (const pp of graph.parents.get(sib) ?? []) ids.add(pp);
+      return by([...ids]).filter((x) => x.sex === (k === "mother" ? "F" : "M") && !fam.parents.includes(x.id) && x.id !== p.id);
+    }
+    if (k === "spouse") return by([...new Set([...fam.partners, ...fam.children.flatMap((c) => graph.parents.get(c) ?? [])])].filter((x) => x !== p.id));
+    return by(k === "child" ? fam.children : fam.siblings);
+  };
+  const useExistingFor = (k: RelKind) => (k === "mother" || k === "father")
+    ? async (x: PersonView) => (await setParent(treeId, p.id, k, x.id)).error ?? null
+    : undefined;
   const toggleDiscreet = () => startToggle(async () => {
     const r = await setDiscreet(treeId, p.id, !p.discreet);
     if (r.error) setDone(r.error);
@@ -223,7 +263,8 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
     return form === "edit"
       ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished("Fișa a fost salvată.")} onCancel={() => setForm(null)} />
       : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={childPartners} shareWith={shareFor(graph, people, p.id, form)} discreet={discreetFor(form)}
-          onDone={() => finished("Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
+          lookalikes={lookalikesFor(form)} useExisting={useExistingFor(form)}
+          onDone={(msg) => finished(msg ?? "Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
   }
 
   const group = (label: string, list: PersonView[], note?: (x: PersonView, i: number) => string) => list.length > 0 && (
@@ -287,6 +328,7 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
         {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>Pune în centru</button>}
         {(isEditor || (canAdd && p.createdBy === meId)) && (!p.claimed || p.claimedBy === meId) && ego?.id !== p.id &&
           <DeletePerson key={`del${p.id}`} treeId={treeId} p={p} onDeleted={() => { onSelect(ego?.id ?? p.id); finished(`${p.name} a fost ștearsă din arbore.`); }} />}
+        {isEditor && <MergeWith key={`mg${p.id}`} treeId={treeId} p={p} candidates={mergeCandidates(graph, people, p)} onDone={onMerged} />}
       </div>
       {done && <p className="muted" style={{ fontSize: 14 }}>{done}</p>}
       {aiEnabled && canAdd && !p.living && <BiographySuggest key={`bio-${p.id}`} treeId={treeId} personId={p.id} canSave={isEditor} onSaved={onChanged} />}
@@ -310,6 +352,8 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
         return kids.length > 0 && <SpouseChildren key={`sc${sp.id}`} treeId={treeId} p={p} spouse={sp} kids={kids} onDone={finished} />;
       })}
       {!fam.parents.length && !fam.partners.length && !fam.children.length && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nicio rudă legată încă.</p>}
+      {isEditor && <Duplicates inline treeId={treeId} pairs={pairs.filter((d) => d.keep === p.id || d.drop === p.id)} people={people}
+        kids={(id) => graph.children.get(id)?.length ?? 0} onDone={onMerged} />}
       {canAdd && (
         <div className="actions" style={{ flexWrap: "wrap" }}>
           {!hasFather && <button className="btn" onClick={() => setForm("father")}>+ Tată</button>}
