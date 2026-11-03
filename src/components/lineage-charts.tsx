@@ -2,6 +2,7 @@
 import type { PersonView } from "@/lib/tree-data";
 import { genOf, fillFor, type DescNode, type Slots } from "./charts";
 import { clip, lifeDates, years } from "@/lib/person-text";
+import { TREE, layoutSingle, layoutTwin, thick, type Pt, type Scene, type TNode, type TwinParts } from "@/lib/tree-layout";
 
 /**
  * Desenele „de la trunchi în sus”: copacul neamului și evantaiul urmașilor.
@@ -52,7 +53,6 @@ function seeded(id: string) {
   return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
 }
 
-type Pt = [number, number];
 /** O ramură plină care se subțiază: o curbă Bézier cu grosime w0 la bază și w1 la vârf. */
 function taper(p0: Pt, p1: Pt, p2: Pt, p3: Pt, w0: number, w1: number, n = 18) {
   const L: Pt[] = [], R: Pt[] = [];
@@ -77,169 +77,86 @@ const leafPath = (x: number, y: number, w: number, h: number, tilt = 0) => {
   return `M${P(-w / 2, 0)}Q${P(0, -h)} ${P(w / 2, 0)}Q${P(0, h)} ${P(-w / 2, 0)}Z`;
 };
 
-type TNode = { node: DescNode; depth: number; x: number; y: number; parent?: TNode; trunk: boolean; size: number; side: -1 | 0 | 1 };
+const nKids = (k: number) => (k === 1 ? "1 copil" : `${k} copii`);
 
 /**
- * Așezarea copacului: trunchiul e linia neamului (de la cel mai vechi strămoș, prin persoana din centru, mai departe pe urmașul cu cei mai mulți urmași),
- * drept în sus. Din fiecare om de pe trunchi ies, la stânga și la dreapta, ramurile fraților și ale copiilor lui; ramurile de jos ies mai lungi, spre margine,
- * cele de sus mai aproape de trunchi, ca la un copac adevărat. În fiecare ramură, fiecare urmaș primește loc cât frunzele (urmașii fără copii) de sub el.
+ * Desenul copacului, după o așezare gata făcută (cu o rădăcină sau cu două): pământul și rădăcinile, coroana, trunchiul,
+ * ramurile groase cât urmașii pe care îi poartă, lăstarii celor mai tineri și oamenii, ca frunze pe ramuri și plăcuțe pe trunchi.
  */
-function growTree(root: DescNode, egoPath: Set<string>, colW: number, own: (d: DescNode) => number,
-  pads: (trunk: DescNode[]) => { l: number; r: number } = () => ({ l: colW * 1.3, r: colW * 1.3 }),
-  prefer: (t: DescNode, c: DescNode, next?: DescNode) => -1 | 0 | 1 = () => 0) {
-  const leaves = new Map<DescNode, number>(), size = new Map<DescNode, number>();
-  const count = (d: DescNode): void => {
-    d.children.forEach(count);
-    leaves.set(d, Math.max(own(d), d.children.reduce((s, c) => s + leaves.get(c)!, 0)));
-    size.set(d, 1 + d.children.reduce((s, c) => s + size.get(c)!, 0));
-  };
-  count(root);
-  const trunk: DescNode[] = [root];
-  for (let cur = root; cur.children.length; ) {
-    cur = cur.children.find((c) => egoPath.has(c.id)) ?? [...cur.children].sort((a, b) => size.get(b)! - size.get(a)!)[0];
-    trunk.push(cur);
-  }
-  // Ramurile fiecărui om de pe trunchi, împărțite stânga/dreapta ca să fie copacul cât mai echilibrat.
-  const left: { d: DescNode; level: number }[] = [], right: { d: DescNode; level: number }[] = [];
-  let lw = 0, rw = 0;
-  trunk.forEach((t, level) => {
-    const side = t.children.filter((c) => c !== trunk[level + 1]).sort((a, b) => leaves.get(b)! - leaves.get(a)!);
-    for (const d of side) {
-      const want = prefer(t, d, trunk[level + 1]);
-      if (want === -1) { left.push({ d, level }); lw += leaves.get(d)!; }
-      else if (want === 1) { right.push({ d, level }); rw += leaves.get(d)!; }
-      else if (lw <= rw) { left.push({ d, level }); lw += leaves.get(d)!; } else { right.push({ d, level }); rw += leaves.get(d)!; }
-    }
-  });
-  const pad = pads(trunk);
-  const trunkX = lw * colW + pad.l;
-  const out: TNode[] = [];
-  const tnodes: TNode[] = [];
-  trunk.forEach((d, i) => {
-    const t: TNode = { node: d, depth: i, x: trunkX, y: 0, parent: tnodes[i - 1], trunk: true, size: size.get(d)!, side: 0 };
-    tnodes.push(t); out.push(t);
-  });
-  const lay = (d: DescNode, depth: number, a: number, b: number, parent: TNode, side: -1 | 1) => {
-    const me: TNode = { node: d, depth, x: (a + b) / 2, y: 0, parent, trunk: false, size: size.get(d)!, side };
-    out.push(me);
-    let x = a;
-    for (const c of d.children) { const w = ((b - a) * leaves.get(c)!) / leaves.get(d)!; lay(c, depth + 1, x, x + w, me, side); x += w; }
-  };
-  // Stânga: de la margine spre trunchi, ramurile de jos primele (cele mai lungi stau la margine).
-  let x = 0;
-  for (const { d, level } of [...left].sort((a, b) => a.level - b.level)) { const w = leaves.get(d)! * colW; lay(d, level + 1, x, x + w, tnodes[level], -1); x += w; }
-  // Dreapta: de la trunchi spre margine, ramurile de sus primele.
-  x = trunkX + pad.r;
-  for (const { d, level } of [...right].sort((a, b) => b.level - a.level)) { const w = leaves.get(d)! * colW; lay(d, level + 1, x, x + w, tnodes[level], 1); x += w; }
-  return { nodes: out, width: x, depth: Math.max(...out.map((n) => n.depth)), trunkX };
-}
-
-/** Copacul neamului: trunchiul e linia de la cel mai vechi la cel mai tânăr; fiecare familie e o ramură, din ea ramuri mai subțiri și lăstari. */
-export function LineageTree({ root: root0, people, selectedId, egoPath, onSelectPerson, onCenter }: Props) {
-  const colW = 108, rowH = 116, half = 58, leafHalf = 51;
-  // Pe desen, cel mult două căsătorii (cele mai recente). Cu una: soțul/soția în dreapta. Cu două: prima în stânga persoanei, a doua în dreapta.
-  const shown = (d: DescNode) => d.partners.filter((id) => people[id]).slice(-2);
-  const sideOf = (d: DescNode, sp: string | null | undefined): -1 | 0 | 1 => {
-    const sh = shown(d);
-    if (!sp || !sh.includes(sp)) return 0;
-    return sh.length === 2 && sp === sh[0] ? -1 : 1;
-  };
-  // Copiii fiecărei familii stau împreună, sub căsătoria lor: întâi cei din căsătoria din stânga, apoi cei fără celălalt părinte desenat, apoi cei din dreapta.
-  const regroup = (d: DescNode): DescNode => ({ ...d, children: [...d.children].sort((a, b) => sideOf(d, a.via) - sideOf(d, b.via)).map(regroup) });
-  const root = regroup(root0);
-  // Pe trunchi, nodul căsătoriei din care coboară următorul om de pe linie stă pe trunchi.
-  const leadSide = (t: DescNode, next?: DescNode) => (next ? sideOf(t, next.via) : 0);
-  const footprint = (d: DescNode, P: number) => {
-    const sh = shown(d);
-    return { l: P - (sh.length === 2 ? 2 * half : 0) - leafHalf, r: P + (sh.length ? 2 * half : 0) + leafHalf };
-  };
-  const grown = growTree(root, egoPath, colW, (d) => 1 + shown(d).length,
-    (trunk) => {
-      let l = colW * 1.3, r = colW * 1.3;
-      trunk.forEach((t, i) => { const f = footprint(t, -leadSide(t, trunk[i + 1]) * half); l = Math.max(l, -f.l + 14); r = Math.max(r, f.r + 14); });
-      return { l, r };
-    },
-    // Pe trunchi, dacă un om are copii din mai multe căsătorii, fiecare grup crește pe partea soțului/soției lui; altfel ramurile se împart echilibrat.
-    (t, c, next) => {
-      const groups = new Set([...t.children.map((x) => (shown(t).includes(x.via ?? "") ? x.via : null))]);
-      if (groups.size < 2) return 0;
-      const s = sideOf(t, c.via);
-      return s !== 0 ? s : shown(t).length === 2 ? 0 : leadSide(t, next) === 1 ? -1 : 0;
-    });
-  const W0 = grown.width, W = Math.max(W0, 680), shift = (W - W0) / 2;
-  const trunkH = 130, top = 70, H = top + grown.depth * rowH + trunkH + 70;
-  const baseY = H - 46;
-  for (const n of grown.nodes) { n.x += shift; n.y = baseY - trunkH - n.depth * rowH; }
-  const tx = grown.trunkX + shift;
-  const thick = (s: number) => Math.min(5 + 3.4 * Math.sqrt(s), 46);
-  const trunkNodes = grown.nodes.filter((n) => n.trunk);
-  const rootN = trunkNodes[0];
-  // Familia de pe desen: unde stă persoana, unde stau soții ei și nodul fiecărei căsătorii (de unde pornesc copiii lor).
-  const famOf = new Map(grown.nodes.map((n) => {
-    const sh = shown(n.node);
-    const P = n.trunk ? tx - leadSide(n.node, trunkNodes[n.depth + 1]?.node) * half : n.x - (sh.length === 1 ? half : 0);
-    const unions = sh.map((id) => { const s = sideOf(n.node, id); return { sp: people[id], x: P + s * 2 * half, knot: P + s * half }; });
-    return [n.node.id, { P, unions, mid: (footprint(n.node, P).l + footprint(n.node, P).r) / 2 }];
-  }));
+function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter, ariaLabel, label }: Omit<Props, "root"> & {
+  scene: Scene; ariaLabel: string; label: (rootId: string) => string;
+}) {
+  const { rowH } = TREE;
+  const { W, H, baseY, nodes, fam, trunk, bases, couple, roots, noShoots } = scene;
+  // Pe trunchi, ramurile ies de pe marginea scoarței, nu din mijlocul ei: unde ajunge trunchiul în dreptul fiecărui om de pe el.
+  const onLine = new Set(trunk.map((s) => `${s.p[3][0]}|${s.p[3][1]}`));
+  const onTrunkLine = (p: TNode, x: number) => p.trunk && onLine.has(`${x}|${p.y}`);
   const branchFrom = (p: TNode, c: DescNode) => {
-    const f = famOf.get(p.node.id)!, u = f.unions.find((x) => x.sp.id === c.via);
+    const f = fam.get(p.node.id)!, u = f.unions.find((x) => x.sp === c.via);
     return u ? { x: u.knot, y: p.y + 6 } : { x: f.P, y: p.y - 10 };
   };
-  const kidsOf = (d: DescNode, via: string | null) => d.children.filter((c) => (via ? c.via === via : !shown(d).includes(c.via ?? ""))).length;
-  const nKids = (k: number) => (k === 1 ? "1 copil" : `${k} copii`);
+  const kidsOf = (d: DescNode, via: string | null) => {
+    const sh = fam.get(d.id)?.unions.map((u) => u.sp) ?? [];
+    return d.children.filter((c) => (via ? c.via === via : !sh.includes(c.via ?? ""))).length;
+  };
 
   // Coroana: pâlcuri de frunziș în jurul fiecărei familii, mai dese la vârfuri (cei fără copii).
-  const foliage = grown.nodes.flatMap((n) => {
-    const rnd = seeded(n.node.id), k = n.node.children.length ? 3 : 5, f = famOf.get(n.node.id)!, spread = 80 + f.unions.length * 100;
+  const foliage = nodes.flatMap((n) => {
+    const rnd = seeded(n.node.id), k = n.node.children.length ? 3 : 5, f = fam.get(n.node.id)!, spread = 80 + f.unions.length * 100;
     return Array.from({ length: k }, (_, i) => ({ key: `${n.node.id}f${i}`, cx: f.mid + (rnd() - 0.5) * spread, cy: n.y - 6 + (rnd() - 0.5) * 56, r: 22 + rnd() * 20, tone: 1 + Math.floor(rnd() * 3) }));
   });
   // Lăstari: rămurele cu frunze la cei fără copii (vârfurile copacului).
-  const shoots = grown.nodes.filter((n) => !n.node.children.length && n.depth > 0).flatMap((n) => {
-    const rnd = seeded(`${n.node.id}s`), f = famOf.get(n.node.id)!, ox = f.unions.length ? f.unions[f.unions.length - 1].knot : f.P;
+  const shoots = nodes.filter((n) => !n.node.children.length && n.depth > 0 && !noShoots.has(n.node.id)).flatMap((n) => {
+    const rnd = seeded(`${n.node.id}s`), f = fam.get(n.node.id)!, ox = f.unions.length ? f.unions[f.unions.length - 1].knot : f.P;
     return [-1, 0, 1].map((dir, i) => {
       const ang = -Math.PI / 2 + dir * (0.55 + rnd() * 0.3), len = 30 + rnd() * 14;
       const sx = ox + dir * 6, sy = n.y - (f.unions.length ? 18 : 16), ex = sx + Math.cos(ang) * len, ey = sy + Math.sin(ang) * len;
       return { key: `${n.node.id}s${i}`, d: taper([sx, sy], [sx + (ex - sx) * 0.2, sy - len * 0.4], [ex - (ex - sx) * 0.3, ey + 4], [ex, ey], 3, 1, 8), leaf: leafPath(ex, ey, 16, 7, ang) };
     });
   });
+  const gx = (bases[0].x + bases[bases.length - 1].x) / 2, spanX = (bases[bases.length - 1].x - bases[0].x) / 2;
+  const father = couple && people[couple.father], mother = couple && people[couple.mother];
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Copacul neamului" style={{ width: W, maxWidth: "none", display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={ariaLabel} style={{ width: W, maxWidth: "none", display: "block", margin: "0 auto" }}>
       <defs>
         <linearGradient id="bark" x1="0" x2="1" y1="0" y2="0">
           <stop offset="0" stopColor="var(--tree-bark-dark)" /><stop offset="0.45" stopColor="var(--tree-bark)" /><stop offset="1" stopColor="var(--tree-bark-dark)" />
         </linearGradient>
       </defs>
       {/* Pământul și rădăcinile */}
-      <ellipse cx={tx} cy={baseY + 14} rx={Math.max(Math.min(tx - 10, W - tx - 10, 360), 120)} ry={26} fill="var(--tree-ground)" />
-      {[-1, 1].flatMap((s) => [0.6, 1.3].map((k) => (
-        <path key={`r${s}${k}`} d={taper([tx + s * 10, baseY - 6], [tx + s * 40 * k, baseY], [tx + s * 70 * k, baseY + 10], [tx + s * 110 * k, baseY + 18], 16 / k, 2)} fill="var(--tree-bark-dark)" />
-      )))}
+      <ellipse cx={gx} cy={baseY + 14} rx={Math.max(Math.min(gx - 10, W - gx - 10, 360 + spanX), 120)} ry={26} fill="var(--tree-ground)" />
+      {bases.flatMap((b) => [-1, 1].flatMap((s) => [0.6, 1.3].map((k) => (
+        <path key={`r${b.root}${s}${k}`} d={taper([b.x + s * 10, baseY - 6], [b.x + s * 40 * k, baseY], [b.x + s * 70 * k, baseY + 10], [b.x + s * 110 * k, baseY + 18], 16 / k, 2)} fill="var(--tree-bark-dark)" />
+      ))))}
       {/* Coroana */}
       <g opacity={0.55}>{foliage.map((f) => <circle key={f.key} cx={f.cx} cy={f.cy} r={f.r} fill={`var(--foliage-${f.tone})`} />)}</g>
-      {/* Trunchiul: din pământ până la ultimul om de pe linie, tot mai subțire */}
-      <path d={taper([tx, baseY + 4], [tx, baseY - trunkH * 0.4], [tx, rootN.y + trunkH * 0.3], [tx, rootN.y], thick(rootN.size) * 1.7, thick(rootN.size))} fill="url(#bark)" />
-      {trunkNodes.slice(1).map((n) => (
-        <path key={`t${n.node.id}`} d={taper([tx, n.parent!.y + 2], [tx, n.parent!.y - rowH * 0.4], [tx, n.y + rowH * 0.4], [tx, n.y], thick(n.parent!.size), thick(n.size))}
-          fill="url(#bark)" stroke={egoPath.has(n.node.id) ? "var(--accent)" : "none"} strokeWidth={1.2} />
-      ))}
+      {/* Trunchiul: din pământ până la ultimul om de pe linie, tot mai subțire (în copacul cu două rădăcini, două trunchiuri care se unesc în părinți) */}
+      {trunk.map((s, i) => s.root
+        ? <path key={`t${i}`} d={taper(s.p[0], s.p[1], s.p[2], s.p[3], s.w0, s.w1)} fill="url(#bark)" />
+        : <path key={`t${i}`} d={taper(s.p[0], s.p[1], s.p[2], s.p[3], s.w0, s.w1)} fill="url(#bark)" stroke={s.onPath ? "var(--accent)" : "none"} strokeWidth={1.2} />)}
       {/* Ramurile: ies din nodul căsătoriei părinților, în lături, apoi urcă spre copil; groase cât urmașii pe care îi poartă.
           Copiii dintr-o altă relație (cu o persoană discretă) au o ramură mai subțire, care pornește doar din părinte. */}
-      {grown.nodes.filter((n) => !n.trunk && n.parent).map((n) => {
-        const p = n.parent!, from = branchFrom(p, n.node), to = famOf.get(n.node.id)!.P, dx = to - from.x;
+      {nodes.filter((n) => !n.trunk && n.parent).map((n) => {
+        const p = n.parent!, from = branchFrom(p, n.node), to = fam.get(n.node.id)!.P, dx = to - from.x;
         const onPath = egoPath.has(n.node.id) && egoPath.has(p.node.id), k = n.node.apart ? 0.55 : 1;
-        return <path key={`b${n.node.id}`} d={taper([from.x + Math.sign(dx) * (p.trunk && from.x === tx ? thick(p.size) * 0.3 : 0), from.y], [from.x + dx * 0.55, from.y - rowH * 0.12], [to, n.y + rowH * 0.55], [to, n.y + 8], Math.min(thick(n.size) * 1.15, thick(p.size)) * k, thick(n.size) * 0.7 * k)}
+        return <path key={`b${n.node.id}`} d={taper([from.x + Math.sign(dx) * (onTrunkLine(p, from.x) ? thick(p.size) * 0.3 : 0), from.y], [from.x + dx * 0.55, from.y - rowH * 0.12], [to, n.y + rowH * 0.55], [to, n.y + 8], Math.min(thick(n.size) * 1.15, thick(p.size)) * k, thick(n.size) * 0.7 * k)}
           fill="url(#bark)" stroke={onPath ? "var(--accent)" : "none"} strokeWidth={1.2} opacity={n.node.apart ? 0.85 : 1} />;
       })}
       {shoots.map((s) => <g key={s.key}><path d={s.d} fill="var(--tree-bark)" /><path d={s.leaf} fill="var(--foliage-2)" stroke="var(--leaf-edge)" strokeWidth={0.6} /></g>)}
+      {/* Căsătoria părinților, în care se unesc cele două trunchiuri */}
+      {couple && father && mother && (
+        <path d={taper([couple.P + 30, couple.y + 4], [couple.knot - 10, couple.y + 10], [couple.knot + 10, couple.y + 10], [couple.x - 30, couple.y + 4], 5, 5, 12)} fill="var(--tree-bark)" />
+      )}
       {/* Oamenii: fiecare familie e o pereche de frunze (pe trunchi, plăcuțe) legate printr-un nod; din nod pornesc ramurile copiilor */}
-      {grown.nodes.map((n) => {
+      {nodes.map((n) => {
         const person = people[n.node.id];
         if (!person) return null;
-        const { y } = n, { P, unions } = famOf.get(n.node.id)!;
+        const { y } = n, f = fam.get(n.node.id)!, { P } = f;
+        const unions = f.unions.map((u) => ({ ...u, sp: people[u.sp] })).filter((u) => u.sp);
         const card = (who: PersonView, cx: number, blood: boolean) => {
           const sel = selectedId === who.id, ego = egoPath.has(who.id);
-          const fill = n.trunk ? (n.depth === 0 && blood ? "var(--accent-soft)" : "var(--surface)") : blood ? (ego ? "var(--leaf-pat)" : "var(--leaf-mat)") : "var(--leaf-spouse)";
+          const fill = n.trunk ? (roots.has(n.node.id) && blood ? "var(--accent-soft)" : "var(--surface)") : blood ? (ego ? "var(--leaf-pat)" : "var(--leaf-mat)") : "var(--leaf-spouse)";
           return (
             <g key={who.id} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={blood ? who.name : `Soț/soție: ${who.name}`}
               onClick={() => onSelectPerson(who.id)} onDoubleClick={() => onCenter(who.id)} onKeyDown={keyAct(() => onSelectPerson(who.id))}>
@@ -254,6 +171,7 @@ export function LineageTree({ root: root0, people, selectedId, egoPath, onSelect
           );
         };
         const alone = kidsOf(n.node, null);
+        const beside = n.trunk && !unions.length;
         return (
           <g key={n.node.id}>
             {unions.map((u) => { const l = Math.min(P, u.x) + 30, r = Math.max(P, u.x) - 30;
@@ -269,15 +187,42 @@ export function LineageTree({ root: root0, people, selectedId, egoPath, onSelect
                 </g>
               );
             })}
-            {alone > 0 && <text x={n.trunk && !unions.length ? P + 56 : P} y={y + (n.trunk && !unions.length ? 4 : 36)} textAnchor={n.trunk && !unions.length ? "start" : "middle"} fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(alone)}</text>}
+            {alone > 0 && <text x={f.alone ? f.alone.x : beside ? P + 56 : P} y={y + (f.alone ? f.alone.dy : beside ? 4 : 36)} textAnchor={f.alone ? f.alone.anchor : beside ? "start" : "middle"} fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(alone)}</text>}
           </g>
         );
       })}
-      <text x={tx} y={baseY + 36} textAnchor="middle" fill="var(--muted)" fontSize={11} style={{ fontFamily: "var(--display)" }}>
-        {people[root.id] ? `Neamul ${people[root.id].surname} · rădăcina: ${people[root.id].name}` : ""}
-      </text>
+      {couple && father && mother && (
+        <g>
+          <circle data-focus="1" cx={couple.knot} cy={couple.y + 9} r={8} fill="var(--tree-bark-dark)" stroke="var(--surface)" strokeWidth={1.4}>
+            <title>{`Familia ${father.givenName} și ${mother.givenName}${couple.kids ? `: ${nKids(couple.kids)}` : ""}`}</title>
+          </circle>
+          {couple.kids > 0 && <text x={couple.knot} y={couple.y + 38} textAnchor="middle" fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(couple.kids)}</text>}
+        </g>
+      )}
+      {bases.map((b) => (
+        <text key={`l${b.root}`} x={b.x} y={baseY + 36} textAnchor="middle" fill="var(--muted)" fontSize={11} style={{ fontFamily: "var(--display)" }}>{label(b.root)}</text>
+      ))}
     </svg>
   );
+}
+
+/** Copacul neamului: trunchiul e linia de la cel mai vechi la cel mai tânăr; fiecare familie e o ramură, din ea ramuri mai subțiri și lăstari. */
+export function LineageTree(props: Props) {
+  const { root, people, egoPath } = props;
+  const scene = layoutSingle(root, (id) => !!people[id], egoPath);
+  return <TreeArt {...props} scene={scene} ariaLabel="Copacul neamului"
+    label={(id) => (people[id] ? `Neamul ${people[id].surname} · rădăcina: ${people[id].name}` : "")} />;
+}
+
+/**
+ * Copacul cu două rădăcini: neamul tatălui în stânga, neamul mamei în dreapta. Cele două trunchiuri se apleacă unul spre altul
+ * și se unesc în căsătoria părinților; de acolo crește o singură coroană, cu copiii lor și urmașii acestora.
+ */
+export function TwinTree({ parts, ...props }: Omit<Props, "root"> & { parts: TwinParts }) {
+  const { people, egoPath } = props;
+  const scene = layoutTwin(parts, (id) => !!people[id], egoPath);
+  return <TreeArt {...props} scene={scene} ariaLabel="Copacul neamului cu două rădăcini: neamul tatălui și neamul mamei"
+    label={(id) => { const p = people[id], sur = p?.birthSurname?.trim() || p?.surname; return p ? (sur ? `Neamul ${sur}` : `Neamul lui ${p.name}`) : ""; }} />;
 }
 
 /** Evantaiul urmașilor: trunchiul în mijloc, fiecare generație un inel, fiecare ramură o felie cât urmașii ei. */

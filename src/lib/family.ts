@@ -53,7 +53,7 @@ export function sameLooking(a: Lookalike, b: Lookalike) {
 }
 
 /** Este `anc` strămoșul lui `id`? */
-function isAncestor(g: Graph, anc: string, id: string) {
+export function isAncestor(g: Graph, anc: string, id: string) {
   const seen = new Set<string>();
   for (let frontier = g.parents.get(id) ?? []; frontier.length; ) {
     if (frontier.includes(anc)) return true;
