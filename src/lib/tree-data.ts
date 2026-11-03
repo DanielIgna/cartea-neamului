@@ -4,6 +4,7 @@ import { person, tree, document, documentLink, relationship } from "@/db/schema"
 import type { Rel } from "./kinship";
 import { fetchAncestorRows, toAhnentafel } from "./ancestry";
 import { parseFuzzyDate } from "./dates";
+import { raisedIn, type Raised } from "./raised";
 
 export type PersonView = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: "M" | "F" | "U";
@@ -36,14 +37,14 @@ export function where(place: string | null | undefined, country: string | null |
 
 /**
  * Tot ce are nevoie ecranul arborelui: toate persoanele și relațiile arborelui (pentru frați, soți, copii,
- * descendenți și gradul de rudenie) plus ascendenții persoanei centrale numerotați Ahnentafel.
+ * descendenți și gradul de rudenie), cine pe cine a crescut, plus ascendenții persoanei centrale numerotați Ahnentafel.
  */
 export async function loadTreeView(db: Db, treeId: string, centerId?: string, generations = 4) {
   const [t] = await db.select().from(tree).where(eq(tree.id, treeId));
   if (!t) return null;
   const rows = await db.select().from(person).where(eq(person.treeId, treeId));
   const center = centerId && rows.some((p) => p.id === centerId) ? centerId : t.rootPersonId;
-  const empty = { tree: t, centerId: null, rootId: t.rootPersonId, slots: {} as Record<number, string>, people: {} as Record<string, PersonView>, rels: [] as Rel[] };
+  const empty = { tree: t, centerId: null, rootId: t.rootPersonId, slots: {} as Record<number, string>, people: {} as Record<string, PersonView>, rels: [] as Rel[], raised: [] as Raised[] };
   if (!center) return empty;
   const gens = Math.min(Math.max(generations, 1), MAX_GENERATIONS);
   const ahnen = toAhnentafel(await fetchAncestorRows(db, center, gens));
@@ -58,7 +59,7 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })));
   const slots: Record<number, string> = {};
   for (const [n, id] of ahnen) slots[n] = id;
-  return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows };
+  return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised: await raisedIn(db, treeId) };
 }
 
 export async function loadTimeline(db: Db, treeId: string) {

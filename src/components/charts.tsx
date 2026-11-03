@@ -1,14 +1,15 @@
 "use client";
 import type { PersonView } from "@/lib/tree-data";
 import type { DescNode } from "@/lib/family";
+import { clip, years } from "@/lib/person-text";
 export type { DescNode };
+// Textele („1898–1967”, scurtarea numelor) stau în lib, ca să le poată folosi și paginile de pe server (profilul, cartea).
+export { clip, years };
 
 export type Slots = Record<number, PersonView>;
 type Props = { slots: Slots; selected: number; onSelect: (n: number) => void; onCenter: (id: string) => void; generations?: number };
 
 export const genOf = (n: number) => Math.floor(Math.log2(n));
-export const years = (p?: PersonView) =>
-  !p ? "" : `${p.approx ? "cca. " : ""}${p.birthYear ?? "?"}${p.deathYear ? `–${p.deathYear}` : p.living ? "" : "–?"}`;
 const side = (n: number) => (genOf(n) < 1 ? null : n >> (genOf(n) - 1) === 2 ? "pat" : "mat");
 export const fillFor = (n: number) => (genOf(n) === 0 ? "var(--accent-soft)" : `var(--${side(n)}-${Math.min(genOf(n), 4)})`);
 
@@ -131,8 +132,6 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
     </svg>
   );
 }
-
-export const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
 
 /**
  * Descendenții persoanei din centru, de sus în jos: fiecare cu soții desenați alături (în ordinea căsătoriilor) și copiii dedesubt.

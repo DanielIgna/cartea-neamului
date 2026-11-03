@@ -1,6 +1,6 @@
 import { and, eq, or } from "drizzle-orm";
 import type { Db } from "@/db";
-import { bookExport, documentLink, invitation, person, relationship, tree } from "@/db/schema";
+import { bookExport, documentLink, invitation, person, raisedBy, relationship, tree } from "@/db/schema";
 
 type Person = typeof person.$inferSelect;
 const empty = (v: unknown) => v === null || v === undefined || v === "";
@@ -61,6 +61,12 @@ export async function mergeInto(db: Db, treeId: string, keepId: string, dropId: 
       const where = and(eq(documentLink.documentId, l.d), eq(documentLink.personId, dropId));
       if (docs.has(l.d)) await tx.delete(documentLink).where(where);
       else { await tx.update(documentLink).set({ personId: keepId }).where(where); docs.add(l.d); }
+    }
+    // „A crescut-o”: legăturile dublei trec la fișa păstrată (fără dubluri și fără ca cineva să se fi crescut pe sine).
+    for (const r of await tx.select().from(raisedBy).where(and(eq(raisedBy.treeId, treeId), or(eq(raisedBy.childId, dropId), eq(raisedBy.carerId, dropId))))) {
+      await tx.delete(raisedBy).where(and(eq(raisedBy.childId, r.childId), eq(raisedBy.carerId, r.carerId)));
+      const childId = r.childId === dropId ? keepId : r.childId, carerId = r.carerId === dropId ? keepId : r.carerId;
+      if (childId !== carerId) await tx.insert(raisedBy).values({ ...r, childId, carerId }).onConflictDoNothing();
     }
     await tx.update(tree).set({ rootPersonId: keepId }).where(and(eq(tree.id, treeId), eq(tree.rootPersonId, dropId)));
     await tx.update(invitation).set({ personId: keepId }).where(and(eq(invitation.treeId, treeId), eq(invitation.personId, dropId)));

@@ -17,6 +17,7 @@ import { aiConfigured, biographyPrompt, chat } from "@/lib/ai";
 import { mergeInto } from "@/lib/merge";
 import { after } from "next/server";
 import { refreshTreePlaces } from "@/lib/shared-places";
+import { setRaised } from "@/lib/raised";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
 function placesChanged(treeId: string) {
@@ -426,6 +427,19 @@ export async function linkChildren(treeId: string, parentId: string, childIds: s
   });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true, linked };
+}
+
+/**
+ * „A crescut-o”: cine a crescut un copil fără să-i fie părinte (mama vitregă, bunicii). Nu schimbă desenele; apare în fișe, în profil și în carte.
+ */
+export async function setRaisedBy(treeId: string, childId: string, carerId: string, on: boolean): Promise<{ ok?: boolean; error?: string }> {
+  if (!z.object({ treeId: z.string().uuid(), childId: z.string().uuid(), carerId: z.string().uuid(), on: z.boolean() }).safeParse({ treeId, childId, carerId, on }).success) return { error: "Date greșite." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să schimbi legăturile din acest arbore." };
+  const r = await setRaised(db, treeId, childId, carerId, on, me.id);
+  if (r.error) return { error: r.error };
+  revalidatePath(`/arbore/${treeId}`);
+  return { ok: true };
 }
 
 /** Cine poate corecta fișa unei persoane: editorii pe oricine, contributorii pe cei adăugați de ei, fiecare propriul profil. */
