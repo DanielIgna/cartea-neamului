@@ -1,7 +1,7 @@
 "use client";
 import type { PersonView } from "@/lib/tree-data";
 import type { DescNode } from "@/lib/family";
-import { clip, years } from "@/lib/person-text";
+import { clip, lifeDates, years } from "@/lib/person-text";
 export type { DescNode };
 // Textele („1898–1967”, scurtarea numelor) stau în lib, ca să le poată folosi și paginile de pe server (profilul, cartea).
 export { clip, years };
@@ -64,13 +64,13 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 
         <>
           <tspan x={tx} dy={g <= 2 ? -8 : -6} fontWeight={700}>{g >= 3 ? p.givenName : p.name}</tspan>
           {g >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
-          <tspan x={tx} dy={g <= 2 ? 16 : 12} fill="var(--muted)">{years(p)}</tspan>
+          <tspan x={tx} dy={g <= 2 ? 16 : 12} fill="var(--muted)">{g <= 2 ? lifeDates(p) : years(p)}</tspan>
         </>
       );
       sectors.push(
         <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber, adaugă persoana"}
           onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
-          <title>{p ? `${p.name} ${years(p)}` : "Loc liber: adaugă persoana"}</title>
+          <title>{p ? `${p.name} ${lifeDates(p)}` : "Loc liber: adaugă persoana"}</title>
           <path d={arc(R[g], R[g + 1], a1, a2, cx, cy)} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeWidth={g >= 6 ? 0.8 : 1.2} strokeDasharray={p ? undefined : "4 4"} />
           <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={fs}>{label}</text>
         </g>,
@@ -86,7 +86,7 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 
           <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--ink)" fontSize={15} fontWeight={700} style={{ fontFamily: "var(--display)" }}>
             <tspan x={cx}>{center.givenName}</tspan><tspan x={cx} dy={17}>{center.surname}</tspan>
           </text>
-          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{years(center)}</text>
+          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{lifeDates(center)}</text>
         </g>
       )}
     </svg>
@@ -123,7 +123,7 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
             {p ? (
               <>
                 <text x={x + 10} y={y - 3} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 22)}</text>
-                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(`${years(p)}${p.birthPlace ? ` · ${p.birthPlace}` : ""}`, 26)}</text>
+                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(/\d\.\d/.test(lifeDates(p)) ? lifeDates(p) : `${years(p)}${p.birthPlace ? ` · ${p.birthPlace}` : ""}`, 26)}</text>
               </>
             ) : <text x={x + 10} y={y + 4} fill="var(--muted)" fontSize={12}>+ adaugă</text>}
           </g>
@@ -182,7 +182,7 @@ export function DescendantsChart({ root, people, selectedId, onSelectPerson, onC
             <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6}
               fill={isRoot ? "var(--accent-soft)" : b.partnerOf ? "var(--surface)" : "var(--desc)"} stroke={isRoot ? "var(--accent)" : "var(--line)"} strokeDasharray={b.partnerOf ? "4 3" : undefined} />
             <text x={b.x + 9} y={b.y + 17} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 20)}</text>
-            <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{years(p)}</text>
+            <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{lifeDates(p)}</text>
           </g>
         );
       })}

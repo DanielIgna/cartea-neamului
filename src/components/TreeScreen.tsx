@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo, useRef, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { FanChart, ClassicTree, DescendantsChart, years, type Slots, type DescNode } from "./charts";
+import { FanChart, ClassicTree, DescendantsChart, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass } from "./lineage-charts";
 import { where, type PersonView } from "@/lib/tree-data";
 import { placeKey } from "@/lib/place-key";
@@ -21,6 +21,7 @@ import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
 import RaisedBy from "./RaisedBy";
 import { carerCandidates, raisedLinks, type Raised } from "@/lib/raised";
+import { lifeDates } from "@/lib/person-text";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
@@ -295,7 +296,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         <Avatar p={p} size={72} />
         <div>
           <h2>{p.name}</h2>
-          <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}</div>
+          <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}</div>
           <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>Deschide profilul și albumul →</Link>
         </div>
       </div>

@@ -82,6 +82,7 @@ export default function PersonForm(props: Props) {
         <label>Locul nașterii<input name="birthPlace" placeholder="sat, comună sau oraș" defaultValue={p?.birthPlace ?? ""} /></label>
         <label>Țara<input name="birthCountry" list="tari" defaultValue={countryHint} /></label>
       </div>
+      <small className="muted" style={{ marginTop: -6 }}>La naștere și la deces scrie ziua, luna și anul, dacă le știi (12.03.1932); altfel doar anul sau „cca. 1870”.</small>
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <input type="checkbox" name="living" checked={living} onChange={(e) => setLiving(e.target.checked)} /> Persoana e în viață (rămâne privată în arbore)
       </label>
@@ -93,7 +94,7 @@ export default function PersonForm(props: Props) {
         </div>
       ) : (
         <div className="row">
-          <label>Decedat(ă)<input name="death" placeholder="1980" defaultValue={p?.deathText ?? ""} /></label>
+          <label>Decedat(ă)<input name="death" placeholder="5.11.2008 sau 1980" defaultValue={p?.deathText ?? ""} /></label>
           <label>Locul decesului<input name="deathPlace" defaultValue={p?.deathPlace ?? ""} /></label>
           <label>Țara<input name="deathCountry" list="tari" defaultValue={p?.deathCountry ?? "România"} /></label>
         </div>

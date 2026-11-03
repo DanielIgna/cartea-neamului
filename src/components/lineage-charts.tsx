@@ -1,6 +1,7 @@
 "use client";
 import type { PersonView } from "@/lib/tree-data";
-import { clip, years, genOf, fillFor, type DescNode, type Slots } from "./charts";
+import { genOf, fillFor, type DescNode, type Slots } from "./charts";
+import { clip, lifeDates, years } from "@/lib/person-text";
 
 /**
  * Desenele „de la trunchi în sus”: copacul neamului și evantaiul urmașilor.
@@ -242,7 +243,7 @@ export function LineageTree({ root: root0, people, selectedId, egoPath, onSelect
           return (
             <g key={who.id} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={blood ? who.name : `Soț/soție: ${who.name}`}
               onClick={() => onSelectPerson(who.id)} onDoubleClick={() => onCenter(who.id)} onKeyDown={keyAct(() => onSelectPerson(who.id))}>
-              <title>{`${blood ? "" : "⚭ "}${who.name} ${years(who)}`}</title>
+              <title>{`${blood ? "" : "⚭ "}${who.name} ${lifeDates(who)}`}</title>
               {n.trunk
                 ? <rect x={cx - 50} y={y - 24} width={100} height={46} rx={10} fill={fill} stroke={ego ? "var(--accent)" : "var(--tree-bark-dark)"} strokeWidth={ego ? 2 : 1.2} strokeDasharray={blood ? undefined : "4 3"} />
                 : <path d={leafPath(cx, y, 102, 36, unions.length ? (cx < P ? -0.06 : cx > P ? 0.06 : 0) : 0)} fill={fill} stroke={ego ? "var(--accent)" : "var(--leaf-edge)"} strokeWidth={ego ? 2 : 1} />}
@@ -306,7 +307,7 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
         return (
           <g key={p.node.id} className={`sector${selectedId === p.node.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={person.name}
             onClick={() => onSelectPerson(p.node.id)} onDoubleClick={() => onCenter(p.node.id)} onKeyDown={keyAct(() => onSelectPerson(p.node.id))}>
-            <title>{`${person.name} ${years(person)}${kids(p.node) ? ` · ${kids(p.node)}` : ""}`}</title>
+            <title>{`${person.name} ${lifeDates(person)}${kids(p.node) ? ` · ${kids(p.node)}` : ""}`}</title>
             <path d={arc(r1, r2, a1, a2)} fill={ego ? "var(--accent-soft)" : `var(--pat-${Math.min(1 + (p.depth % 4), 4)})`} stroke={ego ? "var(--accent)" : "var(--line)"} strokeWidth={ego ? 1.6 : 0.8} />
             <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={wide ? 11 : 9}>
               <tspan x={tx} dy={-2} fontWeight={700}>{clip(person.givenName, wide ? 16 : 10)}</tspan>
@@ -321,7 +322,7 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
           <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--ink)" fontSize={14} fontWeight={700} style={{ fontFamily: "var(--display)" }}>
             <tspan x={cx}>{rootP.givenName}</tspan><tspan x={cx} dy={16}>{rootP.surname}</tspan>
           </text>
-          <text x={cx} y={cy + 30} textAnchor="middle" fill="var(--muted)" fontSize={11}>{years(rootP)}</text>
+          <text x={cx} y={cy + 30} textAnchor="middle" fill="var(--muted)" fontSize={11}>{lifeDates(rootP)}</text>
         </g>
       )}
     </svg>
@@ -354,10 +355,10 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
   const ups = [...upAt.keys()].filter((n) => n > 1);
   const box = (x: number, y: number, p: PersonView, key: string, fill: string, sel: boolean, onClick: () => void, onDbl?: () => void) => (
     <g key={key} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name} onClick={onClick} onDoubleClick={onDbl} onKeyDown={keyAct(onClick)}>
-      <title>{`${p.name} ${years(p)}`}</title>
+      <title>{`${p.name} ${lifeDates(p)}`}</title>
       <rect x={x - bw / 2} y={y - bh / 2} width={bw} height={bh} rx={6} fill={fill} stroke="var(--line)" />
       <text x={x} y={y - 3} textAnchor="middle" fill="var(--ink)" fontSize={11.5} fontWeight={700}>{clip(p.name, 17)}</text>
-      <text x={x} y={y + 12} textAnchor="middle" fill="var(--muted)" fontSize={10}>{years(p)}</text>
+      <text x={x} y={y + 12} textAnchor="middle" fill="var(--muted)" fontSize={10}>{lifeDates(p)}</text>
     </g>
   );
   return (
@@ -389,7 +390,7 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
               return (
                 <g key={`s${partner.id}`} className={`sector${selectedId === partner.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={`Soț/soție: ${partner.name}`}
                   onClick={() => onSelectPerson(partner.id)} onKeyDown={keyAct(() => onSelectPerson(partner.id))}>
-                  <title>{`⚭ ${partner.name} ${years(partner)}`}</title>
+                  <title>{`⚭ ${partner.name} ${lifeDates(partner)}`}</title>
                   <text x={tx} y={y + bh / 2 + 12} textAnchor={two ? (i === 0 ? "end" : "start") : "middle"} fill="var(--muted)" fontSize={10}>⚭ {clip(two ? partner.givenName : partner.name, two ? 10 : 20)}</text>
                 </g>
               );
