@@ -23,6 +23,7 @@ export default async function Thread({ params }: { params: Promise<{ treeId: str
     <section className="card" style={{ maxWidth: 720, margin: "0 auto" }}>
       <Link href="/mesaje" style={{ fontSize: 14 }}>← Toate mesajele</Link>
       <h2 style={{ margin: "8px 0 0" }}>{c?.personName ?? "Conversație"}</h2>
+      {c?.via && <div className="meta">Din aceleași locuri: strămoși din {c.via.place} · {c.via.treeName}</div>}
       {c?.kin && <div className="meta">{c.kin.label}{c.kin.degree ? ` · gradul ${romanDegree(c.kin.degree)}` : ""} · <Link href={`/arbore/${treeId}/persoana/${c.personId}`}>profil</Link></div>}
       <ChatBox treeId={treeId} to={userId} canSend={ok.ok} reason={ok.ok ? null : ok.reason}
         messages={msgs.map((m) => ({ id: m.id, mine: m.fromUserId === me.id, body: m.body, at: m.createdAt.toISOString() }))} />

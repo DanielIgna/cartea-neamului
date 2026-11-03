@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css";
 import type { MapKind, MapPlace, TreeMap } from "@/lib/map-data";
 import type { Spot } from "@/lib/places";
 import { findPlaces, pinPlace, placeChoices, unpinPlace } from "@/app/harta-actions";
+import { de, locuri, persoane } from "@/lib/ro-words";
+import NearbyFamilies, { type Nearby } from "./NearbyFamilies";
 
 type Filter = "all" | MapKind;
 const KINDS: { k: MapKind; label: string; here: string; color: string }[] = [
@@ -17,10 +19,6 @@ const KINDS: { k: MapKind; label: string; here: string; color: string }[] = [
 type Fix = { keys: { key: string; text: string; country: string | null }[]; label: string };
 type Drawn = { L: typeof Leaflet; map: Leaflet.Map; routes: Leaflet.LayerGroup; marks: Leaflet.LayerGroup; temp: Leaflet.LayerGroup; ro: ResizeObserver };
 
-/** „5 persoane”, dar „24 de persoane”: în română, de la 20 în sus numărul cere „de”. */
-const de = (n: number) => (n % 100 >= 20 || (n >= 100 && n % 100 === 0) ? `${n} de` : `${n}`);
-const persoane = (n: number) => (n === 1 ? "o persoană" : `${de(n)} persoane`);
-const locuri = (n: number) => (n === 1 ? "un loc" : `${de(n)} locuri`);
 const radius = (n: number) => 5 + 3.2 * Math.sqrt(n);
 const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)];
 
@@ -34,7 +32,9 @@ function arc(a: [number, number], b: [number, number]): [number, number][] {
   });
 }
 
-export default function FamilyMap({ treeId, treeName, data, canEdit, focus }: { treeId: string; treeName: string; data: TreeMap; canEdit: boolean; focus: string | null }) {
+export default function FamilyMap({ treeId, treeName, data, canEdit, focus, nearby }: {
+  treeId: string; treeName: string; data: TreeMap; canEdit: boolean; focus: string | null; nearby: Nearby;
+}) {
   const router = useRouter();
   const box = useRef<HTMLDivElement>(null);
   const drawn = useRef<Drawn | null>(null);
@@ -217,6 +217,12 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus }: { 
     return [...g.values()].sort((a, b) => b.n - a.n);
   }, [shown]);
   const most = Math.max(1, ...shown.map((p) => p.n));
+  // Câte neamuri din alți arbori au strămoși chiar în acest sat („Din aceleași locuri”).
+  const also = useMemo(() => {
+    const n = new Map<string, number>();
+    for (const m of nearby.matches) for (const id of new Set(m.places.filter((c) => c.same).map((c) => c.placeId))) n.set(id, (n.get(id) ?? 0) + 1);
+    return n;
+  }, [nearby.matches]);
   const total = new Set(shown.flatMap((p) => p.people.filter((x) => filter === "all" || x.kind === filter).map((x) => x.id))).size;
   const counties = groups.filter((g) => shown.some((p) => p.group === g.name && p.cc === "RO")).length;
   const abroad = new Set(shown.filter((p) => p.cc && p.cc !== "RO").map((p) => p.cc)).size;
@@ -278,7 +284,7 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus }: { 
                 <div className="place-list">
                   {g.places.map((p) => (
                     <button key={p.id} className="place-row" onClick={() => choose(p)}>
-                      <span>{p.name}{p.how === "country" ? " (doar țara)" : ""}</span>
+                      <span>{p.name}{p.how === "country" ? " (doar țara)" : ""}{also.get(p.id) ? <small className="also" title="Neamuri din alți arbori cu strămoși în acest loc">+{de(also.get(p.id)!)} {also.get(p.id) === 1 ? "neam" : "neamuri"}</small> : null}</span>
                       <span className="bar" style={{ width: Math.max(4, (60 * p.n) / most) }} />
                       <span className="n">{p.n}</span>
                     </button>
@@ -289,6 +295,8 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus }: { 
           </div>
         )}
         {err && <div className="card"><p className="err" style={{ margin: 0 }}>{err}</p></div>}
+        <NearbyFamilies treeId={treeId} nearby={nearby} shared={data.shared} onAll={() => setSel(null)}
+          place={selected && selected.how !== "country" ? { id: selected.id, area: selected.area, name: selected.name } : null} />
         {data.missing.length > 0 && (
           <div className="card">
             <div className="section-label" style={{ marginTop: 0 }}>Locuri pe care harta nu le-a găsit ({data.missing.length})</div>

@@ -31,6 +31,24 @@ const ADDITIVE = [
     "lat" double precision NOT NULL, "lng" double precision NOT NULL,
     "created_by" text REFERENCES "user"("id") ON DELETE set null, "created_at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "place_pin_key" ON "place_pin" ("tree_id","key")`,
+  sql`ALTER TABLE "tree" ADD COLUMN IF NOT EXISTS "discoverable" boolean DEFAULT false NOT NULL`,
+  sql`CREATE TABLE IF NOT EXISTS "tree_place" (
+    "tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade, "place_id" text NOT NULL, "area" text,
+    "name" text NOT NULL, "detail" text, "people" integer NOT NULL, "from_year" integer, "to_year" integer,
+    "surnames" text DEFAULT '' NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "tree_place_pk" ON "tree_place" ("tree_id","place_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "tree_place_place_idx" ON "tree_place" ("place_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "tree_place_area_idx" ON "tree_place" ("area")`,
+  sql`CREATE TABLE IF NOT EXISTS "place_contact" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "from_user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade,
+    "from_tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade,
+    "to_tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade,
+    "to_user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade,
+    "place" text NOT NULL, "note" text, "status" text DEFAULT 'pending' NOT NULL,
+    "created_at" timestamp DEFAULT now() NOT NULL, "answered_at" timestamp)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "place_contact_pair" ON "place_contact" ("from_user_id","to_tree_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "place_contact_to_idx" ON "place_contact" ("to_user_id","status")`,
 ];
 
 export async function applySchema(target: Db) {

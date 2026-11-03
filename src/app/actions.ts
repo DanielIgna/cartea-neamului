@@ -15,6 +15,15 @@ import { headers } from "next/headers";
 import { toView } from "@/lib/tree-data";
 import { aiConfigured, biographyPrompt, chat } from "@/lib/ai";
 import { mergeInto } from "@/lib/merge";
+import { after } from "next/server";
+import { refreshTreePlaces } from "@/lib/shared-places";
+
+/** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
+function placesChanged(treeId: string) {
+  after(async () => {
+    try { await refreshTreePlaces(db, treeId); } catch (e) { console.error("Din aceleași locuri: nu am putut recalcula satele", e); }
+  });
+}
 
 const MAX_GEDCOM_BYTES = 10 * 1024 * 1024;
 
@@ -166,6 +175,7 @@ export async function addRelative(_: unknown, form: FormData) {
     return p;
   });
   revalidatePath(`/arbore/${v.treeId}`);
+  placesChanged(v.treeId);
   return { ok: true, id: p.id, message: `Am adăugat ${KIND_LABEL[v.kind]}: ${p.givenName} ${p.surname}`.trim() };
 }
 
@@ -192,6 +202,7 @@ export async function updatePerson(_: unknown, form: FormData) {
     return { error: "Poți corecta doar persoanele adăugate de tine. Cere unui editor al arborelui să facă schimbarea." };
   await db.update(person).set({ ...personValues(v), sex: v.sex ?? p.sex, updatedAt: new Date() }).where(eq(person.id, p.id));
   revalidatePath(`/arbore/${v.treeId}`);
+  placesChanged(v.treeId);
   return { ok: true, message: "Fișa a fost salvată." };
 }
 
@@ -389,6 +400,7 @@ export async function deletePerson(treeId: string, personId: string): Promise<{ 
   if (t?.root === personId) return { error: "Este persoana de la care pornește arborele; nu poate fi ștearsă." };
   await db.delete(person).where(eq(person.id, personId));
   revalidatePath(`/arbore/${treeId}`);
+  placesChanged(treeId);
   return { ok: true };
 }
 
@@ -438,6 +450,7 @@ export async function setDiscreet(treeId: string, personId: string, on: boolean)
   if ("error" in r) return { error: r.error };
   await db.update(person).set({ discreet: on, updatedAt: new Date() }).where(eq(person.id, personId));
   revalidatePath(`/arbore/${treeId}`);
+  placesChanged(treeId);
   return { ok: true };
 }
 
@@ -485,6 +498,7 @@ export async function mergePeople(treeId: string, keepId: string, dropId: string
   if ((await isDescendant(treeId, keepId, dropId)) || (await isDescendant(treeId, dropId, keepId))) return { error: "Una dintre persoane e urmașul celeilalte; nu pot fi aceeași persoană." };
   const r = await mergeInto(db, treeId, keepId, dropId);
   revalidatePath(`/arbore/${treeId}`);
+  placesChanged(treeId);
   const warn = r.twoFathers ? " Atenție: acum are doi tați trecuți; alege-l pe cel bun cu „Schimbă tatăl”." : r.twoMothers ? " Atenție: acum are două mame trecute; alege-o pe cea bună cu „Schimbă mama”." : "";
   return { ok: true, message: `Gata: ${r.name} are acum o singură fișă, cu toate legăturile, pozele și datele.${warn}` };
 }
