@@ -24,6 +24,13 @@ const ADDITIVE = [
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_place" text`,
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "residence_country" text`,
   sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "discreet" boolean DEFAULT false NOT NULL`,
+  sql`CREATE TABLE IF NOT EXISTS "place_pin" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade,
+    "key" text NOT NULL, "place_id" text, "name" text NOT NULL, "detail" text,
+    "lat" double precision NOT NULL, "lng" double precision NOT NULL,
+    "created_by" text REFERENCES "user"("id") ON DELETE set null, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "place_pin_key" ON "place_pin" ("tree_id","key")`,
 ];
 
 export async function applySchema(target: Db) {
