@@ -11,6 +11,7 @@ import { storageConfigured } from "@/lib/storage";
 import { lifeDates, years } from "@/lib/person-text";
 import { Avatar } from "@/components/Album";
 import ProfileAlbum from "@/components/ProfileAlbum";
+import PhotoPick from "@/components/PhotoPick";
 import { raisedLinks } from "@/lib/raised";
 
 export const dynamic = "force-dynamic";
@@ -52,7 +53,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>← Înapoi la arbore, cu {p.givenName} în centru</Link>
         <div className="profile-hero" style={{ marginTop: 12 }}>
-          <Avatar p={p} size={128} />
+          <div style={{ display: "grid", justifyItems: "center", gap: 6 }}>
+            <Avatar p={p} size={128} />
+            {storageConfigured() && (canEdit || (can(role, "contributor") && !p.photoId)) && <span style={{ fontSize: 14 }}><PhotoPick treeId={id} p={{ id: p.id, name: p.name, photoId: p.photoId }} /></span>}
+          </div>
           <div>
             <h2>{p.name}</h2>
             <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}{where(p.birthPlace, p.birthCountry) ? ` · n. ${where(p.birthPlace, p.birthCountry)}` : ""}

@@ -1,6 +1,6 @@
 import { eq, inArray } from "drizzle-orm";
 import type { Db } from "@/db";
-import { person, tree, document, documentLink, relationship } from "@/db/schema";
+import { person, tree, document, documentLink, relationship, user } from "@/db/schema";
 import type { Rel } from "./kinship";
 import { fetchAncestorRows, toAhnentafel } from "./ancestry";
 import { parseFuzzyDate } from "./dates";
@@ -13,21 +13,28 @@ export type PersonView = {
   birthYear: number | null; deathYear: number | null; approx: boolean;
   living: boolean; discreet: boolean; claimed: boolean; occupation: string | null; biography: string | null; notes: string | null;
   createdBy: string | null; claimedBy: string | null; photoId: string | null;
+  /** Poza din contul celui care și-a revendicat fișa (de pildă din Google), folosită când fișa nu are o poză încărcată. */
+  accountImage?: string | null;
   documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean; description?: string | null; mimeType?: string | null }[];
 };
 
-export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = []): PersonView {
+export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = [], accountImage: string | null = null): PersonView {
   const b = parseFuzzyDate(p.birthDateText), d = parseFuzzyDate(p.deathDateText);
   return {
     id: p.id, name: `${p.givenName} ${p.surname}`.trim(), givenName: p.givenName, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex,
     birthText: p.birthDateText, birthPlace: p.birthPlace, deathText: p.deathDateText, deathPlace: p.deathPlace,
     birthCountry: p.birthCountry, deathCountry: p.deathCountry, residencePlace: p.residencePlace, residenceCountry: p.residenceCountry,
     birthYear: b.year, deathYear: d.year, approx: b.approx, living: p.living, discreet: p.discreet, claimed: !!p.claimedByUserId,
-    occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, photoId: p.photoDocumentId, documents: docs,
+    occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, photoId: p.photoDocumentId, accountImage, documents: docs,
   };
 }
 
 export const MAX_GENERATIONS = 10;
+
+/** Doar pozele de cont venite de la Google (adrese https de pe googleusercontent.com), nu orice adresă pusă în cont. */
+export function safeAccountImage(url: string | null | undefined): string | null {
+  return url && /^https:\/\/[a-z0-9.-]+\.googleusercontent\.com\//i.test(url) ? url : null;
+}
 
 /** „Huedin” sau „Torino, Italia”: țara se scrie doar când nu e România. */
 export function where(place: string | null | undefined, country: string | null | undefined) {
@@ -55,8 +62,11 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
     ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey, description: document.description, mimeType: document.mimeType })
         .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
     : [];
+  // Cine și-a revendicat fișa poate avea poză în cont (din Google): o arătăm când fișa nu are poză încărcată.
+  const claimers = [...new Set(rows.map((p) => p.claimedByUserId).filter((u): u is string => !!u))];
+  const images = new Map(claimers.length ? (await db.select({ id: user.id, image: user.image }).from(user).where(inArray(user.id, claimers))).map((u) => [u.id, safeAccountImage(u.image)]) : []);
   const people: Record<string, PersonView> = {};
-  for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })));
+  for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })), images.get(p.claimedByUserId ?? "") ?? null);
   const slots: Record<number, string> = {};
   for (const [n, id] of ahnen) slots[n] = id;
   return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised: await raisedIn(db, treeId) };

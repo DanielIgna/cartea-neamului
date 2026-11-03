@@ -20,6 +20,8 @@ import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
 import RaisedBy from "./RaisedBy";
+import ZoomBox from "./ZoomBox";
+import PhotoPick from "./PhotoPick";
 import { carerCandidates, raisedLinks, type Raised } from "@/lib/raised";
 import { lifeDates } from "@/lib/person-text";
 
@@ -51,6 +53,8 @@ export default function TreeScreen(props: Props) {
   const [trunk, setTrunk] = useState<string | null>(null);
   const [sel, setSel] = useState<Sel>({ n: 1 });
   const [notice, setNotice] = useState<string | null>(null);
+  // Desenul pe tot ecranul, cu zoom: pentru arborii mari.
+  const [full, setFull] = useState(false);
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
@@ -94,7 +98,7 @@ export default function TreeScreen(props: Props) {
   return (
     <section className="layout">
       <div className="stack">
-        <div className="card">
+        <div className={`card${full ? " chart-full" : ""}`}>
           <div className="toolbar">
             <div className="title">{view === "hour" ? `Înainte și după ${ego?.name}` : showsLineage ? `Urmașii lui ${people[trunkId]?.name}` : `Ascendenții lui ${ego?.name}`}</div>
             <div className="seg" role="group" aria-label="Vizualizare">
@@ -125,7 +129,7 @@ export default function TreeScreen(props: Props) {
             {!isRoot && <button className="btn" onClick={() => go({ p: null })}>Înapoi la mine</button>}
             {live && <LiveTree key={live.sealedQuery.queryFingerprint} url={live.url} treeId={treeId} userId={live.userId} sealedQuery={live.sealedQuery} initialData={live.initialData} />}
           </div>
-          <div ref={box} className={`chartbox${view !== "fan" || generations >= 7 || fanDir === "down" ? " scroll" : ""}`}>
+          <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}`} full={full} onFull={setFull}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
             {view === "classic" && <ClassicTree {...chartProps} />}
@@ -133,7 +137,14 @@ export default function TreeScreen(props: Props) {
             {view === "hour" && <Hourglass slots={slots} generations={generations} down={mine} people={people} selectedId={selectedId}
               onSelectPerson={(id) => setSel({ id })} onSelectSlot={(n) => setSel({ n })} onCenter={center} />}
             {view === "desc" && <DescendantsChart root={lineage} people={people} selectedId={selectedId} onSelectPerson={(id) => setSel({ id })} onCenter={center} />}
-          </div>
+          </ZoomBox>
+          {full && selectedId && people[selectedId] && (
+            <div className="full-sel">
+              <span><b>{people[selectedId].name}</b> <span className="muted">{lifeDates(people[selectedId])}</span></span>
+              <button className="btn" onClick={() => { setFull(false); requestAnimationFrame(() => document.querySelector("aside.panel")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>Vezi fișa</button>
+              {selectedId !== centerId && <button className="btn" onClick={() => center(selectedId)}>Pune în centru</button>}
+            </div>
+          )}
           <div className="legend">
             {view === "desc" ? (
               <>
@@ -160,7 +171,7 @@ export default function TreeScreen(props: Props) {
                 <span><i className="sw" style={{ border: "1.5px dashed var(--muted)" }} />Loc liber, de completat</span>
               </>
             )}
-            <span>Click pentru fișă, dublu click pune persoana în centru.</span>
+            <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>
           </div>
         </div>
         <div className="card">
@@ -298,6 +309,9 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
           <h2>{p.name}</h2>
           <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}</div>
           <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>Deschide profilul și albumul →</Link>
+          {storageEnabled && (canEdit || (canAdd && !p.photoId)) && (
+            <div style={{ fontSize: 14 }}><PhotoPick key={p.id} treeId={treeId} p={p} onDone={() => { setDone(`Am pus poza pentru ${p.givenName}; o găsești și în album.`); onChanged(); }} /></div>
+          )}
         </div>
       </div>
       <div className="chips">
