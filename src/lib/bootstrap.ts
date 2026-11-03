@@ -60,6 +60,13 @@ const ADDITIVE = [
   sql`CREATE INDEX IF NOT EXISTS "join_attempt_name_idx" ON "join_attempt" ("name_key","created_at")`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "join_request_pair" ON "join_request" ("user_id","person_id")`,
   sql`CREATE INDEX IF NOT EXISTS "join_request_tree_idx" ON "join_request" ("tree_id","status")`,
+  sql`CREATE TABLE IF NOT EXISTS "raised_by" (
+    "tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade,
+    "child_id" uuid NOT NULL REFERENCES "person"("id") ON DELETE cascade,
+    "carer_id" uuid NOT NULL REFERENCES "person"("id") ON DELETE cascade,
+    "created_by" text REFERENCES "user"("id") ON DELETE set null, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "raised_by_pair" ON "raised_by" ("child_id","carer_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "raised_by_tree_idx" ON "raised_by" ("tree_id")`,
 ];
 
 export async function applySchema(target: Db) {

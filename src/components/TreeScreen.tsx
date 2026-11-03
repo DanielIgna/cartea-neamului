@@ -19,10 +19,12 @@ import { setDiscreet, setParent } from "@/app/actions";
 import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
+import RaisedBy from "./RaisedBy";
+import { carerCandidates, raisedLinks, type Raised } from "@/lib/raised";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
-  treeId: string; treeName: string; slots: Record<number, string>; people: Record<string, PersonView>; rels: Rel[]; centerId: string; generations: number;
+  treeId: string; treeName: string; slots: Record<number, string>; people: Record<string, PersonView>; rels: Rel[]; raised: Raised[]; centerId: string; generations: number;
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
 };
 type View = "fan" | "classic" | "tree" | "desc" | "hour";
@@ -210,7 +212,7 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
     .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, "ro"));
 }
 
-function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
+function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [toggling, startToggle] = useTransition();
@@ -228,6 +230,16 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
   const spouseIds = unionsOf(graph, p.id).map((u) => u.spouse).filter((s): s is string => !!s && !!people[s]);
   const shownSpouses = by(spouseIds.filter(drawn));
   const kidsBy = childrenByUnion(graph, drawn, p.id);
+  // „A crescut-o”: cine l-a crescut pe lângă părinți (mama vitregă, bunicii) și pe cine a crescut el.
+  const rl = raisedLinks(graph, raised, p.id);
+  const raisedFor = () => {
+    const c = carerCandidates(graph, p.id, drawn);
+    const step = c.step.map((id) => ({ p: people[id], via: by(fam.parents).find((par) => (graph.partners.get(par.id) ?? []).includes(id))! })).filter((s) => s.p && s.via);
+    const near = new Set([...c.step, ...c.grand, ...c.aunts]);
+    const skip = new Set([p.id, ...fam.parents, ...rl.carers]);
+    const others = Object.values(people).filter((x) => !near.has(x.id) && !skip.has(x.id) && !x.discreet).sort((a, b) => a.name.localeCompare(b.name, "ro"));
+    return { step, family: by([...c.grand, ...c.aunts].filter((x) => !skip.has(x))), others };
+  };
   // Pentru „+ Copil”: întâi soțul/soția de acum (ultima căsătorie desenată), apoi ceilalți.
   const childPartners = [...by(spouseIds.filter(drawn)).reverse(), ...by(spouseIds.filter((s) => !drawn(s))).reverse()];
   // O mamă (un tată) nouă, adăugată ca persoană nouă lângă un tată (o mamă) care are deja soție (soț) în desen, e dintr-o altă relație: o propunem discretă.
@@ -344,6 +356,7 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
       <div className="section-label">Rude</div>
       <dl className="rel-group rel">
         {group("Părinți", by(fam.parents))}
+        {group(p.sex === "F" ? "Crescută de" : p.sex === "M" ? "Crescut de" : "Crescut(ă) de", by(rl.carers))}
         {group(shownSpouses.length > 1 ? (p.sex === "F" ? "Soți" : "Soții") : p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", shownSpouses,
           shownSpouses.length > 1 ? (_, i) => `${ordinalOf(i + 1)} căsătorie` : undefined)}
         {kidsBy.named.length > 0
@@ -352,6 +365,7 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
               {group(`Din altă relație (${kidsBy.other.length})`, by(kidsBy.other))}
             </>
           : group(`Copii (${fam.children.length})`, by(kidsBy.other))}
+        {group(fam.children.length ? "A crescut și pe" : "A crescut pe", by(rl.raised))}
         {group(`Frați (${fam.siblings.length})`, by(fam.siblings), half)}
       </dl>
       {canAdd && by(fam.partners).map((sp) => {
@@ -371,10 +385,11 @@ function PersonPanel({ p, graph, ego, people, treeId, meId, isEditor, canInvite,
           <button className="btn" onClick={() => setForm("sibling")}>+ Frate / soră</button>
         </div>
       )}
-      {canAdd && fam.parents.length > 0 && (
+      {canAdd && (
         <div className="actions" style={{ flexWrap: "wrap" }}>
           {(mother || father) && <ParentChange key={`m${p.id}`} treeId={treeId} p={p} role="mother" current={mother} candidates={partnersOf(father, "F")} onAddNew={() => setForm("mother")} onChanged={finished} />}
           {(father || mother) && <ParentChange key={`f${p.id}`} treeId={treeId} p={p} role="father" current={father} candidates={partnersOf(mother, "M")} onAddNew={() => setForm("father")} onChanged={finished} />}
+          <RaisedBy key={`r${p.id}`} treeId={treeId} p={p} carers={by(rl.carers)} {...raisedFor()} onChanged={finished} />
         </div>
       )}
 

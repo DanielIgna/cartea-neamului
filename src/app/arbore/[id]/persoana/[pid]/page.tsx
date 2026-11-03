@@ -8,9 +8,10 @@ import { requireUser, roleIn, can } from "@/lib/access";
 import { buildGraph, family, kinship, romanDegree } from "@/lib/kinship";
 import { canMessage } from "@/lib/chat";
 import { storageConfigured } from "@/lib/storage";
-import { years } from "@/components/charts";
+import { years } from "@/lib/person-text";
 import { Avatar } from "@/components/Album";
 import ProfileAlbum from "@/components/ProfileAlbum";
+import { raisedLinks } from "@/lib/raised";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -27,6 +28,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
   if (!data || !p) notFound();
   const g = buildGraph(Object.values(data.people), data.rels);
   const fam = family(g, pid);
+  const rl = raisedLinks(g, data.raised, pid);
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const ego = mine?.id ?? data.rootId;
   const kin = ego && ego !== pid ? kinship(g, ego, pid) : null;
@@ -83,8 +85,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         {group(p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", fam.partners.filter((x) => !data.people[x]?.discreet))}
         {group(`Copii (${fam.children.length})`, fam.children)}
         {group("Părinți", fam.parents)}
+        {group(p.sex === "F" ? "Crescută de" : p.sex === "M" ? "Crescut de" : "Crescut(ă) de", rl.carers)}
+        {group(fam.children.length ? "A crescut și pe" : "A crescut pe", rl.raised)}
         {group(`Frați (${fam.siblings.length})`, fam.siblings)}
-        {!fam.partners.length && !fam.children.length && !fam.parents.length && <p className="muted">Nicio rudă legată încă.</p>}
+        {!fam.partners.length && !fam.children.length && !fam.parents.length && !rl.carers.length && !rl.raised.length && <p className="muted">Nicio rudă legată încă.</p>}
       </div>
     </section>
   );

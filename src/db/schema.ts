@@ -147,6 +147,16 @@ export const relationship = pgTable("relationship", {
   uniqueIndex("rel_unique").on(t.type, t.personA, t.personB),
 ]);
 
+// „A crescut-o”: cine a crescut un copil fără să-i fie părinte (mama sau tatăl vitreg, bunicii, o mătușă).
+// Apare în fișe, în profil și în carte; nu schimbă desenele arborelui și nici gradele de rudenie.
+export const raisedBy = pgTable("raised_by", {
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  childId: uuid("child_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  carerId: uuid("carer_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("raised_by_pair").on(t.childId, t.carerId), index("raised_by_tree_idx").on(t.treeId)]);
+
 /* ---------- Arhivă ---------- */
 export const documentKind = pgEnum("document_kind", ["act", "photo", "audio", "letter", "other"]);
 
