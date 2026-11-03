@@ -1,13 +1,16 @@
 import { and, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import type { Db } from "@/db";
-import { message, person, relationship, tree, treeMember, user } from "@/db/schema";
+import { message, person, placeContact, relationship, tree, treeMember, user } from "@/db/schema";
 import { buildGraph, kinship, type Kinship } from "./kinship";
 
 /**
  * Cine cu cine își poate scrie într-un arbore: amândoi sunt membri, amândoi și-au revendicat fișa,
  * iar rudenia dintre ei e cel mult gradul ales de proprietar (soții își pot scrie oricând).
  */
-export type Contact = { userId: string; name: string; personId: string; personName: string; photoId: string | null; kin: Kinship | null; allowed: boolean };
+export type Contact = {
+  userId: string; name: string; personId: string; personName: string; photoId: string | null; kin: Kinship | null; allowed: boolean;
+  via?: { place: string; treeName: string }; // „Din aceleași locuri”: din alt neam, cu strămoși în același sat
+};
 
 export async function chatContacts(db: Db, treeId: string, meId: string): Promise<{ limit: number; mePersonId: string | null; contacts: Contact[] }> {
   const [t] = await db.select({ limit: tree.chatMaxDegree }).from(tree).where(eq(tree.id, treeId));
@@ -34,6 +37,30 @@ export async function chatContacts(db: Db, treeId: string, meId: string): Promis
 }
 
 export async function canMessage(db: Db, treeId: string, fromId: string, toId: string) {
+  const kin = await canMessageKin(db, treeId, fromId, toId);
+  if (kin.ok) return kin;
+  return (await placeLink(db, treeId, fromId, toId)) ?? kin;
+}
+
+/**
+ * Doi oameni din neamuri diferite, cu strămoși în același sat: își pot scrie după ce proprietarul a acceptat cererea de legătură.
+ * Mesajele lor stau în arborele celui care a acceptat.
+ */
+async function placeLink(db: Db, treeId: string, a: string, b: string) {
+  const [c] = await db.select().from(placeContact).where(and(eq(placeContact.toTreeId, treeId),
+    or(and(eq(placeContact.fromUserId, a), eq(placeContact.toUserId, b)), and(eq(placeContact.fromUserId, b), eq(placeContact.toUserId, a)))));
+  if (!c) return null;
+  if (c.status !== "accepted") {
+    return { ok: false as const, reason: c.status === "pending" ? "Cererea de legătură așteaptă încă răspunsul." : "Legătura dintre neamurile voastre s-a încheiat." };
+  }
+  const [other] = await db.select({ name: user.name }).from(user).where(eq(user.id, b));
+  const [t] = await db.select({ name: tree.name }).from(tree).where(eq(tree.id, c.fromUserId === a ? c.toTreeId : c.fromTreeId));
+  const contact: Contact = { userId: b, name: other?.name ?? "", personId: "", personName: other?.name ?? "", photoId: null, kin: null, allowed: true,
+    via: { place: c.place, treeName: t?.name ?? "" } };
+  return { ok: true as const, contact };
+}
+
+async function canMessageKin(db: Db, treeId: string, fromId: string, toId: string) {
   const { contacts, mePersonId, limit } = await chatContacts(db, treeId, fromId);
   if (!mePersonId) return { ok: false as const, reason: "Revendică-ți întâi fișa din arbore, ca rudele să știe cine scrie." };
   const c = contacts.find((x) => x.userId === toId);

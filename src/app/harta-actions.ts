@@ -5,7 +5,9 @@ import { z } from "zod";
 import { db } from "@/db";
 import { placePin } from "@/db/schema";
 import { currentUser, roleIn, can } from "@/lib/access";
+import { isDemo } from "@/lib/demo";
 import { choicesFor, searchPlaces, type Spot } from "@/lib/places";
+import { answerContact, askContact, DEMO_NO, setTreeDiscoverable } from "@/lib/shared-places";
 
 const UUID = z.string().uuid();
 
@@ -55,4 +57,45 @@ export async function unpinPlace(treeId: string, key: string): Promise<{ ok?: bo
   await db.delete(placePin).where(and(eq(placePin.treeId, treeId), eq(placePin.key, String(key))));
   revalidatePath(`/arbore/${treeId}/harta`);
   return { ok: true };
+}
+
+/** „Arată neamul celor din aceleași sate”: doar proprietarul arborelui îl pornește sau îl oprește. */
+export async function setDiscoverable(treeId: string, on: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const me = await currentUser();
+  if (!me || !UUID.safeParse(treeId).success) return { error: "Intră în cont." };
+  if ((await roleIn(db, treeId, me.id)) !== "owner") return { error: "Doar proprietarul arborelui alege dacă neamul poate fi găsit." };
+  if (on && isDemo(me.email)) return { error: DEMO_NO };
+  await setTreeDiscoverable(db, treeId, !!on);
+  revalidatePath(`/arbore/${treeId}/harta`);
+  return { ok: true };
+}
+
+const Ask = z.object({
+  fromTreeId: z.string().uuid(),
+  toTreeId: z.string().uuid(),
+  placeId: z.string().min(1).max(120),
+  note: z.string().max(500, "Scrie cel mult 500 de caractere.").nullable(),
+});
+
+/** „Cere legătura” cu un neam din același sat; proprietarul lui o vede în Mesaje și o acceptă sau o refuză. */
+export async function requestContact(input: z.input<typeof Ask>): Promise<{ ok?: boolean; error?: string }> {
+  const v = Ask.safeParse(input);
+  if (!v.success) return { error: v.error.issues[0]?.message ?? "Cererea nu e completă." };
+  const me = await currentUser();
+  if (!me) return { error: "Intră în cont." };
+  const res = await askContact(db, me, v.data);
+  if (res.ok) {
+    revalidatePath(`/arbore/${v.data.fromTreeId}/harta`);
+    revalidatePath("/mesaje");
+  }
+  return res;
+}
+
+/** Răspunsul proprietarului la o cerere de legătură (și „Încheie legătura”, mai târziu). */
+export async function answerLink(id: string, accept: boolean): Promise<{ ok?: boolean; error?: string }> {
+  const me = await currentUser();
+  if (!me || !UUID.safeParse(id).success) return { error: "Intră în cont." };
+  const res = await answerContact(db, me.id, id, !!accept);
+  revalidatePath("/mesaje");
+  return res;
 }

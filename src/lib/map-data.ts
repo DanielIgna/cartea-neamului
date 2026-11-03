@@ -14,7 +14,9 @@ export type MapPlace = Omit<Spot, "id"> & {
 export type MapMissing = { key: string; text: string; country: string | null; people: { id: string; kind: MapKind }[] };
 export type MapPerson = { id: string; name: string; years: string; sex: "M" | "F" | "U"; living: boolean };
 export type MapRoute = { from: string; to: string; people: string[] };
-export type TreeMap = { places: MapPlace[]; missing: MapMissing[]; people: Record<string, MapPerson>; routes: MapRoute[] };
+/** Un sat al strămoșilor, cum îl văd celelalte neamuri (doar cei decedați: câți, anii și numele de familie). */
+export type SharedPlace = { placeId: string; area: string | null; name: string; detail: string | null; people: number; fromYear: number | null; toYear: number | null; surnames: string };
+export type TreeMap = { places: MapPlace[]; missing: MapMissing[]; people: Record<string, MapPerson>; routes: MapRoute[]; shared: SharedPlace[] };
 
 /**
  * Locurile unui arbore, cu oamenii lor: unde s-au născut, unde au murit și, pentru cei în viață, unde locuiesc acum.
@@ -70,6 +72,28 @@ export async function loadTreeMap(db: Db, treeId: string): Promise<TreeMap> {
     r.people.push(pid);
     routes.set(`${k.born}>${to}`, r);
   }
+  // Ce pot vedea alte neamuri: doar satele celor decedați (nașterea și moartea lor), niciodată ale celor în viață.
+  const dead = new Map(rows.filter((p) => !p.living).map((p) => [p.id, {
+    surnames: [p.surname, p.birthSurname].map((x) => x?.trim()).filter((x): x is string => !!x),
+    years: [parseFuzzyDate(p.birthDateText).year, parseFuzzyDate(p.deathDateText).year].filter((y): y is number => !!y),
+  }]));
+  const shared = new Map<string, { s: Spot; who: Set<string>; years: number[]; names: Map<string, number> }>();
+  for (const m of marks) {
+    const s = spots.get(m.key), who = dead.get(m.pid);
+    if (!s || !who || s.how === "country" || s.id.startsWith("pin:")) continue;
+    const x = shared.get(s.id) ?? { s, who: new Set<string>(), years: [], names: new Map<string, number>() };
+    if (!x.who.has(m.pid)) {
+      x.who.add(m.pid);
+      x.years.push(...who.years);
+      for (const n of who.surnames) x.names.set(n, (x.names.get(n) ?? 0) + 1);
+    }
+    shared.set(s.id, x);
+  }
+  const sharedRows: SharedPlace[] = [...shared.values()].map(({ s, who, years, names }) => ({
+    placeId: s.id, area: s.area ?? null, name: s.name, detail: s.detail, people: who.size,
+    fromYear: years.length ? Math.min(...years) : null, toYear: years.length ? Math.max(...years) : null,
+    surnames: [...names.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([n]) => n).join(", "),
+  }));
   const byCount = <T extends { people: unknown[] }>(a: T, b: T) => b.people.length - a.people.length;
-  return { places: [...places.values()].sort(byCount), missing: [...missing.values()].sort(byCount), people, routes: [...routes.values()] };
+  return { places: [...places.values()].sort(byCount), missing: [...missing.values()].sort(byCount), people, routes: [...routes.values()], shared: sharedRows };
 }

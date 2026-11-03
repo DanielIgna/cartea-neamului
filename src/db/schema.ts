@@ -63,6 +63,8 @@ export const tree = pgTable("tree", {
   rootPersonId: uuid("root_person_id"),
   // Până la ce grad de rudenie își pot scrie mesaje membrii arborelui (soții pot oricând). Îl alege proprietarul.
   chatMaxDegree: integer("chat_max_degree").notNull().default(4),
+  // Neamul poate fi găsit de alte familii cu strămoși din aceleași sate (doar satele, numele de familie și anii celor decedați).
+  discoverable: boolean("discoverable").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -232,3 +234,33 @@ export const placePin = pgTable("place_pin", {
   createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [uniqueIndex("place_pin_key").on(t.treeId, t.key)]);
+
+/* ---------- Din aceleași locuri ---------- */
+// Satele strămoșilor fiecărui arbore (doar cei decedați), recalculate când se schimbă fișele sau harta.
+// După ele își găsesc neamurile cu rădăcini în același sat, dacă amândouă au ales să poată fi găsite.
+export const treePlace = pgTable("tree_place", {
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  placeId: text("place_id").notNull(), // „RO:55455” (cod SIRUTA) sau orașul din străinătate
+  area: text("area"), // comuna, pentru satele din România („CJ:sancraiu”): neamuri din satele vecine
+  name: text("name").notNull(),
+  detail: text("detail"),
+  people: integer("people").notNull(),
+  fromYear: integer("from_year"),
+  toYear: integer("to_year"),
+  surnames: text("surnames").notNull().default(""),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("tree_place_pk").on(t.treeId, t.placeId), index("tree_place_place_idx").on(t.placeId), index("tree_place_area_idx").on(t.area)]);
+
+// „Cere legătura”: cineva dintr-un neam scrie proprietarului altui neam cu rădăcini în același sat. După „Acceptă”, își pot scrie.
+export const placeContact = pgTable("place_contact", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  fromUserId: text("from_user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  fromTreeId: uuid("from_tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  toTreeId: uuid("to_tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  toUserId: text("to_user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  place: text("place").notNull(),
+  note: text("note"),
+  status: text("status").notNull().default("pending"), // pending / accepted / declined
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  answeredAt: timestamp("answered_at"),
+}, (t) => [uniqueIndex("place_contact_pair").on(t.fromUserId, t.toTreeId), index("place_contact_to_idx").on(t.toUserId, t.status)]);

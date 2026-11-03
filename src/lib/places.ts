@@ -17,10 +17,11 @@ export type Spot = {
   group: string; // județul (în România) sau țara: după el grupăm lista de locuri
   how: "found" | "guess" | "pin" | "country"; // găsit sigur / ales dintre mai multe cu același nume / pus de mână / doar țara
   choices?: number;
+  area?: string; // comuna, pentru satele din România („CJ:sancraiu”)
 };
 
-type Entry = { name: string; lat: number; lng: number; cc: string; group: string; detail: string; id: string; prior: number; county?: string; commune?: string; keys: string[] };
-type Index = { entries: Entry[]; byKey: Map<string, Entry[]> };
+type Entry = { name: string; lat: number; lng: number; cc: string; group: string; detail: string; id: string; prior: number; county?: string; commune?: string; area?: string; keys: string[] };
+type Index = { entries: Entry[]; byKey: Map<string, Entry[]>; byId: Map<string, Entry> };
 
 function add(map: Map<string, Entry[]>, key: string, e: Entry) {
   const list = map.get(key);
@@ -71,6 +72,7 @@ function roIndex(): Index {
   const communes = COMMUNES.split("\n").map((l) => { const [name, county, kind, pop] = l.split("\t"); return { name: name.replace(/^Municipiul /, ""), county, kind, pop: Number(pop) }; });
   const entries: Entry[] = [];
   const byKey = new Map<string, Entry[]>();
+  const byId = new Map<string, Entry>();
   for (const line of PLACES.split("\n")) {
     const [name, lng, lat, ci, flag, code] = line.split("\t");
     const c = communes[Number(ci)];
@@ -80,14 +82,17 @@ function roIndex(): Index {
     const where = c.county === "B" ? "capitala" : `jud. ${COUNTIES[c.county] ?? c.county}`;
     const detail = c.county === "B" ? "capitala" : own ? `${word}, ${where}` : `${short} ${c.name}, ${where}`;
     const keys = [...new Set([plainPlace(name), plainPlaceOld(name)])];
-    const e: Entry = { name, lat: Number(lat), lng: Number(lng), cc: "RO", group: COUNTIES[c.county] ?? c.county, detail, id: `RO:${code}`, prior: seat ? c.pop : Math.max(c.pop / 8, 30), county: c.county, commune: plainPlace(c.name), keys };
+    const commune = plainPlace(c.name);
+    const e: Entry = { name, lat: Number(lat), lng: Number(lng), cc: "RO", group: COUNTIES[c.county] ?? c.county, detail, id: `RO:${code}`,
+      prior: seat ? c.pop : Math.max(c.pop / 8, 30), county: c.county, commune, area: `${c.county}:${commune}`, keys };
     entries.push(e);
+    if (!byId.has(e.id) || flag !== "2") byId.set(e.id, e);
     for (const k of keys) add(byKey, k, e);
   }
   for (const [alias, target, county] of RO_ALIASES) {
     for (const e of byKey.get(plainPlace(target)) ?? []) if (e.county === county) { add(byKey, plainPlace(alias), e); e.keys.push(plainPlace(alias)); }
   }
-  return (ro = { entries, byKey });
+  return (ro = { entries, byKey, byId });
 }
 
 const WORLD: Record<string, () => Promise<{ REGIONS: string; PLACES: string }>> = {
@@ -132,7 +137,7 @@ function worldIndex(cc: string): Promise<Index> | null {
           if (e.prior < 1000) { e.prior = 1000; e.name = alias; }
         }
       }
-      return { entries, byKey };
+      return { entries, byKey, byId: new Map(entries.map((e) => [e.id, e])) };
     });
     world.set(cc, p);
   }
@@ -143,7 +148,13 @@ async function indexFor(cc: string): Promise<Index | null> {
   return cc === "RO" ? roIndex() : await (worldIndex(cc) ?? Promise.resolve(null));
 }
 
-const spot = (e: Entry, how: Spot["how"], choices?: number): Spot => ({ id: e.id, name: e.name, detail: e.detail, lat: e.lat, lng: e.lng, cc: e.cc, group: e.group, how, ...(choices ? { choices } : {}) });
+const spot = (e: Entry, how: Spot["how"], choices?: number): Spot => ({ id: e.id, name: e.name, detail: e.detail, lat: e.lat, lng: e.lng, cc: e.cc, group: e.group, how,
+  ...(choices ? { choices } : {}), ...(e.area ? { area: e.area } : {}) });
+
+/** Comuna unui sat din România după codul lui („RO:59470” → „CJ:sancraiu”), pentru locurile alese de mână din listă. */
+export function areaOf(placeId: string | null | undefined): string | undefined {
+  return placeId?.startsWith("RO:") ? roIndex().byId.get(placeId)?.area : undefined;
+}
 
 /** Toate locurile care s-ar putea potrivi cu ce scrie în fișă; dacă nu găsim localitatea, poate măcar țara. */
 export async function candidates(text: string, country: string | null): Promise<{ list: Entry[]; approx: string | null }> {
@@ -199,7 +210,8 @@ export async function resolvePlaces(refs: PlaceRef[], pins: Pin[] = []): Promise
       // Grupul (județul sau țara) îl scoatem din descriere: „com. Urmeniș, jud. Bistrița-Năsăud” → Bistrița-Năsăud.
       const group = cc === "RO" ? pin.detail?.match(/jud\. (.+)$/)?.[1] ?? (pin.detail === "capitala" ? "București" : "România")
         : COUNTRY_NAMES[cc] ?? "Puse de mână pe hartă";
-      out.set(ref.key, { id: pin.placeId ?? `pin:${ref.key}`, name: pin.name, detail: pin.detail ?? "pus de mână pe hartă", lat: pin.lat, lng: pin.lng, cc, group, how: "pin" });
+      const area = areaOf(pin.placeId);
+      out.set(ref.key, { id: pin.placeId ?? `pin:${ref.key}`, name: pin.name, detail: pin.detail ?? "pus de mână pe hartă", lat: pin.lat, lng: pin.lng, cc, group, how: "pin", ...(area ? { area } : {}) });
       sure.push({ cc: pin.placeId?.split(":")[0] ?? "RO", lat: pin.lat, lng: pin.lng, w: ref.weight });
       continue;
     }

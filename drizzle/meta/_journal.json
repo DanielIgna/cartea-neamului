@@ -43,6 +43,13 @@
       "when": 1793673336710,
       "tag": "0005_harta",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793674769544,
+      "tag": "0006_aceleasi_locuri",
+      "breakpoints": true
     }
   ]
 }

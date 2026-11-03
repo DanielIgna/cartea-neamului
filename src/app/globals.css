@@ -202,3 +202,19 @@ a{color:var(--accent)}
 .suggest button:hover{border-color:var(--accent)}
 .suggest small{display:block;color:var(--muted)}
 .mapbox .leaflet-tooltip-top:not(.map-label)::before{border-top-color:var(--surface)}
+
+/* Din aceleași locuri */
+.place-row .also{margin-left:6px;font-size:12px;color:var(--accent);font-weight:700;white-space:nowrap}
+.nearby .match{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface)}
+.nearby .match ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.nearby .match li{margin:2px 0}
+.nearby .ask{display:grid;gap:8px;margin-top:8px}
+.nearby .ask label{display:grid;gap:4px;font-size:14px}
+.nearby .ask select,.nearby .ask textarea{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--surface);color:inherit;font:inherit}
+.nearby .ask textarea{min-height:70px;resize:vertical}
+.share-preview{font-size:14px;margin:0 0 6px}
+.share-preview summary{cursor:pointer;color:var(--accent)}
+.share-preview ul{margin:6px 0 0;padding-left:18px}
+.link-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.link-row .who{flex:1;min-width:200px}
+.link-row small{display:block;color:var(--muted)}

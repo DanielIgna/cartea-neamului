@@ -8,6 +8,7 @@ import { writeGedcom } from "../src/lib/gedcom";
 import { demoGedcom } from "../src/lib/demo-data";
 import { importGedcom } from "../src/lib/gedcom-db";
 import { syncDemo } from "../src/lib/demo-sync";
+import { DEMO_EMAIL } from "../src/lib/demo";
 
 await runMigrations(db);
 const ged = writeGedcom(demoGedcom(), { source: "Neamul Pop din Ieud (exemplu)" });
@@ -19,7 +20,7 @@ if (existing.length) {
   console.log("Arborele de exemplu există deja:", existing[0].id, added ? `· am adăugat ${added} persoane noi din exemplu` : "");
   process.exit(0);
 }
-const DEMO_EMAIL = "demo@cartea-neamului.ro", DEMO_PASS = "demo-parola-123";
+const DEMO_PASS = "demo-parola-123";
 let [demo] = await db.select().from(user).where(eq(user.email, DEMO_EMAIL));
 if (!demo) demo = (await auth.api.signUpEmail({ body: { email: DEMO_EMAIL, password: DEMO_PASS, name: "Andrei Pop (demo)" } })).user as typeof demo;
 const [t] = await db.insert(tree).values({ name: "Neamul Pop din Ieud", region: "Maramureș", ownerId: demo.id }).returning();
