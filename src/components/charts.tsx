@@ -2,32 +2,15 @@
 import type { PersonView } from "@/lib/tree-data";
 import type { DescNode } from "@/lib/family";
 import { clip, lifeDates, years } from "@/lib/person-text";
+import { arc, fanRadii, fillFor, genOf } from "@/lib/fan-geometry";
 export type { DescNode };
-// Textele („1898–1967”, scurtarea numelor) stau în lib, ca să le poată folosi și paginile de pe server (profilul, cartea).
-export { clip, years };
+// Textele („1898–1967”, scurtarea numelor) și geometria evantaiului stau în lib, ca să le poată folosi și paginile de pe server (profilul, cartea).
+export { clip, years, fanRadii, fillFor, genOf };
 
 export type Slots = Record<number, PersonView>;
 type Props = { slots: Slots; selected: number; onSelect: (n: number) => void; onCenter: (id: string) => void; generations?: number };
 
-export const genOf = (n: number) => Math.floor(Math.log2(n));
-const side = (n: number) => (genOf(n) < 1 ? null : n >> (genOf(n) - 1) === 2 ? "pat" : "mat");
-export const fillFor = (n: number) => (genOf(n) === 0 ? "var(--accent-soft)" : `var(--${side(n)}-${Math.min(genOf(n), 4)})`);
-
-function arc(r1: number, r2: number, a1: number, a2: number, cx: number, cy: number) {
-  const pt = (r: number, a: number) => [cx + r * Math.cos((a * Math.PI) / 180), cy + r * Math.sin((a * Math.PI) / 180)];
-  const [x1, y1] = pt(r2, a1), [x2, y2] = pt(r2, a2), [x3, y3] = pt(r1, a2), [x4, y4] = pt(r1, a1);
-  const lg = a2 - a1 > 180 ? 1 : 0;
-  return `M${x1} ${y1}A${r2} ${r2} 0 ${lg} 1 ${x2} ${y2}L${x3} ${y3}A${r1} ${r1} 0 ${lg} 0 ${x4} ${y4}Z`;
-}
-
 const keyAct = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
-
-/** Razele inelelor: primele 4 generații late, cu nume întregi; cele vechi tot mai înguste, cu text de-a lungul razei. */
-export function fanRadii(generations: number) {
-  const R = [0, 72, 148, 214, 276, 340];
-  for (let g = 5; g <= generations; g++) R[g + 1] = R[g] + (g <= 6 ? 74 : 64);
-  return R.slice(0, generations + 2);
-}
 
 /** Evantai: generațiile pe inele concentrice, 240°, tatăl în stânga, mama în dreapta. */
 export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
@@ -123,7 +106,7 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
             {p ? (
               <>
                 <text x={x + 10} y={y - 3} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 22)}</text>
-                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(/\d\.\d/.test(lifeDates(p)) ? lifeDates(p) : `${years(p)}${p.birthPlace ? ` · ${p.birthPlace}` : ""}`, 26)}</text>
+                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(/\d\.\d/.test(lifeDates(p)) ? lifeDates(p) : [years(p), p.birthPlace].filter(Boolean).join(" · "), 26)}</text>
               </>
             ) : <text x={x + 10} y={y + 4} fill="var(--muted)" fontSize={12}>+ adaugă</text>}
           </g>

@@ -6,9 +6,9 @@ import { parseFuzzyDate } from "./dates";
  * Stau aici, nu în desene: o funcție dintr-un fișier „use client” nu poate fi chemată de pe server.
  */
 
-/** „1898–1967”, „cca. 1870–?”, „1988” pentru cei în viață. */
+/** „1898–1967”, „cca. 1870–?”, „1988” pentru cei în viață; nimic pentru cei în viață fără an de naștere (sau cu datele ascunse, în carte). */
 export const years = (p?: Pick<PersonView, "approx" | "birthYear" | "deathYear" | "living">) =>
-  !p ? "" : `${p.approx ? "cca. " : ""}${p.birthYear ?? "?"}${p.deathYear ? `–${p.deathYear}` : p.living ? "" : "–?"}`;
+  !p || (p.living && !p.birthYear && !p.deathYear) ? "" : `${p.approx ? "cca. " : ""}${p.birthYear ?? "?"}${p.deathYear ? `–${p.deathYear}` : p.living ? "" : "–?"}`;
 
 /**
  * O dată, scurt, cu ziua și luna când se știu: „12 martie 1932”, „12.03.1932” și „12 MAR 1932” devin „12.03.1932”;

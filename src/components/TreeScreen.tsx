@@ -177,6 +177,8 @@ export default function TreeScreen(props: Props) {
         <div className="card">
           <div className="toolbar" style={{ marginBottom: 0 }}>
             <div className="title" style={{ fontSize: 17 }}>{treeName} · {Object.keys(people).length} persoane</div>
+            {/* Legătură obișnuită, nu <Link>: cartea se așază pe pagini într-un document proaspăt. */}
+            <a className="btn primary" href={`/arbore/${treeId}/carte?p=${centerId}`}>Cartea neamului</a>
             <Link className="btn" href={`/arbore/${treeId}/harta`}>Harta neamului</Link>
             <Link className="btn" href={`/arbore/${treeId}/cronologie`}>Cronologie</Link>
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
