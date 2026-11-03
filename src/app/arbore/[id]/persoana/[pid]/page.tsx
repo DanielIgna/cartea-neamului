@@ -8,7 +8,7 @@ import { requireUser, roleIn, can } from "@/lib/access";
 import { buildGraph, family, kinship, romanDegree } from "@/lib/kinship";
 import { canMessage } from "@/lib/chat";
 import { storageConfigured } from "@/lib/storage";
-import { years } from "@/lib/person-text";
+import { lifeDates, years } from "@/lib/person-text";
 import { Avatar } from "@/components/Album";
 import ProfileAlbum from "@/components/ProfileAlbum";
 import { raisedLinks } from "@/lib/raised";
@@ -55,7 +55,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
           <Avatar p={p} size={128} />
           <div>
             <h2>{p.name}</h2>
-            <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{years(p)}{where(p.birthPlace, p.birthCountry) ? ` · n. ${where(p.birthPlace, p.birthCountry)}` : ""}
+            <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}{where(p.birthPlace, p.birthCountry) ? ` · n. ${where(p.birthPlace, p.birthCountry)}` : ""}
               {p.living && (p.residencePlace || p.residenceCountry) ? ` · locuiește în ${where(p.residencePlace, p.residenceCountry) || p.residenceCountry}` : ""}</div>
             <div className="chips">
               {p.living ? <span className="chip priv">în viață · vizibil doar în acest arbore</span> : <span className="chip">în amintirea familiei</span>}
