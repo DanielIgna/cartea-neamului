@@ -264,3 +264,26 @@ export const placeContact = pgTable("place_contact", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   answeredAt: timestamp("answered_at"),
 }, (t) => [uniqueIndex("place_contact_pair").on(t.fromUserId, t.toTreeId), index("place_contact_to_idx").on(t.toUserId, t.status)]);
+
+/* ---------- Intrarea în arbore după nume și data nașterii ---------- */
+// Cine își face cont scrie numele și data nașterii și își găsește fișa, trecută deja de o rudă într-un arbore.
+// Proprietarul arborelui confirmă că e chiar el; atunci intră în arbore, cu fișa lui revendicată.
+export const joinRequest = pgTable("join_request", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  note: text("note"),
+  status: text("status").notNull().default("pending"), // pending / accepted / declined
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  answeredAt: timestamp("answered_at"),
+}, (t) => [uniqueIndex("join_request_pair").on(t.userId, t.personId), index("join_request_tree_idx").on(t.treeId, t.status)]);
+
+// Fiecare căutare rămâne scrisă, ca data nașterii cuiva să nu poată fi ghicită încercând zi după zi.
+export const joinAttempt = pgTable("join_attempt", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  nameKey: text("name_key").notNull(), // numele de familie căutat, fără diacritice
+  found: boolean("found").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("join_attempt_user_idx").on(t.userId, t.createdAt), index("join_attempt_name_idx").on(t.nameKey, t.createdAt)]);

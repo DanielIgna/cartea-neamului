@@ -12,6 +12,7 @@ import UserMenu from "@/components/UserMenu";
 import { db } from "@/db";
 import { unreadCount } from "@/lib/chat";
 import { pendingContacts } from "@/lib/shared-places";
+import { pendingJoins } from "@/lib/join";
 import ThemeSwitch from "@/components/ThemeSwitch";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
@@ -21,8 +22,8 @@ export const metadata: Metadata = { title: "Cartea Neamului", description: "Arbo
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
-  // Pe „Mesaje”: mesajele necitite plus cererile de legătură „Din aceleași locuri” care așteaptă răspuns.
-  const unread = me ? (await unreadCount(db, me.id).catch(() => 0)) + (await pendingContacts(db, me.id).catch(() => 0)) : 0;
+  // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
+  const unread = me ? (await Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0)))).reduce((a, b) => a + b, 0) : 0;
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
   return (
     <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
