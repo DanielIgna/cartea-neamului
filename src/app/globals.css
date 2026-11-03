@@ -249,3 +249,30 @@ a{color:var(--accent)}
 .link-row small{display:block;color:var(--muted)}
 .join-list{margin:12px 0 0;padding-left:18px;font-size:14px}
 .join-list li{margin:3px 0}
+
+/* Cartea neamului: alegerile deasupra; pe ecran, paginile ca foi albe una sub alta; la tipar, doar paginile, fără restul site-ului */
+.book-options{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-end}
+.book-options label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.book-options select{max-width:min(320px,80vw);padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.book-options fieldset{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+.book-options legend{font-size:14px;color:var(--muted);padding:0;margin-bottom:4px;width:100%}
+.book-options label.inline{display:inline-flex;align-items:center;gap:6px;color:var(--ink);font-size:15px}
+.book-text summary{cursor:pointer;font-weight:700}
+.book-text-form{display:grid;gap:10px;margin-top:12px;max-width:760px}
+.book-text-form label{display:grid;gap:4px;font-size:14px;color:var(--muted)}
+.book-text-form input,.book-text-form textarea{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);font:inherit}
+.book-text-form .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.book-status{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;position:sticky;top:0;z-index:5}
+.book-stage{overflow-x:auto;overflow-y:hidden;padding:4px 0 24px}
+.book-pages.busy{height:0;overflow:hidden}
+@media screen{
+  .book-pages .pagedjs_pages{display:flex;flex-direction:column;align-items:center;gap:18px}
+  .book-pages .pagedjs_page{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18),0 8px 22px rgba(0,0,0,.10)}
+}
+@media print{
+  body:has(.book-pages){padding:0!important;background:#fff!important}
+  body:has(.book-pages) header.top,.book-chrome,.book-source{display:none!important}
+  body:has(.book-pages) .wrap,.book-root,.book-stage,.book-pages,.book-target{display:contents!important}
+  /* după ultima pagină nu mai vine nimic: fără o foaie albă la final */
+  .book-pages .pagedjs_page:last-child{break-after:auto!important;page-break-after:auto!important}
+}

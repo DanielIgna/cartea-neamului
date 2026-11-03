@@ -37,8 +37,8 @@ export function childrenByUnion(g: Graph, drawn: (id: string) => boolean, id: st
 /** Numele fără diacritice și fără majuscule, ca „Onița”, „Oniţa” și „Onita” să fie același nume. */
 export const normName = (s: string | null | undefined) => (s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 const firstName = (s: string) => normName(s).split(/[\s-]+/)[0] ?? "";
-/** Părinții fără nume puși automat („Tată necunoscut”, „Mamă necunoscută”) nu sunt dubluri unii ai altora. */
-const placeholder = (given: string) => /^(tata|mama) necunoscut|^necunoscut/.test(normName(given));
+/** Părinții fără nume puși automat („Tată necunoscut”, „Mamă necunoscută”): nu sunt dubluri unii ai altora și nu primesc fișă în carte. */
+export const isPlaceholder = (given: string) => /^(tata|mama) necunoscut|^necunoscut/.test(normName(given));
 
 export type Lookalike = { id: string; givenName: string; surname: string; birthSurname: string | null; sex: Sex; birthYear: number | null };
 
@@ -46,7 +46,7 @@ export type Lookalike = { id: string; givenName: string; surname: string; birthS
 export function sameLooking(a: Lookalike, b: Lookalike) {
   if (a.sex !== "U" && b.sex !== "U" && a.sex !== b.sex) return false;
   const fa = firstName(a.givenName);
-  if (!fa || fa !== firstName(b.givenName) || placeholder(a.givenName) || placeholder(b.givenName)) return false;
+  if (!fa || fa !== firstName(b.givenName) || isPlaceholder(a.givenName) || isPlaceholder(b.givenName)) return false;
   const sa = normName(a.surname), sb = normName(b.surname);
   const surnames = !sa || !sb || sa === sb || sa === normName(b.birthSurname) || sb === normName(a.birthSurname);
   return surnames && (a.birthYear === null || b.birthYear === null || Math.abs(a.birthYear - b.birthYear) <= 3);
