@@ -49,6 +49,17 @@ const ADDITIVE = [
     "created_at" timestamp DEFAULT now() NOT NULL, "answered_at" timestamp)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "place_contact_pair" ON "place_contact" ("from_user_id","to_tree_id")`,
   sql`CREATE INDEX IF NOT EXISTS "place_contact_to_idx" ON "place_contact" ("to_user_id","status")`,
+  sql`CREATE TABLE IF NOT EXISTS "join_attempt" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade,
+    "name_key" text NOT NULL, "found" boolean DEFAULT false NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "join_request" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade,
+    "tree_id" uuid NOT NULL REFERENCES "tree"("id") ON DELETE cascade, "person_id" uuid NOT NULL REFERENCES "person"("id") ON DELETE cascade,
+    "note" text, "status" text DEFAULT 'pending' NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL, "answered_at" timestamp)`,
+  sql`CREATE INDEX IF NOT EXISTS "join_attempt_user_idx" ON "join_attempt" ("user_id","created_at")`,
+  sql`CREATE INDEX IF NOT EXISTS "join_attempt_name_idx" ON "join_attempt" ("name_key","created_at")`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "join_request_pair" ON "join_request" ("user_id","person_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "join_request_tree_idx" ON "join_request" ("tree_id","status")`,
 ];
 
 export async function applySchema(target: Db) {

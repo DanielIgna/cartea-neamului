@@ -10,6 +10,7 @@ import ChatLimit from "@/components/ChatLimit";
 import LinkAnswer from "@/components/LinkAnswer";
 import { roleIn } from "@/lib/access";
 import { myLinks } from "@/lib/shared-places";
+import { joinRequestsFor } from "@/lib/join";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,7 @@ export default async function Inbox() {
   const me = await requireUser("/mesaje");
   const trees = await db.select({ id: tree.id, name: tree.name }).from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, me.id));
   const links = await myLinks(db, me.id);
+  const joins = await joinRequestsFor(db, me.id);
   // Conversațiile „Din aceleași locuri” stau în arborele celui care a acceptat, poate unul din care nu fac parte.
   const convs = await inbox(db, me.id, [...new Set([...trees.map((t) => t.id), ...links.filter((l) => l.status === "accepted").map((l) => l.treeId)])]);
   const sections = await Promise.all(trees.map(async (t) => ({ t, owner: (await roleIn(db, t.id, me.id)) === "owner", ...(await chatContacts(db, t.id, me.id)) })));
@@ -27,6 +29,24 @@ export default async function Inbox() {
         <h2 style={{ marginTop: 0 }}>Mesaje între rude</h2>
         <p className="muted" style={{ margin: 0 }}>Poți scrie rudelor care și-au revendicat fișa în același arbore, până la gradul de rudenie ales de proprietarul arborelui. Soții își pot scrie oricând.</p>
       </div>
+      {joins.length > 0 && (
+        <div className="card">
+          <div className="section-label" style={{ marginTop: 0 }}>Cereri de intrare în arbore</div>
+          <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>Cineva și-a găsit fișa în arborele tău după nume și data nașterii. Dacă e chiar el, după „Acceptă” intră în arbore, fișa devine a lui și își poate adăuga rudele.</p>
+          <div className="stack" style={{ gap: 8 }}>
+            {joins.map((j) => (
+              <div key={j.id} className="link-row">
+                <span className="who">
+                  <b>{j.name}</b> spune că e <Link href={`/arbore/${j.treeId}?p=${j.personId}`}>{j.personName}</Link>{j.born ? `, născut(ă) ${j.born}` : ""}
+                  <small>{j.treeName} · contul {j.email}</small>
+                  {j.note && <span className="notes" style={{ display: "block" }}>{j.note}</span>}
+                </span>
+                <LinkAnswer id={j.id} mode="ask" kind="join" />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {links.length > 0 && (
         <div className="card">
           <div className="section-label" style={{ marginTop: 0 }}>Din aceleași locuri</div>

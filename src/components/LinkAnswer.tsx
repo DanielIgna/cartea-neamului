@@ -2,16 +2,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { answerLink } from "@/app/harta-actions";
+import { answerJoinRequest } from "@/app/join-actions";
 
-/** Răspunsul la o cerere „Din aceleași locuri”: Acceptă / Refuză, „Încheie legătura” sau „Acceptă totuși”. */
-export default function LinkAnswer({ id, mode }: { id: string; mode: "ask" | "end" | "undo" }) {
+/**
+ * Răspunsul la o cerere: „Din aceleași locuri” (Acceptă / Refuză, „Încheie legătura”, „Acceptă totuși”)
+ * sau intrarea cuiva în arbore după nume și data nașterii (Acceptă / Refuză).
+ */
+export default function LinkAnswer({ id, mode, kind = "place" }: { id: string; mode: "ask" | "end" | "undo"; kind?: "place" | "join" }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [sure, setSure] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   async function answer(accept: boolean) {
     setBusy(true); setErr(null);
-    const res = await answerLink(id, accept);
+    const res = kind === "join" ? await answerJoinRequest(id, accept) : await answerLink(id, accept);
     setBusy(false);
     if (res.error) setErr(res.error); else router.refresh();
   }

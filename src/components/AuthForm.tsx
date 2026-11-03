@@ -29,7 +29,8 @@ export default function AuthForm({ next, startWithSignUp }: { next: string; star
   }
 
   return (
-    <form onSubmit={submit} className="form">
+    // method="post": dacă cineva apasă înainte să se încarce pagina, parola nu ajunge în bara de adrese.
+    <form onSubmit={submit} method="post" className="form">
       <h2 style={{ fontSize: 24 }}>{signUp ? "Cont nou" : "Intră în cont"}</h2>
       {signUp && <label>Numele tău<input id="name" name="name" required autoComplete="name" /></label>}
       <label>Email<input id="email" name="email" type="email" required autoComplete="email" /></label>

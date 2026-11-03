@@ -78,13 +78,14 @@ export default function PersonForm(props: Props) {
       </div>
       <datalist id="tari">{COUNTRIES.map((c) => <option key={c} value={c} />)}</datalist>
       <div className="row">
-        <label>Născut(ă)<input name="birth" placeholder="1902 sau cca. 1870" defaultValue={p?.birthText ?? ""} /></label>
+        <label>Născut(ă)<input name="birth" placeholder="12.03.1985, 1902 sau cca. 1870" defaultValue={p?.birthText ?? ""} /></label>
         <label>Locul nașterii<input name="birthPlace" placeholder="sat, comună sau oraș" defaultValue={p?.birthPlace ?? ""} /></label>
         <label>Țara<input name="birthCountry" list="tari" defaultValue={countryHint} /></label>
       </div>
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
         <input type="checkbox" name="living" checked={living} onChange={(e) => setLiving(e.target.checked)} /> Persoana e în viață (rămâne privată în arbore)
       </label>
+      {living && <small className="muted" style={{ marginTop: -6 }}>Cu data completă a nașterii (ziua, luna, anul), persoana își poate găsi singură fișa când își face cont, iar tu confirmi că e ea.</small>}
       {living ? (
         <div className="row">
           <label>Locuiește acum în<input name="residencePlace" placeholder="ex. Huedin, Cluj-Napoca, Torino" defaultValue={p?.residencePlace ?? ""} /></label>
