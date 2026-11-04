@@ -196,7 +196,8 @@ export type Pin = { key: string; placeId: string | null; name: string; detail: s
 /**
  * Pune pe hartă toate locurile unui arbore deodată. Când un nume e purtat de mai multe sate („Valea Mare” sunt 50),
  * alegem satul cel mai probabil: aproape de celelalte locuri ale neamului și, la egalitate, cel mai mare.
- * Ce a ales omul de mână (Pin) are întâietate.
+ * Ce a ales omul de mână (Pin) are întâietate. Locurile cu greutatea 0 (cele ale amintirilor) se caută la fel,
+ * dar nu mută mijlocul neamului.
  */
 export async function resolvePlaces(refs: PlaceRef[], pins: Pin[] = []): Promise<Map<string, Spot | null>> {
   const byPin = new Map(pins.map((p) => [p.key, p]));
@@ -212,13 +213,13 @@ export async function resolvePlaces(refs: PlaceRef[], pins: Pin[] = []): Promise
         : COUNTRY_NAMES[cc] ?? "Puse de mână pe hartă";
       const area = areaOf(pin.placeId);
       out.set(ref.key, { id: pin.placeId ?? `pin:${ref.key}`, name: pin.name, detail: pin.detail ?? "pus de mână pe hartă", lat: pin.lat, lng: pin.lng, cc, group, how: "pin", ...(area ? { area } : {}) });
-      sure.push({ cc: pin.placeId?.split(":")[0] ?? "RO", lat: pin.lat, lng: pin.lng, w: ref.weight });
+      if (ref.weight > 0) sure.push({ cc: pin.placeId?.split(":")[0] ?? "RO", lat: pin.lat, lng: pin.lng, w: ref.weight });
       continue;
     }
     const { list, approx } = await candidates(ref.text, ref.country);
     if (list.length === 1) {
       out.set(ref.key, spot(list[0], "found"));
-      sure.push({ cc: list[0].cc, lat: list[0].lat, lng: list[0].lng, w: ref.weight });
+      if (ref.weight > 0) sure.push({ cc: list[0].cc, lat: list[0].lat, lng: list[0].lng, w: ref.weight });
     } else if (list.length > 1) pending.push({ ref, list });
     else if (approx && COUNTRY_CENTER[approx]) {
       const [lat, lng] = COUNTRY_CENTER[approx];
