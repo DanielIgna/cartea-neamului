@@ -1,6 +1,6 @@
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 import type { Db } from "@/db";
-import { bookExport, documentLink, invitation, person, raisedBy, relationship, tree } from "@/db/schema";
+import { bookExport, documentLink, invitation, memory, memoryMention, memoryQuestion, person, raisedBy, relationship, tree } from "@/db/schema";
 import { isPlaceholder } from "./family";
 
 type Person = typeof person.$inferSelect;
@@ -78,6 +78,18 @@ export async function mergeInto(db: Db, treeId: string, keepId: string, dropId: 
       const childId = r.childId === dropId ? keepId : r.childId, carerId = r.carerId === dropId ? keepId : r.carerId;
       if (childId !== carerId) await tx.insert(raisedBy).values({ ...r, childId, carerId }).onConflictDoNothing();
     }
+    // Lada cu amintiri: amintirile, întrebările și pomenirile dublei trec la fișa păstrată, ca ștergerea dublei să nu le ia cu ea.
+    await tx.update(memory).set({ personId: keepId }).where(and(eq(memory.treeId, treeId), eq(memory.personId, dropId)));
+    await tx.update(memoryQuestion).set({ personId: keepId }).where(and(eq(memoryQuestion.treeId, treeId), eq(memoryQuestion.personId, dropId)));
+    const named = new Set((await tx.select({ m: memoryMention.memoryId }).from(memoryMention).where(eq(memoryMention.personId, keepId))).map((x) => x.m));
+    for (const x of await tx.select().from(memoryMention).where(eq(memoryMention.personId, dropId))) {
+      const where = and(eq(memoryMention.memoryId, x.memoryId), eq(memoryMention.personId, dropId));
+      if (named.has(x.memoryId)) await tx.delete(memoryMention).where(where);
+      else { await tx.update(memoryMention).set({ personId: keepId }).where(where); named.add(x.memoryId); }
+    }
+    // O amintire ajunsă în lada omului nu-l mai pomenește pe el însuși.
+    await tx.delete(memoryMention).where(and(eq(memoryMention.personId, keepId),
+      inArray(memoryMention.memoryId, tx.select({ id: memory.id }).from(memory).where(eq(memory.personId, keepId)))));
     await tx.update(tree).set({ rootPersonId: keepId }).where(and(eq(tree.id, treeId), eq(tree.rootPersonId, dropId)));
     await tx.update(invitation).set({ personId: keepId }).where(and(eq(invitation.treeId, treeId), eq(invitation.personId, dropId)));
     await tx.update(bookExport).set({ centerPersonId: keepId }).where(and(eq(bookExport.treeId, treeId), eq(bookExport.centerPersonId, dropId)));

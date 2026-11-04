@@ -386,3 +386,58 @@ body:has(.story){overflow:hidden}
 .meter-fill.warn{background:var(--ochre)}
 .meter-fill.bad{background:var(--red)}
 .err-msg{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:4px 0 0;color:var(--ink)}
+
+/* Glasul la amintiri: înregistrarea din telefon, ascultarea pe profil și în poveste */
+.voice{display:grid;gap:6px}
+.voice-idle{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.voice-file{font-size:14px}
+.voice-live{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center}
+.voice-dot{width:14px;height:14px;border-radius:50%;background:var(--red);animation:voice-pulse 1.1s ease-in-out infinite}
+@keyframes voice-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+.voice-clock{font-variant-numeric:tabular-nums;font-weight:700;font-size:18px}
+.voice-clock small{font-weight:400;color:var(--muted);font-size:13px}
+.voice-done{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.voice-done audio,.voice-row audio{max-width:100%;height:40px}
+.voice-tools{display:flex;gap:12px;font-size:14px}
+.voice-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 2px}
+.voice.big .voice-idle{flex-direction:column;align-items:center}
+.voice-rec{display:grid;justify-items:center;gap:10px;border:0;background:none;cursor:pointer;color:inherit;font:inherit;font-size:18px;font-weight:700;padding:4px}
+.voice-rec-dot{width:96px;height:96px;border-radius:50%;background:#c0392b;box-shadow:0 0 0 8px rgba(192,57,43,.15),0 6px 18px rgba(0,0,0,.18)}
+.voice.big .voice-live{justify-content:center;font-size:20px}
+.voice.big .voice-dot{width:22px;height:22px}
+.voice.big .voice-clock{font-size:30px}
+.voice.big .voice-stop{font-size:20px;padding:10px 22px}
+.voice.big .voice-done{justify-content:center}
+.helper-call{margin-top:14px;border:1px dashed var(--ochre);border-radius:12px;padding:12px 14px;background:var(--ochre-soft);font-size:15px}
+.story-audio{width:100%;margin:6px 0 10px}
+@media (prefers-reduced-motion:reduce){.voice-dot{animation:none}}
+
+/* Modul „la bunici”: un ecran întreg, cu litere mari și puține butoane, ca să-l poată folosi oricine */
+body:has(.grand){overflow:hidden}
+.grand{position:fixed;inset:0;z-index:80;background:#120e09;display:flex;justify-content:center;color:#2b2116}
+.grand-frame{width:100%;max-width:640px;height:100vh;height:100dvh;display:flex;flex-direction:column;background:#f6eedf}
+.grand-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 10px 6px 18px;padding-top:max(10px, env(safe-area-inset-top, 0px));font-weight:700;font-size:15px}
+.grand-top a{font-size:32px;line-height:1;text-decoration:none;color:inherit;padding:2px 10px}
+.grand-body{flex:1;min-height:0;overflow-y:auto;padding:10px 22px 22px;padding-bottom:max(22px, env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:14px}
+.grand-body.center{justify-content:center;align-items:center;text-align:center}
+.grand-body h1{font-family:var(--display);font-size:34px;line-height:1.15;margin:0}
+.grand-body p{font-size:19px;line-height:1.5;margin:0}
+.grand-kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8a5a1f;font-weight:700}
+.grand-q{font-family:var(--display);font-size:clamp(28px,7vw,40px)!important;line-height:1.25!important;font-weight:700}
+.grand-small{font-size:15px!important;color:#6b5a45}
+.grand-box{border:1px solid #d9c9ad;border-radius:12px;padding:12px 14px;background:#fffaf0;display:grid;gap:8px}
+.grand-choices{margin:0}
+.grand-choices legend{font-weight:700;padding:0 4px;font-size:17px}
+.grand-choices label,.grand-check{display:flex;gap:10px;align-items:center;font-size:18px}
+.grand-choices input,.grand-check input{width:22px;height:22px}
+.grand-actions{margin-top:4px}
+.grand .btn{font-size:18px;padding:10px 18px;background:#fff;border-color:#d9c9ad;color:#2b2116}
+.grand .btn.primary{background:#8a5a1f;border-color:#8a5a1f;color:#fff}
+.grand .grand-go{font-size:20px;padding:12px 26px}
+.grand-type{align-self:center;font-size:17px;color:#8a5a1f}
+.grand-text{width:100%;border:1px solid #d9c9ad;border-radius:12px;padding:12px;font:inherit;font-size:19px;background:#fff;color:#2b2116;min-height:120px;resize:vertical}
+.grand .err{font-size:17px}
+.grand .avatar{border:3px solid #fff;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.grand .linklike{color:#8a5a1f}
+.grand audio{max-width:100%}
+.grand .btn:disabled{opacity:.45;cursor:default}

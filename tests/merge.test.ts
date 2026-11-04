@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { and, eq } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
-import { tree, person, relationship, document, documentLink } from "@/db/schema";
+import { tree, person, relationship, document, documentLink, memory, memoryMention, memoryQuestion } from "@/db/schema";
 import { mergeInto, mergedFields } from "@/lib/merge";
 import { buildGraph } from "@/lib/kinship";
 import { likelyDuplicates } from "@/lib/family";
@@ -29,6 +29,14 @@ beforeAll(async () => {
   const [doc] = await db.insert(document).values({ treeId, kind: "photo", title: "Onița la nuntă" }).returning();
   await db.insert(documentLink).values({ documentId: doc.id, personId: ids.onita2 });
   await db.update(tree).set({ rootPersonId: ids.onita2 }).where(eq(tree.id, treeId));
+  // Lada: o amintire în lada dublei, una a lui Gavril care le pomenește pe amândouă și o întrebare lăsată dublei.
+  const [m1] = await db.insert(memory).values({ treeId, personId: ids.onita2, body: "Nunta din 1929" }).returning();
+  const [m2] = await db.insert(memory).values({ treeId, personId: ids.gavril, body: "Cu Onița la târg" }).returning();
+  const [m3] = await db.insert(memory).values({ treeId, personId: ids.c1, body: "Mama ne cânta seara" }).returning();
+  ids.m1 = m1.id; ids.m2 = m2.id; ids.m3 = m3.id;
+  await db.insert(memoryMention).values([{ memoryId: m2.id, personId: ids.onita1 }, { memoryId: m2.id, personId: ids.onita2, hidden: true },
+    { memoryId: m3.id, personId: ids.onita2 }, { memoryId: m1.id, personId: ids.gavril }]);
+  await db.insert(memoryQuestion).values({ treeId, personId: ids.onita2, text: "Cum era la nunta voastră?" });
 });
 
 async function graph() {
@@ -46,6 +54,13 @@ describe("o persoană trecută de două ori", () => {
 
   it("se unește într-o singură fișă, cu toți cei 11 copii, o singură căsătorie și datele din amândouă", async () => {
     await mergeInto(db, treeId, ids.onita1, ids.onita2);
+    // Amintirile, pomenirile și întrebările dublei nu se pierd.
+    expect((await db.select().from(memory).where(eq(memory.id, ids.m1)))[0]?.personId).toBe(ids.onita1);
+    const mentions = await db.select().from(memoryMention);
+    expect(mentions.filter((x) => x.memoryId === ids.m2).map((x) => x.personId)).toEqual([ids.onita1]);
+    expect(mentions.filter((x) => x.memoryId === ids.m3).map((x) => x.personId)).toEqual([ids.onita1]);
+    expect(mentions.filter((x) => x.memoryId === ids.m1).map((x) => x.personId)).toEqual([ids.gavril]);
+    expect((await db.select().from(memoryQuestion))[0].personId).toBe(ids.onita1);
     const { people, g } = await graph();
     expect(people.find((p) => p.id === ids.onita2)).toBeUndefined();
     const onita = people.find((p) => p.id === ids.onita1)!;

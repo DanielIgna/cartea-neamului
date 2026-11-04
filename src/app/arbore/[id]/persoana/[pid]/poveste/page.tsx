@@ -34,6 +34,7 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const story = (m: MemoryView, from: boolean): StoryMemory => ({
     id: m.id, title: m.title, question: m.question, body: m.body, when: [m.whenText, m.place].filter(Boolean).join(" · "), photoId: m.photoId,
     mentions: m.mentions.filter((x) => x.personId !== pid).map((x) => name(x.personId)).filter(Boolean), from: from ? m.author?.name ?? null : null, replies: m.replies.length,
+    audioId: m.audioId, audioSeconds: m.audioSeconds, recordedBy: m.helper && !from ? m.author?.name ?? null : null,
   });
   const own = lada.own.filter((m) => m.visibility !== "private");
   const about = lada.about.filter((m) => !m.mentions.some((x) => x.personId === pid && x.hidden)).sort(order);

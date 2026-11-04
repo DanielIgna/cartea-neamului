@@ -93,6 +93,12 @@ const ADDITIVE = [
   sql`CREATE INDEX IF NOT EXISTS "memory_mention_person_idx" ON "memory_mention" ("person_id")`,
   sql`CREATE INDEX IF NOT EXISTS "memory_question_person_idx" ON "memory_question" ("person_id")`,
   sql`CREATE INDEX IF NOT EXISTS "memory_reply_memory_idx" ON "memory_reply" ("memory_id")`,
+  // Pasul 2 al lăzii: glasul și modul „la bunici”.
+  sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "audio_document_id" uuid REFERENCES "document"("id") ON DELETE set null`,
+  sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "audio_seconds" integer`,
+  sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "helper" boolean DEFAULT false NOT NULL`,
+  sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_at" timestamp`,
+  sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_document_id" uuid REFERENCES "document"("id") ON DELETE set null`,
 ];
 
 export async function applySchema(target: Db) {

@@ -5,6 +5,7 @@ import type { Rel } from "./kinship";
 import { fetchAncestorRows, toAhnentafel } from "./ancestry";
 import { parseFuzzyDate } from "./dates";
 import { raisedIn, type Raised } from "./raised";
+import { memoryMediaIds } from "./lada-db";
 
 export type PersonView = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: "M" | "F" | "U";
@@ -58,10 +59,12 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   const relRows: Rel[] = (await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB, start: relationship.startText, created: relationship.createdAt })
     .from(relationship).where(eq(relationship.treeId, treeId))).map((r) => ({ ...r, created: r.created.getTime() }));
   const ids = rows.map((p) => p.id);
-  const links = ids.length
+  // Pozele și glasul puse la amintiri nu intră în album (le deschide doar cine vede amintirea).
+  const media = await memoryMediaIds(db, treeId);
+  const links = (ids.length
     ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey, description: document.description, mimeType: document.mimeType })
         .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
-    : [];
+    : []).filter((l) => !media.has(l.id));
   // Cine și-a revendicat fișa poate avea poză în cont (din Google): o arătăm când fișa nu are poză încărcată.
   const claimers = [...new Set(rows.map((p) => p.claimedByUserId).filter((u): u is string => !!u))];
   const images = new Map(claimers.length ? (await db.select({ id: user.id, image: user.image }).from(user).where(inArray(user.id, claimers))).map((u) => [u.id, safeAccountImage(u.image)]) : []);

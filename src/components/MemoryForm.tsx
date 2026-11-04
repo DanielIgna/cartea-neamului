@@ -5,6 +5,7 @@ import { CHAPTERS, type Chapter } from "@/lib/questions";
 import type { Visibility } from "@/lib/lada";
 import type { MemoryView } from "@/lib/lada-db";
 import { shrinkPhoto } from "./PhotoPick";
+import VoiceRecorder, { clock, uploadForMemory, type Voice } from "./VoiceRecorder";
 
 export type PersonOption = { id: string; name: string; years: string };
 export type Draft = { question?: string | null; questionKey?: string | null; askedId?: string | null; askedByName?: string | null; chapter?: Chapter; mentions?: string[] };
@@ -23,6 +24,8 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
   const [visibility, setVisibility] = useState<Visibility>(edit?.visibility ?? (draft?.askedId ? "asker" : "tree"));
   const [photo, setPhoto] = useState<File | null>(null);
   const [keepPhoto, setKeepPhoto] = useState(!!edit?.photoId);
+  const [voice, setVoice] = useState<Voice | null>(null);
+  const [keepAudio, setKeepAudio] = useState(!!edit?.audioId);
   const fileRef = useRef<HTMLInputElement>(null);
   const question = edit?.question ?? draft?.question ?? null;
   const askedId = edit?.askedId ?? draft?.askedId ?? null;
@@ -31,26 +34,28 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
 
   const submit = (form: FormData) => start(async () => {
     setErr(null);
+    const body = String(form.get("body") ?? "").trim();
+    if (!body && !voice && !keepAudio) return setErr("Scrie amintirea sau spune-o cu glasul.");
+    const label = String(form.get("title") ?? "").trim() || body.slice(0, 60) || ownerName;
     let photoId = keepPhoto ? edit?.photoId ?? null : null;
     if (photo) {
       const small = await shrinkPhoto(photo);
-      const up = new FormData();
-      up.set("personId", ownerId);
-      up.set("kind", "photo");
-      up.set("forMemory", "on");
-      const title = String(form.get("title") ?? "").trim() || String(form.get("body") ?? "").trim().slice(0, 60);
-      up.set("title", `Amintire: ${title || ownerName}`.slice(0, 200));
-      up.set("file", small, small.name);
-      const res = await fetch(`/api/arbore/${treeId}/documente`, { method: "POST", body: up });
-      const json = (await res.json().catch(() => ({}))) as { id?: string; error?: string };
-      if (!res.ok || !json.id) return setErr(json.error ?? "Poza nu s-a încărcat. Încearcă din nou sau salvează fără poză.");
-      photoId = json.id;
+      const r = await uploadForMemory(treeId, ownerId, small, small.name, "photo", `Amintire: ${label}`);
+      if (r.error) return setErr(r.error);
+      photoId = r.id!;
+    }
+    let audioId = keepAudio ? edit?.audioId ?? null : null, audioSeconds = keepAudio ? edit?.audioSeconds ?? null : null;
+    if (voice) {
+      const r = await uploadForMemory(treeId, ownerId, voice.blob, voice.name, "audio", `Glas: ${label}`);
+      if (r.error) return setErr(r.error);
+      audioId = r.id!;
+      audioSeconds = voice.seconds || null;
     }
     const r = await saveMemory({
       treeId, personId: ownerId, id: edit?.id, chapter: String(form.get("chapter")) as Chapter,
       question, questionKey: edit?.questionKey ?? draft?.questionKey ?? null, askedId,
       title: String(form.get("title") ?? ""), body: String(form.get("body") ?? ""), whenText: String(form.get("whenText") ?? ""), place: String(form.get("place") ?? ""),
-      photoId, visibility, maxDegree: visibility === "close" ? Number(form.get("maxDegree")) || defaultDegree : null, inBook: form.get("inBook") === "on", mentions,
+      photoId, audioId, audioSeconds, visibility, maxDegree: visibility === "close" ? Number(form.get("maxDegree")) || defaultDegree : null, inBook: form.get("inBook") === "on", mentions,
     });
     if (r.error) return setErr(r.error);
     onDone(edit ? "Amintirea a fost schimbată." : visibility === "private" ? "Am pus amintirea în ladă, ca ciornă: doar tu o vezi." : "Am pus amintirea în ladă.");
@@ -62,10 +67,21 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
       <label><span>Titlu <span className="muted">(dacă vrei)</span></span>
         <input name="title" maxLength={160} defaultValue={edit?.title ?? ""} placeholder="De pildă: Iarna cu zăpada până la streașină" />
       </label>
-      <label>Amintirea
-        <textarea name="body" required rows={7} maxLength={20000} defaultValue={edit?.body ?? ""}
+      <label><span>Amintirea {storage && <span className="muted">(scrisă, spusă cu glasul sau amândouă)</span>}</span>
+        <textarea name="body" rows={7} maxLength={20000} defaultValue={edit?.body ?? ""}
           placeholder="Povestește cum a fost: unde erai, cine era acolo, ce s-a întâmplat, ce ai simțit…" />
       </label>
+      {storage && (
+        keepAudio && edit?.audioId && !voice ? (
+          <div className="voice">
+            <div className="voice-done">
+              <audio controls preload="none" src={`/api/document/${edit.audioId}`} />
+              {edit.audioSeconds ? <span className="muted">{clock(edit.audioSeconds)}</span> : null}
+              <span className="voice-tools"><button type="button" className="linklike" onClick={() => setKeepAudio(false)}>Schimbă sau scoate înregistrarea</button></span>
+            </div>
+          </div>
+        ) : <VoiceRecorder value={voice} onChange={setVoice} label="Spune-o cu glasul" />
+      )}
       <div className="row">
         <label>Capitol
           <select name="chapter" defaultValue={edit?.chapter ?? draft?.chapter ?? "altele"}>
@@ -118,7 +134,7 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
       <label className="radio"><input type="checkbox" name="inBook" defaultChecked={edit?.inBook ?? false} /> Poate intra în Cartea neamului</label>
       {err && <p className="err" role="alert">{err}</p>}
       <div className="actions" style={{ marginTop: 0 }}>
-        <button className="btn primary" disabled={pending}>{pending ? (photo ? "Se încarcă poza…" : "Se salvează…") : edit ? "Salvează schimbarea" : "Pune amintirea în ladă"}</button>
+        <button className="btn primary" disabled={pending}>{pending ? (voice ? "Se încarcă glasul…" : photo ? "Se încarcă poza…" : "Se salvează…") : edit ? "Salvează schimbarea" : "Pune amintirea în ladă"}</button>
         <button type="button" className="btn" disabled={pending} onClick={onCancel}>Renunță</button>
       </div>
     </form>
