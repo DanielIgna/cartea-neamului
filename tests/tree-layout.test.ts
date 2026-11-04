@@ -131,11 +131,20 @@ describe("cele două spițe", () => {
     expect(twinParts(g2, drawn, "copil")).toBeNull();
   });
 
-  it("un „Tată necunoscut” fără părinți nu e rădăcina spiței: se merge pe linia mamei", () => {
+  it("spița urcă doar din tată în tată: nu trece pe la o femeie, iar un „Tată necunoscut” fără părinți nu e rădăcină", () => {
     const g3 = buildGraph([{ id: "f", sex: "F" }, { id: "tata", sex: "M" }, { id: "mama", sex: "F" }, { id: "bunic", sex: "M" }],
       [{ type: "parent_child", a: "tata", b: "f" }, { type: "parent_child", a: "mama", b: "f" }, { type: "parent_child", a: "bunic", b: "mama" }]);
     expect(lineRoot(g3, "f")).toBe("tata");
-    expect(lineRoot(g3, "f", (id) => id === "tata")).toBe("bunic");
+    expect(lineRoot(g3, "f", (id) => id === "tata")).toBe("f");
+    // Tatăl lui Avram nu e legat de el, doar mama Ana: spița lui Avram se oprește la el, nu urcă la tatăl Anei.
+    const g4 = buildGraph([{ id: "avram", sex: "M" }, { id: "ana", sex: "F" }, { id: "iosif", sex: "M" }, { id: "floarea", sex: "F" }],
+      [{ type: "parent_child", a: "ana", b: "avram" }, { type: "parent_child", a: "iosif", b: "ana" }, { type: "parent_child", a: "iosif", b: "floarea" }]);
+    expect(lineRoot(g4, "avram")).toBe("avram");
+    expect(lineRoot(g4, "floarea")).toBe("iosif");
+    // Dintre doi tați trecuți, urcăm prin cel cu strămoși.
+    const g5 = buildGraph([{ id: "c", sex: "M" }, { id: "dublu", sex: "M" }, { id: "real", sex: "M" }, { id: "marjel", sex: "M" }],
+      [{ type: "parent_child", a: "dublu", b: "c" }, { type: "parent_child", a: "real", b: "c" }, { type: "parent_child", a: "marjel", b: "real" }]);
+    expect(lineRoot(g5, "c")).toBe("marjel");
   });
 
   it("așezarea: trunchiurile se unesc în părinți, fiecare om apare o dată și nicio familie nu calcă peste alta", () => {

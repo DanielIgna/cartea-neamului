@@ -184,16 +184,17 @@ function without(d: DescNode, drawn: Set<string>): DescNode {
 }
 
 /**
- * Cel mai vechi strămoș pe linia tatălui, pentru rădăcina implicită a unei spițe. Un părinte trecut doar ca loc gol
- * („Tată necunoscut”), fără părinți la rândul lui, nu e o rădăcină bună: atunci linia merge mai departe pe la mamă.
+ * Cel mai vechi strămoș pe linia bărbătească: spița urcă doar din tată în tată, și la tatăl tău, și la mama ta (prin tatăl ei).
+ * Nu trece niciodată pe la o femeie: fără tată legat, spița se oprește acolo, iar cine vrea alt strămoș îl alege din „Trunchiul”.
+ * Un „Tată necunoscut” fără părinți nu e o rădăcină bună; dintre doi tați trecuți, urcăm prin cel cu strămoși.
  */
 export function lineRoot(g: Graph, id: string, placeholder: (id: string) => boolean = () => false) {
   let cur = id;
   const seen = new Set([id]);
   for (;;) {
-    const ps = (g.parents.get(cur) ?? []).filter((p) => !seen.has(p) && !(placeholder(p) && !(g.parents.get(p) ?? []).length));
-    if (!ps.length) return cur;
-    cur = ps.find((p) => g.sex.get(p) === "M") ?? ps[0];
+    const dads = (g.parents.get(cur) ?? []).filter((p) => g.sex.get(p) === "M" && !seen.has(p) && !(placeholder(p) && !(g.parents.get(p) ?? []).length));
+    if (!dads.length) return cur;
+    cur = dads.find((p) => (g.parents.get(p) ?? []).length) ?? dads[0];
     seen.add(cur);
   }
 }

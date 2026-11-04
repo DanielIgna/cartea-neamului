@@ -217,16 +217,20 @@ export function relativesByDegree(g: Graph, ego: string) {
   return { byDegree, affinity };
 }
 
-/** Linia de urcare spre cel mai vechi strămoș cunoscut: întâi pe tată, apoi pe orice părinte. */
+/** Cel mai vechi strămoș pe linia bărbătească, din tată în tată. Cine nu are tată trecut pornește din părintele pe care îl are. */
 export function oldestAncestor(g: Graph, id: string) {
-  let cur = id;
-  const seen = new Set([id]);
-  for (;;) {
-    const parents = (g.parents.get(cur) ?? []).filter((p) => !seen.has(p));
-    if (!parents.length) return cur;
-    cur = parents.find((p) => g.sex.get(p) === "M") ?? parents[0];
-    seen.add(cur);
-  }
+  const climb = (from: string) => {
+    let cur = from;
+    const seen = new Set([from]);
+    for (;;) {
+      const dad = (g.parents.get(cur) ?? []).find((p) => g.sex.get(p) === "M" && !seen.has(p));
+      if (!dad) return cur;
+      cur = dad;
+      seen.add(cur);
+    }
+  };
+  const top = climb(id), first = (g.parents.get(id) ?? [])[0];
+  return top === id && first ? climb(first) : top;
 }
 
 /** Toți ascendenții lui `id`, cu generația, cei mai vechi primii. */
