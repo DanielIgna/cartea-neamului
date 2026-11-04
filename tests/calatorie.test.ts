@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { buildGraph, type Rel, type Sex } from "@/lib/kinship";
-import { journeyStops, lineUp, agoWords, yearsWords, type Person } from "@/lib/calatorie";
+import { journeyStops, journeyLegs, quizFor, lineUp, agoWords, yearsWords, type Person } from "@/lib/calatorie";
+import { eventsFor } from "@/lib/vremuri";
 import { parseWord, wordFor, DEFAULT_WORD } from "@/lib/cuvant-final";
 
 /**
@@ -63,6 +64,29 @@ describe("călătoria în timp", () => {
   it("un „Tată necunoscut” fără părinți nu e oprire", () => {
     const g2 = buildGraph(Object.values(people), [...rels, pc("necunoscut", "nicolae")]);
     expect(journeyStops({ g: g2, people, ego: "nicolae", placeholder, now: 2026 }).map((s) => s.id)).not.toContain("necunoscut");
+  });
+
+  it("face popasul din anii comunismului după cel din centru, la intrarea în acei ani", () => {
+    const legs = journeyLegs(stops(), people, 2026);
+    expect(legs.map((l) => (l.kind === "regime" ? "popas" : l.stop.id))).toEqual(["ioan", "popas", "floarea", "avram", "iosif", "gavril", "tataIosif", "marjel"]);
+    expect(legs[1].year).toBe(1962);
+    // Fără nimeni care să fi trăit atunci, nici popas.
+    const old = journeyStops({ g, people, ego: "marjel", placeholder, now: 2026 }).map((s) => ({ ...s, year: 1800 }));
+    expect(journeyLegs(old, { ...people, marjel: { ...people.marjel, birthYear: 1800, deathYear: 1860 } }, 2026).some((l) => l.kind === "regime")).toBe(false);
+  });
+
+  it("jocul: unul din răspunsuri e din viața omului, celelalte nu; aceeași întrebare de fiecare dată", () => {
+    const avram = stops().find((s) => s.id === "avram")!;
+    const evs = eventsFor({ area: "ardeal", county: "CJ" });
+    const q = quizFor(avram, people.avram, evs, 2026)!;
+    expect(q.options).toHaveLength(3);
+    const right = evs.find((e) => e.text === q.options[q.answer])!;
+    expect(right.year >= 1930 && right.year <= 2008).toBe(true);
+    for (const [i, o] of q.options.entries()) if (i !== q.answer) {
+      const e = evs.find((x) => x.text === o)!;
+      expect((e.to ?? e.year) < 1930 || e.year > 2008).toBe(true);
+    }
+    expect(quizFor(avram, people.avram, evs, 2026)).toEqual(q);
   });
 
   it("vorbe pentru ani", () => {

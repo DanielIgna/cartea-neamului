@@ -5,7 +5,7 @@
  */
 import { isAncestor } from "./family";
 import { kinship, type Graph, type Sex } from "./kinship";
-import { storyFor, type Origin, type Story } from "./vremuri";
+import { storyFor, type HistEvent, type Origin, type Story } from "./vremuri";
 
 export type Line = "ego" | "father" | "mother";
 export type Person = { id: string; givenName: string; name: string; sex: Sex; birthSurname?: string | null; birthYear: number | null; deathYear: number | null; living: boolean; discreet?: boolean };
@@ -130,4 +130,50 @@ export function yearsWords(n: number) {
   if (n <= 0) return "nou-născut";
   if (n === 1) return "un an";
   return n % 100 === 0 || n % 100 >= 20 ? `${n} de ani` : `${n} ani`;
+}
+
+/** Anii comunismului în România: nava face un popas când drumul trece prin ei. */
+export const REGIME = { from: 1947, to: 1989 };
+export type Leg = { kind: "person"; year: number; stop: Stop } | { kind: "regime"; year: number };
+
+/**
+ * Drumul navei: opririle la oameni, plus popasul „Anii minciunii și ai fricii” când cineva de pe drum a trăit în anii comunismului.
+ * Popasul vine după cel din centru, la intrarea în acei ani (1989, venind dinspre prezent) sau la anul opririi de dinainte, dacă e mai vechi.
+ */
+export function journeyLegs(stops: Stop[], people: Record<string, Person>, now = new Date().getFullYear()): Leg[] {
+  const legs: Leg[] = stops.map((stop) => ({ kind: "person", year: stop.year, stop }));
+  const lived = stops.some((s) => {
+    const p = people[s.id];
+    const end = p?.deathYear ?? (p?.living ? now : s.year + MAX_LIFE);
+    return s.year <= REGIME.to && end >= REGIME.from;
+  });
+  if (!lived) return legs;
+  let at = legs.findIndex((l, i) => i > 0 && l.year <= REGIME.to);
+  if (at < 0) at = legs.length;
+  at = Math.max(1, at);
+  legs.splice(at, 0, { kind: "regime", year: Math.min(REGIME.to, legs[at - 1]?.year ?? REGIME.to) });
+  return legs;
+}
+
+/** Un număr mic din id, ca întrebarea și răspunsurile să fie mereu aceleași pentru același om. */
+const seed = (id: string) => [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+export type Quiz = { question: string; options: string[]; answer: number; year: number };
+
+/**
+ * Jocul de la fiecare oprire: „Pe care dintre acestea a apucat-o?” Una din ce a trăit omul și două din afara vieții lui,
+ * din același ținut. Când nu sunt destule, nu punem întrebare.
+ */
+export function quizFor(stop: Stop, p: Person, events: HistEvent[], now = new Date().getFullYear()): Quiz | null {
+  const s = stop.story;
+  const inLife = s?.lived.filter((l) => !l.ongoing).sort((a, b) => (b.event.weight ?? 1) - (a.event.weight ?? 1))[0]?.event;
+  if (!s || !inLife) return null;
+  const end = p.deathYear ?? (p.living ? now : Math.min(now, stop.year + 75));
+  const outside = events.filter((e) => (e.to ?? e.year) < stop.year || e.year > end);
+  if (outside.length < 2) return null;
+  const k = seed(p.id);
+  const a = outside[k % outside.length], b = outside[(k + 1 + (k % (outside.length - 1))) % outside.length];
+  if (a === b) return null;
+  const answer = k % 3, options = [a.text, b.text];
+  options.splice(answer, 0, inLife.text);
+  return { question: `Pe care dintre acestea a apucat-o ${p.givenName || p.name}?`, options, answer, year: inLife.year };
 }

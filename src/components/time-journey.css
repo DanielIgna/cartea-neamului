@@ -65,3 +65,14 @@
 .cockpit.warp .streaks{opacity:1;animation:streaks .35s linear infinite}
 @keyframes streaks{from{background-position:0 23px,40px 71px}to{background-position:180px 23px,300px 71px}}
 @media (prefers-reduced-motion:reduce){.cockpit .streaks{display:none}}
+.time-road i.regime{background:var(--red);border-radius:2px}
+.journey-card.line-regime{border-left:5px solid var(--red)}
+.journey-verse,.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--ochre);background:var(--ochre-soft);border-radius:0 10px 10px 0}
+.journey-verse p{margin:0;font-family:var(--display);font-size:18px}
+.journey-verse cite{display:block;margin-top:4px;font-style:normal;font-weight:700;font-size:14px;color:var(--muted)}
+.journey-quiz{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:10px;background:var(--surface-2)}
+.quiz-options{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.quiz-options .btn{text-align:left;font:inherit;cursor:pointer}
+.quiz-options .btn:disabled{cursor:default}
+.quiz-options .btn.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 15%,var(--surface));font-weight:600}
+.quiz-options .btn.wrong{border-color:var(--red);text-decoration:line-through;opacity:.8}

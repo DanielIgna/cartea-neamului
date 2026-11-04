@@ -4,12 +4,13 @@ import Link from "next/link";
 import { buildGraph, type Rel } from "@/lib/kinship";
 import { isPlaceholder } from "@/lib/family";
 import { lineRoot } from "@/lib/tree-layout";
-import { journeyStops, agoWords, yearsWords, type Stop } from "@/lib/calatorie";
+import { journeyStops, journeyLegs, quizFor, agoWords, yearsWords, type Stop, type Quiz } from "@/lib/calatorie";
+import { REGIME_TEXT, READ_JOHN } from "@/lib/calatorie-popas";
 import { parseWord, wordFor } from "@/lib/cuvant-final";
 import { lifeDates } from "@/lib/person-text";
 import type { PersonView } from "@/lib/tree-data";
 import type { Origin } from "@/lib/vremuri";
-import { ageWords } from "@/lib/vremuri";
+import { ageWords, eventsFor } from "@/lib/vremuri";
 import { setJourneyWord } from "@/app/calatorie-actions";
 import { originFor, bornLine, eraYears, toneColor, TONE_LABEL } from "./TimesStory";
 import "./time-journey.css";
@@ -43,7 +44,16 @@ export default function TimeJourney(props: Props) {
   // Cuvântul de la final: al proprietarului, cel de bază sau deloc. Se schimbă pe loc după ce proprietarul îl salvează.
   const [stored, setStored] = useState(props.word);
   const word = wordFor(stored);
-  const last = stops.length; // indexul „dincolo de timp”
+  // Drumul: opririle la oameni și popasul din anii comunismului.
+  const legs = useMemo(() => journeyLegs(stops, people, now), [stops, people, now]);
+  const last = legs.length; // indexul „dincolo de timp”
+  // Jocul: la fiecare oprire, o întrebare; răspunsurile bune adună „file de istorie”.
+  const quizzes = useMemo(() => new Map(stops.flatMap((st) => {
+    const q = quizFor(st, people[st.id], eventsFor(st.story?.origin ?? null), now);
+    return q ? [[st.id, q] as const] : [];
+  })), [stops, people, now]);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const pages = [...quizzes].filter(([id, q]) => answers[id] === q.answer).length;
   const [idx, setIdx] = useState(-1);
   const ego = people[centerId];
 
@@ -58,7 +68,7 @@ export default function TimeJourney(props: Props) {
   const oldest = stops.length > 1 ? stops[stops.length - 1] : null;
 
   // Anul de pe ecranul navei se derulează spre anul opririi; cu „mișcare redusă” sare direct.
-  const targetYear = idx < 0 ? now : idx >= last ? null : stops[idx].year;
+  const targetYear = idx < 0 ? now : idx >= last ? null : legs[idx].year;
   const [shown, setShown] = useState<number | null>(now);
   const [warp, setWarp] = useState(false);
   const from = useRef<number>(now);
@@ -102,15 +112,17 @@ export default function TimeJourney(props: Props) {
     document.querySelector(".time-road button.on")?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
   }, [idx]);
 
-  const stop = idx >= 0 && idx < last ? stops[idx] : null;
+  const leg = idx >= 0 && idx < last ? legs[idx] : null;
+  const stop = leg?.kind === "person" ? leg.stop : null;
   const p = stop ? people[stop.id] : null;
-  const dest = idx < 0 ? `Azi, ${now}` : stop && p ? `${p.name}${stop.relation ? `, ${stop.relation}` : ""}` : "Dincolo de timp";
+  const dest = idx < 0 ? `Azi, ${now}` : stop && p ? `${p.name}${stop.relation ? `, ${stop.relation}` : ""}` : leg ? `Popas: ${REGIME_TEXT.title.toLowerCase()}` : "Dincolo de timp";
 
   return (
     <div className="journey">
       <div className="card">
         <div className="toolbar" style={{ marginBottom: 0 }}>
           <div className="title">Călătoria în timp · {treeName}</div>
+          {quizzes.size > 0 && <span className="muted" title="Răspunsurile bune de la opriri">File de istorie: {pages} din {quizzes.size}</span>}
           <Link className="btn" href={`/arbore/${treeId}?p=${centerId}`}>Înapoi la arbore</Link>
         </div>
       </div>
@@ -128,9 +140,13 @@ export default function TimeJourney(props: Props) {
 
       <nav className="time-road" aria-label="Opririle călătoriei">
         <button className={idx === -1 ? "on" : ""} onClick={() => go(-1)} title="Azi"><i className="ego" /><span>Azi</span></button>
-        {stops.map((s, i) => (
-          <button key={s.id} className={idx === i ? "on" : ""} onClick={() => go(i)} title={`${people[s.id]?.name} · ${s.year}`}>
-            <i className={s.line} /><span>{s.estimated ? `cca. ${s.year}` : s.year}</span>
+        {legs.map((l, i) => l.kind === "person" ? (
+          <button key={l.stop.id} className={idx === i ? "on" : ""} onClick={() => go(i)} title={`${people[l.stop.id]?.name} · ${l.year}`}>
+            <i className={l.stop.line} /><span>{l.stop.estimated ? `cca. ${l.year}` : l.year}</span>
+          </button>
+        ) : (
+          <button key="popas" className={idx === i ? "on" : ""} onClick={() => go(i)} title={`Popas: ${REGIME_TEXT.title}`}>
+            <i className="regime" /><span>popas</span>
           </button>
         ))}
         {word && <button className={idx === last ? "on" : ""} onClick={() => go(last)} title="Dincolo de timp"><i className="beyond" /><span>∞</span></button>}
@@ -161,8 +177,10 @@ export default function TimeJourney(props: Props) {
             </p>
           </div>
         )}
-        {stop && p && <StopCard stop={stop} p={p} people={people} treeId={treeId} lineName={lineName(stop.line)} />}
-        {idx >= last && word && <WordCard text={word} />}
+        {stop && p && <StopCard stop={stop} p={p} people={people} treeId={treeId} lineName={lineName(stop.line)}
+          quiz={quizzes.get(stop.id) ?? null} answered={answers[stop.id]} onAnswer={(a) => setAnswers((x) => (stop.id in x ? x : { ...x, [stop.id]: a }))} />}
+        {leg?.kind === "regime" && <RegimeCard faith={!!word} />}
+        {idx >= last && word && <WordCard text={word} pages={pages} total={quizzes.size} />}
         {!word && idx >= 0 && idx === last - 1 && (
           <div className="card journey-card"><p className="muted" style={{ margin: 0 }}>Aici se oprește ce știm despre neam. Fiecare strămoș trecut în arbore duce nava mai departe în trecut.</p></div>
         )}
@@ -174,7 +192,9 @@ export default function TimeJourney(props: Props) {
   );
 }
 
-function StopCard({ stop, p, people, treeId, lineName }: { stop: Stop; p: PersonView; people: Record<string, PersonView>; treeId: string; lineName: string }) {
+function StopCard({ stop, p, people, treeId, lineName, quiz, answered, onAnswer }: {
+  stop: Stop; p: PersonView; people: Record<string, PersonView>; treeId: string; lineName: string; quiz: Quiz | null; answered: number | undefined; onAnswer: (a: number) => void;
+}) {
   const s = stop.story;
   const bio = (p.biography ?? "").trim();
   return (
@@ -227,19 +247,51 @@ function StopCard({ stop, p, people, treeId, lineName }: { stop: Stop; p: Person
       ) : (
         <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nu știm încă pe nimeni altcineva din familie care să fi trăit atunci. Frații, bunicii și verii trecuți în arbore, cu anul nașterii, apar aici.</p>
       )}
+      {quiz && (
+        <div className="journey-quiz">
+          <div className="times-sub">Jocul opririi</div>
+          <b>{quiz.question}</b>
+          <div className="quiz-options">
+            {quiz.options.map((o, i) => (
+              <button key={o} className={`btn${answered === undefined ? "" : i === quiz.answer ? " right" : i === answered ? " wrong" : ""}`}
+                disabled={answered !== undefined} onClick={() => onAnswer(i)}>{o}</button>
+            ))}
+          </div>
+          {answered !== undefined && <p role="status" style={{ margin: "6px 0 0" }}>{answered === quiz.answer ? "Corect: ai câștigat o filă de istorie." : "Nu chiar."} S-a întâmplat în {quiz.year}.</p>}
+        </div>
+      )}
       <p style={{ margin: "12px 0 0" }}><Link href={`/arbore/${treeId}/persoana/${p.id}`}>Deschide fișa lui {p.givenName || p.name}</Link></p>
     </article>
   );
 }
 
-function WordCard({ text }: { text: string }) {
+/** Popasul din anii comunismului: istoria la vedere; versetul și întrebarea doar când cuvântul de credință e arătat. */
+function RegimeCard({ faith }: { faith: boolean }) {
+  return (
+    <article className="card journey-card line-regime">
+      <div className="stop-head"><span className="line-chip">Popas · {REGIME_TEXT.years}</span></div>
+      <h2>{REGIME_TEXT.title}</h2>
+      {REGIME_TEXT.paragraphs.map((t) => <p key={t} className="times-life">{t}</p>)}
+      {faith && (
+        <>
+          <blockquote className="journey-verse"><p>„{REGIME_TEXT.verse}”</p><cite>{REGIME_TEXT.verseRef}</cite></blockquote>
+          <p style={{ margin: 0, fontWeight: 600 }}>{REGIME_TEXT.question}</p>
+        </>
+      )}
+    </article>
+  );
+}
+
+function WordCard({ text, pages, total }: { text: string; pages: number; total: number }) {
   const blocks = parseWord(text);
   return (
     <article className="card journey-card word">
+      {total > 0 && <p className="muted" style={{ marginTop: 0 }}>Ai adunat {pages} din {total} file de istorie pe drum.</p>}
       {blocks.map((b, i) =>
         b.kind === "title" ? <h2 key={i}>{b.text}</h2>
           : b.kind === "verse" ? <blockquote key={i}><p>„{b.text.replace(/^[„"]|[”"]$/g, "")}”</p>{b.ref && <cite>{b.ref}</cite>}</blockquote>
           : <p key={i}>{b.text}</p>)}
+      <p><a className="btn primary" href={READ_JOHN} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a></p>
       <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Versetele sunt din Biblia tradusă de Dumitru Cornilescu.</p>
     </article>
   );
