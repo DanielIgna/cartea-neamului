@@ -93,16 +93,20 @@ export default function TreeScreen(props: Props) {
   const selectedN = "n" in sel ? sel.n : Number(Object.entries(props.slots).find(([, id]) => id === sel.id)?.[0] ?? 0);
   const chartProps = { slots, selected: selectedN, onSelect: (n: number) => setSel({ n }), onCenter: center, generations };
   const ego = people[centerId];
-  // Trunchiul copacului: implicit cel mai vechi strămoș cunoscut pe linia tatălui; se poate alege oricare ascendent sau chiar persoana din centru.
+  // Trunchiul copacului: implicit cel mai vechi strămoș din tată în tată; fiecare poate alege oricare ascendent sau chiar persoana din centru.
   const ancestors = useMemo(() => ancestorsOf(graph, centerId), [graph, centerId]);
   const egoPath = useMemo(() => new Set(ancestors.map(([id]) => id)), [ancestors]);
-  const trunkId = trunk && egoPath.has(trunk) ? trunk : oldestAncestor(graph, centerId);
+  const placeholder = useMemo(() => (id: string) => isPlaceholder(people[id]?.givenName ?? ""), [people]);
+  const firstLine = useMemo(() => {
+    const top = lineRoot(graph, centerId, placeholder), parent = (graph.parents.get(centerId) ?? []).find((p) => !placeholder(p));
+    return top === centerId && parent ? lineRoot(graph, parent, placeholder) : top;
+  }, [graph, centerId, placeholder]);
+  const trunkId = trunk && egoPath.has(trunk) ? trunk : firstLine;
   // În desene apar soții care nu sunt discreți; copiii celor discreți pornesc doar din părintele din neam.
   const drawn = useMemo(() => (id: string) => !!people[id] && !people[id].discreet, [people]);
   const lineage = useMemo(() => descendants(graph, drawn, trunkId), [graph, drawn, trunkId]);
   const mine = useMemo(() => descendants(graph, drawn, centerId), [graph, drawn, centerId]);
   // Neamul tatălui și neamul mamei, legate prin părinți: fiecare spiță de la strămoșul ei (implicit cel mai vechi pe linia bărbătească).
-  const placeholder = useMemo(() => (id: string) => isPlaceholder(people[id]?.givenName ?? ""), [people]);
   const parts = useMemo(() => twinParts(graph, drawn, centerId, patRoot, matRoot, placeholder), [graph, drawn, centerId, patRoot, matRoot, placeholder]);
   // Pornit singur doar când fiecare părinte are strămoși adevărați (un „Tată necunoscut” fără părinți nu face o spiță).
   const bothSides = !!parts && lineRoot(graph, parts.father, placeholder) !== parts.father && lineRoot(graph, parts.mother, placeholder) !== parts.mother;
@@ -118,11 +122,15 @@ export default function TreeScreen(props: Props) {
   const lineOf = (who: Side) => props.slots[who === "father" ? 2 : 3] as string | undefined;
   const sidesKnown = !!lineOf("father") && !!lineOf("mother");
   const shownSide = ancestorView && sidesKnown ? side : null;
-  const rootOf = (who: Side) => (parts ? (who === "father" ? parts.patRoot : parts.matRoot) : lineOf(who) ? lineRoot(graph, lineOf(who)!, placeholder) : null);
+  const rootOf = (who: Side) => {
+    if (parts) return who === "father" ? parts.patRoot : parts.matRoot;
+    const x = lineOf(who), own = who === "father" ? patRoot : matRoot;
+    return !x ? null : own && (own === x || isAncestor(graph, own, x)) ? own : lineRoot(graph, x, placeholder);
+  };
   const roots = { father: rootOf("father"), mother: rootOf("mother") };
   const named = !!roots.father && !!roots.mother && !!sur(roots.father) && !!sur(roots.mother) && sur(roots.father) !== sur(roots.mother);
   const sideName = (who: Side) => (named ? `Spița ${sur(roots[who]!)}` : who === "father" ? "Spița tatălui" : "Spița mamei");
-  const onLine = (who: Side) => !!parts && !twinOn && (trunkId === parts[who] || isAncestor(graph, trunkId, parts[who]));
+  const onLine = (who: Side) => { const x = parts?.[who] ?? lineOf(who); return !!x && !twinOn && (trunkId === x || isAncestor(graph, trunkId, x)); };
   // În Copac butonul apăsat arată ce e desenat; în celelalte desene, spița aleasă.
   const treeLike = view === "tree" || view === "360";
   const pressed = (who: Side | null) => (view === "360" ? (who ? !twinOn && (side === who || (side === null && onLine(who))) : twinOn)
@@ -130,8 +138,25 @@ export default function TreeScreen(props: Props) {
   const chooseSide = (who: Side | null) => {
     setSide(who);
     if (!who) setTwin(true);
-    else if (parts) { setTwin(false); setTrunk(who === "father" ? parts.patRoot : parts.matRoot); }
+    else if (sidesKnown) { setTwin(false); setTrunk(rootOf(who)); }
   };
+  // De la ce strămoș pornește fiecare spiță e alegerea fiecăruia: o ținem minte pentru cine se uită, de la persoana din centru.
+  const picksKey = `spite:${treeId}:${props.meId}:${centerId}`;
+  const picksLoaded = useRef<string | null>(null);
+  useEffect(() => {
+    if (picksLoaded.current !== picksKey) return;
+    try {
+      if (trunk || patRoot || matRoot || twin !== null || side) localStorage.setItem(picksKey, JSON.stringify({ trunk, patRoot, matRoot, twin, side }));
+      else localStorage.removeItem(picksKey);
+    } catch { /* fără localStorage rămâne alegerea doar până la închiderea paginii */ }
+  }, [picksKey, trunk, patRoot, matRoot, twin, side]);
+  useEffect(() => {
+    let saved: { trunk?: string | null; patRoot?: string | null; matRoot?: string | null; twin?: boolean | null; side?: Side | null } = {};
+    try { saved = JSON.parse(localStorage.getItem(picksKey) ?? "{}") ?? {}; } catch { /* alegerile implicite */ }
+    setTrunk(saved.trunk ?? null); setPatRoot(saved.patRoot ?? null); setMatRoot(saved.matRoot ?? null); setTwin(saved.twin ?? null); setSide(saved.side ?? null);
+    picksLoaded.current = picksKey;
+  }, [picksKey]);
+  const resetPicks = () => { setTrunk(null); setPatRoot(null); setMatRoot(null); setTwin(null); setSide(null); };
   /** Pe ce spiță e un strămoș al persoanei din centru (null pentru ea însăși). */
   const sideOfAncestor = (id: string): Side | null =>
     (["father", "mother"] as const).find((who) => { const x = lineOf(who); return !!x && (id === x || isAncestor(graph, id, x)); }) ?? null;
@@ -140,18 +165,17 @@ export default function TreeScreen(props: Props) {
   const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
   // Unde se rupe o spiță: părintele fără părinți (spița se oprește la el), ori fără tată când tatăl lui pare să fie deja în arbore.
   const cut = useMemo(() => {
-    if (!parts) return [];
     const discreetOf = (id: string) => !!people[id]?.discreet;
     return (["father", "mother"] as const).flatMap((who) => {
-      const x = people[parts[who]];
+      const start = parts?.[who] ?? props.slots[who === "father" ? 2 : 3];
+      if (!start) return [];
+      const top = lineRoot(graph, start, placeholder), x = people[top];
       if (!x) return [];
       const found = parentsFromSiblings(graph, x.id, placeholder, discreetOf).length > 0 || pairs.some((d) => d.keep === x.id || d.drop === x.id);
-      const dad = (graph.parents.get(x.id) ?? []).find((q) => graph.sex.get(q) === "M");
-      const noDad = !dad || (placeholder(dad) && !(graph.parents.get(dad) ?? []).length);
-      const stops = lineRoot(graph, x.id, placeholder) === x.id;
-      return stops || (noDad && found) ? [{ who, x, stops, found }] : [];
+      const hasParents = (graph.parents.get(x.id) ?? []).some((q) => !placeholder(q));
+      return top === start || found || hasParents ? [{ who, x, stops: !hasParents, found }] : [];
     });
-  }, [parts, people, graph, placeholder, pairs]);
+  }, [parts, props.slots, people, graph, placeholder, pairs]);
   // Doi tați (sau două mame) trecuți la același strămoș, ori un părinte fără sex ales: desenul nu știe pe ce parte să-i pună,
   // așa că spunem pe față, cu fișele de deschis, în loc să se încurce spițele pe tăcute.
   const mixups = useMemo(() => {
@@ -210,11 +234,11 @@ export default function TreeScreen(props: Props) {
                 <button aria-pressed={fanDir === "down"} onClick={() => setFanDir("down")}>Urmași</button>
               </div>
             )}
-            {(treeLike ? !!parts : ancestorView && sidesKnown) && (
+            {(treeLike || ancestorView) && sidesKnown && (
               <div className="seg seg-wrap" role="group" aria-label="Spițe">
                 <button aria-pressed={pressed("father")} onClick={() => chooseSide("father")}>{sideName("father")}</button>
                 <button aria-pressed={pressed("mother")} onClick={() => chooseSide("mother")}>{sideName("mother")}</button>
-                <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>
+                {(!treeLike || !!parts) && <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>}
               </div>
             )}
             {twinOn && parts && ([["father", "Neamul tatălui, de la", "tatăl", setPatRoot], ["mother", "Neamul mamei, de la", "mama", setMatRoot]] as const).map(([who, text, self, set]) => (
@@ -228,13 +252,18 @@ export default function TreeScreen(props: Props) {
             ))}
             {showsLineage && !twinOn && (
               <label className="gen-select">Trunchiul
-                <select value={trunkId} onChange={(e) => { setTrunk(e.target.value); setSide(sideOfAncestor(e.target.value)); }}>
+                <select value={trunkId} onChange={(e) => {
+                  const id = e.target.value, on = sideOfAncestor(id);
+                  setTrunk(id); setSide(on);
+                  if (on === "father") setPatRoot(id); else if (on === "mother") setMatRoot(id);
+                }}>
                   {ancestors.map(([id, gen]) => people[id] && (
                     <option key={id} value={id}>{gen === 0 ? `${people[id].name} (de la mine în jos)` : `${people[id].name}${people[id].birthYear ? `, ${people[id].approx ? "cca. " : ""}${people[id].birthYear}` : ""} · gen. ${gen}`}</option>
                   ))}
                 </select>
               </label>
             )}
+            {(patRoot || matRoot) && <button className="btn" onClick={resetPicks}>Spițele din tată în tată</button>}
             {!showsLineage && view !== "hour" && (
               <label className="gen-select">Generații
                 <select value={generations} onChange={(e) => go({ g: e.target.value })}>
@@ -311,9 +340,9 @@ export default function TreeScreen(props: Props) {
             return (
               <p key={who} className="notice" style={{ margin: "10px 0 0" }}>
                 {stops ? <>{x.givenName} nu are încă părinți legați în arbore, așa că spița {side} se oprește la {el}. </>
-                  : <>Tatăl lui {x.givenName} nu e legat de {el} în arbore, așa că spița {side} urcă doar pe linia mamei {ei}. </>}
+                  : <>Tatăl lui {x.givenName} nu e legat de {el} în arbore, așa că spița {side} se oprește la {el}. </>}
                 {found ? <>{stops ? `Părinții ${ei} par să fie deja în arbore` : "Pare să fie deja în arbore"}, la frații {ei} sau într-o a doua fișă a {ei}: {open(`deschide fișa ${ei}`)} și {x.sex === "F" ? "o" : "îl"} legi cu un clic.</>
-                  : <>{open(`Deschide fișa ${ei}`)} ca să-i adaugi părinții.</>}
+                  : <>{open(`Deschide fișa ${ei}`)} ca să-i adaugi {stops ? "părinții" : "tatăl"}.</>}
               </p>
             );
           })}
