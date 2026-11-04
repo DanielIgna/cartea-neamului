@@ -207,7 +207,13 @@ export function twinParts(g: Graph, drawn: (id: string) => boolean, ego: string,
   placeholder: (id: string) => boolean = () => false): TwinParts | null {
   const parents = g.parents.get(ego) ?? [];
   // Cu doi tați trecuți (de pildă și un „Tată necunoscut” rămas pe lângă tatăl adevărat), spița urcă prin cel adevărat.
-  const pick = (sex: string) => { const xs = parents.filter((p) => g.sex.get(p) === sex); return xs.find((p) => !placeholder(p)) ?? xs[0]; };
+  // La fel cu doi tați adevărați (o a doua fișă a lui): întâi cel care e soțul mamei, apoi cel cu strămoși.
+  const pick = (sex: string) => {
+    const xs = parents.filter((p) => g.sex.get(p) === sex);
+    const partnerOfOther = (p: string) => parents.some((q) => q !== p && g.sex.get(q) !== sex && (g.partners.get(p) ?? []).includes(q));
+    const score = (p: string) => (placeholder(p) ? 0 : 4) + (partnerOfOther(p) ? 2 : 0) + ((g.parents.get(p) ?? []).length ? 1 : 0);
+    return [...xs].sort((a, b) => score(b) - score(a))[0];
+  };
   const father = pick("M"), mother = pick("F");
   if (!father || !mother || !drawn(father) || !drawn(mother)) return null;
   const pr = patRoot && (patRoot === father || isAncestor(g, patRoot, father)) ? patRoot : lineRoot(g, father, placeholder);
