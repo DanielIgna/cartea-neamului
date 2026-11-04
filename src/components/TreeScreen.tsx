@@ -26,16 +26,20 @@ import ZoomBox from "./ZoomBox";
 import PhotoPick from "./PhotoPick";
 import { carerCandidates, raisedLinks, type Raised } from "@/lib/raised";
 import { lifeDates } from "@/lib/person-text";
+import Tree360 from "./Tree360";
+import TimesStory, { originFor } from "./TimesStory";
+import { treeOrigins } from "@/app/vremuri-actions";
+import type { Origin } from "@/lib/vremuri";
 
 type Live = TreeLive & { url: string; userId: string };
 type Props = {
   treeId: string; treeName: string; slots: Record<number, string>; people: Record<string, PersonView>; rels: Rel[]; raised: Raised[]; centerId: string; generations: number;
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
 };
-type View = "fan" | "classic" | "tree" | "desc" | "hour";
+type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
 
-const VIEWS: [View, string][] = [["hour", "Clepsidră"], ["fan", "Evantai"], ["classic", "Clasic"], ["tree", "Copac"], ["desc", "Descendenți"]];
+const VIEWS: [View, string][] = [["hour", "Clepsidră"], ["fan", "Evantai"], ["classic", "Clasic"], ["tree", "Copac"], ["360", "Copac 360°"], ["desc", "Descendenți"]];
 
 /** La „+ Tată”/„+ Mamă”: frații care nu au încă un asemenea părinte; la „+ Soț/soție”: copiii fără al doilea părinte. */
 function shareFor(g: Graph, people: Record<string, PersonView>, id: string, k: RelKind): PersonView[] {
@@ -74,6 +78,13 @@ export default function TreeScreen(props: Props) {
   const center = (id: string) => { setSel({ n: 1 }); go({ p: id }); };
   useEffect(() => setSel({ n: 1 }), [centerId]);
   const box = useRef<HTMLDivElement>(null);
+  // Din ce ținut istoric e fiecare om (după satul nașterii), pentru povestea vremurilor. Se caută pe server, după ce se arată arborele.
+  const [origins, setOrigins] = useState<Record<string, Origin> | null>(null);
+  useEffect(() => {
+    let live = true;
+    treeOrigins(treeId).then((o) => live && setOrigins(o)).catch(() => live && setOrigins({}));
+    return () => { live = false; };
+  }, [treeId, people]);
 
   const slots: Slots = useMemo(() => Object.fromEntries(Object.entries(props.slots).map(([n, id]) => [n, people[id]]).filter(([, p]) => p)), [props.slots, people]);
   const graph = useMemo(() => buildGraph(Object.values(people), rels), [people, rels]);
@@ -112,7 +123,8 @@ export default function TreeScreen(props: Props) {
   const sideName = (who: Side) => (named ? `Spița ${sur(roots[who]!)}` : who === "father" ? "Spița tatălui" : "Spița mamei");
   const onLine = (who: Side) => !!parts && !twinOn && (trunkId === parts[who] || isAncestor(graph, trunkId, parts[who]));
   // În Copac butonul apăsat arată ce e desenat; în celelalte desene, spița aleasă.
-  const pressed = (who: Side | null) => (view === "tree" ? (who ? onLine(who) : twinOn) : side === who);
+  const treeLike = view === "tree" || view === "360";
+  const pressed = (who: Side | null) => (treeLike ? (who ? onLine(who) : twinOn) : side === who);
   const chooseSide = (who: Side | null) => {
     setSide(who);
     if (!who) setTwin(true);
@@ -166,7 +178,8 @@ export default function TreeScreen(props: Props) {
     });
     return () => cancelAnimationFrame(frame);
   }, [view, generations, centerId, fanDir, trunk, twinKey, shownSide]);
-  const showsLineage = view === "tree" || view === "desc" || (view === "fan" && fanDir === "down");
+  const originOf = (id: string) => originFor(id, graph, origins ?? {}, people);
+  const showsLineage = view === "tree" || view === "360" || view === "desc" || (view === "fan" && fanDir === "down");
   const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
   const merged = (msg: string, keptId: string) => { setNotice(msg); setSel({ id: keptId }); router.refresh(); };
   const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
@@ -186,11 +199,11 @@ export default function TreeScreen(props: Props) {
                 <button aria-pressed={fanDir === "down"} onClick={() => setFanDir("down")}>Urmași</button>
               </div>
             )}
-            {(view === "tree" ? !!parts : ancestorView && sidesKnown) && (
+            {(treeLike ? !!parts : ancestorView && sidesKnown) && (
               <div className="seg seg-wrap" role="group" aria-label="Spițe">
                 <button aria-pressed={pressed("father")} onClick={() => chooseSide("father")}>{sideName("father")}</button>
                 <button aria-pressed={pressed("mother")} onClick={() => chooseSide("mother")}>{sideName("mother")}</button>
-                <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>
+                {view !== "360" && <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>}
               </div>
             )}
             {twinOn && parts && ([["father", "Neamul tatălui, de la", "tatăl", setPatRoot], ["mother", "Neamul mamei, de la", "mama", setMatRoot]] as const).map(([who, text, self, set]) => (
@@ -221,7 +234,9 @@ export default function TreeScreen(props: Props) {
             {!isRoot && <button className="btn" onClick={() => go({ p: null })}>Înapoi la mine</button>}
             {live && <LiveTree key={live.sealedQuery.queryFingerprint} url={live.url} treeId={treeId} userId={live.userId} sealedQuery={live.sealedQuery} initialData={live.initialData} />}
           </div>
-          <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}`} full={full} onFull={setFull}>
+          {view === "360" ? (
+            <Tree360 root={lineage} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
+          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}`} full={full} onFull={setFull}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} side={shownSide} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
             {view === "classic" && <ClassicTree {...chartProps} side={shownSide} />}
@@ -231,7 +246,7 @@ export default function TreeScreen(props: Props) {
             {view === "hour" && <Hourglass slots={slots} generations={generations} down={mine} people={people} selectedId={selectedId}
               onSelectPerson={(id) => setSel({ id })} onSelectSlot={(n) => setSel({ n })} onCenter={center} side={shownSide} />}
             {view === "desc" && <DescendantsChart root={lineage} people={people} selectedId={selectedId} onSelectPerson={(id) => setSel({ id })} onCenter={center} />}
-          </ZoomBox>
+          </ZoomBox>}
           {full && selectedId && people[selectedId] && (
             <div className="full-sel">
               <span><b>{people[selectedId].name}</b> <span className="muted">{lifeDates(people[selectedId])}</span></span>
@@ -240,7 +255,12 @@ export default function TreeScreen(props: Props) {
             </div>
           )}
           <div className="legend">
-            {view === "desc" ? (
+            {view === "360" ? (
+              <>
+                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
+                <span>Strămoșul stă jos, în trunchi; fiecare generație e un inel mai sus, de jur împrejur. Trage de copac ca să-l rotești (și în sus sau în jos ca să-l înclini), sau folosește săgețile de pe tastatură. „Povestea neamului” trece prin oameni în ordinea nașterii și spune, pentru fiecare, cum era lumea în ținutul lui atunci.</span>
+              </>
+            ) : view === "desc" ? (
               <>
                 <span><i className="sw" style={{ background: "var(--desc)" }} />Urmaș</span>
                 <span><i className="sw" style={{ border: "1.5px dashed var(--line)" }} />⚭ Soț / soție</span>
@@ -270,7 +290,7 @@ export default function TreeScreen(props: Props) {
                 <span><i className="sw" style={{ border: "1.5px dashed var(--muted)" }} />Loc liber, de completat</span>
               </>
             )}
-            <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>
+            {view !== "360" && <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>}
           </div>
           {/* O spiță care se oprește la părinte, sau îi lipsește tatăl: de obicei părinții lui au fost legați doar de frații lui, ori e trecut de două ori. */}
           {view === "tree" && cut.map(({ who, x, stops, found }) => {
@@ -322,7 +342,7 @@ export default function TreeScreen(props: Props) {
       </div>
       <aside className="card panel" aria-live="polite">
         {selectedId && people[selectedId]
-          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} graph={graph} ego={ego} pairs={pairs} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
+          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} origin={originOf(selectedId)} originsLoading={origins === null} graph={graph} ego={ego} pairs={pairs} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
             ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
                 shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
@@ -333,7 +353,7 @@ export default function TreeScreen(props: Props) {
 }
 
 type PanelProps = Props & {
-  p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[];
+  p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[]; origin: Origin | null; originsLoading: boolean;
   onSelect: (id: string) => void; onCenter: (id: string) => void; onChanged: () => void; onMerged: (msg: string, keptId: string) => void;
 };
 
@@ -352,7 +372,7 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
     .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, "ro"));
 }
 
-function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
+function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, origin, originsLoading, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [toggling, startToggle] = useTransition();
@@ -486,6 +506,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
       <div className="section-label">Ce se știe despre {p.givenName}</div>
       {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nimic scris încă.{canEdit ? " Apasă „Editează” și scrie câteva rânduri." : ""}</p>}
       {p.notes && <><div className="section-label">Note suplimentare</div><p className="notes">{p.notes}</p></>}
+      <TimesStory p={p} origin={origin} loading={originsLoading} />
       <div className="actions">
         {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>Editează</button>}
         {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>Pune în centru</button>}
