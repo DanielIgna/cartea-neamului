@@ -1,6 +1,7 @@
 import { and, eq, or } from "drizzle-orm";
 import type { Db } from "@/db";
 import { bookExport, documentLink, invitation, person, raisedBy, relationship, tree } from "@/db/schema";
+import { isPlaceholder } from "./family";
 
 type Person = typeof person.$inferSelect;
 const empty = (v: unknown) => v === null || v === undefined || v === "";
@@ -8,23 +9,32 @@ const pick = <T,>(a: T, b: T) => (empty(a) ? b : a);
 /** Două texte lungi (biografie, note): le păstrăm pe amândouă, fără să repetăm același text. */
 const both = (a: string | null, b: string | null) => (empty(a) ? b : empty(b) || a === b || a!.includes(b!) ? a : `${a}\n\n${b}`);
 
-/** Ce rămâne în fișa păstrată: câmpurile ei, iar cele goale completate din dublură. */
+/** Nota pusă singură pe un „Tată necunoscut” („Adăugat automat ca să-i lege pe frații…”): nu trece în fișa omului adevărat. */
+const ownNote = (p: Person) => (isPlaceholder(p.givenName) && /^Adăugat automat/.test(p.notes ?? "") ? null : p.notes);
+
+/**
+ * Ce rămâne în fișa păstrată: câmpurile ei, iar cele goale completate din dublură.
+ * Un „Tată necunoscut” n-are nume al lui: unit cu omul adevărat, rămâne numele omului, oricare dintre fișe se păstrează.
+ */
 export function mergedFields(keep: Person, drop: Person) {
+  const nameless = (p: Person) => isPlaceholder(p.givenName);
+  const named = nameless(keep) && !nameless(drop) ? drop : keep, other = named === keep ? drop : keep;
+  const longer = keep.givenName.length >= drop.givenName.length ? keep.givenName : drop.givenName;
   const birth = empty(keep.birthDateText) && !empty(drop.birthDateText) ? drop : keep;
   const death = empty(keep.deathDateText) && !empty(drop.deathDateText) ? drop : keep;
   const dead = !empty(keep.deathDateText) || !empty(drop.deathDateText);
   const claimedBy = keep.claimedByUserId ?? drop.claimedByUserId;
   return {
-    givenName: keep.givenName.length >= drop.givenName.length ? keep.givenName : drop.givenName,
-    surname: pick(keep.surname, drop.surname), birthSurname: pick(keep.birthSurname, drop.birthSurname),
+    givenName: nameless(keep) === nameless(drop) ? longer : named.givenName,
+    surname: pick(named.surname, other.surname), birthSurname: pick(named.birthSurname, other.birthSurname),
     sex: keep.sex === "U" ? drop.sex : keep.sex,
     birthDateText: birth.birthDateText, birthFrom: birth.birthFrom, birthTo: birth.birthTo,
     birthPlace: pick(keep.birthPlace, drop.birthPlace), birthCountry: pick(keep.birthCountry, drop.birthCountry),
     deathDateText: death.deathDateText, deathFrom: death.deathFrom, deathTo: death.deathTo,
     deathPlace: pick(keep.deathPlace, drop.deathPlace), deathCountry: pick(keep.deathCountry, drop.deathCountry),
     residencePlace: pick(keep.residencePlace, drop.residencePlace), residenceCountry: pick(keep.residenceCountry, drop.residenceCountry),
-    living: dead ? false : keep.living || drop.living, discreet: keep.discreet || drop.discreet,
-    biography: both(keep.biography, drop.biography), notes: both(keep.notes, drop.notes),
+    living: dead ? false : keep.living || drop.living, discreet: nameless(keep) === nameless(drop) ? keep.discreet || drop.discreet : named.discreet,
+    biography: both(keep.biography, drop.biography), notes: both(ownNote(keep), ownNote(drop)),
     photoDocumentId: keep.photoDocumentId ?? drop.photoDocumentId, occupation: pick(keep.occupation, drop.occupation),
     claimedByUserId: claimedBy, privacy: claimedBy ? ("claimed" as const) : keep.privacy, gedcomXref: keep.gedcomXref ?? drop.gedcomXref,
     updatedAt: new Date(),
@@ -73,12 +83,13 @@ export async function mergeInto(db: Db, treeId: string, keepId: string, dropId: 
     await tx.update(bookExport).set({ centerPersonId: keepId }).where(and(eq(bookExport.treeId, treeId), eq(bookExport.centerPersonId, dropId)));
     // Revendicarea trece la fișa păstrată: întâi o scoatem de pe dublură.
     if (drop.claimedByUserId) await tx.update(person).set({ claimedByUserId: null }).where(eq(person.id, dropId));
-    await tx.update(person).set(mergedFields(keep, drop)).where(eq(person.id, keepId));
+    const fields = mergedFields(keep, drop);
+    await tx.update(person).set(fields).where(eq(person.id, keepId));
     await tx.delete(person).where(eq(person.id, dropId));
     // Dacă dubla avea alți părinți decât fișa păstrată, acum pot fi doi tați sau două mame: spunem, ca omul să aleagă.
     const parents = await tx.select({ sex: person.sex }).from(relationship).innerJoin(person, eq(person.id, relationship.personA))
       .where(and(eq(relationship.type, "parent_child"), eq(relationship.personB, keepId)));
     const twoFathers = parents.filter((p) => p.sex === "M").length > 1, twoMothers = parents.filter((p) => p.sex === "F").length > 1;
-    return { moved, name: `${keep.givenName} ${keep.surname || drop.surname}`.trim(), twoFathers, twoMothers };
+    return { moved, name: `${fields.givenName} ${fields.surname ?? ""}`.trim(), twoFathers, twoMothers };
   });
 }

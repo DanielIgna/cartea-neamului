@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { buildGraph, kinship, unionsOf, relativesByDegree, type Rel, type Sex } from "@/lib/kinship";
-import { descendants, childrenByUnion } from "@/lib/family";
+import { descendants, childrenByUnion, parentsFromSiblings } from "@/lib/family";
 
 /**
  * Povestea de verificat: Avram a avut-o pe Mariana cu Iosefina și pe Lenuța cu Valeria (amândouă discrete),
@@ -94,5 +94,39 @@ describe("cum se numesc rudele prin alianță", () => {
     const aff = relativesByDegree(g, "ioan").affinity.map((x) => x.id);
     expect(aff).toEqual(expect.arrayContaining(["iosefina", "valeria", "silvia"]));
     expect(aff.filter(drawn)).not.toContain("iosefina");
+  });
+});
+
+/**
+ * Mama a fost trecută cu frații ei: „+ Frate/soră” i-a pus un „Tată necunoscut”, apoi frații au primit tatăl adevărat (Ion Todea),
+ * iar ea a rămas cu locul gol. Mama ei (Maria) e comună tuturor, așa că frații rămân frați.
+ */
+describe("părinții pe care îi au frații, dar ea nu", () => {
+  const people: [string, Sex][] = [["floarea", "F"], ["tn", "M"], ["tnd", "M"], ["ion", "M"], ["vasile", "M"], ["maria", "F"], ["ana", "F"], ["gheorghe", "M"], ["bunicul", "M"]];
+  const names: Record<string, string> = { tn: "Tată necunoscut", tnd: "Tată necunoscut" };
+  const ph = (id: string) => /necunoscut/.test(names[id] ?? "");
+  const discreetPh = (id: string) => id === "tnd";
+  const graphOf = (rels: Rel[]) => buildGraph(people.map(([id, sex]) => ({ id, sex })), rels);
+  const siblings = [pc("ion", "ana"), pc("maria", "ana"), pc("ion", "gheorghe"), pc("maria", "gheorghe")];
+
+  it("îi propune tatăl fraților în locul „Tatălui necunoscut”", () => {
+    const g = graphOf([pc("tn", "floarea"), pc("maria", "floarea"), ...siblings]);
+    expect(parentsFromSiblings(g, "floarea", ph, discreetPh)).toEqual([{ role: "father", id: "ion", current: "tn" }]);
+  });
+  it("îi propune mama fraților când ea n-are mamă", () => {
+    const g = graphOf([pc("ion", "floarea"), ...siblings]);
+    expect(parentsFromSiblings(g, "floarea", ph, discreetPh)).toEqual([{ role: "mother", id: "maria" }]);
+  });
+  it("nu propune nimic după „Nu, are alt tată” (loc gol discret), nici când „Tatăl necunoscut” are părinți", () => {
+    expect(parentsFromSiblings(graphOf([pc("tnd", "floarea"), pc("maria", "floarea"), ...siblings]), "floarea", ph, discreetPh)).toEqual([]);
+    expect(parentsFromSiblings(graphOf([pc("tn", "floarea"), pc("bunicul", "tn"), pc("maria", "floarea"), ...siblings]), "floarea", ph, discreetPh)).toEqual([]);
+  });
+  it("nu ghicește când frații au tați diferiți, și nu propune un alt loc gol", () => {
+    const half = [pc("ion", "ana"), pc("maria", "ana"), pc("vasile", "gheorghe"), pc("maria", "gheorghe")];
+    expect(parentsFromSiblings(graphOf([pc("tn", "floarea"), pc("maria", "floarea"), ...half]), "floarea", ph, discreetPh)).toEqual([]);
+    expect(parentsFromSiblings(graphOf([pc("maria", "floarea"), pc("tn", "ana"), pc("maria", "ana")]), "floarea", ph, discreetPh)).toEqual([]);
+  });
+  it("fără niciun părinte nu are frați în arbore, deci nu are de unde propune", () => {
+    expect(parentsFromSiblings(graphOf(siblings), "floarea", ph, discreetPh)).toEqual([]);
   });
 });

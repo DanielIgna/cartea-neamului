@@ -4,7 +4,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FanChart, ClassicTree, DescendantsChart, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass, TwinTree } from "./lineage-charts";
-import { twinParts } from "@/lib/tree-layout";
+import { twinParts, lineRoot } from "@/lib/tree-layout";
 import { where, type PersonView } from "@/lib/tree-data";
 import { placeKey } from "@/lib/place-key";
 import type { TreeLive } from "@/lib/realtime";
@@ -14,12 +14,13 @@ import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album, Avatar } from "./Album";
-import { descendants, childrenByUnion, likelyDuplicates, sameLooking, normName, isPlaceholder, type Duplicate } from "@/lib/family";
+import { descendants, childrenByUnion, likelyDuplicates, sameLooking, normName, isPlaceholder, isAncestor, parentsFromSiblings, type Duplicate } from "@/lib/family";
 import Duplicates, { MergeWith } from "./Duplicates";
 import { setDiscreet, setParent } from "@/app/actions";
 import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
 import SpouseChildren from "./SpouseChildren";
+import SiblingsParents from "./SiblingsParents";
 import RaisedBy from "./RaisedBy";
 import ZoomBox from "./ZoomBox";
 import PhotoPick from "./PhotoPick";
@@ -89,13 +90,35 @@ export default function TreeScreen(props: Props) {
   // Neamul tatălui și neamul mamei, legate prin părinți: fiecare spiță de la strămoșul ei (implicit cel mai vechi pe linia bărbătească).
   const placeholder = useMemo(() => (id: string) => isPlaceholder(people[id]?.givenName ?? ""), [people]);
   const parts = useMemo(() => twinParts(graph, drawn, centerId, patRoot, matRoot, placeholder), [graph, drawn, centerId, patRoot, matRoot, placeholder]);
-  const bothSides = !!parts && !!graph.parents.get(parts.father)?.length && !!graph.parents.get(parts.mother)?.length;
+  // Pornit singur doar când fiecare părinte are strămoși adevărați (un „Tată necunoscut” fără părinți nu face o spiță).
+  const bothSides = !!parts && lineRoot(graph, parts.father, placeholder) !== parts.father && lineRoot(graph, parts.mother, placeholder) !== parts.mother;
   const twinOn = view === "tree" && !!parts && (twin ?? bothSides);
   const twinKey = twinOn && parts ? `${parts.patRoot}+${parts.matRoot}` : "";
   // Neamul cuiva poartă numele cu care s-a născut (o femeie măritată își duce mai departe neamul de fată).
   const sur = (id: string) => people[id]?.birthSurname?.trim() || people[id]?.surname || "";
   const twinTitle = parts && sur(parts.patRoot) && sur(parts.matRoot) && sur(parts.patRoot) !== sur(parts.matRoot)
     ? `Spița ${sur(parts.patRoot)} și spița ${sur(parts.matRoot)}` : `Neamul tatălui și al mamei lui ${ego?.givenName ?? ""}`;
+  // „Spița Igna” / „Spița Todea”: o singură spiță, cu trunchiul de la strămoșul ei prin părintele acela până la persoana din centru.
+  const named = !!parts && !!sur(parts.patRoot) && !!sur(parts.matRoot) && sur(parts.patRoot) !== sur(parts.matRoot);
+  const sideName = (who: "father" | "mother") => (parts && named ? `Spița ${sur(who === "father" ? parts.patRoot : parts.matRoot)}` : who === "father" ? "Spița tatălui" : "Spița mamei");
+  const onSide = (who: "father" | "mother") => !!parts && !twinOn && (trunkId === parts[who] || isAncestor(graph, trunkId, parts[who]));
+  const showSide = (who: "father" | "mother") => { if (!parts) return; setTwin(false); setTrunk(who === "father" ? parts.patRoot : parts.matRoot); };
+  // Fișe care par aceeași persoană trecută de două ori (doar proprietarul și editorii le pot uni).
+  const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
+  // Unde se rupe o spiță: părintele fără părinți (spița se oprește la el), ori fără tată când tatăl lui pare să fie deja în arbore.
+  const cut = useMemo(() => {
+    if (!parts) return [];
+    const discreetOf = (id: string) => !!people[id]?.discreet;
+    return (["father", "mother"] as const).flatMap((who) => {
+      const x = people[parts[who]];
+      if (!x) return [];
+      const found = parentsFromSiblings(graph, x.id, placeholder, discreetOf).length > 0 || pairs.some((d) => d.keep === x.id || d.drop === x.id);
+      const dad = (graph.parents.get(x.id) ?? []).find((q) => graph.sex.get(q) === "M");
+      const noDad = !dad || (placeholder(dad) && !(graph.parents.get(dad) ?? []).length);
+      const stops = lineRoot(graph, x.id, placeholder) === x.id;
+      return stops || (noDad && found) ? [{ who, x, stops, found }] : [];
+    });
+  }, [parts, people, graph, placeholder, pairs]);
   // Desenele mari se derulează: pornim cu persoana din centru la vedere, nu cu colțul gol din stânga sus.
   useEffect(() => {
     const el = box.current;
@@ -114,8 +137,6 @@ export default function TreeScreen(props: Props) {
     return () => cancelAnimationFrame(frame);
   }, [view, generations, centerId, fanDir, trunk, twinKey]);
   const showsLineage = view === "tree" || view === "desc" || (view === "fan" && fanDir === "down");
-  // Fișe care par aceeași persoană trecută de două ori (doar proprietarul și editorii le pot uni).
-  const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
   const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
   const merged = (msg: string, keptId: string) => { setNotice(msg); setSel({ id: keptId }); router.refresh(); };
   const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
@@ -137,8 +158,9 @@ export default function TreeScreen(props: Props) {
             )}
             {view === "tree" && parts && (
               <div className="seg" role="group" aria-label="Spițe">
-                <button aria-pressed={!twinOn} onClick={() => setTwin(false)}>O spiță</button>
-                <button aria-pressed={twinOn} onClick={() => setTwin(true)}>Ambele spițe</button>
+                <button aria-pressed={onSide("father")} onClick={() => showSide("father")}>{sideName("father")}</button>
+                <button aria-pressed={onSide("mother")} onClick={() => showSide("mother")}>{sideName("mother")}</button>
+                <button aria-pressed={twinOn} onClick={() => setTwin(true)}>Amândouă</button>
               </div>
             )}
             {twinOn && parts && ([["father", "Neamul tatălui, de la", "tatăl", setPatRoot], ["mother", "Neamul mamei, de la", "mama", setMatRoot]] as const).map(([who, text, self, set]) => (
@@ -204,7 +226,7 @@ export default function TreeScreen(props: Props) {
             ) : twinOn ? (
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Cele două rădăcini și drumul până la {ego?.givenName}</span>
-                <span>În stânga crește neamul tatălui, în dreapta neamul mamei, fiecare cu frații, verii și urmașii lor. Cele două trunchiuri se unesc în părinți, iar din nodul lor crește familia lor. Dacă vrei, alege de la ce strămoș pornește fiecare spiță.</span>
+                <span>În stânga crește neamul tatălui, în dreapta neamul mamei, fiecare cu frații, verii și urmașii lor. Cele două trunchiuri se unesc în părinți, iar din nodul lor crește familia lor. Dacă vrei, alege de la ce strămoș pornește fiecare spiță, sau apasă pe o singură spiță ca s-o vezi mai mare.</span>
               </>
             ) : showsLineage ? (
               <>
@@ -220,6 +242,19 @@ export default function TreeScreen(props: Props) {
             )}
             <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>
           </div>
+          {/* O spiță care se oprește la părinte, sau îi lipsește tatăl: de obicei părinții lui au fost legați doar de frații lui, ori e trecut de două ori. */}
+          {view === "tree" && cut.map(({ who, x, stops, found }) => {
+            const el = x.sex === "F" ? "ea" : "el", ei = x.sex === "F" ? "ei" : "lui", side = who === "father" ? "tatălui" : "mamei";
+            const open = (text: string) => <button className="linklike" onClick={() => setSel({ id: x.id })}>{text}</button>;
+            return (
+              <p key={who} className="notice" style={{ margin: "10px 0 0" }}>
+                {stops ? <>{x.givenName} nu are încă părinți legați în arbore, așa că spița {side} se oprește la {el}. </>
+                  : <>Tatăl lui {x.givenName} nu e legat de {el} în arbore, așa că spița {side} urcă doar pe linia mamei {ei}. </>}
+                {found ? <>{stops ? `Părinții ${ei} par să fie deja în arbore` : "Pare să fie deja în arbore"}, la frații {ei} sau într-o a doua fișă a {ei}: {open(`deschide fișa ${ei}`)} și {x.sex === "F" ? "o" : "îl"} legi cu un clic.</>
+                  : <>{open(`Deschide fișa ${ei}`)} ca să-i adaugi părinții.</>}
+              </p>
+            );
+          })}
         </div>
         <div className="card">
           <div className="toolbar" style={{ marginBottom: 0 }}>
@@ -432,6 +467,10 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         {group(fam.children.length ? "A crescut și pe" : "A crescut pe", by(rl.raised))}
         {group(`Frați (${fam.siblings.length})`, by(fam.siblings), half)}
       </dl>
+      {canAdd && parentsFromSiblings(graph, p.id, (id) => isPlaceholder(people[id]?.givenName ?? ""), (id) => !!people[id]?.discreet).map((s) => people[s.id] && (
+        <SiblingsParents key={`sp${p.id}${s.role}`} treeId={treeId} p={p} role={s.role} parent={people[s.id]} current={s.current ? people[s.current] : undefined}
+          alsoFor={s.current ? by((graph.children.get(s.current) ?? []).filter((c) => c !== p.id)) : []} onDone={finished} />
+      ))}
       {canAdd && by(fam.partners).map((sp) => {
         // Copiii soțului/soției care au un singur părinte trecut: propunem să fie și ai acestei persoane.
         const kids = by(graph.children.get(sp.id) ?? []).filter((c) => (graph.parents.get(c.id) ?? []).length === 1 && c.id !== p.id);

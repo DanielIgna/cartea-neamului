@@ -32,10 +32,11 @@ export default function Duplicates({ treeId, pairs, people, kids, onDone, inline
       {shown.map((d) => (
         <div key={pairKey(d)} className="confirm" style={{ marginTop: 8 }}>
           Pare aceeași persoană, trecută de două ori: <b>{label(d.keep)}</b> și <b>{label(d.drop)}</b>
-          {people[d.via] ? <>, amândouă legate de {people[d.via].name}</> : null}.
+          {d.via && people[d.via] ? <>, amândouă legate de {people[d.via].name}</> : null}
+          {d.born && people[d.born] ? <>, {people[d.drop].sex === "M" ? "fiul" : people[d.drop].sex === "F" ? "fiica" : "copilul"} lui {people[d.born].name}</> : null}.
           {asking === pairKey(d) ? (
             <>
-              <div style={{ margin: "6px 0" }}>Păstrez fișa „{people[d.keep].name}” și mut la ea copiii, soții, pozele și datele celeilalte; dubla se șterge. Continui?</div>
+              <div style={{ margin: "6px 0" }}>Păstrez fișa „{people[d.keep].name}” și mut la ea {d.born ? "părinții, " : ""}copiii, soții, pozele și datele celeilalte; dubla se șterge. Continui?</div>
               <div className="actions" style={{ marginTop: 0 }}>
                 <button className="btn primary" disabled={pending} onClick={() => start(async () => {
                   const r = await mergePeople(treeId, d.keep, d.drop);

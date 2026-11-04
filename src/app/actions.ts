@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { eq, and, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { tree, person, relationship, treeMember, document, documentLink, message } from "@/db/schema";
+import { tree, person, relationship, treeMember, document, documentLink, message, raisedBy } from "@/db/schema";
 import { canMessage } from "@/lib/chat";
 import { importGedcom } from "@/lib/gedcom-db";
 import { parseFuzzyDate } from "@/lib/dates";
@@ -18,6 +18,7 @@ import { mergeInto } from "@/lib/merge";
 import { after } from "next/server";
 import { refreshTreePlaces } from "@/lib/shared-places";
 import { setRaised } from "@/lib/raised";
+import { isPlaceholder } from "@/lib/family";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
 function placesChanged(treeId: string) {
@@ -357,8 +358,24 @@ export async function setParent(treeId: string, childId: string, role: "father" 
     await tx.insert(relationship).values({ treeId, type: "parent_child", personA: newParent.id, personB: childId, subtype: "biologic" }).onConflictDoNothing();
     if (other) await linkPartners(tx, treeId, newParent.id, other.id);
   });
+  await dropEmptyPlaceholders(treeId, old.map((o) => o.id).filter((id) => id !== parentId));
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
+}
+
+/**
+ * Un „Tată necunoscut” (sau „Mamă necunoscută”) ține locul unui părinte. Înlocuit cu cel adevărat și rămas fără niciun copil,
+ * nu mai ține locul nimănui: îl scoatem, cu tot cu căsătoria închipuită, ca să nu rămână în desen lângă celălalt părinte.
+ */
+async function dropEmptyPlaceholders(treeId: string, ids: string[]) {
+  for (const id of ids) {
+    const [p] = await db.select({ given: person.givenName, claimed: person.claimedByUserId }).from(person).where(and(eq(person.id, id), eq(person.treeId, treeId)));
+    if (!p || p.claimed || !isPlaceholder(p.given)) continue;
+    const kin = await db.select({ id: relationship.id }).from(relationship)
+      .where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), or(eq(relationship.personA, id), eq(relationship.personB, id)))).limit(1);
+    const cared = await db.select({ child: raisedBy.childId }).from(raisedBy).where(and(eq(raisedBy.treeId, treeId), or(eq(raisedBy.childId, id), eq(raisedBy.carerId, id)))).limit(1);
+    if (!kin.length && !cared.length) await db.delete(person).where(eq(person.id, id));
+  }
 }
 
 type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -492,6 +509,7 @@ export async function otherRelation(treeId: string, childId: string, role: "fath
     await tx.insert(relationship).values({ treeId, type: "parent_child", personA: ph.id, personB: childId, subtype: "biologic" });
     if (other) await linkPartners(tx, treeId, ph.id, other.id);
   });
+  await dropEmptyPlaceholders(treeId, parents.filter((x) => x.sex === sex).map((x) => x.id));
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -511,8 +529,50 @@ export async function mergePeople(treeId: string, keepId: string, dropId: string
   if (keep.claimedByUserId && drop.claimedByUserId && keep.claimedByUserId !== drop.claimedByUserId) return { error: "Fiecare fișă e revendicată de alt om din familie; nu pot fi aceeași persoană." };
   if ((await isDescendant(treeId, keepId, dropId)) || (await isDescendant(treeId, dropId, keepId))) return { error: "Una dintre persoane e urmașul celeilalte; nu pot fi aceeași persoană." };
   const r = await mergeInto(db, treeId, keepId, dropId);
+  const left = await settleParents(treeId, keepId);
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
-  const warn = r.twoFathers ? " Atenție: acum are doi tați trecuți; alege-l pe cel bun cu „Schimbă tatăl”." : r.twoMothers ? " Atenție: acum are două mame trecute; alege-o pe cea bună cu „Schimbă mama”." : "";
+  const warn = left.twoFathers ? " Atenție: acum are doi tați trecuți; alege-l pe cel bun cu „Schimbă tatăl”." : left.twoMothers ? " Atenție: acum are două mame trecute; alege-o pe cea bună cu „Schimbă mama”." : "";
   return { ok: true, message: `Gata: ${r.name} are acum o singură fișă, cu toate legăturile, pozele și datele.${warn}` };
+}
+
+/**
+ * După o unire, o fișă poate avea și tatăl adevărat (adus de dublă) și un „Tată necunoscut” fără părinți, pus când i s-au adăugat frații.
+ * Locul gol ținea locul aceluiași om: îl unim cu el, ca frații legați prin locul gol să treacă și ei la tatăl adevărat.
+ */
+async function settleParents(treeId: string, childId: string) {
+  const parentsOf = (id: string) => db.select({ id: person.id, sex: person.sex, given: person.givenName, claimed: person.claimedByUserId }).from(relationship)
+    .innerJoin(person, eq(person.id, relationship.personA)).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personB, id)));
+  const parents = await parentsOf(childId);
+  for (const sex of ["M", "F"] as const) {
+    const real = parents.filter((x) => x.sex === sex && !isPlaceholder(x.given));
+    if (real.length !== 1) continue;
+    for (const ph of parents.filter((x) => x.sex === sex && isPlaceholder(x.given) && !x.claimed)) {
+      if ((await parentsOf(ph.id)).length || (await isDescendant(treeId, ph.id, real[0].id))) continue;
+      await mergeInto(db, treeId, real[0].id, ph.id);
+    }
+  }
+  const now = await parentsOf(childId);
+  return { twoFathers: now.filter((x) => x.sex === "M").length > 1, twoMothers: now.filter((x) => x.sex === "F").length > 1 };
+}
+
+/**
+ * „Tată necunoscut” e de fapt cineva din arbore (de pildă tatăl fraților, trecut la ei): toți copiii locului gol trec la el,
+ * cu tot cu căsătoria, iar locul gol dispare. Așa ajunge neamul lui la toți frații deodată.
+ */
+export async function replacePlaceholder(treeId: string, placeholderId: string, personId: string): Promise<{ ok?: boolean; error?: string }> {
+  if (!z.object({ treeId: z.string().uuid(), placeholderId: z.string().uuid(), personId: z.string().uuid() }).safeParse({ treeId, placeholderId, personId }).success
+    || placeholderId === personId) return { error: "Date greșite." };
+  const me = await currentUser();
+  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: "Nu ai drept să schimbi legăturile din acest arbore." };
+  const two = await db.select().from(person).where(and(eq(person.treeId, treeId), inArray(person.id, [placeholderId, personId])));
+  const ph = two.find((x) => x.id === placeholderId), real = two.find((x) => x.id === personId);
+  if (!ph || !real) return { error: "Una dintre persoane nu mai există în acest arbore." };
+  if (!isPlaceholder(ph.givenName) || ph.claimedByUserId || isPlaceholder(real.givenName)) return { error: "Se poate înlocui doar un părinte fără nume, cu cineva trecut cu numele lui." };
+  if (ph.sex !== "U" && real.sex !== "U" && ph.sex !== real.sex) return { error: "Date greșite." };
+  if ((await isDescendant(treeId, placeholderId, personId)) || (await isDescendant(treeId, personId, placeholderId))) return { error: `${real.givenName} e urmașul unuia dintre copii; nu le poate fi părinte.` };
+  await mergeInto(db, treeId, personId, placeholderId);
+  revalidatePath(`/arbore/${treeId}`);
+  placesChanged(treeId);
+  return { ok: true };
 }

@@ -3,7 +3,7 @@ import { and, eq } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { tree, person, relationship, document, documentLink } from "@/db/schema";
-import { mergeInto } from "@/lib/merge";
+import { mergeInto, mergedFields } from "@/lib/merge";
 import { buildGraph } from "@/lib/kinship";
 import { likelyDuplicates } from "@/lib/family";
 
@@ -70,5 +70,74 @@ describe("nu sunt dubluri", () => {
     const p = (id: string, givenName: string, sex: "M" | "F") => ({ id, givenName, surname: "Igna", birthSurname: null, sex, birthYear: null });
     expect(likelyDuplicates(g, { ion1: p("ion1", "Ion", "M"), ion2: p("ion2", "Ion", "M"), ana: p("ana", "Ana", "F"), petru: p("petru", "Petru", "M"),
       t1: p("t1", "Tată necunoscut", "M"), t2: p("t2", "Tată necunoscut", "M"), x: p("x", "Ion", "F") })).toEqual([]);
+  });
+});
+
+/**
+ * Mama trecută de două ori: o dată soția lui Avram (Floarea Igna, născută Todea, fără părinți), încă o dată fiica lui Ion Todea
+ * (Floarea Todea, trecută cu frații ei, fără soț și copii). Spița Todea nu ajungea la ea până nu se unesc fișele.
+ */
+describe("aceeași femeie, o dată soție și o dată fiică", () => {
+  const p = (id: string, givenName: string, surname: string, sex: "M" | "F", birthSurname: string | null = null, birthYear: number | null = null) =>
+    ({ id, givenName, surname, birthSurname, sex, birthYear });
+  const base = {
+    avram: p("avram", "Avram", "Igna", "M"), daniel: p("daniel", "Ioan Daniel", "Igna", "M"), tn: p("tn", "Tată necunoscut", "Todea", "M"),
+    ion: p("ion", "Ion", "Todea", "M"), maria: p("maria", "Maria", "Todea", "F"), ana: p("ana", "Ana", "Todea", "F"),
+  };
+  const rels = [
+    { type: "partnership" as const, a: "avram", b: "f1" }, { type: "parent_child" as const, a: "avram", b: "daniel" }, { type: "parent_child" as const, a: "f1", b: "daniel" },
+    { type: "parent_child" as const, a: "ion", b: "f2" }, { type: "parent_child" as const, a: "maria", b: "f2" },
+    { type: "parent_child" as const, a: "ion", b: "ana" }, { type: "parent_child" as const, a: "maria", b: "ana" },
+  ];
+  const ids = ["avram", "daniel", "tn", "ion", "maria", "ana", "f1", "f2"];
+  const graphOf = (extra: { type: "parent_child" | "partnership"; a: string; b: string }[] = []) =>
+    buildGraph(ids.map((id) => ({ id, sex: id === "f1" || id === "f2" || id === "maria" || id === "ana" ? "F" as const : "M" as const })), [...rels, ...extra]);
+
+  it("o găsește după numele de fată, chiar dacă soția are un „Tată necunoscut” pus când i s-au adăugat frații", () => {
+    const people = { ...base, f1: p("f1", "Floarea", "Igna", "F", "Todea"), f2: p("f2", "Floarea", "Todea", "F") };
+    expect(likelyDuplicates(graphOf(), people)).toEqual([{ keep: "f1", drop: "f2", born: "ion" }]);
+    expect(likelyDuplicates(graphOf([{ type: "parent_child", a: "tn", b: "f1" }]), people)).toEqual([{ keep: "f1", drop: "f2", born: "ion" }]);
+  });
+  it("sau după același nume și același an al nașterii (de pildă un bărbat trecut o dată ca soț, o dată ca fiu)", () => {
+    const people = { ...base, f1: p("f1", "Floarea", "Todea", "F", null, 1940), f2: p("f2", "Floarea", "Todea", "F", null, 1941) };
+    expect(likelyDuplicates(graphOf(), people)).toEqual([{ keep: "f1", drop: "f2", born: "ion" }]);
+    const far = { ...base, f1: p("f1", "Floarea", "Todea", "F", null, 1940), f2: p("f2", "Floarea", "Todea", "F", null, 1943) };
+    expect(likelyDuplicates(graphOf(), far)).toEqual([]);
+  });
+  it("nu le leagă fără nume de fată și fără ani, nici când fiica are și ea soț", () => {
+    expect(likelyDuplicates(graphOf(), { ...base, f1: p("f1", "Floarea", "Igna", "F"), f2: p("f2", "Floarea", "Todea", "F") })).toEqual([]);
+    const people = { ...base, f1: p("f1", "Floarea", "Igna", "F", "Todea"), f2: p("f2", "Floarea", "Todea", "F") };
+    expect(likelyDuplicates(graphOf([{ type: "partnership", a: "f2", b: "tn" }]), people)).toEqual([]);
+  });
+});
+
+describe("„Tată necunoscut” unit cu tatăl adevărat", () => {
+  it("rămâne numele omului, fără nota pusă automat, oricare fișă se păstrează", () => {
+    const row = (v: Partial<typeof person.$inferSelect>) => ({ givenName: "", surname: "", birthSurname: null, notes: null, discreet: false, ...v }) as typeof person.$inferSelect;
+    const ph = row({ givenName: "Tată necunoscut", surname: "Igna", notes: "Adăugat automat ca să-i lege pe frații lui Floarea. Completează numele când îl afli." });
+    const ion = row({ givenName: "Ion", surname: "Todea", notes: "Pădurar." });
+    expect(mergedFields(ion, ph)).toMatchObject({ givenName: "Ion", surname: "Todea", notes: "Pădurar." });
+    expect(mergedFields(ph, ion)).toMatchObject({ givenName: "Ion", surname: "Todea", notes: "Pădurar." });
+  });
+
+  it("îi trec toți copiii și căsătoria, iar locul gol dispare", async () => {
+    const [t] = await db.insert(tree).values({ name: "Loc gol" }).returning();
+    const add = async (givenName: string, sex: "M" | "F", surname = "Todea", notes?: string) =>
+      (await db.insert(person).values({ treeId: t.id, givenName, surname, sex, notes }).returning())[0].id;
+    const tn = await add("Tată necunoscut", "M", "Todea", "Adăugat automat ca să-i lege pe frații lui Floarea."), ion = await add("Ion", "M");
+    const maria = await add("Maria", "F"), floarea = await add("Floarea", "F", "Igna"), vasile = await add("Vasile", "M"), ana = await add("Ana", "F");
+    const rel = (type: "parent_child" | "partnership", a: string, b: string) => db.insert(relationship).values({ treeId: t.id, type, personA: a, personB: b });
+    for (const c of [floarea, vasile]) { await rel("parent_child", tn, c); await rel("parent_child", maria, c); }
+    await rel("parent_child", ion, ana); await rel("parent_child", maria, ana);
+    await rel("partnership", tn, maria); await rel("partnership", ion, maria);
+    const r = await mergeInto(db, t.id, ion, tn);
+    expect(r.name).toBe("Ion Todea");
+    const people = await db.select().from(person).where(eq(person.treeId, t.id));
+    expect(people.find((x) => x.id === tn)).toBeUndefined();
+    expect(people.find((x) => x.id === ion)).toMatchObject({ givenName: "Ion", surname: "Todea", notes: null });
+    const rs = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, t.id));
+    const g = buildGraph(people, rs);
+    expect([...(g.children.get(ion) ?? [])].sort()).toEqual([ana, floarea, vasile].sort());
+    expect(g.partners.get(maria)).toEqual([ion]);
   });
 });
