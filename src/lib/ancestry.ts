@@ -40,7 +40,9 @@ export function toAhnentafel(rows: AncestorRow[]): Map<number, string> {
   let prev = new Map<string, number[]>([[root.id, [1]]]);
   for (let g = 1; byGen.has(g); g++) {
     const next = new Map<string, number[]>();
-    const rowsG = [...byGen.get(g)!].sort((a, b) => rank(a) - rank(b));
+    // Cu doi părinți de același sex (de pildă tatăl trecut în două fișe), locul îl ia cel cu strămoși, ca neamul lui să nu iasă din desen.
+    const up = (r: AncestorRow) => (byGen.get(g + 1) ?? []).filter((x) => x.childId === r.id).length;
+    const rowsG = [...byGen.get(g)!].sort((a, b) => rank(a) - rank(b) || up(b) - up(a));
     for (const r of rowsG) {
       for (const n of prev.get(r.childId!) ?? []) {
         let slot = r.sex === "F" ? 2 * n + 1 : 2 * n;

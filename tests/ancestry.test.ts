@@ -55,9 +55,21 @@ describe("tatăl și mama la locul lor, chiar când fișele sunt încurcate", ()
 
   it("mama trecută din greșeală ca bărbat nu dispare cu tot neamul ei: ia locul rămas liber", () => {
     const ahnen = toAhnentafel([row("eu", null, 0, "M"), row("tata", "eu", 1, "M"), row("mama", "eu", 1, "M"), row("bunica", "mama", 2, "F")]);
-    expect(ahnen.get(2)).toBe("tata");
-    expect(ahnen.get(3)).toBe("mama");
-    expect(ahnen.get(7)).toBe("bunica");
+    // amândoi rămân în desen (iar sub desen apare semnul cu doi tați); cel cu strămoși ia primul loc
+    expect(new Set([ahnen.get(2), ahnen.get(3)])).toEqual(new Set(["tata", "mama"]));
+    expect([...ahnen.values()]).toContain("bunica");
+  });
+
+  it("cu tatăl trecut în două fișe, rămâne cel cu strămoși, iar mama își păstrează locul, oricum ar veni din baza de date", () => {
+    const rows = [row("eu", null, 0, "M"), row("tata2", "eu", 1, "M", "Avram"), row("tata", "eu", 1, "M", "Avram"), row("mama", "eu", 1, "F"),
+      row("bunicul", "tata", 2, "M"), row("bunicaM", "mama", 2, "F")];
+    for (const order of [rows, [rows[0], rows[2], rows[1], ...rows.slice(3)], [rows[0], rows[3], rows[1], rows[2], ...rows.slice(4)]]) {
+      const ahnen = toAhnentafel(order);
+      expect(ahnen.get(2)).toBe("tata");
+      expect(ahnen.get(3)).toBe("mama");
+      expect(ahnen.get(4)).toBe("bunicul");
+      expect(ahnen.get(7)).toBe("bunicaM");
+    }
   });
 
   it("un părinte fără sex ales ia locul rămas liber, oricare ar fi el", () => {
