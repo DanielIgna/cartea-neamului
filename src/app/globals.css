@@ -276,3 +276,34 @@ a{color:var(--accent)}
   /* după ultima pagină nu mai vine nimic: fără o foaie albă la final */
   .book-pages .pagedjs_page:last-child{break-after:auto!important;page-break-after:auto!important}
 }
+
+/* ---------- Panoul de admin ---------- */
+.admin-nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.admin-nav .btn[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.admin-tag{font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--muted);margin-right:6px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2);min-width:0}
+.stat-label{font-size:13px;color:var(--muted)}
+.stat-value{font-family:var(--display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat-hint{font-size:12px;color:var(--muted)}
+.stat.ok{border-color:var(--accent)}
+.stat.warn{background:var(--ochre-soft)}
+.stat.bad{border-color:var(--red)}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.pill.ok{background:var(--accent-soft);color:var(--ink)}
+.pill.warn{background:var(--ochre-soft);color:var(--ink)}
+.pill.bad{background:transparent;border:1px solid var(--red);color:var(--red)}
+.admin-zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.zone-link{display:block;text-decoration:none;color:inherit}
+.zone-link:hover .card{border-color:var(--accent)}
+.tbl-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td.n,.tbl th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl small{display:block;color:var(--muted)}
+.meter{height:10px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.meter-fill{height:100%;background:var(--good)}
+.meter-fill.warn{background:var(--ochre)}
+.meter-fill.bad{background:var(--red)}
+.err-msg{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:4px 0 0;color:var(--ink)}

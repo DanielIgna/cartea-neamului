@@ -19,6 +19,7 @@ import { cookies } from "next/headers";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
+import { isAdminEmail } from "@/lib/admin";
 
 
 export const metadata: Metadata = { title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte." };
@@ -41,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="top">
             <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>
             <ThemeSwitch initial={theme} />
-            {me && <UserMenu name={me.name} unread={unread} image={avatar} />}
+            {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminEmail(me.email)} />}
           </header>
           {children}
         </div>
