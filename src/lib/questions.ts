@@ -3,7 +3,7 @@
  * cu cine s-a căsătorit și în ce an s-a născut, așa că întrebările poartă numele și anii lui. Doi oameni din aceeași familie
  * primesc întrebări diferite. Totul e scris de mână, în română, fără inteligență artificială și fără costuri.
  */
-export type Chapter = "copilaria" | "scoala" | "dragostea" | "munca" | "copiii" | "plecarea" | "obiceiuri" | "istoria" | "invatat" | "altele";
+export type Chapter = "copilaria" | "scoala" | "dragostea" | "munca" | "copiii" | "plecarea" | "obiceiuri" | "istoria" | "credinta" | "invatat" | "altele";
 
 /** Capitolele poveștii, în ordinea în care se răsfoiesc. */
 export const CHAPTERS: { key: Chapter; label: string }[] = [
@@ -15,6 +15,7 @@ export const CHAPTERS: { key: Chapter; label: string }[] = [
   { key: "plecarea", label: "Plecări și drumuri" },
   { key: "obiceiuri", label: "Obiceiuri" },
   { key: "istoria", label: "Istoria mare" },
+  { key: "credinta", label: "Credința" },
   { key: "invatat", label: "Ce am învățat" },
   { key: "altele", label: "Alte amintiri" },
 ];

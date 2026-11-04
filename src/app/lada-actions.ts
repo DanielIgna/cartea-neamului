@@ -52,6 +52,7 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
   const [owner] = await db.select({ id: person.id, givenName: person.givenName, sex: person.sex, living: person.living, claimedBy: person.claimedByUserId }).from(person)
     .where(and(eq(person.id, v.personId), eq(person.treeId, v.treeId)));
   if (!owner) return { error: "Persoana nu mai e în arbore." };
+  if (v.chapter === "credinta" && !owner.living) return { error: "Capitolul despre credință e doar pentru cei în viață, care răspund singuri." };
   let existing: typeof memory.$inferSelect | undefined;
   let helper = false;
   if (v.id) {
