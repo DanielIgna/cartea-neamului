@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FanChart, ClassicTree, DescendantsChart, type Side, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass, TwinTree, hourglassUp } from "./lineage-charts";
 import { twinParts, lineRoot } from "@/lib/tree-layout";
+import { twinForest, type Seed } from "@/lib/tree360";
 import { where, type PersonView } from "@/lib/tree-data";
 import { placeKey } from "@/lib/place-key";
 import type { TreeLive } from "@/lib/realtime";
@@ -105,7 +106,7 @@ export default function TreeScreen(props: Props) {
   const parts = useMemo(() => twinParts(graph, drawn, centerId, patRoot, matRoot, placeholder), [graph, drawn, centerId, patRoot, matRoot, placeholder]);
   // Pornit singur doar când fiecare părinte are strămoși adevărați (un „Tată necunoscut” fără părinți nu face o spiță).
   const bothSides = !!parts && lineRoot(graph, parts.father, placeholder) !== parts.father && lineRoot(graph, parts.mother, placeholder) !== parts.mother;
-  const twinOn = view === "tree" && !!parts && (twin ?? bothSides);
+  const twinOn = (view === "tree" || view === "360") && !!parts && (twin ?? bothSides);
   const twinKey = twinOn && parts ? `${parts.patRoot}+${parts.matRoot}` : "";
   // Neamul cuiva poartă numele cu care s-a născut (o femeie măritată își duce mai departe neamul de fată).
   const sur = (id: string) => people[id]?.birthSurname?.trim() || people[id]?.surname || "";
@@ -124,7 +125,8 @@ export default function TreeScreen(props: Props) {
   const onLine = (who: Side) => !!parts && !twinOn && (trunkId === parts[who] || isAncestor(graph, trunkId, parts[who]));
   // În Copac butonul apăsat arată ce e desenat; în celelalte desene, spița aleasă.
   const treeLike = view === "tree" || view === "360";
-  const pressed = (who: Side | null) => (treeLike ? (who ? onLine(who) : twinOn) : side === who);
+  const pressed = (who: Side | null) => (view === "360" ? (who ? !twinOn && (side === who || (side === null && onLine(who))) : twinOn)
+    : treeLike ? (who ? onLine(who) : twinOn) : side === who);
   const chooseSide = (who: Side | null) => {
     setSide(who);
     if (!who) setTwin(true);
@@ -178,6 +180,15 @@ export default function TreeScreen(props: Props) {
     });
     return () => cancelAnimationFrame(frame);
   }, [view, generations, centerId, fanDir, trunk, twinKey, shownSide]);
+  // Copacul 360°: amândouă spițele, fiecare pe jumătatea ei de cerc, sau spița aleasă. Spița aleasă pornește sigur de la
+  // strămoșul ei (rădăcina din twinParts, care ține cont de tatăl trecut de două ori), chiar dacă trunchiul a rămas pe altă linie.
+  const seeds360 = useMemo((): { seeds: Seed[]; links: [string, string][] } => {
+    if (view !== "360") return { seeds: [{ node: lineage, depth: 0 }], links: [] };
+    if (twinOn && parts) return twinForest(parts);
+    const want = parts && side ? (side === "father" ? parts.patRoot : parts.matRoot) : null;
+    const onWanted = !!want && !!parts && (trunkId === parts[side!] || isAncestor(graph, trunkId, parts[side!]));
+    return { seeds: [{ node: want && !onWanted ? descendants(graph, drawn, want) : lineage, depth: 0 }], links: [] };
+  }, [view, twinOn, parts, side, trunkId, graph, drawn, lineage]);
   const originOf = (id: string) => originFor(id, graph, origins ?? {}, people);
   const showsLineage = view === "tree" || view === "360" || view === "desc" || (view === "fan" && fanDir === "down");
   const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
@@ -203,7 +214,7 @@ export default function TreeScreen(props: Props) {
               <div className="seg seg-wrap" role="group" aria-label="Spițe">
                 <button aria-pressed={pressed("father")} onClick={() => chooseSide("father")}>{sideName("father")}</button>
                 <button aria-pressed={pressed("mother")} onClick={() => chooseSide("mother")}>{sideName("mother")}</button>
-                {view !== "360" && <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>}
+                <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>
               </div>
             )}
             {twinOn && parts && ([["father", "Neamul tatălui, de la", "tatăl", setPatRoot], ["mother", "Neamul mamei, de la", "mama", setMatRoot]] as const).map(([who, text, self, set]) => (
@@ -235,7 +246,7 @@ export default function TreeScreen(props: Props) {
             {live && <LiveTree key={live.sealedQuery.queryFingerprint} url={live.url} treeId={treeId} userId={live.userId} sealedQuery={live.sealedQuery} initialData={live.initialData} />}
           </div>
           {view === "360" ? (
-            <Tree360 root={lineage} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
+            <Tree360 seeds={seeds360.seeds} links={seeds360.links} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
           ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}`} full={full} onFull={setFull}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} side={shownSide} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
@@ -258,6 +269,7 @@ export default function TreeScreen(props: Props) {
             {view === "360" ? (
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
+                {twinOn && <span><i className="sw" style={{ border: "2px dashed var(--ochre)" }} />Neamul tatălui pe o jumătate de cerc, neamul mamei pe cealaltă; linia punctată e căsătoria părinților, iar copiii lor cresc din ea.</span>}
                 <span>Strămoșul stă jos, în trunchi; fiecare generație e un inel mai sus, de jur împrejur. Trage de copac ca să-l rotești (și în sus sau în jos ca să-l înclini), sau folosește săgețile de pe tastatură. „Povestea neamului” trece prin oameni în ordinea nașterii și spune, pentru fiecare, cum era lumea în ținutul lui atunci.</span>
               </>
             ) : view === "desc" ? (
@@ -293,7 +305,7 @@ export default function TreeScreen(props: Props) {
             {view !== "360" && <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>}
           </div>
           {/* O spiță care se oprește la părinte, sau îi lipsește tatăl: de obicei părinții lui au fost legați doar de frații lui, ori e trecut de două ori. */}
-          {view === "tree" && cut.map(({ who, x, stops, found }) => {
+          {treeLike && cut.map(({ who, x, stops, found }) => {
             const el = x.sex === "F" ? "ea" : "el", ei = x.sex === "F" ? "ei" : "lui", side = who === "father" ? "tatălui" : "mamei";
             const open = (text: string) => <button className="linklike" onClick={() => setSel({ id: x.id })}>{text}</button>;
             return (

@@ -1,4 +1,5 @@
 import type { DescNode } from "./family";
+import type { TwinParts } from "./tree-layout";
 
 /**
  * Copacul 360°: urmașii unui strămoș așezați pe inele, unul deasupra altuia, ca o coroană de copac.
@@ -24,7 +25,11 @@ export const SPACING = 86;
 
 type Flat = { d: DescNode; depth: number; parent: string | null; weight: number; a0: number; a1: number };
 
-export function layout360(root: DescNode, opts: { rowH?: number; spacing?: number } = {}): Layout3 {
+/** Un copac de la o rădăcină, sau mai mulți (neamul tatălui și al mamei), fiecare pornind de la inelul lui. */
+export type Seed = { node: DescNode; depth: number };
+
+export function layout360(input: DescNode | Seed[], opts: { rowH?: number; spacing?: number } = {}): Layout3 {
+  const seeds: Seed[] = Array.isArray(input) ? input : [{ node: input, depth: 0 }];
   const rowH = opts.rowH ?? ROW_H, spacing = opts.spacing ?? SPACING;
   // Cât loc cere fiecare: un om cu soții lui are nevoie de mai mult loc pe inel; o ramură, cât toți urmașii ei de jos.
   const flat: Flat[] = [];
@@ -37,7 +42,7 @@ export function layout360(root: DescNode, opts: { rowH?: number; spacing?: numbe
     (f as Flat & { kids: Flat[] }).kids = kids;
     return f;
   };
-  const top = weigh(root, 0, null);
+  const tops = seeds.map((s) => weigh(s.node, s.depth, null));
   const kidsOf = (f: Flat) => (f as Flat & { kids: Flat[] }).kids;
   // Felia de cerc a fiecăruia: cât greutatea lui din felia părintelui.
   const share = (f: Flat, a0: number, a1: number) => {
@@ -46,11 +51,14 @@ export function layout360(root: DescNode, opts: { rowH?: number; spacing?: numbe
     let a = a0;
     for (const k of kids) { const w = ((a1 - a0) * k.weight) / sum; share(k, a, a + w); a += w; }
   };
-  share(top, -Math.PI, Math.PI);
+  // Mai multe rădăcini: fiecare își ia felia ei de cerc, după cât loc cere neamul ei.
+  const total = tops.reduce((t, f) => t + f.weight, 0) || 1;
+  let a0 = -Math.PI;
+  for (const f of tops) { const w = (2 * Math.PI * f.weight) / total; share(f, a0, a0 + w); a0 += w; }
   const maxDepth = Math.max(...flat.map((f) => f.depth));
   // Raza fiecărui inel: destul de mare cât vecinii să nu se calce (după cât loc cer), dar nu mai mică decât cea de dedesubt cu un pas.
-  const radius: number[] = [0];
-  for (let d = 1; d <= maxDepth; d++) {
+  const radius: number[] = [];
+  for (let d = 0; d <= maxDepth; d++) {
     const ring = flat.filter((f) => f.depth === d).sort((a, b) => a.a0 - b.a0);
     let need = 0;
     for (let i = 0; i < ring.length; i++) {
@@ -63,7 +71,7 @@ export function layout360(root: DescNode, opts: { rowH?: number; spacing?: numbe
       need = Math.max(need, want / gap);
     }
     // Un singur om pe inel (o linie de strămoși): stă pe axă, ca trunchiul copacului. Mai mulți: inelul nu se strânge sub cel de dedesubt.
-    radius[d] = ring.length === 1 ? 0 : Math.max(radius[d - 1], spacing * 0.9, need);
+    radius[d] = ring.length <= 1 ? 0 : Math.max(radius[d - 1] ?? 0, spacing * 0.9, need);
   }
   const nodes: Node3[] = [];
   for (const f of flat) {
@@ -103,4 +111,17 @@ export function project(p: { x: number; y: number; z: number }, cam: Cam) {
   const y1 = yc * cp - z1 * sp, z2 = yc * sp + z1 * cp;
   const s = cam.dist / (cam.dist + z2);
   return { x: x1 * s, y: -y1 * s, z: z2, s };
+}
+
+/**
+ * „Amândouă” în 360°: neamul tatălui și neamul mamei, fiecare în jumătatea lui de cerc, cu tatăl și mama pe același inel.
+ * Familia lor comună (copiii) crește din tată; între tată și mamă se trage legătura căsătoriei.
+ */
+export function twinForest(parts: TwinParts): { seeds: Seed[]; links: [string, string][] } {
+  const depthOf = (d: DescNode, id: string, k = 0): number => (d.id === id ? k : d.children.reduce((f, c) => (f >= 0 ? f : depthOf(c, id, k + 1)), -1));
+  const withKids = (d: DescNode): DescNode => (d.id === parts.father ? { ...d, children: [...d.children, ...parts.crown.children] } : { ...d, children: d.children.map(withKids) });
+  const left = withKids(parts.left);
+  const df = Math.max(0, depthOf(left, parts.father)), dm = Math.max(0, depthOf(parts.right, parts.mother));
+  const top = Math.max(df, dm);
+  return { seeds: [{ node: left, depth: top - df }, { node: parts.right, depth: top - dm }], links: [[parts.father, parts.mother]] };
 }

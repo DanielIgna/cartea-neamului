@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from "react";
 import type { PersonView } from "@/lib/tree-data";
-import type { DescNode } from "@/lib/family";
-import { layout360, project, yawFacing, angleDiff, ROW_H, type Cam, type Node3 } from "@/lib/tree360";
+import { layout360, project, type Seed, yawFacing, angleDiff, ROW_H, type Cam, type Node3 } from "@/lib/tree360";
 import { ageWords, storyFor, type Origin } from "@/lib/vremuri";
 import { bornLine, eraYears, toneColor, TONE_LABEL } from "./TimesStory";
 import { clip } from "@/lib/person-text";
@@ -11,7 +10,8 @@ const PITCH = -0.38; // privit puțin de sus
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 
 type Props = {
-  root: DescNode; people: Record<string, PersonView>; selectedId: string | null; egoPath: Set<string>;
+  /** Rădăcinile: o spiță, sau amândouă (neamul tatălui și al mamei), cu legăturile de căsătorie dintre ele. */
+  seeds: Seed[]; links?: [string, string][]; people: Record<string, PersonView>; selectedId: string | null; egoPath: Set<string>;
   onSelectPerson: (id: string) => void; onCenter: (id: string) => void; originOf: (id: string) => Origin | null;
 };
 
@@ -20,8 +20,9 @@ type Props = {
  * „Povestea neamului” trece prin oameni în ordinea nașterii: copacul se întoarce spre fiecare, iar dedesubt apare
  * lumea în care s-a născut, după ținutul lui, și ce a trăit.
  */
-export default function Tree360({ root, people, selectedId, egoPath, onSelectPerson, onCenter, originOf }: Props) {
-  const lay = useMemo(() => layout360(root), [root]);
+export default function Tree360({ seeds, links = [], people, selectedId, egoPath, onSelectPerson, onCenter, originOf }: Props) {
+  const lay = useMemo(() => layout360(seeds), [seeds]);
+  const root = seeds[0].node;
   // Pe telefon desenul stă în picioare, ca să încapă un copac înalt.
   const wrap = useRef<HTMLDivElement>(null);
   const [narrow, setNarrow] = useState(false);
@@ -45,10 +46,9 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
   const [story, setStory] = useState<number | null>(null);
   const [autoplay, setAutoplay] = useState(false);
 
-  // Se învârte singur la început, dacă omul nu a cerut ecranul fără mișcare.
-  useEffect(() => { setSpin(!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches); }, []);
+  // Pornește oprit: îl învârți tu cu mâna, sau apeși „Rotește singur”.
   // Alt neam (alt trunchi): o luăm de la capăt.
-  useEffect(() => { setCam({ ...base, dist: span * 3 }); setZoom(1); setStory(null); target.current = null; }, [root]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { setCam({ ...base, dist: span * 3 }); setZoom(1); setStory(null); target.current = null; }, [seeds]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // O singură buclă de desen: rotirea lentă, ori drumul spre omul din poveste.
   const zoomRef = useRef(zoom);
@@ -103,6 +103,7 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
   // Rotire cu mouse-ul sau cu degetul; un clic fără mișcare alege omul.
   const onDown = (e: RPointerEvent<SVGSVGElement>) => {
     drag.current = { x: e.clientX, y: e.clientY, moved: false, id: e.pointerId };
+    setSpin(false); // l-ai prins cu mâna: stă pe loc până îl pornești din nou
     dragged.current = false;
   };
   const onMove = (e: RPointerEvent<SVGSVGElement>) => {
@@ -139,7 +140,8 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
   type Item = { z: number; el: React.ReactNode };
   const items: Item[] = [];
   const ground = Array.from({ length: 48 }, (_, i) => { const a = (i / 48) * Math.PI * 2; return P({ x: Math.cos(a) * lay.radius * 0.55, y: -ROW_H * 0.55, z: Math.sin(a) * lay.radius * 0.55 }); });
-  const trunkBase = P({ x: 0, y: -ROW_H * 0.55, z: 0 }), rootP = P(byId.get(root.id) ?? { x: 0, y: 0, z: 0 });
+  const trunkBase = P({ x: 0, y: -ROW_H * 0.55, z: 0 });
+  const rootPs = seeds.map((sd) => byId.get(sd.node.id)).filter((n): n is Node3 => !!n).map((n) => ({ id: n.id, p: P({ x: n.x, y: Math.min(n.y, 0), z: n.z }), top: P(n) }));
   const zoomLine = clamp(scale * 1.6, 0.5, 2.2);
   for (const n of lay.nodes) {
     if (!n.parent) continue;
@@ -157,6 +159,12 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
       z: (a.z + b.z) / 2 + 2,
       el: <path key={`e${n.id}`} d={`M${a.x},${a.y} Q${c.x},${c.y} ${b.x},${b.y}`} fill="none" stroke={onPath ? "var(--accent)" : "var(--tree-bark)"} strokeWidth={w} strokeLinecap="round" opacity={fade((a.z + b.z) / 2, span)} />,
     });
+  }
+  for (const [a1, b1] of links) {
+    const na = byId.get(a1), nb = byId.get(b1);
+    if (!na || !nb) continue;
+    const a = P(na), b = P(nb);
+    items.push({ z: (a.z + b.z) / 2 + 1, el: <line key={`m${a1}${b1}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="var(--ochre)" strokeWidth={2.4 * zoomLine} strokeDasharray="6 4" opacity={fade((a.z + b.z) / 2, span)} /> });
   }
   const nodeEl = (n: Node3) => {
     const p = people[n.id];
@@ -203,7 +211,7 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
         </button>
         <span className="t360-turn">
           <button onClick={() => turn(-0.4)} aria-label="Rotește spre stânga" title="Rotește spre stânga">⟲</button>
-          <button onClick={() => setSpin((v) => !v)} aria-pressed={spin} title={spin ? "Oprește rotirea" : "Rotește singur"}>{spin ? "⏸" : "↻"}</button>
+          <button className="zt-text" onClick={() => setSpin((v) => !v)} aria-pressed={spin}>{spin ? "⏸ Oprește" : "↻ Rotește singur"}</button>
           <button onClick={() => turn(0.4)} aria-label="Rotește spre dreapta" title="Rotește spre dreapta">⟳</button>
           <button onClick={() => zoomBy(1.25)} aria-label="Mărește">+</button>
           <button onClick={() => zoomBy(0.8)} aria-label="Micșorează">−</button>
@@ -211,11 +219,14 @@ export default function Tree360({ root, people, selectedId, egoPath, onSelectPer
         </span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="t360-svg" tabIndex={0} onKeyDown={onKey} role="img"
-        aria-label={`Copacul neamului lui ${people[root.id]?.name ?? ""}, văzut de jur împrejur. Trage ca să-l rotești.`}
+        aria-label={`Copacul neamului lui ${seeds.map((sd) => people[sd.node.id]?.name ?? "").join(" și ")}, văzut de jur împrejur. Trage ca să-l rotești.`}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
         onWheel={(e) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1); } }}>
         <polygon points={ground.map((g) => `${g.x},${g.y}`).join(" ")} fill="var(--tree-ground)" opacity={0.7} />
-        <line x1={trunkBase.x} y1={trunkBase.y} x2={rootP.x} y2={rootP.y} stroke="var(--tree-bark-dark)" strokeWidth={11 * zoomLine} strokeLinecap="round" />
+        {rootPs.map((r) => (
+          <path key={`t${r.id}`} d={`M${trunkBase.x},${trunkBase.y} Q${r.p.x},${trunkBase.y} ${r.p.x},${r.p.y} L${r.top.x},${r.top.y}`} fill="none"
+            stroke="var(--tree-bark-dark)" strokeWidth={(seeds.length > 1 ? 8 : 11) * zoomLine} strokeLinecap="round" />
+        ))}
         {items.map((i) => i.el)}
       </svg>
       {cur && s && (
