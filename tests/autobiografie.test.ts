@@ -29,6 +29,8 @@ describe("autobiografia: modelul de carte", () => {
   it("întreabă dacă Îl cunoaște pe Hristos, cu Ioan 17:3 la capitolul credinței și 2 Cronici 7:14 la vremuri", () => {
     expect(q("carte.hristos")?.text).toBe("Îl cunoști pe Domnul Isus Hristos? Cum L-ai cunoscut și ce s-a schimbat în viața ta de atunci?");
     expect(q("carte.hristos")?.chapter).toBe("credinta");
+    expect(q("carte.mantuitor")?.text).toContain("Mântuitor personal");
+    expect(q("carte.intrebare")?.chapter).toBe("credinta");
     expect(plan.find((c) => c.key === "credinta")?.verse).toEqual(FAITH_VERSE);
     expect(FAITH_VERSE.ref).toBe("Ioan 17:3");
     expect(plan.find((c) => c.key === "istoria")?.verse).toEqual(LAND_VERSE);

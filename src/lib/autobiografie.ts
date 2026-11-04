@@ -75,10 +75,12 @@ export function bookQuestions(ctx: QuestionContext): Question[] {
   q("rugaciune", "credinta", "Cine te-a învățat prima rugăciune? Ți-o mai amintești?");
   q("duminica", "credinta", "Cum era duminica în casa părinților tăi? Unde mergeați la biserică?");
   q("hristos", "credinta", "Îl cunoști pe Domnul Isus Hristos? Cum L-ai cunoscut și ce s-a schimbat în viața ta de atunci?");
+  q("mantuitor", "credinta", "A fost un moment în care L-ai primit pe Isus Hristos ca Mântuitor personal? Cum a fost?");
   q("biblia", "credinta", "Ce verset din Biblie te-a însoțit în viață? De ce tocmai acela?");
   q("ocrotit", "credinta", "A fost un moment în care ai simțit că Dumnezeu te-a ocrotit sau ți-a răspuns la rugăciune?");
   if (lived(1975)) q("prigoana", "credinta", "Cum ați păstrat credința în anii comunismului? Ați avut de suferit pentru ea?");
   q("credinta-urmasi", "credinta", "Ce ai vrea să știe urmașii tăi despre Dumnezeu și despre credința ta?");
+  q("intrebare", "credinta", "Dacă nu L-ai cunoscut încă pe Dumnezeu, ce L-ai întreba?");
   q("multumire", "invatat", "Cui îi mulțumești pentru viața pe care ai avut-o?");
   q("scrisoare", "invatat", "Dacă ai scrie o scrisoare strănepoților, ce le-ai spune în ea?");
   return out;
