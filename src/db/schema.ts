@@ -322,6 +322,12 @@ export const memory = pgTable("memory", {
   visibility: memoryVisibility("visibility").notNull().default("tree"),
   maxDegree: integer("max_degree"), // pentru „familia apropiată”: până la ce grad de rudenie; gol = gradul de la mesaje
   inBook: boolean("in_book").notNull().default(false), // autorul a bifat că poate intra în Cartea neamului
+  audioDocumentId: uuid("audio_document_id").references(() => document.id, { onDelete: "set null" }), // amintirea spusă cu glasul
+  audioSeconds: integer("audio_seconds"),
+  // Modul „la bunici”: o rudă (authorId) a înregistrat-o pentru omul fără cont, cu acordul lui spus la început.
+  helper: boolean("helper").notNull().default(false),
+  consentAt: timestamp("consent_at"),
+  consentDocumentId: uuid("consent_document_id").references(() => document.id, { onDelete: "set null" }), // acordul, cu glasul lui
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("memory_person_idx").on(t.personId), index("memory_tree_idx").on(t.treeId)]);

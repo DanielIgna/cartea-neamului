@@ -100,7 +100,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         {p.notes && <><div className="section-label">Note suplimentare</div><p className="notes">{p.notes}</p></>}
       </div>
       <MemoryBox treeId={id} owner={{ id: p.id, givenName: p.givenName, sex: p.sex, living: p.living, claimed: p.claimed }} isOwner={lada.isOwner}
-        viewerPersonId={mine?.id ?? null} canAsk={p.living && !lada.isOwner} own={lada.own} about={lada.about} questions={lada.questions} upcoming={upcoming}
+        viewerPersonId={mine?.id ?? null} canAsk={p.living && !lada.isOwner} canHelp={p.living && !p.claimed && can(role, "contributor")} own={lada.own} about={lada.about} questions={lada.questions} upcoming={upcoming}
         people={options} storage={storageConfigured()} defaultDegree={data.tree.chatMaxDegree} startMention={scrie ?? null} />
       <div className="card">
         <div className="section-label" style={{ marginTop: 0 }}>Album</div>

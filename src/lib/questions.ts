@@ -96,7 +96,7 @@ function fromHistory({ me }: QuestionContext): Question[] {
 /** Întrebări bune pentru oricine. */
 const ANY: [string, Chapter, string][] = [
   ["prima-amintire", "copilaria", "Care e prima ta amintire?"],
-  ["jocul", "copilaria", "Care era jocul tău preferat când erai mic?"],
+  ["jocul", "copilaria", "Care era jocul tău preferat când erai {mic|mică}?"],
   ["vara", "copilaria", "Ce făceai vara, în vacanțele copilăriei?"],
   ["prieten-scoala", "scoala", "Cine ți-a fost cel mai bun prieten la școală și ce s-a ales de el?"],
   ["profesor", "scoala", "Ce învățător sau profesor ți-a rămas în minte? De ce?"],
@@ -115,14 +115,17 @@ const ANY: [string, Chapter, string][] = [
   ["mancare", "obiceiuri", "Ce mâncare de-a casei îți lipsește cel mai mult?"],
   ["obicei", "obiceiuri", "Ce obicei din familie ai vrea să nu se piardă?"],
   ["sfat", "invatat", "Ce sfat le dai strănepoților pe care n-o să-i cunoști?"],
-  ["mandru", "invatat", "De ce ești cel mai mândru în viața ta?"],
+  ["mandru", "invatat", "De ce ești {cel mai mândru|cea mai mândră} în viața ta?"],
   ["altfel", "invatat", "Ce ai face altfel, dacă ai lua-o de la capăt?"],
   ["om-bun", "invatat", "Cine a fost omul care te-a ajutat cel mai mult în viață?"],
 ];
 
+/** „{mic|mică}”: forma de bărbat sau de femeie, după cel care răspunde. */
+const gendered = (text: string, sex: Who["sex"]) => text.replace(/\{([^|}]*)\|([^}]*)\}/g, (_, m: string, f: string) => (sex === "F" ? f : m));
+
 /** Toate întrebările pentru un om, amestecate pe rând: una din arbore, una din istorie, una pentru oricine, și tot așa. */
 export function questionsFor(ctx: QuestionContext): Question[] {
-  const groups = [fromTree(ctx), fromHistory(ctx), ANY.map(([key, chapter, text]): Question => ({ key: `oricine.${key}`, chapter, text, kind: "any" }))]
+  const groups = [fromTree(ctx), fromHistory(ctx), ANY.map(([key, chapter, text]): Question => ({ key: `oricine.${key}`, chapter, text: gendered(text, ctx.me.sex), kind: "any" }))]
     .map((list) => [...list].sort((a, b) => hash(ctx.me.id + a.key) - hash(ctx.me.id + b.key)));
   const out: Question[] = [];
   for (let i = 0; out.length < groups.reduce((n, g) => n + g.length, 0); i++) for (const g of groups) if (g[i]) out.push(g[i]);

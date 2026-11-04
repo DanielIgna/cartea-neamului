@@ -7,6 +7,7 @@ import { Avatar } from "./Album";
 export type StoryMemory = {
   id: string; title: string | null; question: string | null; body: string; when: string; photoId: string | null;
   mentions: string[]; from: string | null; replies: number;
+  audioId: string | null; audioSeconds: number | null; recordedBy: string | null;
 };
 type Who = { givenName: string; surname: string; photoId: string | null; accountImage?: string | null };
 export type Slide =
@@ -42,7 +43,7 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
   const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
     const d = down.current;
     down.current = null;
-    if (!d || (e.target as HTMLElement).closest("a,button")) return;
+    if (!d || (e.target as HTMLElement).closest("a,button,audio")) return;
     const dx = e.clientX - d.x, dy = e.clientY - d.y;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) return go(dx < 0 ? 1 : -1);
     if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && Date.now() - d.t < 600) {
@@ -84,10 +85,12 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
               {s.m.photoId && <img className="photo" src={`/api/document/${s.m.photoId}`} alt="" draggable={false} />}
               {s.m.title && <h3>{s.m.title}</h3>}
               {s.m.question && <p className="q">„{s.m.question}”</p>}
-              <p className="body">{s.m.body}</p>
+              {s.m.audioId && <audio className="story-audio" controls preload="none" src={`/api/document/${s.m.audioId}`} />}
+              {s.m.body && <p className="body">{s.m.body}</p>}
               {s.m.when && <div className="meta">{s.m.when}</div>}
               {s.m.mentions.length > 0 && <div className="meta">Cu {andList(s.m.mentions)}</div>}
               {s.m.from && <div className="meta">Scrisă de {s.m.from}</div>}
+              {s.m.recordedBy && <div className="meta">Înregistrată de {s.m.recordedBy}, „la bunici”</div>}
               {s.m.replies > 0 && <Link className="story-replies" href={`${back}#amintire-${s.m.id}`}>{s.m.replies === 1 ? "Încă cineva își amintește" : `Încă ${s.m.replies} își amintesc`} ›</Link>}
             </article>
           )}

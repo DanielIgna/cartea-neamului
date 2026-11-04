@@ -6,6 +6,7 @@ import { addMemoryReply, askQuestion, deleteMemory, deleteMemoryReply, dismissQu
 import { CHAPTERS, type Question } from "@/lib/questions";
 import type { AskedView, MemoryView } from "@/lib/lada-db";
 import MemoryForm, { type Draft, type PersonOption } from "./MemoryForm";
+import { clock } from "./VoiceRecorder";
 
 type Owner = { id: string; givenName: string; sex: "M" | "F" | "U"; living: boolean; claimed: boolean };
 type Run = (fn: () => Promise<{ error?: string }>, ok?: string) => void;
@@ -20,11 +21,11 @@ const order = (a: MemoryView, b: MemoryView) => (a.whenYear ?? 9999) - (b.whenYe
  * Dedesubt, amintirile altora în care e pomenit (merge și pentru cei care nu mai sunt).
  */
 export default function MemoryBox(props: {
-  treeId: string; owner: Owner; isOwner: boolean; viewerPersonId: string | null; canAsk: boolean;
+  treeId: string; owner: Owner; isOwner: boolean; viewerPersonId: string | null; canAsk: boolean; canHelp?: boolean;
   own: MemoryView[]; about: MemoryView[]; questions: AskedView[]; upcoming: Question[];
   people: PersonOption[]; storage: boolean; defaultDegree: number; startMention?: string | null;
 }) {
-  const { treeId, owner, isOwner, viewerPersonId, canAsk, own, about, questions, upcoming, people, storage, defaultDegree, startMention } = props;
+  const { treeId, owner, isOwner, viewerPersonId, canAsk, canHelp, own, about, questions, upcoming, people, storage, defaultDegree, startMention } = props;
   const router = useRouter();
   const [pending, start] = useTransition();
   const [writing, setWriting] = useState<Draft | null>(isOwner && startMention && people.some((p) => p.id === startMention) ? { mentions: [startMention] } : null);
@@ -63,7 +64,7 @@ export default function MemoryBox(props: {
           <div className="lada-head">
             <div>
               <div className="section-label" style={{ marginTop: 0 }}>Lada cu amintiri</div>
-              <h3>{isOwner ? "Lada ta cu amintiri" : `Ce și-a scris ${owner.givenName} despre viața ${lui}`}</h3>
+              <h3>{isOwner ? "Lada ta cu amintiri" : `Ce a povestit ${owner.givenName} despre viața ${lui}`}</h3>
               <p>{isOwner ? "Amintirile tale, pe capitole, pentru cei din familie. Tu alegi la fiecare cine o vede." : own.length ? `${own.length} ${own.length === 1 ? "amintire" : "amintiri"} pe care le poți vedea.` : ""}</p>
             </div>
             {shown > 0 && <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/poveste`}>Răsfoiește povestea ▸</Link>}
@@ -116,6 +117,12 @@ export default function MemoryBox(props: {
             </details>
           )}
 
+          {canHelp && (
+            <div className="helper-call">
+              <b>Ești la {owner.givenName}?</b> Deschide modul „la bunici”: telefonul îi arată întrebările cu litere mari, {owner.givenName} povestește, iar telefonul înregistrează, cu acordul {owner.sex === "F" ? "ei" : "lui"} spus la început.
+              <div className="actions" style={{ marginTop: 8 }}><Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/la-bunici`}>Deschide modul „la bunici”</Link></div>
+            </div>
+          )}
           {!isOwner && canAsk && <AskBox treeId={treeId} owner={owner} mine={questions.filter((x) => x.mine)} run={run} pending={pending} visibleIds={own.map((m) => m.id)} />}
 
           {chapters.map((c) => (
@@ -171,7 +178,8 @@ function AskBox({ treeId, owner, mine, run, pending, visibleIds }: { treeId: str
         <textarea value={text} onChange={(e) => setText(e.target.value)} maxLength={400} placeholder="De pildă: Cum era o zi de duminică în copilăria ta?" aria-label="Întrebarea ta" />
         <div className="actions" style={{ marginTop: 0, alignItems: "center" }}>
           <button className="btn primary" disabled={pending || text.trim().length < 3}>Lasă întrebarea</button>
-          <small className="muted">{owner.givenName} alege dacă răspunsul îl vede toată familia sau doar tu.</small>
+          <small className="muted">{owner.claimed ? `${owner.givenName} alege dacă răspunsul îl vede toată familia sau doar tu.`
+            : `${owner.givenName} o găsește în ladă când își face cont, sau i-o citește cine deschide modul „la bunici”.`}</small>
         </div>
       </form>
       {mine.length > 0 && (
@@ -213,20 +221,27 @@ function MemoryCard({ m, treeId, profileId, viewerPersonId, nameOf, run, pending
       {m.title && <h4>{m.title}</h4>}
       {m.question && <p className="q">La întrebarea „{m.question}”{m.askedBy ? `, de la ${m.askedBy.name}` : ""}</p>}
       {m.photoId && <a className="photo" href={`/api/document/${m.photoId}`} target="_blank" rel="noopener"><img src={`/api/document/${m.photoId}`} alt={m.title ?? "Poza amintirii"} loading="lazy" /></a>}
-      <p className="body">{long ? `${m.body.slice(0, 600).trimEnd()}… ` : m.body}{long && <button className="linklike" onClick={() => setFull(true)}>Citește tot</button>}</p>
+      {m.audioId && (
+        <div className="voice-row">
+          <audio controls preload="none" src={`/api/document/${m.audioId}`} aria-label={`Amintirea spusă cu glasul${m.audioSeconds ? `, ${clock(m.audioSeconds)}` : ""}`} />
+          {m.audioSeconds ? <span className="muted">{clock(m.audioSeconds)}</span> : null}
+        </div>
+      )}
+      {m.body && <p className="body">{long ? `${m.body.slice(0, 600).trimEnd()}… ` : m.body}{long && <button className="linklike" onClick={() => setFull(true)}>Citește tot</button>}</p>}
+      {m.helper && <div className="meta">Povestită de {nameOf(m.personId)}{m.author ? `, înregistrată de ${m.author.name}` : ""} în modul „la bunici”, cu acordul {m.consentAudioId ? <a href={`/api/document/${m.consentAudioId}`} target="_blank" rel="noopener">spus cu glasul</a> : "dat la început"}.</div>}
       {(m.whenText || m.place) && <div className="meta">{[m.whenText, m.place].filter(Boolean).join(" · ")}</div>}
-      {(m.mentions.length > 0 || m.mine) && (
+      {(m.mentions.length > 0 || m.editable) && (
         <div className="chips">
           {m.mentions.map((x) => <Link key={x.personId} className="chip" href={`/arbore/${treeId}/persoana/${x.personId}`}>{nameOf(x.personId)}</Link>)}
-          {m.mine && <span className="chip priv" title="Cine vede amintirea">{vis}</span>}
-          {m.mine && m.inBook && <span className="chip ok">poate intra în carte</span>}
+          {m.editable && <span className="chip priv" title="Cine vede amintirea">{vis}</span>}
+          {m.editable && m.inBook && <span className="chip ok">poate intra în carte</span>}
           {m.mine && from && hiddenByProfile && <span className="chip">ascunsă de {nameOf(profileId)} de pe profil</span>}
         </div>
       )}
       <div className="tools">
         {m.visibility !== "private" && <button className="linklike" onClick={() => setReplying(!replying)}>Și eu îmi amintesc…</button>}
-        {m.mine && <button className="linklike" onClick={() => setEditing(m.id)}>Schimbă</button>}
-        {m.mine && <button className="linklike" onClick={() => setConfirm(true)}>Șterge</button>}
+        {m.editable && <button className="linklike" onClick={() => setEditing(m.id)}>Schimbă</button>}
+        {m.editable && <button className="linklike" onClick={() => setConfirm(true)}>Șterge</button>}
         {meHere && (meHere.hidden
           ? <button className="linklike" disabled={pending} onClick={() => run(() => hideMention(treeId, m.id, viewerPersonId!, false), "Amintirea apare din nou pe profilul tău.")}>Arată-o din nou pe profilul meu</button>
           : <button className="linklike" disabled={pending} onClick={() => run(() => hideMention(treeId, m.id, viewerPersonId!, true), "Am ascuns amintirea de pe profilul tău. În lada autorului rămâne.")}>Ascunde-o de pe profilul meu</button>)}
@@ -247,7 +262,7 @@ function MemoryCard({ m, treeId, profileId, viewerPersonId, nameOf, run, pending
             <div key={r.id} className="reply">
               <span className="who">{r.author?.personId ? <Link href={`/arbore/${treeId}/persoana/${r.author.personId}`}>{r.author.name}</Link> : r.author?.name ?? "Cineva"}</span>
               <span className="muted"> · {fmtDay(r.createdAt)}</span>
-              {(r.mine || m.mine) && <button className="linklike" style={{ float: "right", fontSize: 13 }} disabled={pending} onClick={() => run(() => deleteMemoryReply(treeId, r.id))}>Șterge</button>}
+              {(r.mine || m.editable) && <button className="linklike" style={{ float: "right", fontSize: 13 }} disabled={pending} onClick={() => run(() => deleteMemoryReply(treeId, r.id))}>Șterge</button>}
               <p>{r.body}</p>
             </div>
           ))}

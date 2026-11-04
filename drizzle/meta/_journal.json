@@ -71,6 +71,13 @@
       "when": 1793773657455,
       "tag": "0009_lada",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793779574486,
+      "tag": "0010_glas",
+      "breakpoints": true
     }
   ]
 }

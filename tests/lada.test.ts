@@ -2,10 +2,11 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { eq } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
-import { tree, person, relationship, treeMember, user, memory, memoryMention, memoryQuestion, memoryReply } from "@/db/schema";
+import { tree, person, relationship, treeMember, user, memory, memoryMention, memoryQuestion, memoryReply, document, documentLink } from "@/db/schema";
 import { buildGraph, type Graph } from "@/lib/kinship";
 import { canSee, questionContext, yearIn, type MemoryAccess } from "@/lib/lada";
-import { loadLada } from "@/lib/lada-db";
+import { canOpenDocument, loadLada, memoryMediaIds } from "@/lib/lada-db";
+import { fileType } from "@/lib/file-type";
 import { questionsFor, sundayQuestion, weekNumber, type QuestionContext } from "@/lib/questions";
 
 const who = (id: string, givenName: string, sex: "M" | "F", birthYear: number | null, deathYear: number | null = null) => ({ id, givenName, sex, birthYear, deathYear });
@@ -42,6 +43,14 @@ describe("întrebarea de duminică", () => {
     expect(young).not.toContain("istorie.colectivizare");
     expect(young).not.toContain("plecarea.armata");
     expect(questionsFor({ ...ctx, me: me(null) }).some((q) => q.kind === "history")).toBe(false);
+  });
+
+  it("vorbește cu fiecare la genul lui", () => {
+    const her = questionsFor({ ...ctx, me: me(1961, "F") });
+    expect(her.find((q) => q.key === "oricine.jocul")!.text).toBe("Care era jocul tău preferat când erai mică?");
+    expect(her.find((q) => q.key === "oricine.mandru")!.text).toBe("De ce ești cea mai mândră în viața ta?");
+    expect(text("oricine.mandru")).toBe("De ce ești cel mai mândru în viața ta?");
+    expect(all.some((q) => /[{}|]/.test(q.text))).toBe(false);
   });
 
   it("amestecă întrebările: una din arbore, una din istorie, una pentru oricine", () => {
@@ -176,5 +185,45 @@ describe("lada pe profil", () => {
     expect(bodies((await lada("var")).about)).toEqual(["dinLadaVarului"]);
     // În lada vărului rămâne pentru toți.
     expect(bodies((await lada("sotie", "var")).own)).toEqual(["dinLadaVarului"]);
+  });
+});
+
+describe("glasul și modul „la bunici”", () => {
+  const lada = (k: string, of: string) => loadLada(db, treeId, P[of], { userId: `u-${k}`, personId: k === "tata" ? null : P[k] }, g, 4);
+
+  it("recunoaște înregistrările din telefon și mesajele vocale fără tip", () => {
+    expect(fileType({ type: "audio/webm;codecs=opus", name: "glas.webm" })).toBe("audio/webm");
+    expect(fileType({ type: "", name: "PTT-20261104-WA0003.opus" })).toBe("audio/ogg");
+    expect(fileType({ type: "", name: "bunica.m4a" })).toBe("audio/mp4");
+    expect(fileType({ type: "image/jpeg", name: "x.jpg" })).toBe("image/jpeg");
+    expect(fileType({ type: "", name: "fara-extensie" })).toBe("");
+  });
+
+  it("poza sau glasul unei amintiri le deschide doar cine vede amintirea", async () => {
+    const doc = async (by: string) => (await db.insert(document).values({ treeId, kind: "audio", title: "glas", fileKey: `k-${by}-${Math.random()}`, uploadedBy: `u-${by}` }).returning())[0].id;
+    const draftVoice = await doc("eu"), loose = await doc("var"), album = await doc("var");
+    await db.update(memory).set({ audioDocumentId: draftVoice }).where(eq(memory.id, M.ciorna));
+    await db.insert(documentLink).values({ documentId: album, personId: P.var });
+    expect(await canOpenDocument(db, draftVoice, treeId, "u-eu", "u-eu")).toBe(true);
+    expect(await canOpenDocument(db, draftVoice, treeId, "u-eu", "u-sotie")).toBe(false);
+    // Încărcat, dar încă nepus la nicio amintire: doar cine l-a încărcat.
+    expect(await canOpenDocument(db, loose, treeId, "u-var", "u-var")).toBe(true);
+    expect(await canOpenDocument(db, loose, treeId, "u-var", "u-eu")).toBe(false);
+    // Documentele din album rămân ale tuturor din arbore.
+    expect(await canOpenDocument(db, album, treeId, "u-var", "u-sotie")).toBe(true);
+    expect((await memoryMediaIds(db, treeId)).has(draftVoice)).toBe(true);
+    expect((await lada("eu", "eu")).own.find((x) => x.body === "ciorna")!.audioId).toBe(draftVoice);
+  });
+
+  it("povestea înregistrată pentru tata, care n-are cont, e și a lui după ce își face cont", async () => {
+    await db.insert(memory).values({ treeId, personId: P.tata, authorId: "u-eu", body: "", audioSeconds: 75, helper: true, consentAt: new Date(), visibility: "tree", chapter: "copilaria" });
+    const byHelper = (await lada("eu", "tata")).own[0];
+    expect(byHelper).toMatchObject({ helper: true, editable: true, mine: true, audioSeconds: 75 });
+    expect((await lada("var", "tata")).own[0]).toMatchObject({ helper: true, editable: false });
+    await db.update(person).set({ claimedByUserId: "u-tata" }).where(eq(person.id, P.tata));
+    const l = await loadLada(db, treeId, P.tata, { userId: "u-tata", personId: P.tata }, g, 4);
+    expect(l.isOwner).toBe(true);
+    expect(l.own[0]).toMatchObject({ editable: true, mine: false });
+    await db.update(person).set({ claimedByUserId: null }).where(eq(person.id, P.tata));
   });
 });
