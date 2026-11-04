@@ -1,6 +1,6 @@
 "use client";
 import type { PersonView } from "@/lib/tree-data";
-import { genOf, fillFor, type DescNode, type Slots } from "./charts";
+import { genOf, fillFor, onSide, type DescNode, type Side, type Slots } from "./charts";
 import { clip, lifeDates, years } from "@/lib/person-text";
 import { TREE, layoutSingle, layoutTwin, thick, type Pt, type Scene, type TNode, type TwinParts } from "@/lib/tree-layout";
 
@@ -274,18 +274,22 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
   );
 }
 
+/** Câte generații de strămoși urcă în clepsidră: trei pe amândouă spițele (părinți, bunici, străbunici), patru pe una singură, cât să încapă la fel de lat. */
+export const hourglassUp = (generations: number, side?: Side | null) => Math.min(generations, side ? 4 : 3);
+
 /**
- * Clepsidra: persoana aleasă la mijloc, strămoșii ei deasupra (tatăl spre stânga, mama spre dreapta)
+ * Clepsidra: persoana aleasă la mijloc, strămoșii ei deasupra (tatăl spre stânga, mama spre dreapta, ori doar spița aleasă)
  * și urmașii dedesubt, cu soții alături. Forma se lărgește singură în sus sau în jos, după câte generații sunt.
  */
-export function Hourglass({ slots, generations, down, people, selectedId, onSelectPerson, onSelectSlot, onCenter }: {
+export function Hourglass({ slots, generations, down, people, selectedId, onSelectPerson, onSelectSlot, onCenter, side }: {
   slots: Slots; generations: number; down: DescNode; people: Record<string, PersonView>; selectedId: string | null;
-  onSelectPerson: (id: string) => void; onSelectSlot: (n: number) => void; onCenter: (id: string) => void;
+  onSelectPerson: (id: string) => void; onSelectSlot: (n: number) => void; onCenter: (id: string) => void; side?: Side | null;
 }) {
   const bw = 118, bh = 40, rowH = 74, colW = bw + 10;
-  const upGens = Math.min(generations, 3); // părinți, bunici, străbunici: destul cât să rămână lizibil pe un ecran
+  const upGens = hourglassUp(generations, side);
   // Strămoșii ca un arbore „întors”: fiecare are loc doar cât îi trebuie, ca să nu rămână găuri pentru părinți necunoscuți.
-  const toNode = (n: number): DescNode => ({ id: String(n), partners: [], children: [2 * n, 2 * n + 1].filter((c) => slots[c] && genOf(c) <= upGens).map(toNode) });
+  // Cu o singură spiță, deasupra urcă doar neamul tatălui sau doar al mamei.
+  const toNode = (n: number): DescNode => ({ id: String(n), partners: [], children: [2 * n, 2 * n + 1].filter((c) => slots[c] && genOf(c) <= upGens && onSide(c, side)).map(toNode) });
   const upTree = place(toNode(1));
   const topGen = upTree.depth;
   const { placed, leaves, depth } = place(down);

@@ -51,6 +51,8 @@ nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
 .seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
 /* Pe telefon, filtrele hărții (cu „Amintiri”, cinci) trec pe două rânduri în loc să iasă din cutie. */
 @media (max-width:520px){.map-filter{display:flex;flex-wrap:wrap;width:100%}.map-filter button{flex:1 1 auto;white-space:nowrap;padding:6px 9px}}
+/* Pe telefon, butoanele desenelor (Clepsidră… Descendenți) și ale spițelor trec pe două rânduri în loc să se taie la margine. */
+@media (max-width:520px){.seg-wrap{display:flex;flex-wrap:wrap;width:100%}.seg-wrap button{flex:1 1 auto;white-space:nowrap;padding:6px 9px}}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;text-decoration:none;color:var(--ink);display:inline-block}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
 .btn:hover{border-color:var(--accent)}

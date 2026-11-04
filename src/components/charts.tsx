@@ -8,22 +8,30 @@ export type { DescNode };
 export { clip, years, fanRadii, fillFor, genOf };
 
 export type Slots = Record<number, PersonView>;
-type Props = { slots: Slots; selected: number; onSelect: (n: number) => void; onCenter: (id: string) => void; generations?: number };
+/** O singură spiță: doar neamul tatălui (locurile 2, 4–5, 8–11…) sau doar al mamei (3, 6–7, 12–15…). */
+export type Side = "father" | "mother";
+type Props = { slots: Slots; selected: number; onSelect: (n: number) => void; onCenter: (id: string) => void; generations?: number; side?: Side | null };
+/** Locul `n` e pe spița aleasă (persoana din centru e pe amândouă). */
+export const onSide = (n: number, side?: Side | null) => !side || n === 1 || n >> (genOf(n) - 1) === (side === "father" ? 2 : 3);
 
 const keyAct = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
 
-/** Evantai: generațiile pe inele concentrice, 240°, tatăl în stânga, mama în dreapta. */
-export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
+/**
+ * Evantai: generațiile pe inele concentrice, 240°, tatăl în stânga, mama în dreapta.
+ * Cu o singură spiță, neamul acelui părinte umple tot evantaiul: el e primul inel, părinții lui al doilea, și tot așa.
+ */
+export function FanChart({ slots, selected, onSelect, onCenter, generations = 4, side }: Props) {
   const R = fanRadii(generations), maxR = R[generations + 1];
   const cx = maxR + 20, cy = maxR + 10, A0 = -210, SPAN = 240;
   const W = 2 * cx, H = cy + maxR * 0.5 + 20;
   const center = slots[1];
   const sectors = [];
   for (let g = 1; g <= generations; g++) {
-    const count = 2 ** g;
-    const radial = g >= 5; // pe inelele subțiri textul merge de-a lungul razei
+    // Pe o singură spiță, fiecare inel are jumătate din felii, de două ori mai late: scrisul e cel de la inelul dinăuntru.
+    const count = side ? 2 ** (g - 1) : 2 ** g, first = 2 ** g + (side === "mother" ? count : 0), w = side ? g - 1 : g;
+    const radial = w >= 5; // pe inelele subțiri textul merge de-a lungul razei
     for (let k = 0; k < count; k++) {
-      const n = count + k, p = slots[n];
+      const n = first + k, p = slots[n];
       const childKnown = !!slots[Math.floor(n / 2)];
       const a1 = A0 + (SPAN * k) / count, a2 = A0 + (SPAN * (k + 1)) / count, mid = (a1 + a2) / 2, rm = (R[g] + R[g + 1]) / 2;
       if (!p && !childKnown) {
@@ -33,21 +41,21 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 
       }
       const tx = cx + rm * Math.cos((mid * Math.PI) / 180), ty = cy + rm * Math.sin((mid * Math.PI) / 180);
       const left = mid < -90;
-      const rot = radial ? (left ? mid + 180 : mid) : g <= 2 ? mid + 90 : left ? mid + 180 : mid;
-      const fs = g <= 2 ? 13 : g === 3 ? 11 : g === 4 ? 10 : g <= 6 ? 9 : 8;
+      const rot = radial ? (left ? mid + 180 : mid) : w <= 2 ? mid + 90 : left ? mid + 180 : mid;
+      const fs = w <= 2 ? 13 : w === 3 ? 11 : w === 4 ? 10 : w <= 6 ? 9 : 8;
       let label;
       if (!p) label = <tspan x={tx} dy={4} fill="var(--muted)">{radial ? "+" : "+ adaugă"}</tspan>;
       else if (radial) label = (
         <>
-          <tspan x={tx} dy={g >= 7 ? 3 : -2} fontWeight={700}>{p.givenName}</tspan>
-          {g < 7 && <tspan x={tx} dy={10} fill="var(--muted)">{p.birthYear ?? ""}</tspan>}
+          <tspan x={tx} dy={w >= 7 ? 3 : -2} fontWeight={700}>{p.givenName}</tspan>
+          {w < 7 && <tspan x={tx} dy={10} fill="var(--muted)">{p.birthYear ?? ""}</tspan>}
         </>
       );
       else label = (
         <>
-          <tspan x={tx} dy={g <= 2 ? -8 : -6} fontWeight={700}>{g >= 3 ? p.givenName : p.name}</tspan>
-          {g >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
-          <tspan x={tx} dy={g <= 2 ? 16 : 12} fill="var(--muted)">{g <= 2 ? lifeDates(p) : years(p)}</tspan>
+          <tspan x={tx} dy={w <= 2 ? -8 : -6} fontWeight={700}>{w >= 3 ? p.givenName : p.name}</tspan>
+          {w >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
+          <tspan x={tx} dy={w <= 2 ? 16 : 12} fill="var(--muted)">{w <= 2 ? lifeDates(p) : years(p)}</tspan>
         </>
       );
       sectors.push(
@@ -76,10 +84,13 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4 
   );
 }
 
-/** Arbore clasic, de la stânga la dreapta. Rândurile se dau doar persoanelor și locurilor libere vizibile, deci rămâne compact. */
-export function ClassicTree({ slots, selected, onSelect, onCenter, generations = 4 }: Props) {
+/**
+ * Arbore clasic, de la stânga la dreapta. Rândurile se dau doar persoanelor și locurilor libere vizibile, deci rămâne compact.
+ * Cu o singură spiță, celălalt părinte și neamul lui nu se desenează deloc.
+ */
+export function ClassicTree({ slots, selected, onSelect, onCenter, generations = 4, side }: Props) {
   const colW = 176, bw = 160, bh = 38, rowH = 44;
-  const visible = (n: number) => genOf(n) <= generations && (n === 1 || !!slots[n] || !!slots[Math.floor(n / 2)]);
+  const visible = (n: number) => onSide(n, side) && genOf(n) <= generations && (n === 1 || !!slots[n] || !!slots[Math.floor(n / 2)]);
   const pos: Record<number, { x: number; y: number }> = {};
   let row = 0;
   const place = (n: number): number => {
