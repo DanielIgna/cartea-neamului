@@ -105,6 +105,14 @@ describe("cele două spițe", () => {
     expect(twinParts(g, drawn, "daniel", "petrea", null)!.patRoot).toBe("marjel");
   });
 
+  it("cu doi tați trecuți (și un „Tată necunoscut” rămas lângă cel adevărat), spița tatălui urcă prin cel adevărat", () => {
+    const g2 = buildGraph([{ id: "necunoscut", sex: "M" as Sex, birthYear: null }, ...P.map(([id, sex, birthYear]) => ({ id, sex, birthYear }))],
+      [{ type: "parent_child", a: "necunoscut", b: "daniel" }, ...rels]);
+    const parts = twinParts(g2, drawn, "daniel", null, null, (id) => id === "necunoscut")!;
+    expect(parts.father).toBe("avram");
+    expect(parts.patRoot).toBe("marjel");
+  });
+
   it("nu leagă spițele când un părinte lipsește sau e discret, ori când neamurile se întâlnesc deja", () => {
     expect(twinParts(g, drawn, "mariana")).toBeNull(); // mama ei e discretă
     expect(twinParts(g, drawn, "avram")).not.toBeNull();

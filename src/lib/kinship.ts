@@ -48,8 +48,11 @@ export const yearOf = (t?: string | null) => {
 export function unionsOf(g: Graph, id: string): Union[] {
   const groups = new Map<string | null, string[]>();
   for (const sp of g.partners.get(id) ?? []) groups.set(sp, []);
+  const partners = new Set(g.partners.get(id) ?? []);
   for (const c of g.children.get(id) ?? []) {
-    const other = (g.parents.get(c) ?? []).find((p) => p !== id) ?? null;
+    // Cu trei părinți trecuți (de pildă și un „Tată necunoscut” rămas lângă tatăl adevărat), copilul e al căsătoriei, nu al celui rămas.
+    const others = (g.parents.get(c) ?? []).filter((p) => p !== id);
+    const other = others.find((p) => partners.has(p)) ?? others.find((p) => g.sex.get(p) !== g.sex.get(id)) ?? others[0] ?? null;
     groups.set(other, [...(groups.get(other) ?? []), c]);
   }
   const born = (c: string) => g.birth.get(c) ?? 9999;

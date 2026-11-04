@@ -34,6 +34,38 @@ describe("ascendenți pe generații", () => {
   });
 });
 
+describe("tatăl și mama la locul lor, chiar când fișele sunt încurcate", () => {
+  type Row = Parameters<typeof toAhnentafel>[0][number];
+  const row = (id: string, childId: string | null, gen: number, sex: Row["sex"], givenName = id): Row => ({ id, childId, gen, sex, givenName });
+
+  it("un „Tată necunoscut” rămas lângă tatăl adevărat nu-i ia locul, oricum ar veni din baza de date", () => {
+    const ahnen = toAhnentafel([row("eu", null, 0, "M"), row("tn", "eu", 1, "M", "Tată necunoscut"), row("tata", "eu", 1, "M"), row("mama", "eu", 1, "F"),
+      row("bunicul", "tata", 2, "M")]);
+    expect(ahnen.get(2)).toBe("tata");
+    expect(ahnen.get(3)).toBe("mama");
+    expect(ahnen.get(4)).toBe("bunicul");
+    expect([...ahnen.values()]).not.toContain("tn");
+  });
+
+  it("un „Tată necunoscut” rămas lângă tatăl adevărat nu ajunge nici pe locul mamei, când ea lipsește", () => {
+    const ahnen = toAhnentafel([row("eu", null, 0, "M"), row("tn", "eu", 1, "M", "Tată necunoscut"), row("tata", "eu", 1, "M")]);
+    expect(ahnen.get(2)).toBe("tata");
+    expect(ahnen.has(3)).toBe(false);
+  });
+
+  it("mama trecută din greșeală ca bărbat nu dispare cu tot neamul ei: ia locul rămas liber", () => {
+    const ahnen = toAhnentafel([row("eu", null, 0, "M"), row("tata", "eu", 1, "M"), row("mama", "eu", 1, "M"), row("bunica", "mama", 2, "F")]);
+    expect(ahnen.get(2)).toBe("tata");
+    expect(ahnen.get(3)).toBe("mama");
+    expect(ahnen.get(7)).toBe("bunica");
+  });
+
+  it("un părinte fără sex ales ia locul rămas liber, oricare ar fi el", () => {
+    expect(toAhnentafel([row("eu", null, 0, "M"), row("x", "eu", 1, "U"), row("mama", "eu", 1, "F")]).get(2)).toBe("x");
+    expect(toAhnentafel([row("eu", null, 0, "M"), row("x", "eu", 1, "U"), row("tata", "eu", 1, "M")]).get(3)).toBe("x");
+  });
+});
+
 describe("export GEDCOM", () => {
   it("ascunde persoanele în viață în mod implicit (GDPR)", async () => {
     const ged = parseGedcom(await exportGedcom(db, treeId));
