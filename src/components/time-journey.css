@@ -1,0 +1,67 @@
+/* Călătoria în timp: cabina navei e mereu „în spațiu” (întunecată), în tema luminoasă și în cea întunecată. */
+.journey{display:flex;flex-direction:column;gap:12px}
+.cockpit{position:relative;overflow:hidden;border-radius:16px;min-height:220px;background:radial-gradient(ellipse at 30% 40%,#1d3358 0%,#0b1426 55%,#05080f 100%);
+  color:#f4efe2;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:18px 22px;border:1px solid #24405f}
+.cockpit .stars{position:absolute;inset:0;background-repeat:repeat;pointer-events:none;animation:stars-drift 60s linear infinite}
+.cockpit .s1{background-image:radial-gradient(1px 1px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 120px 80px,#fff,transparent),radial-gradient(1px 1px at 200px 150px,#cfe0ff,transparent),radial-gradient(1px 1px at 60px 180px,#fff,transparent);background-size:240px 220px;opacity:.7}
+.cockpit .s2{background-image:radial-gradient(1.5px 1.5px at 90px 40px,#ffe9b0,transparent),radial-gradient(1.5px 1.5px at 260px 120px,#fff,transparent),radial-gradient(1.5px 1.5px at 30px 110px,#fff,transparent);background-size:320px 200px;opacity:.8;animation-duration:40s}
+.cockpit .s3{background-image:radial-gradient(2px 2px at 150px 60px,#fff,transparent),radial-gradient(2px 2px at 380px 170px,#bcd4ff,transparent);background-size:460px 240px;opacity:.9;animation-duration:25s}
+@keyframes stars-drift{from{background-position:0 0}to{background-position:-960px 0}}
+/* În zbor: stelele se întind în dungi și trec repede (spre trecut, de la stânga la dreapta). */
+.cockpit.warp .stars{animation-duration:1.2s;animation-name:stars-warp;filter:blur(.4px)}
+.cockpit.warp .s1{transform:scaleX(3)}
+.cockpit.warp .s2{transform:scaleX(6)}
+.cockpit.warp .s3{transform:scaleX(8)}
+@keyframes stars-warp{from{background-position:0 0}to{background-position:960px 0}}
+.cockpit .ship{position:relative;width:min(260px,40vw);height:auto;grid-column:2;grid-row:1 / span 2;filter:drop-shadow(0 6px 16px rgba(0,0,0,.5));animation:ship-bob 4s ease-in-out infinite}
+.cockpit.warp .ship{animation:ship-shake .25s linear infinite}
+.cockpit .flame{transform-origin:168px 45px;animation:flame 0.6s ease-in-out infinite alternate}
+.cockpit.warp .flame{transform:scaleX(1.8)}
+@keyframes ship-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes ship-shake{0%{transform:translate(0,0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(-1px,-1px)}}
+@keyframes flame{from{opacity:.75}to{opacity:1}}
+.cockpit-screen{position:relative;grid-column:1;font-variant-numeric:tabular-nums}
+.cockpit-label{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#e0b469}
+.cockpit-year{font-family:var(--display);font-size:clamp(52px,11vw,92px);line-height:1;font-weight:800;text-shadow:0 0 18px rgba(127,176,234,.55)}
+.cockpit-ago{font-size:15px;color:#c8d6e8}
+.cockpit-dest{position:relative;grid-column:1 / span 2;font-size:16px;font-weight:600;border-top:1px solid rgba(224,180,105,.35);padding-top:8px;color:#f4efe2}
+@media (max-width:560px){.cockpit{grid-template-columns:1fr;padding:14px 16px}.cockpit .ship{grid-column:1;grid-row:1;width:150px;justify-self:end;margin-bottom:-40px}.cockpit-dest{grid-column:1}}
+@media (prefers-reduced-motion:reduce){.cockpit .stars,.cockpit .ship,.cockpit .flame{animation:none!important}.cockpit.warp .stars{transform:none}}
+
+.time-road{display:flex;gap:4px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.time-road button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:1px solid transparent;border-radius:10px;padding:6px 8px;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;font-variant-numeric:tabular-nums}
+.time-road button.on{border-color:var(--accent);color:var(--ink);background:var(--surface)}
+.time-road i{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.time-road i.ego{background:var(--good)}
+.time-road i.father{background:var(--accent)}
+.time-road i.mother{background:var(--ochre)}
+.time-road i.beyond{background:var(--plum)}
+.journey-nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.journey-nav .btn{font:inherit;cursor:pointer}
+.journey-nav .btn:disabled{opacity:.45;cursor:default}
+.journey-card-wrap{display:flex;flex-direction:column;gap:12px;outline:none}
+.journey-card h2{font-family:var(--display);margin:4px 0 8px;font-size:26px}
+.journey-card.line-father{border-left:5px solid var(--accent)}
+.journey-card.line-mother{border-left:5px solid var(--ochre)}
+.journey-card.line-ego{border-left:5px solid var(--good)}
+.stop-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px}
+.line-chip{font-size:13px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--surface-2);border:1px solid var(--line)}
+.line-chip.father{background:var(--pat-1)}
+.line-chip.mother{background:var(--mat-1)}
+.journey-bio{font-style:italic;margin:6px 0 8px;line-height:1.5}
+.contemporaries{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.contemporaries li{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:4px 10px;font-size:14px}
+.journey-card.word{border-left:5px solid var(--plum);line-height:1.6;font-size:16.5px}
+.journey-card.word h2{margin-top:18px}
+.journey-card.word h2:first-child{margin-top:4px}
+.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--ochre);background:var(--ochre-soft);border-radius:0 10px 10px 0}
+.journey-card.word blockquote p{margin:0;font-family:var(--display);font-size:18px}
+.journey-card.word cite{display:block;margin-top:4px;font-style:normal;font-weight:700;font-size:14px;color:var(--muted)}
+/* Dungile de lumină din zbor. */
+.cockpit .streaks{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .3s;
+  background-image:linear-gradient(90deg,transparent 0 40%,rgba(207,224,255,.7) 50%,transparent 60%),linear-gradient(90deg,transparent 0 45%,rgba(255,233,176,.6) 50%,transparent 55%);
+  background-size:180px 2px,260px 1.5px;background-repeat:repeat;background-position:0 23px,40px 71px}
+.cockpit .streaks{-webkit-mask:repeating-linear-gradient(0deg,#000 0 2px,transparent 2px 37px);mask:repeating-linear-gradient(0deg,#000 0 2px,transparent 2px 37px)}
+.cockpit.warp .streaks{opacity:1;animation:streaks .35s linear infinite}
+@keyframes streaks{from{background-position:0 23px,40px 71px}to{background-position:180px 23px,300px 71px}}
+@media (prefers-reduced-motion:reduce){.cockpit .streaks{display:none}}
