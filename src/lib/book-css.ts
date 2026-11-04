@@ -107,6 +107,30 @@ export function bookCss(format: BookFormat) {
 .bk-album img { width: 100%; height: ${small ? 30 : 40}mm; object-fit: cover; border-radius: 1mm; display: block; background: #eef1f2; }
 .bk-album figcaption { font-size: ${s - 2}pt; line-height: 1.3; color: #5b6673; margin-top: 1mm; font-style: italic; }
 
+/* Cu vorbele lor: amintirile din ladă, pe oameni, cu codul QR la cele spuse cu glasul */
+.bk-teller { margin-top: ${small ? 6 : 8}mm; }
+.bk-chapter-sub + .bk-teller { margin-top: 0; }
+.bk-teller > h3 { font-size: ${small ? 13 : 15}pt; line-height: 1.15; padding-bottom: 1.5mm; border-bottom: .6pt solid #d9dee3; break-after: avoid; }
+.bk-teller-dates { font-family: "Alegreya Sans", sans-serif; font-weight: 400; font-size: ${s - 1}pt; color: #5b6673; }
+.bk-memory { margin-top: ${small ? 3.5 : 4.5}mm; }
+.bk-memory-head { break-inside: avoid; break-after: avoid; }
+.bk-memory-chapter { font-family: "Alegreya Sans", sans-serif; font-weight: 700; font-size: ${s - 2.5}pt; letter-spacing: .14em; text-transform: uppercase; color: #9a6b1f; }
+.bk-memory h4 { font-size: ${s + 1.5}pt; line-height: 1.2; margin: .6mm 0 0; }
+.bk .bk-q { font-style: italic; color: #4a5562; margin: .8mm 0 0; }
+.bk-q span { font-style: normal; font-family: "Alegreya Sans", sans-serif; font-size: .85em; color: #6b7380; }
+.bk .bk-when { font-family: "Alegreya Sans", sans-serif; font-size: ${s - 1.5}pt; color: #5b6673; margin: .6mm 0 0; }
+.bk-memory-body { margin-top: 2mm; }
+.bk-memory-body p { text-indent: 4mm; margin: 0 0 .25em; }
+.bk-memory-body p:first-child { text-indent: 0; }
+.bk-memory-photo { display: block; max-width: 100%; max-height: ${small ? 55 : 80}mm; margin: 2.5mm 0 1mm; border-radius: 1mm; break-inside: avoid; background: #eef1f2; }
+.bk-listen { display: flex; align-items: center; gap: ${small ? 3 : 4}mm; margin-top: 2.5mm; padding: 2mm ${small ? 2.5 : 3}mm; border: .6pt solid #d9dee3; border-radius: 1.5mm;
+  break-inside: avoid; font-family: "Alegreya Sans", sans-serif; font-size: ${s - 1}pt; line-height: 1.4; color: #4a5562; }
+.bk-listen b { color: #1b2430; }
+.bk-qr { flex: none; display: block; width: ${small ? 20 : 22}mm; height: ${small ? 20 : 22}mm; }
+.bk-qr svg { display: block; width: 100%; height: 100%; }
+.bk-url { font-size: .88em; color: #6b7380; word-break: break-all; }
+.bk .bk-by { font-family: "Alegreya Sans", sans-serif; font-size: ${s - 1.5}pt; color: #6b7380; margin: 1.2mm 0 0; }
+
 /* Indexul */
 .bk-index { list-style: none; padding: 0; margin: ${small ? 3 : 5}mm 0 0; font-size: ${s - 1.2}pt; line-height: 1.3; columns: 2; column-gap: ${small ? 6 : 9}mm; }
 .bk-index li { display: flex; align-items: baseline; gap: 1.5mm; padding: .35mm 0; break-inside: avoid; }

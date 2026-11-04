@@ -6,6 +6,7 @@ import "@fontsource/alegreya/latin-ext-400-italic.css";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
+import QRCode from "qrcode";
 import { db } from "@/db";
 import { bookExport, person } from "@/db/schema";
 import { loadTreeView } from "@/lib/tree-data";
@@ -13,7 +14,11 @@ import { requireUser, roleIn, can } from "@/lib/access";
 import { bookOptions, buildBook, cleanText, type BookModel, type BookOptions, type BookText, type BookUnion, type Entry, type Ref } from "@/lib/book";
 import { isPlaceholder, normName } from "@/lib/family";
 import { ordinalOf } from "@/lib/kinship";
-import { de } from "@/lib/ro-words";
+import { amintiri, de } from "@/lib/ro-words";
+import { bookMemories, type BookMemory } from "@/lib/lada-db";
+import { CHAPTERS, chapterLabel } from "@/lib/questions";
+import { memoryShortPath } from "@/lib/short-link";
+import { siteOrigin } from "@/lib/site";
 import BookView from "@/components/BookView";
 import BookFan from "@/components/BookFan";
 import BookTree from "@/components/BookTree";
@@ -49,6 +54,12 @@ function Refs({ list, more }: { list: Ref[]; more?: string }) {
   const parts = [...list.map((r) => <RefName key={r.id ?? r.name} r={r} />), ...(more ? [<span key="more">{more}</span>] : [])];
   return <>{parts.map((x, i) => <span key={i}>{i === 0 ? "" : i === parts.length - 1 ? " și " : ", "}{x}</span>)}</>;
 }
+/** Cât ține o înregistrare: „3:07”. */
+const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.round(sec) % 60).padStart(2, "0")}`;
+
+/** Un om care povestește în „Cu vorbele lor”: amintirile lui bifate pentru carte, cu codul QR la cele spuse cu glasul. */
+type Voice = { id: string; name: string; sex: string; dates: string; memories: (BookMemory & { qr: string | null; url: string | null })[] };
+
 const inLife = (n: number, kids: boolean) => (n === 1 ? (kids ? "un copil în viață" : "o persoană în viață") : `${de(n)} ${kids ? "copii" : "persoane"} în viață`);
 const marriedOn = (m: string) => (!m ? "" : /^\d{2}\.\d{2}\.\d{4}$/.test(m) ? `, căsătoriți la ${m}` : /^\d/.test(m) ? `, căsătoriți în ${m}` : `, căsătoriți ${m}`);
 
@@ -76,7 +87,7 @@ function Unions({ e }: { e: Entry }) {
   );
 }
 
-function Person({ e }: { e: Entry }) {
+function Person({ e, told }: { e: Entry; told?: number }) {
   const maiden = e.birthSurname && normName(e.birthSurname) !== normName(e.surname) ? e.birthSurname : null;
   const row = (label: string, value: React.ReactNode) => <div className="bk-row"><dt>{label}</dt><dd>{value}</dd></div>;
   return (
@@ -95,6 +106,7 @@ function Person({ e }: { e: Entry }) {
             <Unions e={e} />
             {e.carers.length > 0 && row(sexed(e.sex, "Crescut de", "Crescută de", "Crescut(ă) de"), <Refs list={e.carers} />)}
             {e.raised.length > 0 && row("A crescut", <Refs list={e.raised} />)}
+            {!!told && row("Amintiri", <><a href={`#v-${e.id}`}>{amintiri(told)}, cu vorbele {sexed(e.sex, "lui", "ei", "lui")}</a> <Pg id={`v-${e.id}`} before="(p. " after=")" /></>)}
           </dl>
         </div>
       </div>
@@ -135,8 +147,51 @@ function Ornament() {
   );
 }
 
-function Book({ model, options, text, title, subtitle, author, treeName, when }: {
-  model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string;
+/** „Cu vorbele lor”: amintirile din lada fiecăruia, pe care cine le-a scris a ales să intre în carte. */
+function Voices({ voices, options }: { voices: Voice[]; options: BookOptions }) {
+  const told = voices.reduce((n, v) => n + v.memories.length, 0), heard = voices.some((v) => v.memories.some((m) => m.qr));
+  return (
+    <section className="bk-chapter bk-voices" data-anchor="c-vorbe">
+      <h2>Cu vorbele lor</h2>
+      <p className="bk-chapter-sub">
+        {cap(amintiri(told))} din lada cu amintiri, povestite chiar de ei și lăsate de ei pentru carte.
+        {heard ? " Lângă cele spuse cu glasul e un cod: scanează-l cu camera telefonului și le asculți." : ""}
+        {options.living !== "tot" ? " Cele lăsate doar pentru familia apropiată nu intră în această ediție." : ""}
+      </p>
+      {voices.map((v) => {
+        const lui = sexed(v.sex, "lui", "ei", "lui");
+        return (
+          <div key={v.id} className="bk-teller" data-anchor={`v-${v.id}`}>
+            <h3><a href={`#p-${v.id}`}>{v.name}</a>{v.dates && <span className="bk-teller-dates"> {v.dates}</span>}</h3>
+            {v.memories.map((m) => (
+              <article key={m.id} className="bk-memory">
+                <div className="bk-memory-head">
+                  <div className="bk-memory-chapter">{chapterLabel(m.chapter)}</div>
+                  {m.title && <h4>{m.title}</h4>}
+                  {m.question && <p className="bk-q">„{m.question}”{m.askedBy && <span> · a întrebat {m.askedBy}</span>}</p>}
+                  {(m.when || m.place) && <p className="bk-when">{[m.when, m.place].filter(Boolean).join(", ")}</p>}
+                </div>
+                {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt="" loading="lazy" />}
+                {m.body ? <div className="bk-memory-body">{paragraphs(m.body)}</div> : <p className="bk-memory-body bk-muted">Povestea e spusă cu glasul.</p>}
+                {m.qr && m.url && (
+                  <div className="bk-listen">
+                    <span className="bk-qr" dangerouslySetInnerHTML={{ __html: m.qr }} />
+                    <span><b>Ascult-o cu glasul {lui}</b>{m.audioSeconds ? ` (${clock(m.audioSeconds)})` : ""}: scanează codul cu telefonul.
+                      <br /><span className="bk-url">{m.url.replace(/^https?:\/\//, "")}</span></span>
+                  </div>
+                )}
+                {m.recordedBy && <p className="bk-by">{m.audio ? "Înregistrată" : "Scrisă"} la bunici de {m.recordedBy}.</p>}
+              </article>
+            ))}
+          </div>
+        );
+      })}
+    </section>
+  );
+}
+
+function Book({ model, options, text, title, subtitle, author, treeName, when, voices }: {
+  model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string; voices: Voice[];
 }) {
   const { stats, centerName, trunk } = model;
   const fanTitle = centerName ? `Strămoșii lui ${centerName}` : "Evantaiul strămoșilor";
@@ -148,8 +203,11 @@ function Book({ model, options, text, title, subtitle, author, treeName, when }:
     ...(model.tree ? [{ id: "c-copac", title: "Copacul neamului" }] : []),
     ...(model.outline.length >= 3 ? [{ id: "c-urmasi", title: urmasi }] : []),
     ...model.generations.map((g) => ({ id: g.id, title: g.title, sub: g.subtitle })),
+    ...(voices.length ? [{ id: "c-vorbe", title: "Cu vorbele lor" }] : []),
     { id: "c-index", title: "Index de nume" },
   ];
+  const told = new Map(voices.map((v) => [v.id, v.memories.length]));
+  const memoriesCount = voices.reduce((n, v) => n + v.memories.length, 0);
   const privacy = options.living === "nume" ? "Cei în viață apar doar cu numele, fără date, locuri și poze, ca să poată fi dată cartea și altora."
     : options.living === "ascunsi" ? "Cei în viață nu apar în această ediție a cărții."
     : "Cei în viață apar cu toate datele: cartea e doar pentru familie.";
@@ -189,6 +247,8 @@ function Book({ model, options, text, title, subtitle, author, treeName, when }:
         <p>Oamenii sunt așezați pe generații, de la cei mai vechi la cei mai tineri; în fiecare generație, fiecare om are alături soțul sau soția,
           iar frații vin în ordinea nașterii. Numărul de lângă un nume, de pildă (p. 14), arată pagina pe care e fișa acelui om.
           La final găsești indexul cu toate numele, și cu numele de fată.</p>
+        {voices.length > 0 && <p>Înainte de index, în „Cu vorbele lor”, sunt {amintiri(memoriesCount)} povestite chiar de {voices.length === 1 ? voices[0].name : oameni(voices.length)} din neam,
+          așa cum le-au scris sau le-au spus{voices.some((v) => v.memories.some((m) => m.qr)) ? "; pe cele spuse cu glasul le asculți scanând codul de lângă ele" : ""}.</p>}
         <p className="bk-note">{privacy}</p>
       </section>
 
@@ -247,9 +307,11 @@ function Book({ model, options, text, title, subtitle, author, treeName, when }:
         <section key={g.id} className="bk-chapter" data-anchor={g.id}>
           <h2>{g.title}</h2>
           {g.subtitle && <p className="bk-chapter-sub">{g.subtitle} · {oameni(g.entries.length)}</p>}
-          {g.entries.map((e) => <Person key={e.id} e={e} />)}
+          {g.entries.map((e) => <Person key={e.id} e={e} told={told.get(e.id)} />)}
         </section>
       ))}
+
+      {voices.length > 0 && <Voices voices={voices} options={options} />}
 
       <section className="bk-chapter" data-anchor="c-index">
         <h2>Index de nume</h2>
@@ -280,7 +342,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   if (!role) notFound();
   const options = bookOptions(q);
   const want = typeof q.p === "string" && UUID.test(q.p) ? q.p : undefined;
-  const [mine] = want ? [] : await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
+  const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const data = await loadTreeView(db, id, want ?? mine?.id, 6);
   if (!data) notFound();
   const [draft] = await db.select({ options: bookExport.options }).from(bookExport)
@@ -288,6 +350,22 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const text = cleanText((draft?.options as { text?: Partial<BookText> } | undefined)?.text);
   const model = buildBook({ people: data.people, rels: data.rels, raised: data.raised, centerId: data.centerId, slots: data.slots, options });
   const { stats } = model;
+  // „Cu vorbele lor”: amintirile bifate pentru carte pe care cel care face cartea le vede și pe site, pe oameni (în ordinea fișelor) și pe capitole.
+  const memories = await bookMemories(db, id, { userId: me.id, personId: mine?.id ?? null }, options.living, options.photos);
+  const entries = model.generations.flatMap((g) => g.entries);
+  const place = new Map(entries.map((e, i) => [e.id, i]));
+  const chapterAt = (c: string) => { const i = CHAPTERS.findIndex((x) => x.key === c); return i < 0 ? CHAPTERS.length : i; };
+  const origin = await siteOrigin();
+  const voices: Voice[] = await Promise.all(entries.filter((e) => memories.some((m) => m.personId === e.id)).map(async (e) => ({
+    id: e.id, name: e.name, sex: e.sex, dates: e.dates,
+    memories: await Promise.all(memories.filter((m) => m.personId === e.id)
+      .sort((a, b) => chapterAt(a.chapter) - chapterAt(b.chapter) || (a.year ?? 9999) - (b.year ?? 9999) || a.createdAt.localeCompare(b.createdAt))
+      .map(async (m) => {
+        const url = m.audio ? `${origin}${memoryShortPath(m.id)}` : null;
+        return { ...m, url, qr: url ? await QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#1b2430", light: "#ffffff" } }) : null };
+      })),
+  })));
+  voices.sort((a, b) => place.get(a.id)! - place.get(b.id)!);
   const defaults = {
     title: data.tree.name,
     subtitle: `${cap(oameni(stats.people))}${stats.generations > 1 ? `, ${stats.generations} generații` : ""}${stats.from && stats.to && stats.to > stats.from ? ` · ${stats.from}–${stats.to}` : ""}`,
@@ -298,7 +376,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const choices = Object.values(data.people).filter((p) => !p.discreet && !isPlaceholder(p.givenName))
     .sort((a, b) => a.name.localeCompare(b.name, "ro"))
     .map((p) => ({ id: p.id, label: `${p.name}${p.birthYear ? ` (${p.birthYear})` : ""}` }));
-  const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model }));
+  const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin }));
   return (
     <section className="stack book-root">
       <div className="card book-chrome">
@@ -317,7 +395,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
         <div className="card"><p style={{ margin: 0 }}>Nu e încă nimeni de pus în carte. Adaugă oameni în arbore, apoi revino aici.</p></div>
       ) : (
         <BookView format={options.format} renderKey={renderKey} fileName={title}>
-          <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when} />
+          <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when} voices={voices} />
         </BookView>
       )}
     </section>

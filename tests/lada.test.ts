@@ -5,7 +5,8 @@ import { runMigrations } from "@/db/migrate";
 import { tree, person, relationship, treeMember, user, memory, memoryMention, memoryQuestion, memoryReply, document, documentLink } from "@/db/schema";
 import { buildGraph, type Graph } from "@/lib/kinship";
 import { canSee, questionContext, yearIn, type MemoryAccess } from "@/lib/lada";
-import { canOpenDocument, excerpt, loadLada, memoryMediaIds } from "@/lib/lada-db";
+import { bookMemories, canOpenDocument, excerpt, loadLada, memoryMediaIds } from "@/lib/lada-db";
+import { fromShortCode, memoryShortPath, shortCode } from "@/lib/short-link";
 import { loadTreeMap } from "@/lib/map-data";
 import { fileType } from "@/lib/file-type";
 import { questionsFor, sundayQuestion, weekNumber, type QuestionContext } from "@/lib/questions";
@@ -270,5 +271,57 @@ describe("amintirile pe harta neamului", () => {
     expect(plain.places.map((p) => p.name)).toEqual(["Huedin"]);
     expect(withMemories.shared).toEqual(plain.shared);
     expect(withMemories.routes).toEqual(plain.routes);
+  });
+});
+
+describe("„Cu vorbele lor”, capitolul din Cartea neamului", () => {
+  const book = (k: string, living: "tot" | "nume" | "ascunsi" = "tot", photos = true) =>
+    bookMemories(db, treeId, { userId: `u-${k}`, personId: k === "tata" ? null : P[k] }, living, photos);
+  const bodies = async (k: string, living: "tot" | "nume" | "ascunsi" = "tot") => (await book(k, living)).map((m) => m.body).sort();
+
+  it("intră doar ce a bifat autorul pentru carte și vede cel care face cartea, fără ciorne și fără răspunsurile doar pentru cel care a întrebat", async () => {
+    expect(await bodies("eu")).toEqual([]);
+    await db.update(memory).set({ inBook: true }).where(inArray(memory.id, [M.pentruToti, M.apropiati, M.ciorna, M.doarLuiFiulVar]));
+    expect(await bodies("eu")).toEqual(["apropiati", "pentruToti"]);
+    expect(await bodies("sotie")).toEqual(["apropiati", "pentruToti"]);
+    expect(await bodies("var")).toEqual(["pentruToti"]); // vărul e prea departe pentru „familia apropiată” (gradul II)
+    expect(await bodies("fiulVar")).toEqual(["pentruToti"]); // întrebarea lui are răspuns doar pentru el, nu în carte
+    // Lada unei persoane discrete nu intră nici ea.
+    const [fosta] = await db.select().from(person).where(eq(person.givenName, "fosta"));
+    await db.update(memory).set({ inBook: true }).where(eq(memory.personId, fosta.id));
+    expect(await bodies("eu")).toEqual(["apropiati", "pentruToti"]);
+  });
+
+  it("ediția care poate fi dată și altora nu ia amintirile pentru familia apropiată, nici pozele celor în viață; fără cei în viață, nici amintirile lor", async () => {
+    const [photo] = await db.insert(document).values({ treeId, kind: "photo", title: "poza", fileKey: `k-poza-${Math.random()}`, uploadedBy: "u-eu" }).returning();
+    await db.update(memory).set({ photoDocumentId: photo.id }).where(eq(memory.id, M.pentruToti));
+    const tot = await book("eu", "tot");
+    expect(tot.find((m) => m.id === M.pentruToti)!.photoId).toBe(photo.id);
+    expect((await book("eu", "tot", false)).find((m) => m.id === M.pentruToti)!.photoId).toBeNull();
+    const nume = await book("eu", "nume");
+    expect(nume.map((m) => m.body)).toEqual(["pentruToti"]);
+    expect(nume[0].photoId).toBeNull(); // „eu” e în viață: în ediția „doar cu numele” apare fără poze
+    expect(await bodies("eu", "ascunsi")).toEqual([]);
+  });
+
+  it("spune cine a întrebat și cine a înregistrat la bunici, și ia și amintirile spuse doar cu glasul", async () => {
+    const voice = (await db.insert(document).values({ treeId, kind: "audio", title: "glas", fileKey: `k-glas-${Math.random()}`, uploadedBy: "u-eu" }).returning())[0].id;
+    const [bunici] = await db.insert(memory).values({ treeId, personId: P.tata, authorId: "u-eu", body: "", audioDocumentId: voice, audioSeconds: 187,
+      helper: true, consentAt: new Date(), visibility: "tree", inBook: true, chapter: "munca" }).returning();
+    const [raspuns] = await db.insert(memory).values({ treeId, personId: P.eu, authorId: "u-eu", body: "Cireșele erau ale popii.", askedId: Q.var,
+      question: "Mai știi cum am furat cireșe?", visibility: "tree", inBook: true }).returning();
+    await db.insert(memory).values({ treeId, personId: P.eu, authorId: "u-eu", body: "   ", visibility: "tree", inBook: true });
+    const all = await book("eu");
+    expect(all.find((m) => m.id === bunici.id)).toMatchObject({ body: "", audio: true, audioSeconds: 187, recordedBy: "eu Igna", askedBy: null, chapter: "munca" });
+    expect(all.find((m) => m.id === raspuns.id)).toMatchObject({ askedBy: "var Igna", question: "Mai știi cum am furat cireșe?", recordedBy: null, audio: false });
+    expect(all.some((m) => !m.body && !m.audio)).toBe(false); // una goală, fără glas, nu are ce căuta în carte
+  });
+
+  it("codul de lângă o amintire spusă cu glasul e scurt și duce înapoi la ea", () => {
+    const id = M.pentruToti;
+    expect(memoryShortPath(id)).toMatch(/^\/a\/[A-Za-z0-9_-]{22}$/);
+    expect(fromShortCode(shortCode(id))).toBe(id);
+    expect(fromShortCode("prea-scurt")).toBeNull();
+    expect(fromShortCode("!".repeat(22))).toBeNull();
   });
 });
