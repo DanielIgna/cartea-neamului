@@ -24,6 +24,24 @@ export function descendants(g: Graph, drawn: (id: string) => boolean, id: string
   return { id, partners, children, via, ...(apart ? { apart } : {}) };
 }
 
+/**
+ * Părinții pe care îi au frații cuiva, dar el nu. Se întâmplă când frații au fost legați de părinții lor, iar persoana a rămas fără mamă
+ * (sau fără tată), ori cu „Tată necunoscut” pus automat când i s-au adăugat frații. Pentru fiecare rol propunem doar un părinte pe care
+ * îl au toți frații care au unul. Un loc gol discret (ales cu „Nu, are altă mamă”) înseamnă că s-a hotărât deja: nu mai propunem nimic.
+ */
+export function parentsFromSiblings(g: Graph, id: string, placeholder: (id: string) => boolean, discreet: (id: string) => boolean) {
+  const mine = g.parents.get(id) ?? [];
+  const siblings = new Set(mine.flatMap((p) => g.children.get(p) ?? []).filter((c) => c !== id));
+  const out: { role: "father" | "mother"; id: string; current?: string }[] = [];
+  for (const [role, sex] of [["father", "M"], ["mother", "F"]] as const) {
+    const current = mine.find((p) => g.sex.get(p) === sex);
+    if (current && !(placeholder(current) && !discreet(current) && !(g.parents.get(current) ?? []).length)) continue;
+    const found = new Set([...siblings].flatMap((s) => (g.parents.get(s) ?? []).filter((p) => g.sex.get(p) === sex && p !== current && !placeholder(p))));
+    if (found.size === 1) out.push({ role, id: [...found][0], ...(current ? { current } : {}) });
+  }
+  return out;
+}
+
 /** Copiii unei persoane împărțiți pe căsătorii, pentru fișă: soții discreți nu sunt numiți, copiii lor apar „din altă relație”. */
 export function childrenByUnion(g: Graph, drawn: (id: string) => boolean, id: string) {
   const unions = unionsOf(g, id);
@@ -73,10 +91,12 @@ function near(g: Graph, id: string) {
 
 /**
  * Perechi de fișe care par aceeași persoană trecută de două ori (de pildă bunica trecută o dată ca mama a 8 copii și încă o dată ca mama altor 3):
- * arată la fel și au o rudă apropiată comună (același soț, aceiași părinți), fără să fie ele însele părinte–copil sau soți.
+ * arată la fel și au o rudă apropiată comună (`via`: același soț, aceiași părinți), fără să fie ele însele părinte–copil sau soți.
  * Prima din pereche e fișa cu mai multe legături, cea care se păstrează la unire.
+ * Al doilea fel (`born`): aceeași persoană trecută o dată ca soție (fără părinți) și încă o dată ca fiica părinților ei, de pildă
+ * când îi treci pe frații mamei și pe părinții lor. Atunci `born` e părintele fișei de fiică, ca să știi care e.
  */
-export type Duplicate = { keep: string; drop: string; via: string };
+export type Duplicate = { keep: string; drop: string; via?: string; born?: string };
 export function likelyDuplicates(g: Graph, people: Record<string, Lookalike>): Duplicate[] {
   const byName = new Map<string, string[]>();
   for (const p of Object.values(people)) { const k = firstName(p.givenName); if (k) byName.set(k, [...(byName.get(k) ?? []), p.id]); }
@@ -90,9 +110,30 @@ export function likelyDuplicates(g: Graph, people: Record<string, Lookalike>): D
       // Bunicul și nepotul cu același nume (des întâlnit) nu sunt dubluri: unul e strămoșul celuilalt.
       if (na.has(b.id) || nb.has(a.id) || isAncestor(g, a.id, b.id) || isAncestor(g, b.id, a.id)) continue;
       const via = [...na].find((x) => nb.has(x));
-      if (!via) continue;
-      out.push(links(b.id) > links(a.id) ? { keep: b.id, drop: a.id, via } : { keep: a.id, drop: b.id, via });
+      if (via) out.push(links(b.id) > links(a.id) ? { keep: b.id, drop: a.id, via } : { keep: a.id, drop: b.id, via });
+      else {
+        const twice = marriedAndBorn(g, people, a, b) ?? marriedAndBorn(g, people, b, a);
+        if (twice) out.push(twice);
+      }
     }
   }
   return out;
+}
+
+/**
+ * `wed` e trecută ca soție sau mamă, fără părinți (sau doar cu un „Tată necunoscut”), iar `born` ca fiica unor părinți, fără soț și fără copii.
+ * Sunt aceeași persoană dacă numele de fată al soției e numele fiicei, ori dacă amândouă au același an al nașterii.
+ * Se păstrează fișa de soție (cu soțul și copiii ei) și primește părinții de la cealaltă.
+ */
+function marriedAndBorn(g: Graph, people: Record<string, Lookalike>, wed: Lookalike, born: Lookalike): Duplicate | null {
+  const ph = (id: string) => isPlaceholder(people[id]?.givenName ?? "");
+  const real = (id: string) => (g.parents.get(id) ?? []).filter((p) => !ph(p) || (g.parents.get(p) ?? []).length);
+  const family = (id: string) => (g.partners.get(id) ?? []).length + (g.children.get(id) ?? []).length;
+  if (real(wed.id).length || !family(wed.id) || !real(born.id).length || family(born.id)) return null;
+  const maiden = normName(wed.birthSurname);
+  const sameName = !!maiden && maiden !== normName(wed.surname) && (maiden === normName(born.surname) || maiden === normName(born.birthSurname));
+  const sameYear = wed.birthYear !== null && born.birthYear !== null && Math.abs(wed.birthYear - born.birthYear) <= 1;
+  if (!sameName && !sameYear) return null;
+  const parents = real(born.id);
+  return { keep: wed.id, drop: born.id, born: parents.find((p) => g.sex.get(p) === "M") ?? parents[0] };
 }
