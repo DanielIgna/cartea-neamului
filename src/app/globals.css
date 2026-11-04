@@ -474,3 +474,59 @@ body:has(.grand){overflow:hidden}
 .times-list li > i{position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:50%}
 .times .dot,.t360-story .dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle}
 .t360-svg:focus:not(:focus-visible){outline:none}
+
+/* Călătoria în timp: spațiul e întunecat în ambele teme, ca să se vadă stelele. */
+.voyage{--v-ink:#e8eef6;--v-muted:#a9bbd0;--v-line:#2c4668;--v-card:rgba(13,26,46,.9);--v-gold:#e0b469;position:relative;min-height:100vh;min-height:100dvh;background:#060d1a;color:var(--v-ink);padding:0 16px 40px;overflow-x:hidden}
+.voy-stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.voyage a{color:var(--v-gold)}
+.voy-top{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;max-width:760px;margin:0 auto;padding:14px 0 8px}
+.voy-pages{justify-self:end;color:var(--v-gold);font-size:14px}
+.voy-year{text-align:center;font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.05}
+.voy-year small{display:block;font-size:11px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:var(--v-muted)}
+.voy-rail{position:relative;display:flex;align-items:center;gap:0;max-width:760px;margin:0 auto 16px;padding:0;list-style:none}
+.voy-rail li{flex:1;display:flex;align-items:center;min-width:0}
+.voy-rail li::after{content:"";flex:1;height:2px;background:var(--v-line)}
+.voy-rail li.end{flex:0 0 12px}
+.voy-rail li.end::after{flex:0 0 12px;height:12px;border-radius:50%;background:var(--v-gold)}
+.voy-rail li.done::after{background:var(--v-gold)}
+.voy-rail button{flex:0 0 12px;width:12px;height:12px;min-width:12px;padding:0;border-radius:50%;border:2px solid var(--v-muted);background:#060d1a;cursor:pointer}
+.voy-rail button:disabled{cursor:default}
+.voy-rail .done button{background:var(--v-gold);border-color:var(--v-gold)}
+.voy-rail .here button{background:var(--v-ink);border-color:var(--v-gold);box-shadow:0 0 0 3px rgba(224,180,105,.35)}
+.voyage .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.voy-card{position:relative;max-width:760px;margin:0 auto;padding:22px;background:var(--v-card);border:1px solid var(--v-line);border-radius:14px;line-height:1.55;outline:0}
+.voy-card h1{margin:2px 0 6px;font-size:28px;line-height:1.2}
+.voy-card h2{margin:20px 0 6px;font-size:18px}
+.voy-card p{margin:0 0 10px}
+.voy-kicker{color:var(--v-gold);font-size:14px;font-weight:600}
+.voy-muted{color:var(--v-muted)}
+.voy-start{text-align:center}
+.voy-start label{display:block;margin:14px 0;text-align:left;font-weight:600}
+.voy-start select{display:block;width:100%;margin-top:6px;padding:10px;border-radius:8px;border:1px solid var(--v-line);background:#0d1a2e;color:var(--v-ink);font:inherit}
+.voy-ship{width:64px;height:auto;display:block;margin:0 auto 8px}
+.voy-flame{transform-origin:60px 118px;opacity:.35}
+.voy-ship.flying .voy-flame{opacity:1;animation:voy-flame .18s infinite alternate}
+@keyframes voy-flame{to{transform:scaleY(1.25)}}
+@media (prefers-reduced-motion:reduce){.voy-ship.flying .voy-flame{animation:none}}
+.voy-flight{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;text-align:center;color:var(--v-muted)}
+.voy-flight .voy-ship{width:96px}
+.voy-events,.voy-people{margin:0;padding:0;list-style:none}
+.voy-events li{display:flex;gap:10px;padding:5px 0}
+.voy-events i{flex:0 0 10px;height:10px;margin-top:7px;border-radius:50%}
+.voy-people li{padding:3px 0}
+.voy-quiz{margin-top:20px;padding-top:4px;border-top:1px solid var(--v-line)}
+.voy-quiz button{display:block;width:100%;margin:6px 0;padding:10px 12px;text-align:left;border:1px solid var(--v-line);border-radius:8px;background:#0d1a2e;color:var(--v-ink);font:inherit;cursor:pointer}
+.voy-quiz button:disabled{cursor:default}
+.voy-quiz button.right{border-color:#6fbf8b;background:#143325}
+.voy-quiz button.wrong{border-color:#f0958b;background:#3a1a1a}
+.voy-quiz p{margin-top:8px}
+.voy-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:20px}
+.voy-actions button:not(.voy-go){padding:10px 14px;border:1px solid var(--v-line);border-radius:8px;background:transparent;color:var(--v-ink);font:inherit;cursor:pointer}
+.voy-go{display:inline-block;padding:11px 18px;border:0;border-radius:8px;background:var(--v-gold);color:#14202f!important;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.voyage blockquote{margin:14px 0;padding:2px 0 2px 14px;border-left:3px solid var(--v-gold);font-size:18px}
+.voyage cite{font-size:14px;font-style:normal;color:var(--v-muted);white-space:nowrap}
+.voy-question{font-size:20px;font-weight:600}
+.voy-lines{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.voy-lines a{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px solid var(--v-line);border-radius:10px;color:var(--v-ink);text-decoration:none}
+.voy-ref{color:var(--v-gold);font-size:14px}
+@media (max-width:560px){.voy-lines{grid-template-columns:1fr}.voy-card{padding:16px}.voy-card h1{font-size:24px}}
