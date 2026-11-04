@@ -4,25 +4,34 @@ import { person, placePin } from "@/db/schema";
 import { parseFuzzyDate } from "./dates";
 import { placeKey } from "./place-key";
 import { resolvePlaces, type PlaceRef, type Spot } from "./places";
+import { placedMemories, type PlaceMemory } from "./lada-db";
+import type { Viewer } from "./lada";
 
 export type MapKind = "born" | "died" | "lives";
 export type MapPlace = Omit<Spot, "id"> & {
   id: string;
-  keys: { key: string; text: string; country: string | null }[]; // cum e scris locul în fișe (pentru „Nu e acesta?”)
+  keys: { key: string; text: string; country: string | null; memory?: boolean }[]; // cum e scris locul în fișe sau, `memory`, doar în amintiri
   people: { id: string; kind: MapKind }[];
+  memories: PlaceMemory[]; // amintirile petrecute aici, doar cele pe care le vede cine se uită
 };
 export type MapMissing = { key: string; text: string; country: string | null; people: { id: string; kind: MapKind }[] };
 export type MapPerson = { id: string; name: string; years: string; sex: "M" | "F" | "U"; living: boolean };
 export type MapRoute = { from: string; to: string; people: string[] };
 /** Un sat al strămoșilor, cum îl văd celelalte neamuri (doar cei decedați: câți, anii și numele de familie). */
 export type SharedPlace = { placeId: string; area: string | null; name: string; detail: string | null; people: number; fromYear: number | null; toYear: number | null; surnames: string };
-export type TreeMap = { places: MapPlace[]; missing: MapMissing[]; people: Record<string, MapPerson>; routes: MapRoute[]; shared: SharedPlace[] };
+/** Locul unei amintiri pe care harta nu l-a găsit („la moara bunicului”, un sat scris altfel). */
+export type MemoryMissing = { key: string; text: string; memories: PlaceMemory[] };
+export type TreeMap = {
+  places: MapPlace[]; missing: MapMissing[]; people: Record<string, MapPerson>; routes: MapRoute[]; shared: SharedPlace[]; memoryMissing: MemoryMissing[];
+};
 
 /**
  * Locurile unui arbore, cu oamenii lor: unde s-au născut, unde au murit și, pentru cei în viață, unde locuiesc acum.
  * Persoanele discrete (de pildă o fostă soție) nu apar pe hartă, la fel ca în desenele arborelui.
+ * Cu `viewer`, și amintirile din lăzi pe care le vede el, la locul unde s-au petrecut. Ele nu schimbă nimic din rest:
+ * nici satele alese pentru oameni, nici drumurile, nici ce văd celelalte neamuri.
  */
-export async function loadTreeMap(db: Db, treeId: string): Promise<TreeMap> {
+export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer): Promise<TreeMap> {
   const rows = (await db.select().from(person).where(eq(person.treeId, treeId))).filter((p) => !p.discreet);
   const pins = await db.select().from(placePin).where(eq(placePin.treeId, treeId));
   const refs = new Map<string, PlaceRef>();
@@ -44,6 +53,14 @@ export async function loadTreeMap(db: Db, treeId: string): Promise<TreeMap> {
       marks.push({ pid: p.id, key, kind });
     }
   }
+  const memories = viewer ? await placedMemories(db, treeId, viewer) : [];
+  const memMarks: { key: string; m: PlaceMemory }[] = [];
+  for (const m of memories) {
+    const key = placeKey(m.place, null);
+    if (!key) continue;
+    if (!refs.has(key)) refs.set(key, { key, text: m.place, country: null, weight: 0 });
+    memMarks.push({ key, m });
+  }
   const spots = await resolvePlaces([...refs.values()], pins.map((x) => ({ key: x.key, placeId: x.placeId, name: x.name, detail: x.detail, lat: x.lat, lng: x.lng })));
   const places = new Map<string, MapPlace>();
   const missing = new Map<string, MapMissing>();
@@ -57,11 +74,26 @@ export async function loadTreeMap(db: Db, treeId: string): Promise<TreeMap> {
       missing.set(m.key, x);
       continue;
     }
-    const pl = places.get(s.id) ?? { ...s, keys: [], people: [] };
+    const pl = places.get(s.id) ?? { ...s, keys: [], people: [], memories: [] };
     if (!pl.keys.some((k) => k.key === m.key)) pl.keys.push({ key: m.key, text: ref.text, country: ref.country });
     if (!pl.people.some((x) => x.id === m.pid && x.kind === m.kind)) pl.people.push({ id: m.pid, kind: m.kind });
     places.set(s.id, pl);
     at.set(m.pid, { ...at.get(m.pid), [m.kind]: s.id });
+  }
+  const memoryMissing = new Map<string, MemoryMissing>();
+  for (const { key, m } of memMarks) {
+    const s = spots.get(key);
+    const ref = refs.get(key)!;
+    if (!s) {
+      const x = memoryMissing.get(key) ?? { key, text: ref.text, memories: [] };
+      x.memories.push(m);
+      memoryMissing.set(key, x);
+      continue;
+    }
+    const pl = places.get(s.id) ?? { ...s, keys: [], people: [], memories: [] };
+    if (!pl.keys.some((k) => k.key === key)) pl.keys.push({ key, text: ref.text, country: ref.country, memory: true });
+    pl.memories.push(m);
+    places.set(s.id, pl);
   }
   // Drumurile neamului: de unde a plecat fiecare (locul nașterii) și unde a ajuns (locul morții sau unde trăiește acum).
   const routes = new Map<string, MapRoute>();
@@ -95,5 +127,8 @@ export async function loadTreeMap(db: Db, treeId: string): Promise<TreeMap> {
     surnames: [...names.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([n]) => n).join(", "),
   }));
   const byCount = <T extends { people: unknown[] }>(a: T, b: T) => b.people.length - a.people.length;
-  return { places: [...places.values()].sort(byCount), missing: [...missing.values()].sort(byCount), people, routes: [...routes.values()], shared: sharedRows };
+  return {
+    places: [...places.values()].sort((a, b) => byCount(a, b) || b.memories.length - a.memories.length), missing: [...missing.values()].sort(byCount),
+    people, routes: [...routes.values()], shared: sharedRows, memoryMissing: [...memoryMissing.values()].sort((a, b) => b.memories.length - a.memories.length),
+  };
 }

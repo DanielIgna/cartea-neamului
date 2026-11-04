@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition, type ComponentProps } from 
 import { addMemoryReply, askQuestion, deleteMemory, deleteMemoryReply, dismissQuestion, hideMention } from "@/app/lada-actions";
 import { CHAPTERS, type Question } from "@/lib/questions";
 import type { AskedView, MemoryView } from "@/lib/lada-db";
+import { placeKey } from "@/lib/place-key";
 import MemoryForm, { type Draft, type PersonOption } from "./MemoryForm";
 import { clock } from "./VoiceRecorder";
 
@@ -229,7 +230,13 @@ function MemoryCard({ m, treeId, profileId, viewerPersonId, nameOf, run, pending
       )}
       {m.body && <p className="body">{long ? `${m.body.slice(0, 600).trimEnd()}… ` : m.body}{long && <button className="linklike" onClick={() => setFull(true)}>Citește tot</button>}</p>}
       {m.helper && <div className="meta">Povestită de {nameOf(m.personId)}{m.author ? `, înregistrată de ${m.author.name}` : ""} în modul „la bunici”, cu acordul {m.consentAudioId ? <a href={`/api/document/${m.consentAudioId}`} target="_blank" rel="noopener">spus cu glasul</a> : "dat la început"}.</div>}
-      {(m.whenText || m.place) && <div className="meta">{[m.whenText, m.place].filter(Boolean).join(" · ")}</div>}
+      {(m.whenText || m.place) && (
+        <div className="meta">
+          {m.whenText}{m.whenText && m.place ? " · " : ""}
+          {m.place && (m.visibility === "private" ? m.place
+            : <Link href={`/arbore/${treeId}/harta?loc=${encodeURIComponent(placeKey(m.place, null) ?? "")}`} title="Vezi locul pe harta neamului">{m.place}</Link>)}
+        </div>
+      )}
       {(m.mentions.length > 0 || m.editable) && (
         <div className="chips">
           {m.mentions.map((x) => <Link key={x.personId} className="chip" href={`/arbore/${treeId}/persoana/${x.personId}`}>{nameOf(x.personId)}</Link>)}

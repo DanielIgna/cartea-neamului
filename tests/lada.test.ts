@@ -1,11 +1,12 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { tree, person, relationship, treeMember, user, memory, memoryMention, memoryQuestion, memoryReply, document, documentLink } from "@/db/schema";
 import { buildGraph, type Graph } from "@/lib/kinship";
 import { canSee, questionContext, yearIn, type MemoryAccess } from "@/lib/lada";
-import { canOpenDocument, loadLada, memoryMediaIds } from "@/lib/lada-db";
+import { canOpenDocument, excerpt, loadLada, memoryMediaIds } from "@/lib/lada-db";
+import { loadTreeMap } from "@/lib/map-data";
 import { fileType } from "@/lib/file-type";
 import { questionsFor, sundayQuestion, weekNumber, type QuestionContext } from "@/lib/questions";
 
@@ -225,5 +226,49 @@ describe("glasul și modul „la bunici”", () => {
     expect(l.isOwner).toBe(true);
     expect(l.own[0]).toMatchObject({ editable: true, mine: false });
     await db.update(person).set({ claimedByUserId: null }).where(eq(person.id, P.tata));
+  });
+});
+
+describe("amintirile pe harta neamului", () => {
+  const map = (k: string) => loadTreeMap(db, treeId, { userId: `u-${k}`, personId: k === "tata" ? null : P[k] });
+  /** Locul → titlurile amintirilor de acolo, cu locurile pe care harta nu le știe la sfârșit. */
+  const told = async (k: string) => {
+    const m = await map(k);
+    return Object.fromEntries([...m.places.filter((p) => p.memories.length).map((p) => [p.name, p.memories.map((x) => x.title).sort()]),
+      ...m.memoryMissing.map((x) => [x.text, x.memories.map((y) => y.title).sort()])]);
+  };
+  const moara = "Mergeam cu tata la moară iarna, cu sania trasă de cai, și ne întorceam pe întuneric, cu sacii de făină și cu lampa aprinsă.";
+
+  it("fiecare vede pe hartă doar ce vede și pe profil, fără ciorne și fără lăzile celor discreți", async () => {
+    await db.update(memory).set({ place: "Huedin" }).where(inArray(memory.id, [M.pentruToti, M.apropiati, M.ciorna]));
+    await db.update(memory).set({ place: "Domoșu" }).where(eq(memory.id, M.doarLuiFiulVar));
+    await db.insert(memory).values({ treeId, personId: P.eu, authorId: "u-eu", body: moara, place: "la moara bunicului", visibility: "tree" });
+    const [fosta] = await db.insert(person).values({ treeId, givenName: "fosta", surname: "Igna", sex: "F", discreet: true }).returning();
+    await db.insert(memory).values({ treeId, personId: fosta.id, authorId: "u-eu", body: "din lada ei", place: "Huedin", visibility: "tree" });
+    await db.update(person).set({ birthPlace: "Huedin", deathPlace: "Huedin", deathDateText: "1988" }).where(eq(person.id, P.bunic));
+
+    const lost = { "la moara bunicului": [excerpt(moara)] };
+    const question = "„Unchiule, cum era bunicul Majel?”";
+    expect(await told("eu")).toEqual({ Huedin: ["apropiati", "pentruToti"], Domoșu: [question], ...lost });
+    expect(await told("sotie")).toEqual({ Huedin: ["apropiati", "pentruToti"], ...lost });
+    expect(await told("var")).toEqual({ Huedin: ["pentruToti"], ...lost });
+    expect(await told("fiulVar")).toEqual({ Huedin: ["pentruToti"], Domoșu: [question], ...lost });
+    expect(excerpt(moara)).toMatch(/^Mergeam cu tata la moară iarna, cu sania .+[^ ,]…$/);
+    expect(excerpt(moara).length).toBeLessThanOrEqual(91);
+  });
+
+  it("amintirea duce la lada celui care a povestit-o, iar locul ei nu schimbă nimic pentru oameni", async () => {
+    const withMemories = await map("eu");
+    const huedin = withMemories.places.find((p) => p.name === "Huedin")!;
+    expect(huedin.people).toEqual([{ id: P.bunic, kind: "born" }, { id: P.bunic, kind: "died" }]);
+    expect(huedin.memories.find((x) => x.title === "pentruToti")).toMatchObject({ id: M.pentruToti, personId: P.eu, teller: "eu Igna" });
+    expect(withMemories.places.find((p) => p.name === "Domoșu")!.people).toEqual([]);
+    // Fără cine se uită (ce văd celelalte neamuri): fără amintiri, aceleași sate.
+    const plain = await loadTreeMap(db, treeId);
+    expect(plain.places.flatMap((p) => p.memories)).toEqual([]);
+    expect(plain.memoryMissing).toEqual([]);
+    expect(plain.places.map((p) => p.name)).toEqual(["Huedin"]);
+    expect(withMemories.shared).toEqual(plain.shared);
+    expect(withMemories.routes).toEqual(plain.routes);
   });
 });

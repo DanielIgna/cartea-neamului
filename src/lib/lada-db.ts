@@ -1,4 +1,4 @@
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, ne, or } from "drizzle-orm";
 import type { Db } from "@/db";
 import { documentLink, memory, memoryMention, memoryQuestion, memoryReply, person, relationship, tree, user } from "@/db/schema";
 import { buildGraph, type Graph } from "./kinship";
@@ -83,6 +83,46 @@ export async function memoryVisible(db: Db, m: typeof memory.$inferSelect, viewe
   const [t] = await db.select({ degree: tree.chatMaxDegree }).from(tree).where(eq(tree.id, m.treeId));
   const askedBy = m.askedId ? (await db.select({ by: memoryQuestion.askedBy }).from(memoryQuestion).where(eq(memoryQuestion.id, m.askedId)))[0]?.by ?? null : null;
   return canSee({ ...m, askedBy }, viewer, buildGraph(people, rels), t?.degree ?? 4, people.find((p) => p.id === m.personId)?.claimedBy ?? null);
+}
+
+/** O amintire pe harta neamului: unde s-a întâmplat, în lada cui e și cum o recunoști în listă. */
+export type PlaceMemory = {
+  id: string; personId: string; teller: string; title: string; when: string | null; year: number | null; audio: boolean; place: string; createdAt: string;
+};
+
+/** Începutul unei amintiri fără titlu, tăiat la un cuvânt întreg. */
+export function excerpt(s: string, n = 90) {
+  const t = s.replace(/\s+/g, " ").trim();
+  if (t.length <= n) return t;
+  const cut = t.slice(0, n), sp = cut.lastIndexOf(" ");
+  return `${(sp > n / 2 ? cut.slice(0, sp) : cut).replace(/[\s,.;:!?–-]+$/, "")}…`;
+}
+
+/**
+ * Amintirile cu loc pe care le vede `viewer`, pentru harta neamului: aceleași reguli ca pe profil. Ciornele nu apar,
+ * nici lăzile celor discreți (care nu apar nici ei pe hartă).
+ */
+export async function placedMemories(db: Db, treeId: string, viewer: Viewer): Promise<PlaceMemory[]> {
+  const rows = (await db.select().from(memory).where(and(eq(memory.treeId, treeId), isNotNull(memory.place), ne(memory.visibility, "private"))))
+    .filter((m) => m.place?.trim());
+  if (!rows.length) return [];
+  const people = await db.select({ id: person.id, sex: person.sex, given: person.givenName, surname: person.surname, claimedBy: person.claimedByUserId, discreet: person.discreet })
+    .from(person).where(eq(person.treeId, treeId));
+  const rels = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
+  const [t] = await db.select({ degree: tree.chatMaxDegree }).from(tree).where(eq(tree.id, treeId));
+  const askedIds = [...new Set(rows.map((m) => m.askedId).filter((x): x is string => !!x))];
+  const askedBy = new Map(askedIds.length
+    ? (await db.select({ id: memoryQuestion.id, by: memoryQuestion.askedBy }).from(memoryQuestion).where(inArray(memoryQuestion.id, askedIds))).map((q) => [q.id, q.by])
+    : []);
+  const g = buildGraph(people, rels);
+  const byId = new Map(people.map((p) => [p.id, p]));
+  return rows.flatMap((m): PlaceMemory[] => {
+    const p = byId.get(m.personId);
+    if (!p || p.discreet || !canSee({ ...m, askedBy: m.askedId ? askedBy.get(m.askedId) ?? null : null }, viewer, g, t?.degree ?? 4, p.claimedBy)) return [];
+    const title = m.title?.trim() || (m.question?.trim() ? `„${m.question.trim()}”` : "") || excerpt(m.body) || (m.audioDocumentId ? "Amintire spusă cu glasul" : "Amintire");
+    return [{ id: m.id, personId: m.personId, teller: `${p.given} ${p.surname}`.trim(), title, when: m.whenText?.trim() || null, year: m.whenYear,
+      audio: !!m.audioDocumentId, place: m.place!.trim(), createdAt: m.createdAt.toISOString() }];
+  }).sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999) || a.createdAt.localeCompare(b.createdAt));
 }
 
 /** Pozele și glasul puse la amintiri (nu apar în album; le deschide doar cine vede amintirea). */

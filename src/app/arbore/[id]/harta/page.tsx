@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { tree } from "@/db/schema";
+import { person, tree } from "@/db/schema";
 import { requireUser, roleIn, can } from "@/lib/access";
 import { isDemo } from "@/lib/demo";
 import { loadTreeMap } from "@/lib/map-data";
@@ -10,7 +10,7 @@ import FamilyMap from "@/components/FamilyMap";
 
 export const dynamic = "force-dynamic";
 
-/** Harta neamului: satele și orașele din fișe, cu oamenii născuți, îngropați sau care trăiesc acolo. */
+/** Harta neamului: satele și orașele din fișe, cu oamenii născuți, îngropați sau care trăiesc acolo, și amintirile petrecute acolo. */
 export default async function MapPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ loc?: string }> }) {
   const { id } = await params;
   const { loc } = await searchParams;
@@ -20,7 +20,8 @@ export default async function MapPage({ params, searchParams }: { params: Promis
   if (!role) notFound();
   const [t] = await db.select({ name: tree.name, discoverable: tree.discoverable }).from(tree).where(eq(tree.id, id));
   if (!t) notFound();
-  const data = await loadTreeMap(db, id);
+  const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
+  const data = await loadTreeMap(db, id, { userId: me.id, personId: mine?.id ?? null });
   // Satele pe care le văd celelalte neamuri țin pasul cu harta (de pildă după ce un loc e mutat pe hartă).
   if (t.discoverable) await storeSharedPlaces(db, id, data.shared).catch((e) => console.error("Din aceleași locuri", e));
   const matches = t.discoverable ? await placeMatches(db, id, me.id) : [];
