@@ -2,7 +2,7 @@
  * Textele călătoriei care nu vin din arbore: popasul despre anii comunismului și capătul drumului.
  * Sunt scrise aici, la un loc, ca să le poată îndrepta ușor cine ține site-ul. Versetele sunt din traducerea Cornilescu.
  */
-const bible = (book: string, chapter: number) => `https://www.bible.com/ro/bible/126/${book}.${chapter}.NTR`;
+const bible = (book: string, chapter: number) => `https://www.bible.com/ro/bible/191/${book}.${chapter}.VDC`;
 
 export const REGIME_TEXT = {
   title: "Anii minciunii și ai fricii",
@@ -30,8 +30,9 @@ export const END_TEXT = {
     "Cine Îl primește ca Mântuitor personal se naște din nou și primește o chemare cerească: să trăiască în lume sfânt și fără prihană, adică pus deoparte pentru Dumnezeu, să facă voia Lui și, la urmă, să moștenească nemurirea.",
   ],
   verses: [
+    { text: "Și viața veșnică este aceasta: să Te cunoască pe Tine, singurul Dumnezeu adevărat, și pe Isus Hristos, pe care L-ai trimis Tu.", ref: "Ioan 17:3" },
     { text: "Dar tuturor celor ce L-au primit, adică celor ce cred în Numele Lui, le-a dat dreptul să se facă copii ai lui Dumnezeu.", ref: "Ioan 1:12" },
-    { text: "Eu sunt calea, adevărul și viața.", ref: "Ioan 14:6" },
+    { text: "Eu sunt Calea, Adevărul și Viața.", ref: "Ioan 14:6" },
   ],
   question: "Numele tău e în arborele acesta. Dar e scris și în Cartea Vieții?",
   questionRef: "Apocalipsa 20:12",
