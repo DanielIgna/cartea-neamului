@@ -448,3 +448,29 @@ body:has(.grand){overflow:hidden}
 .grand .linklike{color:#8a5a1f}
 .grand audio{max-width:100%}
 .grand .btn:disabled{opacity:.45;cursor:default}
+
+/* Copacul 360° și povestea vremurilor */
+.t360{position:relative}
+.t360-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.t360-turn{display:inline-flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px}
+.t360-turn button{border:0;background:transparent;min-width:34px;height:32px;border-radius:7px;font-size:19px;line-height:1;color:var(--ink);padding:0 6px;cursor:pointer}
+.t360-turn button.zt-text{font-size:14px}
+.t360-turn button:hover,.t360-turn button[aria-pressed="true"]{background:var(--accent-soft)}
+.t360-svg{display:block;width:100%;height:auto;max-height:78vh;touch-action:none;cursor:grab;user-select:none;border-radius:12px;background:radial-gradient(ellipse at 50% 35%,var(--surface-2),var(--surface) 70%)}
+.t360-svg:active{cursor:grabbing}
+.n360{cursor:pointer}
+.n360:hover circle{stroke:var(--accent);stroke-width:2.5}
+.n360-label{fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:3px;stroke-linejoin:round}
+.card.chart-full .t360-svg{max-height:none}
+.t360-story{margin-top:10px;border:1px solid var(--line);border-left:4px solid var(--ochre);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
+.t360-story h3{margin:4px 0 2px;font-size:19px}
+.t360-nav{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.era-chip{display:inline-block;font-size:13px;font-weight:600;background:var(--ochre-soft);color:var(--ink);border-radius:999px;padding:3px 10px;margin:2px 0 6px}
+.times-born{margin:0 0 4px;font-size:14px}
+.times-life{margin:0 0 8px;font-size:14.5px;line-height:1.55}
+.times-sub{font-size:13px;font-weight:700;color:var(--muted);margin:8px 0 4px}
+.times-list{list-style:none;margin:0;padding:0;font-size:14px;line-height:1.45}
+.times-list li{position:relative;padding-left:16px;margin:3px 0}
+.times-list li > i{position:absolute;left:0;top:.5em;width:8px;height:8px;border-radius:50%}
+.times .dot,.t360-story .dot{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle}
+.t360-svg:focus:not(:focus-visible){outline:none}
