@@ -276,3 +276,82 @@ a{color:var(--accent)}
   /* după ultima pagină nu mai vine nimic: fără o foaie albă la final */
   .book-pages .pagedjs_page:last-child{break-after:auto!important;page-break-after:auto!important}
 }
+
+/* Lada cu amintiri: întrebarea de duminică, întrebările de la familie, amintirile pe capitole și „Și eu îmi amintesc” */
+.lada-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;justify-content:space-between}
+.lada-head h3{margin:0;font-family:var(--display);font-size:24px;line-height:1.2}
+.lada-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.sunday{margin-top:14px;border-radius:12px;padding:14px 16px;background:var(--ochre-soft);border:1px solid color-mix(in srgb,var(--ochre) 35%,transparent)}
+.sunday-label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--ochre)}
+.sunday-q{font-family:var(--display);font-size:22px;line-height:1.3;margin:6px 0 0}
+.sunday .actions{margin:12px 0 8px}
+.sunday small{display:block}
+.asked{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.asked li{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface-2);display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;justify-content:space-between}
+.asked .q{flex:1;min-width:min(220px,100%)}
+.asked small{display:block;color:var(--muted)}
+.asked .tools{display:flex;gap:12px;align-items:center}
+.ask-form{display:grid;gap:8px}
+.ask-form textarea{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--surface);color:inherit;font:inherit;min-height:64px;resize:vertical;min-width:0}
+.chapter-title{font-family:var(--display);font-size:20px;margin:20px 0 8px;display:flex;align-items:baseline;gap:8px}
+.chapter-title small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400}
+.memories{display:grid;gap:12px}
+.memory{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);scroll-margin-top:80px;min-width:0}
+.memory.draft{border-style:dashed;background:var(--surface-2)}
+.memory .from{font-size:13px;color:var(--muted);margin-bottom:2px}
+.memory h4{margin:0;font-family:var(--display);font-size:19px;line-height:1.25}
+.memory .q{margin:2px 0 6px;font-style:italic;color:var(--muted);font-size:14px}
+.memory .body{white-space:pre-wrap;margin:6px 0 0;line-height:1.55;overflow-wrap:anywhere}
+.memory .photo{display:block;margin:8px 0 4px}
+.memory .photo img{max-width:100%;max-height:380px;border-radius:10px;object-fit:cover;display:block}
+.memory .meta{font-size:13px;color:var(--muted);margin-top:6px}
+.memory .chips{margin:8px 0 0}
+.memory a.chip{text-decoration:none;color:var(--ink)}
+.memory .tools{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline;margin-top:10px;font-size:14px}
+.replies{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:8px}
+.reply{font-size:14px;background:var(--surface-2);border-radius:10px;padding:6px 10px}
+.reply .who{font-weight:700}
+.reply p{white-space:pre-wrap;margin:2px 0 0;overflow-wrap:anywhere}
+.memory-form{margin-top:12px;border:1px solid var(--accent);border-radius:12px;padding:12px;background:var(--surface-2)}
+.memory-question{font-size:14px;background:var(--ochre-soft);border-radius:8px;padding:6px 10px}
+.form label.radio,.share label.radio{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.mention-chip{display:inline-flex;gap:6px;align-items:center;color:var(--ink)}
+
+/* Povestea: un ecran întreg, ca filele unei cărți de răsfoit; pe calculator, o coloană cât un telefon */
+body:has(.story){overflow:hidden}
+.story{position:fixed;inset:0;z-index:80;background:#120e09;display:flex;justify-content:center;color:#2b2116}
+.story-frame{position:relative;width:100%;max-width:480px;height:100vh;height:100dvh;display:flex;flex-direction:column;background:#f6eedf;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.story-bars{display:flex;gap:4px;padding:10px 12px 0;padding-top:max(10px, env(safe-area-inset-top, 0px))}
+.story-bars span{flex:1;height:3px;border-radius:2px;background:rgba(43,33,22,.16);overflow:hidden}
+.story-bars span.done{background:#8a5a1f}
+.story-bars span.one i{display:block;height:100%;background:#8a5a1f}
+.story-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 16px;font-size:14px;font-weight:700}
+.story-top a{font-size:30px;line-height:1;text-decoration:none;color:inherit;padding:2px 8px}
+.story-slide{flex:1;min-height:0;overflow-y:auto;padding:8px 24px 18px;display:flex;flex-direction:column;animation:story-in .25s ease}
+@keyframes story-in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+.story-kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8a5a1f;font-weight:700}
+.story-cover{margin:auto 0;text-align:center;display:grid;justify-items:center;gap:10px}
+.story-cover .avatar{border:3px solid #fff;box-shadow:0 4px 18px rgba(0,0,0,.18)}
+.story-cover h1{font-family:var(--display);font-size:34px;margin:6px 0 0;line-height:1.1}
+.story-cover p{margin:0;font-size:17px}
+.story-dates{color:#6b5a45}
+.story-hint{color:#6b5a45;margin-top:18px}
+.story-chapter{margin:auto 0;text-align:center}
+.story-chapter h2{font-family:var(--display);font-size:40px;margin:10px 0;line-height:1.1}
+.story-chapter p{color:#6b5a45;margin:0}
+.story-memory{margin:auto 0}
+.story-memory h3{font-family:var(--display);font-size:26px;margin:6px 0 4px;line-height:1.15}
+.story-memory .q{font-style:italic;color:#6b5a45;margin:0 0 10px}
+.story-memory .photo{width:100%;max-height:42vh;object-fit:cover;border-radius:12px;margin:10px 0 8px;box-shadow:0 2px 10px rgba(0,0,0,.12);pointer-events:none}
+.story-memory .body{white-space:pre-wrap;font-family:var(--display);font-size:19px;line-height:1.5;margin:6px 0 0;overflow-wrap:anywhere}
+.story-memory .meta{font-size:14px;color:#6b5a45;margin-top:10px}
+.story-replies{display:inline-block;margin-top:14px;color:#8a5a1f;font-weight:700}
+.story-end{margin:auto 0;text-align:center;display:grid;gap:12px;justify-items:center}
+.story-end h2{font-family:var(--display);font-size:28px;margin:0;line-height:1.2}
+.story-end .btn{background:#fff;border-color:#d9c9ad;color:#2b2116}
+.story-end .btn.primary{background:#8a5a1f;border-color:#8a5a1f;color:#fff}
+.story-end small{color:#6b5a45}
+.story-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;padding-bottom:max(10px, env(safe-area-inset-bottom, 0px));font-size:13px;color:#6b5a45}
+.story-nav button{border:0;background:rgba(43,33,22,.08);border-radius:999px;width:44px;height:44px;font-size:24px;line-height:1;color:inherit;cursor:pointer}
+.story-nav button:disabled{opacity:.3;cursor:default}
+@media (prefers-reduced-motion:reduce){.story-slide{animation:none}}
