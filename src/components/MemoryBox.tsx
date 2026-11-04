@@ -68,6 +68,7 @@ export default function MemoryBox(props: {
               <h3>{isOwner ? "Lada ta cu amintiri" : `Ce a povestit ${owner.givenName} despre viața ${lui}`}</h3>
               <p>{isOwner ? "Amintirile tale, pe capitole, pentru cei din familie. Tu alegi la fiecare cine o vede." : own.length ? `${own.length} ${own.length === 1 ? "amintire" : "amintiri"} pe care le poți vedea.` : ""}</p>
             </div>
+            {isOwner && owner.living && <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie`}>Scrie-ți autobiografia</Link>}
             {shown > 0 && <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/poveste`}>Răsfoiește povestea ▸</Link>}
           </div>
           {msg && <p className="notice" role="status" style={{ margin: "12px 0 0" }}>{msg}</p>}
