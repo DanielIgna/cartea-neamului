@@ -3,7 +3,7 @@
  * cu cine s-a căsătorit și în ce an s-a născut, așa că întrebările poartă numele și anii lui. Doi oameni din aceeași familie
  * primesc întrebări diferite. Totul e scris de mână, în română, fără inteligență artificială și fără costuri.
  */
-export type Chapter = "copilaria" | "scoala" | "dragostea" | "munca" | "copiii" | "plecarea" | "obiceiuri" | "istoria" | "invatat" | "altele";
+export type Chapter = "copilaria" | "scoala" | "dragostea" | "munca" | "copiii" | "plecarea" | "obiceiuri" | "istoria" | "credinta" | "invatat" | "altele";
 
 /** Capitolele poveștii, în ordinea în care se răsfoiesc. */
 export const CHAPTERS: { key: Chapter; label: string }[] = [
@@ -15,13 +15,15 @@ export const CHAPTERS: { key: Chapter; label: string }[] = [
   { key: "plecarea", label: "Plecări și drumuri" },
   { key: "obiceiuri", label: "Obiceiuri" },
   { key: "istoria", label: "Istoria mare" },
+  { key: "credinta", label: "Credința" },
   { key: "invatat", label: "Ce am învățat" },
   { key: "altele", label: "Alte amintiri" },
 ];
 export const chapterLabel = (c: string) => CHAPTERS.find((x) => x.key === c)?.label ?? "Alte amintiri";
 export const isChapter = (c: string): c is Chapter => CHAPTERS.some((x) => x.key === c);
 
-export type Question = { key: string; chapter: Chapter; text: string; kind: "tree" | "history" | "any" };
+/** `carte`: întrebările din modelul de autobiografie (src/lib/autobiografie.ts), care nu vin și duminica. */
+export type Question = { key: string; chapter: Chapter; text: string; kind: "tree" | "history" | "any" | "carte"; mentions?: string[] };
 export type Who = { id: string; givenName: string; sex: "M" | "F" | "U"; birthYear: number | null; deathYear: number | null };
 export type QuestionContext = {
   me: Who & { birthPlace: string | null; residencePlace: string | null; occupation: string | null };
@@ -121,7 +123,7 @@ const ANY: [string, Chapter, string][] = [
 ];
 
 /** „{mic|mică}”: forma de bărbat sau de femeie, după cel care răspunde. */
-const gendered = (text: string, sex: Who["sex"]) => text.replace(/\{([^|}]*)\|([^}]*)\}/g, (_, m: string, f: string) => (sex === "F" ? f : m));
+export const gendered = (text: string, sex: Who["sex"]) => text.replace(/\{([^|}]*)\|([^}]*)\}/g, (_, m: string, f: string) => (sex === "F" ? f : m));
 
 /** Toate întrebările pentru un om, amestecate pe rând: una din arbore, una din istorie, una pentru oricine, și tot așa. */
 export function questionsFor(ctx: QuestionContext): Question[] {
