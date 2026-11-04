@@ -68,7 +68,11 @@ export default function MemoryBox(props: {
               <h3>{isOwner ? "Lada ta cu amintiri" : `Ce a povestit ${owner.givenName} despre viața ${lui}`}</h3>
               <p>{isOwner ? "Amintirile tale, pe capitole, pentru cei din familie. Tu alegi la fiecare cine o vede." : own.length ? `${own.length} ${own.length === 1 ? "amintire" : "amintiri"} pe care le poți vedea.` : ""}</p>
             </div>
-            {shown > 0 && <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/poveste`}>Răsfoiește povestea ▸</Link>}
+            <div className="actions" style={{ marginTop: 0 }}>
+              {isOwner && owner.living && <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie`}>Autobiografia ta ▸</Link>}
+              {!isOwner && own.some((m) => m.visibility !== "private") && <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie/carte`}>Autobiografia, ca o carte</Link>}
+              {shown > 0 && <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/poveste`}>Răsfoiește povestea ▸</Link>}
+            </div>
           </div>
           {msg && <p className="notice" role="status" style={{ margin: "12px 0 0" }}>{msg}</p>}
 
@@ -121,7 +125,10 @@ export default function MemoryBox(props: {
           {canHelp && (
             <div className="helper-call">
               <b>Ești la {owner.givenName}?</b> Deschide modul „la bunici”: telefonul îi arată întrebările cu litere mari, {owner.givenName} povestește, iar telefonul înregistrează, cu acordul {owner.sex === "F" ? "ei" : "lui"} spus la început.
-              <div className="actions" style={{ marginTop: 8 }}><Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/la-bunici`}>Deschide modul „la bunici”</Link></div>
+              <div className="actions" style={{ marginTop: 8 }}>
+                <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/la-bunici`}>Deschide modul „la bunici”</Link>
+                <Link className="btn" href={`/arbore/${treeId}/persoana/${owner.id}/la-bunici?carte=1`}>Cu întrebările autobiografiei</Link>
+              </div>
             </div>
           )}
           {!isOwner && canAsk && <AskBox treeId={treeId} owner={owner} mine={questions.filter((x) => x.mine)} run={run} pending={pending} visibleIds={own.map((m) => m.id)} />}
