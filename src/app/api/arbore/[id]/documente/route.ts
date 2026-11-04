@@ -47,8 +47,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     treeId, kind: v.kind, title: v.title, dateText: v.dateText ?? null, description: v.description ?? null, fileKey: key, mimeType: file.type, uploadedBy: me.id,
   }).returning();
   await db.insert(documentLink).values({ documentId: d.id, personId: p.id });
-  // O fotografie poate deveni poza de profil; prima fotografie a unei persoane devine automat poza ei.
-  if (v.kind === "photo") {
+  // O fotografie poate deveni poza de profil; prima fotografie a unei persoane devine automat poza ei
+  // (nu și poza pusă la o amintire, care poate fi casa, satul sau nunta).
+  if (v.kind === "photo" && form.get("forMemory") !== "on") {
     const [cur] = await db.select({ photo: person.photoDocumentId }).from(person).where(eq(person.id, p.id));
     if (v.asProfile || !cur?.photo) await db.update(person).set({ photoDocumentId: d.id, updatedAt: new Date() }).where(eq(person.id, p.id));
   }

@@ -297,3 +297,59 @@ export const joinAttempt = pgTable("join_attempt", {
   found: boolean("found").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("join_attempt_user_idx").on(t.userId, t.createdAt), index("join_attempt_name_idx").on(t.nameKey, t.createdAt)]);
+
+/* ---------- Lada cu amintiri ---------- */
+// Povestea celor vii, spusă de ei: fiecare om în viață își adună amintirile, pe capitole, în lada lui.
+// O amintire e a celui care o scrie: doar el alege cine o vede și doar el o poate schimba sau șterge.
+// „private” = doar el (ciornă); „asker” = doar cel care a pus întrebarea; „close” = familia apropiată, până la un grad; „tree” = tot arborele.
+export const memoryVisibility = pgEnum("memory_visibility", ["private", "asker", "close", "tree"]);
+
+export const memory = pgTable("memory", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }), // în lada cui e (cine povestește)
+  authorId: text("author_id").references(() => user.id, { onDelete: "set null" }), // contul care a scris-o
+  chapter: text("chapter").notNull().default("altele"),
+  question: text("question"), // întrebarea la care răspunde, cum a fost pusă
+  questionKey: text("question_key"), // tiparul întrebării de duminică, ca să nu mai fie pusă încă o dată
+  askedId: uuid("asked_id"), // întrebarea lăsată de o rudă, dacă răspunde la ea
+  title: text("title"),
+  body: text("body").notNull(),
+  whenText: text("when_text"), // „vara lui 1965”, „cca. 1970”
+  whenYear: integer("when_year"),
+  place: text("place"),
+  photoDocumentId: uuid("photo_document_id").references(() => document.id, { onDelete: "set null" }),
+  visibility: memoryVisibility("visibility").notNull().default("tree"),
+  maxDegree: integer("max_degree"), // pentru „familia apropiată”: până la ce grad de rudenie; gol = gradul de la mesaje
+  inBook: boolean("in_book").notNull().default(false), // autorul a bifat că poate intra în Cartea neamului
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [index("memory_person_idx").on(t.personId), index("memory_tree_idx").on(t.treeId)]);
+
+// Cine mai e în amintire: amintirea apare și pe profilul lui, dacă el nu o ascunde.
+export const memoryMention = pgTable("memory_mention", {
+  memoryId: uuid("memory_id").notNull().references(() => memory.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  hidden: boolean("hidden").notNull().default(false),
+}, (t) => [uniqueIndex("memory_mention_pk").on(t.memoryId, t.personId), index("memory_mention_person_idx").on(t.personId)]);
+
+// „Și eu îmi amintesc”: ce adaugă rudele sub o amintire.
+export const memoryReply = pgTable("memory_reply", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  memoryId: uuid("memory_id").notNull().references(() => memory.id, { onDelete: "cascade" }),
+  authorId: text("author_id").references(() => user.id, { onDelete: "set null" }),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("memory_reply_memory_idx").on(t.memoryId)]);
+
+// O întrebare lăsată de o rudă în lada cuiva („Bunico, cum era la nunta voastră?”).
+export const memoryQuestion = pgTable("memory_question", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }), // în lada cui
+  askedBy: text("asked_by").references(() => user.id, { onDelete: "set null" }),
+  text: text("text").notNull(),
+  memoryId: uuid("memory_id").references(() => memory.id, { onDelete: "set null" }), // răspunsul
+  dismissed: boolean("dismissed").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("memory_question_person_idx").on(t.personId)]);

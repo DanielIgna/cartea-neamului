@@ -392,7 +392,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         <div>
           <h2>{p.name}</h2>
           <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}</div>
-          <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>Deschide profilul și albumul →</Link>
+          <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>{p.living ? "Deschide profilul, lada cu amintiri și albumul →" : "Deschide profilul, amintirile și albumul →"}</Link>
           {storageEnabled && (canEdit || (canAdd && !p.photoId)) && (
             <div style={{ fontSize: 14 }}><PhotoPick key={p.id} treeId={treeId} p={p} onDone={() => { setDone(`Am pus poza pentru ${p.givenName}; o găsești și în album.`); onChanged(); }} /></div>
           )}

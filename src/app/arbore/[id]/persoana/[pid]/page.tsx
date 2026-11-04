@@ -13,13 +13,19 @@ import { Avatar } from "@/components/Album";
 import ProfileAlbum from "@/components/ProfileAlbum";
 import PhotoPick from "@/components/PhotoPick";
 import { raisedLinks } from "@/lib/raised";
+import { isPlaceholder } from "@/lib/family";
+import { questionContext } from "@/lib/lada";
+import { loadLada } from "@/lib/lada-db";
+import { questionsFor, sundayQuestion, type Question } from "@/lib/questions";
+import MemoryBox from "@/components/MemoryBox";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
 
-/** Profilul unei persoane: poza, ce se știe despre ea, albumul cu descrieri și familia ei apropiată. */
-export default async function ProfilePage({ params }: { params: Promise<{ id: string; pid: string }> }) {
+/** Profilul unei persoane: poza, ce se știe despre ea, lada cu amintiri, albumul cu descrieri și familia ei apropiată. */
+export default async function ProfilePage({ params, searchParams }: { params: Promise<{ id: string; pid: string }>; searchParams: Promise<{ scrie?: string }> }) {
   const { id, pid } = await params;
+  const { scrie } = await searchParams;
   if (!UUID.test(id) || !UUID.test(pid)) notFound();
   const me = await requireUser(`/arbore/${id}/persoana/${pid}`);
   const role = await roleIn(db, id, me.id);
@@ -35,6 +41,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
   const kin = ego && ego !== pid ? kinship(g, ego, pid) : null;
   const chat = p.claimedBy && p.claimedBy !== me.id ? await canMessage(db, id, me.id, p.claimedBy) : null;
   const canEdit = can(role, "editor") || (can(role, "contributor") && (p.createdBy === me.id || p.claimedBy === me.id));
+  // Lada cu amintiri: ce poate vedea cel care se uită, și, pentru omul însuși, întrebarea de duminică și următoarele (pentru „Altă întrebare”).
+  const lada = await loadLada(db, id, pid, { userId: me.id, personId: mine?.id ?? null }, g, data.tree.chatMaxDegree);
+  let upcoming: Question[] = [];
+  const qctx = lada.isOwner ? questionContext(g, data.people, pid) : null;
+  if (qctx) {
+    const all = questionsFor(qctx), now = new Date();
+    const left = all.filter((q) => !lada.answeredKeys.includes(q.key)).length;
+    upcoming = Array.from({ length: Math.min(12, left) }, (_, k) => sundayQuestion(all, lada.answeredKeys, now, k)).filter((q): q is Question => !!q);
+  }
+  const options = Object.values(data.people).filter((x) => !isPlaceholder(x.givenName))
+    .map((x) => ({ id: x.id, name: x.name, years: years(x) })).sort((a, b) => a.name.localeCompare(b.name, "ro"));
+  const memories = lada.own.length + lada.about.length;
   const group = (title: string, ids: string[]) => ids.length > 0 && (
     <>
       <div className="section-label">{title}</div>
@@ -69,6 +87,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
             {kin && <div className="kin">Pentru tine: <b>{kin.label}</b>{kin.degree ? ` · gradul ${romanDegree(kin.degree)}` : ""}</div>}
             <div className="actions">
               {chat?.ok && <Link className="btn primary" href={`/mesaje/${id}/${p.claimedBy}`}>Trimite un mesaj</Link>}
+              {(p.living || memories > 0) && <a className="btn" href={p.living || lada.own.length ? "#lada" : "#despre"}>{lada.isOwner ? "Lada ta cu amintiri" : "Lada cu amintiri"}{memories ? ` (${memories})` : ""}</a>}
               {chat && !chat.ok && <span className="muted" style={{ fontSize: 14 }}>{chat.reason}</span>}
               {p.living && !p.claimed && <span className="muted" style={{ fontSize: 14 }}>{p.givenName} nu are încă cont. Trimite-i o invitație din arbore, ca să-și completeze singur profilul.</span>}
             </div>
@@ -80,6 +99,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted">Nimic scris încă.{canEdit ? " Scrie câteva rânduri din fișa persoanei, cu „Editează”." : ""}</p>}
         {p.notes && <><div className="section-label">Note suplimentare</div><p className="notes">{p.notes}</p></>}
       </div>
+      <MemoryBox treeId={id} owner={{ id: p.id, givenName: p.givenName, sex: p.sex, living: p.living, claimed: p.claimed }} isOwner={lada.isOwner}
+        viewerPersonId={mine?.id ?? null} canAsk={p.living && !lada.isOwner} own={lada.own} about={lada.about} questions={lada.questions} upcoming={upcoming}
+        people={options} storage={storageConfigured()} defaultDegree={data.tree.chatMaxDegree} startMention={scrie ?? null} />
       <div className="card">
         <div className="section-label" style={{ marginTop: 0 }}>Album</div>
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />
