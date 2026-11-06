@@ -64,7 +64,7 @@ export default async function MyDataPage() {
         <div className="section-label" style={{ marginTop: 0 }}>Șterge contul</div>
         <p>Îți poți șterge contul oricând. Înainte, îți arătăm ce pleacă și ce rămâne în arborii familiei.</p>
         <AccountDelete plan={plan} email={me.email} demo={isDemo(me.email)} />
-        {contact && <p className="muted" style={{ marginTop: 12 }}>Pentru orice întrebare despre datele tale ne scrii la <a href={`mailto:${contact}`}>{contact}</a>.</p>}
+        <p className="muted" style={{ marginTop: 12 }}>Pentru orice întrebare despre datele tale ne scrii la <a href={`mailto:${contact}`}>{contact}</a>.</p>
       </div>
     </section>
   );
