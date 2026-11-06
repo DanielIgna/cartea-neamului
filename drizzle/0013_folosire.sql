@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS "usage_day" (
 	"views" integer DEFAULT 0 NOT NULL,
 	"phone_seconds" integer DEFAULT 0 NOT NULL,
 	"app_seconds" integer DEFAULT 0 NOT NULL,
+	"last_beat" text,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint

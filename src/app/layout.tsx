@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </header>
           {usage && !usage.at && <UsageNotice />}
           {children}
-          {usage?.granted && <UsageBeat />}
+          {me && usage?.granted && <UsageBeat userId={me.id} />}
           <footer className="site-foot">
             <span>© {new Date().getFullYear()} Cartea Neamului</span>
             <Link href="/confidentialitate">Confidențialitate</Link>

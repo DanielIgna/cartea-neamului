@@ -252,6 +252,8 @@ export const usageDay = pgTable("usage_day", {
   views: integer("views").notNull().default(0),
   phoneSeconds: integer("phone_seconds").notNull().default(0),
   appSeconds: integer("app_seconds").notNull().default(0),
+  /** Ultima bătaie adunată (id dat de browser): aceeași bătaie trimisă de două ori nu se numără de două ori. */
+  lastBeat: text("last_beat"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [uniqueIndex("usage_day_pk").on(t.userId, t.day, t.section), index("usage_day_day_idx").on(t.day)]);
 

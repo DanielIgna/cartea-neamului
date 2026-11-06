@@ -8,6 +8,7 @@ import { isDemo } from "@/lib/demo";
 import { LEGAL_UPDATED, operator } from "@/lib/legal";
 import { AccountDelete, FaithWithdraw, UsageToggle } from "@/components/MyDataTools";
 import { duration, usageOf } from "@/lib/usage";
+import { inZile } from "@/lib/ro-words";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Datele mele · Cartea Neamului" };
@@ -63,7 +64,7 @@ export default async function MyDataPage() {
         <FaithWithdraw answers={plan.faith} granted={faith.granted} />
         <p id="folosire" style={{ marginTop: 18 }}>Cât folosești site-ul: {usage.granted && usage.at
           ? <>ai spus „Bine” pe {day(usage.at)}, așa că știm cât timp stai în fiecare parte a site-ului (doar timpul, nu ce scrii).
-              {mine && (mine.total ? <> În ultimele 30 de zile: {duration(mine.total)}, în {mine.activeDays === 1 ? "o zi" : `${mine.activeDays} zile`}.</> : <> În ultimele 30 de zile nu s-a adunat nimic.</>)}</>
+              {mine && (mine.total ? <> În ultimele 30 de zile: {duration(mine.total)}, {inZile(mine.activeDays)}.</> : <> În ultimele 30 de zile nu s-a adunat nimic.</>)}</>
           : usage.at ? <>ai spus „Nu vreau” pe {day(usage.at)}, așa că nu măsurăm nimic.</>
           : <>nu ne-ai răspuns încă, așa că nu măsurăm nimic.</>}
         </p>

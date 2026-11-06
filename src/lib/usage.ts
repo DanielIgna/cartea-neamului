@@ -72,14 +72,19 @@ export const KEEP_DAYS = 400;
 
 const dayOf = (now: Date) => now.toISOString().slice(0, 10);
 
-/** Adună o bătaie: secundele (tăiate la MAX_BEAT), o deschidere a paginii și cât din timp a fost pe telefon sau în aplicație. */
+/**
+ * Adună o bătaie: secundele (tăiate la MAX_BEAT), o deschidere a paginii și cât din timp a fost pe telefon sau în aplicație.
+ * Când omul închide pagina, browserul trimite bătaia și o mai ține și la el, ca s-o trimită din nou la intrarea următoare dacă
+ * n-a ajuns. Ca să nu se numere de două ori, fiecare bătaie are un `id`, iar aceeași bătaie venită a doua oară e lăsată deoparte.
+ */
 export async function recordUsage(db: Pick<Db, "insert">, userId: string, section: Section,
-  beat: { seconds: number; view: boolean; phone: boolean; app: boolean }, now = new Date()) {
+  beat: { id?: string | null; seconds: number; view: boolean; phone: boolean; app: boolean }, now = new Date()) {
   const seconds = Math.max(0, Math.min(MAX_BEAT, Math.round(Number(beat.seconds) || 0)));
   const views = beat.view ? 1 : 0;
   if (!seconds && !views) return;
   const phone = beat.phone ? seconds : 0, app = beat.app ? seconds : 0;
-  await db.insert(usageDay).values({ userId, day: dayOf(now), section, seconds, views, phoneSeconds: phone, appSeconds: app, updatedAt: now })
+  const id = beat.id || null;
+  await db.insert(usageDay).values({ userId, day: dayOf(now), section, seconds, views, phoneSeconds: phone, appSeconds: app, lastBeat: id, updatedAt: now })
     .onConflictDoUpdate({
       target: [usageDay.userId, usageDay.day, usageDay.section],
       set: {
@@ -87,8 +92,10 @@ export async function recordUsage(db: Pick<Db, "insert">, userId: string, sectio
         views: sql`${usageDay.views} + ${views}`,
         phoneSeconds: sql`least(${usageDay.phoneSeconds} + ${phone}, ${MAX_DAY})`,
         appSeconds: sql`least(${usageDay.appSeconds} + ${app}, ${MAX_DAY})`,
+        lastBeat: id,
         updatedAt: now,
       },
+      ...(id ? { setWhere: sql`${usageDay.lastBeat} is distinct from ${id}` } : {}),
     });
 }
 
@@ -125,7 +132,8 @@ export async function usageOf(db: Pick<Db, "select">, userId: string, days = 30,
   const dayKeys = Array.from({ length: days }, (_, i) => dayOf(new Date(now.getTime() - (days - 1 - i) * 86_400_000)));
   return {
     total, phone, app, views, activeDays: byDay.size,
-    sections: [...bySection.values()].sort((a, b) => b.seconds - a.seconds),
+    // O parte doar deschisă, fără nicio secundă numărată, nu spune nimic în liste (deschiderile rămân în `views`).
+    sections: [...bySection.values()].filter((x) => x.seconds > 0).sort((a, b) => b.seconds - a.seconds),
     days: dayKeys.map((d) => ({ day: d, seconds: byDay.get(d) ?? 0 })),
   };
 }
@@ -145,13 +153,14 @@ export async function usageOverview(db: Db, days = 30, now = new Date()) {
   const from = since(days, now);
   const r = await db.execute(sql`select section, sum(seconds) as seconds, sum(views) as views, count(distinct user_id) as people
     from ${usageDay} where day >= ${from} group by section order by seconds desc`);
-  const sections = ((r.rows ?? []) as Record<string, unknown>[]).map((x) => ({
+  const all = ((r.rows ?? []) as Record<string, unknown>[]).map((x) => ({
     section: (isSection(x.section) ? x.section : "altele") as Section, label: label(String(x.section)), seconds: n(x.seconds), views: n(x.views), people: n(x.people),
   }));
+  const sections = all.filter((x) => x.seconds > 0);
   const p = await db.execute(sql`select user_id, sum(seconds) as seconds, count(distinct day) as days, sum(phone_seconds) as phone, sum(app_seconds) as app
     from ${usageDay} where day >= ${from} group by user_id`);
   const perUser = new Map(((p.rows ?? []) as Record<string, unknown>[]).map((x) => [String(x.user_id), { seconds: n(x.seconds), days: n(x.days), phone: n(x.phone), app: n(x.app) }]));
-  const total = sections.reduce((s, x) => s + x.seconds, 0);
+  const total = all.reduce((s, x) => s + x.seconds, 0);
   const personDays = [...perUser.values()].reduce((s, x) => s + x.days, 0);
   return {
     sections, perUser, total, people: perUser.size,

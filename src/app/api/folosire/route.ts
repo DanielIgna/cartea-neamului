@@ -8,6 +8,7 @@ import { cleanupUsage, recordUsage, sectionOf } from "@/lib/usage";
 export const dynamic = "force-dynamic";
 
 const Beat = z.object({
+  id: z.string().max(64).nullish(),
   path: z.string().max(500),
   hint: z.string().max(40).nullish(),
   seconds: z.number().min(0).max(100_000),
@@ -29,7 +30,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return none();
   const section = sectionOf(parsed.data.path, parsed.data.hint);
   if (!section) return none();
-  await recordUsage(db, me.id, section, { seconds: parsed.data.seconds, view: !!parsed.data.view, phone: !!parsed.data.phone, app: !!parsed.data.app });
+  const { id, seconds, view, phone, app } = parsed.data;
+  await recordUsage(db, me.id, section, { id, seconds, view: !!view, phone: !!phone, app: !!app });
   // Din când în când, curățenie: zilele mai vechi de 13 luni pleacă.
   if (Math.random() < 0.02) await cleanupUsage(db).catch(() => {});
   return none();

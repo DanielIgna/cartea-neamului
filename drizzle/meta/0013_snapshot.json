@@ -1,5 +1,5 @@
 {
-  "id": "3bc57c35-1d41-45e9-a592-1b23edb0d0d6",
+  "id": "33d13ce2-700c-4946-a365-2c0dd193a294",
   "prevId": "fb3befa9-42c1-4415-966c-731e0dd09e2b",
   "version": "7",
   "dialect": "postgresql",
@@ -3211,6 +3211,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "last_beat": {
+          "name": "last_beat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",

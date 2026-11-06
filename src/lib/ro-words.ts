@@ -4,3 +4,6 @@ export const de = (n: number) => (cereDe(n) ? `${n} de` : `${n}`);
 export const persoane = (n: number) => (n === 1 ? "o persoană" : `${de(n)} persoane`);
 export const locuri = (n: number) => (n === 1 ? "un loc" : `${de(n)} locuri`);
 export const amintiri = (n: number) => (n === 1 ? "o amintire" : `${de(n)} amintiri`);
+export const oameni = (n: number) => (n === 1 ? "un om" : `${de(n)} oameni`);
+export const zile = (n: number) => (n === 1 ? "o zi" : `${de(n)} zile`);
+export const inZile = (n: number) => (n === 1 ? "într-o zi" : `în ${de(n)} zile`);

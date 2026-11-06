@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/admin-access";
 import { personDetail } from "@/lib/admin-people";
 import { consentState } from "@/lib/consent";
 import { duration, usageOf } from "@/lib/usage";
+import { inZile } from "@/lib/ro-words";
 import { PLANS } from "@/lib/plan-names";
 import { AdminNav, Bars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 import { AccountPlanForm } from "@/components/admin/PlanForms";
@@ -76,13 +77,14 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
         ) : (
           <>
             <div className="stats">
-              <Stat label="Timp în total" value={duration(time.total)} hint={`în ${time.activeDays} ${time.activeDays === 1 ? "zi" : "zile"}`} />
+              <Stat label="Timp în total" value={duration(time.total)} hint={inZile(time.activeDays)} />
               <Stat label="Pe zi" value={duration(time.activeDays ? Math.round(time.total / time.activeDays) : 0)} hint="în zilele în care intră" />
               <Stat label="Pagini deschise" value={num(time.views)} />
               <Stat label="De pe telefon" value={share(time.phone)} hint={`${share(time.app)} în aplicație`} />
             </div>
             <div className="section-label">Minute pe zi</div>
-            <Bars label="Minute pe zi" data={time.days.map((x) => ({ key: x.day, label: `${x.day.slice(8, 10)}.${x.day.slice(5, 7)}`, value: Math.round(x.seconds / 60) }))} />
+            <Bars label="Minute pe zi" format={(s) => (s < 60 ? "<1" : String(Math.round(s / 60)))}
+              data={time.days.map((x) => ({ key: x.day, label: `${x.day.slice(8, 10)}.${x.day.slice(5, 7)}`, value: x.seconds }))} />
             {time.sections.length > 0 && (
               <>
                 <div className="section-label">Unde stă</div>

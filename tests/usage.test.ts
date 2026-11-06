@@ -5,6 +5,7 @@ import { runMigrations } from "@/db/migrate";
 import { usageDay, user } from "@/db/schema";
 import { exportMyData } from "@/lib/account";
 import { recordConsent } from "@/lib/consent";
+import { inZile, oameni, zile } from "@/lib/ro-words";
 import { MAX_BEAT, cleanupUsage, deleteUsage, duration, recordUsage, sectionOf, usageOf, usageOverview } from "@/lib/usage";
 
 describe("partea din site a unei adrese", () => {
@@ -35,6 +36,8 @@ describe("partea din site a unei adrese", () => {
     expect(duration(12 * 60)).toBe("12 min");
     expect(duration(3 * 3600 + 20 * 60)).toBe("3 h 20 min");
     expect(duration(7200)).toBe("2 h");
+    expect([oameni(1), oameni(3), oameni(20), zile(1), zile(19), zile(21)]).toEqual(["un om", "3 oameni", "20 de oameni", "o zi", "19 zile", "21 de zile"]);
+    expect([inZile(1), inZile(4), inZile(30)]).toEqual(["într-o zi", "în 4 zile", "în 30 de zile"]);
   });
 });
 
@@ -64,6 +67,23 @@ describe("timpul petrecut în site", () => {
     const rows = await db.select().from(usageDay).where(eq(usageDay.userId, "ana"));
     expect(rows).toHaveLength(2);
     expect(rows.find((r) => r.section === "arbore-360")).toMatchObject({ day: "2026-11-06", seconds: 60 + MAX_BEAT, views: 1, phoneSeconds: 60 + MAX_BEAT, appSeconds: MAX_BEAT });
+  });
+
+  it("aceeași bătaie venită de două ori (trimisă la plecare și din nou la intrare) se numără o singură dată", async () => {
+    const beat = { seconds: 40, view: true, phone: false, app: false };
+    await recordUsage(db, "gol", "cronologie", { ...beat, id: "b1" }, now);
+    await recordUsage(db, "gol", "cronologie", { ...beat, id: "b1" }, now);
+    await recordUsage(db, "gol", "cronologie", { ...beat, id: "b2" }, now);
+    await recordUsage(db, "gol", "cronologie", { ...beat, id: "b2" }, now);
+    await recordUsage(db, "gol", "cronologie", beat, now);
+    const row = (await db.select().from(usageDay).where(eq(usageDay.userId, "gol"))).find((r) => r.section === "cronologie");
+    expect(row).toMatchObject({ seconds: 120, views: 3 });
+    // Doar deschisă, fără secunde: se numără ca deschidere, dar nu apare în liste.
+    await recordUsage(db, "gol", "harta", { ...beat, seconds: 0, id: "b3" }, now);
+    const u = await usageOf(db, "gol", 30, now);
+    expect(u.views).toBe(4);
+    expect(u.sections.map((x) => x.section)).toEqual(["cronologie"]);
+    await deleteUsage(db, "gol");
   });
 
   it("omul își vede timpul pe părți și pe zile", async () => {

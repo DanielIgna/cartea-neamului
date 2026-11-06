@@ -89,20 +89,20 @@ export function Status({ ok, warn, children }: { ok: boolean; warn?: boolean; ch
 }
 
 /** Bare verticale simple, cu valoarea deasupra fiecărei bare. */
-export function Bars({ data, label }: { data: { key: string; label: string; value: number }[]; label: string }) {
+export function Bars({ data, label, format = String }: { data: { key: string; label: string; value: number }[]; label: string; format?: (v: number) => string }) {
   const max = Math.max(1, ...data.map((d) => d.value));
   const W = 640, H = 170, pad = 22, bw = (W - pad) / data.length;
   return (
-    <svg viewBox={`0 0 ${W} ${H + 26}`} role="img" aria-label={label} style={{ width: "100%", maxWidth: 720, height: "auto", display: "block" }}>
+    <svg viewBox={`-16 0 ${W + 32} ${H + 26}`} role="img" aria-label={label} style={{ width: "100%", maxWidth: 720, height: "auto", display: "block" }}>
       <line x1={0} x2={W} y1={H} y2={H} stroke="var(--line)" />
       {data.map((d, i) => {
         const h = Math.max(d.value ? 3 : 0, ((H - pad) * d.value) / max);
         const x = i * bw + bw * 0.18, w = bw * 0.64;
         return (
           <g key={d.key}>
-            <title>{`${d.label}: ${d.value}`}</title>
+            <title>{`${d.label}: ${format(d.value)}`}</title>
             <rect x={x} y={H - h} width={w} height={h} rx={3} fill="var(--accent)" />
-            {d.value > 0 && <text x={x + w / 2} y={H - h - 5} textAnchor="middle" fontSize={12} fill="var(--ink)">{d.value}</text>}
+            {d.value > 0 && <text x={x + w / 2} y={H - h - 5} textAnchor="middle" fontSize={12} fill="var(--ink)">{format(d.value)}</text>}
             {(i % 2 === data.length % 2 || data.length <= 8) && <text x={x + w / 2} y={H + 17} textAnchor="middle" fontSize={11} fill="var(--muted)">{d.label}</text>}
           </g>
         );

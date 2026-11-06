@@ -44,7 +44,8 @@ export default function PrivacyPage() {
         <li id="folosire"><b>Cât folosești site-ul</b>, doar dacă spui „Bine” la întrebarea pe care ți-o punem o singură dată: pe zile, cât timp ai stat
           în fiecare parte a site-ului (de pildă „Arborele · Copac” sau „Harta neamului”), de câte ori ai deschis-o și cât din timp a fost pe telefon sau
           în aplicația de pe telefon. Numărăm doar timpul în care pagina e în față și faci ceva în ea. Nu păstrăm adresa paginii, ce scrii sau pe ce apeși.</li>
-        <li><b>În browserul tău:</b> tema aleasă (luminoasă sau întunecată) și spițele pe care le-ai ales să le vezi.</li>
+        <li><b>În browserul tău:</b> tema aleasă (luminoasă sau întunecată) și spițele pe care le-ai ales să le vezi. Dacă ai spus „Bine” la
+          măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.</li>
         <li><b>Jurnalele tehnice</b> ale serverului (adresa IP, pagina cerută, ora), păstrate pentru scurt timp, ca să putem repara erorile.</li>
       </ul>
 

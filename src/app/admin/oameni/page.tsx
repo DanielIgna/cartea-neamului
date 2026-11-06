@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { adoptionOf, funnelOf, observations, peopleList, type PersonRow } from "@/lib/admin-people";
 import { duration, usageOverview } from "@/lib/usage";
+import { de, oameni } from "@/lib/ro-words";
 import { AdminNav, HBars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -41,6 +42,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
   const list: Row[] = people.filter(FILTERS[show].ok).map((p) => ({ ...p, time: usage.perUser.get(p.id)?.seconds ?? null })).sort(ORDERS[order].cmp);
   const top = usage.sections[0];
   const total = people.length;
+  const silent = Math.max(0, total - usage.answers.yes - usage.answers.no);
   const href = (arata: string, ordine: string) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}) })}`;
 
   return (
@@ -83,8 +85,8 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
           și omul face ceva în ea.
         </p>
         <div className="stats">
-          <Stat label="Au spus „Bine”" value={num(usage.answers.yes)} hint={`${usage.answers.no} au spus „Nu vreau” · ${Math.max(0, total - usage.answers.yes - usage.answers.no)} n-au răspuns`} />
-          <Stat label="Timp în total" value={duration(usage.total)} hint={`${usage.people} oameni măsurați`} />
+          <Stat label="Au spus „Bine”" value={num(usage.answers.yes)} hint={`${usage.answers.no} ${usage.answers.no === 1 ? "a spus" : "au spus"} „Nu vreau” · ${silent} ${silent === 1 ? "n-a" : "n-au"} răspuns`} />
+          <Stat label="Timp în total" value={duration(usage.total)} hint={usage.people === 1 ? "un om măsurat" : `${de(usage.people)} oameni măsurați`} />
           <Stat label="Pe zi, de om" value={duration(usage.perPersonDay)} hint="în zilele în care intră" />
           <Stat label="De pe telefon" value={`${pctOf(usage.phone, usage.total)}%`} hint={`${pctOf(usage.app, usage.total)}% în aplicația de pe telefon`} />
         </div>
@@ -92,7 +94,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
           <>
             <div className="section-label">Unde stau cel mai mult</div>
             <HBars label="Timpul pe părți ale site-ului" total={usage.total} format={duration}
-              data={usage.sections.map((x) => ({ label: `${x.label} (${x.people} ${x.people === 1 ? "om" : "oameni"})`, count: x.seconds }))} />
+              data={usage.sections.map((x) => ({ label: `${x.label} (${oameni(x.people)})`, count: x.seconds }))} />
             {top && <p className="muted" style={{ marginBottom: 0 }}>Cel mai mult timp îl petrec în „{top.label}”: {pctOf(top.seconds, usage.total)}% din tot timpul.</p>}
           </>
         ) : <p className="muted" style={{ marginBottom: 0 }}>Încă nu s-a adunat nimic: nimeni n-a spus „Bine” sau n-au intrat de atunci.</p>}
