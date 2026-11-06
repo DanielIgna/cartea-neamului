@@ -291,7 +291,7 @@ function WordCard({ text, pages, total }: { text: string; pages: number; total: 
         b.kind === "title" ? <h2 key={i}>{b.text}</h2>
           : b.kind === "verse" ? <blockquote key={i}><p>„{b.text.replace(/^[„"]|[”"]$/g, "")}”</p>{b.ref && <cite>{b.ref}</cite>}</blockquote>
           : <p key={i}>{b.text}</p>)}
-      <p><a className="btn primary" href={READ_JOHN} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a></p>
+      <p><a className="btn primary" href={READ_JOHN} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a> <Link className="btn" href="/istoria-bisericii">Istoria Bisericii prigonite</Link></p>
       <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Versetele sunt din Biblia tradusă de Dumitru Cornilescu.</p>
     </article>
   );

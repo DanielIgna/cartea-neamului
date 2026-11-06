@@ -626,3 +626,52 @@ body:has(.grand){overflow:hidden}
 .welcome-person summary{cursor:pointer;color:var(--accent)}
 .welcome-person form{margin-top:8px}
 @media (max-width:760px){.welcome-grid{grid-template-columns:minmax(0,1fr)}.landing-hero{padding:18px}.landing-hero h2{font-size:26px}}
+
+/* Istoria Bisericii prigonite */
+.ch{max-width:860px;margin:0 auto;padding:22px 26px}
+.ch h2{font-size:30px;line-height:1.2;margin:2px 0 8px}
+.ch p{max-width:70ch}
+.ch-lead{font-size:16.5px}
+.ch-verse{margin:12px 0;padding:10px 14px;border-left:3px solid var(--ochre);background:var(--ochre-soft);border-radius:0 10px 10px 0;font-family:var(--display);font-size:17px;line-height:1.45;max-width:70ch}
+.ch-verse p{margin:0}
+.ch-verse cite{display:block;font-style:normal;font-family:var(--body);font-size:13px;color:var(--muted);margin-top:4px}
+.ch-nav{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 10px}
+.ch-nav .chip{text-decoration:none;font-size:13px}
+.ch-chip-strong{color:var(--accent);border-color:var(--accent)}
+.ch-filter{margin:8px 0 4px}
+.ch-eras{list-style:none;margin:0;padding:0;border-left:2px solid var(--line);margin-left:6px}
+.ch-era{position:relative;padding:14px 0 10px 20px;scroll-margin-top:12px}
+.ch-era::before{content:"";position:absolute;left:-8px;top:22px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--ochre)}
+.ch-era h3{font-size:22px;margin:0 0 4px}
+.ch-era-years{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ochre);font-weight:700}
+.ch-witnesses{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:10px}
+.ch-witness{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2)}
+.ch-witness.ro{border-color:var(--accent);background:var(--accent-soft)}
+.ch-witness p{margin:6px 0 0;font-size:14.5px}
+.ch-w-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;font-family:var(--display);font-size:17px}
+.ch-w-top .muted{font-family:var(--body);font-size:13px;white-space:nowrap}
+.ch-w-place{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ch-ro{font-size:11px;padding:0 7px;color:var(--accent);border-color:var(--accent)}
+.ch-w-quote{font-family:var(--display);font-style:italic;font-size:15.5px}
+.ch-part{border-top:1px solid var(--line);margin-top:22px;padding-top:6px;scroll-margin-top:12px}
+.ch-part-title{font-size:24px;margin:0 0 6px}
+.ch-sub{font-family:var(--display);font-size:18px;margin:18px 0 4px}
+.ch-heroes{display:grid;gap:10px;margin-top:10px}
+.ch-hero{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
+.ch-hero summary{cursor:pointer;list-style:none}
+.ch-hero summary::-webkit-details-marker{display:none}
+.ch-hero summary::before{content:"▸";color:var(--ochre);margin-right:6px;display:inline-block;transition:transform .15s}
+.ch-hero[open] summary::before{transform:rotate(90deg)}
+.ch-hero-name{font-family:var(--display);font-size:20px;font-weight:700}
+.ch-hero-who{display:block;color:var(--muted);font-size:14px;margin:2px 0 0 18px}
+.ch-hero p{font-size:15px}
+.ch-lesson{font-weight:600;border-left:3px solid var(--accent);padding-left:10px}
+.ch-bible{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:12px}
+.ch-bible li{display:grid;grid-template-columns:110px 1fr;gap:12px}
+.ch-bible p{margin:4px 0 0;font-size:14.5px}
+.ch-b-year{font-family:var(--display);font-weight:700;color:var(--ochre);font-size:17px}
+.ch-b-who{font-size:13px}
+.ch-influence{padding-left:20px}
+.ch-influence li{margin:0 0 8px;max-width:70ch}
+@media (max-width:560px){.ch{padding:16px}.ch h2{font-size:24px}.ch-bible li{grid-template-columns:1fr;gap:2px}.ch-era{padding-left:14px}}
+@media print{.ch-nav,.ch-filter{display:none}.ch-hero{break-inside:avoid}}

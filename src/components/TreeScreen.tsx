@@ -369,6 +369,7 @@ export default function TreeScreen(props: Props) {
             <Link className="btn" href={`/arbore/${treeId}/harta`}>Harta neamului</Link>
             <Link className="btn" href={`/arbore/${treeId}/cronologie`}>Cronologie</Link>
             <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>Călătoria în timp</Link>
+            <Link className="btn" href="/istoria-bisericii">Istoria Bisericii</Link>
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
           </div>
         </div>
