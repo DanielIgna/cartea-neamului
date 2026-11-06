@@ -1,16 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LEGAL_UPDATED, MIN_AGE, operator } from "@/lib/legal";
+import { BETA, LEGAL_UPDATED, MIN_AGE, operator } from "@/lib/legal";
 
 export const metadata: Metadata = { title: "Politica de confidențialitate · Cartea Neamului", description: "Ce date păstrăm, de ce, cine le vede și cum le descarci sau le ștergi." };
 
 /**
- * Politica de confidențialitate, scrisă pe înțelesul oricui. Cine răspunde de date vine din OPERATOR_NAME și CONTACT_EMAIL.
+ * Politica de confidențialitate, scrisă pe înțelesul oricui. Cine răspunde de date vine din `operator()` (src/lib/legal.ts).
  * Când se schimbă ceva important în ce păstrăm sau cui arătăm, se schimbă și textul de aici (și LEGAL_UPDATED).
  */
 export default function PrivacyPage() {
   const op = operator();
-  const contact = op.email ? <a href={`mailto:${op.email}`}>{op.email}</a> : <>adresa de contact de la sfârșitul acestei pagini</>;
+  const contact = <a href={`mailto:${op.email}`}>{op.email}</a>;
   return (
     <article className="card legal">
       <div className="section-label" style={{ marginTop: 0 }}>Politica de confidențialitate</div>
@@ -21,8 +21,10 @@ export default function PrivacyPage() {
         privați, tu alegi cine îți vede amintirile, nu vindem nimic și nu facem reclame.</p>
 
       <h3>Cine răspunde de date</h3>
-      <p>De datele din Cartea Neamului răspunde {op.name ? <b>{op.name}</b> : "cel care ține site-ul"}, ca operator, după Regulamentul general privind
-        protecția datelor (Regulamentul UE 2016/679, „GDPR”). Pentru orice întrebare sau cerere despre datele tale ne scrii la {contact}.</p>
+      <p>De datele din Cartea Neamului răspunde, ca operator după Regulamentul general privind protecția datelor (Regulamentul UE 2016/679,
+        „GDPR”), <b>{op.name}</b>{op.person ? ", persoană fizică" : ""}. Pentru orice întrebare sau cerere despre datele tale ne scrii la {contact}.</p>
+      {BETA && <p>Acum, Cartea Neamului e în probă: o folosesc doar familia și prietenii apropiați, ca să ne spună ce merge și ce nu. Și în probă,
+        datele voastre sunt păstrate și păzite cum scrie aici.</p>}
 
       <h3>Ce date păstrăm</h3>
       <ul>
@@ -115,7 +117,7 @@ export default function PrivacyPage() {
       <p>Dacă schimbăm ceva important în ce păstrăm sau cui arătăm, te anunțăm în site înainte ca schimbarea să intre în vigoare.</p>
 
       <h3>Contact</h3>
-      <p>{op.name ? <>{op.name}. </> : null}{op.email ? <>Email: <a href={`mailto:${op.email}`}>{op.email}</a>.</> : <>Adresa de contact se trece aici înainte de lansare.</>}</p>
+      <p>{op.name}{op.person ? ", persoană fizică" : ""}. Email: {contact}.</p>
     </article>
   );
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { LEGAL_UPDATED, MIN_AGE, operator } from "@/lib/legal";
+import { BETA, LEGAL_UPDATED, MIN_AGE, operator } from "@/lib/legal";
 
 export const metadata: Metadata = { title: "Termeni de utilizare · Cartea Neamului", description: "Ce înseamnă să ai cont în Cartea Neamului: ce poți pune, al cui e și ce promitem." };
 
@@ -14,6 +14,8 @@ export default function TermsPage() {
       <p className="legal-date">Ultima schimbare: {LEGAL_UPDATED}</p>
       <p>Cartea Neamului e un loc în care familiile își construiesc împreună arborele, își păstrează amintirile și își tipăresc cartea neamului.
         Când îți faci cont, ești de acord cu acești termeni și cu <Link href="/confidentialitate">Politica de confidențialitate</Link>.</p>
+      {BETA && <p className="confirm">Acum, Cartea Neamului e în probă: e deschisă doar familiei și prietenilor apropiați, ca să ne spună ce merge și ce nu.
+        Se poate schimba des și uneori poate greși, așa că păstrează-ți și tu o copie a ce contează: o descarci oricând din „Datele mele”.</p>}
 
       <h3>1. Contul</h3>
       <ul>
@@ -65,7 +67,7 @@ export default function TermsPage() {
       <p>Dacă schimbăm ceva important în acești termeni, te anunțăm în site înainte ca schimbarea să intre în vigoare.</p>
 
       <h3>Contact</h3>
-      <p>{op.name ? <>{op.name}. </> : null}{op.email ? <>Email: <a href={`mailto:${op.email}`}>{op.email}</a>.</> : <>Adresa de contact se trece aici înainte de lansare.</>}</p>
+      <p>{op.name}{op.person ? ", persoană fizică" : ""}. Email: <a href={`mailto:${op.email}`}>{op.email}</a>.</p>
     </article>
   );
 }

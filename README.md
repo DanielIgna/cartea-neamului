@@ -95,7 +95,8 @@ Arborii sunt vizibili doar membrilor. Persoanele în viață sunt private în ar
 le ascunde implicit (`?living=1` le include, tot doar pentru membri).
 
 - `/confidentialitate` și `/termeni`: textele pe înțelesul oricui, legate din subsolul fiecărei pagini și de la crearea contului.
-  Cine răspunde de date vine din `OPERATOR_NAME` și `CONTACT_EMAIL` (puse pe Vercel, ca adresa să nu stea în cod).
+  Cât timp site-ul e în probă (`BETA` în `src/lib/legal.ts`), de date răspunde Daniel Igna, ca persoană fizică, cu adresa de contact
+  din același fișier; `OPERATOR_NAME` și `CONTACT_EMAIL` (pe Vercel) le înlocuiesc, de pildă când vine o firmă.
 - `/datele-mele`: descărcarea tuturor datelor contului (JSON, `/api/datele-mele`), acordurile date și ștergerea contului.
   La ștergere pleacă tot ce e al omului; arborii cu alți membri trec la unul dintre ei, cei în care e singur se șterg
   cu totul, iar fișa lui rămâne în arbore fără legătura cu contul (și, dacă vrea, fără datele lui). Logica: `src/lib/account.ts`.
