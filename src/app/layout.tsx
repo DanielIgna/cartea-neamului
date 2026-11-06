@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
@@ -14,6 +14,7 @@ import { unreadCount } from "@/lib/chat";
 import { pendingContacts } from "@/lib/shared-places";
 import { pendingJoins } from "@/lib/join";
 import ThemeSwitch from "@/components/ThemeSwitch";
+import { PwaSetup } from "@/components/InstallApp";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import { and, eq, isNotNull } from "drizzle-orm";
@@ -22,7 +23,15 @@ import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminEmail } from "@/lib/admin";
 
 
-export const metadata: Metadata = { title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte." };
+export const metadata: Metadata = {
+  title: "Cartea Neamului", description: "Arborele familiei, construit împreună, tipărit ca o carte.", applicationName: "Cartea Neamului",
+  // Pe iPhone, după „Adaugă pe ecranul principal”, se deschide ca o aplicație, cu numele întreg sub iconiță.
+  appleWebApp: { capable: true, title: "Cartea Neamului", statusBarStyle: "default" },
+  formatDetection: { telephone: false },
+};
+export const viewport: Viewport = {
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#eef1f2" }, { media: "(prefers-color-scheme: dark)", color: "#0b1626" }],
+};
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
@@ -38,6 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
       <body>
+        <PwaSetup />
         <div className="wrap">
           <header className="top">
             <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>

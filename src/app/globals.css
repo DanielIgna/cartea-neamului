@@ -578,3 +578,51 @@ body:has(.grand){overflow:hidden}
 .faith-consent,.form .faith-consent{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--ochre);background:var(--ochre-soft);border-radius:10px;padding:10px 12px;font-size:14px}
 .faith-consent input{margin-top:4px;flex:none}
 .faith-note{border:1px dashed var(--ochre);border-radius:10px;padding:10px 12px;font-size:14px;margin:8px 0}
+
+/* „Pune aplicația pe telefon” */
+.install-app{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.install-app img{border-radius:10px;flex:none}
+.install-app p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.install-app.compact{border-style:dashed}
+
+/* „Pornește arborele pas cu pas”: pașii sus, câte un om pe rând, rezumatul la sfârșit */
+.start-card h2{font-size:24px;line-height:1.2;margin-bottom:4px}
+.start-card > p{margin:0 0 12px;max-width:62ch}
+.start h3{font-size:20px;margin-top:4px}
+.start h3:focus{outline:none}
+.start > p{margin:0;max-width:62ch}
+.start-steps{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 4px;padding:0}
+.start-steps li{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 4px;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--muted)}
+.start-steps li span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface-2);font-size:12px;font-weight:700}
+.start-steps li.now{border-color:var(--accent);color:var(--ink);font-weight:700}
+.start-steps li.now span{background:var(--accent);color:var(--on-accent)}
+.start-steps li.done span{background:var(--good);color:var(--surface)}
+.start-person{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin:0;display:grid;gap:10px;min-width:0}
+.start-person legend{font-family:var(--display);font-weight:700;font-size:17px;padding:0 6px}
+.start-side{display:grid;gap:10px}
+.start-side .section-label{margin:6px 0 0}
+.start-sex{display:flex;flex-wrap:wrap;gap:6px 18px}
+.start-summary{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.start-summary ul{margin:6px 0 8px;padding-left:20px}
+.start-summary p{margin:0}
+.start-nav{justify-content:flex-end}
+@media (max-width:520px){.start-nav .btn{flex:1 1 auto;text-align:center;padding:9px 12px}}
+
+/* Prima pagină pentru cine n-are cont și pagina de bun venit după pornirea arborelui */
+.landing,.welcome{max-width:980px;margin:0 auto;display:grid;gap:16px}
+.landing-hero{padding:24px 26px}
+.landing-hero h2{font-size:32px;line-height:1.15}
+.landing-hero p{font-size:17px;max-width:60ch;margin:10px 0 0}
+.landing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px}
+.landing-grid h3,.landing h3,.welcome h3{font-size:19px;margin-bottom:4px}
+.landing-grid p{margin:4px 0 0}
+.landing-steps{margin:8px 0 10px;padding-left:22px}
+.landing-steps li{margin:0 0 6px;max-width:62ch}
+.welcome-hero h2{font-size:28px;line-height:1.2}
+.welcome-hero p{max-width:62ch;margin:8px 0 0}
+.welcome-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+.welcome-grid p{margin:4px 0 10px;max-width:62ch}
+.welcome-person{border-top:1px solid var(--line);padding:8px 0}
+.welcome-person summary{cursor:pointer;color:var(--accent)}
+.welcome-person form{margin-top:8px}
+@media (max-width:760px){.welcome-grid{grid-template-columns:minmax(0,1fr)}.landing-hero{padding:18px}.landing-hero h2{font-size:26px}}
