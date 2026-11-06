@@ -45,6 +45,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminEmail(me.email)} />}
           </header>
           {children}
+          <footer className="site-foot">
+            <span>© {new Date().getFullYear()} Cartea Neamului</span>
+            <Link href="/confidentialitate">Confidențialitate</Link>
+            <Link href="/termeni">Termeni</Link>
+            {me && <Link href="/datele-mele">Datele mele</Link>}
+          </footer>
         </div>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { saveMemory } from "@/app/lada-actions";
 import { CHAPTERS, type Chapter } from "@/lib/questions";
 import type { Visibility } from "@/lib/lada";
 import type { MemoryView } from "@/lib/lada-db";
+import { FAITH_CONSENT_TEXT } from "@/lib/legal";
 import { shrinkPhoto } from "./PhotoPick";
 import VoiceRecorder, { clock, uploadForMemory, type Voice } from "./VoiceRecorder";
 
@@ -13,10 +14,11 @@ export type Draft = { question?: string | null; questionKey?: string | null; ask
 /**
  * Scrisul unei amintiri: textul, capitolul, când și unde, o poză, cine mai e în ea și cine o vede.
  * La o întrebare de la o rudă se poate alege ca răspunsul să-l vadă doar cel care a întrebat.
+ * În capitolul „Credința”, la primul răspuns (sau la una înregistrată „la bunici” pentru altcineva), cere acordul explicit.
  */
-export default function MemoryForm({ treeId, ownerId, ownerName, people, storage, defaultDegree, draft, edit, onDone, onCancel }: {
+export default function MemoryForm({ treeId, ownerId, ownerName, people, storage, defaultDegree, draft, edit, faithConsent = false, onDone, onCancel }: {
   treeId: string; ownerId: string; ownerName: string; people: PersonOption[]; storage: boolean; defaultDegree: number;
-  draft?: Draft; edit?: MemoryView; onDone: (msg: string) => void; onCancel: () => void;
+  draft?: Draft; edit?: MemoryView; faithConsent?: boolean; onDone: (msg: string) => void; onCancel: () => void;
 }) {
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
@@ -31,6 +33,10 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
   const askedId = edit?.askedId ?? draft?.askedId ?? null;
   const askedByName = edit?.askedBy?.name ?? draft?.askedByName ?? null;
   const name = (id: string) => people.find((p) => p.id === id)?.name ?? "";
+  const [chapter, setChapter] = useState<Chapter>((edit?.chapter as Chapter | undefined) ?? draft?.chapter ?? "altele");
+  // O amintire înregistrată de tine „la bunici” pentru altcineva: acordul e al lui, nu al tău.
+  const forSomeoneElse = !!edit?.helper && edit.mine;
+  const askFaith = chapter === "credinta" && (forSomeoneElse || !faithConsent);
 
   const submit = (form: FormData) => start(async () => {
     setErr(null);
@@ -52,7 +58,7 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
       audioSeconds = voice.seconds || null;
     }
     const r = await saveMemory({
-      treeId, personId: ownerId, id: edit?.id, chapter: String(form.get("chapter")) as Chapter,
+      treeId, personId: ownerId, id: edit?.id, chapter, faithConsent: askFaith ? form.get("faithConsent") === "on" : undefined,
       question, questionKey: edit?.questionKey ?? draft?.questionKey ?? null, askedId,
       title: String(form.get("title") ?? ""), body: String(form.get("body") ?? ""), whenText: String(form.get("whenText") ?? ""), place: String(form.get("place") ?? ""),
       photoId, audioId, audioSeconds, visibility, maxDegree: visibility === "close" ? Number(form.get("maxDegree")) || defaultDegree : null, inBook: form.get("inBook") === "on", mentions,
@@ -84,7 +90,7 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
       )}
       <div className="row">
         <label>Capitol
-          <select name="chapter" defaultValue={edit?.chapter ?? draft?.chapter ?? "altele"}>
+          <select name="chapter" value={chapter} onChange={(e) => setChapter(e.target.value as Chapter)}>
             {CHAPTERS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
           </select>
         </label>
@@ -132,6 +138,13 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
         <small className="muted">Gradul 1: părinții și copiii; 2: frații și bunicii; 3: unchii și nepoții de frate; 4: verii primari. Soții văd mereu.</small>
       </fieldset>
       <label className="radio"><input type="checkbox" name="inBook" defaultChecked={edit?.inBook ?? false} /> Poate intra în Cartea neamului</label>
+      {askFaith && (
+        <label className="faith-consent">
+          <input type="checkbox" name="faithConsent" required onChange={(e) => e.currentTarget.setCustomValidity("")}
+            onInvalid={(e) => e.currentTarget.setCustomValidity("Bifează acordul ca să poți păstra răspunsul.")} />
+          <span>{forSomeoneElse ? `${ownerName} e de acord să păstrăm ce a spus despre credința sa.` : FAITH_CONSENT_TEXT}</span>
+        </label>
+      )}
       {err && <p className="err" role="alert">{err}</p>}
       <div className="actions" style={{ marginTop: 0 }}>
         <button className="btn primary" disabled={pending}>{pending ? (voice ? "Se încarcă glasul…" : photo ? "Se încarcă poza…" : "Se salvează…") : edit ? "Salvează schimbarea" : "Pune amintirea în ladă"}</button>

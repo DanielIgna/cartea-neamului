@@ -24,9 +24,9 @@ const order = (a: MemoryView, b: MemoryView) => (a.whenYear ?? 9999) - (b.whenYe
 export default function MemoryBox(props: {
   treeId: string; owner: Owner; isOwner: boolean; viewerPersonId: string | null; canAsk: boolean; canHelp?: boolean;
   own: MemoryView[]; about: MemoryView[]; questions: AskedView[]; upcoming: Question[];
-  people: PersonOption[]; storage: boolean; defaultDegree: number; startMention?: string | null;
+  people: PersonOption[]; storage: boolean; defaultDegree: number; startMention?: string | null; faithConsent?: boolean;
 }) {
-  const { treeId, owner, isOwner, viewerPersonId, canAsk, canHelp, own, about, questions, upcoming, people, storage, defaultDegree, startMention } = props;
+  const { treeId, owner, isOwner, viewerPersonId, canAsk, canHelp, own, about, questions, upcoming, people, storage, defaultDegree, startMention, faithConsent = false } = props;
   const router = useRouter();
   const [pending, start] = useTransition();
   const [writing, setWriting] = useState<Draft | null>(isOwner && startMention && people.some((p) => p.id === startMention) ? { mentions: [startMention] } : null);
@@ -46,7 +46,7 @@ export default function MemoryBox(props: {
     setMsg(r.error ?? ok ?? null);
     if (!r.error) router.refresh();
   });
-  const formProps = { treeId, people, storage, defaultDegree, onDone: done, onCancel: () => { setWriting(null); setEditing(null); } };
+  const formProps = { treeId, people, storage, defaultDegree, faithConsent, onDone: done, onCancel: () => { setWriting(null); setEditing(null); } };
   const cardProps = { treeId, profileId: owner.id, viewerPersonId, nameOf, run, pending, editing, setEditing: (id: string | null) => { setMsg(null); setWriting(null); setEditing(id); }, formProps };
 
   const q = upcoming.length ? upcoming[skip % upcoming.length] : null;

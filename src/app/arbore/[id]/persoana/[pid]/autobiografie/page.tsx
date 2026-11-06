@@ -13,6 +13,7 @@ import { BOOK_VERSE, bookPlan } from "@/lib/autobiografie";
 import { years } from "@/lib/person-text";
 import { storageConfigured } from "@/lib/storage";
 import AutoBook from "@/components/AutoBook";
+import { hasConsent } from "@/lib/consent";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -62,7 +63,7 @@ export default async function AutobiographyPage({ params }: { params: Promise<{ 
   return (
     <section style={{ maxWidth: 860, margin: "0 auto" }}>
       <AutoBook treeId={id} owner={{ id: p.id, givenName: p.givenName }} own={lada.own} people={people} storage={storageConfigured()}
-        defaultDegree={data.tree.chatMaxDegree} verse={BOOK_VERSE}
+        defaultDegree={data.tree.chatMaxDegree} verse={BOOK_VERSE} faithConsent={await hasConsent(db, me.id, "faith")}
         chapters={plan.map((c) => ({ key: c.key, title: c.title, intro: c.intro, verse: c.verse, questions: c.questions.map((q) => ({ key: q.key, text: q.text, mentions: q.mentions ?? [] })) }))} />
     </section>
   );

@@ -202,7 +202,7 @@ export const bookExport = pgTable("book_export", {
 export const consent = pgTable("consent", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
-  purpose: text("purpose").notNull(), // claim_profile / appear_in_book / professional_profile / external_sync
+  purpose: text("purpose").notNull(), // terms (la crearea contului) / faith (capitolul „Credința”); vezi src/lib/legal.ts
   textVersion: text("text_version").notNull(),
   granted: boolean("granted").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),

@@ -23,6 +23,9 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
   const [step, setStep] = useState<"intro" | "consent" | "ask" | "saved">("intro");
   const [visibility, setVisibility] = useState<"tree" | "close">("tree");
   const [inBook, setInBook] = useState(false);
+  // Despre credință întrebăm doar dacă omul e de acord și cu asta, separat (e o dată ocrotită mai strict).
+  const [faithOk, setFaithOk] = useState(false);
+  const hasFaith = questions.some((q) => q.chapter === "credinta");
   const [consentVoice, setConsentVoice] = useState<Voice | null>(null);
   const [consentId, setConsentId] = useState<string | null>(null);
   const [i, setI] = useState(0);
@@ -35,7 +38,7 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const ei = person.sex === "F" ? "ei" : "lui";
-  const left = useMemo(() => questions.map((q, k) => ({ q, k })).filter((x) => !done.has(x.k)), [questions, done]);
+  const left = useMemo(() => questions.map((q, k) => ({ q, k })).filter((x) => !done.has(x.k) && (faithOk || x.q.chapter !== "credinta")), [questions, done, faithOk]);
   const cur = left.length ? left[i % left.length] : null;
 
   const next = () => { setVoice(null); setText(""); setOnlyAsker(false); setErr(null); setI((x) => x + 1); };
@@ -59,7 +62,7 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
     }
     const mentions = [...new Set([...(cur.q.mentions ?? []), ...(cur.q.key?.match(UUIDS) ?? [])])].filter((id) => people.includes(id));
     const r = await saveMemory({
-      treeId, personId: person.id, helper: true, consent: true, consentAudioId: cid, chapter: cur.q.chapter,
+      treeId, personId: person.id, helper: true, consent: true, consentAudioId: cid, chapter: cur.q.chapter, faithConsent: cur.q.chapter === "credinta" ? faithOk : undefined,
       question: cur.q.text, questionKey: cur.q.key ?? null, askedId: cur.q.askedId ?? null,
       body, audioId, audioSeconds: voice?.seconds || null, visibility: cur.q.askedId && onlyAsker ? "asker" : visibility, maxDegree: null, inBook, mentions,
     });
@@ -104,6 +107,10 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
               <label><input type="radio" name="cine" checked={visibility === "tree"} onChange={() => setVisibility("tree")} /> Toată familia din arbore</label>
               <label><input type="radio" name="cine" checked={visibility === "close"} onChange={() => setVisibility("close")} /> Doar familia apropiată</label>
               <label><input type="checkbox" checked={inBook} onChange={(e) => setInBook(e.target.checked)} /> Pot intra și în Cartea neamului, pe hârtie</label>
+              {hasFaith && (
+                <label><input type="checkbox" checked={faithOk} onChange={(e) => setFaithOk(e.target.checked)} />
+                  <span>E de acord să păstrăm și ce spune despre credința {ei}{!faithOk && <span className="grand-small"> (fără acest acord, sărim peste întrebările despre credință)</span>}</span></label>
+              )}
             </fieldset>
             <div className="actions grand-actions">
               <button className="btn primary grand-go" onClick={() => setStep("ask")}>Da, e de acord</button>

@@ -93,3 +93,12 @@ O invitație poate fi legată de o persoană în viață din arbore: când o acc
 
 Arborii sunt vizibili doar membrilor. Persoanele în viață sunt private în arbore, iar exportul GEDCOM
 le ascunde implicit (`?living=1` le include, tot doar pentru membri).
+
+- `/confidentialitate` și `/termeni`: textele pe înțelesul oricui, legate din subsolul fiecărei pagini și de la crearea contului.
+  Cine răspunde de date vine din `OPERATOR_NAME` și `CONTACT_EMAIL` (puse pe Vercel, ca adresa să nu stea în cod).
+- `/datele-mele`: descărcarea tuturor datelor contului (JSON, `/api/datele-mele`), acordurile date și ștergerea contului.
+  La ștergere pleacă tot ce e al omului; arborii cu alți membri trec la unul dintre ei, cei în care e singur se șterg
+  cu totul, iar fișa lui rămâne în arbore fără legătura cu contul (și, dacă vrea, fără datele lui). Logica: `src/lib/account.ts`.
+- Acordurile stau în tabelul `consent` (`src/lib/consent.ts`): `terms` la crearea contului și `faith` pentru capitolul
+  „Credința”, cerut explicit înainte de primul răspuns (date din categoria specială, art. 9 GDPR). Retragerea lui șterge
+  răspunsurile din capitol.

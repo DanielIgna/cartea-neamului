@@ -25,9 +25,9 @@ const excerpt = (s: string, n = 220) => {
  * Autobiografia, de scris: capitolele cărții unul sub altul, fiecare cu întrebările lui. Omul răspunde la ce vrea, în ce ordine
  * vrea, scris sau cu glasul; fiecare răspuns intră în lada lui cu amintiri, cu alegerea lui de cine îl vede.
  */
-export default function AutoBook({ treeId, owner, chapters, own, people, storage, defaultDegree, verse }: {
+export default function AutoBook({ treeId, owner, chapters, own, people, storage, defaultDegree, verse, faithConsent }: {
   treeId: string; owner: { id: string; givenName: string }; chapters: AutoChapter[]; own: MemoryView[];
-  people: PersonOption[]; storage: boolean; defaultDegree: number; verse: Verse;
+  people: PersonOption[]; storage: boolean; defaultDegree: number; verse: Verse; faithConsent: boolean;
 }) {
   const router = useRouter();
   const keys = new Set(chapters.flatMap((c) => c.questions.map((q) => q.key)));
@@ -48,7 +48,7 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
     requestAnimationFrame(() => document.getElementById(`scrie-${w.at}`)?.scrollIntoView({ behavior: "smooth", block: "center" }));
   };
   const formProps = {
-    treeId, ownerId: owner.id, ownerName: owner.givenName, people, storage, defaultDegree,
+    treeId, ownerId: owner.id, ownerName: owner.givenName, people, storage, defaultDegree, faithConsent,
     onDone: (text: string) => { setWriting(null); setMsg(text); router.refresh(); }, onCancel: () => setWriting(null),
   };
   const form = (at: string) => writing?.at === at && (
@@ -102,6 +102,10 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
               <div className="auto-ch-body">
                 <p className="auto-intro">{c.intro}</p>
                 {c.verse && <blockquote className="auto-verse">„{c.verse.text}” <cite>{c.verse.ref}</cite></blockquote>}
+                {c.key === "credinta" && !faithConsent && (
+                  <p className="faith-note">Ce scrii aici despre credința ta e ocrotit mai strict de lege. Îl păstrăm doar cu acordul tău, pe care ți-l cerem
+                    la primul răspuns, și îl vede doar cine alegi tu. Îți poți retrage acordul oricând, din <Link href="/datele-mele">Datele mele</Link>.</p>
+                )}
                 <ol className="auto-qs">
                   {shown.map((q) => {
                     const m = answers.get(q.key);
