@@ -109,7 +109,7 @@ export function fillWeeks(data: { week: string; c: number }[], count: number, no
 
 const TABLES = ["user", "session", "account", "verification", "tree", "tree_member", "invitation", "person", "relationship", "raised_by",
   "document", "document_link", "book_export", "consent", "audit_log", "message", "place_pin", "tree_place", "place_contact", "join_request", "join_attempt",
-  "memory", "memory_mention", "memory_question", "memory_reply", "account_plan", "app_setting"];
+  "memory", "memory_mention", "memory_question", "memory_reply", "account_plan", "app_setting", "usage_day"];
 
 export type InfraStats = Awaited<ReturnType<typeof infraStats>>;
 

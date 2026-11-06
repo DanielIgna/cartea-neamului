@@ -71,6 +71,17 @@ export default function TreeScreen(props: Props) {
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
+  // Pentru „cât folosesc oamenii site-ul” (doar cu acordul lor, src/components/UsageBeat.tsx): ce desen al arborelui e deschis.
+  useEffect(() => {
+    const el = document.documentElement;
+    el.dataset.sectiune = `arbore-${view}`;
+    el.dataset.sectiuneCale = `/arbore/${treeId}`;
+    window.dispatchEvent(new Event("cn:sectiune"));
+  }, [view, treeId]);
+  useEffect(() => () => {
+    delete document.documentElement.dataset.sectiune;
+    delete document.documentElement.dataset.sectiuneCale;
+  }, []);
   const go = (changes: Record<string, string | null>) => {
     const q = new URLSearchParams(search.toString());
     for (const [k, v] of Object.entries(changes)) v === null ? q.delete(k) : q.set(k, v);

@@ -6,7 +6,8 @@ import { deletionPlan } from "@/lib/account";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import { LEGAL_UPDATED, operator } from "@/lib/legal";
-import { AccountDelete, FaithWithdraw } from "@/components/MyDataTools";
+import { AccountDelete, FaithWithdraw, UsageToggle } from "@/components/MyDataTools";
+import { duration, usageOf } from "@/lib/usage";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Datele mele · Cartea Neamului" };
@@ -19,7 +20,9 @@ const day = (d: Date) => d.toLocaleDateString("ro-RO", { day: "numeric", month: 
  */
 export default async function MyDataPage() {
   const me = await requireUser("/datele-mele");
-  const [plan, terms, faith] = await Promise.all([deletionPlan(db, me.id), consentState(db, me.id, "terms"), consentState(db, me.id, "faith")]);
+  const [plan, terms, faith, usage] = await Promise.all([deletionPlan(db, me.id), consentState(db, me.id, "terms"), consentState(db, me.id, "faith"),
+    consentState(db, me.id, "usage")]);
+  const mine = usage.granted ? await usageOf(db, me.id, 30) : null;
   const contact = operator().email;
   const trees = [...plan.owned.map((t) => ({ id: t.id, name: t.name })), ...plan.member];
   return (
@@ -58,6 +61,18 @@ export default async function MyDataPage() {
           : <>nu ți-ai dat încă acordul. Ți-l cerem când scrii prima dată în acest capitol, pentru că legea ocrotește mai strict ce spune omul despre credința lui.</>}
         </p>
         <FaithWithdraw answers={plan.faith} granted={faith.granted} />
+        <p id="folosire" style={{ marginTop: 18 }}>Cât folosești site-ul: {usage.granted && usage.at
+          ? <>ai spus „Bine” pe {day(usage.at)}, așa că știm cât timp stai în fiecare parte a site-ului (doar timpul, nu ce scrii).
+              {mine && (mine.total ? <> În ultimele 30 de zile: {duration(mine.total)}, în {mine.activeDays === 1 ? "o zi" : `${mine.activeDays} zile`}.</> : <> În ultimele 30 de zile nu s-a adunat nimic.</>)}</>
+          : usage.at ? <>ai spus „Nu vreau” pe {day(usage.at)}, așa că nu măsurăm nimic.</>
+          : <>nu ne-ai răspuns încă, așa că nu măsurăm nimic.</>}
+        </p>
+        {mine && mine.sections.length > 0 && (
+          <ul className="my-usage">
+            {mine.sections.slice(0, 6).map((x) => <li key={x.section}>{x.label}: <b>{duration(x.seconds)}</b></li>)}
+          </ul>
+        )}
+        <UsageToggle granted={usage.granted} demo={isDemo(me.email)} />
       </div>
 
       <div className="card my-danger">

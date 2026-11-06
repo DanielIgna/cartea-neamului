@@ -394,6 +394,12 @@ body:has(.story){overflow:hidden}
 .meter-fill.warn{background:var(--ochre)}
 .meter-fill.bad{background:var(--red)}
 .err-msg{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:4px 0 0;color:var(--ink)}
+/* Anunțul pentru măsurarea timpului petrecut în site, cerut o singură dată */
+.usage-notice{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin:0 0 16px;font-size:15px}
+.usage-notice p{margin:0 0 10px;max-width:80ch}
+.usage-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.usage-actions .btn{padding:7px 16px}
+.my-usage{margin:4px 0 6px;padding-left:20px;columns:2 220px;font-size:14px}
 /* Oamenii (drumul lor, ce folosesc, fișa fiecăruia) și Manager control (planuri și limite) */
 .hbars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .hbars li{display:grid;grid-template-columns:minmax(0,16em) minmax(60px,1fr) auto;gap:10px;align-items:center;font-size:14px}

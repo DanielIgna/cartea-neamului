@@ -7,10 +7,21 @@
 export const LEGAL_UPDATED = "6 noiembrie 2026";
 export const TERMS_VERSION = "2026-11-06";
 export const FAITH_VERSION = "2026-11-06";
+export const USAGE_VERSION = "2026-11-06";
 
-/** Acordurile păstrate în tabelul `consent`: termenii (la crearea contului) și capitolul „Credința” (date ocrotite mai strict). */
-export type ConsentPurpose = "terms" | "faith";
-export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION };
+/**
+ * Acordurile păstrate în tabelul `consent`: termenii (la crearea contului), capitolul „Credința” (date ocrotite mai strict) și
+ * măsurarea timpului petrecut în site („usage”, cerută o singură dată, cu „Bine” sau „Nu vreau”).
+ */
+export type ConsentPurpose = "terms" | "faith" | "usage";
+export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION };
+export const CONSENT_LABEL: Record<ConsentPurpose, string> = {
+  terms: "Termenii și Politica de confidențialitate", faith: "Capitolul „Credința”", usage: "Cât timp folosesc site-ul și ce părți din el",
+};
+
+/** Ce află cel care ține site-ul dacă omul spune „Bine”, cum îl citește omul în anunț. */
+export const USAGE_CONSENT_TEXT = "Ca să facem Cartea Neamului mai bună, am vrea să știm cât timp stai în site și ce părți din el folosești "
+  + "(arborele, lada cu amintiri, harta...). Doar timpul și numele părții, nu ce scrii și nici pe ce apeși. Poți opri oricând, din „Datele mele”.";
 
 /** Textul acordului pentru capitolul „Credința”, așa cum îl bifează omul. */
 export const FAITH_CONSENT_TEXT = "Sunt de acord ca ce scriu despre credința mea să fie păstrat în Cartea Neamului și văzut doar de cei pe care îi aleg. "

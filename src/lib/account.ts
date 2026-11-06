@@ -12,13 +12,15 @@
 import { and, asc, eq, inArray, isNull, ne, notInArray, or, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import {
-  account, accountPlan, consent, document, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
+  account, accountPlan, consent, document, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
   user, verification,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
 import { chapterLabel } from "./questions";
 import { recordConsent } from "./consent";
+import { CONSENT_LABEL, type ConsentPurpose } from "./legal";
+import { sectionLabel } from "./usage";
 import { PLANS, type Plan } from "./plan-names";
 
 const RANK: Record<Role, number> = { viewer: 0, contributor: 1, editor: 2, owner: 3 };
@@ -153,6 +155,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     .from(session).where(eq(session.userId, userId)).orderBy(asc(session.createdAt));
   const consents = await db.select().from(consent).where(eq(consent.userId, userId)).orderBy(asc(consent.createdAt));
   const [plan] = await db.select().from(accountPlan).where(eq(accountPlan.userId, userId));
+  const usage = await db.select().from(usageDay).where(eq(usageDay.userId, userId)).orderBy(asc(usageDay.day), asc(usageDay.section));
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, joinedAt: treeMember.joinedAt })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, userId)).orderBy(asc(treeMember.joinedAt));
   const claimed = await db.select().from(person).where(eq(person.claimedByUserId, userId));
@@ -188,10 +191,12 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     },
     cont: { nume: u.name, email: u.email, emailVerificat: u.emailVerified, poza: u.image, creat: iso(u.createdAt), intrari: logins.map((l) => ({ fel: l.provider, din: iso(l.createdAt) })) },
     sesiuni: sessions.map((s) => ({ inceput: iso(s.createdAt), expira: iso(s.expiresAt), ip: s.ip, browser: s.browser })),
-    acorduri: consents.map((c) => ({ pentru: c.purpose === "terms" ? "Termenii și Politica de confidențialitate" : c.purpose === "faith" ? "Capitolul „Credința”" : c.purpose,
+    acorduri: consents.map((c) => ({ pentru: CONSENT_LABEL[c.purpose as ConsentPurpose] ?? c.purpose,
       versiune: c.textVersion, dat: c.granted, cand: iso(c.createdAt) })),
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
     ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, schimbata: iso(plan.updatedAt) } } : {}),
+    // Cât a folosit site-ul, pe zile, dacă a spus „Bine” la măsurare (doar timpul și partea din site).
+    folosire: usage.map((x) => ({ zi: x.day, parte: sectionLabel(x.section), secunde: x.seconds, deschideri: x.views, peTelefon: x.phoneSeconds, inAplicatie: x.appSeconds })),
     arbori: trees.map((t) => ({ nume: t.name, regiune: t.region, rol: ROLE[t.role], intrat: iso(t.joinedAt), gedcom: `${origin}/api/arbore/${t.id}/gedcom?living=1` })),
     fisaMea: claimed.map((p) => ({
       arbore: treeOf(p.treeId), prenume: p.givenName, nume: p.surname, numeLaNastere: p.birthSurname, sex: p.sex, inViata: p.living,

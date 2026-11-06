@@ -9,6 +9,7 @@ import { DEMO_EMAIL } from "./demo";
 import { CHAPTERS } from "./questions";
 import { accountPlans, type Plan } from "./plans";
 import { INVITE_VALID_DAYS } from "./invitations";
+import { de } from "./ro-words";
 
 type Row = Record<string, unknown>;
 async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
@@ -150,7 +151,7 @@ export function adoptionOf(people: PersonRow[]) {
 const pct = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 /** „1 om și-a făcut”, „2 oameni și-au făcut”; „5 conturi”, dar „20 de conturi”. */
 const sg = (v: number, one: string, many: string) => (v === 1 ? one : many);
-const cnt = (v: number, noun: string) => `${v}${v % 100 >= 20 || (v % 100 === 0 && v !== 0) ? " de" : ""} ${noun}`;
+const cnt = (v: number, noun: string) => `${de(v)} ${noun}`;
 
 /** Câteva lucruri care se văd din cifre, fiecare cu ce s-ar putea face. Apar doar cele care au sens pentru datele de acum. */
 export function observations(people: PersonRow[], now = new Date()) {
