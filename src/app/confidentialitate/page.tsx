@@ -51,6 +51,8 @@ export default function PrivacyPage() {
           <Link href="/termeni"> Termeni</Link> (art. 6 alin. 1 lit. b GDPR).</li>
         <li>Ca să păzim conturile și arborii: sesiunile, jurnalul schimbărilor și limitarea căutărilor. Temeiul e interesul nostru legitim de a ține
           site-ul în siguranță (art. 6 alin. 1 lit. f).</li>
+        <li>Ca să vedem ce folosesc oamenii și ce trebuie îmbunătățit: cifrele despre conturi și arbori din panoul de administrare, fără ce scrieți. Temeiul
+          e interesul nostru legitim de a face site-ul mai bun (art. 6 alin. 1 lit. f).</li>
         <li>Pentru rudele în viață pe care le treci în arbore, temeiul e interesul legitim al familiei de a-și păstra istoria, cu grijă: arborii sunt
           privați, iar cei în viață se văd doar în arborele lor, niciodată la alte familii. Oricine e trecut într-un arbore poate cere să-i îndreptăm
           sau să-i ștergem datele.</li>
@@ -68,8 +70,10 @@ export default function PrivacyPage() {
         <li><b>Amintirile</b> le vede doar cine alege cel care le scrie: doar el (ciornă), cel care a întrebat, familia apropiată până la un grad de
           rudenie sau tot arborele. În Cartea neamului intră doar cele bifate pentru carte.</li>
         <li><b>Mesajele</b> le văd doar cei doi care și le scriu.</li>
-        <li><b>Noi</b> vedem în panoul de administrare doar liste și cifre: conturile (nume, email, când au intrat) și arborii (nume, câte persoane au).
-          Amintirile și mesajele nu le citim; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.</li>
+        <li><b>Noi</b> vedem în panoul de administrare doar liste și cifre: conturile (nume, email, când și de pe ce fel de dispozitiv au intrat), arborii
+          (nume, câte persoane și fișiere au) și, la fiecare cont, cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje). Tot acolo putem ține
+          o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm
+          la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.</li>
         <li>Nu vindem date, nu facem reclame și nu le dăm nimănui altcuiva în afară de furnizorii de mai jos și de autorități, când legea ne obligă.</li>
       </ul>
 

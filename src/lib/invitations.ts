@@ -4,7 +4,9 @@ import type { Db } from "@/db";
 import { invitation, treeMember, person, tree } from "@/db/schema";
 import type { Role } from "./access";
 
-const VALID_DAYS = 14;
+/** Cât ține un link de invitație. Tabela nu ține minte când s-a făcut linkul: e cu atâtea zile înainte de expirare. */
+export const INVITE_VALID_DAYS = 14;
+const VALID_DAYS = INVITE_VALID_DAYS;
 export const hashToken = (t: string) => createHash("sha256").update(t).digest("hex");
 
 /** Creează un link de invitație. În baza de date păstrăm doar hash-ul tokenului. */

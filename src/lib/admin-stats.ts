@@ -1,7 +1,7 @@
 import { sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
 import journal from "../../drizzle/meta/_journal.json";
-import { FREE_PERSONS, PRICE_EUR_YEAR } from "./admin";
+import { planOverview } from "./plans";
 
 type Row = Record<string, unknown>;
 async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
@@ -15,8 +15,9 @@ const iso = (v: unknown) => (v == null ? null : new Date(v as string).toISOStrin
 
 export type BusinessStats = Awaited<ReturnType<typeof businessStats>>;
 
-/** Tot ce arată zona Business: oameni, arbori, activitate și ce ar aduce planul „Familie”. Doar citiri. */
+/** Tot ce arată zona Business: oameni, arbori, activitate și ce ar aduce planul „Familie”, cu limitele din „Manager control”. Doar citiri. */
 export async function businessStats(db: Db) {
+  const plans = await planOverview(db);
   const [u] = await rows(db, sql`select
       count(*) as total,
       count(*) filter (where created_at > now() - interval '7 days') as new7,
@@ -39,8 +40,6 @@ export async function businessStats(db: Db) {
     select count(*) as total,
       count(*) filter (where discoverable) as discoverable,
       count(*) filter (where members > 1) as shared,
-      count(*) filter (where persons >= ${FREE_PERSONS}) as over_limit,
-      count(*) filter (where persons >= ${Math.round(FREE_PERSONS * 0.75)} and persons < ${FREE_PERSONS}) as near_limit,
       coalesce(round(avg(persons)), 0) as avg_persons,
       coalesce(max(persons), 0) as max_persons
     from sizes`);
@@ -62,7 +61,7 @@ export async function businessStats(db: Db) {
   const books = await rows<{ status: string; c: unknown; bani: unknown }>(db, sql`select status, count(*) as c, coalesce(sum(price_bani), 0) as bani
     from book_export group by status`);
 
-  const topTrees = await rows(db, sql`select t.id, t.name, t.created_at, t.discoverable, o.name as owner, o.email as owner_email,
+  const topTrees = await rows(db, sql`select t.id, t.name, t.created_at, t.discoverable, t.owner_id, o.name as owner, o.email as owner_email,
       (select count(*) from person p where p.tree_id = t.id) as persons,
       (select count(*) from tree_member m where m.tree_id = t.id) as members,
       (select count(*) from document d where d.tree_id = t.id) as documents,
@@ -75,16 +74,20 @@ export async function businessStats(db: Db) {
       (select max(s.updated_at) from session s where s.user_id = u.id) as last_seen
     from "user" u order by u.created_at desc limit 15`);
 
-  const overLimit = n(t.over_limit);
+  const overLimit = plans.counts.over;
+  const state = new Map(plans.trees.map((x) => [x.id, x]));
   const paidBani = books.filter((b) => b.status === "paid" || b.status === "ready").reduce((s, b) => s + n(b.bani), 0);
   return {
     users: { total: n(u.total), new7: n(u.new7), new30: n(u.new30), verified: n(u.verified), google: n(google?.c), active1: n(act.d1), active7: n(act.d7), active30: n(act.d30) },
     signupsByWeek: fillWeeks(weeks.map((w) => ({ week: iso(w.week)!, c: n(w.c) })), 12),
-    trees: { total: n(t.total), discoverable: n(t.discoverable), shared: n(t.shared), overLimit, nearLimit: n(t.near_limit), avgPersons: n(t.avg_persons), maxPersons: n(t.max_persons) },
+    trees: { total: n(t.total), discoverable: n(t.discoverable), shared: n(t.shared), overLimit, nearLimit: plans.counts.near, avgPersons: n(t.avg_persons), maxPersons: n(t.max_persons) },
     content: Object.fromEntries(Object.entries(c).map(([k, v]) => [k, n(v)])) as Record<string, number>,
     books: books.map((b) => ({ status: b.status, count: n(b.c), lei: n(b.bani) / 100 })),
-    revenue: { booksLei: paidBani / 100, potentialEurYear: overLimit * PRICE_EUR_YEAR, subscriptionsActive: 0 },
-    topTrees: topTrees.map((r) => ({ id: String(r.id), name: String(r.name), owner: (r.owner as string) ?? "—", ownerEmail: (r.owner_email as string) ?? "", persons: n(r.persons), members: n(r.members), documents: n(r.documents), discoverable: !!r.discoverable, createdAt: iso(r.created_at), lastEdit: iso(r.last_edit) })),
+    // „Familie” e doar o alegere din panou cât timp plățile nu sunt pornite: nimeni nu plătește încă.
+    revenue: { booksLei: paidBani / 100, potentialEurYear: plans.revenue.eurYearPossible, markedEurYear: plans.revenue.eurYearNow, subscriptionsActive: plans.revenue.paying },
+    plans: { settings: plans.settings, counts: plans.counts, wouldPay: plans.revenue.wouldPay },
+    topTrees: topTrees.map((r) => ({ id: String(r.id), name: String(r.name), owner: (r.owner as string) ?? "—", ownerEmail: (r.owner_email as string) ?? "", ownerId: (r.owner_id as string) ?? null, persons: n(r.persons), members: n(r.members), documents: n(r.documents), discoverable: !!r.discoverable, createdAt: iso(r.created_at), lastEdit: iso(r.last_edit),
+      plan: state.get(String(r.id))?.plan ?? "gratuit", limit: state.get(String(r.id))?.state ?? "sub" })),
     recentUsers: recentUsers.map((r) => ({ id: String(r.id), name: String(r.name), email: String(r.email), providers: (r.providers as string) ?? "", trees: n(r.trees), createdAt: iso(r.created_at), lastSeen: iso(r.last_seen) })),
   };
 }
@@ -105,7 +108,8 @@ export function fillWeeks(data: { week: string; c: number }[], count: number, no
 /* ------------------------------ Infra & Dev ------------------------------ */
 
 const TABLES = ["user", "session", "account", "verification", "tree", "tree_member", "invitation", "person", "relationship", "raised_by",
-  "document", "document_link", "book_export", "consent", "audit_log", "message", "place_pin", "tree_place", "place_contact", "join_request", "join_attempt"];
+  "document", "document_link", "book_export", "consent", "audit_log", "message", "place_pin", "tree_place", "place_contact", "join_request", "join_attempt",
+  "memory", "memory_mention", "memory_question", "memory_reply", "account_plan", "app_setting"];
 
 export type InfraStats = Awaited<ReturnType<typeof infraStats>>;
 

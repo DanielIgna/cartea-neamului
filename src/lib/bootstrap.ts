@@ -100,6 +100,13 @@ const ADDITIVE = [
   sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_at" timestamp`,
   sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_document_id" uuid REFERENCES "document"("id") ON DELETE set null`,
   sql`ALTER TABLE "tree" ADD COLUMN IF NOT EXISTS "journey_word" text`,
+  // Panoul de admin, „Manager control”: planul fiecărui cont și setările planurilor.
+  sql`CREATE TABLE IF NOT EXISTS "account_plan" (
+    "user_id" text PRIMARY KEY NOT NULL REFERENCES "user"("id") ON DELETE cascade, "plan" text NOT NULL, "note" text,
+    "set_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "app_setting" (
+    "key" text PRIMARY KEY NOT NULL, "value" jsonb NOT NULL,
+    "updated_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
 ];
 
 export async function applySchema(target: Db) {

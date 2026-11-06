@@ -1,6 +1,11 @@
 import Link from "next/link";
+import type { LimitState, Plan } from "@/lib/plans";
+import { STAGES, type Stage } from "@/lib/admin-people";
 
 export const num = (v: number) => v.toLocaleString("ro-RO");
+/** „5 persoane”, dar „20 de persoane” și „100 de persoane”: în română, „de” vine după numerele care se termină de la 20 în sus (sau în 00). */
+export const de = (v: number) => (v % 100 >= 20 || (v % 100 === 0 && v !== 0) ? " de" : "");
+export const count = (v: number, noun: string) => `${num(v)}${de(v)} ${noun}`;
 export const lei = (v: number) => `${v.toLocaleString("ro-RO", { maximumFractionDigits: 2 })} lei`;
 export const eur = (v: number) => `${v.toLocaleString("ro-RO")} €`;
 export function bytes(b: number) {
@@ -26,17 +31,46 @@ export function ago(isoDate: string | null | undefined) {
   return d === 1 ? "ieri" : `acum ${d} zile`;
 }
 
-export function AdminNav({ active }: { active: "home" | "business" | "infra" }) {
+export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "infra" }) {
   const tab = (key: typeof active, href: string, label: string) => (
     <Link href={href} className="btn" aria-current={active === key ? "page" : undefined}>{label}</Link>
   );
   return (
-    <nav className="admin-nav">
+    <nav className="admin-nav" aria-label="Panoul de admin">
       <span className="admin-tag">Admin</span>
       {tab("home", "/admin", "Prezentare")}
+      {tab("oameni", "/admin/oameni", "Oamenii")}
       {tab("business", "/admin/business", "Business")}
+      {tab("control", "/admin/control", "Manager control")}
       {tab("infra", "/admin/infra", "Infra & Dev")}
     </nav>
+  );
+}
+
+/** Planul unui cont sau al proprietarului unui arbore, cu locul arborelui față de limitele gratuite. */
+export function PlanPill({ plan, limit }: { plan: Plan; limit?: LimitState }) {
+  if (plan === "mereu") return <span className="pill ok">gratuit mereu</span>;
+  if (plan === "familie") return <span className="pill ok">Familie</span>;
+  if (limit === "peste") return <span className="pill warn">peste limită</span>;
+  if (limit === "aproape") return <span className="pill warn">aproape de limită</span>;
+  return <span className="muted">gratuit</span>;
+}
+
+/** Bare orizontale cu eticheta în stânga și „număr · procent” în dreapta (drumul oamenilor, ce folosesc). */
+export function HBars({ data, total, label }: { data: { label: string; count: number }[]; total: number; label: string }) {
+  return (
+    <ul className="hbars" aria-label={label}>
+      {data.map((d) => {
+        const pct = total ? Math.round((100 * d.count) / total) : 0;
+        return (
+          <li key={d.label}>
+            <span className="hbars-label">{d.label}</span>
+            <span className="hbars-track" aria-hidden="true"><span className="hbars-fill" style={{ width: `${d.count ? Math.max(pct, 1.5) : 0}%` }} /></span>
+            <span className="hbars-value">{num(d.count)} <small>· {pct}%</small></span>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -86,4 +120,10 @@ export function Meter({ used, limit, label }: { used: number; limit: number; lab
       <div className={`meter-fill ${tone}`} style={{ width: `${Math.max(pct, 0.6)}%` }} />
     </div>
   );
+}
+
+/** Unde a ajuns un om cu arborele lui: ce n-a pornit încă e ocru, ce a adus familia sau amintirile e verde. */
+export function StagePill({ stage }: { stage: Stage }) {
+  const tone = stage === "cont" || stage === "arbore" ? "warn" : stage === "familie" || stage === "amintiri" ? "ok" : "";
+  return tone ? <span className={`pill ${tone}`}>{STAGES[stage]}</span> : <span className="chip">{STAGES[stage]}</span>;
 }
