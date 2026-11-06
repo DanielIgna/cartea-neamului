@@ -2,6 +2,8 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { adoptionOf, funnelOf, observations, peopleList, type PersonRow } from "@/lib/admin-people";
+import { duration, usageOverview } from "@/lib/usage";
+import { de, oameni } from "@/lib/ro-words";
 import { AdminNav, HBars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -20,22 +22,27 @@ const FILTERS: Record<string, { label: string; ok: (p: PersonRow) => boolean }> 
   activi: { label: "Activi în 7 zile", ok: (p) => since(lastActive(p), 7) },
   dusi: { label: "Neintrați de 14 zile", ok: (p) => !since(lastActive(p), 14) },
 };
-const ORDERS: Record<string, { label: string; cmp: (a: PersonRow, b: PersonRow) => number }> = {
+type Row = PersonRow & { time: number | null };
+const ORDERS: Record<string, { label: string; cmp: (a: Row, b: Row) => number }> = {
   noi: { label: "cei mai noi", cmp: (a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? "") },
   activi: { label: "ultima dată activi", cmp: (a, b) => (lastActive(b) ?? "").localeCompare(lastActive(a) ?? "") },
   arbore: { label: "arborele cel mai mare", cmp: (a, b) => (b.mainTree?.persons ?? 0) - (a.mainTree?.persons ?? 0) },
   amintiri: { label: "cele mai multe amintiri", cmp: (a, b) => b.memories - a.memories },
+  timp: { label: "cel mai mult timp", cmp: (a, b) => (b.time ?? -1) - (a.time ?? -1) },
 };
+const pctOf = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 
 /** Oamenii: drumul tuturor de la cont la amintiri, ce folosesc și cifrele fiecăruia. Doar cifre, niciodată ce scriu. */
 export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string }> }) {
   await requireAdmin("/admin/oameni");
   const sp = await searchParams;
-  const people = await peopleList(db);
+  const [people, usage] = await Promise.all([peopleList(db), usageOverview(db, 30)]);
   const show = FILTERS[sp.arata ?? ""] ? sp.arata! : "toti";
   const order = ORDERS[sp.ordine ?? ""] ? sp.ordine! : "noi";
-  const list = people.filter(FILTERS[show].ok).sort(ORDERS[order].cmp);
+  const list: Row[] = people.filter(FILTERS[show].ok).map((p) => ({ ...p, time: usage.perUser.get(p.id)?.seconds ?? null })).sort(ORDERS[order].cmp);
+  const top = usage.sections[0];
   const total = people.length;
+  const silent = Math.max(0, total - usage.answers.yes - usage.answers.no);
   const href = (arata: string, ordine: string) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}) })}`;
 
   return (
@@ -72,11 +79,30 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
       </div>
 
       <div className="card">
+        <h3 style={{ marginTop: 0 }}>Cât timp petrec și ce îi interesează</h3>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Ultimele 30 de zile, doar la cei care au spus „Bine” la anunțul despre asta (îl văd o singură dată). Se numără doar timpul în care pagina e în față
+          și omul face ceva în ea.
+        </p>
+        <div className="stats">
+          <Stat label="Au spus „Bine”" value={num(usage.answers.yes)} hint={`${usage.answers.no} ${usage.answers.no === 1 ? "a spus" : "au spus"} „Nu vreau” · ${silent} ${silent === 1 ? "n-a" : "n-au"} răspuns`} />
+          <Stat label="Timp în total" value={duration(usage.total)} hint={usage.people === 1 ? "un om măsurat" : `${de(usage.people)} oameni măsurați`} />
+          <Stat label="Pe zi, de om" value={duration(usage.perPersonDay)} hint="în zilele în care intră" />
+          <Stat label="De pe telefon" value={`${pctOf(usage.phone, usage.total)}%`} hint={`${pctOf(usage.app, usage.total)}% în aplicația de pe telefon`} />
+        </div>
+        {usage.sections.length > 0 ? (
+          <>
+            <div className="section-label">Unde stau cel mai mult</div>
+            <HBars label="Timpul pe părți ale site-ului" total={usage.total} format={duration}
+              data={usage.sections.map((x) => ({ label: `${x.label} (${oameni(x.people)})`, count: x.seconds }))} />
+            {top && <p className="muted" style={{ marginBottom: 0 }}>Cel mai mult timp îl petrec în „{top.label}”: {pctOf(top.seconds, usage.total)}% din tot timpul.</p>}
+          </>
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Încă nu s-a adunat nimic: nimeni n-a spus „Bine” sau n-au intrat de atunci.</p>}
+      </div>
+
+      <div className="card">
         <h3 style={{ marginTop: 0 }}>Ce se vede din cifre</h3>
         <ul className="obs">{observations(people).map((o) => <li key={o}>{o}</li>)}</ul>
-        <p className="muted" style={{ marginBottom: 0 }}>
-          Cât timp petrec oamenii în site și ce pagini îi interesează se va vedea aici doar la cei care spun „Bine” la anunțul despre asta.
-        </p>
       </div>
 
       <div className="card">
@@ -99,7 +125,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
               <thead>
                 <tr>
                   <th>Om</th><th>Unde a ajuns</th><th>Arborele lui</th><th className="n">A trecut</th><th className="n">Amintiri</th><th className="n">Poze</th>
-                  <th className="n">Rude chemate</th><th className="n">Zile active</th><th>Ultima dată</th><th>Plan</th>
+                  <th className="n">Rude chemate</th><th className="n">Zile active</th><th className="n">Timp</th><th>Ultima dată</th><th>Plan</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,6 +139,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
                     <td className="n">{num(p.photos)}</td>
                     <td className="n">{p.invites ? `${p.invitesAccepted}/${p.invites}` : "—"}</td>
                     <td className="n">{p.activeDays30}<small>din 30</small></td>
+                    <td className="n tight">{p.time != null ? duration(p.time) : <span className="muted" title="n-a spus „Bine”">—</span>}</td>
                     <td className="tight">{ago(lastActive(p))}</td>
                     <td><PlanPill plan={p.plan} /></td>
                   </tr>
@@ -123,7 +150,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
         )}
         <p className="muted" style={{ marginBottom: 0 }}>
           „A trecut” = câte persoane a adăugat el în arbori. „Rude chemate” = linkuri folosite din cele trimise. „Zile active” = zilele din ultimele 30 în
-          care a intrat sau a adăugat ceva.
+          care a intrat sau a adăugat ceva. „Timp” = cât a stat în site în ultimele 30 de zile, doar la cei care au spus „Bine”.
         </p>
       </div>
     </section>

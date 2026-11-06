@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { personDetail } from "@/lib/admin-people";
+import { consentState } from "@/lib/consent";
+import { duration, usageOf } from "@/lib/usage";
+import { inZile } from "@/lib/ro-words";
 import { PLANS } from "@/lib/plan-names";
 import { AdminNav, Bars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 import { AccountPlanForm } from "@/components/admin/PlanForms";
@@ -20,6 +23,8 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
   await requireAdmin(`/admin/oameni/${id}`);
   const d = await personDetail(db, id);
   if (!d) notFound();
+  const [answer, time] = await Promise.all([consentState(db, id, "usage"), usageOf(db, id, 30)]);
+  const share = (a: number) => (time.total ? `${Math.round((100 * a) / time.total)}%` : "—");
   const p = d.person;
   const done = d.weeks.map((w) => ({ key: w.week, label: label(w.week), value: w.persoane + w.amintiri + w.poze + w.altele }));
   const visits = d.weeks.map((w) => ({ key: w.week, label: label(w.week), value: w.intrari }));
@@ -61,6 +66,35 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
           <p className="muted" style={{ marginTop: 0 }}>De câte ori a intrat din nou (o intrare ține câteva zile).</p>
           <Bars label="Intrări în cont pe săptămâni" data={visits} />
         </div>
+      </div>
+
+      <div className="card">
+        <h3 style={{ marginTop: 0 }}>Cât timp petrece și unde (30 de zile)</h3>
+        {!answer.granted ? (
+          <p className="muted" style={{ marginBottom: 0 }}>
+            {answer.at ? `A spus „Nu vreau” pe ${day(answer.at.toISOString())}, așa că nu se măsoară nimic.` : "N-a răspuns încă la anunț, așa că nu se măsoară nimic."}
+          </p>
+        ) : (
+          <>
+            <div className="stats">
+              <Stat label="Timp în total" value={duration(time.total)} hint={inZile(time.activeDays)} />
+              <Stat label="Pe zi" value={duration(time.activeDays ? Math.round(time.total / time.activeDays) : 0)} hint="în zilele în care intră" />
+              <Stat label="Pagini deschise" value={num(time.views)} />
+              <Stat label="De pe telefon" value={share(time.phone)} hint={`${share(time.app)} în aplicație`} />
+            </div>
+            <div className="section-label">Minute pe zi</div>
+            <Bars label="Minute pe zi" format={(s) => (s < 60 ? "<1" : String(Math.round(s / 60)))}
+              data={time.days.map((x) => ({ key: x.day, label: `${x.day.slice(8, 10)}.${x.day.slice(5, 7)}`, value: x.seconds }))} />
+            {time.sections.length > 0 && (
+              <>
+                <div className="section-label">Unde stă</div>
+                <div className="chips" style={{ margin: 0 }}>
+                  {time.sections.map((x) => <span key={x.section} className="chip">{x.label}: {duration(x.seconds)}</span>)}
+                </div>
+              </>
+            )}
+          </>
+        )}
       </div>
 
       {d.growth.length > 1 && (

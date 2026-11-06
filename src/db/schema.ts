@@ -240,6 +240,23 @@ export const appSetting = pgTable("app_setting", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+/* ---------- Cât folosesc oamenii site-ul, doar la cei care au spus „Bine” (acordul `usage`) ---------- */
+// Pe zile: câte secunde a stat omul în fiecare parte a site-ului („Arborele · Copac”, „Harta neamului”...) și de câte ori a
+// deschis-o, plus cât din timp a fost pe telefon și în aplicația pusă pe telefon. Nu se păstrează adresa paginii, ce scrie
+// sau pe ce apasă. Se șterge după 13 luni, când omul își retrage acordul și odată cu contul. Vezi src/lib/usage.ts.
+export const usageDay = pgTable("usage_day", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  day: date("day").notNull(),
+  section: text("section").notNull(),
+  seconds: integer("seconds").notNull().default(0),
+  views: integer("views").notNull().default(0),
+  phoneSeconds: integer("phone_seconds").notNull().default(0),
+  appSeconds: integer("app_seconds").notNull().default(0),
+  /** Ultima bătaie adunată (id dat de browser): aceeași bătaie trimisă de două ori nu se numără de două ori. */
+  lastBeat: text("last_beat"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("usage_day_pk").on(t.userId, t.day, t.section), index("usage_day_day_idx").on(t.day)]);
+
 /* ---------- Mesaje între rude ---------- */
 export const message = pgTable("message", {
   id: uuid("id").primaryKey().defaultRandom(),

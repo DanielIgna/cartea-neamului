@@ -21,6 +21,10 @@ import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminUser } from "@/lib/admin";
+import { consentState } from "@/lib/consent";
+import { isDemo } from "@/lib/demo";
+import UsageBeat from "@/components/UsageBeat";
+import UsageNotice from "@/components/UsageNotice";
 
 
 export const metadata: Metadata = {
@@ -44,6 +48,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         .then((r) => r[0]?.photo ?? null).catch(() => null)
     : null;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
+  // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
+  const usage = me && !isDemo(me.email) ? await consentState(db, me.id, "usage").catch(() => null) : null;
   return (
     <html lang="ro" data-theme={theme === "auto" ? undefined : theme}>
       <body>
@@ -54,7 +60,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ThemeSwitch initial={theme} />
             {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminUser(me)} />}
           </header>
+          {usage && !usage.at && <UsageNotice />}
           {children}
+          {me && usage?.granted && <UsageBeat userId={me.id} />}
           <footer className="site-foot">
             <span>© {new Date().getFullYear()} Cartea Neamului</span>
             <Link href="/confidentialitate">Confidențialitate</Link>

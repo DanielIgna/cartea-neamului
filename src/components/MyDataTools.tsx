@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { deleteMyAccount, withdrawFaithConsent } from "@/app/cont-actions";
+import { answerUsage } from "@/app/folosire-actions";
 import type { DeletionPlan } from "@/lib/account";
 import { de, persoane } from "@/lib/ro-words";
 
@@ -34,6 +35,25 @@ export function FaithWithdraw({ answers, granted }: { answers: number; granted: 
         })}>{pending ? "Se retrage…" : "Da, retrag acordul"}</button>
         <button className="btn" disabled={pending} onClick={() => setAsk(false)}>Renunță</button>
       </div>
+    </div>
+  );
+}
+
+/** Măsurarea timpului petrecut în site: pornită sau oprită de om; oprirea șterge tot ce s-a adunat. */
+export function UsageToggle({ granted, demo }: { granted: boolean; demo: boolean }) {
+  const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<string | null>(null);
+  const router = useRouter();
+  if (demo) return <p className="muted">Contul de probă nu se măsoară.</p>;
+  return (
+    <div className="actions" style={{ marginTop: 6, alignItems: "center" }}>
+      <button className="btn" disabled={pending} onClick={() => start(async () => {
+        const r = await answerUsage(!granted);
+        if (r.error) return setMsg(r.error);
+        setMsg(granted ? "Am oprit măsurarea și am șters tot ce se adunase." : "Am pornit măsurarea. Mulțumim!");
+        router.refresh();
+      })}>{pending ? "Se schimbă…" : granted ? "Oprește și șterge ce s-a adunat" : "Pornește măsurarea"}</button>
+      {msg && <span role="status" className="muted">{msg}</span>}
     </div>
   );
 }

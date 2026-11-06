@@ -1,11 +1,11 @@
 import Link from "next/link";
+import { cereDe } from "@/lib/ro-words";
 import type { LimitState, Plan } from "@/lib/plans";
 import { STAGES, type Stage } from "@/lib/admin-people";
 
 export const num = (v: number) => v.toLocaleString("ro-RO");
-/** „5 persoane”, dar „20 de persoane” și „100 de persoane”: în română, „de” vine după numerele care se termină de la 20 în sus (sau în 00). */
-export const de = (v: number) => (v % 100 >= 20 || (v % 100 === 0 && v !== 0) ? " de" : "");
-export const count = (v: number, noun: string) => `${num(v)}${de(v)} ${noun}`;
+/** „5 persoane”, dar „1.200 de persoane”, cu cifrele despărțite ca în română. */
+export const count = (v: number, noun: string) => `${num(v)}${cereDe(v) ? " de" : ""} ${noun}`;
 export const lei = (v: number) => `${v.toLocaleString("ro-RO", { maximumFractionDigits: 2 })} lei`;
 export const eur = (v: number) => `${v.toLocaleString("ro-RO")} €`;
 export function bytes(b: number) {
@@ -56,8 +56,8 @@ export function PlanPill({ plan, limit }: { plan: Plan; limit?: LimitState }) {
   return <span className="muted">gratuit</span>;
 }
 
-/** Bare orizontale cu eticheta în stânga și „număr · procent” în dreapta (drumul oamenilor, ce folosesc). */
-export function HBars({ data, total, label }: { data: { label: string; count: number }[]; total: number; label: string }) {
+/** Bare orizontale cu eticheta în stânga și „număr · procent” în dreapta (drumul oamenilor, ce folosesc, timpul pe părți). */
+export function HBars({ data, total, label, format = num }: { data: { label: string; count: number }[]; total: number; label: string; format?: (v: number) => string }) {
   return (
     <ul className="hbars" aria-label={label}>
       {data.map((d) => {
@@ -66,7 +66,7 @@ export function HBars({ data, total, label }: { data: { label: string; count: nu
           <li key={d.label}>
             <span className="hbars-label">{d.label}</span>
             <span className="hbars-track" aria-hidden="true"><span className="hbars-fill" style={{ width: `${d.count ? Math.max(pct, 1.5) : 0}%` }} /></span>
-            <span className="hbars-value">{num(d.count)} <small>· {pct}%</small></span>
+            <span className="hbars-value">{format(d.count)} <small>· {pct}%</small></span>
           </li>
         );
       })}
@@ -89,20 +89,20 @@ export function Status({ ok, warn, children }: { ok: boolean; warn?: boolean; ch
 }
 
 /** Bare verticale simple, cu valoarea deasupra fiecărei bare. */
-export function Bars({ data, label }: { data: { key: string; label: string; value: number }[]; label: string }) {
+export function Bars({ data, label, format = String }: { data: { key: string; label: string; value: number }[]; label: string; format?: (v: number) => string }) {
   const max = Math.max(1, ...data.map((d) => d.value));
   const W = 640, H = 170, pad = 22, bw = (W - pad) / data.length;
   return (
-    <svg viewBox={`0 0 ${W} ${H + 26}`} role="img" aria-label={label} style={{ width: "100%", maxWidth: 720, height: "auto", display: "block" }}>
+    <svg viewBox={`-16 0 ${W + 32} ${H + 26}`} role="img" aria-label={label} style={{ width: "100%", maxWidth: 720, height: "auto", display: "block" }}>
       <line x1={0} x2={W} y1={H} y2={H} stroke="var(--line)" />
       {data.map((d, i) => {
         const h = Math.max(d.value ? 3 : 0, ((H - pad) * d.value) / max);
         const x = i * bw + bw * 0.18, w = bw * 0.64;
         return (
           <g key={d.key}>
-            <title>{`${d.label}: ${d.value}`}</title>
+            <title>{`${d.label}: ${format(d.value)}`}</title>
             <rect x={x} y={H - h} width={w} height={h} rx={3} fill="var(--accent)" />
-            {d.value > 0 && <text x={x + w / 2} y={H - h - 5} textAnchor="middle" fontSize={12} fill="var(--ink)">{d.value}</text>}
+            {d.value > 0 && <text x={x + w / 2} y={H - h - 5} textAnchor="middle" fontSize={12} fill="var(--ink)">{format(d.value)}</text>}
             {(i % 2 === data.length % 2 || data.length <= 8) && <text x={x + w / 2} y={H + 17} textAnchor="middle" fontSize={11} fill="var(--muted)">{d.label}</text>}
           </g>
         );

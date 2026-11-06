@@ -41,7 +41,11 @@ export default function PrivacyPage() {
           căutat și dacă s-a găsit ceva, ca să limităm căutările (așa nimeni nu poate ghici data nașterii cuiva încercând zi după zi).</li>
         <li><b>„Din aceleași locuri”:</b> doar dacă proprietarul arborelui o pornește, satele strămoșilor decedați, numele lor de familie și anii, ca să-și
           găsească neamurile alte familii cu rădăcini în aceleași sate. Păstrăm și cererile de legătură și răspunsurile la ele.</li>
-        <li><b>În browserul tău:</b> tema aleasă (luminoasă sau întunecată) și spițele pe care le-ai ales să le vezi.</li>
+        <li id="folosire"><b>Cât folosești site-ul</b>, doar dacă spui „Bine” la întrebarea pe care ți-o punem o singură dată: pe zile, cât timp ai stat
+          în fiecare parte a site-ului (de pildă „Arborele · Copac” sau „Harta neamului”), de câte ori ai deschis-o și cât din timp a fost pe telefon sau
+          în aplicația de pe telefon. Numărăm doar timpul în care pagina e în față și faci ceva în ea. Nu păstrăm adresa paginii, ce scrii sau pe ce apeși.</li>
+        <li><b>În browserul tău:</b> tema aleasă (luminoasă sau întunecată) și spițele pe care le-ai ales să le vezi. Dacă ai spus „Bine” la
+          măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.</li>
         <li><b>Jurnalele tehnice</b> ale serverului (adresa IP, pagina cerută, ora), păstrate pentru scurt timp, ca să putem repara erorile.</li>
       </ul>
 
@@ -56,8 +60,8 @@ export default function PrivacyPage() {
         <li>Pentru rudele în viață pe care le treci în arbore, temeiul e interesul legitim al familiei de a-și păstra istoria, cu grijă: arborii sunt
           privați, iar cei în viață se văd doar în arborele lor, niciodată la alte familii. Oricine e trecut într-un arbore poate cere să-i îndreptăm
           sau să-i ștergem datele.</li>
-        <li>Pe baza acordului tău, pe care îl poți retrage oricând: capitolul „Credința” (art. 9 alin. 2 lit. a), poveștile înregistrate „la bunici”
-          și „Din aceleași locuri” (art. 6 alin. 1 lit. a). Retragerea nu schimbă ce s-a făcut înainte cu acordul dat.</li>
+        <li>Pe baza acordului tău, pe care îl poți retrage oricând: capitolul „Credința” (art. 9 alin. 2 lit. a), poveștile înregistrate „la bunici”,
+          „Din aceleași locuri” și cât folosești site-ul (art. 6 alin. 1 lit. a). Retragerea nu schimbă ce s-a făcut înainte cu acordul dat.</li>
       </ul>
 
       <h3>Cine vede datele</h3>
@@ -71,9 +75,9 @@ export default function PrivacyPage() {
           rudenie sau tot arborele. În Cartea neamului intră doar cele bifate pentru carte.</li>
         <li><b>Mesajele</b> le văd doar cei doi care și le scriu.</li>
         <li><b>Noi</b> vedem în panoul de administrare doar liste și cifre: conturile (nume, email, când și de pe ce fel de dispozitiv au intrat), arborii
-          (nume, câte persoane și fișiere au) și, la fiecare cont, cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje). Tot acolo putem ține
-          o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm
-          la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.</li>
+          (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus
+          „Bine”, cât timp stau în fiecare parte a site-ului. Tot acolo putem ține o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și
+          mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.</li>
         <li>Nu vindem date, nu facem reclame și nu le dăm nimănui altcuiva în afară de furnizorii de mai jos și de autorități, când legea ne obligă.</li>
       </ul>
 
@@ -93,12 +97,13 @@ export default function PrivacyPage() {
       <p>Cât timp ai cont. Ce ștergi tu dispare imediat din site, iar copiile de siguranță ale bazei de date se rescriu singure în cel mult 30 de zile.
         Când îți ștergi contul, pleacă tot ce e al tău: contul, amintirile din lada ta, mesajele, ce ai scris altora și acordurile. Arborii rămân ai
         familiei: un arbore cu alți membri trece la unul dintre ei, iar unul în care ești singur se șterge cu totul. Fișa ta din arbori rămâne, ca să nu
-        se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale.</p>
+        se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale. Cât folosești site-ul păstrăm cel mult 13 luni; dacă spui
+        „Nu mai vreau”, se șterge imediat.</p>
 
       <h3>Drepturile tale</h3>
       <p>Poți afla ce date avem despre tine, le poți îndrepta, le poți șterge, le poți lua cu tine, poți cere să nu le mai folosim într-un anume fel și
         îți poți retrage oricând acordul dat. Multe le faci singur, din pagina <Link href="/datele-mele">Datele mele</Link>: descarci tot ce ține de
-        contul tău, îți retragi acordul pentru „Credința” sau îți ștergi contul. Pentru restul ne scrii la {contact}; îți răspundem în cel mult o lună.</p>
+        contul tău, îți retragi acordul pentru „Credința”, oprești măsurarea timpului petrecut în site sau îți ștergi contul. Pentru restul ne scrii la {contact}; îți răspundem în cel mult o lună.</p>
       <p>Dacă socotești că nu ți-am respectat drepturile, poți face plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter
         Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <a href="https://www.dataprotection.ro" rel="noopener noreferrer" target="_blank">www.dataprotection.ro</a>.</p>
 
