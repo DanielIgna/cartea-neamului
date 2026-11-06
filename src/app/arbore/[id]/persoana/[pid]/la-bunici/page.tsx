@@ -9,6 +9,7 @@ import { buildGraph } from "@/lib/kinship";
 import { isPlaceholder } from "@/lib/family";
 import { questionContext } from "@/lib/lada";
 import { questionsFor, sundayQuestion } from "@/lib/questions";
+import { bookPlan, bookQueue } from "@/lib/autobiografie";
 import { storageConfigured } from "@/lib/storage";
 import LaBunici, { type GrandQuestion } from "@/components/LaBunici";
 
@@ -19,8 +20,10 @@ const UUID = /^[0-9a-f-]{36}$/i;
  * Modul „la bunici” pentru un om în viață fără cont: întâi întrebările lăsate de rude, apoi cele scrise din arbore și din istoria
  * pe care a trăit-o (fără cele la care a răspuns deja). Îl deschide o rudă care poate adăuga în arbore.
  */
-export default async function LaBuniciPage({ params }: { params: Promise<{ id: string; pid: string }> }) {
+export default async function LaBuniciPage({ params, searchParams }: { params: Promise<{ id: string; pid: string }>; searchParams: Promise<{ carte?: string }> }) {
   const { id, pid } = await params;
+  // `?carte=1`: întrebările autobiografiei, capitol cu capitol, în locul celor de duminică.
+  const book = (await searchParams).carte === "1";
   if (!UUID.test(id) || !UUID.test(pid)) notFound();
   const me = await requireUser(`/arbore/${id}/persoana/${pid}/la-bunici`);
   const role = await roleIn(db, id, me.id);
@@ -49,8 +52,10 @@ export default async function LaBuniciPage({ params }: { params: Promise<{ id: s
   const all = ctx ? questionsFor(ctx) : [];
   const left = all.filter((q) => !answered.includes(q.key)).length;
   const now = new Date();
-  const fromTree = Array.from({ length: Math.min(40, left) }, (_, k) => sundayQuestion(all, answered, now, k)).filter((q) => !!q)
-    .map((q): GrandQuestion => ({ text: q!.text, chapter: q!.chapter, key: q!.key }));
+  const fromTree = book && ctx
+    ? bookQueue(bookPlan(ctx), answered).map((q): GrandQuestion => ({ text: q.text, chapter: q.chapter, key: q.key, mentions: q.mentions }))
+    : Array.from({ length: Math.min(40, left) }, (_, k) => sundayQuestion(all, answered, now, k)).filter((q) => !!q)
+      .map((q): GrandQuestion => ({ text: q!.text, chapter: q!.chapter, key: q!.key }));
 
   // Întrebările lăsate de rude în lada lui, încă fără răspuns, cu numele celui care a întrebat (din fișa lui sau din cont).
   const asked = await db.select().from(memoryQuestion).where(and(eq(memoryQuestion.treeId, id), eq(memoryQuestion.personId, pid), isNull(memoryQuestion.memoryId)));

@@ -6,8 +6,10 @@ import { db } from "@/db";
 import { document, memory, memoryMention, memoryQuestion, memoryReply, person } from "@/db/schema";
 import { can, currentUser, roleIn } from "@/lib/access";
 import { yearIn } from "@/lib/lada";
-import { memoryVisible } from "@/lib/lada-db";
+import { dropMemories, memoryVisible } from "@/lib/lada-db";
 import { isChapter } from "@/lib/questions";
+import { hasConsent, recordConsent } from "@/lib/consent";
+import { deleteObjects } from "@/lib/storage";
 
 type Result = { ok?: boolean; id?: string; error?: string };
 const uuid = z.string().uuid();
@@ -37,6 +39,8 @@ const MemoryInput = z.object({
   inBook: z.boolean().optional(), mentions: z.array(uuid).max(30).optional(),
   // Modul „la bunici”: o rudă înregistrează pentru omul fără cont, care și-a dat acordul la început (poate și cu glasul lui).
   helper: z.boolean().optional(), consent: z.boolean().optional(), consentAudioId: uuid.nullish(),
+  // Acordul pentru capitolul „Credința”: al omului însuși sau, „la bunici”, cel spus rudei care înregistrează.
+  faithConsent: z.boolean().optional(),
 }).refine((v) => v.body.length > 0 || !!v.audioId, { message: "Scrie amintirea sau spune-o cu glasul." });
 
 /**
@@ -52,6 +56,8 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
   const [owner] = await db.select({ id: person.id, givenName: person.givenName, sex: person.sex, living: person.living, claimedBy: person.claimedByUserId }).from(person)
     .where(and(eq(person.id, v.personId), eq(person.treeId, v.treeId)));
   if (!owner) return { error: "Persoana nu mai e în arbore." };
+  // Despre credința lui scrie doar omul în viață (sau o rudă cu el de față, „la bunici”), nu altcineva în locul lui după ce n-a mai fost.
+  if (v.chapter === "credinta" && !owner.living) return { error: "Capitolul despre credință e doar pentru cei în viață, care răspund ei înșiși." };
   let existing: typeof memory.$inferSelect | undefined;
   let helper = false;
   if (v.id) {
@@ -67,6 +73,16 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
     if (!can(m.role, "contributor")) return { error: "Nu ai drept să adaugi în acest arbore." };
     if (!v.consent) return { error: `Întâi ${owner.sex === "F" ? "întreab-o" : "întreabă-l"} dacă e de acord să-i păstrăm povestea în arbore.` };
     helper = true;
+  }
+  // Ce spune omul despre credința lui e o dată ocrotită mai strict (art. 9 GDPR): o păstrăm doar cu acordul lui explicit.
+  if (v.chapter === "credinta") {
+    const forSomeoneElse = helper || (!!existing?.helper && existing.authorId === m.me.id && owner.claimedBy !== m.me.id);
+    if (forSomeoneElse) {
+      if (!v.faithConsent) return { error: `Întâi ${owner.sex === "F" ? "întreab-o" : "întreabă-l"} dacă e de acord să păstrăm și ce spune despre credința ${owner.sex === "F" ? "ei" : "lui"}.` };
+    } else if (!(await hasConsent(db, m.me.id, "faith"))) {
+      if (!v.faithConsent) return { error: "Ca să scrii în capitolul „Credința”, bifează întâi acordul de deasupra butonului." };
+      await recordConsent(db, m.me.id, "faith", true);
+    }
   }
   const askedId = v.askedId ?? existing?.askedId ?? null;
   let asked: typeof memoryQuestion.$inferSelect | undefined;
@@ -107,14 +123,15 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
   return { ok: true, id };
 }
 
-/** Șterge o amintire: doar cine a scris-o. Poza rămâne în albumul omului. */
+/** Șterge o amintire: doar cine a scris-o. Pleacă și glasul și poza puse doar la ea; ce e și în albumul cuiva rămâne acolo. */
 export async function deleteMemory(treeId: string, id: string): Promise<Result> {
   const m = await member(treeId);
   if (!m || !uuid.safeParse(id).success) return { error: "Nu ești în acest arbore." };
   const [row] = await db.select({ authorId: memory.authorId, helper: memory.helper, personId: memory.personId }).from(memory).where(and(eq(memory.id, id), eq(memory.treeId, treeId)));
   if (!row) return { error: "Amintirea nu mai există." };
   if (row.authorId !== m.me.id && !(row.helper && m.personId === row.personId)) return { error: "Doar cine a scris amintirea o poate șterge." };
-  await db.delete(memory).where(eq(memory.id, id));
+  const keys = await db.transaction((tx) => dropMemories(tx, [id]));
+  await deleteObjects(keys);
   touch(treeId);
   return { ok: true };
 }

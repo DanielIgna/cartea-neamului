@@ -77,6 +77,19 @@ tests/           teste Vitest (rulează pe un Postgres în memorie)
 fixtures/        familia de exemplu în format GEDCOM
 ```
 
+## Familii noi și aplicația pe telefon
+
+- Cine își face cont și n-are niciun arbore ajunge la „Pornește-ți arborele” (`src/components/FamilyStart.tsx`): patru pași
+  (tu, părinții, bunicii, arborele), cu numele de familie completate de la un pas la altul. `createFamilyTree`
+  (`src/lib/family-start.ts`) face într-o singură tranzacție arborele, fișa revendicată a omului (în centru), părinții,
+  bunicii și legăturile dintre ei; bunicii intră doar împreună cu părintele lor.
+- După creare, `/arbore/{id}/bun-venit`: linkuri de invitație (unul pentru toți și câte unul pe numele fiecărei rude în viață),
+  fișa și autobiografia omului, modul „la bunici”. `/arbore-nou` e același drum pentru încă un arbore, plus aducerea unui fișier GEDCOM.
+- Aplicația pe telefon: `src/app/manifest.ts`, iconițele din `public/icons` și `src/app/apple-icon.png`, plus `public/sw.js`,
+  care arată doar pagina „Nu ai internet acum” (`public/offline.html`) și nu ține nimic din arbore. Butonul „Pune aplicația”
+  (`src/components/InstallApp.tsx`) deschide fereastra browserului pe Android și pe calculator și arată pașii din Safari pe iPhone.
+  Când se schimbă `offline.html`, se schimbă și numele cache-ului din `sw.js`.
+
 ## Conturi, roluri și invitații
 
 | Rol | Ce poate face |
@@ -93,3 +106,13 @@ O invitație poate fi legată de o persoană în viață din arbore: când o acc
 
 Arborii sunt vizibili doar membrilor. Persoanele în viață sunt private în arbore, iar exportul GEDCOM
 le ascunde implicit (`?living=1` le include, tot doar pentru membri).
+
+- `/confidentialitate` și `/termeni`: textele pe înțelesul oricui, legate din subsolul fiecărei pagini și de la crearea contului.
+  Cât timp site-ul e în probă (`BETA` în `src/lib/legal.ts`), de date răspunde Daniel Igna, ca persoană fizică, cu adresa de contact
+  din același fișier; `OPERATOR_NAME` și `CONTACT_EMAIL` (pe Vercel) le înlocuiesc, de pildă când vine o firmă.
+- `/datele-mele`: descărcarea tuturor datelor contului (JSON, `/api/datele-mele`), acordurile date și ștergerea contului.
+  La ștergere pleacă tot ce e al omului; arborii cu alți membri trec la unul dintre ei, cei în care e singur se șterg
+  cu totul, iar fișa lui rămâne în arbore fără legătura cu contul (și, dacă vrea, fără datele lui). Logica: `src/lib/account.ts`.
+- Acordurile stau în tabelul `consent` (`src/lib/consent.ts`): `terms` la crearea contului și `faith` pentru capitolul
+  „Credința”, cerut explicit înainte de primul răspuns (date din categoria specială, art. 9 GDPR). Retragerea lui șterge
+  răspunsurile din capitol.

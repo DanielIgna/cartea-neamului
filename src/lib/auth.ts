@@ -4,6 +4,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
 import { user, session, account, verification } from "@/db/schema";
+import { recordConsent } from "./consent";
 
 const DEV_SECRET = "dev-secret-cartea-neamului-schimba-in-productie";
 if (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build" && !process.env.BETTER_AUTH_SECRET) {
@@ -38,6 +39,8 @@ export const auth = betterAuth({
   // Cine are deja cont cu un email și intră apoi cu Google pe același email ajunge în același cont (Google verifică emailul).
   account: { accountLinking: { enabled: true, trustedProviders: ["google"] } },
   databaseHooks: {
+    // Cine își face cont (cu email sau cu Google) e de acord cu Termenii și cu Politica de confidențialitate: ținem minte când și ce versiune.
+    user: { create: { after: async (u) => { await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e)); } } },
     account: {
       create: {
         // Când cineva își leagă contul Google, poza din Google devine poza contului, dacă nu are deja una.

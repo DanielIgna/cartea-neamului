@@ -1,6 +1,6 @@
 import { and, eq, inArray, isNotNull, ne, or, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
-import { documentLink, memory, memoryMention, memoryQuestion, memoryReply, person, relationship, tree, user } from "@/db/schema";
+import { document, documentLink, memory, memoryMention, memoryQuestion, memoryReply, person, relationship, tree, user } from "@/db/schema";
 import { buildGraph, type Graph } from "./kinship";
 import { canSee, type Viewer, type Visibility } from "./lada";
 
@@ -190,4 +190,29 @@ export async function canOpenDocument(db: Db, docId: string, treeId: string, upl
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, treeId), eq(person.claimedByUserId, userId))).limit(1);
   for (const m of uses) if (await memoryVisible(db, m, { userId, personId: mine?.id ?? null })) return true;
   return false;
+}
+
+/** Baza de date sau o tranzacție: tot ce trebuie ca să citim și să ștergem. */
+export type Q = Pick<Db, "select" | "insert" | "update" | "delete">;
+
+/**
+ * Șterge amintirile împreună cu fișierele puse doar la ele (poza, glasul, acordul înregistrat „la bunici”): cele care nu sunt
+ * și în albumul cuiva, nici poză de profil, nici la o altă amintire. Întoarce cheile fișierelor, ca să fie șterse din stocare
+ * după ce tranzacția s-a încheiat.
+ */
+export async function dropMemories(db: Q, ids: string[]): Promise<string[]> {
+  if (!ids.length) return [];
+  const rows = await db.select({ a: memory.photoDocumentId, b: memory.audioDocumentId, c: memory.consentDocumentId }).from(memory).where(inArray(memory.id, ids));
+  const media = [...new Set(rows.flatMap((r) => [r.a, r.b, r.c]).filter((x): x is string => !!x))];
+  await db.delete(memory).where(inArray(memory.id, ids));
+  if (!media.length) return [];
+  const linked = new Set((await db.select({ id: documentLink.documentId }).from(documentLink).where(inArray(documentLink.documentId, media))).map((r) => r.id));
+  const still = await db.select({ a: memory.photoDocumentId, b: memory.audioDocumentId, c: memory.consentDocumentId }).from(memory)
+    .where(or(inArray(memory.photoDocumentId, media), inArray(memory.audioDocumentId, media), inArray(memory.consentDocumentId, media)));
+  const used = new Set(still.flatMap((r) => [r.a, r.b, r.c]));
+  const profile = new Set((await db.select({ id: person.photoDocumentId }).from(person).where(inArray(person.photoDocumentId, media))).map((r) => r.id));
+  const orphans = media.filter((id) => !linked.has(id) && !used.has(id) && !profile.has(id));
+  if (!orphans.length) return [];
+  const gone = await db.delete(document).where(inArray(document.id, orphans)).returning({ key: document.fileKey });
+  return gone.map((d) => d.key).filter((k): k is string => !!k);
 }

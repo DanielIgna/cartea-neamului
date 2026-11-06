@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { MIN_AGE } from "@/lib/legal";
 
 export default function AuthForm({ next, startWithSignUp, google = false, oauthError }: { next: string; startWithSignUp: boolean; google?: boolean; oauthError?: string }) {
   const [signUp, setSignUp] = useState(startWithSignUp);
@@ -52,6 +54,12 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
       <label>Parolă<input id="password" name="password" type="password" required minLength={8} autoComplete={signUp ? "new-password" : "current-password"} /></label>
       {error && <p className="err">{error}</p>}
       <button className="btn primary" disabled={pending}>{pending ? "Așteaptă…" : signUp ? "Creează contul" : "Intră"}</button>
+      {(signUp || google) && (
+        <p className="auth-legal">
+          {signUp ? "Creând contul" : "Dacă intri prima oară cu Google, îți facem cont: atunci"}, confirmi că ai cel puțin {MIN_AGE} ani și ești de acord cu{" "}
+          <Link href="/termeni" target="_blank">Termenii</Link> și cu <Link href="/confidentialitate" target="_blank">Politica de confidențialitate</Link>.
+        </p>
+      )}
       <button type="button" className="btn" onClick={() => { setSignUp(!signUp); setError(""); }}>
         {signUp ? "Am deja cont" : "Nu am cont, vreau unul gratuit"}
       </button>
