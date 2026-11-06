@@ -18,6 +18,7 @@ import { questionContext } from "@/lib/lada";
 import { loadLada } from "@/lib/lada-db";
 import { questionsFor, sundayQuestion, type Question } from "@/lib/questions";
 import MemoryBox from "@/components/MemoryBox";
+import { hasConsent } from "@/lib/consent";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -101,7 +102,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
       </div>
       <MemoryBox treeId={id} owner={{ id: p.id, givenName: p.givenName, sex: p.sex, living: p.living, claimed: p.claimed }} isOwner={lada.isOwner}
         viewerPersonId={mine?.id ?? null} canAsk={p.living && !lada.isOwner} canHelp={p.living && !p.claimed && can(role, "contributor")} own={lada.own} about={lada.about} questions={lada.questions} upcoming={upcoming}
-        people={options} storage={storageConfigured()} defaultDegree={data.tree.chatMaxDegree} startMention={scrie ?? null} />
+        people={options} storage={storageConfigured()} defaultDegree={data.tree.chatMaxDegree} startMention={scrie ?? null}
+        faithConsent={lada.isOwner ? await hasConsent(db, me.id, "faith") : false} />
       <div className="card">
         <div className="section-label" style={{ marginTop: 0 }}>Album</div>
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />

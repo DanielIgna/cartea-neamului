@@ -1,6 +1,6 @@
 import path from "node:path";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand } from "@aws-sdk/client-s3";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadBucketCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 /** Bucket-ul privat din neon.ts pentru poze și documente scanate. */
@@ -46,6 +46,30 @@ export async function getObjectBytes(key: string) {
   if (localStorageMode()) return new Uint8Array(await readFile(localPath(key)));
   const res = await s3().send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
   return res.Body!.transformToByteArray();
+}
+
+/**
+ * Șterge fișierele (pozele, actele, înregistrările) după ce rândurile lor au plecat din baza de date: când cineva își șterge
+ * contul, o amintire sau acordul pentru capitolul „Credința”. Câte unul, câte cinci deodată; ce nu merge rămâne scris în jurnal,
+ * fără să oprească restul (rândul din baza de date e deja șters, deci fișierul nu se mai poate deschide din site).
+ */
+export async function deleteObjects(keys: (string | null | undefined)[]) {
+  const todo = [...new Set(keys.filter((k): k is string => !!k))];
+  if (!todo.length || !storageConfigured()) return { deleted: 0, failed: 0 };
+  let deleted = 0, failed = 0;
+  for (let i = 0; i < todo.length; i += 5) {
+    await Promise.all(todo.slice(i, i + 5).map(async (key) => {
+      try {
+        if (localStorageMode()) await rm(localPath(key), { force: true });
+        else await s3().send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+        deleted++;
+      } catch (e) {
+        failed++;
+        console.error("deleteObjects", key, e);
+      }
+    }));
+  }
+  return { deleted, failed };
 }
 
 /** Link temporar (implicit 10 minute) către un obiect privat, fără să expunem cheile. */

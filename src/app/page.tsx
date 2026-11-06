@@ -11,11 +11,13 @@ export const dynamic = "force-dynamic";
 
 const ROLE: Record<string, string> = { owner: "proprietar", editor: "editor", contributor: "contributor", viewer: "vizitator" };
 
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ cont?: string }> }) {
   const me = await currentUser();
+  const deleted = (await searchParams).cont === "sters";
   if (!me) {
     return (
       <div className="card" style={{ maxWidth: 640 }}>
+        {deleted && <p className="notice" role="status">Contul tău a fost șters, cu tot ce era al tău. Îți mulțumim că ai fost cu noi.</p>}
         <h2 style={{ fontSize: 28 }}>Arborele familiei, construit împreună</h2>
         <p style={{ maxWidth: "60ch" }}>Pornești de la tine, inviți rudele, fiecare completează ramura lui cu nume, poze, acte și amintiri. La final, familia își tipărește cartea neamului.</p>
         <div className="actions"><Link className="btn primary" href="/intrare?mod=cont-nou">Creează cont gratuit</Link><Link className="btn" href="/intrare">Intră în cont</Link></div>
