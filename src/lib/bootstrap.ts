@@ -99,6 +99,7 @@ const ADDITIVE = [
   sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "helper" boolean DEFAULT false NOT NULL`,
   sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_at" timestamp`,
   sql`ALTER TABLE "memory" ADD COLUMN IF NOT EXISTS "consent_document_id" uuid REFERENCES "document"("id") ON DELETE set null`,
+  sql`ALTER TABLE "tree" ADD COLUMN IF NOT EXISTS "journey_word" text`,
 ];
 
 export async function applySchema(target: Db) {

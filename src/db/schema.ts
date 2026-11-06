@@ -65,6 +65,8 @@ export const tree = pgTable("tree", {
   chatMaxDegree: integer("chat_max_degree").notNull().default(4),
   // Neamul poate fi găsit de alte familii cu strămoși din aceleași sate (doar satele, numele de familie și anii celor decedați).
   discoverable: boolean("discoverable").notNull().default(false),
+  // Cuvântul de la capătul călătoriei în timp: null = textul de bază, gol = ascuns de proprietar, altfel scris de el.
+  journeyWord: text("journey_word"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

@@ -1,0 +1,1 @@
+ALTER TABLE "tree" ADD COLUMN IF NOT EXISTS "journey_word" text;
