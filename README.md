@@ -77,6 +77,19 @@ tests/           teste Vitest (rulează pe un Postgres în memorie)
 fixtures/        familia de exemplu în format GEDCOM
 ```
 
+## Familii noi și aplicația pe telefon
+
+- Cine își face cont și n-are niciun arbore ajunge la „Pornește-ți arborele” (`src/components/FamilyStart.tsx`): patru pași
+  (tu, părinții, bunicii, arborele), cu numele de familie completate de la un pas la altul. `createFamilyTree`
+  (`src/lib/family-start.ts`) face într-o singură tranzacție arborele, fișa revendicată a omului (în centru), părinții,
+  bunicii și legăturile dintre ei; bunicii intră doar împreună cu părintele lor.
+- După creare, `/arbore/{id}/bun-venit`: linkuri de invitație (unul pentru toți și câte unul pe numele fiecărei rude în viață),
+  fișa și autobiografia omului, modul „la bunici”. `/arbore-nou` e același drum pentru încă un arbore, plus aducerea unui fișier GEDCOM.
+- Aplicația pe telefon: `src/app/manifest.ts`, iconițele din `public/icons` și `src/app/apple-icon.png`, plus `public/sw.js`,
+  care arată doar pagina „Nu ai internet acum” (`public/offline.html`) și nu ține nimic din arbore. Butonul „Pune aplicația”
+  (`src/components/InstallApp.tsx`) deschide fereastra browserului pe Android și pe calculator și arată pașii din Safari pe iPhone.
+  Când se schimbă `offline.html`, se schimbă și numele cache-ului din `sw.js`.
+
 ## Conturi, roluri și invitații
 
 | Rol | Ce poate face |
