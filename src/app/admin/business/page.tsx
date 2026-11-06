@@ -2,8 +2,7 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { businessStats } from "@/lib/admin-stats";
-import { FREE_PERSONS, PRICE_EUR_YEAR } from "@/lib/admin";
-import { AdminNav, Bars, Stat, Status, ago, day, eur, lei, num } from "@/components/admin/ui";
+import { AdminNav, Bars, PlanPill, Stat, ago, count, day, eur, lei, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Business · Admin" };
@@ -16,6 +15,7 @@ export default async function AdminBusiness() {
   await requireAdmin("/admin/business");
   const b = await businessStats(db);
   const c = b.content;
+  const lim = b.plans.settings;
   return (
     <section className="stack">
       <AdminNav active="business" />
@@ -52,14 +52,16 @@ export default async function AdminBusiness() {
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Bani</h2>
         <p className="muted" style={{ marginTop: 0 }}>
-          Planul propus: gratuit până la {FREE_PERSONS} de persoane pe arbore, apoi „Familie” {PRICE_EUR_YEAR} €/an pe arbore. Plățile nu sunt încă pornite,
-          așa că cifrele de abonamente arată ce ar aduce planul dacă ar fi pornit azi.
+          Planul de acum, din <Link href="/admin/control">Manager control</Link>: gratuit până la {count(lim.freePersons, "persoane")} și{" "}
+          {count(lim.freeFiles, "fișiere")} pe arbore, apoi „Familie” {eur(lim.priceEurYear)} pe an pentru cel care a pornit arborele. Plățile nu sunt
+          încă pornite, așa că cifrele arată ce ar aduce planul dacă ar fi pornit azi.
         </p>
         <div className="stats">
-          <Stat label="Abonamente active" value={num(b.revenue.subscriptionsActive)} hint="plățile nu sunt pornite" />
-          <Stat label="Arbori peste limită" value={num(b.trees.overLimit)} hint={`≥ ${FREE_PERSONS} persoane`} tone={b.trees.overLimit ? "ok" : undefined} />
-          <Stat label="Aproape de limită" value={num(b.trees.nearLimit)} hint={`${Math.round(FREE_PERSONS * 0.75)}–${FREE_PERSONS - 1} persoane`} />
-          <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} hint="arborii peste limită × 12 €" />
+          <Stat label="Marcați „Familie”" value={num(b.revenue.subscriptionsActive)} hint={`≈ ${eur(b.revenue.markedEurYear)}/an · plățile nu sunt pornite`} />
+          <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} hint="familia, prietenii" />
+          <Stat label="Arbori peste limită" value={num(b.trees.overLimit)} hint={`${b.plans.counts.overFree} la conturi cu planul gratuit`} tone={b.trees.overLimit ? "ok" : undefined} />
+          <Stat label="Aproape de limită" value={num(b.trees.nearLimit)} hint="peste trei sferturi din limite" />
+          <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} hint={`„Familie” și ${b.plans.wouldPay} conturi peste limită`} />
           <Stat label="Cărți plătite" value={lei(b.revenue.booksLei)} />
         </div>
         {b.books.length > 0 && (
@@ -81,7 +83,7 @@ export default async function AdminBusiness() {
                   <td className="n">{num(t.members)}</td>
                   <td className="n">{num(t.documents)}</td>
                   <td>{ago(t.lastEdit)}</td>
-                  <td>{t.persons >= FREE_PERSONS ? <Status ok>Familie</Status> : <span className="muted">gratuit</span>}</td>
+                  <td><PlanPill plan={t.plan} limit={t.limit} /></td>
                 </tr>
               ))}
             </tbody>

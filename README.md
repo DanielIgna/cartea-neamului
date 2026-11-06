@@ -116,3 +116,19 @@ le ascunde implicit (`?living=1` le include, tot doar pentru membri).
 - Acordurile stau în tabelul `consent` (`src/lib/consent.ts`): `terms` la crearea contului și `faith` pentru capitolul
   „Credința”, cerut explicit înainte de primul răspuns (date din categoria specială, art. 9 GDPR). Retragerea lui șterge
   răspunsurile din capitol.
+
+## Panoul de admin
+
+`/admin` se vede doar pentru adresele din `ADMIN_EMAILS` (pe Vercel) și pentru cel care ține site-ul (`OWNER_ADMIN` în
+`src/lib/admin.ts`: contul lui cu emailul verificat sau făcut înainte de regulă). Ceilalți primesc „pagina nu există”.
+
+- **Prezentare**: câte un cartonaș cu cifrele de bază pentru fiecare zonă.
+- **Oamenii** (`/admin/oameni`, `src/lib/admin-people.ts`): fiecare cont cu cât și-a crescut arborele, ce a folosit și până unde
+  a ajuns (cont → arbore → rude chemate → amintiri), drumul tuturor, ce folosesc și câteva observații din cifre. Fișa unui om
+  (`/admin/oameni/{id}`) arată arborii lui, ce a făcut săptămână cu săptămână și de pe ce dispozitiv intră. Doar numere: nimic
+  din ce scriu oamenii și nimic din capitolul „Credința”.
+- **Business**: creșterea, conținutul și banii posibili, cu limitele din Manager control.
+- **Manager control** (`/admin/control`, `src/lib/plans.ts`): planul fiecărui cont (gratuit, gratuit mereu, „Familie”) cu o notă,
+  limitele planului gratuit (persoane și fișiere pe arbore) și prețul pe an. Totul stă în tabelele `account_plan` și `app_setting`
+  și nu se vede nicăieri în site cât timp plățile nu sunt pornite. GEDCOM și „Datele mele” rămân gratuite oricum.
+- **Infra & Dev**: baza de date, migrațiile, erorile prinse, cheile de mediu (doar dacă sunt puse, niciodată valoarea).

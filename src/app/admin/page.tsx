@@ -2,22 +2,38 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { businessStats, infraStats } from "@/lib/admin-stats";
+import { funnelOf, peopleList } from "@/lib/admin-people";
 import { ENV_KEYS, NEON_FREE_BYTES, envSet } from "@/lib/admin";
 import { AdminNav, Stat, Status, bytes, eur, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Cartea Neamului" };
 
-/** Panoul de admin: două zone separate, Business și Infra & Dev, cu cifrele cele mai importante din fiecare. */
+/** Panoul de admin: Oamenii, Business, Manager control și Infra & Dev, cu cifrele cele mai importante din fiecare. */
 export default async function AdminHome() {
   await requireAdmin("/admin");
-  const [b, i] = await Promise.all([businessStats(db), infraStats(db)]);
+  const [b, i, people] = await Promise.all([businessStats(db), infraStats(db), peopleList(db)]);
+  const funnel = funnelOf(people);
+  const step = (k: number) => funnel[k]?.count ?? 0;
   const missing = ENV_KEYS.filter((k) => k.needed && !envSet(k.key));
   const migOk = i.migrations.applied >= i.migrations.expected;
   return (
     <section className="stack">
       <AdminNav active="home" />
       <div className="admin-zones">
+        <Link href="/admin/oameni" className="zone-link">
+          <div className="card">
+            <h2 style={{ marginTop: 0 }}>Oamenii</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Fiecare cont: cât și-a crescut arborele, ce folosește, până unde a ajuns.</p>
+            <div className="stats">
+              <Stat label="Conturi" value={num(step(0))} hint="fără contul de probă" />
+              <Stat label="Au un arbore" value={num(step(1))} />
+              <Stat label="Și-au chemat rudele" value={num(step(3))} hint={`${step(4)} au rude în arbore`} />
+              <Stat label="Scriu amintiri" value={num(step(5))} />
+              <Stat label="S-au întors" value={num(step(6))} hint="după prima zi" />
+            </div>
+          </div>
+        </Link>
         <Link href="/admin/business" className="zone-link">
           <div className="card">
             <h2 style={{ marginTop: 0 }}>Business</h2>
@@ -27,7 +43,18 @@ export default async function AdminHome() {
               <Stat label="Activi în 7 zile" value={num(b.users.active7)} />
               <Stat label="Arbori" value={num(b.trees.total)} hint={`${b.trees.shared} cu mai mulți membri`} />
               <Stat label="Persoane trecute" value={num(b.content.persons)} hint={`+${b.content.persons7} în 7 zile`} />
-              <Stat label="Peste limita gratuită" value={num(b.trees.overLimit)} hint={`≈ ${eur(b.revenue.potentialEurYear)}/an`} />
+            </div>
+          </div>
+        </Link>
+        <Link href="/admin/control" className="zone-link">
+          <div className="card">
+            <h2 style={{ marginTop: 0 }}>Manager control</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Cine e gratuit mereu, cine ar plăti, limitele planului gratuit. Nu se vede în site.</p>
+            <div className="stats">
+              <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} />
+              <Stat label="Marcați „Familie”" value={num(b.revenue.subscriptionsActive)} hint="plățile nu sunt pornite" />
+              <Stat label="Peste limite" value={num(b.trees.overLimit)} hint={`${b.plans.counts.overFree} cu planul gratuit`} />
+              <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} />
             </div>
           </div>
         </Link>

@@ -221,6 +221,25 @@ export const auditLog = pgTable("audit_log", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("audit_tree_idx").on(t.treeId, t.createdAt)]);
 
+/* ---------- Planul fiecărui cont și setările planurilor, alese din panoul de admin („Control”) ---------- */
+// Nu se văd nicăieri în site și nu opresc pe nimeni cât timp plățile nu sunt pornite: îl ajută pe cel care ține site-ul să-și
+// pregătească abonamentul (cine rămâne gratuit pentru totdeauna, cine plătește). Fără rând, contul are planul gratuit, ca toți.
+export const accountPlan = pgTable("account_plan", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  plan: text("plan").notNull(), // gratuit / mereu (gratuit pentru totdeauna) / familie (plătește); vezi src/lib/plans.ts
+  note: text("note"),
+  setBy: text("set_by").references(() => user.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Setări ale site-ului schimbate din panou (de pildă limitele planului gratuit și prețul), câte una pe cheie.
+export const appSetting = pgTable("app_setting", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedBy: text("updated_by").references(() => user.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
 /* ---------- Mesaje între rude ---------- */
 export const message = pgTable("message", {
   id: uuid("id").primaryKey().defaultRandom(),

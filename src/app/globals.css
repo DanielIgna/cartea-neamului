@@ -394,6 +394,38 @@ body:has(.story){overflow:hidden}
 .meter-fill.warn{background:var(--ochre)}
 .meter-fill.bad{background:var(--red)}
 .err-msg{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:4px 0 0;color:var(--ink)}
+/* Oamenii (drumul lor, ce folosesc, fișa fiecăruia) și Manager control (planuri și limite) */
+.hbars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.hbars li{display:grid;grid-template-columns:minmax(0,16em) minmax(60px,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.hbars-track{height:12px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.hbars-fill{display:block;height:100%;background:var(--accent)}
+.hbars-value{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;min-width:5.5em}
+.hbars-value small{color:var(--muted)}
+@media (max-width:520px){.hbars li{grid-template-columns:minmax(0,1fr) auto}.hbars-track{grid-column:1/-1;grid-row:2}}
+.obs,.ideas{margin:0;padding-left:20px;display:grid;gap:8px}
+.obs li,.ideas li{max-width:78ch}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;align-items:center}
+.filters a{font-size:13px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink);background:var(--surface)}
+.filters a[aria-current="page"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.filters .section-label{margin:0 4px 0 0}
+.plan-form{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.plan-form select,.plan-form input{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font:inherit;font-size:14px;min-width:0}
+.plan-form input{flex:1 1 11em}
+.plan-saved{font-size:13px}
+.limits-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px;align-items:start}
+.limits-form small{font-size:12px}
+.person-head{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.person-head h2{margin:0}
+.tbl td.tight{white-space:nowrap}
+.tbl td.plan-cell{min-width:300px}
+/* Pe telefon, tabelul cu planuri devine o listă: fiecare cont cu formularul lui dedesubt, fără derulare în lateral. */
+@media (max-width:640px){
+  .tbl.stacked thead{display:none}
+  .tbl.stacked,.tbl.stacked tbody,.tbl.stacked tr,.tbl.stacked td{display:block}
+  .tbl.stacked tr{border-bottom:1px solid var(--line);padding:10px 0}
+  .tbl.stacked td{border:0;padding:3px 0}
+  .tbl.stacked td.plan-cell{min-width:0}
+}
 
 /* Glasul la amintiri: înregistrarea din telefon, ascultarea pe profil și în poveste */
 .voice{display:grid;gap:6px}
