@@ -19,7 +19,7 @@ export default function TermsPage() {
       <ul>
         <li>Contul e pentru cei care au cel puțin {MIN_AGE} ani. Copiii pot fi trecuți în arbore de părinții lor.</li>
         <li>Un cont e al unui singur om. Parola o păstrezi doar pentru tine; ce se face din contul tău e în grija ta.</li>
-        <li>Contul de probă, cu parola scrisă pe site, e al tuturor: nu pune în el nimic din familia ta.</li>
+        <li>Contul de probă are o parolă publică, deci e al tuturor: nu pune în el nimic din familia ta.</li>
       </ul>
 
       <h3>2. Ce pui în site</h3>
