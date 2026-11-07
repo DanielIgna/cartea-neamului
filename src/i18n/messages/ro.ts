@@ -11,6 +11,7 @@ import type { DeepPartial, Widen } from "./types";
 import { roArbore } from "./arbore/ro";
 import { roAmintiri } from "./amintiri/ro";
 import { roVremuri } from "./vremuri/ro";
+import { roCarte } from "./carte/ro";
 
 export const ro = {
   Meta: {
@@ -300,6 +301,8 @@ export const ro = {
   ...roAmintiri,
   // Povestea vremurilor: epocile, viața de atunci pe ținuturi, evenimentele și ținuturile (src/i18n/messages/vremuri/).
   ...roVremuri,
+  // Cartea neamului de tipărit, în limba cărții, și alegerile ei (src/i18n/messages/carte/).
+  ...roCarte,
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

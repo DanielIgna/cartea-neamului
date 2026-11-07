@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import type { BookFormat } from "@/lib/book";
 import { PAGE, ROT, bookCss, contentBox } from "@/lib/book-css";
 import type { Previewer } from "pagedjs";
+import { useTranslations } from "use-intl";
 
 /**
  * Cartea, așezată pe pagini în browser cu Paged.js: conținutul vine gata de pe server (ascuns), iar aici o copie a lui
@@ -72,6 +73,7 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
   const [phase, setPhase] = useState<"work" | "done" | "error">("work");
   const [pages, setPages] = useState(0);
   const [zoom, setZoom] = useState(1);
+  const t = useTranslations("BookUi.view");
 
   useEffect(() => {
     if (laidOut) {
@@ -141,12 +143,12 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
   return (
     <>
       <div className="card book-chrome book-status" aria-live="polite">
-        {phase === "work" && <span className="muted">Se așază paginile cărții…{pages ? ` ${pages} ${pages === 1 ? "pagină" : "pagini"}` : ""}</span>}
-        {phase === "error" && <span>Nu am putut așeza cartea. Reîncarcă pagina; dacă tot nu merge, scrie-ne.</span>}
+        {phase === "work" && <span className="muted">{pages ? t("workingPages", { count: pages }) : t("working")}</span>}
+        {phase === "error" && <span>{t("error")}</span>}
         {phase === "done" && (
           <>
-            <button type="button" className="btn primary" onClick={print}>Descarcă PDF</button>
-            <span className="muted">{pages} pagini. Se deschide fereastra de tipărire: alege „Salvează ca PDF” (pe iPhone: Partajează, apoi Salvează în Fișiere).</span>
+            <button type="button" className="btn primary" onClick={print}>{t("download")}</button>
+            <span className="muted">{t("ready", { count: pages })}</span>
           </>
         )}
       </div>

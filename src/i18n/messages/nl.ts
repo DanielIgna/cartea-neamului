@@ -2,6 +2,7 @@ import type { Catalog } from "./ro";
 import { nlArbore } from "./arbore/nl";
 import { nlAmintiri } from "./amintiri/nl";
 import { nlVremuri } from "./vremuri/nl";
+import { nlCarte } from "./carte/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -290,4 +291,5 @@ export const nl: Catalog = {
   ...nlAmintiri,
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...nlVremuri,
+  ...nlCarte,
 };

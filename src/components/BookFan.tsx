@@ -1,13 +1,16 @@
 import type { PersonView } from "@/lib/tree-data";
 import { arc, fanRadii, fillFor } from "@/lib/fan-geometry";
 import { clip, lifeDates, years } from "@/lib/person-text";
+import type { Locale } from "@/i18n/locales";
 
 /**
  * Evantaiul strămoșilor, pentru carte: același desen ca pe site (tatăl în stânga, mama în dreapta), dar fără butoane
  * și fără „+ adaugă”. Locurile necunoscute rămân doar conturate, ca cititorul să vadă ce lipsește.
- * Se desenează pe server, ca pagina cărții să fie gata înainte să ajungă în browser.
+ * Se desenează pe server, ca pagina cărții să fie gata înainte să ajungă în browser, în limba cărții (datele și cuvintele vin de la pagină).
  */
-export default function BookFan({ slots, generations, centerHidden = false }: { slots: Record<number, PersonView>; generations: number; centerHidden?: boolean }) {
+export default function BookFan({ slots, generations, centerHidden = false, locale = "ro", label, livingLabel }: {
+  slots: Record<number, PersonView>; generations: number; centerHidden?: boolean; locale?: Locale; label: string; livingLabel: string;
+}) {
   const R = fanRadii(generations), maxR = R[generations + 1];
   const cx = maxR + 20, cy = maxR + 10, A0 = -210, SPAN = 240;
   const W = 2 * cx, H = cy + maxR * 0.5 + 20;
@@ -33,13 +36,13 @@ export default function BookFan({ slots, generations, centerHidden = false }: { 
       const label = g <= 2 ? (
         <>
           <tspan x={tx} dy={-8} fontWeight={700}>{fit(p.name)}</tspan>
-          <tspan x={tx} dy={16} fill="var(--muted)">{lifeDates(p)}</tspan>
+          <tspan x={tx} dy={16} fill="var(--muted)">{lifeDates(p, locale)}</tspan>
         </>
       ) : g <= 4 ? (
         <>
           <tspan x={tx} dy={-6} fontWeight={700}>{fit(p.givenName)}</tspan>
           <tspan x={tx} dy={fs + 1} fontWeight={700}>{fit(p.surname)}</tspan>
-          <tspan x={tx} dy={fs + 1} fill="var(--muted)" fontSize={fs - 1}>{years(p)}</tspan>
+          <tspan x={tx} dy={fs + 1} fill="var(--muted)" fontSize={fs - 1}>{years(p, locale)}</tspan>
         </>
       ) : (
         <>
@@ -56,7 +59,7 @@ export default function BookFan({ slots, generations, centerHidden = false }: { 
     }
   }
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Evantaiul strămoșilor" style={{ width: "100%", display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} style={{ width: "100%", display: "block", margin: "0 auto" }}>
       {sectors}
       <circle cx={cx} cy={cy} r={R[1] - 2} fill="var(--accent-soft)" stroke="var(--accent)" strokeWidth={1.5} />
       {center ? (
@@ -64,10 +67,10 @@ export default function BookFan({ slots, generations, centerHidden = false }: { 
           <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--ink)" fontSize={15} fontWeight={700} style={{ fontFamily: "var(--display)" }}>
             <tspan x={cx}>{clip(center.givenName, 16)}</tspan><tspan x={cx} dy={17}>{clip(center.surname, 16)}</tspan>
           </text>
-          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{lifeDates(center)}</text>
+          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{lifeDates(center, locale)}</text>
         </>
       ) : (
-        <text x={cx} y={cy + 5} textAnchor="middle" fill="var(--muted)" fontSize={13}>{centerHidden ? "în viață" : ""}</text>
+        <text x={cx} y={cy + 5} textAnchor="middle" fill="var(--muted)" fontSize={13}>{centerHidden ? livingLabel : ""}</text>
       )}
     </svg>
   );

@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { bookOptions, buildBook, cleanText, generationOf, generationTitle, photoUrl, shownPerson, type BookOptions } from "@/lib/book";
+import { createTranslator } from "use-intl/core";
+import { bookOptions, bookWords, buildBook, cleanText, dateKind, generationOf, generationTitle, photoUrl, shownPerson, type BookOptions } from "@/lib/book";
+import { loadMessages } from "@/i18n/messages";
+import type { Locale } from "@/i18n/locales";
 import { parseFuzzyDate } from "@/lib/dates";
 import type { PersonView } from "@/lib/tree-data";
 import type { Rel } from "@/lib/kinship";
@@ -41,8 +44,10 @@ const rels: Rel[] = [
   { type: "parent_child", a: "tata", b: "floarea" },
 ];
 const slots = { 1: "daniel", 2: "avram", 3: "floarea", 4: "gavril", 5: "onita", 6: "tata" };
-const book = (o: Partial<BookOptions> = {}) =>
-  buildBook({ people, rels, raised: [{ child: "mariana", carer: "floarea" }], centerId: "daniel", slots, options: { living: "tot", photos: true, format: "A4", ...o } });
+const book = (o: Partial<BookOptions> = {}, words?: ReturnType<typeof bookWords>) =>
+  buildBook({ people, rels, raised: [{ child: "mariana", carer: "floarea" }], centerId: "daniel", slots, options: { living: "tot", photos: true, format: "A4", ...o }, words });
+/** Cuvintele cărții într-o limbă, ca pe pagina cărții cu `?limba=`. */
+const wordsIn = async (locale: Locale) => bookWords(locale, createTranslator({ locale, messages: await loadMessages(locale), namespace: "Book" }));
 const names = (ids: { name: string }[]) => ids.map((e) => e.name);
 
 describe("cartea neamului", () => {
@@ -129,6 +134,37 @@ describe("cartea neamului", () => {
     expect(avram.unions[0]).toMatchObject({ spouse: { name: "Floarea Igna" }, children: [], hidden: 2 });
     expect(b.outline.map((l) => [l.num, l.person.name, l.hidden])).toEqual([["1", "Gavril Igna", 1], ["1.1", "Avram Igna", 2], ["1.1.1", "Mariana Moldovan", 0]]);
     expect(b.fan[1]).toBeUndefined();
+  });
+
+  it("în limba cărții: titlurile generațiilor, datele, țara, „din altă relație” și numele de fată", async () => {
+    const de = book({}, await wordsIn("de"));
+    expect(de.generations.map((g) => [g.title, g.subtitle])).toEqual([
+      ["Generation I", "Die Generation der Großeltern von Ioan Daniel"],
+      ["Generation II", "Die Generation der Eltern von Ioan Daniel"],
+      ["Generation III", "Die Generation von Ioan Daniel"],
+    ]);
+    const fisa = (id: string) => de.generations.flatMap((g) => g.entries).find((e) => e.id === id)!;
+    expect(fisa("avram").unions[0]).toMatchObject({ married: "1958", marriedKind: "year" });
+    expect(fisa("daniel").lives).toBe("Torino, Italien"); // țara se traduce, orașul rămâne cum l-a scris familia
+    expect(de.outline.find((l) => l.from)?.from).toBe("aus einer anderen Beziehung");
+    expect(de.index.map((l) => l.label)).toContain("Igna, Floarea (geb. Pop)");
+    expect(de.index.map((l) => l.label)).toContain("Pop, Floarea (verh. Igna)");
+    // În maghiară, numărul vine înaintea cuvântului, iar datele se scriu cu anul în față.
+    const hu = book({}, await wordsIn("hu"));
+    expect(hu.generations.map((g) => g.title)).toEqual(["I. nemzedék", "II. nemzedék", "III. nemzedék"]);
+    expect(hu.generations.flatMap((g) => g.entries).find((e) => e.id === "avram")!.dates).toBe("1932. 03. 12.–2008. 11. 05.");
+    // Engleza: „née” la femei, „born” la bărbați.
+    const en = book({}, await wordsIn("en-GB"));
+    expect(en.index.map((l) => l.label)).toContain("Moldovan, Mariana (née Igna)");
+    // Fără cuvinte date, cartea e în română, ca până acum.
+    expect(book().generations[0].title).toBe("Generația I");
+  });
+
+  it("cum s-a scris data căsătoriei, ca fraza să se potrivească („la 3 mai 1958”, „în 1958”, „pe la 1958”)", () => {
+    expect(dateKind("03.05.1958")).toBe("date");
+    expect(dateKind("1958")).toBe("year");
+    expect(dateKind("cca 1958")).toBe("other");
+    expect(dateKind("")).toBe("other");
   });
 
   it("fără poze, când așa se alege", () => {
