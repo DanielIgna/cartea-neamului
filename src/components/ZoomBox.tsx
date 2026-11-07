@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import { flushSync } from "react-dom";
+import { useTranslations } from "use-intl";
 
 const MIN = 0.1, MAX = 4, STEP = 1.25;
 const clamp = (z: number) => Math.min(MAX, Math.max(MIN, z));
@@ -13,6 +14,7 @@ const clamp = (z: number) => Math.min(MAX, Math.max(MIN, z));
 export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
   children: ReactNode; resetKey: string; boxRef?: RefObject<HTMLDivElement | null>; full: boolean; onFull: (on: boolean) => void;
 }) {
+  const t = useTranslations("Charts");
   const own = useRef<HTMLDivElement>(null);
   const box = boxRef ?? own;
   const inner = useRef<HTMLDivElement>(null);
@@ -176,14 +178,14 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
   const zoomed = zoom !== null && natW.current > 0;
   return (
     <div className="zoom-wrap">
-      <div className="zoom-tools" role="group" aria-label="Mărimea desenului">
-        <button type="button" onClick={() => zoomTo(current() / STEP)} aria-label="Micșorează" title="Micșorează">−</button>
+      <div className="zoom-tools" role="group" aria-label={t("zoomGroup")}>
+        <button type="button" onClick={() => zoomTo(current() / STEP)} aria-label={t("zoomOut")} title={t("zoomOut")}>−</button>
         {zoomed && <span className="zt-pct" aria-live="polite">{Math.round(zoom * 100)}%</span>}
-        <button type="button" onClick={() => zoomTo(current() * STEP)} aria-label="Mărește" title="Mărește">+</button>
-        <button type="button" className="zt-text" onClick={fit} title="Tot desenul, cât încape pe ecran">Tot</button>
-        <button type="button" className="zt-text" onClick={() => onFull(!full)} aria-pressed={full} title={full ? "Închide (Esc)" : "Pe tot ecranul"}>
-          {full ? "Închide" : (
-            <svg width="16" height="16" viewBox="0 0 16 16" aria-label="Pe tot ecranul" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <button type="button" onClick={() => zoomTo(current() * STEP)} aria-label={t("zoomIn")} title={t("zoomIn")}>+</button>
+        <button type="button" className="zt-text" onClick={fit} title={t("fitTitle")}>{t("fit")}</button>
+        <button type="button" className="zt-text" onClick={() => onFull(!full)} aria-pressed={full} title={full ? t("closeEsc") : t("fullScreen")}>
+          {full ? t("close") : (
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-label={t("fullScreen")} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M1.5 5.5v-4h4M10.5 1.5h4v4M14.5 10.5v4h-4M5.5 14.5h-4v-4" />
             </svg>
           )}
