@@ -30,7 +30,7 @@ Toți ne naștem în Adam. Toți suntem chemați să credem în Hristos și să 
 > Adevărat, adevărat îți spun că, dacă un om nu se naște din nou, nu poate vedea Împărăția lui Dumnezeu. — Ioan 3:3
 
 ## Cartea vieții
-Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Dar există o carte care contează mai mult decât orice arbore: Cartea vieții. În ea sunt scriși cei care L-au primit pe Domnul Isus Hristos ca Mântuitor al vieții lor. Ei au o chemare cerească: să trăiască în lume sfinți și fără prihană, adică puși deoparte pentru Dumnezeu, să facă voia Lui și, în cele din urmă, să moștenească nemurirea.
+Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Dar există o carte care contează mai mult decât orice carte: Cartea vieții. În ea sunt scriși cei care L-au primit pe Domnul Isus Hristos ca Mântuitor al vieții lor. Ei au o chemare cerească: să trăiască în lume sfinți și fără prihană, adică puși deoparte pentru Dumnezeu, să facă voia Lui și, în cele din urmă, să moștenească nemurirea.
 
 > Și viața veșnică este aceasta: să Te cunoască pe Tine, singurul Dumnezeu adevărat, și pe Isus Hristos, pe care L-ai trimis Tu. — Ioan 17:3
 
