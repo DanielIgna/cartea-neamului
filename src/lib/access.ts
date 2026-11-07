@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { and, eq } from "drizzle-orm";
@@ -9,11 +10,12 @@ import { ensureSchema } from "./bootstrap";
 export type Role = "owner" | "editor" | "contributor" | "viewer";
 const RANK: Record<Role, number> = { viewer: 0, contributor: 1, editor: 2, owner: 3 };
 
-export async function currentUser() {
+/** Cine e intrat în cont. O singură citire pe cerere, oricâte părți ale paginii întreabă (aspectul, limba, pagina). */
+export const currentUser = cache(async () => {
   await ensureSchema();
   const s = await auth.api.getSession({ headers: await headers() });
   return s?.user ?? null;
-}
+});
 
 export async function requireUser(next = "/") {
   const u = await currentUser();

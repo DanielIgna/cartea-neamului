@@ -5,7 +5,7 @@ import { runMigrations } from "@/db/migrate";
 import { joinAttempt, joinRequest, person, tree, treeMember, user } from "@/db/schema";
 import { parseFuzzyDate } from "@/lib/dates";
 import { DEMO_EMAIL } from "@/lib/demo";
-import { answerJoin, askToJoin, DEMO_JOIN, joinRequestsFor, myJoinRequests, pendingJoins, sameName } from "@/lib/join";
+import { answerJoin, askToJoin, joinRequestsFor, myJoinRequests, pendingJoins, sameName } from "@/lib/join";
 
 let db: Db, treeId: string, demoTree: string;
 const P: Record<string, string> = {};
@@ -53,8 +53,8 @@ describe("intrarea în arbore după nume și data nașterii", () => {
   it("găsește doar fișa celui în viață, nerevendicată, cu aceeași zi de naștere", async () => {
     expect(await ask(daniel, "Daniel", "Igna", "1985-03-13")).toEqual({ found: 0 });
     expect(await ask(ioana, "Ioana", "Igna", "1990-06-01")).toEqual({ found: 0 }); // în fișă e doar anul
-    expect(await ask({ id: "u-demo", email: DEMO_EMAIL }, "Daniel", "Igna", "1985-03-12")).toEqual({ error: DEMO_JOIN });
-    expect((await ask(daniel, "Daniel", "Igna", "2999-01-01")).error).toBeTruthy();
+    expect(await ask({ id: "u-demo", email: DEMO_EMAIL }, "Daniel", "Igna", "1985-03-12")).toEqual({ error: "demo" });
+    expect((await ask(daniel, "Daniel", "Igna", "2999-01-01")).error).toBe("birth");
     expect(await ask(daniel, "Daniel", "Igna", "1985-03-12", "Sunt fiul lui Nicolae.")).toEqual({ found: 1, declined: false });
     // Nici bunicul decedat cu aceeași dată, nici fișa din arborele de probă nu primesc cereri.
     const reqs = await db.select().from(joinRequest);
@@ -79,7 +79,7 @@ describe("intrarea în arbore după nume și data nașterii", () => {
     expect(await ask({ id: "u-x", email: "x@test.ro" }, "Daniel", "Igna", "1985-03-12")).toEqual({ found: 1, declined: false });
     const pending = await joinRequestsFor(db, "u-nicolae");
     const own = pending.find((x) => x.name === "Daniel Igna")!, other = pending.find((x) => x.name === "Cineva")!;
-    expect(await answerJoin(db, daniel.id, own.id, true)).toEqual({ error: "Cererea nu mai așteaptă răspuns." });
+    expect(await answerJoin(db, daniel.id, own.id, true)).toEqual({ error: "notPending" });
     expect(await answerJoin(db, "u-nicolae", own.id, true)).toEqual({ ok: true });
     const [p] = await db.select().from(person).where(eq(person.id, P.daniel));
     expect(p.claimedByUserId).toBe(daniel.id);
@@ -104,10 +104,10 @@ describe("intrarea în arbore după nume și data nașterii", () => {
     const now = new Date();
     for (let i = 0; i < 9; i++) await ask(ioana, "Ioana", "Igna", `1990-01-${String(i + 10).padStart(2, "0")}`); // a 10-a din ziua asta
     const r = await ask(ioana, "Ioana", "Igna", "1990-02-01");
-    expect(r.error).toMatch(/de multe ori/);
+    expect(r.error).toBe("tooMany");
     // Din alte conturi, același nume de familie: cel mult 30 de încercări fără rezultat pe zi.
     await db.insert(joinAttempt).values(Array.from({ length: 30 }, (_, i) => ({ userId: "u-x", nameKey: "rus", found: false, createdAt: new Date(now.getTime() - i * 1000) })));
-    expect((await ask(daniel, "Petru", "Rus", "1970-01-01")).error).toMatch(/de multe ori/);
+    expect((await ask(daniel, "Petru", "Rus", "1970-01-01")).error).toBe("tooMany");
     // A doua zi se poate din nou.
     const tomorrow = new Date(now.getTime() + 864e5 + 60_000);
     expect(await askToJoin(db, ioana, { given: "Ioana", surname: "Igna", birth: "1990-02-01", note: null }, tomorrow)).toEqual({ found: 0 });

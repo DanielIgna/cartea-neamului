@@ -53,9 +53,10 @@ describe("startPlan: cine intră în arbore și cum se leagă", () => {
 
   it("cere prenumele, sexul și numele arborelui", () => {
     const err = (v: unknown) => StartInput.safeParse(v).error?.issues[0].message;
-    expect(err({ treeName: "N", me: { given: " ", sex: "M" } })).toBe("Scrie-ți prenumele.");
-    expect(err({ treeName: "N", me: { given: "Ion" } })).toBe("Alege dacă ești bărbat sau femeie.");
-    expect(err({ treeName: "  ", me: { given: "Ion", sex: "M" } })).toBe("Dă un nume arborelui.");
+    // Codurile din Errors (src/i18n/messages/ro.ts), pe care acțiunea le scrie în limba omului.
+    expect(err({ treeName: "N", me: { given: " ", sex: "M" } })).toBe("given");
+    expect(err({ treeName: "N", me: { given: "Ion" } })).toBe("sex");
+    expect(err({ treeName: "  ", me: { given: "Ion", sex: "M" } })).toBe("treeName");
   });
 });
 

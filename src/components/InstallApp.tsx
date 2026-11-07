@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "use-intl";
 
 /** Evenimentul prin care Chrome și Edge (pe Android și pe calculator) lasă site-ul să ceară punerea lui ca aplicație. */
 type InstallEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: "accepted" | "dismissed" }> };
@@ -29,11 +30,12 @@ export function PwaSetup() {
  * există așa ceva, cei doi pași de făcut în Safari. Nu apare dacă e deja deschisă ca aplicație sau dacă omul a închis-o.
  */
 export default function InstallApp({ compact = false }: { compact?: boolean }) {
+  const t = useTranslations("InstallApp");
   const [prompt, setPrompt] = useState<InstallEvent | null>(null);
   const [ios, setIos] = useState(false);
   const [show, setShow] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [where, setWhere] = useState("telefon");
+  const [phone, setPhone] = useState(true);
 
   useEffect(() => {
     const standalone = matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
@@ -42,7 +44,7 @@ export default function InstallApp({ compact = false }: { compact?: boolean }) {
     if (standalone || hidden) return;
     const ua = navigator.userAgent;
     setIos(/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1));
-    if (!matchMedia("(pointer: coarse)").matches) setWhere("calculator");
+    if (!matchMedia("(pointer: coarse)").matches) setPhone(false);
     const sync = () => setPrompt((window as W).__cnInstall ?? null);
     sync();
     setShow(true);
@@ -56,11 +58,11 @@ export default function InstallApp({ compact = false }: { compact?: boolean }) {
     <div className={`install-app${compact ? " compact" : ""}`}>
       <img src="/icons/icon-192.png" alt="" width={44} height={44} />
       <div>
-        <b>Pune Cartea Neamului pe {where}</b>
+        <b>{phone ? t("titlePhone") : t("titleComputer")}</b>
         {msg ? <p>{msg}</p> : prompt ? (
-          <p>Se deschide ca o aplicație, {where === "telefon" ? "direct de pe ecranul principal" : "dintr-o iconiță a ei"}, fără să mai cauți site-ul.</p>
+          <p>{phone ? t("promptPhone") : t("promptComputer")}</p>
         ) : (
-          <p>În Safari, apasă butonul <b>Partajează</b> (pătratul cu săgeata în sus), apoi <b>Adaugă pe ecranul principal</b>.</p>
+          <p>{t.rich("ios", { b: (c) => <b>{c}</b> })}</p>
         )}
         <div className="actions" style={{ marginTop: 8 }}>
           {prompt && !msg && (
@@ -69,10 +71,10 @@ export default function InstallApp({ compact = false }: { compact?: boolean }) {
               const { outcome } = await prompt.userChoice;
               (window as W).__cnInstall = null;
               setPrompt(null);
-              setMsg(outcome === "accepted" ? (where === "telefon" ? "Gata: o găsești pe ecranul principal." : "Gata: o găsești printre aplicații.") : "Bine, o poți pune oricând de aici.");
-            }}>Pune aplicația</button>
+              setMsg(outcome === "accepted" ? (phone ? t("donePhone") : t("doneComputer")) : t("later"));
+            }}>{t("install")}</button>
           )}
-          <button className="btn" onClick={hide}>{msg ? "Închide" : "Nu acum"}</button>
+          <button className="btn" onClick={hide}>{msg ? t("close") : t("notNow")}</button>
         </div>
       </div>
     </div>
