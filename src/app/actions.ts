@@ -21,12 +21,51 @@ import { setRaised } from "@/lib/raised";
 import { getLocale, getT } from "@/i18n/server";
 import { degreeWord } from "@/lib/kin-words";
 import { isPlaceholder } from "@/lib/family";
+import { buildGraph } from "@/lib/kinship";
+import { closeKinIds, mayEdit } from "@/lib/relatives";
+import { editLimits, limitFor, type EditOp } from "@/lib/edit-limits";
+import { fieldChanges, logChange, personName, snapshotPerson, type LogAction, type LogDiff } from "@/lib/edit-log";
+import type { Role } from "@/lib/access";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
 function placesChanged(treeId: string) {
   after(async () => {
     try { await refreshTreePlaces(db, treeId); } catch (e) { console.error("Din aceleași locuri: nu am putut recalcula satele", e); }
   });
+}
+
+/**
+ * Dacă adminul a limitat schimbările acestui om sau ale acestui arbore („Istoric și limite”), mesajul pentru el; altfel null.
+ * Rolul din arbore se verifică separat, ca până acum.
+ */
+async function limited(treeId: string, userId: string, role: Role | null, op: EditOp): Promise<string | null> {
+  const code = limitFor(await editLimits(db), treeId, userId, role, op);
+  return code ? (await getT("TreeErrors"))(`limit.${code}`) : null;
+}
+
+/** O schimbare în istoric; o greșeală la scriere nu oprește schimbarea făcută de om. */
+async function logged(treeId: string, actorId: string, personId: string, action: LogAction, diff: LogDiff) {
+  try { await logChange(db, { treeId, actorId, personId, action, diff }); } catch (e) { console.error("Istoric: nu am putut scrie schimbarea", e); }
+}
+const nameOf = async (treeId: string, id: string) => {
+  const [p] = await db.select({ givenName: person.givenName, surname: person.surname }).from(person).where(and(eq(person.id, id), eq(person.treeId, treeId)));
+  return p ? personName(p) : "?";
+};
+const KIND_RO = { father: "tată", mother: "mamă", child: "copil", spouse: "soț/soție", sibling: "frate/soră" } as const;
+
+/**
+ * Cine poate corecta fișa unei persoane: editorii pe oricine; contributorii pe cei adăugați de ei, propriul profil și, din
+ * profilul lor, rudele apropiate (părinți, bunici, soți, frați, copii, nepoți), cât timp ruda nu și-a revendicat fișa.
+ */
+async function mayFix(treeId: string, meId: string, role: Role | null, p: typeof person.$inferSelect) {
+  const base = { editor: can(role, "editor"), contributor: can(role, "contributor"), meId, target: { id: p.id, createdBy: p.createdBy, claimedBy: p.claimedByUserId } };
+  if (mayEdit({ ...base, kin: null })) return true;
+  if (!base.contributor || p.claimedByUserId) return false;
+  const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, treeId), eq(person.claimedByUserId, meId))).limit(1);
+  if (!mine) return false;
+  const people = await db.select({ id: person.id, sex: person.sex }).from(person).where(eq(person.treeId, treeId));
+  const rels = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
+  return mayEdit({ ...base, kin: closeKinIds(buildGraph(people, rels), mine.id) });
 }
 
 const MAX_GEDCOM_BYTES = 10 * 1024 * 1024;
@@ -133,7 +172,10 @@ export async function addRelative(_: unknown, form: FormData) {
   if (!parsed.success) return { error: formError(te, parsed.error.issues) };
   const v = parsed.data;
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, v.treeId, me.id), "contributor")) return { error: te("noAddRight") };
+  const role = me ? await roleIn(db, v.treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noAddRight") };
+  const lim = await limited(v.treeId, me.id, role, "add");
+  if (lim) return { error: lim };
   const [anchor] = await db.select().from(person).where(and(eq(person.id, v.anchorId), eq(person.treeId, v.treeId)));
   if (!anchor) return { error: te("personGone") };
   const parentsOf = async (id: string) => db.select({ id: person.id, sex: person.sex }).from(relationship)
@@ -198,6 +240,10 @@ export async function addRelative(_: unknown, form: FormData) {
     }
     return p;
   });
+  await logged(v.treeId, me.id, p.id, "adaugare", {
+    name: personName(p), summary: `Adăugat(ă) ca ${KIND_RO[v.kind]} pentru ${personName(anchor)}${shareWith.length ? ` (și pentru încă ${shareWith.length})` : ""}`,
+    after: fieldChanges({}, p)?.after,
+  });
   revalidatePath(`/arbore/${v.treeId}`);
   placesChanged(v.treeId);
   return { ok: true, id: p.id, message: te("added", { kind: v.kind, name: `${p.givenName} ${p.surname}`.trim() }) };
@@ -223,10 +269,13 @@ export async function updatePerson(_: unknown, form: FormData) {
   if (!me || !can(role, "contributor")) return { error: te("noEditRight") };
   const [p] = await db.select().from(person).where(and(eq(person.id, v.personId), eq(person.treeId, v.treeId)));
   if (!p) return { error: te("personGone") };
-  if (!can(role, "editor") && p.createdBy !== me.id && p.claimedByUserId !== me.id)
-    return { error: te("onlyOwnEdit") };
-  const values = personValues(v, await getLocale(), { birth: p.birthDateText, death: p.deathDateText });
-  await db.update(person).set({ ...values, sex: v.sex ?? p.sex, updatedAt: new Date() }).where(eq(person.id, p.id));
+  if (!(await mayFix(v.treeId, me.id, role, p))) return { error: te("onlyOwnEdit") };
+  const lim = await limited(v.treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
+  const values = { ...personValues(v, await getLocale(), { birth: p.birthDateText, death: p.deathDateText }), sex: v.sex ?? p.sex };
+  await db.update(person).set({ ...values, updatedAt: new Date() }).where(eq(person.id, p.id));
+  const changed = fieldChanges(p, values);
+  if (changed) await logged(v.treeId, me.id, p.id, "modificare", { name: personName({ givenName: values.givenName, surname: values.surname }), ...changed });
   revalidatePath(`/arbore/${v.treeId}`);
   placesChanged(v.treeId);
   return { ok: true, message: te("saved") };
@@ -294,10 +343,15 @@ export async function saveBiography(treeId: string, personId: string, biography:
   const parsed = PersonRef.extend({ biography: z.string().trim().min(1).max(4000) }).safeParse({ treeId, personId, biography });
   if (!parsed.success) return { error: te("bioInvalid") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "editor")) return { error: te("bioEditors") };
-  const res = await db.update(person).set({ biography: parsed.data.biography, updatedAt: new Date() })
-    .where(and(eq(person.id, personId), eq(person.treeId, treeId))).returning({ id: person.id });
-  if (!res.length) return { error: te("personGone") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "editor")) return { error: te("bioEditors") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
+  const [before] = await db.select().from(person).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
+  if (!before) return { error: te("personGone") };
+  await db.update(person).set({ biography: parsed.data.biography, updatedAt: new Date() }).where(eq(person.id, personId));
+  const changed = fieldChanges(before, { biography: parsed.data.biography });
+  if (changed) await logged(treeId, me.id, personId, "modificare", { name: personName(before), ...changed });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -311,11 +365,18 @@ export async function setProfilePhoto(treeId: string, personId: string, docId: s
   const te = await getT("TreeErrors");
   if (!DocRef.safeParse({ treeId, personId, docId }).success) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noEditRight") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noEditRight") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
   const [link] = await db.select({ id: document.id }).from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId))
     .where(and(eq(documentLink.personId, personId), eq(document.id, docId), eq(document.treeId, treeId), eq(document.kind, "photo")));
   if (!link) return { error: te("photoNotInAlbum") };
-  await db.update(person).set({ photoDocumentId: docId, updatedAt: new Date() }).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
+  const [before] = await db.select().from(person).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
+  if (!before) return { error: te("personGone") };
+  await db.update(person).set({ photoDocumentId: docId, updatedAt: new Date() }).where(eq(person.id, personId));
+  const changed = fieldChanges(before, { photoDocumentId: docId });
+  if (changed) await logged(treeId, me.id, personId, "modificare", { name: personName(before), ...changed });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -326,7 +387,10 @@ export async function updateDocumentDescription(treeId: string, docId: string, d
   const parsed = z.object({ treeId: z.string().uuid(), docId: z.string().uuid(), description: z.string().trim().max(2000) }).safeParse({ treeId, docId, description });
   if (!parsed.success) return { error: te("descTooLong") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noEditRight") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noEditRight") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
   const res = await db.update(document).set({ description: parsed.data.description || null }).where(and(eq(document.id, docId), eq(document.treeId, treeId))).returning({ id: document.id });
   if (!res.length) return { error: te("docMissing") };
   revalidatePath(`/arbore/${treeId}`);
@@ -373,7 +437,11 @@ export async function setParent(treeId: string, childId: string, role: "father" 
     .safeParse({ treeId, childId, role, parentId });
   if (!parsed.success) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noLinkRight") };
+  const myRole = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(myRole, "contributor")) return { error: te("noLinkRight") };
+  // Scoaterea unui părinte fără altul în loc e ca o ștergere de legătură.
+  const lim = await limited(treeId, me.id, myRole, parentId ? "edit" : "delete");
+  if (lim) return { error: lim };
   const inTree = async (id: string) => (await db.select({ id: person.id, sex: person.sex }).from(person).where(and(eq(person.id, id), eq(person.treeId, treeId))))[0];
   const child = await inTree(childId);
   if (!child) return { error: te("personGone") };
@@ -394,6 +462,12 @@ export async function setParent(treeId: string, childId: string, role: "father" 
     if (other) await linkPartners(tx, treeId, newParent.id, other.id);
   });
   await dropEmptyPlaceholders(treeId, old.map((o) => o.id).filter((id) => id !== parentId));
+  const word = role === "father" ? "tatăl" : "mama";
+  const was = (await Promise.all(old.map((o) => nameOf(treeId, o.id)))).join(", ");
+  await logged(treeId, me.id, childId, "legaturi", {
+    name: await nameOf(treeId, childId),
+    summary: newParent ? `I-a schimbat ${word}${was ? ` (era ${was})` : ""}: acum ${await nameOf(treeId, newParent.id)}` : `I-a scos ${word}${was ? `: ${was}` : ""}`,
+  });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -453,7 +527,13 @@ export async function deletePerson(treeId: string, personId: string): Promise<{ 
   if (p.claimedByUserId && p.claimedByUserId !== me.id) return { error: te("claimedNoDelete") };
   const [t] = await db.select({ root: tree.rootPersonId }).from(tree).where(eq(tree.id, treeId));
   if (t?.root === personId) return { error: te("rootNoDelete") };
+  const lim = await limited(treeId, me.id, role, "delete");
+  if (lim) return { error: lim };
+  // Fișa întreagă, cu legăturile ei, rămâne în istoric: adminul o poate pune înapoi dacă a fost ștearsă din greșeală.
+  const snapshot = await snapshotPerson(db, treeId, personId);
   await db.delete(person).where(eq(person.id, personId));
+  if (snapshot) await logged(treeId, me.id, personId, "stergere", { name: personName(p), snapshot,
+    summary: `Ștearsă cu ${snapshot.rels.length} legături${snapshot.memories ? `; avea ${snapshot.memories} amintiri în ladă, care nu se pot aduce înapoi` : ""}` });
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
   return { ok: true };
@@ -468,7 +548,10 @@ export async function linkChildren(treeId: string, parentId: string, childIds: s
   const parsed = z.object({ treeId: z.string().uuid(), parentId: z.string().uuid(), childIds: z.array(z.string().uuid()).max(100) }).safeParse({ treeId, parentId, childIds });
   if (!parsed.success) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noLinkRight") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noLinkRight") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
   const rels = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
   const partners = new Set(rels.filter((r) => r.type === "partnership" && (r.a === parentId || r.b === parentId)).map((r) => (r.a === parentId ? r.b : r.a)));
   let linked = 0;
@@ -480,6 +563,7 @@ export async function linkChildren(treeId: string, parentId: string, childIds: s
       linked++;
     }
   });
+  if (linked) await logged(treeId, me.id, parentId, "legaturi", { name: await nameOf(treeId, parentId), summary: `I-a legat ${linked} copii ai soțului/soției ca fiind și ai lui/ei` });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true, linked };
 }
@@ -491,9 +575,13 @@ export async function setRaisedBy(treeId: string, childId: string, carerId: stri
   const te = await getT("TreeErrors");
   if (!z.object({ treeId: z.string().uuid(), childId: z.string().uuid(), carerId: z.string().uuid(), on: z.boolean() }).safeParse({ treeId, childId, carerId, on }).success) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noLinkRight") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noLinkRight") };
+  const lim = await limited(treeId, me.id, role, on ? "edit" : "delete");
+  if (lim) return { error: lim };
   const r = await setRaised(db, treeId, childId, carerId, on, me.id);
   if (r.code) return { error: te(RAISED_ERROR[r.code]) };
+  await logged(treeId, me.id, childId, "legaturi", { name: await nameOf(treeId, childId), summary: `${on ? "A trecut" : "A scos"} „A crescut-o”: ${await nameOf(treeId, carerId)}` });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -506,8 +594,9 @@ async function canFix(treeId: string, personId: string) {
   if (!me || !can(role, "contributor")) return { error: te("noEditRight") } as const;
   const [p] = await db.select().from(person).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
   if (!p) return { error: te("personGone") } as const;
-  if (!can(role, "editor") && p.createdBy !== me.id && p.claimedByUserId !== me.id)
-    return { error: te("onlyOwnChange") } as const;
+  if (!(await mayFix(treeId, me.id, role, p))) return { error: te("onlyOwnChange") } as const;
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim } as const;
   return { me, p } as const;
 }
 
@@ -521,6 +610,8 @@ export async function setDiscreet(treeId: string, personId: string, on: boolean)
   const r = await canFix(treeId, personId);
   if ("error" in r) return { error: r.error };
   await db.update(person).set({ discreet: on, updatedAt: new Date() }).where(eq(person.id, personId));
+  const changed = fieldChanges(r.p, { discreet: on });
+  if (changed) await logged(treeId, r.me.id, personId, "modificare", { name: personName(r.p), ...changed });
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
   return { ok: true };
@@ -534,7 +625,10 @@ export async function otherRelation(treeId: string, childId: string, role: "fath
   const te = await getT("TreeErrors");
   if (!z.object({ treeId: z.string().uuid(), childId: z.string().uuid(), role: z.enum(["father", "mother"]) }).safeParse({ treeId, childId, role }).success) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noLinkRight") };
+  const myRole = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(myRole, "contributor")) return { error: te("noLinkRight") };
+  const lim = await limited(treeId, me.id, myRole, "edit");
+  if (lim) return { error: lim };
   const [child] = await db.select().from(person).where(and(eq(person.id, childId), eq(person.treeId, treeId)));
   if (!child) return { error: te("personGone") };
   const sex = role === "father" ? "M" : "F";
@@ -552,6 +646,9 @@ export async function otherRelation(treeId: string, childId: string, role: "fath
     if (other) await linkPartners(tx, treeId, ph.id, other.id);
   });
   await dropEmptyPlaceholders(treeId, parents.filter((x) => x.sex === sex).map((x) => x.id));
+  const old = parents.filter((x) => x.sex === sex).map((x) => x.given).join(", ");
+  await logged(treeId, me.id, childId, "legaturi", { name: personName(child),
+    summary: `Copil dintr-o altă relație: ${role === "father" ? "tatăl" : "mama"}${old ? ` (era ${old})` : ""} e acum necunoscut(ă)` });
   revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }
@@ -564,7 +661,10 @@ export async function mergePeople(treeId: string, keepId: string, dropId: string
   const te = await getT("TreeErrors");
   if (!z.object({ treeId: z.string().uuid(), keepId: z.string().uuid(), dropId: z.string().uuid() }).safeParse({ treeId, keepId, dropId }).success || keepId === dropId) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "editor")) return { error: te("mergeEditors") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "editor")) return { error: te("mergeEditors") };
+  const lim = await limited(treeId, me.id, role, "delete");
+  if (lim) return { error: lim };
   const two = await db.select().from(person).where(and(eq(person.treeId, treeId), inArray(person.id, [keepId, dropId])));
   const keep = two.find((x) => x.id === keepId), drop = two.find((x) => x.id === dropId);
   if (!keep || !drop) return { error: te("mergeGone") };
@@ -573,6 +673,7 @@ export async function mergePeople(treeId: string, keepId: string, dropId: string
   if ((await isDescendant(treeId, keepId, dropId)) || (await isDescendant(treeId, dropId, keepId))) return { error: te("mergeDescendant") };
   const r = await mergeInto(db, treeId, keepId, dropId);
   const left = await settleParents(treeId, keepId);
+  await logged(treeId, me.id, keepId, "unire", { name: personName(keep), summary: `A unit cu ea dubla „${personName(drop)}” (dubla a fost ștearsă)` });
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
   return { ok: true, message: te("merged", { name: r.name, warn: left.twoFathers ? "fathers" : left.twoMothers ? "mothers" : "none" }) };
@@ -607,7 +708,10 @@ export async function replacePlaceholder(treeId: string, placeholderId: string, 
   if (!z.object({ treeId: z.string().uuid(), placeholderId: z.string().uuid(), personId: z.string().uuid() }).safeParse({ treeId, placeholderId, personId }).success
     || placeholderId === personId) return { error: te("badData") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, treeId, me.id), "contributor")) return { error: te("noLinkRight") };
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "contributor")) return { error: te("noLinkRight") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
   const two = await db.select().from(person).where(and(eq(person.treeId, treeId), inArray(person.id, [placeholderId, personId])));
   const ph = two.find((x) => x.id === placeholderId), real = two.find((x) => x.id === personId);
   if (!ph || !real) return { error: te("onePersonGone") };
@@ -615,6 +719,7 @@ export async function replacePlaceholder(treeId: string, placeholderId: string, 
   if (ph.sex !== "U" && real.sex !== "U" && ph.sex !== real.sex) return { error: te("badData") };
   if ((await isDescendant(treeId, placeholderId, personId)) || (await isDescendant(treeId, personId, placeholderId))) return { error: te("replaceDescendant", { name: real.givenName }) };
   await mergeInto(db, treeId, personId, placeholderId);
+  await logged(treeId, me.id, personId, "legaturi", { name: personName(real), summary: `A luat locul lui „${personName(ph)}” la copiii acestuia` });
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
   return { ok: true };

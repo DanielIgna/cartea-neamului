@@ -3,12 +3,14 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { user } from "@/db/schema";
+import { tree, user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { PlanSettings, isPlan, savePlanSettings, setAccountPlan } from "@/lib/plans";
 import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
+import { undoChange } from "@/lib/admin-istoric";
+import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
 
@@ -57,4 +59,47 @@ export async function saveJourneyBaseWord(text: string | null): Promise<AdminFor
   revalidatePath("/admin", "layout");
   revalidatePath("/arbore/[id]/calatorie", "page");
   return { ok: parsed.data === null ? "Am pus înapoi textul inițial." : "Am salvat. Așa se vede de acum la capătul călătoriei." };
+}
+
+/* ---------- „Istoric și limite”: anularea unei schimbări din arbori și limitele de editare ---------- */
+
+/** Pune înapoi o fișă ștearsă, readuce o corectură sau scoate o persoană adăugată greșit (vezi src/lib/admin-istoric.ts). */
+export async function undoTreeChange(logId: string): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  if (!z.string().uuid().safeParse(logId).success) return { error: "Schimbarea nu mai e în istoric." };
+  const r = await undoChange(db, logId, me.id);
+  if ("error" in r) return { error: r.error };
+  revalidatePath("/admin/istoric");
+  revalidatePath("/arbore/[id]", "layout");
+  return { ok: r.ok };
+}
+
+/** Limita de editare a unui om: fără ștergeri, doar adaugă, blocat; „normal” o scoate. */
+export async function saveUserLimit(_: AdminFormState, form: FormData): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const userId = String(form.get("userId") ?? ""), mode = String(form.get("mode") ?? "");
+  if (!userId) return { error: "Alege omul." };
+  if (mode !== "normal" && !(mode in USER_MODES)) return { error: "Alege limita." };
+  const [u] = await db.select().from(user).where(eq(user.id, userId));
+  if (!u) return { error: "Contul nu mai există." };
+  if (isAdminUser(u)) return { error: "Un admin nu poate fi limitat." };
+  await setUserLimit(db, userId, mode === "normal" ? null : (mode as UserMode), String(form.get("note") ?? ""), me.id);
+  revalidatePath("/admin", "layout");
+  return { ok: mode === "normal" ? "Limita a fost scoasă." : "Limita e pusă. Se aplică de la următoarea lui schimbare." };
+}
+
+/** Limita unui arbore întreg: doar editorii, sau înghețat (doar proprietarul); „normal” o scoate. */
+export async function saveTreeLimit(_: AdminFormState, form: FormData): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const treeId = String(form.get("treeId") ?? ""), mode = String(form.get("mode") ?? "");
+  if (!z.string().uuid().safeParse(treeId).success) return { error: "Alege arborele." };
+  if (mode !== "normal" && !(mode in TREE_MODES)) return { error: "Alege limita." };
+  const [t] = await db.select({ id: tree.id }).from(tree).where(eq(tree.id, treeId));
+  if (!t) return { error: "Arborele nu mai există." };
+  await setTreeLimit(db, treeId, mode === "normal" ? null : (mode as TreeMode), String(form.get("note") ?? ""), me.id);
+  revalidatePath("/admin", "layout");
+  return { ok: mode === "normal" ? "Arborele e din nou deschis, ca înainte." : "Limita arborelui e pusă." };
 }

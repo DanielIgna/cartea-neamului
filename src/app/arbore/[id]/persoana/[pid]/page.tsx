@@ -22,6 +22,9 @@ import { hasConsent } from "@/lib/consent";
 import PageIntl from "@/i18n/PageIntl";
 import { getLocale, getT } from "@/i18n/server";
 import { degreeWord, kinLabel } from "@/lib/kin-words";
+import ProfileRelatives from "@/components/ProfileRelatives";
+import { closeFamily, closeKinIds, mayEdit, shareIds, type RelKind } from "@/lib/relatives";
+import { editLimits, limitFor } from "@/lib/edit-limits";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -46,7 +49,34 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   const ego = mine?.id ?? data.rootId;
   const kin = ego && ego !== pid ? kinship(g, ego, pid) : null;
   const chat = p.claimedBy && p.claimedBy !== me.id ? await canMessage(db, id, me.id, p.claimedBy) : null;
-  const canEdit = can(role, "editor") || (can(role, "contributor") && (p.createdBy === me.id || p.claimedBy === me.id));
+  // Rudele apropiate: fiecare le poate completa și corecta din profil (cele revendicate de altcineva rămân ale lor), dacă adminul nu i-a limitat.
+  const limits = await editLimits(db);
+  const [te, tr] = await Promise.all([getT("TreeErrors", locale), getT("Relatives", locale)]);
+  const addLimit = limitFor(limits, id, me.id, role, "add"), editLimit = limitFor(limits, id, me.id, role, "edit");
+  const myKin = mine ? closeKinIds(g, mine.id) : null;
+  const fixable = (x: { id: string; createdBy: string | null; claimedBy: string | null }) => !editLimit
+    && mayEdit({ editor: can(role, "editor"), contributor: can(role, "contributor"), meId: me.id, kin: myKin, target: x });
+  const canEdit = fixable(p);
+  const cf = closeFamily(g, pid);
+  const shownPartners = cf.partners.filter((x) => !data.people[x]?.discreet);
+  const relIds = new Set<string>([pid, cf.father, cf.mother, cf.paternal.grandfather, cf.paternal.grandmother, cf.maternal.grandfather, cf.maternal.grandmother,
+    ...cf.partners, ...cf.siblings, ...cf.children, ...cf.nephews.flatMap((n) => [n.via, ...n.ids]), ...cf.grandchildren.flatMap((n) => [n.via, ...n.ids])]
+    .filter((x): x is string => !!x && !!data.people[x]));
+  const slots: [string, RelKind][] = [[pid, "father"], [pid, "mother"], [pid, "spouse"], [pid, "sibling"], [pid, "child"],
+    ...[cf.father, cf.mother].filter((x): x is string => !!x).flatMap((x) => [[x, "father"], [x, "mother"]] as [string, RelKind][]),
+    ...cf.siblings.map((x) => [x, "child"] as [string, RelKind]), ...cf.children.map((x) => [x, "child"] as [string, RelKind])];
+  const sexOf = (x: string) => data.people[x]?.sex;
+  const share: Record<string, string[]> = {}, lookalikes: Record<string, string[]> = {}, partnersOf: Record<string, string[]> = {};
+  for (const [a, k] of slots) {
+    const f = family(g, a);
+    share[`${a}:${k}`] = shareIds(g, sexOf, a, k);
+    lookalikes[`${a}:${k}`] = k === "child" ? f.children : k === "sibling" ? f.siblings
+      : k === "spouse" ? [...new Set([...f.partners, ...f.children.flatMap((c) => g.parents.get(c) ?? [])])].filter((x) => x !== a) : [];
+    if (k === "child") partnersOf[a] = [...f.partners].sort((x, y) => Number(!!data.people[x]?.discreet) - Number(!!data.people[y]?.discreet));
+    for (const x of [...share[`${a}:${k}`], ...lookalikes[`${a}:${k}`], ...(partnersOf[a] ?? [])]) if (data.people[x]) relIds.add(x);
+  }
+  const relPeople = Object.fromEntries([...relIds].map((x) => [x, data.people[x]]));
+  const lockedNote = !can(role, "contributor") ? tr("viewerOnly") : addLimit ? te(`limit.${addLimit}`) : editLimit ? te(`limit.${editLimit}`) : null;
   // Lada cu amintiri: ce poate vedea cel care se uită, și, pentru omul însuși, întrebarea de duminică și următoarele (pentru „Altă întrebare”).
   const lada = await loadLada(db, id, pid, { userId: me.id, personId: mine?.id ?? null }, g, data.tree.chatMaxDegree);
   let upcoming: Question[] = [];
@@ -74,7 +104,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
-    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice"]}>
+    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>{t("back", { name: p.givenName })}</Link>
@@ -115,16 +145,18 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         <div className="section-label" style={{ marginTop: 0 }}>{t("album")}</div>
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />
       </div>
-      <div className="card">
-        {/* Soții discreți (de pildă o fostă soție) nu apar aici; se văd doar în profilurile copiilor lor, la „Părinți”. */}
-        {(() => { const shown = fam.partners.filter((x) => !data.people[x]?.discreet); return group(tp("spouses", { count: shown.length, sex: p.sex }), shown); })()}
-        {group(tp("children", { count: fam.children.length }), fam.children)}
-        {group(tp("parents"), fam.parents)}
-        {group(tp("raisedBy", { sex: p.sex }), rl.carers)}
-        {group(fam.children.length ? tp("raisedAlso") : tp("raised"), rl.raised)}
-        {group(tp("siblings", { count: fam.siblings.length }), fam.siblings)}
-        {!fam.partners.length && !fam.children.length && !fam.parents.length && !rl.carers.length && !rl.raised.length && <p className="muted">{tp("noRelatives")}</p>}
-      </div>
+      {/* Soții discreți (de pildă o fostă soție) nu apar aici; se văd doar în profilurile copiilor lor, la „Părinți”. */}
+      <ProfileRelatives treeId={id} personId={pid} own={mine?.id === pid} people={relPeople}
+        data={{ father: cf.father, mother: cf.mother, paternal: cf.paternal, maternal: cf.maternal, partners: shownPartners, siblings: cf.siblings,
+          children: cf.children, nephews: cf.nephews, grandchildren: cf.grandchildren }}
+        editable={[...relIds].filter((x) => fixable(data.people[x]))} canAdd={can(role, "contributor") && !addLimit} lockedNote={lockedNote}
+        share={share} lookalikes={lookalikes} partners={partnersOf} />
+      {(rl.carers.length > 0 || rl.raised.length > 0) && (
+        <div className="card">
+          {group(tp("raisedBy", { sex: p.sex }), rl.carers)}
+          {group(fam.children.length ? tp("raisedAlso") : tp("raised"), rl.raised)}
+        </div>
+      )}
     </section>
     </PageIntl>
   );
