@@ -2,6 +2,7 @@ import type { Catalog } from "./ro";
 import { enGBArbore } from "./arbore/en-GB";
 import { enGBAmintiri } from "./amintiri/en-GB";
 import { enGBVremuri } from "./vremuri/en-GB";
+import { enGBCarte } from "./carte/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -290,4 +291,5 @@ export const enGB: Catalog = {
   ...enGBAmintiri,
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...enGBVremuri,
+  ...enGBCarte,
 };

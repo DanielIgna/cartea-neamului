@@ -1,8 +1,12 @@
+import { createTranslator } from "use-intl/core";
+import type { Locale } from "@/i18n/locales";
+import { roCarte } from "@/i18n/messages/carte/ro";
 import { where, type PersonView } from "./tree-data";
 import { ancestorsOf, buildGraph, oldestAncestor, pairKey, romanDegree, unionsOf, type Graph, type Rel, type Sex } from "./kinship";
 import { descendants, isPlaceholder, normName, type DescNode } from "./family";
 import { raisedLinks, type Raised } from "./raised";
 import { lifeDates, shortDate } from "./person-text";
+import { parseFuzzyDate } from "./dates";
 import { genOf } from "./fan-geometry";
 
 /**
@@ -60,8 +64,13 @@ export const chartPerson = (p: PersonView): PersonView => ({
 });
 
 export type Ref = { id: string | null; name: string; dates: string };
-/** O căsătorie (sau legătură) în fișă: `spouse` = null când celălalt părinte nu se numește (discret, necunoscut sau ascuns). */
-export type BookUnion = { spouse: Ref | null; married: string; children: Ref[]; hidden: number };
+/** Cum se leagă data căsătoriei în frază: „la 12.03.1958” (o zi), „în 1958” (un an sau o lună) sau doar alăturat („cca. 1958”). */
+export type DateKind = "date" | "year" | "other";
+/**
+ * O căsătorie (sau legătură) în fișă: `spouse` = null când celălalt părinte nu se numește (discret, necunoscut sau ascuns);
+ * `married` = data căsătoriei, scrisă în limba cărții.
+ */
+export type BookUnion = { spouse: Ref | null; married: string; marriedKind: DateKind; children: Ref[]; hidden: number };
 export type Entry = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: Sex; living: boolean;
   dates: string; born: string; died: string; lives: string; occupation: string; biography: string; photo: string | null;
@@ -92,17 +101,53 @@ export type BookModel = {
   fanGenerations: number;
 };
 
-const UP = ["", "părinților", "bunicilor", "străbunicilor", "răstrăbunicilor"];
-const DOWN = ["", "copiilor", "nepoților", "strănepoților", "răstrănepoților"];
+/**
+ * Cuvintele pe care cartea le alcătuiește aici, în limba ei: titlurile generațiilor, „din altă relație”, numele de fată
+ * și cel de după căsătorie din index. Datele și locurile se scriu și ele în limba cărții (`locale`).
+ */
+export type BookWords = {
+  locale: Locale;
+  generationTitle: (n: number) => string;
+  generationOf: (level: number, who: string) => string;
+  others: string;
+  othersSub: string;
+  fromOtherRelation: string;
+  fromMarriage: (name: string) => string;
+  maiden: (name: string, sex: Sex) => string;
+  marriedAs: (name: string, sex: Sex) => string;
+};
+type Say = (key: string, values?: Record<string, string | number>) => string;
+
+/** Cuvintele cărții dintr-un traducător pentru partea „Book” a textelor (pe server: getT("Book", limbaCărții)). */
+export function bookWords(locale: Locale, t: unknown): BookWords {
+  const say = t as Say;
+  return {
+    locale,
+    generationTitle: (n) => say("model.generationTitle", { first: n === 1 ? "yes" : "no", roman: romanDegree(n) }),
+    generationOf: (level, who) => (level === 0 ? say("model.generationSelf", { who }) : say(level < 0 ? "model.generationUp" : "model.generationDown", { n: Math.abs(level), who })),
+    others: say("model.others"),
+    othersSub: say("model.othersSub"),
+    fromOtherRelation: say("model.fromOtherRelation"),
+    fromMarriage: (name) => say("model.fromMarriage", { name }),
+    maiden: (name, sex) => say("model.maiden", { name, sex }),
+    marriedAs: (name, sex) => say("model.marriedAs", { name, sex }),
+  };
+}
+
+/** În română, de la sine (și în teste). */
+const RO_WORDS = bookWords("ro", createTranslator({ locale: "ro", messages: roCarte, namespace: "Book" }));
 
 /** „Generația I”, „Generația a II-a”… */
-export const generationTitle = (n: number) => (n === 1 ? "Generația I" : `Generația a ${romanDegree(n)}-a`);
+export const generationTitle = (n: number, w: BookWords = RO_WORDS) => w.generationTitle(n);
 
 /** „Generația bunicilor lui Ioan Daniel”, „Cu 6 generații înaintea lui Ioan Daniel”. */
-export function generationOf(level: number, who: string) {
-  if (level === 0) return `Generația lui ${who}`;
-  if (level < 0) return -level < UP.length ? `Generația ${UP[-level]} lui ${who}` : `Cu ${-level} generații înaintea lui ${who}`;
-  return level < DOWN.length ? `Generația ${DOWN[level]} lui ${who}` : `Cu ${level} generații după ${who}`;
+export const generationOf = (level: number, who: string, w: BookWords = RO_WORDS) => w.generationOf(level, who);
+
+/** Cum se leagă în frază o dată scrisă de om (vezi DateKind). */
+export function dateKind(text: string | null | undefined): DateKind {
+  const r = parseFuzzyDate(text?.trim());
+  if (!r.year || !r.from || !r.to || r.side || r.approx) return "other";
+  return r.from === r.to ? "date" : "year";
 }
 
 /** Generația fiecărui om față de persoana din centru: părinții -1, copiii +1, soții la fel ca partenerul lor. */
@@ -148,14 +193,20 @@ const fileLike = (t: string) => /\.(jpe?g|png|gif|webp|heic|heif|tiff?)$/i.test(
 const caption = (text: string, date: string) => (!date || text.includes(date) ? text : text ? `${text.replace(/[.,;\s]+$/, "")}, ${date}` : date);
 const nonNull = <T,>(x: T | null | undefined): x is T => x != null;
 /** Anii vieții, ca pe site, dar fără „?–?” când nu se știe nimic: în carte, locul rămâne gol. */
-const datesOf = (p: PersonView) => (/^[?–\s]*$/.test(lifeDates(p)) ? "" : lifeDates(p));
-const top = (m: Map<string, number>, n: number) => [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ro")).slice(0, n);
+const datesOf = (p: PersonView, locale: Locale) => {
+  const d = lifeDates(p, locale);
+  return /^[?–\s]*$/.test(d) ? "" : d;
+};
+const top = (m: Map<string, number>, n: number, locale: Locale) => [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], locale)).slice(0, n);
 const count = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1);
 
 export function buildBook(input: {
   people: Record<string, PersonView>; rels: Rel[]; raised: Raised[]; centerId: string | null; slots: Record<number, string>; options: BookOptions;
+  /** Limba cărții; de la sine, româna. */
+  words?: BookWords;
 }): BookModel {
   const { people, rels, raised, options } = input;
+  const w = input.words ?? RO_WORDS, L = w.locale;
   const g = buildGraph(Object.values(people), rels);
   const shown: Record<string, PersonView> = {};
   for (const p of Object.values(people)) {
@@ -168,7 +219,7 @@ export function buildBook(input: {
   const ref = (id: string): Ref | null => {
     const p = shown[id];
     if (!p || isPlaceholder(p.givenName)) return null;
-    return { id: hasEntry(id) ? id : null, name: p.name, dates: datesOf(p) };
+    return { id: hasEntry(id) ? id : null, name: p.name, dates: datesOf(p, L) };
   };
   const center = input.centerId && people[input.centerId] ? input.centerId : null;
   const centerName = center && shown[center] ? shown[center].givenName || shown[center].name : null;
@@ -176,10 +227,11 @@ export function buildBook(input: {
   const entry = (id: string): Entry => {
     const p = shown[id];
     const unions: BookUnion[] = [];
-    const other: BookUnion = { spouse: null, married: "", children: [], hidden: 0 };
+    const other: BookUnion = { spouse: null, married: "", marriedKind: "other", children: [], hidden: 0 };
     for (const u of unionsOf(g, id)) {
       const spouse = u.spouse && hasEntry(u.spouse) ? ref(u.spouse) : null;
-      const target = spouse ? { spouse, married: shortDate(g.unionMeta.get(pairKey(id, u.spouse!))?.start), children: [] as Ref[], hidden: 0 } : other;
+      const start = spouse ? g.unionMeta.get(pairKey(id, u.spouse!))?.start : null;
+      const target: BookUnion = spouse ? { spouse, married: shortDate(start, L), marriedKind: dateKind(start), children: [], hidden: 0 } : other;
       for (const c of u.children) {
         const r = ref(c);
         if (r) target.children.push(r);
@@ -192,10 +244,10 @@ export function buildBook(input: {
     const photo = options.photos ? photoUrl(p) : null;
     return {
       id, name: p.name, givenName: p.givenName, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex, living: p.living,
-      dates: datesOf(p),
-      born: [shortDate(p.birthText), where(p.birthPlace, p.birthCountry)].filter(Boolean).join(", "),
-      died: [shortDate(p.deathText), where(p.deathPlace, p.deathCountry)].filter(Boolean).join(", "),
-      lives: p.living ? where(p.residencePlace, p.residenceCountry) || (p.residenceCountry ?? "") : "",
+      dates: datesOf(p, L),
+      born: [shortDate(p.birthText, L), where(p.birthPlace, p.birthCountry, L)].filter(Boolean).join(", "),
+      died: [shortDate(p.deathText, L), where(p.deathPlace, p.deathCountry, L)].filter(Boolean).join(", "),
+      lives: p.living ? where(p.residencePlace, p.residenceCountry, L) || (p.residenceCountry ?? "") : "",
       occupation: p.occupation?.trim() ?? "", biography: p.biography?.trim() ?? "", photo,
       parents: (g.parents.get(id) ?? []).map(ref).filter(nonNull),
       unions, carers: links.carers.map(ref).filter(nonNull), raised: links.raised.map(ref).filter(nonNull),
@@ -224,11 +276,11 @@ export function buildBook(input: {
     else byLevel.set(l, [...(byLevel.get(l) ?? []), id]);
   }
   const generations: Generation[] = [...byLevel.keys()].sort((a, b) => a - b).map((l, i) => ({
-    id: `g-${i + 1}`, title: generationTitle(i + 1), subtitle: centerName ? generationOf(l, centerName) : "",
+    id: `g-${i + 1}`, title: w.generationTitle(i + 1), subtitle: centerName ? w.generationOf(l, centerName) : "",
     entries: byLevel.get(l)!.sort((a, b) => order.get(a)! - order.get(b)!).map(entry),
   }));
   if (loose.length) generations.push({
-    id: "g-alte", title: "Alte persoane din arbore", subtitle: "Încă fără o legătură trecută cu restul neamului",
+    id: "g-alte", title: w.others, subtitle: w.othersSub,
     entries: loose.sort((a, b) => born(a) - born(b) || order.get(a)! - order.get(b)!).map(entry),
   });
 
@@ -243,7 +295,7 @@ export function buildBook(input: {
     if (!person) return;
     treePeople[d.id] = chartPerson(shown[d.id]);
     for (const s of d.partners) treePeople[s] = chartPerson(shown[s]);
-    const from = !parent ? "" : d.apart ? "din altă relație" : parent.partners.length > 1 && d.via && shown[d.via] ? `din căsătoria cu ${shown[d.via].givenName}` : "";
+    const from = !parent ? "" : d.apart ? w.fromOtherRelation : parent.partners.length > 1 && d.via && shown[d.via] ? w.fromMarriage(shown[d.via].givenName) : "";
     outline.push({ num, depth, person, spouses: d.partners.map(ref).filter(nonNull), from, hidden: fullNode.children.length - d.children.length });
     d.children.forEach((c, i) => walk(c, `${num}.${i + 1}`, depth + 1, d, fullNode.children.find((x) => x.id === c.id)!));
   };
@@ -264,10 +316,10 @@ export function buildBook(input: {
   for (const gen of generations) for (const e of gen.entries) {
     const maiden = e.birthSurname && normName(e.birthSurname) !== normName(e.surname) ? e.birthSurname : null;
     const name = (sur: string) => (sur ? `${sur}, ${e.givenName}` : e.givenName || e.name);
-    index.push({ id: e.id, label: `${name(e.surname)}${maiden ? ` (n. ${maiden})` : ""}`, dates: e.dates });
-    if (maiden) index.push({ id: e.id, label: `${name(maiden)} (căs. ${e.surname || "?"})`, dates: e.dates });
+    index.push({ id: e.id, label: `${name(e.surname)}${maiden ? ` ${w.maiden(maiden, e.sex)}` : ""}`, dates: e.dates });
+    if (maiden) index.push({ id: e.id, label: `${name(maiden)} ${w.marriedAs(e.surname || "?", e.sex)}`, dates: e.dates });
   }
-  index.sort((a, b) => a.label.localeCompare(b.label, "ro", { sensitivity: "base" }) || a.dates.localeCompare(b.dates));
+  index.sort((a, b) => a.label.localeCompare(b.label, L, { sensitivity: "base" }) || a.dates.localeCompare(b.dates));
 
   // Neamul pe scurt, doar din ce se arată în carte.
   const all = generations.flatMap((x) => x.entries.map((e) => shown[e.id]));
@@ -277,15 +329,15 @@ export function buildBook(input: {
   for (const p of all) {
     if (p.surname.trim()) count(surnames, p.surname.trim());
     if (p.birthSurname?.trim() && normName(p.birthSurname) !== normName(p.surname)) count(surnames, p.birthSurname.trim());
-    const w = where(p.birthPlace, p.birthCountry);
-    if (w) count(places, w);
+    const at = where(p.birthPlace, p.birthCountry, L);
+    if (at) count(places, at);
   }
   return {
     centerId: center, centerName, trunk: trunkId ? ref(trunkId) : null, generations, outline, index,
     stats: {
       people: all.length, generations: generations.filter((x) => x.id !== "g-alte").length,
       from: years.length ? Math.min(...years) : null, to: years.length ? Math.max(...years) : null,
-      oldest: oldest ? ref(oldest.id) : null, surnames: top(surnames, 8), places: top(places, 8),
+      oldest: oldest ? ref(oldest.id) : null, surnames: top(surnames, 8, L), places: top(places, 8, L),
     },
     tree: tree && outline.length >= 3 ? tree : null, treePeople, path, fan, fanGenerations,
   };

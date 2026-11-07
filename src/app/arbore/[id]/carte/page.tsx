@@ -11,14 +11,15 @@ import { db } from "@/db";
 import { bookExport, person } from "@/db/schema";
 import { loadTreeView } from "@/lib/tree-data";
 import { requireUser, roleIn, can } from "@/lib/access";
-import { bookOptions, buildBook, cleanText, type BookModel, type BookOptions, type BookText, type BookUnion, type Entry, type Ref } from "@/lib/book";
+import { bookOptions, bookWords, buildBook, cleanText, type BookModel, type BookOptions, type BookText, type BookUnion, type Entry, type Ref } from "@/lib/book";
 import { isPlaceholder, normName } from "@/lib/family";
-import { ordinalOf } from "@/lib/kinship";
-import { amintiri, de } from "@/lib/ro-words";
+import type { Sex } from "@/lib/kinship";
 import { bookMemories, type BookMemory } from "@/lib/lada-db";
-import { CHAPTERS, chapterLabel } from "@/lib/questions";
+import { CHAPTERS, chapterKey } from "@/lib/questions";
 import { memoryShortPath } from "@/lib/short-link";
 import { siteOrigin } from "@/lib/site";
+import { getLocale, getT } from "@/i18n/server";
+import { isLocale, type Locale } from "@/i18n/locales";
 import BookView from "@/components/BookView";
 import BookFan from "@/components/BookFan";
 import BookTree from "@/components/BookTree";
@@ -27,13 +28,18 @@ import BookOptionsForm from "@/components/BookOptionsForm";
 import BookTextForm from "@/components/BookTextForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Cartea neamului" };
+export async function generateMetadata() {
+  return { title: (await getT("Book"))("page.title") };
+}
 const UUID = /^[0-9a-f-]{36}$/i;
 
-const oameni = (n: number) => (n === 1 ? "un om" : `${de(n)} oameni`);
-/** Eticheta după sex: „Născut” / „Născută”; când sexul nu se știe, amândouă („Născut(ă)”, „Soț / soție”). */
-const sexed = (sex: string, m: string, f: string, u = `${m}(ă)`) => (sex === "F" ? f : sex === "M" ? m : u);
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+type TB = Awaited<ReturnType<typeof getT<"Book">>>;
+/**
+ * Ce le trebuie bucăților cărții ca să scrie în limba ei: textele („Book”), cum se scrie trimiterea la o pagină („(p. 14)”),
+ * cum se înșiră numele („Ana, Ion și Maria”) și numele capitolelor din lada cu amintiri.
+ */
+type Words = { t: TB; pg: { before: string; after: string }; list: Intl.ListFormat; locale: Locale; chapter: (c: string) => string };
+
 /** Un hash scurt al conținutului: când se schimbă ceva în carte, paginile se așază din nou. */
 function hash(s: string) {
   let h = 5381;
@@ -43,52 +49,64 @@ function hash(s: string) {
 /** Paragrafele unui text scris de mână: un rând gol începe un paragraf nou. */
 const paragraphs = (t: string) => t.split(/\n\s*\n/).map((x, i) => <p key={i}>{x.split("\n").flatMap((line, j) => (j ? [<br key={j} />, line] : [line]))}</p>);
 
+/** Ce vine înainte și după numărul paginii în trimiteri: „(p. ” și „)” în română, „(S. ” și „)” în germană, „(” și „. o.)” în maghiară. */
+function pageParts(t: TB) {
+  const mark = "\u0001";
+  const [before, after = ""] = t("pageRef", { n: mark }).split(mark);
+  return { before, after };
+}
+
 /** Numărul paginii unei fișe sau al unui capitol; se completează după ce cartea e așezată pe pagini. */
 const Pg = ({ id, before = "", after = "" }: { id: string; before?: string; after?: string }) => (
   <span className="bk-pg" data-pg={id} data-before={before} data-after={after}>{`${before}00${after}`}</span>
 );
 
 /** Un nume din fișă, cu trimitere la pagina lui, dacă are fișă în carte. */
-const RefName = ({ r }: { r: Ref }) => (r.id ? <><a href={`#p-${r.id}`}>{r.name}</a> <Pg id={`p-${r.id}`} before="(p. " after=")" /></> : <>{r.name}</>);
-/** „Ana, Ion și Maria”. */
-function Refs({ list, more }: { list: Ref[]; more?: string }) {
-  const parts = [...list.map((r) => <RefName key={r.id ?? r.name} r={r} />), ...(more ? [<span key="more">{more}</span>] : [])];
-  return <>{parts.map((x, i) => <span key={i}>{i === 0 ? "" : i === parts.length - 1 ? " și " : ", "}{x}</span>)}</>;
+const RefName = ({ r, w }: { r: Ref; w: Words }) => (r.id ? <><a href={`#p-${r.id}`}>{r.name}</a> <Pg id={`p-${r.id}`} {...w.pg} /></> : <>{r.name}</>);
+/** Același nume, în mijlocul unei fraze traduse (<ref>…</ref>). */
+const refTag = (r: Ref, w: Words) => (c: React.ReactNode) => (r.id ? <><a href={`#p-${r.id}`}>{c}</a> <Pg id={`p-${r.id}`} {...w.pg} /></> : <>{c}</>);
+/** „Ana, Ion și Maria”, cu „și”-ul și virgulele limbii cărții (în engleza americană, cu virgula dinainte de „and”). */
+function Refs({ list, more, w }: { list: Ref[]; more?: string; w: Words }) {
+  const items = [...list.map((r) => <RefName key={r.id ?? r.name} r={r} w={w} />), ...(more ? [<span key="more">{more}</span>] : [])];
+  // Numele adevărate, ca regulile limbii să se potrivească (în spaniolă, „y” devine „e” înaintea lui „I”).
+  let k = 0;
+  const parts = w.list.formatToParts([...list.map((r) => r.name), ...(more ? [more] : [])]);
+  return <>{parts.map((p, i) => <span key={i}>{p.type === "element" ? items[k++] : p.value}</span>)}</>;
 }
 /** Cât ține o înregistrare: „3:07”. */
 const clock = (sec: number) => `${Math.floor(sec / 60)}:${String(Math.round(sec) % 60).padStart(2, "0")}`;
 
 /** Un om care povestește în „Cu vorbele lor”: amintirile lui bifate pentru carte, cu codul QR la cele spuse cu glasul. */
-type Voice = { id: string; name: string; sex: string; dates: string; memories: (BookMemory & { qr: string | null; url: string | null })[] };
+type Voice = { id: string; name: string; sex: Sex; dates: string; memories: (BookMemory & { qr: string | null; url: string | null })[] };
 
-const inLife = (n: number, kids: boolean) => (n === 1 ? (kids ? "un copil în viață" : "o persoană în viață") : `${de(n)} ${kids ? "copii" : "persoane"} în viață`);
-const marriedOn = (m: string) => (!m ? "" : /^\d{2}\.\d{2}\.\d{4}$/.test(m) ? `, căsătoriți la ${m}` : /^\d/.test(m) ? `, căsătoriți în ${m}` : `, căsătoriți ${m}`);
-
-function Unions({ e }: { e: Entry }) {
+function Unions({ e, w }: { e: Entry; w: Words }) {
+  const { t } = w;
   const named = e.unions.filter((u) => u.spouse);
-  const kids = (u: BookUnion) => <Refs list={u.children} more={u.hidden ? inLife(u.hidden, true) : undefined} />;
+  const kids = (u: BookUnion) => <Refs list={u.children} more={u.hidden ? t("person.livingChildren", { count: u.hidden }) : undefined} w={w} />;
+  const married = (u: BookUnion) => (u.married ? t("person.married", { kind: u.marriedKind, when: u.married }) : "");
   return (
     <>
       {e.unions.map((u, i) => {
         if (!u.spouse) return (
-          <div key="alta" className="bk-row"><dt>{named.length ? "Copii din altă relație" : "Copii"}</dt><dd>{kids(u)}</dd></div>
+          <div key="alta" className="bk-row"><dt>{named.length ? t("person.childrenOther") : t("person.children")}</dt><dd>{kids(u)}</dd></div>
         );
         if (named.length === 1) return (
           <div key={i} className="bk-row-group">
-            <div className="bk-row"><dt>{sexed(e.sex, "Soție", "Soț", "Soț / soție")}</dt><dd><RefName r={u.spouse} />{marriedOn(u.married)}</dd></div>
-            {(u.children.length > 0 || u.hidden > 0) && <div className="bk-row"><dt>Copii</dt><dd>{kids(u)}</dd></div>}
+            <div className="bk-row"><dt>{t("person.spouse", { sex: e.sex })}</dt><dd><RefName r={u.spouse} w={w} />{married(u)}</dd></div>
+            {(u.children.length > 0 || u.hidden > 0) && <div className="bk-row"><dt>{t("person.children")}</dt><dd>{kids(u)}</dd></div>}
           </div>
         );
         return (
-          <div key={i} className="bk-row"><dt>{cap(ordinalOf(i + 1, "F"))} căsătorie</dt>
-            <dd>cu <RefName r={u.spouse} />{marriedOn(u.married)}{u.children.length || u.hidden ? <>; copii: {kids(u)}</> : null}</dd></div>
+          <div key={i} className="bk-row"><dt>{t("person.nthMarriage", { n: i + 1 })}</dt>
+            <dd>{t.rich("person.marriage", { name: u.spouse.name, married: married(u), kids: u.children.length || u.hidden ? "yes" : "no", ref: refTag(u.spouse, w), list: () => kids(u) })}</dd></div>
         );
       })}
     </>
   );
 }
 
-function Person({ e, told }: { e: Entry; told?: number }) {
+function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
+  const { t } = w;
   const maiden = e.birthSurname && normName(e.birthSurname) !== normName(e.surname) ? e.birthSurname : null;
   const row = (label: string, value: React.ReactNode) => <div className="bk-row"><dt>{label}</dt><dd>{value}</dd></div>;
   return (
@@ -96,18 +114,18 @@ function Person({ e, told }: { e: Entry; told?: number }) {
       <div className="bk-person-top">
         {e.photo && <img className="bk-photo" src={e.photo} alt="" referrerPolicy="no-referrer" loading="lazy" />}
         <div className="bk-person-main">
-          <h3>{e.name}{maiden && <span className="bk-born"> (n. {maiden})</span>}</h3>
+          <h3>{e.name}{maiden && <span className="bk-born"> {t("model.maiden", { name: maiden, sex: e.sex })}</span>}</h3>
           {e.dates && <div className="bk-dates">{e.dates}</div>}
           <dl className="bk-facts">
-            {e.born && row(sexed(e.sex, "Născut", "Născută"), e.born)}
-            {e.died && row(sexed(e.sex, "Decedat", "Decedată"), e.died)}
-            {e.lives && row("Locuiește", e.lives)}
-            {e.occupation && row("Ocupația", e.occupation)}
-            {e.parents.length > 0 && row("Părinți", <Refs list={e.parents} />)}
-            <Unions e={e} />
-            {e.carers.length > 0 && row(sexed(e.sex, "Crescut de", "Crescută de", "Crescut(ă) de"), <Refs list={e.carers} />)}
-            {e.raised.length > 0 && row("A crescut", <Refs list={e.raised} />)}
-            {!!told && row("Amintiri", <><a href={`#v-${e.id}`}>{amintiri(told)}, cu vorbele {sexed(e.sex, "lui", "ei", "lui")}</a> <Pg id={`v-${e.id}`} before="(p. " after=")" /></>)}
+            {e.born && row(t("person.born", { sex: e.sex }), e.born)}
+            {e.died && row(t("person.died", { sex: e.sex }), e.died)}
+            {e.lives && row(t("person.lives"), e.lives)}
+            {e.occupation && row(t("person.occupation"), e.occupation)}
+            {e.parents.length > 0 && row(t("person.parents"), <Refs list={e.parents} w={w} />)}
+            <Unions e={e} w={w} />
+            {e.carers.length > 0 && row(t("person.raisedBy", { sex: e.sex }), <Refs list={e.carers} w={w} />)}
+            {e.raised.length > 0 && row(t("person.raised"), <Refs list={e.raised} w={w} />)}
+            {!!told && row(t("person.memories"), <><a href={`#v-${e.id}`}>{t("person.memoriesLink", { count: told, sex: e.sex })}</a> <Pg id={`v-${e.id}`} {...w.pg} /></>)}
           </dl>
         </div>
       </div>
@@ -149,113 +167,115 @@ function Ornament() {
 }
 
 /** „Cu vorbele lor”: amintirile din lada fiecăruia, pe care cine le-a scris a ales să intre în carte. */
-function Voices({ voices, options }: { voices: Voice[]; options: BookOptions }) {
+function Voices({ voices, options, w }: { voices: Voice[]; options: BookOptions; w: Words }) {
+  const { t } = w;
   const told = voices.reduce((n, v) => n + v.memories.length, 0), heard = voices.some((v) => v.memories.some((m) => m.qr));
   return (
     <section className="bk-chapter bk-voices" data-anchor="c-vorbe">
-      <h2>Cu vorbele lor</h2>
+      <h2>{t("voices.title")}</h2>
       <p className="bk-chapter-sub">
-        {cap(amintiri(told))} din lada cu amintiri, povestite chiar de ei și lăsate de ei pentru carte.
-        {heard ? " Lângă cele spuse cu glasul e un cod: scanează-l cu camera telefonului și le asculți." : ""}
-        {options.living !== "tot" ? " Cele lăsate doar pentru familia apropiată nu intră în această ediție." : ""}
+        {t("voices.sub", { count: told })}
+        {heard ? ` ${t("voices.audio", { count: told })}` : ""}
+        {options.living !== "tot" ? ` ${t("voices.private")}` : ""}
       </p>
-      {voices.map((v) => {
-        const lui = sexed(v.sex, "lui", "ei", "lui");
-        return (
-          <div key={v.id} className="bk-teller" data-anchor={`v-${v.id}`}>
-            <h3><a href={`#p-${v.id}`}>{v.name}</a>{v.dates && <span className="bk-teller-dates"> {v.dates}</span>}</h3>
-            {v.memories.map((m) => (
-              <article key={m.id} className="bk-memory">
-                <div className="bk-memory-head">
-                  <div className="bk-memory-chapter">{chapterLabel(m.chapter)}</div>
-                  {m.title && <h4>{m.title}</h4>}
-                  {m.question && <p className="bk-q">„{m.question}”{m.askedBy && <span> · a întrebat {m.askedBy}</span>}</p>}
-                  {(m.when || m.place) && <p className="bk-when">{[m.when, m.place].filter(Boolean).join(", ")}</p>}
+      {voices.map((v) => (
+        <div key={v.id} className="bk-teller" data-anchor={`v-${v.id}`}>
+          <h3><a href={`#p-${v.id}`}>{v.name}</a>{v.dates && <span className="bk-teller-dates"> {v.dates}</span>}</h3>
+          {v.memories.map((m) => (
+            <article key={m.id} className="bk-memory">
+              <div className="bk-memory-head">
+                <div className="bk-memory-chapter">{w.chapter(m.chapter)}</div>
+                {m.title && <h4>{m.title}</h4>}
+                {m.question && <p className="bk-q">{t("voices.question", { question: m.question })}{m.askedBy && <span> · {t("voices.askedBy", { name: m.askedBy })}</span>}</p>}
+                {(m.when || m.place) && <p className="bk-when">{[m.when, m.place].filter(Boolean).join(", ")}</p>}
+              </div>
+              {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt="" loading="lazy" />}
+              {m.body ? <div className="bk-memory-body">{paragraphs(m.body)}</div> : <p className="bk-memory-body bk-muted">{t("voices.toldAloud")}</p>}
+              {m.qr && m.url && (
+                <div className="bk-listen">
+                  <span className="bk-qr" dangerouslySetInnerHTML={{ __html: m.qr }} />
+                  <span>{t.rich("voices.listen", { sex: v.sex, time: m.audioSeconds ? ` (${clock(m.audioSeconds)})` : "", b: (c) => <b>{c}</b> })}
+                    <br /><span className="bk-url">{m.url.replace(/^https?:\/\//, "")}</span></span>
                 </div>
-                {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt="" loading="lazy" />}
-                {m.body ? <div className="bk-memory-body">{paragraphs(m.body)}</div> : <p className="bk-memory-body bk-muted">Povestea e spusă cu glasul.</p>}
-                {m.qr && m.url && (
-                  <div className="bk-listen">
-                    <span className="bk-qr" dangerouslySetInnerHTML={{ __html: m.qr }} />
-                    <span><b>Ascult-o cu glasul {lui}</b>{m.audioSeconds ? ` (${clock(m.audioSeconds)})` : ""}: scanează codul cu telefonul.
-                      <br /><span className="bk-url">{m.url.replace(/^https?:\/\//, "")}</span></span>
-                  </div>
-                )}
-                {m.recordedBy && <p className="bk-by">{m.audio ? "Înregistrată" : "Scrisă"} la bunici de {m.recordedBy}.</p>}
-              </article>
-            ))}
-          </div>
-        );
-      })}
+              )}
+              {m.recordedBy && <p className="bk-by">{t("voices.recorded", { audio: m.audio ? "yes" : "no", name: m.recordedBy })}</p>}
+            </article>
+          ))}
+        </div>
+      ))}
     </section>
   );
 }
 
-function Book({ model, options, text, title, subtitle, author, treeName, when, voices }: {
-  model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string; voices: Voice[];
+function Book({ model, options, text, title, subtitle, author, treeName, when, voices, oldestSex, w }: {
+  model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string;
+  voices: Voice[]; oldestSex: Sex; w: Words;
 }) {
+  const { t } = w;
   const { stats, centerName, trunk } = model;
-  const fanTitle = centerName ? `Strămoșii lui ${centerName}` : "Evantaiul strămoșilor";
-  const urmasi = trunk ? `Urmașii lui ${trunk.name}` : "";
+  const fanTitle = centerName ? t("fan.titleOf", { name: centerName }) : t("fan.title");
+  const urmasi = trunk ? t("descendants.title", { name: trunk.name }) : "";
   const toc: { id: string; title: string; sub?: string }[] = [
-    { id: "c-despre", title: "Despre această carte" },
-    ...(text.preface ? [{ id: "c-cuvant", title: "Cuvânt înainte" }] : []),
+    { id: "c-despre", title: t("about.title") },
+    ...(text.preface ? [{ id: "c-cuvant", title: t("preface") }] : []),
     ...(model.fanGenerations >= 2 ? [{ id: "c-evantai", title: fanTitle }] : []),
-    ...(model.tree ? [{ id: "c-copac", title: "Copacul neamului" }] : []),
+    ...(model.tree ? [{ id: "c-copac", title: t("tree.title") }] : []),
     ...(model.outline.length >= 3 ? [{ id: "c-urmasi", title: urmasi }] : []),
     ...model.generations.map((g) => ({ id: g.id, title: g.title, sub: g.subtitle })),
-    ...(voices.length ? [{ id: "c-vorbe", title: "Cu vorbele lor" }] : []),
-    { id: "c-index", title: "Index de nume" },
+    ...(voices.length ? [{ id: "c-vorbe", title: t("voices.title") }] : []),
+    { id: "c-index", title: t("index") },
   ];
   const told = new Map(voices.map((v) => [v.id, v.memories.length]));
   const memoriesCount = voices.reduce((n, v) => n + v.memories.length, 0);
-  const privacy = options.living === "nume" ? "Cei în viață apar doar cu numele, fără date, locuri și poze, ca să poată fi dată cartea și altora."
-    : options.living === "ascunsi" ? "Cei în viață nu apar în această ediție a cărții."
-    : "Cei în viață apar cu toate datele: cartea e doar pentru familie.";
+  const privacy = options.living === "nume" ? t("about.privacyNames") : options.living === "ascunsi" ? t("about.privacyHidden") : t("about.privacyAll");
+  const oldest = stats.oldest;
+  const treeCount = Object.keys(model.treePeople).length;
   return (
-    <div className={`bk bk-${options.format}`}>
+    <div className={`bk bk-${options.format}`} lang={w.locale}>
       <section className="bk-cover">
-        <div className="bk-kicker">Cartea neamului</div>
+        <div className="bk-kicker">{t("cover.kicker")}</div>
         <h1 className="bk-title">{title}</h1>
         {subtitle && <p className="bk-subtitle">{subtitle}</p>}
         <Ornament />
-        <div className="bk-cover-foot">Alcătuită de {author}<br />{when}</div>
+        <div className="bk-cover-foot">{t("cover.by", { author })}<br />{when}</div>
       </section>
 
       <section className="bk-chapter bk-toc" data-anchor="c-cuprins">
-        <h2>Cuprins</h2>
+        <h2>{t("toc")}</h2>
         <ol>
-          {toc.map((t) => (
-            <li key={t.id} className={t.sub !== undefined ? "sub" : undefined}>
-              <a href={`#${t.id}`}>{t.title}{t.sub ? <span className="bk-muted"> · {t.sub}</span> : null}</a>
-              <span className="bk-dots" /><Pg id={t.id} />
+          {toc.map((x) => (
+            <li key={x.id} className={x.sub !== undefined ? "sub" : undefined}>
+              <a href={`#${x.id}`}>{x.title}{x.sub ? <span className="bk-muted"> · {x.sub}</span> : null}</a>
+              <span className="bk-dots" /><Pg id={x.id} />
             </li>
           ))}
         </ol>
       </section>
 
       <section className="bk-chapter" data-anchor="c-despre">
-        <h2>Despre această carte</h2>
+        <h2>{t("about.title")}</h2>
         <p className="bk-chapter-sub">{treeName}</p>
         <p className="bk-lead">
-          Cartea adună {oameni(stats.people)}{stats.generations > 1 ? `, pe ${stats.generations} generații` : ""}.
-          {stats.oldest ? <> Cel mai vechi este <RefName r={stats.oldest} />{stats.oldest.dates ? `, ${stats.oldest.dates}` : ""}.</> : null}
-          {stats.from && stats.to && stats.to > stats.from ? ` Primul s-a născut în ${stats.from}, cel mai tânăr în ${stats.to}.` : ""}
+          {stats.generations > 1 ? t("about.peopleGenerations", { count: stats.people, generations: stats.generations }) : t("about.people", { count: stats.people })}
+          {oldest ? <> {oldest.dates
+            ? t.rich("about.oldestDated", { sex: oldestSex, name: oldest.name, dates: oldest.dates, ref: refTag(oldest, w) })
+            : t.rich("about.oldest", { sex: oldestSex, name: oldest.name, ref: refTag(oldest, w) })}</> : null}
+          {stats.from && stats.to && stats.to > stats.from ? ` ${t("about.span", { from: String(stats.from), to: String(stats.to) })}` : ""}
         </p>
-        {stats.surnames.length > 0 && <><h3 className="bk-h">Numele de familie</h3><p>{stats.surnames.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
-        {stats.places.length > 0 && <><h3 className="bk-h">Locurile unde s-au născut</h3><p>{stats.places.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
-        <h3 className="bk-h">Cum se citește</h3>
-        <p>Oamenii sunt așezați pe generații, de la cei mai vechi la cei mai tineri; în fiecare generație, fiecare om are alături soțul sau soția,
-          iar frații vin în ordinea nașterii. Numărul de lângă un nume, de pildă (p. 14), arată pagina pe care e fișa acelui om.
-          La final găsești indexul cu toate numele, și cu numele de fată.</p>
-        {voices.length > 0 && <p>Înainte de index, în „Cu vorbele lor”, sunt {amintiri(memoriesCount)} povestite chiar de {voices.length === 1 ? voices[0].name : oameni(voices.length)} din neam,
-          așa cum le-au scris sau le-au spus{voices.some((v) => v.memories.some((m) => m.qr)) ? "; pe cele spuse cu glasul le asculți scanând codul de lângă ele" : ""}.</p>}
+        {stats.surnames.length > 0 && <><h3 className="bk-h">{t("about.surnames")}</h3><p>{stats.surnames.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
+        {stats.places.length > 0 && <><h3 className="bk-h">{t("about.places")}</h3><p>{stats.places.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
+        <h3 className="bk-h">{t("about.howTitle")}</h3>
+        <p>{t("about.how", { example: `${w.pg.before}14${w.pg.after}` })}</p>
+        {voices.length > 0 && <p>{t("about.voices", {
+          chapter: t("voices.title"), count: memoriesCount, audio: voices.some((v) => v.memories.some((m) => m.qr)) ? "yes" : "no",
+          tellers: voices.length === 1 ? voices[0].name : t("about.tellers", { count: voices.length }),
+        })}</p>}
         <p className="bk-note">{privacy}</p>
       </section>
 
       {text.preface && (
         <section className="bk-chapter bk-preface" data-anchor="c-cuvant">
-          <h2>Cuvânt înainte</h2>
+          <h2>{t("preface")}</h2>
           <div style={{ marginTop: "6mm" }}>{paragraphs(text.preface)}</div>
           <p className="bk-sign">{author}</p>
         </section>
@@ -264,40 +284,42 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
       {model.fanGenerations >= 2 && (
         <section className="bk-chapter" data-anchor="c-evantai">
           <h2>{fanTitle}</h2>
-          <p className="bk-chapter-sub">{model.fanGenerations} generații: linia tatălui în stânga, a mamei în dreapta.</p>
-          <figure className="bk-fig"><BookFan slots={model.fan} generations={model.fanGenerations} centerHidden={!centerName} /></figure>
+          <p className="bk-chapter-sub">{t("fan.sub", { count: model.fanGenerations })}</p>
+          <figure className="bk-fig">
+            <BookFan slots={model.fan} generations={model.fanGenerations} centerHidden={!centerName} locale={w.locale} label={t("fan.title")} livingLabel={t("fan.living")} />
+          </figure>
           <div className="bk-legend">
-            <span><i style={{ background: "#c9daef" }} />Linia tatălui</span>
-            <span><i style={{ background: "#ecd8b4" }} />Linia mamei</span>
-            <span><i style={{ border: "0.8pt dashed #a9b0b8" }} />Nu se știe încă</span>
+            <span><i style={{ background: "#c9daef" }} />{t("fan.father")}</span>
+            <span><i style={{ background: "#ecd8b4" }} />{t("fan.mother")}</span>
+            <span><i style={{ border: "0.8pt dashed #a9b0b8" }} />{t("fan.unknown")}</span>
           </div>
         </section>
       )}
 
       {model.tree && (
         <section className="bk-chapter" data-anchor="c-copac">
-          <h2>Copacul neamului</h2>
+          <h2>{t("tree.title")}</h2>
           <p className="bk-chapter-sub">
-            {urmasi}: {oameni(Object.keys(model.treePeople).length)}.{centerName ? ` Trunchiul duce până la ${centerName}.` : ""} În PDF, mărește desenul ca să citești toate numele.
+            {centerName ? t("tree.subTrunk", { title: urmasi, count: treeCount, name: centerName }) : t("tree.sub", { title: urmasi, count: treeCount })} {t("tree.zoom")}
           </p>
-          <figure className="bk-fig" data-fit><PageIntl ns={["Charts"]} locale="ro"><BookTree root={model.tree} people={model.treePeople} path={model.path} /></PageIntl></figure>
+          <figure className="bk-fig" data-fit><PageIntl ns={["Charts"]} locale={w.locale}><BookTree root={model.tree} people={model.treePeople} path={model.path} /></PageIntl></figure>
         </section>
       )}
 
       {model.outline.length >= 3 && (
         <section className="bk-chapter" data-anchor="c-urmasi">
           <h2>{urmasi}</h2>
-          <p className="bk-chapter-sub">Pe rând, cu numere: 1.2 e al doilea copil al primului, 1.2.1 primul lui copil; ⚭ înseamnă căsătorit cu.</p>
+          <p className="bk-chapter-sub">{t("descendants.sub")}</p>
           <ol className="bk-outline">
             {model.outline.map((l) => (
               <li key={l.num} style={{ paddingLeft: `${Math.min(l.depth, 9) * 4}mm` }}>
                 <span className="num">{l.num}</span>
                 <span className="who">{l.person.id ? <a href={`#p-${l.person.id}`}>{l.person.name}</a> : l.person.name}</span>
                 {l.person.dates && <span className="bk-muted"> {l.person.dates}</span>}
-                {l.person.id && <> <Pg id={`p-${l.person.id}`} before="(p. " after=")" /></>}
+                {l.person.id && <> <Pg id={`p-${l.person.id}`} {...w.pg} /></>}
                 {l.from && <span className="from"> · {l.from}</span>}
-                {l.spouses.map((s) => <span key={s.name} className="sp"> ⚭ <RefName r={s} /></span>)}
-                {options.living === "ascunsi" && l.hidden > 0 && <span className="bk-muted"> · și {inLife(l.hidden, true)}</span>}
+                {l.spouses.map((s) => <span key={s.name} className="sp"> ⚭ <RefName r={s} w={w} /></span>)}
+                {options.living === "ascunsi" && l.hidden > 0 && <span className="bk-muted"> · {t("descendants.hidden", { count: l.hidden })}</span>}
               </li>
             ))}
           </ol>
@@ -307,15 +329,15 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
       {model.generations.map((g) => (
         <section key={g.id} className="bk-chapter" data-anchor={g.id}>
           <h2>{g.title}</h2>
-          {g.subtitle && <p className="bk-chapter-sub">{g.subtitle} · {oameni(g.entries.length)}</p>}
-          {g.entries.map((e) => <Person key={e.id} e={e} told={told.get(e.id)} />)}
+          {g.subtitle && <p className="bk-chapter-sub">{g.subtitle} · {t("people", { count: g.entries.length })}</p>}
+          {g.entries.map((e) => <Person key={e.id} e={e} told={told.get(e.id)} w={w} />)}
         </section>
       ))}
 
-      {voices.length > 0 && <Voices voices={voices} options={options} />}
+      {voices.length > 0 && <Voices voices={voices} options={options} w={w} />}
 
       <section className="bk-chapter" data-anchor="c-index">
-        <h2>Index de nume</h2>
+        <h2>{t("index")}</h2>
         <ol className="bk-index">
           {model.index.map((l, i) => (
             <li key={`${l.id}-${i}`}><span className="name"><a href={`#p-${l.id}`}>{l.label}</a>{l.dates && <span className="bk-muted"> {l.dates}</span>}</span><Pg id={`p-${l.id}`} /></li>
@@ -325,15 +347,19 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
 
       <section className="bk-colophon">
         <p><b>{title}</b></p>
-        <p>Alcătuită de {author} pe Cartea Neamului, în {when}, din arborele „{treeName}”: {oameni(stats.people)}.</p>
+        <p>{t("colophon.made", { author, when, tree: treeName, count: stats.people })}</p>
         <p>{privacy}</p>
-        <p>Cartea se poate reface oricând de pe site, cu tot ce a mai adăugat familia între timp.</p>
+        <p>{t("colophon.redo")}</p>
       </section>
     </div>
   );
 }
 
-/** Cartea neamului: coperta, cuprinsul, desenele și câte o fișă pentru fiecare om, gata de tipărit sau de salvat ca PDF. */
+/**
+ * Cartea neamului: coperta, cuprinsul, desenele și câte o fișă pentru fiecare om, gata de tipărit sau de salvat ca PDF.
+ * Cartea se scrie în limba aleasă cu `?limba=` (de la sine, limba cititorului), ca să poată fi tipărită și în română pentru
+ * bunici, și în germană pentru nepoți; butoanele paginii rămân în limba cititorului.
+ */
 export default async function BookPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const { id } = await params;
   const q = await searchParams;
@@ -342,6 +368,15 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const role = await roleIn(db, id, me.id);
   if (!role) notFound();
   const options = bookOptions(q);
+  const uiLocale = await getLocale();
+  const asked = typeof q.limba === "string" ? q.limba : undefined;
+  const locale: Locale = isLocale(asked) ? asked : uiLocale;
+  const [t, tb, tl] = await Promise.all([getT("Book"), getT("Book", locale), getT("Lada", locale)]);
+  const w: Words = {
+    t: tb, pg: pageParts(tb), locale,
+    list: new Intl.ListFormat(locale, { style: "long", type: "conjunction" }),
+    chapter: (c) => tl(`chapters.${chapterKey(c)}`),
+  };
   const want = typeof q.p === "string" && UUID.test(q.p) ? q.p : undefined;
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const data = await loadTreeView(db, id, want ?? mine?.id, 6);
@@ -349,7 +384,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const [draft] = await db.select({ options: bookExport.options }).from(bookExport)
     .where(and(eq(bookExport.treeId, id), eq(bookExport.status, "draft"))).orderBy(desc(bookExport.createdAt)).limit(1);
   const text = cleanText((draft?.options as { text?: Partial<BookText> } | undefined)?.text);
-  const model = buildBook({ people: data.people, rels: data.rels, raised: data.raised, centerId: data.centerId, slots: data.slots, options });
+  const model = buildBook({ people: data.people, rels: data.rels, raised: data.raised, centerId: data.centerId, slots: data.slots, options, words: bookWords(locale, tb) });
   const { stats } = model;
   // „Cu vorbele lor”: amintirile bifate pentru carte pe care cel care face cartea le vede și pe site, pe oameni (în ordinea fișelor) și pe capitole.
   const memories = await bookMemories(db, id, { userId: me.id, personId: mine?.id ?? null }, options.living, options.photos);
@@ -367,38 +402,40 @@ export default async function BookPage({ params, searchParams }: { params: Promi
       })),
   })));
   voices.sort((a, b) => place.get(a.id)! - place.get(b.id)!);
+  const range = stats.from && stats.to && stats.to > stats.from ? ` · ${stats.from}–${stats.to}` : "";
   const defaults = {
     title: data.tree.name,
-    subtitle: `${cap(oameni(stats.people))}${stats.generations > 1 ? `, ${stats.generations} generații` : ""}${stats.from && stats.to && stats.to > stats.from ? ` · ${stats.from}–${stats.to}` : ""}`,
+    subtitle: `${stats.generations > 1 ? tb("defaults.subtitleGenerations", { count: stats.people, generations: stats.generations }) : tb("defaults.subtitle", { count: stats.people })}${range}`,
     author: me.name,
   };
   const title = text.title || defaults.title, subtitle = text.subtitle || defaults.subtitle, author = text.author || defaults.author;
-  const when = new Intl.DateTimeFormat("ro-RO", { month: "long", year: "numeric", timeZone: "Europe/Bucharest" }).format(new Date());
+  const when = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "Europe/Bucharest" }).format(new Date());
   const choices = Object.values(data.people).filter((p) => !p.discreet && !isPlaceholder(p.givenName))
-    .sort((a, b) => a.name.localeCompare(b.name, "ro"))
+    .sort((a, b) => a.name.localeCompare(b.name, uiLocale))
     .map((p) => ({ id: p.id, label: `${p.name}${p.birthYear ? ` (${p.birthYear})` : ""}` }));
-  const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin }));
+  const oldestSex: Sex = (stats.oldest?.id && data.people[stats.oldest.id]?.sex) || "U";
+  const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin, locale }));
   return (
     <section className="stack book-root">
-      <div className="card book-chrome">
-        <div className="toolbar" style={{ marginBottom: 4 }}>
-          <div className="title">Cartea neamului</div>
-          <Link className="btn" href={`/arbore/${id}${data.centerId ? `?p=${data.centerId}` : ""}`}>Înapoi la arbore</Link>
+      <PageIntl ns={["BookUi"]}>
+        <div className="card book-chrome">
+          <div className="toolbar" style={{ marginBottom: 4 }}>
+            <div className="title">{t("page.title")}</div>
+            <Link className="btn" href={`/arbore/${id}${data.centerId ? `?p=${data.centerId}` : ""}`}>{t("page.back")}</Link>
+          </div>
+          <p className="muted" style={{ margin: "0 0 10px" }}>{t("page.lead")}</p>
+          <BookOptionsForm treeId={id} center={data.centerId} options={options} people={choices} bookLocale={locale} uiLocale={uiLocale} />
         </div>
-        <p className="muted" style={{ margin: "0 0 10px" }}>
-          Coperta, cuprinsul, strămoșii în evantai, copacul neamului și câte o fișă pentru fiecare om, cu poze și povești. Se face din ce e acum în arbore:
-          când familia mai adaugă ceva, deschide pagina din nou și cartea are și noutățile.
-        </p>
-        <BookOptionsForm treeId={id} center={data.centerId} options={options} people={choices} />
-      </div>
-      {can(role, "editor") && <BookTextForm treeId={id} text={text} defaults={defaults} />}
-      {stats.people === 0 ? (
-        <div className="card"><p style={{ margin: 0 }}>Nu e încă nimeni de pus în carte. Adaugă oameni în arbore, apoi revino aici.</p></div>
-      ) : (
-        <BookView format={options.format} renderKey={renderKey} fileName={title}>
-          <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when} voices={voices} />
-        </BookView>
-      )}
+        {can(role, "editor") && <BookTextForm treeId={id} text={text} defaults={defaults} />}
+        {stats.people === 0 ? (
+          <div className="card"><p style={{ margin: 0 }}>{t("page.empty")}</p></div>
+        ) : (
+          <BookView format={options.format} renderKey={renderKey} fileName={title}>
+            <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when}
+              voices={voices} oldestSex={oldestSex} w={w} />
+          </BookView>
+        )}
+      </PageIntl>
     </section>
   );
 }

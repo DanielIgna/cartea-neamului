@@ -2,6 +2,7 @@ import type { Catalog } from "./ro";
 import { frArbore } from "./arbore/fr";
 import { frAmintiri } from "./amintiri/fr";
 import { frVremuri } from "./vremuri/fr";
+import { frCarte } from "./carte/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -290,4 +291,5 @@ export const fr: Catalog = {
   ...frAmintiri,
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...frVremuri,
+  ...frCarte,
 };

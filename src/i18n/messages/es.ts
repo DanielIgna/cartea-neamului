@@ -2,6 +2,7 @@ import type { Catalog } from "./ro";
 import { esArbore } from "./arbore/es";
 import { esAmintiri } from "./amintiri/es";
 import { esVremuri } from "./vremuri/es";
+import { esCarte } from "./carte/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -290,4 +291,5 @@ export const es: Catalog = {
   ...esAmintiri,
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...esVremuri,
+  ...esCarte,
 };
