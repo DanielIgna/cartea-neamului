@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { IntlMessageFormat } from "intl-messageformat";
 import { createTranslator } from "use-intl/core";
 import { LANGUAGE_NAMES, LOCALES, localeFromAcceptLanguage, localeFromCookieHeader, type Locale } from "@/i18n/locales";
-import { CLIENT_NAMESPACES, loadMessages } from "@/i18n/messages";
+import { CLIENT_NAMESPACES, PAGE_NAMESPACES, loadMessages } from "@/i18n/messages";
 import { persoane } from "@/lib/ro-words";
 
 /** Felurile de bucăți dintr-un mesaj ICU, cum le numerotează formatjs (TYPE din icu-messageformat-parser). */
@@ -115,9 +115,12 @@ describe("cataloagele de texte", () => {
     for (const [key, msg] of leaves(catalogs[l])) {
       const want = shape(ro.get(key)!, "ro");
       const got = shape(msg, l);
-      expect([...got.args.keys()].sort(), `${l} ${key}: valori`).toEqual([...want.args.keys()].sort());
+      // O limbă poate lăsa deoparte un select de care gramatica ei nu are nevoie (engleza n-are „decedat/decedată”); orice altă valoare trebuie să rămână.
+      for (const name of got.args.keys()) expect(want.args.has(name), `${l} ${key}: {${name}} nu e în română`).toBe(true);
+      for (const [name, kind] of want.args) if (!got.args.has(name)) expect(kind, `${l} ${key}: lipsește {${name}}`).toBe("select");
       expect([...got.tags].sort(), `${l} ${key}: etichete`).toEqual([...want.tags].sort());
       for (const [name, kind] of want.args) {
+        if (!got.args.has(name)) continue;
         // Un număr se poate arăta și simplu ({count}), dar textul nu poate deveni număr, select sau dată.
         const ok = got.args.get(name) === kind || (kind === "num" && got.args.get(name) === "text");
         expect(ok, `${l} ${key}: {${name}} e „${got.args.get(name)}”, în română „${kind}”`).toBe(true);
@@ -157,17 +160,49 @@ describe("componentele din browser", () => {
   const files = (readdirSync("src", { recursive: true }) as string[]).filter((f) => /\.tsx?$/.test(f)).map((f) => join("src", f));
   const isClient = (code: string) => /^\s*(?:\/\/[^\n]*\n|\/\*[\s\S]*?\*\/\s*)*["']use client["']/.test(code);
 
-  it("primesc toate textele pe care le cer (CLIENT_NAMESPACES)", () => {
-    const wanted = new Set<string>();
-    for (const f of files) {
-      const code = readFileSync(f, "utf8");
-      for (const m of code.matchAll(/useTranslations\(\s*(?:"([^"]*)"|'([^']*)')?\s*\)/g)) {
-        const ns = (m[1] ?? m[2] ?? "").split(".")[0];
-        expect(ns, `${f}: useTranslations() fără nume`).not.toBe("");
-        wanted.add(ns);
-      }
+  const code = new Map(files.map((f) => [f, readFileSync(f, "utf8")]));
+  /** Părțile din texte cerute cu useTranslations("…") într-un fișier. */
+  const asked = (f: string) => [...code.get(f)!.matchAll(/useTranslations\(\s*(?:"([^"]*)"|'([^']*)')?\s*\)/g)].map((m) => (m[1] ?? m[2] ?? "").split(".")[0]);
+  /** Fișierele din src pe care le aduce un fișier (import, export … from, import() dinamic), fără importurile doar de tip. */
+  const deps = (f: string): string[] => {
+    const specs = [...code.get(f)!.matchAll(/^\s*(?:import|export)\s+(?!type\s)[^;]*?\sfrom\s+["']([^"']+)["']|import\(\s*["']([^"']+)["']\s*\)/gm)].map((m) => m[1] ?? m[2]);
+    return specs.flatMap((spec) => {
+      const base = spec.startsWith("@/") ? join("src", spec.slice(2)) : spec.startsWith(".") ? join(dirname(f), spec) : null;
+      const hit = base && ["", ".ts", ".tsx", "/index.ts", "/index.tsx"].map((e) => base + e).find((x) => code.has(x));
+      return hit ? [hit] : [];
+    });
+  };
+  const reach = (start: string) => {
+    const seen = new Set([start]);
+    for (const f of seen) for (const d of deps(f)) seen.add(d);
+    return seen;
+  };
+  /** Ce părți dă mai departe o pagină sau un layout cu <PageIntl ns={[…]}>. */
+  const given = (f: string) => [...code.get(f)!.matchAll(/<PageIntl\s+ns=\{\[([^\]]*)\]\}/g)].flatMap((m) => [...m[1].matchAll(/["']([^"']+)["']/g)].map((x) => x[1]));
+
+  it("cer doar părți pe care le avem (CLIENT_NAMESPACES sau PAGE_NAMESPACES)", () => {
+    const known = [...CLIENT_NAMESPACES, ...PAGE_NAMESPACES] as readonly string[];
+    for (const f of files) if (isClient(code.get(f)!)) for (const ns of asked(f)) {
+      expect(ns, `${f}: useTranslations() fără nume`).not.toBe("");
+      expect(known, `${f}: „${ns}” lipsește din CLIENT_NAMESPACES și din PAGE_NAMESPACES`).toContain(ns);
     }
-    for (const ns of wanted) expect(CLIENT_NAMESPACES as readonly string[], `${ns} lipsește din CLIENT_NAMESPACES`).toContain(ns);
+  });
+
+  it("fiecare pagină dă componentelor ei părțile de pagină pe care le cer (<PageIntl>)", () => {
+    const pages = files.filter((f) => /^src[\\/]app[\\/].*\b(page|layout)\.tsx$/.test(f));
+    expect(pages.length).toBeGreaterThan(10);
+    for (const page of pages) {
+      const need = new Set<string>();
+      for (const f of reach(page)) if (isClient(code.get(f)!)) for (const ns of asked(f)) if ((PAGE_NAMESPACES as readonly string[]).includes(ns)) need.add(ns);
+      if (!need.size) continue;
+      // Ce dă pagina însăși și layout-urile de deasupra ei.
+      const have = new Set(given(page));
+      for (let dir = dirname(page); dir.startsWith(join("src", "app")); dir = dirname(dir)) {
+        const layout = join(dir, "layout.tsx");
+        if (layout !== page && code.has(layout)) for (const ns of given(layout)) have.add(ns);
+      }
+      for (const ns of need) expect([...have], `${page} folosește „${ns}”, dar nu-l dă cu <PageIntl ns={[…]}>`).toContain(ns);
+    }
   });
 
   it("„use-intl” (cu React) doar în fișiere „use client”; pe server se folosește getT", () => {

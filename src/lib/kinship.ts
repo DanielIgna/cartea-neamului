@@ -3,6 +3,8 @@
  * părinți, copii, soți, frați și gradul de rudenie (Codul civil: numărul de generații
  * până la ascendentul comun și înapoi; în linie dreaptă, numărul de generații dintre cei doi).
  */
+import { kinLabel, romanDegree } from "./kin-words";
+
 export type Sex = "M" | "F" | "U";
 /** O legătură; la căsătorii, `start` e data căsătoriei scrisă de om și `created` momentul în care a fost trecută în arbore. */
 export type Rel = { type: "parent_child" | "partnership"; a: string; b: string; start?: string | null; created?: number };
@@ -89,75 +91,97 @@ function ancestorsWithDepth(g: Graph, id: string, max = 30) {
   return out;
 }
 
-export type Kinship = { label: string; degree: number | null; up: number; down: number; ancestor?: string };
+/**
+ * Legătura, fără cuvinte: din ea se scrie numele rudeniei în fiecare limbă (src/lib/kin-words.ts).
+ * `blood`: `up` generații urcate de la ego până la ascendentul comun, `down` coborâte până la rudă; `half` = sexul singurului
+ * părinte comun, la frații doar după un părinte. Celelalte sunt legături prin căsătorie.
+ */
+export type KinTerm =
+  | { t: "self" }
+  | { t: "blood"; up: number; down: number; half?: Sex }
+  | { t: "spouse" }
+  /** Soțul/soția unui părinte, care nu e și părintele lui ego: după (vitreg), înainte (a câta soție/soț) sau fără ani știuți. */
+  | { t: "parentSpouse"; parent: Sex; when: "after" | "before" | "unknown"; order: number }
+  | { t: "childSpouse" }
+  | { t: "siblingInLaw" }
+  | { t: "stepGrandparent" }
+  | { t: "piblingByMarriage" }
+  /** Soțul/soția unei rude de sânge mai depărtate; `kin` e ruda, cu sexul ei. */
+  | { t: "kinSpouse"; kin: KinTerm; kinSex: Sex }
+  | { t: "parentInLaw" }
+  | { t: "stepChild" }
+  | { t: "stepGrandchild" }
+  /** Ruda de sânge a soțului/soției lui ego; `kin` e cum îi este soțului/soției, `spouse` sexul acestuia. */
+  | { t: "spouseKin"; kin: KinTerm; spouse: Sex };
+
+/** `label` e numele în română; în celelalte limbi se scrie din `term` și `sex` cu kinLabel (src/lib/kin-words.ts). */
+export type Kinship = { label: string; term: KinTerm; sex: Sex; degree: number | null; up: number; down: number; ancestor?: string };
 
 /** Cum îi este `other` lui `ego`: „bunic”, „văr primar”, „soție”… și gradul de rudenie. */
 export function kinship(g: Graph, ego: string, other: string): Kinship | null {
   return relate(g, ego, other, true);
 }
 
+const made = (term: KinTerm, sex: Sex, rest: Omit<Kinship, "label" | "term" | "sex">): Kinship => ({ label: kinLabel(term, sex, "ro"), term, sex, ...rest });
+
 /** `affinity` = încearcă și legăturile prin căsătorie; la pasul următor doar de sânge, ca socrii socrilor să nu cicleze la nesfârșit. */
 function relate(g: Graph, ego: string, other: string, affinity: boolean): Kinship | null {
-  if (ego === other) return { label: "persoana din centru", degree: 0, up: 0, down: 0 };
+  const sex = g.sex.get(other) ?? "U";
+  if (ego === other) return made({ t: "self" }, sex, { degree: 0, up: 0, down: 0 });
   const a = ancestorsWithDepth(g, ego), b = ancestorsWithDepth(g, other);
   let best: { up: number; down: number; ancestor: string } | null = null;
   for (const [anc, up] of a) {
     const down = b.get(anc);
     if (down !== undefined && (!best || up + down < best.up + best.down)) best = { up, down, ancestor: anc };
   }
-  const sex = g.sex.get(other) ?? "U";
   if (best) {
-    let label = bloodLabel(best.up, best.down, sex);
+    const term: KinTerm = { t: "blood", up: best.up, down: best.down };
     // Frați doar după un părinte (din altă căsătorie): „frate după tată”, „soră după mamă”.
     if (best.up === 1 && best.down === 1) {
       const mine = g.parents.get(ego) ?? [], theirs = g.parents.get(other) ?? [];
       const shared = mine.filter((x) => theirs.includes(x));
-      if (shared.length === 1 && mine.length === 2 && theirs.length === 2)
-        label += g.sex.get(shared[0]) === "M" ? " după tată" : g.sex.get(shared[0]) === "F" ? " după mamă" : " după un părinte";
+      if (shared.length === 1 && mine.length === 2 && theirs.length === 2) term.half = g.sex.get(shared[0]) ?? "U";
     }
-    return { label, degree: best.up + best.down, ...best };
+    return made(term, sex, { degree: best.up + best.down, ...best });
   }
   if (!affinity) return null;
   // Fără ascendent comun: poate fi soț/soție sau rudă prin alianță (afin).
-  if ((g.partners.get(ego) ?? []).includes(other)) return { label: pick(sex, "soț", "soție", "partener(ă)"), degree: null, up: 0, down: 0 };
+  if ((g.partners.get(ego) ?? []).includes(other)) return made({ t: "spouse" }, sex, { degree: null, up: 0, down: 0 });
   for (const partner of g.partners.get(other) ?? []) {
     const k = relate(g, ego, partner, false);
-    if (k && k.degree !== null) return { label: spouseOfKin(g, ego, other, partner, k, sex), degree: null, up: k.up, down: k.down };
+    if (k && k.degree !== null) return made(spouseOfKin(g, ego, other, partner, k), sex, { degree: null, up: k.up, down: k.down });
   }
   for (const partner of g.partners.get(ego) ?? []) {
     const k = relate(g, partner, other, false);
-    if (k && k.degree !== null) return { label: kinOfSpouse(k, sex, g.sex.get(partner) ?? "U"), degree: null, up: k.up, down: k.down };
+    if (k && k.degree !== null) return made(kinOfSpouse(k, g.sex.get(partner) ?? "U"), sex, { degree: null, up: k.up, down: k.down });
   }
   return null;
 }
 
 /** Soțul/soția unei rude de sânge: mamă vitregă, noră, ginere, cumnat(ă)… */
-function spouseOfKin(g: Graph, ego: string, other: string, kin: string, k: Kinship, sex: Sex): string {
+function spouseOfKin(g: Graph, ego: string, other: string, kin: string, k: Kinship): KinTerm {
   if (k.up === 1 && k.down === 0) {
     // Soția tatălui (soțul mamei) care nu e și părintele meu: după ani, căsătoria ei a fost după cea din care sunt eu (vitregă) sau înainte (prima soție).
     const unions = unionsOf(g, kin), theirs = unions.find((u) => u.spouse === other), mine = unions.find((u) => u.children.includes(ego));
-    const of = pick(g.sex.get(kin) ?? "U", "tatălui", "mamei", "părintelui");
-    if (theirs && mine && theirs.year !== null && mine.year !== null && theirs.year !== mine.year) {
-      if (theirs.year > mine.year) return pick(sex, "tată vitreg", "mamă vitregă", "părinte vitreg");
-      const nth = ordinalOf(theirs.order, sex);
-      return pick(sex, `${nth} soț al ${of}`, `${nth} soție a ${of}`, `${nth} partener al ${of}`);
-    }
-    return pick(sex, `soțul ${of}`, `soția ${of}`, `partenerul ${of}`);
+    const parent = g.sex.get(kin) ?? "U";
+    if (theirs && mine && theirs.year !== null && mine.year !== null && theirs.year !== mine.year)
+      return { t: "parentSpouse", parent, when: theirs.year > mine.year ? "after" : "before", order: theirs.order };
+    return { t: "parentSpouse", parent, when: "unknown", order: theirs?.order ?? 0 };
   }
-  if (k.up === 0 && k.down === 1) return pick(sex, "ginere", "noră", "soțul/soția copilului");
-  if (k.up === 1 && k.down === 1) return pick(sex, "cumnat", "cumnată", "cumnat(ă)");
-  if (k.up === 2 && k.down === 0) return pick(sex, "bunic vitreg", "bunică vitregă", "bunic(ă) vitreg(ă)");
-  if (k.up === 2 && k.down === 1) return pick(sex, "unchi prin alianță", "mătușă prin alianță", "unchi/mătușă prin alianță");
-  return `${pick(sex, "soțul", "soția", "partenerul")} unei rude (${k.label})`;
+  if (k.up === 0 && k.down === 1) return { t: "childSpouse" };
+  if (k.up === 1 && k.down === 1) return { t: "siblingInLaw" };
+  if (k.up === 2 && k.down === 0) return { t: "stepGrandparent" };
+  if (k.up === 2 && k.down === 1) return { t: "piblingByMarriage" };
+  return { t: "kinSpouse", kin: k.term, kinSex: k.sex };
 }
 
 /** Ruda de sânge a soțului/soției: socru, soacră, cumnat(ă), fiu/fiică vitreg(ă)… */
-function kinOfSpouse(k: Kinship, sex: Sex, spouseSex: Sex): string {
-  if (k.up === 1 && k.down === 0) return pick(sex, "socru", "soacră", "socru/soacră");
-  if (k.up === 1 && k.down === 1) return pick(sex, "cumnat", "cumnată", "cumnat(ă)");
-  if (k.up === 0 && k.down === 1) return pick(sex, "fiu vitreg", "fiică vitregă", "copil vitreg");
-  if (k.up === 0 && k.down === 2) return pick(sex, "nepot vitreg", "nepoată vitregă", "nepot(oată) vitreg(ă)");
-  return `rudă prin alianță: ${k.label}, din neamul ${pick(spouseSex, "soțului", "soției", "soțului/soției")}`;
+function kinOfSpouse(k: Kinship, spouseSex: Sex): KinTerm {
+  if (k.up === 1 && k.down === 0) return { t: "parentInLaw" };
+  if (k.up === 1 && k.down === 1) return { t: "siblingInLaw" };
+  if (k.up === 0 && k.down === 1) return { t: "stepChild" };
+  if (k.up === 0 && k.down === 2) return { t: "stepGrandchild" };
+  return { t: "spouseKin", kin: k.term, spouse: spouseSex };
 }
 
 /** „prima”, „a doua”… (sau „primul”, „al doilea”…) pentru căsătorii. */
@@ -166,39 +190,11 @@ export function ordinalOf(n: number, sex: Sex = "F") {
   return sex === "M" ? m[n] ?? `al ${n}-lea` : f[n] ?? `a ${n}-a`;
 }
 
-const pick = (sex: Sex, m: string, f: string, u: string) => (sex === "M" ? m : sex === "F" ? f : u);
-const ordinal = (n: number) => (n === 1 ? "primar" : `de-al ${["", "", "doilea", "treilea", "patrulea", "cincilea", "șaselea"][n] ?? `${n}-lea`}`);
+/** Numele rudeniei de sânge în română: „bunic”, „văr primar”… (vezi kinLabel pentru celelalte limbi). */
+export const bloodLabel = (up: number, down: number, sex: Sex) => kinLabel({ t: "blood", up, down }, sex, "ro");
 
-export function bloodLabel(up: number, down: number, sex: Sex): string {
-  if (down === 0) {
-    const names: [string, string, string][] = [["", "", ""], ["tată", "mamă", "părinte"], ["bunic", "bunică", "bunic(ă)"], ["străbunic", "străbunică", "străbunic(ă)"], ["răstrăbunic", "răstrăbunică", "răstrăbunic(ă)"]];
-    if (up < names.length) return pick(sex, ...names[up]);
-    return `${pick(sex, "strămoș", "strămoașă", "strămoș")} (generația ${up})`;
-  }
-  if (up === 0) {
-    const names: [string, string, string][] = [["", "", ""], ["fiu", "fiică", "copil"], ["nepot", "nepoată", "nepot(oată)"], ["strănepot", "strănepoată", "strănepot(oată)"], ["răstrănepot", "răstrănepoată", "răstrănepot(oată)"]];
-    if (down < names.length) return pick(sex, ...names[down]);
-    return `urmaș (generația ${down})`;
-  }
-  if (up === 1 && down === 1) return pick(sex, "frate", "soră", "frate/soră");
-  if (up === 1) return down === 2 ? pick(sex, "nepot de frate", "nepoată de frate", "nepot(oată) de frate") : `${pick(sex, "strănepot", "strănepoată", "strănepot(oată)")} de frate`;
-  if (down === 1) {
-    if (up === 2) return pick(sex, "unchi", "mătușă", "unchi/mătușă");
-    if (up === 3) return pick(sex, "frate al bunicului/bunicii", "soră a bunicului/bunicii", "frate/soră a bunicilor");
-    return `${pick(sex, "frate", "soră", "frate/soră")} al unui strămoș`;
-  }
-  if (up === down) return `${pick(sex, "văr", "vară", "văr/vară")} ${ordinal(up - 1)}`;
-  const cousin = Math.min(up, down) - 1;
-  return `${pick(sex, "văr", "vară", "văr/vară")} ${ordinal(cousin)}, ${up > down ? "dintr-o generație mai veche" : "dintr-o generație mai nouă"}`;
-}
-
-/** Gradul în cifre romane, ca în actele de succesiune. */
-export function romanDegree(n: number) {
-  const r: [number, string][] = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
-  let out = "";
-  for (const [v, s] of r) while (n >= v) { out += s; n -= v; }
-  return out;
-}
+/** Gradul în cifre romane, ca în actele de succesiune (stă în kin-words, lângă celelalte feluri de a-l scrie). */
+export { romanDegree };
 
 /** Până la gradul VII se vorbește de „neam apropiat”; dincolo, legătura se recunoaște prin ascendentul comun și locul lui. */
 export const CLOSE_KIN_DEGREE = 7;

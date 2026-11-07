@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { itArbore } from "./arbore/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -282,4 +283,5 @@ export const it: Catalog = {
       claimed: "Nel frattempo qualcun altro ha rivendicato questa scheda.",
     },
   },
+  ...itArbore,
 };

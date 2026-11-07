@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { huArbore } from "./arbore/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -282,4 +283,5 @@ export const hu: Catalog = {
       claimed: "Közben valaki más már magáénak jelölte ezt az adatlapot.",
     },
   },
+  ...huArbore,
 };

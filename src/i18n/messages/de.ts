@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { deArbore } from "./arbore/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -282,4 +283,5 @@ export const de: Catalog = {
       claimed: "Jemand anderes hat dieses Profil inzwischen übernommen.",
     },
   },
+  ...deArbore,
 };

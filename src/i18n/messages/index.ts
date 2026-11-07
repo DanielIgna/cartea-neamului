@@ -37,6 +37,15 @@ export const CLIENT_NAMESPACES = [
   "ThemeSwitch", "LanguagePicker", "UserMenu", "UsageNotice", "AuthForm", "InvitePanel", "FamilyStart", "JoinTree", "GedcomImport", "InstallApp",
 ] as const satisfies readonly (keyof Messages)[];
 
-export function clientMessages(messages: Messages) {
-  return Object.fromEntries(CLIENT_NAMESPACES.map((n) => [n, messages[n]])) as Pick<Messages, (typeof CLIENT_NAMESPACES)[number]>;
+/**
+ * Părți folosite în browser doar pe unele pagini (arborele, fișa, harta, mesajele): pleacă spre telefon doar pe paginile
+ * care le cer, cu <PageIntl ns={[…]}> (src/i18n/PageIntl.tsx), nu pe fiecare pagină.
+ */
+export const PAGE_NAMESPACES = [
+  "Tree", "Person",
+] as const satisfies readonly (keyof Messages)[];
+export type PageNamespace = (typeof PAGE_NAMESPACES)[number];
+
+export function clientMessages(messages: Messages, extra: readonly PageNamespace[] = []): Partial<Messages> {
+  return Object.fromEntries([...CLIENT_NAMESPACES, ...extra].map((n) => [n, messages[n]]));
 }

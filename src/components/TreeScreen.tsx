@@ -2,6 +2,8 @@
 import { useState, useEffect, useMemo, useRef, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useLocale, useTranslations } from "use-intl";
+import { degreeWord, kinLabel } from "@/lib/kin-words";
 import { FanChart, ClassicTree, DescendantsChart, type Side, type Slots, type DescNode } from "./charts";
 import { LineageTree, DescendantFan, Hourglass, TwinTree, hourglassUp } from "./lineage-charts";
 import { twinParts, lineRoot } from "@/lib/tree-layout";
@@ -9,7 +11,7 @@ import { twinForest, type Seed } from "@/lib/tree360";
 import { where, type PersonView } from "@/lib/tree-data";
 import { placeKey } from "@/lib/place-key";
 import type { TreeLive } from "@/lib/realtime";
-import { buildGraph, family, kinship, romanDegree, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, ordinalOf, CLOSE_KIN_DEGREE, type Graph, type Rel } from "@/lib/kinship";
+import { buildGraph, family, kinship, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, CLOSE_KIN_DEGREE, type Graph, type Kinship, type Rel } from "@/lib/kinship";
 import InvitePanel from "./InvitePanel";
 import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
@@ -26,7 +28,7 @@ import RaisedBy from "./RaisedBy";
 import ZoomBox from "./ZoomBox";
 import PhotoPick from "./PhotoPick";
 import { carerCandidates, raisedLinks, type Raised } from "@/lib/raised";
-import { lifeDates } from "@/lib/person-text";
+import { DATE_WORDS, lifeDates } from "@/lib/person-text";
 import Tree360 from "./Tree360";
 import TimesStory, { originFor } from "./TimesStory";
 import { treeOrigins } from "@/app/vremuri-actions";
@@ -40,7 +42,8 @@ type Props = {
 type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
 
-const VIEWS: [View, string][] = [["hour", "Clepsidră"], ["fan", "Evantai"], ["classic", "Clasic"], ["tree", "Copac"], ["360", "Copac 360°"], ["desc", "Descendenți"]];
+/** Desenele, cu cheia numelui lor în texte (Tree.views). */
+const VIEWS = [["hour", "hour"], ["fan", "fan"], ["classic", "classic"], ["tree", "tree"], ["360", "round"], ["desc", "desc"]] as const satisfies readonly [View, string][];
 
 /** La „+ Tată”/„+ Mamă”: frații care nu au încă un asemenea părinte; la „+ Soț/soție”: copiii fără al doilea părinte. */
 function shareFor(g: Graph, people: Record<string, PersonView>, id: string, k: RelKind): PersonView[] {
@@ -55,6 +58,8 @@ function shareFor(g: Graph, people: Record<string, PersonView>, id: string, k: R
 
 export default function TreeScreen(props: Props) {
   const { treeId, treeName, people, rels, centerId, generations, isRoot, canAdd, canInvite, live } = props;
+  const t = useTranslations("Tree");
+  const locale = useLocale();
   const [view, setView] = useState<View>("hour");
   const [fanDir, setFanDir] = useState<"up" | "down">("up");
   const [trunk, setTrunk] = useState<string | null>(null);
@@ -126,7 +131,7 @@ export default function TreeScreen(props: Props) {
   // Neamul cuiva poartă numele cu care s-a născut (o femeie măritată își duce mai departe neamul de fată).
   const sur = (id: string) => people[id]?.birthSurname?.trim() || people[id]?.surname || "";
   const twinTitle = parts && sur(parts.patRoot) && sur(parts.matRoot) && sur(parts.patRoot) !== sur(parts.matRoot)
-    ? `Spița ${sur(parts.patRoot)} și spița ${sur(parts.matRoot)}` : `Neamul tatălui și al mamei lui ${ego?.givenName ?? ""}`;
+    ? t("twinTitleNames", { a: sur(parts.patRoot), b: sur(parts.matRoot) }) : t("twinTitle", { name: ego?.givenName ?? "" });
   // „Spița Igna” / „Spița Todea”: o singură spiță. În Copac, trunchiul ei pornește de la strămoșul ei și coboară prin părintele acela
   // până la persoana din centru; în Clasic, Evantai și Clepsidră se desenează doar strămoșii de pe ea.
   const ancestorView = view === "classic" || view === "hour" || (view === "fan" && fanDir === "up");
@@ -140,7 +145,7 @@ export default function TreeScreen(props: Props) {
   };
   const roots = { father: rootOf("father"), mother: rootOf("mother") };
   const named = !!roots.father && !!roots.mother && !!sur(roots.father) && !!sur(roots.mother) && sur(roots.father) !== sur(roots.mother);
-  const sideName = (who: Side) => (named ? `Spița ${sur(roots[who]!)}` : who === "father" ? "Spița tatălui" : "Spița mamei");
+  const sideName = (who: Side) => (named ? t("lineOf", { surname: sur(roots[who]!) }) : who === "father" ? t("lineFather") : t("lineMother"));
   const onLine = (who: Side) => { const x = parts?.[who] ?? lineOf(who); return !!x && !twinOn && (trunkId === x || isAncestor(graph, trunkId, x)); };
   // În Copac butonul apăsat arată ce e desenat; în celelalte desene, spița aleasă.
   const treeLike = view === "tree" || view === "360";
@@ -171,7 +176,7 @@ export default function TreeScreen(props: Props) {
   /** Pe ce spiță e un strămoș al persoanei din centru (null pentru ea însăși). */
   const sideOfAncestor = (id: string): Side | null =>
     (["father", "mother"] as const).find((who) => { const x = lineOf(who); return !!x && (id === x || isAncestor(graph, id, x)); }) ?? null;
-  const lineWord = shownSide === "father" ? ", pe linia tatălui" : shownSide === "mother" ? ", pe linia mamei" : "";
+  const line = shownSide ?? "both";
   // Fișe care par aceeași persoană trecută de două ori (doar proprietarul și editorii le pot uni).
   const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
   // Unde se rupe o spiță: părintele fără părinți (spița se oprește la el), ori fără tată când tatăl lui pare să fie deja în arbore.
@@ -229,60 +234,62 @@ export default function TreeScreen(props: Props) {
   const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
   const merged = (msg: string, keptId: string) => { setNotice(msg); setSel({ id: keptId }); router.refresh(); };
   const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
+  /** „Ion Igna, cca. 1870 · gen. 5” în listele de strămoși. */
+  const ancestorOption = (x: PersonView, gen: number) => [x.name, x.birthYear ? `, ${x.approx ? DATE_WORDS[locale].approx : ""}${x.birthYear}` : "", " · ", t("genShort", { gen })].join("");
 
   return (
     <section className="layout">
       <div className="stack">
         <div className={`card${full ? " chart-full" : ""}`}>
           <div className="toolbar">
-            <div className="title">{view === "hour" ? `Înainte și după ${ego?.name}${lineWord}` : twinOn ? twinTitle : showsLineage ? `Urmașii lui ${people[trunkId]?.name}` : `Ascendenții lui ${ego?.name}${lineWord}`}</div>
-            <div className="seg seg-wrap" role="group" aria-label="Vizualizare">
-              {VIEWS.map(([v, label]) => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{label}</button>)}
+            <div className="title">{view === "hour" ? t("titleHour", { name: ego?.name ?? "", line }) : twinOn ? twinTitle : showsLineage ? t("titleDescendants", { name: people[trunkId]?.name ?? "" }) : t("titleAncestors", { name: ego?.name ?? "", line })}</div>
+            <div className="seg seg-wrap" role="group" aria-label={t("viewsLabel")}>
+              {VIEWS.map(([v, key]) => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{t(`views.${key}`)}</button>)}
             </div>
             {view === "fan" && (
-              <div className="seg" role="group" aria-label="Direcție">
-                <button aria-pressed={fanDir === "up"} onClick={() => setFanDir("up")}>Strămoși</button>
-                <button aria-pressed={fanDir === "down"} onClick={() => setFanDir("down")}>Urmași</button>
+              <div className="seg" role="group" aria-label={t("directionLabel")}>
+                <button aria-pressed={fanDir === "up"} onClick={() => setFanDir("up")}>{t("ancestors")}</button>
+                <button aria-pressed={fanDir === "down"} onClick={() => setFanDir("down")}>{t("descendants")}</button>
               </div>
             )}
             {(treeLike || ancestorView) && sidesKnown && (
-              <div className="seg seg-wrap" role="group" aria-label="Spițe">
+              <div className="seg seg-wrap" role="group" aria-label={t("linesLabel")}>
                 <button aria-pressed={pressed("father")} onClick={() => chooseSide("father")}>{sideName("father")}</button>
                 <button aria-pressed={pressed("mother")} onClick={() => chooseSide("mother")}>{sideName("mother")}</button>
-                {(!treeLike || !!parts) && <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>Amândouă</button>}
+                {(!treeLike || !!parts) && <button aria-pressed={pressed(null)} onClick={() => chooseSide(null)}>{t("both")}</button>}
               </div>
             )}
-            {twinOn && parts && ([["father", "Neamul tatălui, de la", "tatăl", setPatRoot], ["mother", "Neamul mamei, de la", "mama", setMatRoot]] as const).map(([who, text, self, set]) => (
-              <label key={who} className="gen-select">{text}
+            {twinOn && parts && ([["father", setPatRoot], ["mother", setMatRoot]] as const).map(([who, set]) => (
+              <label key={who} className="gen-select">{who === "father" ? t("fatherRootFrom") : t("motherRootFrom")}
                 <select value={who === "father" ? parts.patRoot : parts.matRoot} onChange={(e) => set(e.target.value)}>
                   {ancestorsOf(graph, parts[who]).map(([id, gen]) => people[id] && (
-                    <option key={id} value={id}>{gen === 0 ? `${people[id].name} (${self})` : `${people[id].name}${people[id].birthYear ? `, ${people[id].approx ? "cca. " : ""}${people[id].birthYear}` : ""} · gen. ${gen + 1}`}</option>
+                    <option key={id} value={id}>{gen === 0 ? t("rootSelf", { name: people[id].name, who }) : ancestorOption(people[id], gen + 1)}</option>
                   ))}
                 </select>
               </label>
             ))}
             {showsLineage && !twinOn && (
-              <label className="gen-select">Trunchiul
+              <label className="gen-select">{t("trunk")}
                 <select value={trunkId} onChange={(e) => {
                   const id = e.target.value, on = sideOfAncestor(id);
                   setTrunk(id); setSide(on);
                   if (on === "father") setPatRoot(id); else if (on === "mother") setMatRoot(id);
                 }}>
                   {ancestors.map(([id, gen]) => people[id] && (
-                    <option key={id} value={id}>{gen === 0 ? `${people[id].name} (de la mine în jos)` : `${people[id].name}${people[id].birthYear ? `, ${people[id].approx ? "cca. " : ""}${people[id].birthYear}` : ""} · gen. ${gen}`}</option>
+                    <option key={id} value={id}>{gen === 0 ? t("trunkSelf", { name: people[id].name }) : ancestorOption(people[id], gen)}</option>
                   ))}
                 </select>
               </label>
             )}
-            {(patRoot || matRoot) && <button className="btn" onClick={resetPicks}>Spițele din tată în tată</button>}
+            {(patRoot || matRoot) && <button className="btn" onClick={resetPicks}>{t("resetLines")}</button>}
             {!showsLineage && view !== "hour" && (
-              <label className="gen-select">Generații
+              <label className="gen-select">{t("generations")}
                 <select value={generations} onChange={(e) => go({ g: e.target.value })}>
-                  {[3, 4, 5, 6, 7, 8, 9, 10].map((g) => <option key={g} value={g}>{g}{g >= 8 ? " (până pe la 1700)" : ""}</option>)}
+                  {[3, 4, 5, 6, 7, 8, 9, 10].map((g) => <option key={g} value={g}>{g >= 8 ? t("generationsOld", { count: g }) : g}</option>)}
                 </select>
               </label>
             )}
-            {!isRoot && <button className="btn" onClick={() => go({ p: null })}>Înapoi la mine</button>}
+            {!isRoot && <button className="btn" onClick={() => go({ p: null })}>{t("backToMe")}</button>}
             {live && <LiveTree key={live.sealedQuery.queryFingerprint} url={live.url} treeId={treeId} userId={live.userId} sealedQuery={live.sealedQuery} initialData={live.initialData} />}
           </div>
           {view === "360" ? (
@@ -300,88 +307,82 @@ export default function TreeScreen(props: Props) {
           </ZoomBox>}
           {full && selectedId && people[selectedId] && (
             <div className="full-sel">
-              <span><b>{people[selectedId].name}</b> <span className="muted">{lifeDates(people[selectedId])}</span></span>
-              <button className="btn" onClick={() => { setFull(false); requestAnimationFrame(() => document.querySelector("aside.panel")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>Vezi fișa</button>
-              {selectedId !== centerId && <button className="btn" onClick={() => center(selectedId)}>Pune în centru</button>}
+              <span><b>{people[selectedId].name}</b> <span className="muted">{lifeDates(people[selectedId], locale)}</span></span>
+              <button className="btn" onClick={() => { setFull(false); requestAnimationFrame(() => document.querySelector("aside.panel")?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{t("seeCard")}</button>
+              {selectedId !== centerId && <button className="btn" onClick={() => center(selectedId)}>{t("putInCentre")}</button>}
             </div>
           )}
           <div className="legend">
             {view === "360" ? (
               <>
-                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
-                {twinOn && <span><i className="sw" style={{ border: "2px dashed var(--ochre)" }} />Neamul tatălui pe o jumătate de cerc, neamul mamei pe cealaltă; linia punctată e căsătoria părinților, iar copiii lor cresc din ea.</span>}
-                <span>Strămoșul stă jos, în trunchi; fiecare generație e un inel mai sus, de jur împrejur. Trage de copac ca să-l rotești (și în sus sau în jos ca să-l înclini), sau folosește săgețile de pe tastatură. „Povestea neamului” trece prin oameni în ordinea nașterii și spune, pentru fiecare, cum era lumea în ținutul lui atunci.</span>
+                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendPathTo", { name: ego?.givenName ?? "" })}</span>
+                {twinOn && <span><i className="sw" style={{ border: "2px dashed var(--ochre)" }} />{t("legend360Twin")}</span>}
+                <span>{t("legend360Help")}</span>
               </>
             ) : view === "desc" ? (
               <>
-                <span><i className="sw" style={{ background: "var(--desc)" }} />Urmaș</span>
-                <span><i className="sw" style={{ border: "1.5px dashed var(--line)" }} />⚭ Soț / soție</span>
-                <span>Copiii unei căsătorii coboară din linia dintre soți; cei dintr-o altă relație, doar din părinte.</span>
+                <span><i className="sw" style={{ background: "var(--desc)" }} />{t("legendDescendant")}</span>
+                <span><i className="sw" style={{ border: "1.5px dashed var(--line)" }} />⚭ {t("legendSpouse")}</span>
+                <span>{t("legendDescHelp")}</span>
               </>
             ) : view === "hour" ? (
               <>
-                {shownSide !== "mother" && <span><i className="sw" style={{ background: "var(--pat-1)" }} />Linia tatălui</span>}
-                {shownSide !== "father" && <span><i className="sw" style={{ background: "var(--mat-1)" }} />Linia mamei</span>}
-                <span><i className="sw" style={{ background: "var(--desc)" }} />Urmași</span>
-                <span>Sus: {hourglassUp(generations, shownSide)} generații de strămoși. Pentru mai multe, alege Evantai sau Copac.</span>
+                {shownSide !== "mother" && <span><i className="sw" style={{ background: "var(--pat-1)" }} />{t("legendFatherLine")}</span>}
+                {shownSide !== "father" && <span><i className="sw" style={{ background: "var(--mat-1)" }} />{t("legendMotherLine")}</span>}
+                <span><i className="sw" style={{ background: "var(--desc)" }} />{t("descendants")}</span>
+                <span>{t("legendHourUp", { count: hourglassUp(generations, shownSide) })}</span>
               </>
             ) : twinOn ? (
               <>
-                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Cele două rădăcini și drumul până la {ego?.givenName}</span>
-                <span>În stânga crește neamul tatălui, în dreapta neamul mamei, fiecare cu frații, verii și urmașii lor. Cele două trunchiuri se unesc în părinți, iar din nodul lor crește familia lor. Dacă vrei, alege de la ce strămoș pornește fiecare spiță, sau apasă pe o singură spiță ca s-o vezi mai mare.</span>
+                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendTwinRoots", { name: ego?.givenName ?? "" })}</span>
+                <span>{t("legendTwinHelp")}</span>
               </>
             ) : showsLineage ? (
               <>
-                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />Drumul de la trunchi până la {ego?.givenName}</span>
-                <span>{view === "tree" ? "Trunchiul e linia neamului. Soțul și soția (⚭) se unesc într-un nod, iar din el pornesc ramurile copiilor; copiii dintr-o altă relație pornesc doar din părinte, pe o ramură mai subțire. Vârfurile cu lăstari sunt cei mai tineri." : "Fiecare inel e o generație, iar fiecare felie e cât urmașii acelei ramuri."}</span>
+                <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendPathTo", { name: ego?.givenName ?? "" })}</span>
+                <span>{view === "tree" ? t("legendTreeHelp") : t("legendFanDownHelp")}</span>
               </>
             ) : (
               <>
-                {shownSide !== "mother" && <span><i className="sw" style={{ background: "var(--pat-1)" }} />Linia tatălui</span>}
-                {shownSide !== "father" && <span><i className="sw" style={{ background: "var(--mat-1)" }} />Linia mamei</span>}
-                <span><i className="sw" style={{ border: "1.5px dashed var(--muted)" }} />Loc liber, de completat</span>
+                {shownSide !== "mother" && <span><i className="sw" style={{ background: "var(--pat-1)" }} />{t("legendFatherLine")}</span>}
+                {shownSide !== "father" && <span><i className="sw" style={{ background: "var(--mat-1)" }} />{t("legendMotherLine")}</span>}
+                <span><i className="sw" style={{ border: "1.5px dashed var(--muted)" }} />{t("legendEmpty")}</span>
               </>
             )}
-            {view !== "360" && <span>Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.</span>}
+            {view !== "360" && <span>{t("legendHowTo")}</span>}
           </div>
           {/* O spiță care se oprește la părinte, sau îi lipsește tatăl: de obicei părinții lui au fost legați doar de frații lui, ori e trecut de două ori. */}
           {treeLike && cut.map(({ who, x, stops, found }) => {
-            const el = x.sex === "F" ? "ea" : "el", ei = x.sex === "F" ? "ei" : "lui", side = who === "father" ? "tatălui" : "mamei";
-            const open = (text: string) => <button className="linklike" onClick={() => setSel({ id: x.id })}>{text}</button>;
+            const v = { name: x.givenName, sex: x.sex, side: who, stops: stops ? "yes" : "no" };
+            const open = (chunks: React.ReactNode) => <button className="linklike" onClick={() => setSel({ id: x.id })}>{chunks}</button>;
             return (
               <p key={who} className="notice" style={{ margin: "10px 0 0" }}>
-                {stops ? <>{x.givenName} nu are încă părinți legați în arbore, așa că spița {side} se oprește la {el}. </>
-                  : <>Tatăl lui {x.givenName} nu e legat de {el} în arbore, așa că spița {side} se oprește la {el}. </>}
-                {found ? <>{stops ? `Părinții ${ei} par să fie deja în arbore` : "Pare să fie deja în arbore"}, la frații {ei} sau într-o a doua fișă a {ei}: {open(`deschide fișa ${ei}`)} și {x.sex === "F" ? "o" : "îl"} legi cu un clic.</>
-                  : <>{open(`Deschide fișa ${ei}`)} ca să-i adaugi {stops ? "părinții" : "tatăl"}.</>}
+                {stops ? t("cutStops", v) : t("cutNoFather", v)}{" "}
+                {found ? t.rich("cutFound", { ...v, open }) : t.rich("cutOpen", { ...v, open })}
               </p>
             );
           })}
           {view !== "desc" && mixups.map(({ child, who, kind }) => {
-            const names = who.map((x, i) => (
-              <span key={x.id}>{i === 0 ? "" : i === who.length - 1 ? " și " : ", "}<button className="linklike" onClick={() => setSel({ id: x.id })}>{x.name}</button></span>
+            const names = () => who.map((x, i) => (
+              <span key={x.id}>{i === 0 ? "" : i === who.length - 1 ? ` ${t("and")} ` : ", "}<button className="linklike" onClick={() => setSel({ id: x.id })}>{x.name}</button></span>
             ));
             return (
               <p key={`${child.id}-${kind}`} className="notice" style={{ margin: "10px 0 0" }}>
-                {kind === "M" ? <>La {child.givenName} sunt trecuți doi tați: {names}. Dacă unul dintre ei e de fapt mama, deschide-i fișa și schimbă-i sexul;
-                  dacă e același om trecut de două ori, unește fișele.</>
-                  : kind === "F" ? <>La {child.givenName} sunt trecute două mame: {names}. Dacă una dintre ele e de fapt tatăl, deschide-i fișa și schimbă-i sexul;
-                  dacă e același om trecut de două ori, unește fișele.</>
-                  : <>La {names} nu e ales dacă e bărbat sau femeie, așa că desenul nu știe dacă e tatăl sau mama lui {child.givenName}. Deschide fișa și alege.</>}
+                {t.rich(kind === "M" ? "mixTwoFathers" : kind === "F" ? "mixTwoMothers" : "mixNoSex", { child: child.givenName, names })}
               </p>
             );
           })}
         </div>
         <div className="card">
           <div className="toolbar" style={{ marginBottom: 0 }}>
-            <div className="title" style={{ fontSize: 17 }}>{treeName} · {Object.keys(people).length} persoane</div>
+            <div className="title" style={{ fontSize: 17 }}>{t("treeCount", { tree: treeName, count: Object.keys(people).length })}</div>
             {/* Legătură obișnuită, nu <Link>: cartea se așază pe pagini într-un document proaspăt. */}
-            <a className="btn primary" href={`/arbore/${treeId}/carte?p=${centerId}`}>Cartea neamului</a>
-            <Link className="btn" href={`/arbore/${treeId}/harta`}>Harta neamului</Link>
-            <Link className="btn" href={`/arbore/${treeId}/cronologie`}>Cronologie</Link>
-            <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>Călătoria în timp</Link>
-            <Link className="btn" href="/istoria-bisericii">Istoria Bisericii</Link>
-            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>Exportă GEDCOM</a>
+            <a className="btn primary" href={`/arbore/${treeId}/carte?p=${centerId}`}>{t("book")}</a>
+            <Link className="btn" href={`/arbore/${treeId}/harta`}>{t("map")}</Link>
+            <Link className="btn" href={`/arbore/${treeId}/cronologie`}>{t("timeline")}</Link>
+            <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>{t("journey")}</Link>
+            <Link className="btn" href="/istoria-bisericii">{t("churchHistory")}</Link>
+            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>
           </div>
         </div>
         {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}
@@ -389,7 +390,7 @@ export default function TreeScreen(props: Props) {
         {ego && <KinByDegree graph={graph} people={people} ego={ego} onSelect={(id) => setSel({ id })} />}
         {canInvite && (
           <div className="card">
-            <div className="section-label" style={{ marginTop: 0 }}>Invită o rudă în arbore</div>
+            <div className="section-label" style={{ marginTop: 0 }}>{t("inviteRelative")}</div>
             <InvitePanel treeId={treeId} />
           </div>
         )}
@@ -400,7 +401,7 @@ export default function TreeScreen(props: Props) {
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
             ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
                 shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
-            : <p className="muted">{canAdd ? "Alege o persoană din arbore." : "Ca vizitator poți vedea arborele, dar nu poți adăuga persoane."}</p>}
+            : <p className="muted">{canAdd ? t("pickPerson") : t("viewerOnly")}</p>}
       </aside>
     </section>
   );
@@ -423,10 +424,12 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
   const first = normName(p.givenName)[0];
   const rank = (x: PersonView) => (sameLooking(p, x) ? 0 : normName(x.givenName)[0] === first ? 1 : 2);
   return Object.values(people).filter((x) => !skip.has(x.id) && (x.sex === p.sex || x.sex === "U" || p.sex === "U"))
-    .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, "ro"));
+    .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }
 
 function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, origin, originsLoading, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
+  const t = useTranslations("Person");
+  const locale = useLocale();
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
   const [done, setDone] = useState<string | null>(null);
   const [toggling, startToggle] = useTransition();
@@ -451,7 +454,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
     const step = c.step.map((id) => ({ p: people[id], via: by(fam.parents).find((par) => (graph.partners.get(par.id) ?? []).includes(id))! })).filter((s) => s.p && s.via);
     const near = new Set([...c.step, ...c.grand, ...c.aunts]);
     const skip = new Set([p.id, ...fam.parents, ...rl.carers]);
-    const others = Object.values(people).filter((x) => !near.has(x.id) && !skip.has(x.id) && !x.discreet).sort((a, b) => a.name.localeCompare(b.name, "ro"));
+    const others = Object.values(people).filter((x) => !near.has(x.id) && !skip.has(x.id) && !x.discreet).sort((a, b) => a.name.localeCompare(b.name));
     return { step, family: by([...c.grand, ...c.aunts].filter((x) => !skip.has(x))), others };
   };
   // Pentru „+ Copil”: întâi soțul/soția de acum (ultima căsătorie desenată), apoi ceilalți.
@@ -465,7 +468,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
   const half = (x: PersonView) => {
     const mine = graph.parents.get(p.id) ?? [], theirs = graph.parents.get(x.id) ?? [], shared = mine.filter((y) => theirs.includes(y));
     if (mine.length !== 2 || theirs.length !== 2 || shared.length !== 1) return "";
-    return people[shared[0]]?.sex === "M" ? "după tată" : people[shared[0]]?.sex === "F" ? "după mamă" : "după un părinte";
+    return t("halfVia", { via: people[shared[0]]?.sex ?? "U" });
   };
   // Cine ar putea fi deja în arbore când adaugi o rudă: soțiile tatălui (mamele fraților) la „+ Mamă”, soții la „+ Soț”, copiii la „+ Copil”, frații la „+ Frate”.
   const lookalikesFor = (k: RelKind): PersonView[] => {
@@ -484,15 +487,15 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
   const toggleDiscreet = () => startToggle(async () => {
     const r = await setDiscreet(treeId, p.id, !p.discreet);
     if (r.error) setDone(r.error);
-    else finished(p.discreet ? `${p.givenName} apare din nou în desenele arborelui.` : `${p.givenName} nu mai apare în desene; ${p.sex === "M" ? "îl" : "o"} văd doar copiii ${p.sex === "M" ? "lui" : "ei"}, în fișele lor.`);
+    else finished(p.discreet ? t("discreetOff", { name: p.givenName }) : t("discreetOn", { name: p.givenName, sex: p.sex }));
   });
 
   if (form) {
     return form === "edit"
-      ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished("Fișa a fost salvată.")} onCancel={() => setForm(null)} />
+      ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished(t("saved"))} onCancel={() => setForm(null)} />
       : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={childPartners} shareWith={shareFor(graph, people, p.id, form)} discreet={discreetFor(form)}
           lookalikes={lookalikesFor(form)} useExisting={useExistingFor(form)}
-          onDone={(msg) => finished(msg ?? "Persoana a fost adăugată.")} onCancel={() => setForm(null)} />;
+          onDone={(msg) => finished(msg ?? t("added"))} onCancel={() => setForm(null)} />;
   }
 
   const group = (label: string, list: PersonView[], note?: (x: PersonView, i: number) => string) => list.length > 0 && (
@@ -504,87 +507,87 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
 
   return (
     <>
-      <div className="section-label" style={{ marginTop: 0 }}>Fișa persoanei</div>
+      <div className="section-label" style={{ marginTop: 0 }}>{t("cardTitle")}</div>
       <div className="person-head">
         <Avatar p={p} size={72} />
         <div>
           <h2>{p.name}</h2>
-          <div className="meta">{p.birthSurname ? `născut(ă) ${p.birthSurname} · ` : ""}{lifeDates(p)}</div>
-          <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>{p.living ? "Deschide profilul, lada cu amintiri și albumul →" : "Deschide profilul, amintirile și albumul →"}</Link>
+          <div className="meta">{p.birthSurname ? `${t("bornAs", { sex: p.sex, surname: p.birthSurname })} · ` : ""}{lifeDates(p, locale)}</div>
+          <Link href={`/arbore/${treeId}/persoana/${p.id}`} style={{ fontSize: 14 }}>{p.living ? t("openProfileLiving") : t("openProfile")}</Link>
           {storageEnabled && (canEdit || (canAdd && !p.photoId)) && (
-            <div style={{ fontSize: 14 }}><PhotoPick key={p.id} treeId={treeId} p={p} onDone={() => { setDone(`Am pus poza pentru ${p.givenName}; o găsești și în album.`); onChanged(); }} /></div>
+            <div style={{ fontSize: 14 }}><PhotoPick key={p.id} treeId={treeId} p={p} onDone={() => { setDone(t("photoSet", { name: p.givenName })); onChanged(); }} /></div>
           )}
         </div>
       </div>
       <div className="chips">
-        {p.living ? <span className="chip priv">în viață · vizibil doar în acest arbore</span> : <span className="chip">decedat(ă)</span>}
-        {p.claimed && <span className="chip ok">profil revendicat</span>}
-        {p.approx && <span className="chip">dată aproximativă</span>}
-        {p.discreet && <span className="chip">discret(ă) · apare doar în fișele copiilor</span>}
+        {p.living ? <span className="chip priv">{t("chipLiving")}</span> : <span className="chip">{t("chipDeceased", { sex: p.sex })}</span>}
+        {p.claimed && <span className="chip ok">{t("chipClaimed")}</span>}
+        {p.approx && <span className="chip">{t("chipApprox")}</span>}
+        {p.discreet && <span className="chip">{t("chipDiscreet", { sex: p.sex })}</span>}
         {canEdit && fam.partners.length > 0 && (p.discreet || fam.children.length > 0) && (
           <button className="linklike" style={{ fontSize: 13 }} disabled={toggling} onClick={toggleDiscreet}
-            title={p.discreet ? "Va apărea din nou în desene, lângă soțul/soția din neam" : "Nu mai apare în desenele arborelui; copiii pornesc doar din celălalt părinte"}>
-            {p.discreet ? "Arată din nou în desene" : "Ascunde din desene (doar în fișele copiilor)"}
+            title={p.discreet ? t("showAgainTitle") : t("hideTitle")}>
+            {p.discreet ? t("showAgain") : t("hide")}
           </button>
         )}
       </div>
       {kin && ego && (
         <div className="kin">
-          Pentru {ego.givenName}: <b>{kin.label}</b>
-          {kin.degree ? ` · rudă de gradul ${romanDegree(kin.degree)}` : kin.degree === null ? " · rudă prin alianță, fără grad de sânge" : ""}
-          {kin.degree !== null && kin.degree > CLOSE_KIN_DEGREE && " · neam mai îndepărtat de al șaptelea"}
+          {t.rich("kinFor", { name: ego.givenName, kin: kinLabel(kin.term, kin.sex, locale), b: (c) => <b>{c}</b> })}
+          {kin.degree ? ` · ${t("kinDegree", { degree: degreeWord(kin.degree, locale) })}` : kin.degree === null ? ` · ${t("kinAffinity")}` : ""}
+          {kin.degree !== null && kin.degree > CLOSE_KIN_DEGREE && ` · ${t("kinBeyondSeventh")}`}
           {kin.ancestor && kin.up > 0 && kin.down > 0 && people[kin.ancestor] && (
             <div style={{ fontSize: 13, marginTop: 4 }}>
-              Ascendent comun: <button className="linklike" onClick={() => onSelect(kin.ancestor!)}>{people[kin.ancestor].name}</button>
-              {people[kin.ancestor].birthPlace ? `, din ${people[kin.ancestor].birthPlace}` : ""}{people[kin.ancestor].birthYear ? `, n. ${people[kin.ancestor].birthYear}` : ""}
+              {t("commonAncestor")} <button className="linklike" onClick={() => onSelect(kin.ancestor!)}>{people[kin.ancestor].name}</button>
+              {people[kin.ancestor].birthPlace ? `, ${t("fromPlace", { place: people[kin.ancestor].birthPlace! })}` : ""}{people[kin.ancestor].birthYear ? `, ${t("bornYear", { year: String(people[kin.ancestor].birthYear), sex: people[kin.ancestor].sex })}` : ""}
             </div>
           )}
         </div>
       )}
-      {!kin && ego && ego.id !== p.id && <div className="kin">Nu am găsit încă o legătură de sânge cu {ego.givenName} în arbore.</div>}
+      {!kin && ego && ego.id !== p.id && <div className="kin">{t("noKin", { name: ego.givenName })}</div>}
       <dl className="facts" style={{ marginTop: 10 }}>
         {(() => {
           // Locul duce pe harta neamului, la satul acela, cu toți cei de acolo.
           const place = (text: string | null, country: string | null, fallback = "") => {
             const w = where(text, country) || fallback, k = placeKey(text, country);
-            return w && k ? <Link href={`/arbore/${treeId}/harta?loc=${encodeURIComponent(k)}`} title="Vezi locul pe harta neamului">{w}</Link> : w;
+            return w && k ? <Link href={`/arbore/${treeId}/harta?loc=${encodeURIComponent(k)}`} title={t("placeOnMap")}>{w}</Link> : w;
           };
           const fact = (date: string | null, pl: React.ReactNode) => (date || pl ? <>{date}{date && pl ? ", " : ""}{pl}</> : null);
           const born = fact(p.birthText, place(p.birthPlace, p.birthCountry));
           const died = fact(p.deathText, place(p.deathPlace, p.deathCountry));
           const lives = p.living ? place(p.residencePlace, p.residenceCountry, p.residenceCountry ?? "") : null;
-          return <>{born && <><dt>Născut(ă)</dt><dd>{born}</dd></>}{died && <><dt>Decedat(ă)</dt><dd>{died}</dd></>}{lives && <><dt>Locuiește în</dt><dd>{lives}</dd></>}</>;
+          return <>{born && <><dt>{t("born", { sex: p.sex })}</dt><dd>{born}</dd></>}{died && <><dt>{t("died", { sex: p.sex })}</dt><dd>{died}</dd></>}{lives && <><dt>{t("livesIn")}</dt><dd>{lives}</dd></>}</>;
         })()}
-        {p.occupation && <><dt>Ocupație</dt><dd>{p.occupation}</dd></>}
+        {p.occupation && <><dt>{t("occupation")}</dt><dd>{p.occupation}</dd></>}
       </dl>
-      <div className="section-label">Ce se știe despre {p.givenName}</div>
-      {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nimic scris încă.{canEdit ? " Apasă „Editează” și scrie câteva rânduri." : ""}</p>}
-      {p.notes && <><div className="section-label">Note suplimentare</div><p className="notes">{p.notes}</p></>}
+      <div className="section-label">{t("whatWeKnow", { name: p.givenName })}</div>
+      {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted" style={{ margin: 0, fontSize: 14 }}>{canEdit ? t("nothingYetEdit") : t("nothingYet")}</p>}
+      {p.notes && <><div className="section-label">{t("notes")}</div><p className="notes">{p.notes}</p></>}
       <TimesStory p={p} origin={origin} loading={originsLoading} />
       <div className="actions">
-        {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>Editează</button>}
-        {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>Pune în centru</button>}
+        {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>{t("edit")}</button>}
+        {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>{t("putInCentre")}</button>}
         {(isEditor || (canAdd && p.createdBy === meId)) && (!p.claimed || p.claimedBy === meId) && ego?.id !== p.id &&
-          <DeletePerson key={`del${p.id}`} treeId={treeId} p={p} onDeleted={() => { onSelect(ego?.id ?? p.id); finished(`${p.name} a fost ștearsă din arbore.`); }} />}
+          <DeletePerson key={`del${p.id}`} treeId={treeId} p={p} onDeleted={() => { onSelect(ego?.id ?? p.id); finished(t("deleted", { name: p.name, sex: p.sex })); }} />}
         {isEditor && <MergeWith key={`mg${p.id}`} treeId={treeId} p={p} candidates={mergeCandidates(graph, people, p)} onDone={onMerged} />}
       </div>
       {done && <p className="muted" style={{ fontSize: 14 }}>{done}</p>}
       {aiEnabled && canAdd && !p.living && <BiographySuggest key={`bio-${p.id}`} treeId={treeId} personId={p.id} canSave={isEditor} onSaved={onChanged} />}
 
-      <div className="section-label">Rude</div>
+      <div className="section-label">{t("relatives")}</div>
       <dl className="rel-group rel">
-        {group("Părinți", by(fam.parents))}
-        {group(p.sex === "F" ? "Crescută de" : p.sex === "M" ? "Crescut de" : "Crescut(ă) de", by(rl.carers))}
-        {group(shownSpouses.length > 1 ? (p.sex === "F" ? "Soți" : "Soții") : p.sex === "F" ? "Soț" : p.sex === "M" ? "Soție" : "Soț / soție", shownSpouses,
-          shownSpouses.length > 1 ? (_, i) => `${ordinalOf(i + 1)} căsătorie` : undefined)}
+        {group(t("parents"), by(fam.parents))}
+        {group(t("raisedBy", { sex: p.sex }), by(rl.carers))}
+        {group(t("spouses", { count: shownSpouses.length, sex: p.sex }), shownSpouses,
+          shownSpouses.length > 1 ? (_, i) => t("marriageNth", { n: i + 1 }) : undefined)}
         {kidsBy.named.length > 0
           ? <>
-              {kidsBy.named.map((u) => group(`Copii cu ${people[u.spouse]?.givenName} (${u.children.length})`, by(u.children)))}
-              {group(`Din altă relație (${kidsBy.other.length})`, by(kidsBy.other))}
+              {kidsBy.named.map((u) => group(t("childrenWith", { name: people[u.spouse]?.givenName ?? "", count: u.children.length }), by(u.children)))}
+              {group(t("otherRelation", { count: kidsBy.other.length }), by(kidsBy.other))}
             </>
-          : group(`Copii (${fam.children.length})`, by(kidsBy.other))}
-        {group(fam.children.length ? "A crescut și pe" : "A crescut pe", by(rl.raised))}
-        {group(`Frați (${fam.siblings.length})`, by(fam.siblings), half)}
+          : group(t("children", { count: fam.children.length }), by(kidsBy.other))}
+        {group(fam.children.length ? t("raisedAlso") : t("raised"), by(rl.raised))}
+        {group(t("siblings", { count: fam.siblings.length }), by(fam.siblings), half)}
       </dl>
       {canAdd && parentsFromSiblings(graph, p.id, (id) => isPlaceholder(people[id]?.givenName ?? ""), (id) => !!people[id]?.discreet).map((s) => people[s.id] && (
         <SiblingsParents key={`sp${p.id}${s.role}`} treeId={treeId} p={p} role={s.role} parent={people[s.id]} current={s.current ? people[s.current] : undefined}
@@ -595,16 +598,16 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         const kids = by(graph.children.get(sp.id) ?? []).filter((c) => (graph.parents.get(c.id) ?? []).length === 1 && c.id !== p.id);
         return kids.length > 0 && <SpouseChildren key={`sc${sp.id}`} treeId={treeId} p={p} spouse={sp} kids={kids} onDone={finished} />;
       })}
-      {!fam.parents.length && !fam.partners.length && !fam.children.length && <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nicio rudă legată încă.</p>}
+      {!fam.parents.length && !fam.partners.length && !fam.children.length && <p className="muted" style={{ margin: 0, fontSize: 14 }}>{t("noRelatives")}</p>}
       {isEditor && <Duplicates inline treeId={treeId} pairs={pairs.filter((d) => d.keep === p.id || d.drop === p.id)} people={people}
         kids={(id) => graph.children.get(id)?.length ?? 0} onDone={onMerged} />}
       {canAdd && (
         <div className="actions" style={{ flexWrap: "wrap" }}>
-          {!hasFather && <button className="btn" onClick={() => setForm("father")}>+ Tată</button>}
-          {!hasMother && <button className="btn" onClick={() => setForm("mother")}>+ Mamă</button>}
-          <button className="btn" onClick={() => setForm("spouse")}>+ Soț / soție</button>
-          <button className="btn" onClick={() => setForm("child")}>+ Copil</button>
-          <button className="btn" onClick={() => setForm("sibling")}>+ Frate / soră</button>
+          {!hasFather && <button className="btn" onClick={() => setForm("father")}>+ {t("addFather")}</button>}
+          {!hasMother && <button className="btn" onClick={() => setForm("mother")}>+ {t("addMother")}</button>}
+          <button className="btn" onClick={() => setForm("spouse")}>+ {t("addSpouse")}</button>
+          <button className="btn" onClick={() => setForm("child")}>+ {t("addChild")}</button>
+          <button className="btn" onClick={() => setForm("sibling")}>+ {t("addSibling")}</button>
         </div>
       )}
       {canAdd && (
@@ -615,15 +618,13 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         </div>
       )}
 
-      <div className="section-label">Album: poze și documente</div>
+      <div className="section-label">{t("album")}</div>
       <Album p={p} treeId={treeId} canEdit={canAdd} onChanged={onChanged} />
       {storageEnabled && canAdd && <DocumentUpload key={`doc-${p.id}`} treeId={treeId} personId={p.id} personName={p.givenName} onUploaded={onChanged} />}
       {p.living && !p.claimed && canInvite && (
         <>
-          <div className="section-label">Profil nerevendicat</div>
-          <p className="muted" style={{ margin: "0 0 8px", fontSize: 14 }}>
-            Trimite-i lui {p.givenName} un link. După ce își face cont, intră direct în arbore cu propria fișă în centru și poate continua arborele pe familia lui.
-          </p>
+          <div className="section-label">{t("unclaimed")}</div>
+          <p className="muted" style={{ margin: "0 0 8px", fontSize: 14 }}>{t("unclaimedText", { name: p.givenName, sex: p.sex })}</p>
           <InvitePanel key={p.id} treeId={treeId} personId={p.id} personName={p.givenName} />
         </>
       )}
@@ -633,6 +634,8 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
 
 /** Neamul persoanei din centru pe grade de rudenie: I–VII nominal, dincolo de VII grupat după ascendentul comun și locul lui. */
 function KinByDegree({ graph, people, ego, onSelect }: { graph: Graph; people: Record<string, PersonView>; ego: PersonView; onSelect: (id: string) => void }) {
+  const t = useTranslations("Tree");
+  const locale = useLocale();
   const [open, setOpen] = useState<number | null>(null);
   // Rudele prin alianță fără cei discreți (o fostă soție apare doar în fișele copiilor ei).
   const { byDegree, affinity } = useMemo(() => {
@@ -646,35 +649,38 @@ function KinByDegree({ graph, people, ego, onSelect }: { graph: Graph; people: R
   for (const { k } of far) {
     const a = k.ancestor && people[k.ancestor];
     if (!a) continue;
-    const key = `${a.name}${a.birthPlace ? ` din ${a.birthPlace}` : ""}`;
+    const key = a.birthPlace ? t("nameFrom", { name: a.name, place: a.birthPlace }) : a.name;
     farGroups.set(key, (farGroups.get(key) ?? 0) + 1);
   }
-  const chips = (list: { id: string; k: { label: string } }[]) => (
-    <dd>{list.filter((x) => people[x.id]).map((x) => <button key={x.id} onClick={() => onSelect(x.id)} title={x.k.label}>{people[x.id].name} · {x.k.label}</button>)}</dd>
+  const chips = (list: { id: string; k: Kinship }[]) => (
+    <dd>{list.filter((x) => people[x.id]).map((x) => {
+      const label = kinLabel(x.k.term, x.k.sex, locale);
+      return <button key={x.id} onClick={() => onSelect(x.id)} title={label}>{people[x.id].name} · {label}</button>;
+    })}</dd>
   );
   return (
     <div className="card">
-      <div className="section-label" style={{ marginTop: 0 }}>Neamul lui {ego.name}, pe grade de rudenie</div>
+      <div className="section-label" style={{ marginTop: 0 }}>{t("byDegreeTitle", { name: ego.name })}</div>
       <dl className="rel-group rel">
         {close.map((d) => (
           <div key={d} style={{ display: "contents" }}>
-            <dt><button className="linklike" onClick={() => setOpen(open === d ? null : d)}>Gradul {romanDegree(d)} · {byDegree.get(d)!.length}</button></dt>
+            <dt><button className="linklike" onClick={() => setOpen(open === d ? null : d)}>{t("degreeCount", { degree: degreeWord(d, locale), count: byDegree.get(d)!.length })}</button></dt>
             {open === d ? chips(byDegree.get(d)!) : <dd className="muted" style={{ fontSize: 13, paddingTop: 4 }}>{byDegree.get(d)!.slice(0, 4).map((x) => people[x.id]?.givenName).join(", ")}{byDegree.get(d)!.length > 4 ? "…" : ""}</dd>}
           </div>
         ))}
         {affinity.length > 0 && (
           <>
-            <dt><button className="linklike" onClick={() => setOpen(open === 0 ? null : 0)}>Prin alianță · {affinity.length}</button></dt>
-            {open === 0 ? chips(affinity) : <dd className="muted" style={{ fontSize: 13, paddingTop: 4 }}>soți, soții și neamurile lor</dd>}
+            <dt><button className="linklike" onClick={() => setOpen(open === 0 ? null : 0)}>{t("affinityCount", { count: affinity.length })}</button></dt>
+            {open === 0 ? chips(affinity) : <dd className="muted" style={{ fontSize: 13, paddingTop: 4 }}>{t("affinityHint")}</dd>}
           </>
         )}
       </dl>
       {far.length > 0 && (
         <p className="muted" style={{ fontSize: 14, margin: "10px 0 0" }}>
-          Dincolo de al șaptelea neam: {far.length} {far.length === 1 ? "persoană" : "persoane"}, din {[...farGroups].map(([k, n]) => `neamul lui ${k} (${n})`).join("; ")}.
+          {t("beyond", { count: far.length, groups: [...farGroups].map(([k, n]) => t("beyondGroup", { name: k, count: n })).join("; ") })}
         </p>
       )}
-      <p className="muted" style={{ fontSize: 13, margin: "8px 0 0" }}>Gradul se numără ca în Codul civil: generațiile urcate până la ascendentul comun plus cele coborâte până la rudă.</p>
+      <p className="muted" style={{ fontSize: 13, margin: "8px 0 0" }}>{t("degreeHelp")}</p>
     </div>
   );
 }

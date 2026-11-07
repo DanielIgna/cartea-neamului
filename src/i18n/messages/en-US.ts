@@ -1,4 +1,5 @@
 import type { Catalog, DeepPartial } from "./ro";
+import { enUSArbore } from "./arbore/en-US";
 
 /**
  * US English: only what differs from British English (en-GB.ts), which fills in the rest.
@@ -25,4 +26,5 @@ export const enUS: DeepPartial<Catalog> = {
       names: "Write the first and last name.",
     },
   },
+  ...enUSArbore,
 };

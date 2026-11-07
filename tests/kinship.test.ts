@@ -69,7 +69,9 @@ describe("rude și grad de rudenie", () => {
   it("scrie gradul cu cifre romane și numește verii mai îndepărtați", () => {
     expect(romanDegree(4)).toBe("IV");
     expect(romanDegree(9)).toBe("IX");
-    expect(bloodLabel(3, 3, "F")).toBe("vară de-al doilea");
+    expect(bloodLabel(3, 3, "F")).toBe("vară de-a doua");
+    expect(bloodLabel(2, 2, "F")).toBe("vară primară");
+    expect(bloodLabel(4, 1, "F")).toBe("soră a unui strămoș");
     expect(bloodLabel(3, 1, "M")).toBe("frate al bunicului/bunicii");
   });
 
