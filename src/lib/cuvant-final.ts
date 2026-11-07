@@ -21,7 +21,7 @@ Noul Testament începe tot cu o spiță, dar cu alta: neamul lui Isus Hristos. F
 
 > Și Cuvântul S-a făcut trup și a locuit printre noi, plin de har și de adevăr. — Ioan 1:14
 
-El este Mielul lui Dumnezeu, care a fost pus pe cruce și a murit în locul meu și al tău, omule, oricine ai fi tu. În spița Lui nu intri prin sânge, ci prin credință:
+El este Mielul lui Dumnezeu, care a fost pus pe cruce și a murit în locul meu și al tău, omule, oricine ai fi tu. În spița Lui intri prin credință:
 
 > Dar tuturor celor ce L-au primit, adică celor ce cred în Numele Lui, le-a dat dreptul să se facă copii ai lui Dumnezeu; născuți nu din sânge, nici din voia firii lor, nici din voia vreunui om, ci din Dumnezeu. — Ioan 1:12–13
 
