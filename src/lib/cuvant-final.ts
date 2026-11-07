@@ -21,7 +21,7 @@ Noul Testament începe tot cu o spiță, dar cu alta: neamul lui Isus Hristos. F
 
 > Și Cuvântul S-a făcut trup și a locuit printre noi, plin de har și de adevăr. — Ioan 1:14
 
-El este Mielul lui Dumnezeu, care a fost pus pe cruce și a murit în locul meu și al tău, omule, oricine ai fi tu. În spița Lui nu intri prin sânge, ci prin credință:
+El este Mielul lui Dumnezeu, care a fost pus pe cruce și a murit în locul meu și al tău, omule, oricine ai fi tu. În spița Lui intri prin credință:
 
 > Dar tuturor celor ce L-au primit, adică celor ce cred în Numele Lui, le-a dat dreptul să se facă copii ai lui Dumnezeu; născuți nu din sânge, nici din voia firii lor, nici din voia vreunui om, ci din Dumnezeu. — Ioan 1:12–13
 
@@ -30,7 +30,7 @@ Toți ne naștem în Adam. Toți suntem chemați să credem în Hristos și să 
 > Adevărat, adevărat îți spun că, dacă un om nu se naște din nou, nu poate vedea Împărăția lui Dumnezeu. — Ioan 3:3
 
 ## Cartea vieții
-Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Dar există o carte care contează mai mult decât orice arbore: Cartea vieții. În ea sunt scriși cei care L-au primit pe Domnul Isus Hristos ca Mântuitor al vieții lor. Ei au o chemare cerească: să trăiască în lume sfinți și fără prihană, adică puși deoparte pentru Dumnezeu, să facă voia Lui și, în cele din urmă, să moștenească nemurirea.
+Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Dar există o carte care contează mai mult decât orice carte: Cartea vieții. În ea sunt scriși cei care L-au primit pe Domnul Isus Hristos ca Mântuitor al vieții lor. Ei au o chemare cerească: să trăiască în lume sfinți și fără prihană, adică puși deoparte pentru Dumnezeu, să facă voia Lui și, în cele din urmă, să moștenească nemurirea.
 
 > Și viața veșnică este aceasta: să Te cunoască pe Tine, singurul Dumnezeu adevărat, și pe Isus Hristos, pe care L-ai trimis Tu. — Ioan 17:3
 
