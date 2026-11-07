@@ -381,6 +381,10 @@ body:has(.story){overflow:hidden}
 .pill.warn{background:var(--ochre-soft);color:var(--ink)}
 .pill.bad{background:transparent;border:1px solid var(--red);color:var(--red)}
 .admin-zones{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.word-editor{align-items:start}
+.word-editor textarea{width:100%;min-height:420px;font-family:inherit;font-size:15px;line-height:1.5;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);resize:vertical}
+.word-preview{margin:0}
+@media (min-width:900px){.word-preview{max-height:680px;overflow:auto}}
 .zone-link{display:block;text-decoration:none;color:inherit}
 .zone-link:hover .card{border-color:var(--accent)}
 .tbl-wrap{overflow-x:auto}

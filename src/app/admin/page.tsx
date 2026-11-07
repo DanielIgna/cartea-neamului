@@ -4,15 +4,16 @@ import { requireAdmin } from "@/lib/admin-access";
 import { businessStats, infraStats } from "@/lib/admin-stats";
 import { funnelOf, peopleList } from "@/lib/admin-people";
 import { ENV_KEYS, NEON_FREE_BYTES, envSet } from "@/lib/admin";
-import { AdminNav, Stat, Status, bytes, eur, num } from "@/components/admin/ui";
+import { baseWordInfo } from "@/lib/texte";
+import { AdminNav, Stat, Status, bytes, day, eur, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Cartea Neamului" };
 
-/** Panoul de admin: Oamenii, Business, Manager control și Infra & Dev, cu cifrele cele mai importante din fiecare. */
+/** Panoul de admin: Oamenii, Business, Manager control, Texte și Infra & Dev, cu cifrele cele mai importante din fiecare. */
 export default async function AdminHome() {
   await requireAdmin("/admin");
-  const [b, i, people] = await Promise.all([businessStats(db), infraStats(db), peopleList(db)]);
+  const [b, i, people, word] = await Promise.all([businessStats(db), infraStats(db), peopleList(db), baseWordInfo(db)]);
   const funnel = funnelOf(people);
   const step = (k: number) => funnel[k]?.count ?? 0;
   const missing = ENV_KEYS.filter((k) => k.needed && !envSet(k.key));
@@ -55,6 +56,15 @@ export default async function AdminHome() {
               <Stat label="Marcați „Familie”" value={num(b.revenue.subscriptionsActive)} hint="plățile nu sunt pornite" />
               <Stat label="Peste limite" value={num(b.trees.overLimit)} hint={`${b.plans.counts.overFree} cu planul gratuit`} />
               <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} />
+            </div>
+          </div>
+        </Link>
+        <Link href="/admin/texte" className="zone-link">
+          <div className="card">
+            <h2 style={{ marginTop: 0 }}>Texte</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Cuvântul de la finalul Călătoriei în timp, pe care îl scrii tu pentru toți.</p>
+            <div className="stats">
+              <Stat label="Acum se vede" value={word.changed ? "textul tău" : "textul inițial"} hint={word.changed ? `schimbat pe ${day(word.updatedAt?.toISOString())}` : "cel scris la început"} />
             </div>
           </div>
         </Link>
