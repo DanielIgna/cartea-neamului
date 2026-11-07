@@ -6,7 +6,8 @@ import { isPlaceholder } from "@/lib/family";
 import { lineRoot } from "@/lib/tree-layout";
 import { journeyStops, journeyLegs, quizFor, agoWords, yearsWords, type Stop, type Quiz } from "@/lib/calatorie";
 import { REGIME_TEXT, READ_JOHN } from "@/lib/calatorie-popas";
-import { parseWord, wordFor } from "@/lib/cuvant-final";
+import { wordFor } from "@/lib/cuvant-final";
+import WordBlocks from "@/components/WordBlocks";
 import { lifeDates } from "@/lib/person-text";
 import type { PersonView } from "@/lib/tree-data";
 import type { Origin } from "@/lib/vremuri";
@@ -43,7 +44,7 @@ export default function TimeJourney(props: Props) {
 
   // Cuvântul de la final: al proprietarului, cel de bază sau deloc. Se schimbă pe loc după ce proprietarul îl salvează.
   const [stored, setStored] = useState(props.word);
-  const word = wordFor(stored);
+  const word = wordFor(stored, props.defaultWord);
   // Drumul: opririle la oameni și popasul din anii comunismului.
   const legs = useMemo(() => journeyLegs(stops, people, now), [stops, people, now]);
   const last = legs.length; // indexul „dincolo de timp”
@@ -283,14 +284,10 @@ function RegimeCard({ faith }: { faith: boolean }) {
 }
 
 function WordCard({ text, pages, total }: { text: string; pages: number; total: number }) {
-  const blocks = parseWord(text);
   return (
     <article className="card journey-card word">
       {total > 0 && <p className="muted" style={{ marginTop: 0 }}>Ai adunat {pages} din {total} file de istorie pe drum.</p>}
-      {blocks.map((b, i) =>
-        b.kind === "title" ? <h2 key={i}>{b.text}</h2>
-          : b.kind === "verse" ? <blockquote key={i}><p>„{b.text.replace(/^[„"]|[”"]$/g, "")}”</p>{b.ref && <cite>{b.ref}</cite>}</blockquote>
-          : <p key={i}>{b.text}</p>)}
+      <WordBlocks text={text} />
       <p><a className="btn primary" href={READ_JOHN} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a> <Link className="btn" href="/istoria-bisericii">Istoria Bisericii prigonite</Link></p>
       <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Versetele sunt din Biblia tradusă de Dumitru Cornilescu.</p>
     </article>

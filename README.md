@@ -131,4 +131,7 @@ le ascunde implicit (`?living=1` le include, tot doar pentru membri).
 - **Manager control** (`/admin/control`, `src/lib/plans.ts`): planul fiecărui cont (gratuit, gratuit mereu, „Familie”) cu o notă,
   limitele planului gratuit (persoane și fișiere pe arbore) și prețul pe an. Totul stă în tabelele `account_plan` și `app_setting`
   și nu se vede nicăieri în site cât timp plățile nu sunt pornite. GEDCOM și „Datele mele” rămân gratuite oricum.
+- **Texte** (`/admin/texte`, `src/lib/texte.ts`): cuvântul de la finalul Călătoriei în timp, scris pentru toți arborii unde
+  proprietarul n-a pus textul lui (stă în `app_setting`, cheia `cuvant_final`). Cu previzualizare și „Pune înapoi textul
+  inițial”, care se întoarce la `DEFAULT_WORD` din `src/lib/cuvant-final.ts`.
 - **Infra & Dev**: baza de date, migrațiile, erorile prinse, cheile de mediu (doar dacă sunt puse, niciodată valoarea).

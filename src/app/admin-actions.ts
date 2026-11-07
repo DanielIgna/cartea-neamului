@@ -1,11 +1,14 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { db } from "@/db";
 import { user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { PlanSettings, isPlan, savePlanSettings, setAccountPlan } from "@/lib/plans";
+import { MAX_WORD } from "@/lib/cuvant-final";
+import { saveBaseWord } from "@/lib/texte";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
 
@@ -38,4 +41,20 @@ export async function saveAccountPlan(_: AdminFormState, form: FormData): Promis
   await setAccountPlan(db, userId, plan, String(form.get("note") ?? ""), me.id);
   revalidatePath("/admin", "layout");
   return { ok: "Salvat." };
+}
+
+/**
+ * „Texte”: cuvântul de la finalul Călătoriei în timp, pentru toți arborii unde proprietarul n-a scris altul.
+ * `null` = înapoi la textul inițial (cel din cod).
+ */
+export async function saveJourneyBaseWord(text: string | null): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const parsed = z.string().max(MAX_WORD).nullable().safeParse(text);
+  if (!parsed.success) return { error: `Textul poate avea cel mult ${MAX_WORD} de caractere.` };
+  if (parsed.data !== null && !parsed.data.trim()) return { error: "Textul e gol. Scrie-l sau pune înapoi textul inițial." };
+  await saveBaseWord(db, parsed.data, me.id);
+  revalidatePath("/admin", "layout");
+  revalidatePath("/arbore/[id]/calatorie", "page");
+  return { ok: parsed.data === null ? "Am pus înapoi textul inițial." : "Am salvat. Așa se vede de acum la capătul călătoriei." };
 }

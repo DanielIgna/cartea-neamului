@@ -1,7 +1,8 @@
 /**
  * Cuvântul de la capătul călătoriei în timp: după ce nava a trecut pe la toți strămoșii știuți, merge „dincolo de timp”,
  * la cele două spițe ale Bibliei: a lui Adam (Geneza 5) și a lui Isus Hristos (Matei 1). Versetele sunt din traducerea
- * Dumitru Cornilescu. Proprietarul arborelui poate păstra textul acesta, îl poate scrie cu vorbele lui sau îl poate ascunde.
+ * Dumitru Cornilescu. Adminul îl poate schimba pentru toți din panou (pagina „Texte”, src/lib/texte.ts), iar proprietarul unui
+ * arbore poate păstra textul de bază, îl poate scrie cu vorbele lui sau îl poate ascunde.
  *
  * Scrierea e simplă, ca s-o poată schimba oricine: „## ” la început de rând = titlu, „> ” = verset (cu trimiterea după „ — ”),
  * un rând gol = paragraf nou.
@@ -78,9 +79,12 @@ export function parseWord(text: string): WordBlock[] {
   return out;
 }
 
-/** Ce se arată la final: `null` în baza de date = textul de bază; un text gol = proprietarul l-a ascuns. */
-export function wordFor(stored: string | null | undefined): string | null {
-  if (stored === null || stored === undefined) return DEFAULT_WORD;
+/**
+ * Ce se arată la final: `null` în baza de date = textul de bază (cel din panou, dacă adminul l-a schimbat, altfel DEFAULT_WORD);
+ * un text gol = proprietarul l-a ascuns.
+ */
+export function wordFor(stored: string | null | undefined, base: string = DEFAULT_WORD): string | null {
+  if (stored === null || stored === undefined) return base;
   return stored.trim() ? stored : null;
 }
 

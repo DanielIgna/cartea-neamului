@@ -6,7 +6,7 @@ import { loadTreeView } from "@/lib/tree-data";
 import { requireUser, roleIn } from "@/lib/access";
 import { birthOrigins } from "@/lib/origins";
 import { isDemo } from "@/lib/demo";
-import { DEFAULT_WORD } from "@/lib/cuvant-final";
+import { baseWord } from "@/lib/texte";
 import TimeJourney from "@/components/TimeJourney";
 
 export const dynamic = "force-dynamic";
@@ -24,9 +24,9 @@ export default async function Journey({ params, searchParams }: { params: Promis
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const data = await loadTreeView(db, id, p && UUID.test(p) ? p : mine?.id, 2);
   if (!data || !data.centerId) notFound();
-  const origins = await birthOrigins(db, id);
+  const [origins, base] = await Promise.all([birthOrigins(db, id), baseWord(db)]);
   return (
     <TimeJourney treeId={id} treeName={data.tree.name} meId={me.id} centerId={data.centerId} people={data.people} rels={data.rels} origins={origins}
-      word={data.tree.journeyWord ?? null} defaultWord={DEFAULT_WORD} isOwner={role === "owner"} demo={isDemo(me.email)} />
+      word={data.tree.journeyWord ?? null} defaultWord={base} isOwner={role === "owner"} demo={isDemo(me.email)} />
   );
 }
