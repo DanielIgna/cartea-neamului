@@ -156,6 +156,7 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
         <h3 style={{ marginTop: 0 }}>Planul lui</h3>
         <p className="muted" style={{ marginTop: 0 }}>{PLANS[p.plan].label}: {PLANS[p.plan].hint}. Nu se vede nicăieri în site cât timp plățile nu sunt pornite.</p>
         <AccountPlanForm userId={p.id} plan={p.plan} note={p.planNote} />
+        <p style={{ marginBottom: 0 }}><Link href={`/admin/istoric?om=${p.id}#limite`}>Ce a schimbat în arbori și limitele lui de editare ▸</Link></p>
       </div>
     </section>
   );
