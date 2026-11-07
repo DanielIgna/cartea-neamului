@@ -9,7 +9,7 @@ import { buildGraph, family, kinship, romanDegree } from "@/lib/kinship";
 import { canMessage } from "@/lib/chat";
 import { storageConfigured } from "@/lib/storage";
 import { lifeDates, years } from "@/lib/person-text";
-import { Avatar } from "@/components/Album";
+import { Avatar } from "@/components/Avatar";
 import ProfileAlbum from "@/components/ProfileAlbum";
 import PhotoPick from "@/components/PhotoPick";
 import { raisedLinks } from "@/lib/raised";
@@ -19,6 +19,7 @@ import { loadLada } from "@/lib/lada-db";
 import { questionsFor, sundayQuestion, type Question } from "@/lib/questions";
 import MemoryBox from "@/components/MemoryBox";
 import { hasConsent } from "@/lib/consent";
+import PageIntl from "@/i18n/PageIntl";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -68,6 +69,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
+    <PageIntl ns={["Media"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>← Înapoi la arbore, cu {p.givenName} în centru</Link>
@@ -119,5 +121,6 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         {!fam.partners.length && !fam.children.length && !fam.parents.length && !rl.carers.length && !rl.raised.length && <p className="muted">Nicio rudă legată încă.</p>}
       </div>
     </section>
+    </PageIntl>
   );
 }

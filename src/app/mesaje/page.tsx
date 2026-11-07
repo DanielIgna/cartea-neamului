@@ -5,7 +5,7 @@ import { tree, treeMember } from "@/db/schema";
 import { requireUser } from "@/lib/access";
 import { chatContacts, inbox } from "@/lib/chat";
 import { romanDegree } from "@/lib/kinship";
-import { Avatar } from "@/components/Album";
+import { Avatar } from "@/components/Avatar";
 import ChatLimit from "@/components/ChatLimit";
 import LinkAnswer from "@/components/LinkAnswer";
 import { roleIn } from "@/lib/access";

@@ -6,6 +6,7 @@ import { fetchAncestorRows, toAhnentafel } from "./ancestry";
 import { parseFuzzyDate } from "./dates";
 import { raisedIn, type Raised } from "./raised";
 import { memoryMediaIds } from "./lada-db";
+import { countryCode, countryName } from "./place-key";
 
 export type PersonView = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: "M" | "F" | "U";
@@ -38,9 +39,9 @@ export function safeAccountImage(url: string | null | undefined): string | null 
 }
 
 /** „Huedin” sau „Torino, Italia”: țara se scrie doar când nu e România. */
-export function where(place: string | null | undefined, country: string | null | undefined) {
-  const c = country?.trim();
-  return [place?.trim(), c && !/^rom[aâ]nia$/i.test(c) ? c : null].filter(Boolean).join(", ");
+export function where(place: string | null | undefined, country: string | null | undefined, locale?: string) {
+  const c = country?.trim(), cc = countryCode(c);
+  return [place?.trim(), c && cc !== "RO" ? (cc && locale ? countryName(cc, locale) : c) : null].filter(Boolean).join(", ");
 }
 
 /**

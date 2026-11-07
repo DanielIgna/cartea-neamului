@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Avatar } from "./Album";
+import { Avatar } from "./Avatar";
 
 export type StoryMemory = {
   id: string; title: string | null; question: string | null; body: string; when: string; photoId: string | null;

@@ -3,6 +3,7 @@
  * „Sîncraiu” (cu ortografia veche) sau „Torino, Italia”. Aici sunt doar regulile de scriere, fără gazetar,
  * ca să le poată folosi și pagina din browser.
  */
+import { LOCALES } from "@/i18n/locales";
 
 export const COUNTIES: Record<string, string> = {
   AB: "Alba", AR: "Arad", AG: "Argeș", BC: "Bacău", BH: "Bihor", BN: "Bistrița-Năsăud", BT: "Botoșani", BV: "Brașov", BR: "Brăila", B: "București",
@@ -52,8 +53,32 @@ const COUNTRY_ALIASES: Record<string, string> = {
   switzerland: "CH", schweiz: "CH", sweden: "SE", denmark: "DK", norway: "NO", finland: "FI", portugal: "PT", greece: "GR", cyprus: "CY",
   ukraine: "UA", "republica ceha": "CZ", czechia: "CZ", poland: "PL", "statele unite": "US", sua: "US", usa: "US", america: "US",
   "new zealand": "NZ", eau: "AE", uae: "AE", slovakia: "SK", croatia: "HR", luxembourg: "LU",
+  // Cum le mai scriu cei plecați, în limbile site-ului (numele oficiale le adaugă mai jos Intl.DisplayNames).
+  "great britain": "GB", "grande bretagne": "GB", "gran bretana": "GB", "groot brittannie": "GB", grossbritannien: "GB", "großbritannien": "GB",
+  "gran bretagna": "GB", "nagy britannia": "GB", angleterre: "GB", inglaterra: "GB", engeland: "GB", inghilterra: "GB", scotland: "GB", ecosse: "GB",
+  escocia: "GB", schotland: "GB", schottland: "GB", scozia: "GB", skocia: "GB", wales: "GB", "pays de galles": "GB", gales: "GB", galles: "GB",
+  holland: "NL", hollande: "NL", holanda: "NL", hollandia: "NL", "ee uu": "US", eeuu: "US", "etats unis d amerique": "US",
+  "estados unidos de america": "US", "vereinigte staaten von amerika": "US", "stati uniti d america": "US", "verenigde staten van amerika": "US",
+  "amerikai egyesult allamok": "US", amerika: "US", "republic of moldova": "MD", "republique de moldavie": "MD", moldawien: "MD", moldau: "MD",
+  "republica de moldavia": "MD", "repubblica di moldavia": "MD", "republiek moldavie": "MD", "moldovai koztarsasag": "MD", bessarabia: "MD",
+  bessarabie: "MD", besarabia: "MD", bessarabien: "MD", besszarabia: "MD", "czech republic": "CZ", "republique tcheque": "CZ",
+  "republica checa": "CZ", "tsjechische republiek": "CZ", "tschechische republik": "CZ", "repubblica ceca": "CZ", "cseh koztarsasag": "CZ",
 };
 for (const [cc, name] of Object.entries(COUNTRY_NAMES)) COUNTRY_ALIASES[plainPlace(name)] = cc;
+
+const DISPLAY = new Map<string, Intl.DisplayNames | null>();
+/** Numele țării în limba omului: „Italia” în română, „Italy” în engleză, „Italien” în germană. */
+export function countryName(cc: string, locale: string): string {
+  if (locale !== "ro") {
+    if (!DISPLAY.has(locale)) {
+      try { DISPLAY.set(locale, new Intl.DisplayNames([locale], { type: "region" })); } catch { DISPLAY.set(locale, null); }
+    }
+    try { const n = DISPLAY.get(locale)?.of(cc); if (n && n !== cc) return n; } catch { /* cod necunoscut */ }
+  }
+  return COUNTRY_NAMES[cc] ?? cc;
+}
+// „Allemagne”, „Németország”, „Verenigd Koninkrijk”: țara scrisă în oricare limbă a site-ului e tot aceeași țară.
+for (const l of LOCALES) for (const cc of Object.keys(COUNTRY_NAMES)) COUNTRY_ALIASES[plainPlace(countryName(cc, l))] ??= cc;
 
 /** „Italia” → IT. Gol sau necunoscut → null. */
 export function countryCode(text: string | null | undefined): string | null {

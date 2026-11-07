@@ -12,4 +12,12 @@ export const enUSArbore: DeepPartial<ArboreCatalog> = {
     putInCentre: "Put in the center",
     unclaimedText: "Send {name} a link. Once {sex, select, M {he has} F {she has} other {they have}} an account, {sex, select, M {he goes} F {she goes} other {they go}} straight into the tree with {sex, select, M {his} F {her} other {their}} own profile in the center, and can carry on the tree with {sex, select, M {his} F {her} other {their}} own family.",
   },
+  PersonForm: {
+    surname: "Last name",
+    birthPlaceholder: "03/12/1985, 1902 or c. 1870",
+    deathPlaceholder: "11/5/2008 or 1980",
+    dateHint: "For birth and death, write the month, day and year if you know them (03/12/1932); otherwise just the year or “c. 1870”.",
+    livingHint: "With the full date of birth (month, day, year), the person can find their own profile when they create an account, and you confirm it’s them.",
+    shareHint: "Uncheck those from another marriage.",
+  },
 };
