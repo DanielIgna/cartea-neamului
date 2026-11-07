@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/access";
 import { recordConsent } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import { deleteUsage } from "@/lib/usage";
+import { getT } from "@/i18n/server";
 
 /**
  * Răspunsul la „Cât folosești site-ul”: „Bine” pornește măsurarea, „Nu vreau” (sau oprirea ei din „Datele mele”) o oprește și
@@ -12,8 +13,8 @@ import { deleteUsage } from "@/lib/usage";
  */
 export async function answerUsage(granted: boolean): Promise<{ ok?: boolean; error?: string }> {
   const me = await currentUser();
-  if (!me) return { error: "Intră în cont." };
-  if (isDemo(me.email)) return { error: "Contul de probă nu se măsoară." };
+  if (!me) return { error: (await getT("Errors"))("signIn") };
+  if (isDemo(me.email)) return { error: (await getT("Errors"))("usageDemo") };
   await recordConsent(db, me.id, "usage", !!granted);
   if (!granted) await deleteUsage(db, me.id);
   revalidatePath("/", "layout");

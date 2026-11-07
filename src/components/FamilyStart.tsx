@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { useTranslations } from "use-intl";
 import { startFamilyTree } from "@/app/pornire-actions";
 import type { StartInput } from "@/lib/family-start";
 
@@ -8,14 +9,14 @@ type Key = "father" | "mother" | "ff" | "fm" | "mf" | "mm";
 const empty = (living = false): Who => ({ given: "", surname: "", birthSurname: "", birth: "", living });
 // Intră în arbore doar cine are prenumele scris: numele de familie vin deja completate, deci singure nu spun că omul e știut.
 const has = (w: Who) => !!w.given.trim();
-const full = (w: Who) => [w.given, w.surname].map((x) => x.trim()).filter(Boolean).join(" ") + (w.birthSurname.trim() ? ` (născută ${w.birthSurname.trim()})` : "");
-const STEPS = ["Tu", "Părinții", "Bunicii", "Arborele"];
+const STEPS = ["stepMe", "stepParents", "stepGrandparents", "stepTree"] as const;
 
 /**
  * Arborele pornit pas cu pas, cum l-ar întreba un nepot pe bunic: întâi cine ești, apoi părinții, apoi bunicii.
  * Ce nu știe omul lasă gol; numele de familie trec singure de la un pas la altul (le poate schimba).
  */
 export default function FamilyStart() {
+  const t = useTranslations("FamilyStart");
   const [step, setStep] = useState(0);
   const [me, setMe] = useState({ given: "", surname: "", birthSurname: "", sex: "" as "" | "M" | "F", birth: "", birthPlace: "" });
   const [rel, setRel] = useState<Record<Key, Who>>({ father: empty(true), mother: empty(true), ff: empty(), fm: empty(), mf: empty(), mm: empty() });
@@ -28,6 +29,8 @@ export default function FamilyStart() {
   // La fiecare pas, cititorul de ecran și telefonul pornesc de la titlul pasului.
   useEffect(() => { if (first.current) { first.current = false; return; } head.current?.focus(); }, [step]);
 
+  const nameOf = (w: Who) => [w.given, w.surname].map((x) => x.trim()).filter(Boolean).join(" ");
+  const full = (w: Who) => (w.birthSurname.trim() ? t("withBirthSurname", { name: nameOf(w), birthSurname: w.birthSurname.trim() }) : nameOf(w));
   const set = (k: Key, patch: Partial<Who>) => setRel((r) => ({ ...r, [k]: { ...r[k], ...patch } }));
   // Numele de familie trec de la un pas la altul, doar unde omul n-a scris încă nimic.
   const fill = (r: Record<Key, Who>, k: Key, surname: string) => (r[k].surname || !surname ? r[k] : { ...r[k], surname });
@@ -37,8 +40,8 @@ export default function FamilyStart() {
   const next = () => {
     setErr(null);
     if (step === 0) {
-      if (!me.given.trim()) return setErr("Scrie-ți prenumele.");
-      if (!me.sex) return setErr("Alege dacă ești bărbat sau femeie.");
+      if (!me.given.trim()) return setErr(t("errGiven"));
+      if (!me.sex) return setErr(t("errSex"));
       // O femeie măritată poartă de obicei numele soțului; al tatălui ei e numele de fată.
       const family = (me.sex === "F" && me.birthSurname.trim()) || me.surname.trim();
       setRel((r) => ({ ...r, father: fill(r, "father", family), mother: fill(r, "mother", family) }));
@@ -49,7 +52,7 @@ export default function FamilyStart() {
     }
     if (step === 2 && !treeName) {
       const name = rel.father.surname.trim() || me.surname.trim();
-      setTreeName(name ? `Neamul ${name}` : "Neamul meu");
+      setTreeName(name ? t("defaultTreeName", { surname: name }) : t("defaultTreeNameMine"));
     }
     setStep(step + 1);
   };
@@ -71,60 +74,60 @@ export default function FamilyStart() {
     <fieldset className="start-person" key={k}>
       <legend>{title}</legend>
       <div className="row">
-        <label>Prenume<input value={rel[k].given} onChange={(e) => set(k, { given: e.target.value })} autoComplete="off" /></label>
-        <label>{woman ? "Numele de acum" : "Nume"}<input value={rel[k].surname} onChange={(e) => set(k, { surname: e.target.value })} autoComplete="off" /></label>
+        <label>{t("given")}<input value={rel[k].given} onChange={(e) => set(k, { given: e.target.value })} autoComplete="off" /></label>
+        <label>{woman ? t("surnameNow") : t("surname")}<input value={rel[k].surname} onChange={(e) => set(k, { surname: e.target.value })} autoComplete="off" /></label>
       </div>
       <div className="row">
-        {woman && <label>Numele de fată<input value={rel[k].birthSurname} onChange={(e) => set(k, { birthSurname: e.target.value })} autoComplete="off" /></label>}
-        <label><span>Anul nașterii <span className="muted">(dacă știi)</span></span>
-          <input value={rel[k].birth} onChange={(e) => set(k, { birth: e.target.value })} placeholder="1938" autoComplete="off" />
+        {woman && <label>{t("birthSurname")}<input value={rel[k].birthSurname} onChange={(e) => set(k, { birthSurname: e.target.value })} autoComplete="off" /></label>}
+        <label><span>{t("birthYear")} <span className="muted">{t("ifKnown")}</span></span>
+          <input value={rel[k].birth} onChange={(e) => set(k, { birth: e.target.value })} placeholder={t("birthYearPlaceholder")} autoComplete="off" />
         </label>
       </div>
-      <label className="radio"><input type="checkbox" checked={rel[k].living} onChange={(e) => set(k, { living: e.target.checked })} /> Trăiește</label>
+      <label className="radio"><input type="checkbox" checked={rel[k].living} onChange={(e) => set(k, { living: e.target.checked })} /> {t("living")}</label>
     </fieldset>
   );
 
   const summary = [
-    `tu: ${[me.given, me.surname].map((x) => x.trim()).filter(Boolean).join(" ")}`,
-    fatherOk && `tatăl: ${full(rel.father)}`, motherOk && `mama: ${full(rel.mother)}`,
-    fatherOk && has(rel.ff) && `bunicul dinspre tată: ${full(rel.ff)}`, fatherOk && has(rel.fm) && `bunica dinspre tată: ${full(rel.fm)}`,
-    motherOk && has(rel.mf) && `bunicul dinspre mamă: ${full(rel.mf)}`, motherOk && has(rel.mm) && `bunica dinspre mamă: ${full(rel.mm)}`,
+    t("sumMe", { name: [me.given, me.surname].map((x) => x.trim()).filter(Boolean).join(" ") }),
+    fatherOk && t("sumFather", { name: full(rel.father) }), motherOk && t("sumMother", { name: full(rel.mother) }),
+    fatherOk && has(rel.ff) && t("sumFF", { name: full(rel.ff) }), fatherOk && has(rel.fm) && t("sumFM", { name: full(rel.fm) }),
+    motherOk && has(rel.mf) && t("sumMF", { name: full(rel.mf) }), motherOk && has(rel.mm) && t("sumMM", { name: full(rel.mm) }),
   ].filter(Boolean) as string[];
   const skip = (step === 1 && !fatherOk && !motherOk) || (step === 2 && !grandOk);
 
   return (
     <div className="form start">
-      <ol className="start-steps" aria-label="Pașii">
+      <ol className="start-steps" aria-label={t("stepsLabel")}>
         {STEPS.map((s, i) => (
           <li key={s} className={i === step ? "now" : i < step ? "done" : ""} aria-current={i === step ? "step" : undefined}>
-            <span aria-hidden="true">{i < step ? "✓" : i + 1}</span> {s}
+            <span aria-hidden="true">{i < step ? "✓" : i + 1}</span> {t(s)}
           </li>
         ))}
       </ol>
 
       {step === 0 && (
         <>
-          <h3 ref={head} tabIndex={-1}>Cine ești?</h3>
-          <p className="muted">Arborele pornește de la tine. Fișa ta rămâne legată de contul tău.</p>
+          <h3 ref={head} tabIndex={-1}>{t("whoTitle")}</h3>
+          <p className="muted">{t("whoText")}</p>
           <div className="row">
-            <label>Prenume<input value={me.given} onChange={(e) => setMe({ ...me, given: e.target.value })} autoComplete="given-name" required /></label>
-            <label>Nume<input value={me.surname} onChange={(e) => setMe({ ...me, surname: e.target.value })} autoComplete="family-name" /></label>
+            <label>{t("given")}<input value={me.given} onChange={(e) => setMe({ ...me, given: e.target.value })} autoComplete="given-name" required /></label>
+            <label>{t("surname")}<input value={me.surname} onChange={(e) => setMe({ ...me, surname: e.target.value })} autoComplete="family-name" /></label>
           </div>
-          <div className="start-sex" role="radiogroup" aria-label="Ești">
-            <label className="radio"><input type="radio" name="sex" checked={me.sex === "M"} onChange={() => setMe({ ...me, sex: "M" })} /> Bărbat</label>
-            <label className="radio"><input type="radio" name="sex" checked={me.sex === "F"} onChange={() => setMe({ ...me, sex: "F" })} /> Femeie</label>
+          <div className="start-sex" role="radiogroup" aria-label={t("youAre")}>
+            <label className="radio"><input type="radio" name="sex" checked={me.sex === "M"} onChange={() => setMe({ ...me, sex: "M" })} /> {t("man")}</label>
+            <label className="radio"><input type="radio" name="sex" checked={me.sex === "F"} onChange={() => setMe({ ...me, sex: "F" })} /> {t("woman")}</label>
           </div>
           {me.sex === "F" && (
-            <label><span>Numele de fată <span className="muted">(dacă ți l-ai schimbat la căsătorie)</span></span>
+            <label><span>{t("birthSurname")} <span className="muted">{t("birthSurnameHint")}</span></span>
               <input value={me.birthSurname} onChange={(e) => setMe({ ...me, birthSurname: e.target.value })} autoComplete="off" />
             </label>
           )}
           <div className="row">
-            <label><span>Data nașterii <span className="muted">(sau doar anul)</span></span>
-              <input value={me.birth} onChange={(e) => setMe({ ...me, birth: e.target.value })} placeholder="12.03.1970" autoComplete="off" />
+            <label><span>{t("birthDate")} <span className="muted">{t("birthDateHint")}</span></span>
+              <input value={me.birth} onChange={(e) => setMe({ ...me, birth: e.target.value })} placeholder={t("birthDatePlaceholder")} autoComplete="off" />
             </label>
-            <label><span>Locul nașterii <span className="muted">(dacă vrei)</span></span>
-              <input value={me.birthPlace} onChange={(e) => setMe({ ...me, birthPlace: e.target.value })} placeholder="Huedin" autoComplete="off" />
+            <label><span>{t("birthPlace")} <span className="muted">{t("ifYouWant")}</span></span>
+              <input value={me.birthPlace} onChange={(e) => setMe({ ...me, birthPlace: e.target.value })} placeholder={t("birthPlacePlaceholder")} autoComplete="off" />
             </label>
           </div>
         </>
@@ -132,23 +135,23 @@ export default function FamilyStart() {
 
       {step === 1 && (
         <>
-          <h3 ref={head} tabIndex={-1}>Părinții tăi</h3>
-          <p className="muted">Scrie ce știi; ce nu știi lași gol și adaugi mai târziu, din arbore. Dacă trăiesc, data întreagă a nașterii (de pildă 12.03.1950) îi ajută să-și găsească singuri fișa când își fac cont.</p>
-          {personFields("father", "Tatăl tău", false)}
-          {personFields("mother", "Mama ta", true)}
+          <h3 ref={head} tabIndex={-1}>{t("parentsTitle")}</h3>
+          <p className="muted">{t("parentsText")}</p>
+          {personFields("father", t("father"), false)}
+          {personFields("mother", t("mother"), true)}
         </>
       )}
 
       {step === 2 && (
         <>
-          <h3 ref={head} tabIndex={-1}>Bunicii</h3>
+          <h3 ref={head} tabIndex={-1}>{t("grandTitle")}</h3>
           {!fatherOk && !motherOk ? (
-            <p className="muted">Bunicii se leagă de părinți. Ca să-i treci aici, întoarce-te și scrie măcar numele unuia dintre părinți. Sau mergi mai departe: îi poți adăuga oricând din arbore.</p>
+            <p className="muted">{t("grandNoParents")}</p>
           ) : (
             <>
-              <p className="muted">De la ei pornesc spițele neamului, din tată în tată, dinspre fiecare părinte.</p>
-              {fatherOk && <div className="start-side"><div className="section-label">Dinspre tată</div>{personFields("ff", "Bunicul", false)}{personFields("fm", "Bunica", true)}</div>}
-              {motherOk && <div className="start-side"><div className="section-label">Dinspre mamă</div>{personFields("mf", "Bunicul", false)}{personFields("mm", "Bunica", true)}</div>}
+              <p className="muted">{t("grandText")}</p>
+              {fatherOk && <div className="start-side"><div className="section-label">{t("fatherSide")}</div>{personFields("ff", t("grandfather"), false)}{personFields("fm", t("grandmother"), true)}</div>}
+              {motherOk && <div className="start-side"><div className="section-label">{t("motherSide")}</div>{personFields("mf", t("grandfather"), false)}{personFields("mm", t("grandmother"), true)}</div>}
             </>
           )}
         </>
@@ -156,25 +159,25 @@ export default function FamilyStart() {
 
       {step === 3 && (
         <>
-          <h3 ref={head} tabIndex={-1}>Arborele tău</h3>
+          <h3 ref={head} tabIndex={-1}>{t("treeTitle")}</h3>
           <div className="row">
-            <label>Numele arborelui<input value={treeName} onChange={(e) => setTreeName(e.target.value)} required /></label>
-            <label><span>Regiunea <span className="muted">(dacă vrei)</span></span><input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Cluj" /></label>
+            <label>{t("treeName")}<input value={treeName} onChange={(e) => setTreeName(e.target.value)} required /></label>
+            <label><span>{t("region")} <span className="muted">{t("ifYouWant")}</span></span><input value={region} onChange={(e) => setRegion(e.target.value)} placeholder={t("regionPlaceholder")} /></label>
           </div>
           <div className="start-summary">
-            <b>Intră în arbore:</b>
+            <b>{t("summaryTitle")}</b>
             <ul>{summary.map((s) => <li key={s}>{s}</li>)}</ul>
-            <p className="muted">După ce îl creezi, îți chemi rudele cu un link și fiecare își completează ramura lui.</p>
+            <p className="muted">{t("afterText")}</p>
           </div>
         </>
       )}
 
       {err && <p className="err" role="alert">{err}</p>}
       <div className="actions start-nav">
-        {step > 0 && <button type="button" className="btn" onClick={back} disabled={pending}>Înapoi</button>}
+        {step > 0 && <button type="button" className="btn" onClick={back} disabled={pending}>{t("back")}</button>}
         {step < 3
-          ? <button type="button" className="btn primary" onClick={next}>{skip ? "Sar peste" : "Mai departe"}</button>
-          : <button type="button" className="btn primary" onClick={submit} disabled={pending || !treeName.trim()}>{pending ? "Se creează…" : "Creează arborele"}</button>}
+          ? <button type="button" className="btn primary" onClick={next}>{skip ? t("skip") : t("next")}</button>
+          : <button type="button" className="btn primary" onClick={submit} disabled={pending || !treeName.trim()}>{pending ? t("creating") : t("create")}</button>}
       </div>
     </div>
   );

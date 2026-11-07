@@ -140,6 +140,15 @@ a{color:var(--accent)}
 /* Comutator de temă din antet: Automat / Luminos / Întunecat */
 .theme-switch{font-size:13px}
 .theme-switch button{padding:4px 9px}
+/* Tema și limba, una lângă alta în antet. Limba: globul și lista, cu numele fiecărei limbi scris în limba ei. */
+.prefs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.lang-pick{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:8px;padding:0 2px 0 8px;background:var(--surface);color:var(--muted);font-size:13px}
+.lang-pick:hover{border-color:var(--accent)}
+.lang-pick:has(select:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.lang-pick svg{flex:none}
+.lang-pick select{border:0;background:transparent;color:var(--ink);padding:4px 2px;font-size:13px;line-height:inherit;max-width:9.5em;cursor:pointer}
+.lang-pick select:focus-visible{outline:none}
+.lang-pick option{background:var(--surface);color:var(--ink)}
 
 /* fișa persoanei: rude, rudenie, editare */
 .kin{background:var(--ochre-soft);border-radius:8px;padding:6px 10px;font-size:14px;margin-top:8px}
@@ -399,10 +408,11 @@ body:has(.story){overflow:hidden}
 .meter-fill.bad{background:var(--red)}
 .err-msg{font-family:ui-monospace,Menlo,monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;margin:4px 0 0;color:var(--ink)}
 /* Anunțul pentru măsurarea timpului petrecut în site, cerut o singură dată */
-.usage-notice{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin:0 0 16px;font-size:15px}
-.usage-notice p{margin:0 0 10px;max-width:80ch}
-.usage-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
-.usage-actions .btn{padding:7px 16px}
+/* La fel arată și întrebarea „Citești în …?”, pusă o singură dată cui are browserul în altă limbă. */
+.usage-notice,.lang-suggest{border:1px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin:0 0 16px;font-size:15px}
+.usage-notice p,.lang-suggest p{margin:0 0 10px;max-width:80ch}
+.usage-actions,.lang-suggest-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.usage-actions .btn,.lang-suggest-actions .btn{padding:7px 16px}
 .my-usage{margin:4px 0 6px;padding-left:20px;columns:2 220px;font-size:14px}
 /* Oamenii (drumul lor, ce folosesc, fișa fiecăruia) și Manager control (planuri și limite) */
 .hbars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -655,6 +665,8 @@ body:has(.grand){overflow:hidden}
 .landing-hero{padding:24px 26px}
 .landing-hero h2{font-size:32px;line-height:1.15}
 .landing-hero p{font-size:17px;max-width:60ch;margin:10px 0 0}
+/* În alte limbi: ce înseamnă numele „Cartea Neamului”, mărunt, sub titlu. */
+.landing-hero p.landing-brand{font-size:14px;font-style:italic;margin-top:6px}
 .landing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px}
 .landing-grid h3,.landing h3,.welcome h3{font-size:19px;margin-bottom:4px}
 .landing-grid p{margin:4px 0 0}

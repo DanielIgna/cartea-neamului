@@ -13,10 +13,11 @@ const text = (max: number) => z.string().trim().max(max).optional().default("");
 const Who = z.object({
   given: text(120), surname: text(120), birthSurname: text(120), birth: text(60), living: z.boolean().optional().default(false),
 });
+// Mesajele sunt chei din Errors (src/i18n/messages/ro.ts): acțiunea le scrie în limba omului.
 export const StartInput = z.object({
-  treeName: z.string().trim().min(1, "Dă un nume arborelui.").max(120),
+  treeName: z.string().trim().min(1, "treeName").max(120),
   region: text(120),
-  me: Who.extend({ given: z.string().trim().min(1, "Scrie-ți prenumele.").max(120), sex: z.enum(["M", "F"], { message: "Alege dacă ești bărbat sau femeie." }), birthPlace: text(160) }),
+  me: Who.extend({ given: z.string().trim().min(1, "given").max(120), sex: z.enum(["M", "F"], { message: "sex" }), birthPlace: text(160) }),
   father: Who.optional(), mother: Who.optional(),
   ff: Who.optional(), fm: Who.optional(), mf: Who.optional(), mm: Who.optional(),
 });

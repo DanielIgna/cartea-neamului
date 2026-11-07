@@ -18,6 +18,7 @@ import { mergeInto } from "@/lib/merge";
 import { after } from "next/server";
 import { refreshTreePlaces } from "@/lib/shared-places";
 import { setRaised } from "@/lib/raised";
+import { getT } from "@/i18n/server";
 import { isPlaceholder } from "@/lib/family";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
@@ -31,21 +32,22 @@ const MAX_GEDCOM_BYTES = 10 * 1024 * 1024;
 
 export async function createTree(_: unknown, form: FormData) {
   await ensureSchema();
+  const t = await getT("Errors");
   const me = await currentUser();
-  if (!me) return { error: "Intră în cont ca să creezi un arbore." };
+  if (!me) return { error: t("createSignIn") };
   const name = String(form.get("name") ?? "").trim();
-  if (!name) return { error: "Dă un nume arborelui, de exemplu „Neamul Pop din Ieud”." };
+  if (!name) return { error: t("createName") };
   const region = String(form.get("region") ?? "") || null;
   const file = form.get("gedcom");
   const hasGedcom = file instanceof File && file.size > 0;
   // Verificăm tot înainte să scriem ceva, ca o eroare să nu lase în urmă un arbore gol, care nu se poate deschide.
-  if (hasGedcom && file.size > MAX_GEDCOM_BYTES) return { error: "Fișierul GEDCOM e mai mare de 10 MB." };
+  if (hasGedcom && file.size > MAX_GEDCOM_BYTES) return { error: t("gedcomTooBig") };
   const given = String(form.get("given") ?? "").trim(), surname = String(form.get("surname") ?? "").trim();
-  if (!hasGedcom && !given && !surname) return { error: "Scrie numele tău sau încarcă un fișier GEDCOM." };
+  if (!hasGedcom && !given && !surname) return { error: t("createNoName") };
   const gedcom = hasGedcom ? await file.text() : null;
 
   const NO_PEOPLE = "gedcom-fara-persoane";
-  const t = await db.transaction(async (tx) => {
+  const made = await db.transaction(async (tx) => {
     const [t] = await tx.insert(tree).values({ name, ownerId: me.id, region }).returning();
     await tx.insert(treeMember).values({ treeId: t.id, userId: me.id, role: "owner" });
     if (gedcom !== null) {
@@ -68,8 +70,8 @@ export async function createTree(_: unknown, form: FormData) {
     if (e instanceof Error && e.message === NO_PEOPLE) return null;
     throw e;
   });
-  if (!t) return { error: "Fișierul GEDCOM nu conține nicio persoană." };
-  redirect(`/arbore/${t.id}`);
+  if (!made) return { error: t("gedcomEmpty") };
+  redirect(`/arbore/${made.id}`);
 }
 
 const Fields = {
@@ -211,10 +213,11 @@ export async function updatePerson(_: unknown, form: FormData) {
 const Invite = z.object({ treeId: z.string().uuid(), role: z.enum(["editor", "contributor", "viewer"]), personId: z.string().uuid().optional().or(z.literal("")) });
 
 export async function createInviteLink(_: unknown, form: FormData) {
+  const tr = await getT("Errors");
   const parsed = Invite.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: "Date de invitație invalide." };
+  if (!parsed.success) return { error: tr("inviteInvalid") };
   const me = await currentUser();
-  if (!me || !can(await roleIn(db, parsed.data.treeId, me.id), "editor")) return { error: "Doar proprietarul și editorii pot invita rude." };
+  if (!me || !can(await roleIn(db, parsed.data.treeId, me.id), "editor")) return { error: tr("inviteNotAllowed") };
   const { token, expiresAt } = await createInvitation(db, { treeId: parsed.data.treeId, createdBy: me.id, role: parsed.data.role, personId: parsed.data.personId || null });
   const h = await headers();
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;

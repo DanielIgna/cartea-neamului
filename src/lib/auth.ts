@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
 import { user, session, account, verification } from "@/db/schema";
 import { recordConsent } from "./consent";
+import { DEFAULT_LOCALE, localeFromCookieHeader } from "@/i18n/locales";
 
 const DEV_SECRET = "dev-secret-cartea-neamului-schimba-in-productie";
 if (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build" && !process.env.BETTER_AUTH_SECRET) {
@@ -35,12 +36,23 @@ export const auth = betterAuth({
   trustedOrigins: vercelOrigins,
   database: drizzleAdapter(db, { provider: "pg", schema: { user, session, account, verification } }),
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  // Limba contului (aleasă din site, nu trimisă la creare): îl urmează pe alt telefon sau calculator.
+  user: { additionalFields: { locale: { type: "string", required: false, defaultValue: DEFAULT_LOCALE, input: false } } },
   socialProviders: googleEnabled() ? { google: { clientId: googleId!, clientSecret: googleSecret!, prompt: "select_account" } } : undefined,
   // Cine are deja cont cu un email și intră apoi cu Google pe același email ajunge în același cont (Google verifică emailul).
   account: { accountLinking: { enabled: true, trustedProviders: ["google"] } },
   databaseHooks: {
     // Cine își face cont (cu email sau cu Google) e de acord cu Termenii și cu Politica de confidențialitate: ținem minte când și ce versiune.
-    user: { create: { after: async (u) => { await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e)); } } },
+    user: {
+      create: {
+        // Contul nou primește limba în care omul citea site-ul când și l-a făcut.
+        before: async (u, ctx) => {
+          const locale = localeFromCookieHeader(ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie"));
+          return locale ? { data: { ...u, locale } } : undefined;
+        },
+        after: async (u) => { await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e)); },
+      },
+    },
     account: {
       create: {
         // Când cineva își leagă contul Google, poza din Google devine poza contului, dacă nu are deja una.

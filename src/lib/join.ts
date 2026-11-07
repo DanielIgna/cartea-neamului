@@ -13,7 +13,8 @@ import { DEMO_EMAIL, isDemo } from "./demo";
  * zi după zi, căutările sunt puține pe zi, pentru fiecare cont și pentru fiecare nume.
  */
 
-export const DEMO_JOIN = "Contul de probă e folosit de mai mulți oameni, așa că nu poate intra în alți arbori. Fă-ți un cont al tău.";
+/** De ce nu merge cererea; textul, în limba omului, e în Errors.join (src/i18n/messages/ro.ts). */
+export type JoinError = "demo" | "birth" | "names" | "tooMany" | "notPending" | "claimed";
 const PER_USER = 10; // căutări pe zi, pentru un cont
 const PER_NAME = 30; // căutări fără rezultat pe zi, pentru același nume de familie (din toate conturile)
 const DAY = 864e5;
@@ -35,20 +36,20 @@ export function sameName(typed: { given: string; surname: string }, p: { givenNa
 }
 
 export type JoinInput = { given: string; surname: string; birth: string; note: string | null };
-export type JoinResult = { error?: string; found?: number; declined?: boolean };
+export type JoinResult = { error?: JoinError; found?: number; declined?: boolean };
 
 /** Caută fișa și trimite cererea proprietarului fiecărui arbore în care apare. */
 export async function askToJoin(db: Db, me: { id: string; email: string }, input: JoinInput, now = new Date()): Promise<JoinResult> {
-  if (isDemo(me.email)) return { error: DEMO_JOIN };
+  if (isDemo(me.email)) return { error: "demo" };
   const day = /^\d{4}-\d{2}-\d{2}$/.test(input.birth) ? exactDay(input.birth) : null;
-  if (!day || day > now.toISOString().slice(0, 10) || day < "1900-01-01") return { error: "Alege data nașterii: ziua, luna și anul." };
-  if (!words(input.given).length || !words(input.surname).length) return { error: "Scrie prenumele și numele de familie." };
+  if (!day || day > now.toISOString().slice(0, 10) || day < "1900-01-01") return { error: "birth" };
+  if (!words(input.given).length || !words(input.surname).length) return { error: "names" };
   const nameKey = words(input.surname).join(" ");
   const since = new Date(now.getTime() - DAY);
   const [mine] = await db.select({ n: count() }).from(joinAttempt).where(and(eq(joinAttempt.userId, me.id), gte(joinAttempt.createdAt, since)));
   const [named] = await db.select({ n: count() }).from(joinAttempt)
     .where(and(eq(joinAttempt.nameKey, nameKey), eq(joinAttempt.found, false), gte(joinAttempt.createdAt, since)));
-  if (mine.n >= PER_USER || named.n >= PER_NAME) return { error: "Ai căutat de multe ori azi. Mai încearcă mâine sau cere unei rude un link de invitație." };
+  if (mine.n >= PER_USER || named.n >= PER_NAME) return { error: "tooMany" };
 
   // Fișele celor în viață, nerevendicate, cu data completă a nașterii (doar anul nu ajunge ca să recunoaștem pe cineva).
   const claimedTrees = (await db.select({ id: person.treeId }).from(person).where(eq(person.claimedByUserId, me.id))).map((r) => r.id);
@@ -97,10 +98,10 @@ export async function pendingJoins(db: Db, ownerId: string) {
  * Proprietarul răspunde. „Acceptă”: omul devine membru al arborelui (poate adăuga rude) și fișa devine a lui;
  * celelalte cereri pentru aceeași fișă sunt refuzate.
  */
-export async function answerJoin(db: Db, ownerId: string, id: string, accept: boolean, now = new Date()) {
+export async function answerJoin(db: Db, ownerId: string, id: string, accept: boolean, now = new Date()): Promise<{ ok?: true; error?: JoinError }> {
   const [row] = await db.select({ r: joinRequest, ownerId: tree.ownerId }).from(joinRequest).innerJoin(tree, eq(tree.id, joinRequest.treeId))
     .where(eq(joinRequest.id, id));
-  if (!row || row.ownerId !== ownerId || row.r.status !== "pending") return { error: "Cererea nu mai așteaptă răspuns." };
+  if (!row || row.ownerId !== ownerId || row.r.status !== "pending") return { error: "notPending" };
   const r = row.r;
   if (!accept) {
     await db.update(joinRequest).set({ status: "declined", answeredAt: now }).where(eq(joinRequest.id, id));
@@ -109,7 +110,7 @@ export async function answerJoin(db: Db, ownerId: string, id: string, accept: bo
   return db.transaction(async (tx) => {
     const claimed = await tx.update(person).set({ claimedByUserId: r.userId, privacy: "claimed", updatedAt: now })
       .where(and(eq(person.id, r.personId), eq(person.treeId, r.treeId), isNull(person.claimedByUserId))).returning({ id: person.id });
-    if (!claimed.length) return { error: "Fișa a fost revendicată între timp de altcineva." };
+    if (!claimed.length) return { error: "claimed" as const };
     await tx.insert(treeMember).values({ treeId: r.treeId, userId: r.userId, role: "contributor", invitedBy: ownerId }).onConflictDoNothing();
     await tx.update(joinRequest).set({ status: "accepted", answeredAt: now }).where(eq(joinRequest.id, id));
     await tx.update(joinRequest).set({ status: "declined", answeredAt: now })
