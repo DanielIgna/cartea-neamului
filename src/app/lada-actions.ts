@@ -10,6 +10,7 @@ import { dropMemories, memoryVisible } from "@/lib/lada-db";
 import { isChapter } from "@/lib/questions";
 import { hasConsent, recordConsent } from "@/lib/consent";
 import { deleteObjects } from "@/lib/storage";
+import { getT } from "@/i18n/server";
 
 type Result = { ok?: boolean; id?: string; error?: string };
 const uuid = z.string().uuid();
@@ -29,10 +30,10 @@ const touch = (treeId: string) => revalidatePath(`/arbore/${treeId}`, "layout");
 
 const MemoryInput = z.object({
   treeId: uuid, personId: uuid, id: uuid.optional(),
-  chapter: z.string().refine(isChapter, "Alege capitolul."),
+  chapter: z.string().refine(isChapter),
   question: z.string().trim().max(400).nullish(), questionKey: z.string().trim().max(120).nullish(), askedId: uuid.nullish(),
   title: z.string().trim().max(160).nullish(),
-  body: z.string().trim().max(20000, "Amintirea e prea lungă; împarte-o în două."),
+  body: z.string().trim().max(20000),
   whenText: z.string().trim().max(80).nullish(), place: z.string().trim().max(160).nullish(), photoId: uuid.nullish(),
   audioId: uuid.nullish(), audioSeconds: z.number().int().min(0).max(4 * 3600).nullish(),
   visibility: z.enum(["private", "asker", "close", "tree"]), maxDegree: z.number().int().min(1).max(10).nullish(),
@@ -41,46 +42,51 @@ const MemoryInput = z.object({
   helper: z.boolean().optional(), consent: z.boolean().optional(), consentAudioId: uuid.nullish(),
   // Acordul pentru capitolul „Credința”: al omului însuși sau, „la bunici”, cel spus rudei care înregistrează.
   faithConsent: z.boolean().optional(),
-}).refine((v) => v.body.length > 0 || !!v.audioId, { message: "Scrie amintirea sau spune-o cu glasul." });
+}).refine((v) => v.body.length > 0 || !!v.audioId, { path: ["audioId"] });
 
 /**
  * Scrie (sau schimbă) o amintire. Doar omul își scrie amintirile în lada lui, cu fișa revendicată; doar autorul le poate schimba.
  * Cei pomeniți primesc amintirea și pe profilul lor, păstrându-și alegerea de a o ascunde.
  */
 export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Result> {
+  const t = await getT("LadaErrors");
   const parsed = MemoryInput.safeParse(input);
-  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  if (!parsed.success) {
+    const i = parsed.error.issues[0], at = i.path[0];
+    return { error: at === "chapter" ? t("pickChapter") : at === "body" && i.code === "too_big" ? t("tooLong") : at === "audioId" && i.code === "custom" ? t("bodyOrVoice") : t("badData") };
+  }
   const v = parsed.data;
   const m = await member(v.treeId);
-  if (!m) return { error: "Nu ești în acest arbore." };
+  if (!m) return { error: t("notMember") };
   const [owner] = await db.select({ id: person.id, givenName: person.givenName, sex: person.sex, living: person.living, claimedBy: person.claimedByUserId }).from(person)
     .where(and(eq(person.id, v.personId), eq(person.treeId, v.treeId)));
-  if (!owner) return { error: "Persoana nu mai e în arbore." };
+  if (!owner) return { error: t("personGone") };
+  const sex = owner.sex === "F" ? "F" : "M", name = owner.givenName;
   // Despre credința lui scrie doar omul în viață (sau o rudă cu el de față, „la bunici”), nu altcineva în locul lui după ce n-a mai fost.
-  if (v.chapter === "credinta" && !owner.living) return { error: "Capitolul despre credință e doar pentru cei în viață, care răspund ei înșiși." };
+  if (v.chapter === "credinta" && !owner.living) return { error: t("faithLiving") };
   let existing: typeof memory.$inferSelect | undefined;
   let helper = false;
   if (v.id) {
     [existing] = await db.select().from(memory).where(and(eq(memory.id, v.id), eq(memory.treeId, v.treeId)));
-    if (!existing) return { error: "Amintirea nu mai există." };
+    if (!existing) return { error: t("memoryGone") };
     // Cea înregistrată „la bunici” e și a omului din ladă: după ce își face cont, o poate schimba și el.
-    if (existing.authorId !== m.me.id && !(existing.helper && owner.claimedBy === m.me.id)) return { error: "Doar cine a scris amintirea o poate schimba." };
-    if (existing.personId !== v.personId) return { error: "Date greșite." };
+    if (existing.authorId !== m.me.id && !(existing.helper && owner.claimedBy === m.me.id)) return { error: t("onlyAuthorEdit") };
+    if (existing.personId !== v.personId) return { error: t("badData") };
   } else if (owner.claimedBy !== m.me.id) {
-    if (!v.helper) return { error: `Doar ${owner.givenName} își scrie amintirile în lada ${owner.sex === "F" ? "ei" : "lui"}. Tu îi poți lăsa o întrebare.` };
-    if (owner.claimedBy) return { error: `${owner.givenName} are cont: își scrie singur${owner.sex === "F" ? "ă" : ""} amintirile.` };
-    if (!owner.living) return { error: "Modul „la bunici” e pentru cei în viață." };
-    if (!can(m.role, "contributor")) return { error: "Nu ai drept să adaugi în acest arbore." };
-    if (!v.consent) return { error: `Întâi ${owner.sex === "F" ? "întreab-o" : "întreabă-l"} dacă e de acord să-i păstrăm povestea în arbore.` };
+    if (!v.helper) return { error: t("onlyOwner", { name, sex }) };
+    if (owner.claimedBy) return { error: t("hasAccount", { name, sex }) };
+    if (!owner.living) return { error: t("grandLiving") };
+    if (!can(m.role, "contributor")) return { error: t("noRight") };
+    if (!v.consent) return { error: t("askConsent", { sex }) };
     helper = true;
   }
   // Ce spune omul despre credința lui e o dată ocrotită mai strict (art. 9 GDPR): o păstrăm doar cu acordul lui explicit.
   if (v.chapter === "credinta") {
     const forSomeoneElse = helper || (!!existing?.helper && existing.authorId === m.me.id && owner.claimedBy !== m.me.id);
     if (forSomeoneElse) {
-      if (!v.faithConsent) return { error: `Întâi ${owner.sex === "F" ? "întreab-o" : "întreabă-l"} dacă e de acord să păstrăm și ce spune despre credința ${owner.sex === "F" ? "ei" : "lui"}.` };
+      if (!v.faithConsent) return { error: t("askFaithConsent", { sex }) };
     } else if (!(await hasConsent(db, m.me.id, "faith"))) {
-      if (!v.faithConsent) return { error: "Ca să scrii în capitolul „Credința”, bifează întâi acordul de deasupra butonului." };
+      if (!v.faithConsent) return { error: t("faithConsent") };
       await recordConsent(db, m.me.id, "faith", true);
     }
   }
@@ -88,16 +94,16 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
   let asked: typeof memoryQuestion.$inferSelect | undefined;
   if (askedId) {
     [asked] = await db.select().from(memoryQuestion).where(and(eq(memoryQuestion.id, askedId), eq(memoryQuestion.personId, v.personId)));
-    if (!asked) return { error: "Întrebarea nu mai există." };
-    if (asked.memoryId && asked.memoryId !== existing?.id) return { error: "Ai răspuns deja la această întrebare." };
+    if (!asked) return { error: t("questionGone") };
+    if (asked.memoryId && asked.memoryId !== existing?.id) return { error: t("alreadyAnswered") };
   }
-  if (v.visibility === "asker" && !asked?.askedBy) return { error: "„Doar cel care a întrebat” se poate alege doar la răspunsul unei întrebări de la o rudă." };
+  if (v.visibility === "asker" && !asked?.askedBy) return { error: t("askerOnly") };
   // Poza și glasul: încărcate de tine pentru amintirea asta (sau deja puse la ea), ca nimeni să nu poată arăta fișierele altcuiva.
   const kept = new Set([existing?.photoDocumentId, existing?.audioDocumentId, existing?.consentDocumentId].filter(Boolean));
-  for (const [id, what] of [[v.photoId, "Poza"], [v.audioId, "Înregistrarea"], [v.consentAudioId, "Acordul înregistrat"]] as const) {
+  for (const [id, what] of [[v.photoId, "photo"], [v.audioId, "audio"], [v.consentAudioId, "consent"]] as const) {
     if (!id || kept.has(id)) continue;
     const [d] = await db.select({ by: document.uploadedBy }).from(document).where(and(eq(document.id, id), eq(document.treeId, v.treeId)));
-    if (!d || d.by !== m.me.id) return { error: `${what} nu e în acest arbore.` };
+    if (!d || d.by !== m.me.id) return { error: t("fileNotHere", { what }) };
   }
   const named = v.mentions?.length
     ? (await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, v.treeId), inArray(person.id, v.mentions)))).map((p) => p.id).filter((id) => id !== v.personId)
@@ -125,11 +131,12 @@ export async function saveMemory(input: z.input<typeof MemoryInput>): Promise<Re
 
 /** Șterge o amintire: doar cine a scris-o. Pleacă și glasul și poza puse doar la ea; ce e și în albumul cuiva rămâne acolo. */
 export async function deleteMemory(treeId: string, id: string): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
-  if (!m || !uuid.safeParse(id).success) return { error: "Nu ești în acest arbore." };
+  if (!m || !uuid.safeParse(id).success) return { error: t("notMember") };
   const [row] = await db.select({ authorId: memory.authorId, helper: memory.helper, personId: memory.personId }).from(memory).where(and(eq(memory.id, id), eq(memory.treeId, treeId)));
-  if (!row) return { error: "Amintirea nu mai există." };
-  if (row.authorId !== m.me.id && !(row.helper && m.personId === row.personId)) return { error: "Doar cine a scris amintirea o poate șterge." };
+  if (!row) return { error: t("memoryGone") };
+  if (row.authorId !== m.me.id && !(row.helper && m.personId === row.personId)) return { error: t("onlyAuthorDelete") };
   const keys = await db.transaction((tx) => dropMemories(tx, [id]));
   await deleteObjects(keys);
   touch(treeId);
@@ -138,11 +145,12 @@ export async function deleteMemory(treeId: string, id: string): Promise<Result> 
 
 /** Cine e pomenit într-o amintire o poate ascunde de pe profilul lui (sau o poate arăta din nou). */
 export async function hideMention(treeId: string, memoryId: string, personId: string, hidden: boolean): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
-  if (!m || !uuid.safeParse(memoryId).success || !uuid.safeParse(personId).success) return { error: "Nu ești în acest arbore." };
-  if (m.personId !== personId) return { error: "Doar cel pomenit poate ascunde amintirea de pe profilul lui." };
+  if (!m || !uuid.safeParse(memoryId).success || !uuid.safeParse(personId).success) return { error: t("notMember") };
+  if (m.personId !== personId) return { error: t("onlyMentioned") };
   const [row] = await db.select({ id: memory.id }).from(memory).where(and(eq(memory.id, memoryId), eq(memory.treeId, treeId)));
-  if (!row) return { error: "Amintirea nu mai există." };
+  if (!row) return { error: t("memoryGone") };
   await db.update(memoryMention).set({ hidden }).where(and(eq(memoryMention.memoryId, memoryId), eq(memoryMention.personId, personId)));
   touch(treeId);
   return { ok: true };
@@ -150,14 +158,15 @@ export async function hideMention(treeId: string, memoryId: string, personId: st
 
 /** „Și eu îmi amintesc”: oricine vede amintirea poate adăuga ce își amintește el. */
 export async function addMemoryReply(treeId: string, memoryId: string, body: string): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
   const text = (body ?? "").trim();
-  if (!m || !uuid.safeParse(memoryId).success) return { error: "Nu ești în acest arbore." };
-  if (!text) return { error: "Scrie ce îți amintești." };
-  if (text.length > 4000) return { error: "E prea lung; scrie-o ca amintire în lada ta." };
+  if (!m || !uuid.safeParse(memoryId).success) return { error: t("notMember") };
+  if (!text) return { error: t("writeReply") };
+  if (text.length > 4000) return { error: t("replyTooLong") };
   const [row] = await db.select().from(memory).where(and(eq(memory.id, memoryId), eq(memory.treeId, treeId)));
-  if (!row || !(await memoryVisible(db, row, { userId: m.me.id, personId: m.personId }))) return { error: "Amintirea nu mai există." };
-  if (row.visibility === "private") return { error: "E o ciornă; încă nu se poate răspunde la ea." };
+  if (!row || !(await memoryVisible(db, row, { userId: m.me.id, personId: m.personId }))) return { error: t("memoryGone") };
+  if (row.visibility === "private") return { error: t("draftNoReply") };
   const [r] = await db.insert(memoryReply).values({ memoryId, authorId: m.me.id, body: text }).returning({ id: memoryReply.id });
   touch(treeId);
   return { ok: true, id: r.id };
@@ -165,12 +174,13 @@ export async function addMemoryReply(treeId: string, memoryId: string, body: str
 
 /** Șterge un „Și eu îmi amintesc”: cine l-a scris sau autorul amintirii. */
 export async function deleteMemoryReply(treeId: string, replyId: string): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
-  if (!m || !uuid.safeParse(replyId).success) return { error: "Nu ești în acest arbore." };
+  if (!m || !uuid.safeParse(replyId).success) return { error: t("notMember") };
   const [r] = await db.select({ authorId: memoryReply.authorId, memoryAuthor: memory.authorId, helper: memory.helper, personId: memory.personId }).from(memoryReply)
     .innerJoin(memory, eq(memory.id, memoryReply.memoryId)).where(and(eq(memoryReply.id, replyId), eq(memory.treeId, treeId)));
-  if (!r) return { error: "Nu mai există." };
-  if (r.authorId !== m.me.id && r.memoryAuthor !== m.me.id && !(r.helper && r.personId === m.personId)) return { error: "Doar cine l-a scris îl poate șterge." };
+  if (!r) return { error: t("gone") };
+  if (r.authorId !== m.me.id && r.memoryAuthor !== m.me.id && !(r.helper && r.personId === m.personId)) return { error: t("onlyReplyAuthor") };
   await db.delete(memoryReply).where(eq(memoryReply.id, replyId));
   touch(treeId);
   return { ok: true };
@@ -178,18 +188,19 @@ export async function deleteMemoryReply(treeId: string, replyId: string): Promis
 
 /** O întrebare lăsată în lada cuiva în viață („Bunico, cum era la nunta voastră?”). Cel mult 10 întrebări fără răspuns de la același om. */
 export async function askQuestion(treeId: string, personId: string, text: string): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
   const q = (text ?? "").trim();
-  if (!m || !uuid.safeParse(personId).success) return { error: "Nu ești în acest arbore." };
-  if (q.length < 3) return { error: "Scrie întrebarea." };
-  if (q.length > 400) return { error: "Întrebarea e prea lungă (cel mult 400 de litere)." };
+  if (!m || !uuid.safeParse(personId).success) return { error: t("notMember") };
+  if (q.length < 3) return { error: t("writeQuestion") };
+  if (q.length > 400) return { error: t("questionTooLong") };
   const [p] = await db.select({ living: person.living }).from(person).where(and(eq(person.id, personId), eq(person.treeId, treeId)));
-  if (!p) return { error: "Persoana nu mai e în arbore." };
-  if (!p.living) return { error: "Întrebările se lasă doar celor în viață." };
-  if (m.personId === personId) return { error: "Asta e lada ta: scrie direct amintirea." };
+  if (!p) return { error: t("personGone") };
+  if (!p.living) return { error: t("onlyLivingQuestions") };
+  if (m.personId === personId) return { error: t("ownLada") };
   const [open] = await db.select({ n: sql<number>`count(*)::int` }).from(memoryQuestion)
     .where(and(eq(memoryQuestion.personId, personId), eq(memoryQuestion.askedBy, m.me.id), isNull(memoryQuestion.memoryId), eq(memoryQuestion.dismissed, false)));
-  if (Number(open?.n ?? 0) >= 10) return { error: "Ai deja 10 întrebări fără răspuns în lada aceasta. Așteaptă să răspundă la câteva." };
+  if (Number(open?.n ?? 0) >= 10) return { error: t("tooManyQuestions") };
   const [r] = await db.insert(memoryQuestion).values({ treeId, personId, askedBy: m.me.id, text: q }).returning({ id: memoryQuestion.id });
   touch(treeId);
   return { ok: true, id: r.id };
@@ -197,13 +208,14 @@ export async function askQuestion(treeId: string, personId: string, text: string
 
 /** Omul din ladă amână o întrebare („Nu acum”); cel care a întrebat își poate retrage întrebarea cât timp n-are răspuns. */
 export async function dismissQuestion(treeId: string, questionId: string): Promise<Result> {
+  const t = await getT("LadaErrors");
   const m = await member(treeId);
-  if (!m || !uuid.safeParse(questionId).success) return { error: "Nu ești în acest arbore." };
+  if (!m || !uuid.safeParse(questionId).success) return { error: t("notMember") };
   const [q] = await db.select().from(memoryQuestion).where(and(eq(memoryQuestion.id, questionId), eq(memoryQuestion.treeId, treeId)));
-  if (!q) return { error: "Întrebarea nu mai există." };
+  if (!q) return { error: t("questionGone") };
   if (q.askedBy === m.me.id && !q.memoryId) await db.delete(memoryQuestion).where(eq(memoryQuestion.id, questionId));
   else if (m.personId === q.personId) await db.update(memoryQuestion).set({ dismissed: true }).where(eq(memoryQuestion.id, questionId));
-  else return { error: "Doar omul din ladă poate amâna întrebarea." };
+  else return { error: t("onlyOwnerPostpone") };
   touch(treeId);
   return { ok: true };
 }

@@ -10,6 +10,13 @@ import { fromShortCode, memoryShortPath, shortCode } from "@/lib/short-link";
 import { loadTreeMap } from "@/lib/map-data";
 import { fileType } from "@/lib/file-type";
 import { questionsFor, sundayQuestion, weekNumber, type QuestionContext } from "@/lib/questions";
+import { createTranslator } from "use-intl/core";
+import { ro } from "@/i18n/messages/ro";
+import { loadMessages } from "@/i18n/messages";
+import type { Locale } from "@/i18n/locales";
+
+/** Textele întrebărilor în română, cum le primește cine are site-ul în română. */
+const t = createTranslator({ locale: "ro", messages: ro, namespace: "Questions" });
 
 const who = (id: string, givenName: string, sex: "M" | "F", birthYear: number | null, deathYear: number | null = null) => ({ id, givenName, sex, birthYear, deathYear });
 const me = (birthYear: number | null, sex: "M" | "F" = "M"): QuestionContext["me"] => ({ ...who("eu", "Ioan", sex, birthYear), birthPlace: "Huedin", residencePlace: "Cluj-Napoca", occupation: "Inginer" });
@@ -21,7 +28,7 @@ describe("întrebarea de duminică", () => {
     grandparents: [who("bunic", "Majel", "M", 1910, 1988), who("bunica", "Ana", "F", 1915, 1960)],
     partners: [who("sotie", "Maria", "F", 1968)], children: [who("fiu", "Andrei", "M", 1992)], siblings: [who("sora", "Elena", "F", 1967)],
   };
-  const all = questionsFor(ctx);
+  const all = questionsFor(ctx, t);
   const text = (key: string) => all.find((q) => q.key === key)?.text;
 
   it("scrie întrebările din arbore cu numele și genul fiecăruia", () => {
@@ -39,20 +46,37 @@ describe("întrebarea de duminică", () => {
   it("pune doar întrebările din istorie pe care omul le-a putut trăi", () => {
     expect(text("istorie.1977")).toBe("Aveai 12 ani la cutremurul din 4 martie 1977. Unde erai în seara aceea?");
     expect(text("plecarea.armata")).toBeDefined();
-    const young = questionsFor({ ...ctx, me: me(2005, "F") }).map((q) => q.key);
+    const young = questionsFor({ ...ctx, me: me(2005, "F") }, t).map((q) => q.key);
     expect(young).toContain("istorie.2020");
     expect(young).not.toContain("istorie.1989");
     expect(young).not.toContain("istorie.colectivizare");
     expect(young).not.toContain("plecarea.armata");
-    expect(questionsFor({ ...ctx, me: me(null) }).some((q) => q.kind === "history")).toBe(false);
+    expect(questionsFor({ ...ctx, me: me(null) }, t).some((q) => q.kind === "history")).toBe(false);
   });
 
   it("vorbește cu fiecare la genul lui", () => {
-    const her = questionsFor({ ...ctx, me: me(1961, "F") });
+    const her = questionsFor({ ...ctx, me: me(1961, "F") }, t);
     expect(her.find((q) => q.key === "oricine.jocul")!.text).toBe("Care era jocul tău preferat când erai mică?");
     expect(her.find((q) => q.key === "oricine.mandru")!.text).toBe("De ce ești cea mai mândră în viața ta?");
     expect(text("oricine.mandru")).toBe("De ce ești cel mai mândru în viața ta?");
     expect(all.some((q) => /[{}|]/.test(q.text))).toBe(false);
+  });
+
+  it("vorbește în limba celui întrebat, cu aceleași chei în baza de date", async () => {
+    const inLocale = async (locale: Locale) =>
+      questionsFor(ctx, createTranslator({ locale, messages: (await loadMessages(locale)) as unknown as typeof ro, namespace: "Questions" }), locale);
+    const en = await inLocale("en-GB"), de = await inLocale("de"), hu = await inLocale("hu");
+    const of = (list: typeof all, key: string) => list.find((q) => q.key === key)?.text;
+    expect(en.map((q) => q.key)).toEqual(all.map((q) => q.key));
+    expect(of(en, "bunic.bunic")).toBe("What do you remember about your grandfather Majel?");
+    expect(of(en, "istorie.1977")).toBe("You were 12 at the time of the earthquake of 4 March 1977. Where were you that evening?");
+    // Meseria rămâne cum a scris-o omul; doar româna o pune în propoziție („Cum ai ajuns inginer?”).
+    expect(of(en, "munca.meserie")).toBe("Your trade: Inginer. How did you get into it, and who taught you?");
+    expect(of(de, "bunic.bunica")).toBe("Was hat deine Familie über deine Oma Ana erzählt? Du hast sie nicht mehr kennengelernt.");
+    // În maghiară numele nu primesc terminații: le punem în față sau după două puncte.
+    expect(of(hu, "bunic.bunic")).toBe("Mire emlékszel, ha Majel nagypapádra gondolsz?");
+    expect(of(hu, "plecarea.de-ce")).toBe("Huedin → Cluj-Napoca: miért mentél el? Milyen volt az első időszak?");
+    for (const list of [en, de, hu]) expect(list.some((q) => /[{}|]/.test(q.text))).toBe(false);
   });
 
   it("amestecă întrebările: una din arbore, una din istorie, una pentru oricine", () => {

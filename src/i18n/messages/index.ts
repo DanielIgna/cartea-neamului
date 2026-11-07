@@ -43,6 +43,7 @@ export const CLIENT_NAMESPACES = [
  */
 export const PAGE_NAMESPACES = [
   "Tree", "Person", "Charts", "Times", "Duplicates", "PersonForm", "Media", "Relations", "Chat", "Map", "Nearby",
+  "Lada", "MemoryForm", "Voice", "Story", "Grand", "Auto",
 ] as const satisfies readonly (keyof Messages)[];
 export type PageNamespace = (typeof PAGE_NAMESPACES)[number];
 

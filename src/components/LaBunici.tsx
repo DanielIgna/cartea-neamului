@@ -1,14 +1,22 @@
 "use client";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
+import { useTranslations } from "use-intl";
 import { saveMemory } from "@/app/lada-actions";
-import { chapterLabel, type Chapter } from "@/lib/questions";
+import type { Chapter } from "@/lib/questions";
+import { LANGUAGE_NAMES, LOCALES, type Locale } from "@/i18n/locales";
 import { Avatar } from "./Avatar";
 import VoiceRecorder, { uploadForMemory, type Voice } from "./VoiceRecorder";
 
 type Person = { id: string; givenName: string; surname: string; sex: "M" | "F" | "U"; photoId: string | null; accountImage?: string | null };
-/** O întrebare pentru omul din ladă: una lăsată de o rudă (`askedId`) sau una scrisă din arbore (`key`). */
-export type GrandQuestion = { text: string; chapter: Chapter; key?: string; askedId?: string; askedBy?: string | null; mentions?: string[] };
+/**
+ * O întrebare pentru omul din ladă: una lăsată de o rudă (`askedId`) sau una scrisă din arbore (`key`).
+ * `kicker` (capitolul sau „Întrebare de la…”) vine gata scris, în limba întrebărilor, ca tot ce citește bunica.
+ */
+export type GrandQuestion = { text: string; chapter: Chapter; kicker: string; key?: string; askedId?: string; askedBy?: string | null; mentions?: string[] };
+/** Ce i se spune direct bunicii, în limba întrebărilor: cererea acordului și mulțumirea de la sfârșit. */
+export type GrandWords = { consentQuestion: string; thanks: string };
 
 const UUIDS = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
 
@@ -17,9 +25,11 @@ const UUIDS = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi;
  * cu litere mari, bunica povestește, telefonul înregistrează, iar povestea intră în lada ei. Întâi o întrebăm dacă e de acord
  * (răspunsul ei se poate înregistra), cine poate asculta și dacă poveștile pot intra în Cartea neamului.
  */
-export default function LaBunici({ treeId, person, questions, storage, back, people }: {
-  treeId: string; person: Person; questions: GrandQuestion[]; storage: boolean; back: string; people: string[];
+export default function LaBunici({ treeId, person, questions, storage, back, people, questionLocale, words }: {
+  treeId: string; person: Person; questions: GrandQuestion[]; storage: boolean; back: string; people: string[]; questionLocale: Locale; words: GrandWords;
 }) {
+  const t = useTranslations("Grand"), tv = useTranslations("Voice");
+  const router = useRouter(), path = usePathname(), params = useSearchParams();
   const [step, setStep] = useState<"intro" | "consent" | "ask" | "saved">("intro");
   const [visibility, setVisibility] = useState<"tree" | "close">("tree");
   const [inBook, setInBook] = useState(false);
@@ -37,7 +47,7 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
   const [saved, setSaved] = useState(0);
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
-  const ei = person.sex === "F" ? "ei" : "lui";
+  const sex = person.sex === "F" ? "F" : "M", name = person.givenName;
   const left = useMemo(() => questions.map((q, k) => ({ q, k })).filter((x) => !done.has(x.k) && (faithOk || x.q.chapter !== "credinta")), [questions, done, faithOk]);
   const cur = left.length ? left[i % left.length] : null;
 
@@ -46,17 +56,17 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
     if (!cur) return;
     setErr(null);
     const body = text.trim();
-    if (!voice && !body) return setErr(storage ? "Înregistrează ce povestește (sau scrie tu)." : "Scrie ce povestește.");
+    if (!voice && !body) return setErr(storage ? t("recordFirst") : t("writeFirst"));
     let cid = consentId;
     if (consentVoice && !cid) {
-      const r = await uploadForMemory(treeId, person.id, consentVoice.blob, consentVoice.name, "audio", `Acord: ${person.givenName} ${person.surname}`);
+      const r = await uploadForMemory(treeId, person.id, consentVoice.blob, consentVoice.name, "audio", t("consentTitle", { name: `${person.givenName} ${person.surname}`.trim() }), tv("uploadAudioFailed"));
       if (r.error) return setErr(r.error);
       cid = r.id!;
       setConsentId(cid);
     }
     let audioId: string | null = null;
     if (voice) {
-      const r = await uploadForMemory(treeId, person.id, voice.blob, voice.name, "audio", `Glas: ${person.givenName} – ${cur.q.text}`);
+      const r = await uploadForMemory(treeId, person.id, voice.blob, voice.name, "audio", t("voiceTitle", { name, question: cur.q.text }), tv("uploadAudioFailed"));
       if (r.error) return setErr(r.error);
       audioId = r.id!;
     }
@@ -74,86 +84,92 @@ export default function LaBunici({ treeId, person, questions, storage, back, peo
   });
 
   return (
-    <div className="grand" role="dialog" aria-modal="true" aria-label={`La bunici: ${person.givenName} povestește`}>
+    <div className="grand" role="dialog" aria-modal="true" aria-label={t("aria", { name })}>
       <div className="grand-frame">
         <div className="grand-top">
-          <span>{person.givenName} povestește{saved ? ` · ${saved} ${saved === 1 ? "poveste păstrată" : "povești păstrate"}` : ""}</span>
-          <Link href={back} aria-label="Închide">×</Link>
+          <span>{t("tells", { name })}{saved ? ` · ${t("kept", { count: saved })}` : ""}</span>
+          <Link href={back} aria-label={t("close")}>×</Link>
         </div>
 
         {step === "intro" && (
           <div className="grand-body center">
-            <div className="grand-kicker">La bunici</div>
+            <div className="grand-kicker">{t("kicker")}</div>
             <Avatar p={person} size={120} />
-            <h1>{person.givenName} povestește</h1>
-            <p>Ține telefonul între voi. Pe ecran apare o întrebare cu litere mari; {person.givenName} povestește, iar telefonul înregistrează. Fiecare răspuns intră în lada {ei} cu amintiri.</p>
-            <p className="grand-small">Tu apeși butoanele. Poți sări peste orice întrebare și te poți opri oricând.</p>
-            <button className="btn primary grand-go" onClick={() => setStep("consent")}>Începem</button>
+            <h1>{t("tells", { name })}</h1>
+            <p>{t("intro", { name, sex })}</p>
+            <p className="grand-small">{t("introSmall")}</p>
+            {/* Cine ține telefonul poate citi site-ul în altă limbă decât cea în care povestește bunica: întrebările pot fi în limba ei. */}
+            <label className="grand-small grand-lang">{t("questionsIn")}{" "}
+              <select value={questionLocale} onChange={(e) => { const q = new URLSearchParams(params.toString()); q.set("limba", e.target.value); router.replace(`${path}?${q}`); }}>
+                {LOCALES.map((l) => <option key={l} value={l} lang={l}>{LANGUAGE_NAMES[l]}</option>)}
+              </select>
+            </label>
+            <button className="btn primary grand-go" onClick={() => setStep("consent")}>{t("start")}</button>
           </div>
         )}
 
         {step === "consent" && (
           <div className="grand-body">
-            <div className="grand-kicker">Întâi, acordul {ei}</div>
-            <p className="grand-q">{person.givenName}, ești de acord să păstrăm poveștile tale în arbore, ca să le asculte familia?</p>
+            <div className="grand-kicker">{t("consentKicker", { sex })}</div>
+            <p className="grand-q" lang={questionLocale}>{words.consentQuestion}</p>
             {storage && (
               <div className="grand-box">
-                <div className="grand-small">Dacă vrei, înregistrează-i răspunsul: rămâne lângă fiecare poveste.</div>
-                <VoiceRecorder value={consentVoice} onChange={setConsentVoice} maxSeconds={60} label="Înregistrează-i răspunsul" />
+                <div className="grand-small">{t("recordConsentHint")}</div>
+                <VoiceRecorder value={consentVoice} onChange={setConsentVoice} maxSeconds={60} label={t("recordConsent")} />
               </div>
             )}
             <fieldset className="grand-box grand-choices">
-              <legend>Cine le poate asculta?</legend>
-              <label><input type="radio" name="cine" checked={visibility === "tree"} onChange={() => setVisibility("tree")} /> Toată familia din arbore</label>
-              <label><input type="radio" name="cine" checked={visibility === "close"} onChange={() => setVisibility("close")} /> Doar familia apropiată</label>
-              <label><input type="checkbox" checked={inBook} onChange={(e) => setInBook(e.target.checked)} /> Pot intra și în Cartea neamului, pe hârtie</label>
+              <legend>{t("whoListens")}</legend>
+              <label><input type="radio" name="cine" checked={visibility === "tree"} onChange={() => setVisibility("tree")} /> {t("allFamily")}</label>
+              <label><input type="radio" name="cine" checked={visibility === "close"} onChange={() => setVisibility("close")} /> {t("closeFamily")}</label>
+              <label><input type="checkbox" checked={inBook} onChange={(e) => setInBook(e.target.checked)} /> {t("inBook")}</label>
               {hasFaith && (
                 <label><input type="checkbox" checked={faithOk} onChange={(e) => setFaithOk(e.target.checked)} />
-                  <span>E de acord să păstrăm și ce spune despre credința {ei}{!faithOk && <span className="grand-small"> (fără acest acord, sărim peste întrebările despre credință)</span>}</span></label>
+                  <span>{t("faithOk", { sex })}{!faithOk && <span className="grand-small"> {t("faithSkip")}</span>}</span></label>
               )}
             </fieldset>
             <div className="actions grand-actions">
-              <button className="btn primary grand-go" onClick={() => setStep("ask")}>Da, e de acord</button>
-              <Link className="btn" href={back}>Nu acum</Link>
+              <button className="btn primary grand-go" onClick={() => setStep("ask")}>{t("yes")}</button>
+              <Link className="btn" href={back}>{t("notNow")}</Link>
             </div>
           </div>
         )}
 
         {step === "ask" && (cur ? (
           <div className="grand-body">
-            <div className="grand-kicker">{cur.q.askedId ? `Întrebare de la ${cur.q.askedBy ?? "familie"}` : chapterLabel(cur.q.chapter)}</div>
-            <p className="grand-q">{cur.q.text}</p>
-            {storage && <VoiceRecorder big value={voice} onChange={setVoice} label="Apasă și povestește" />}
-            {storage && !typing && <button className="linklike grand-type" onClick={() => setTyping(true)}>Scriu eu ce spune</button>}
+            <div className="grand-kicker" lang={cur.q.askedId ? undefined : questionLocale}>{cur.q.kicker}</div>
+            <p className="grand-q" lang={cur.q.askedId ? undefined : questionLocale}>{cur.q.text}</p>
+            {storage && <VoiceRecorder big value={voice} onChange={setVoice} label={t("pressAndTell")} />}
+            {storage && !typing && <button className="linklike grand-type" onClick={() => setTyping(true)}>{t("iType")}</button>}
             {typing && (
               <textarea className="grand-text" value={text} onChange={(e) => setText(e.target.value)} maxLength={20000} rows={5}
-                placeholder={`Scrie aici, cu vorbele ${ei}, ce povestește…`} aria-label="Ce povestește" />
+                placeholder={t("typePlaceholder", { sex })} aria-label={t("typeAria")} />
             )}
             {cur.q.askedId && cur.q.askedBy && (
-              <label className="grand-check"><input type="checkbox" checked={onlyAsker} onChange={(e) => setOnlyAsker(e.target.checked)} /> Răspunsul îl aude doar {cur.q.askedBy}, care a întrebat</label>
+              <label className="grand-check"><input type="checkbox" checked={onlyAsker} onChange={(e) => setOnlyAsker(e.target.checked)} /> {t("onlyAsker", { name: cur.q.askedBy })}</label>
             )}
             {err && <p className="err" role="alert">{err}</p>}
             <div className="actions grand-actions">
-              <button className="btn primary grand-go" disabled={pending || (!voice && !text.trim())} onClick={keep}>{pending ? (voice ? "Se încarcă glasul…" : "Se păstrează…") : "Păstrează povestea"}</button>
-              {left.length > 1 && <button className="btn" disabled={pending} onClick={next}>Altă întrebare</button>}
+              <button className="btn primary grand-go" disabled={pending || (!voice && !text.trim())} onClick={keep}>{pending ? (voice ? t("uploadingVoice") : t("keeping")) : t("keep")}</button>
+              {left.length > 1 && <button className="btn" disabled={pending} onClick={next}>{t("otherQuestion")}</button>}
             </div>
           </div>
         ) : (
           <div className="grand-body center">
-            <h1>Gata cu întrebările de azi</h1>
-            <p>Mulțumim, {person.givenName}!</p>
-            <Link className="btn primary grand-go" href={`${back}#lada`}>Vezi lada {ei}</Link>
+            <h1>{t("doneTitle")}</h1>
+            <p lang={questionLocale}>{words.thanks}</p>
+            <Link className="btn primary grand-go" href={`${back}#lada`}>{t("seeLada", { sex })}</Link>
           </div>
         ))}
 
         {step === "saved" && (
           <div className="grand-body center">
-            <div className="grand-kicker">Păstrată</div>
-            <h1>Am pus-o în lada {ei}.</h1>
-            <p>Familia o poate asculta de pe profilul {ei}.</p>
+            <div className="grand-kicker">{t("savedKicker")}</div>
+            <h1>{t("savedTitle", { sex })}</h1>
+            <p>{t("savedText", { sex })}</p>
             <div className="actions grand-actions" style={{ justifyContent: "center" }}>
-              {left.length > 0 && <button className="btn primary grand-go" onClick={() => { setStep("ask"); setErr(null); }}>Încă o întrebare</button>}
-              <Link className="btn" href={`${back}#lada`}>Gata pentru azi</Link>
+              {left.length > 0 && <button className="btn primary grand-go" onClick={() => { setStep("ask"); setErr(null); }}>{t("oneMore")}</button>}
+              <Link className="btn" href={`${back}#lada`}>{t("doneForToday")}</Link>
             </div>
           </div>
         )}

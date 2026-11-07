@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { enUSArbore } from "./arbore/en-US";
+import { enUSAmintiri } from "./amintiri/en-US";
 
 /**
  * US English: only what differs from British English (en-GB.ts), which fills in the rest.
@@ -27,4 +28,6 @@ export const enUS: DeepPartial<Catalog> = {
     },
   },
   ...enUSArbore,
+  // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
+  ...enUSAmintiri,
 };

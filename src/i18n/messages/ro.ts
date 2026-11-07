@@ -9,6 +9,7 @@
 import { USAGE_CONSENT_TEXT } from "@/lib/legal";
 import type { DeepPartial, Widen } from "./types";
 import { roArbore } from "./arbore/ro";
+import { roAmintiri } from "./amintiri/ro";
 
 export const ro = {
   Meta: {
@@ -294,6 +295,8 @@ export const ro = {
   },
   // Etapa 2: arborele, fișa persoanei, rudenia, mesajele, harta (src/i18n/messages/arbore/).
   ...roArbore,
+  // Etapa 3: Lada cu amintiri, întrebările, modul „la bunici”, povestea și autobiografia (src/i18n/messages/amintiri/).
+  ...roAmintiri,
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

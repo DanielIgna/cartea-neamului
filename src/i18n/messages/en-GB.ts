@@ -1,5 +1,6 @@
 import type { Catalog } from "./ro";
 import { enGBArbore } from "./arbore/en-GB";
+import { enGBAmintiri } from "./amintiri/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -284,4 +285,6 @@ export const enGB: Catalog = {
     },
   },
   ...enGBArbore,
+  // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
+  ...enGBAmintiri,
 };

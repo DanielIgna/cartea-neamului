@@ -132,11 +132,12 @@ async function seenMemories(db: Db, treeId: string, viewer: Viewer, only: SQL) {
 }
 
 /** Amintirile cu loc pe care le vede `viewer`, pentru harta neamului. */
-export async function placedMemories(db: Db, treeId: string, viewer: Viewer): Promise<PlaceMemory[]> {
+export async function placedMemories(db: Db, treeId: string, viewer: Viewer,
+  words: { quoted: (text: string) => string; voice: string; plain: string } = { quoted: (s) => `„${s}”`, voice: "Amintire spusă cu glasul", plain: "Amintire" }): Promise<PlaceMemory[]> {
   const { seen, byId } = await seenMemories(db, treeId, viewer, isNotNull(memory.place));
   return seen.filter((m) => m.place?.trim()).map((m): PlaceMemory => {
     const p = byId.get(m.personId)!;
-    const title = m.title?.trim() || (m.question?.trim() ? `„${m.question.trim()}”` : "") || excerpt(m.body) || (m.audioDocumentId ? "Amintire spusă cu glasul" : "Amintire");
+    const title = m.title?.trim() || (m.question?.trim() ? words.quoted(m.question.trim()) : "") || excerpt(m.body) || (m.audioDocumentId ? words.voice : words.plain);
     return { id: m.id, personId: m.personId, teller: `${p.given} ${p.surname}`.trim(), title, when: m.whenText?.trim() || null, year: m.whenYear,
       audio: !!m.audioDocumentId, place: m.place!.trim(), createdAt: m.createdAt.toISOString() };
   }).sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999) || a.createdAt.localeCompare(b.createdAt));

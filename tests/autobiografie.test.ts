@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { BOOK_CHAPTERS, FAITH_VERSE, LAND_VERSE, bookChapterTitle, bookPlan, bookProgress, bookQuestions, bookQueue } from "@/lib/autobiografie";
+import { createTranslator } from "use-intl/core";
+import { BOOK_CHAPTER_KEYS, bookChapterTitle, bookPlan, bookProgress, bookQuestions, bookQueue, verse } from "@/lib/autobiografie";
 import { CHAPTERS, isChapter, questionsFor, type QuestionContext } from "@/lib/questions";
+import { ro } from "@/i18n/messages/ro";
 
 const who = (id: string, givenName: string, sex: "M" | "F", birthYear: number | null, deathYear: number | null = null) => ({ id, givenName, sex, birthYear, deathYear });
 const me = (birthYear: number | null, sex: "M" | "F" = "M", birthPlace: string | null = "Huedin"): QuestionContext["me"] =>
@@ -12,17 +14,20 @@ const ctx: QuestionContext = {
   partners: [who("sotie", "Maria", "F", 1968)], children: [who("fiu", "Andrei", "M", 1992), who("fiica", "Ana", "F", 1995)], siblings: [who("frate", "Nicolae", "M", 1967)],
 };
 
+/** Textele întrebărilor în română, cum le primește cine are site-ul în română. */
+const t = createTranslator({ locale: "ro", messages: ro, namespace: "Questions" });
+
 describe("autobiografia: modelul de carte", () => {
-  const plan = bookPlan(ctx);
+  const plan = bookPlan(ctx, t);
   const q = (key: string) => plan.flatMap((c) => c.questions).find((x) => x.key === key);
 
   it("are capitolele vieții în ordine, iar credința e un capitol al ei, care se poate scrie și în lada cu amintiri", () => {
-    expect(plan.map((c) => c.key)).toEqual(BOOK_CHAPTERS.map((c) => c.key));
+    expect(plan.map((c) => c.key)).toEqual(BOOK_CHAPTER_KEYS);
     expect(plan.map((c) => c.key)).toContain("credinta");
     expect(isChapter("credinta")).toBe(true);
     expect(CHAPTERS.findIndex((c) => c.key === "credinta")).toBeLessThan(CHAPTERS.findIndex((c) => c.key === "invatat"));
-    expect(bookChapterTitle("credinta")).toBe("Credința");
-    expect(bookChapterTitle("altele")).toBe("Alte amintiri");
+    expect(bookChapterTitle(t, "credinta")).toBe("Credința");
+    expect(bookChapterTitle(t, "altele")).toBe("Alte amintiri");
     for (const c of plan) expect(c.questions.length, c.key).toBeGreaterThan(0);
   });
 
@@ -31,10 +36,10 @@ describe("autobiografia: modelul de carte", () => {
     expect(q("carte.hristos")?.chapter).toBe("credinta");
     expect(q("carte.mantuitor")?.text).toContain("Mântuitor personal");
     expect(q("carte.intrebare")?.chapter).toBe("credinta");
-    expect(plan.find((c) => c.key === "credinta")?.verse).toEqual(FAITH_VERSE);
-    expect(FAITH_VERSE.ref).toBe("Ioan 17:3");
-    expect(plan.find((c) => c.key === "istoria")?.verse).toEqual(LAND_VERSE);
-    expect(LAND_VERSE.text).toContain("îl voi asculta din ceruri, îi voi ierta păcatul, și-i voi tămădui țara");
+    expect(plan.find((c) => c.key === "credinta")?.verse).toEqual(verse(t, "faith"));
+    expect(verse(t, "faith").ref).toBe("Ioan 17:3");
+    expect(plan.find((c) => c.key === "istoria")?.verse).toEqual(verse(t, "land"));
+    expect(verse(t, "land").text).toContain("îl voi asculta din ceruri, îi voi ierta păcatul, și-i voi tămădui țara");
   });
 
   it("pune numele din arbore în întrebări și îi leagă pe cei pomeniți", () => {
@@ -47,17 +52,17 @@ describe("autobiografia: modelul de carte", () => {
   });
 
   it("cei născuți după 1975 nu sunt întrebați despre comunism, iar fără loc și an întrebarea nașterii e generală", () => {
-    const young = bookQuestions({ ...ctx, me: me(1990, "F", null) }).map((x) => x.key);
+    const young = bookQuestions({ ...ctx, me: me(1990, "F", null) }, t).map((x) => x.key);
     expect(young).not.toContain("carte.comunism");
     expect(young).not.toContain("carte.prigoana");
-    expect(bookQuestions(ctx).map((x) => x.key)).toContain("carte.prigoana");
-    expect(bookQuestions({ ...ctx, me: me(null, "M", null) }).find((x) => x.key === "carte.nastere")?.text)
+    expect(bookQuestions(ctx, t).map((x) => x.key)).toContain("carte.prigoana");
+    expect(bookQuestions({ ...ctx, me: me(null, "M", null) }, t).find((x) => x.key === "carte.nastere")?.text)
       .toBe("Unde și când te-ai născut? Ce ți s-a povestit despre ziua în care ai venit pe lume?");
-    const single = bookQuestions({ ...ctx, partners: [], children: [] }).map((x) => x.key);
+    const single = bookQuestions({ ...ctx, partners: [], children: [] }, t).map((x) => x.key);
     expect(single).toContain("carte.drag");
     expect(single).not.toContain("carte.dorinta");
     // Fără copii în arbore, capitolul „Copiii” nu apare deloc (n-ar avea nicio întrebare).
-    expect(bookPlan({ ...ctx, children: [] }).map((c) => c.key)).not.toContain("copiii");
+    expect(bookPlan({ ...ctx, children: [] }, t).map((c) => c.key)).not.toContain("copiii");
   });
 
   it("în fiecare capitol vin întâi întrebările cărții, apoi cele de duminică, fără dubluri; credința nu vine duminica", () => {
@@ -69,9 +74,9 @@ describe("autobiografia: modelul de carte", () => {
       if (firstOther >= 0) expect(kinds.slice(firstOther)).not.toContain("carte");
     }
     // Toate întrebările de duminică au loc în carte (afară de cele fără capitol în ea).
-    const sunday = questionsFor(ctx).filter((x) => BOOK_CHAPTERS.some((c) => c.key === x.chapter));
+    const sunday = questionsFor(ctx, t).filter((x) => (BOOK_CHAPTER_KEYS as string[]).includes(x.chapter));
     expect(sunday.every((x) => keys.includes(x.key))).toBe(true);
-    expect(questionsFor(ctx).some((x) => x.chapter === "credinta")).toBe(false);
+    expect(questionsFor(ctx, t).some((x) => x.chapter === "credinta")).toBe(false);
   });
 
   it("socotește cât e scris și dă la rând întrebările rămase, pentru modul „la bunici”", () => {

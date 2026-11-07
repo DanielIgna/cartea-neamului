@@ -52,7 +52,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   let upcoming: Question[] = [];
   const qctx = lada.isOwner ? questionContext(g, data.people, pid) : null;
   if (qctx) {
-    const all = questionsFor(qctx), now = new Date();
+    const all = questionsFor(qctx, await getT("Questions", locale), locale), now = new Date();
     const left = all.filter((q) => !lada.answeredKeys.includes(q.key)).length;
     upcoming = Array.from({ length: Math.min(12, left) }, (_, k) => sundayQuestion(all, lada.answeredKeys, now, k)).filter((q): q is Question => !!q);
   }
@@ -74,7 +74,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
-    <PageIntl ns={["Media"]}>
+    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>{t("back", { name: p.givenName })}</Link>
