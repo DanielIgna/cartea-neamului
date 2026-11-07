@@ -157,7 +157,8 @@ export function journeyLegs(stops: Stop[], people: Record<string, Person>, now =
 
 /** Un număr mic din id, ca întrebarea și răspunsurile să fie mereu aceleași pentru același om. */
 const seed = (id: string) => [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
-export type Quiz = { question: string; options: string[]; answer: number; year: number };
+/** Răspunsurile sunt evenimente: fiecare se scrie în limba cititorului (partea „Vremuri” din texte). */
+export type Quiz = { question: string; options: HistEvent[]; answer: number; year: number };
 
 /**
  * Jocul de la fiecare oprire: „Pe care dintre acestea a apucat-o?” Una din ce a trăit omul și două din afara vieții lui,
@@ -173,7 +174,7 @@ export function quizFor(stop: Stop, p: Person, events: HistEvent[], now = new Da
   const k = seed(p.id);
   const a = outside[k % outside.length], b = outside[(k + 1 + (k % (outside.length - 1))) % outside.length];
   if (a === b) return null;
-  const answer = k % 3, options = [a.text, b.text];
-  options.splice(answer, 0, inLife.text);
+  const answer = k % 3, options = [a, b];
+  options.splice(answer, 0, inLife);
   return { question: `Pe care dintre acestea a apucat-o ${p.givenName || p.name}?`, options, answer, year: inLife.year };
 }

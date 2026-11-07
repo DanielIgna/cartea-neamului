@@ -1,6 +1,7 @@
 import type { Catalog } from "./ro";
 import { esArbore } from "./arbore/es";
 import { esAmintiri } from "./amintiri/es";
+import { esVremuri } from "./vremuri/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -287,4 +288,6 @@ export const es: Catalog = {
   ...esArbore,
   // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
   ...esAmintiri,
+  // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
+  ...esVremuri,
 };

@@ -1,6 +1,7 @@
 import type { Catalog } from "./ro";
 import { itArbore } from "./arbore/it";
 import { itAmintiri } from "./amintiri/it";
+import { itVremuri } from "./vremuri/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -287,4 +288,6 @@ export const it: Catalog = {
   ...itArbore,
   // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
   ...itAmintiri,
+  // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
+  ...itVremuri,
 };

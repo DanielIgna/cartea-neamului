@@ -29,7 +29,7 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   if (!data || !data.centerId || !data.slots[1]) notFound();
   const home = start ?? data.rootId;
   return (
-    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Duplicates", "PersonForm", "Media", "Relations"]}>
+    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "PersonForm", "Media", "Relations"]}>
       <TreeScreen treeId={id} treeName={data.tree.name} slots={data.slots} people={data.people} rels={data.rels} raised={data.raised} centerId={data.centerId} generations={generations}
         meId={me.id} isEditor={can(role, "editor")} isRoot={data.centerId === home} canAdd={can(role, "contributor")} canInvite={can(role, "editor")}
         live={live && { ...live, url: process.env.NEON_REALTIME_URL!, userId: me.id }} aiEnabled={aiConfigured()} storageEnabled={storageConfigured()} />

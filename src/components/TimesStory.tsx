@@ -1,8 +1,9 @@
 "use client";
-import { useTranslations } from "use-intl";
+import { useLocale, useTranslations } from "use-intl";
 import type { PersonView } from "@/lib/tree-data";
 import type { Graph } from "@/lib/kinship";
-import { ageWords, storyFor, type Origin, type Story, type Tone } from "@/lib/vremuri";
+import { COUNTRY_NAMES, countryName } from "@/lib/place-key";
+import { storyFor, type Era, type HistEvent, type Origin, type Story, type Tone } from "@/lib/vremuri";
 
 /**
  * Ținutul cuiva pentru povestea vremurilor: după locul nașterii lui; dacă fișa nu-l are, după al părinților,
@@ -20,26 +21,47 @@ export const toneColor = (t: Tone) => (t === "bine" ? "var(--good)" : t === "gre
 
 export const eraYears = (s: Story) => (s.era.from === 0 ? `până la ${s.era.to + 1}` : s.era.to >= 2100 ? `din ${s.era.from}` : `${s.era.from}–${s.era.to}`);
 
-/** „S-a născut în 1932, în Transilvania (Huedin)”. */
-export function bornLine(p: PersonView, s: Story) {
-  const o = s.origin;
-  const place = o ? (o.place && !o.guess && o.place.toLowerCase() !== o.region.toLowerCase() ? `, în ${o.region} (${o.place})` : `, în ${o.region}`) : "";
+/** Fără diacritice și litere mari: „Maramureș” și „maramures” sunt același loc. */
+const plain = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().trim();
+
+/**
+ * Locul din fișă spune doar ținutul sau țara (în română sau în limba cititorului)? Atunci nu-l mai scriem în paranteză:
+ * „în Italia”, nu „în Italia (Italia)”.
+ */
+function sameAsRegion(place: string, name: string, o: Origin) {
+  const p = plain(place);
+  return p === plain(name) || p === o.region || (!!o.cc && p === plain(COUNTRY_NAMES[o.cc] ?? o.cc)) || (!!o.country && p === plain(o.country));
+}
+
+/** „S-a născut în 1932, în Transilvania (Huedin)” (pentru Călătoria în timp, încă în română). */
+export function bornLine(p: PersonView, s: Story, region: (o: Origin) => string) {
+  const o = s.origin, r = o ? region(o) : "";
+  const place = o ? (o.place && !o.guess && !sameAsRegion(o.place, r, o) ? `, în ${r} (${o.place})` : `, în ${r}`) : "";
   return `S-a născut în ${p.approx ? "jurul anului " : ""}${s.year}${place}`;
 }
 
 /**
- * Cuvintele poveștii vremurilor în limba aleasă: felul anului, anii epocii, nașterea cu ținutul ei și vârsta de atunci.
- * (Călătoria în timp folosește încă variantele românești de mai sus; trece la acestea în etapa 4 a traducerii, cu tot cu povești.)
+ * Cuvintele poveștii vremurilor în limba aleasă: epoca și viața de atunci, evenimentele, ținutul, felul anului,
+ * anii epocii, nașterea cu ținutul ei și vârsta de atunci. Textele istorice vin din partea „Vremuri”.
+ * (Călătoria în timp își scrie încă restul cuvintelor în română; trece la acestea în etapa 4 a traducerii.)
  */
 export function useTimesWords() {
-  const t = useTranslations("Times");
+  const t = useTranslations("Times"), tv = useTranslations("Vremuri"), locale = useLocale();
+  // Nu orice ținut are povestea lui în orice epocă; storyFor alege doar dintre cele care există.
+  const lifeText = tv as unknown as (key: string) => string;
+  const region = (o: Origin) => (o.region ? tv(`regions.${o.region}`) : o.cc ? countryName(o.cc, locale) : o.country || tv("abroad"));
   return {
+    era: (e: Era) => tv(`eras.${e.id}.name`),
+    life: (s: Story) => lifeText(`eras.${s.era.id}.life.${s.life}`),
+    event: (e: HistEvent) => tv(`events.${e.id}`),
+    region,
     tone: (x: Tone) => t(`tone.${x}`),
     eraYears: (s: Story) => (s.era.from === 0 ? t("eraUntil", { year: String(s.era.to + 1) }) : s.era.to >= 2100 ? t("eraFrom", { year: String(s.era.from) }) : `${s.era.from}–${s.era.to}`),
     born: (p: PersonView, s: Story) => {
       const o = s.origin, v = { sex: p.sex, approx: p.approx ? "yes" : "no", year: String(s.year) };
       if (!o) return t("born", v);
-      return o.place && !o.guess && o.place.toLowerCase() !== o.region.toLowerCase() ? t("bornInPlace", { ...v, region: o.region, place: o.place }) : t("bornIn", { ...v, region: o.region });
+      const r = region(o);
+      return o.place && !o.guess && !sameAsRegion(o.place, r, o) ? t("bornInPlace", { ...v, region: r, place: o.place }) : t("bornIn", { ...v, region: r });
     },
     age: (age: number, sex: PersonView["sex"], ongoing = false) =>
       ongoing ? t("ageOngoing") : age === 0 ? t("ageBirthYear") : age < 7 ? t("ageChild", { age, sex }) : t("ageAt", { age }),
@@ -68,13 +90,13 @@ export default function TimesStory({ p, origin, loading }: { p: PersonView; orig
           {s.origin?.guess ? t("guessNote", { name: s.origin.guess }) : !s.origin ? (loading ? t("findingRegion") : t("noRegion")) : ""}
         </span>
       </p>
-      <div className="era-chip">{s.era.name} · {w.eraYears(s)}</div>
-      <p className="times-life">{s.life}</p>
+      <div className="era-chip">{w.era(s.era)} · {w.eraYears(s)}</div>
+      <p className="times-life">{w.life(s)}</p>
       {s.before.length > 0 && (
         <>
           <div className="times-sub">{t("before")}</div>
           <ul className="times-list">
-            {s.before.map((e) => <li key={`${e.year}${e.text}`}><i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} /><b>{e.to ? `${e.year}–${e.to}` : e.year}</b> {e.text}</li>)}
+            {s.before.map((e) => <li key={e.id}><i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} /><b>{e.to ? `${e.year}–${e.to}` : e.year}</b> {w.event(e)}</li>)}
           </ul>
         </>
       )}
@@ -83,9 +105,9 @@ export default function TimesStory({ p, origin, loading }: { p: PersonView; orig
           <div className="times-sub">{t("lived")}</div>
           <ul className="times-list">
             {s.lived.map(({ event: e, age, ongoing }) => (
-              <li key={`${e.year}${e.text}`}>
+              <li key={e.id}>
                 <i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} />
-                <b>{e.to ? `${e.year}–${e.to}` : e.year}</b> <span className="muted">({w.age(age, p.sex, ongoing)})</span> {e.text}
+                <b>{e.to ? `${e.year}–${e.to}` : e.year}</b> <span className="muted">({w.age(age, p.sex, ongoing)})</span> {w.event(e)}
               </li>
             ))}
           </ul>

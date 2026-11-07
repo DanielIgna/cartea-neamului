@@ -1,6 +1,7 @@
 import type { Catalog } from "./ro";
 import { frArbore } from "./arbore/fr";
 import { frAmintiri } from "./amintiri/fr";
+import { frVremuri } from "./vremuri/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -287,4 +288,6 @@ export const fr: Catalog = {
   ...frArbore,
   // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
   ...frAmintiri,
+  // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
+  ...frVremuri,
 };

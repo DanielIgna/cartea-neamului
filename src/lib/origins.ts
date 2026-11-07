@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Db } from "@/db";
 import { person, placePin } from "@/db/schema";
-import { countryCode, countyCode, placeKey, COUNTRY_NAMES } from "./place-key";
+import { countryCode, countyCode, placeKey } from "./place-key";
 import { resolvePlaces, type PlaceRef } from "./places";
 import { areaOfCountry, regionOfCounty, type Origin } from "./vremuri";
 
@@ -36,7 +36,8 @@ export async function birthOrigins(db: Db, treeId: string): Promise<Record<strin
       continue;
     }
     const area = cc ? areaOfCountry(cc) : r.country?.trim() ? "lume" : null;
-    if (area) out[r.id] = { area, region: cc === "MD" ? "Basarabia" : COUNTRY_NAMES[cc] ?? r.country?.trim() ?? "străinătate", place };
+    // Țara se numește în limba cititorului, după cod; o țară scrisă în fișă și nerecunoscută rămâne cum e scrisă.
+    if (area) out[r.id] = cc === "MD" ? { area, region: "basarabia", place } : cc ? { area, cc, place } : { area, country: r.country!.trim(), place };
   }
   return out;
 }

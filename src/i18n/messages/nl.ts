@@ -1,6 +1,7 @@
 import type { Catalog } from "./ro";
 import { nlArbore } from "./arbore/nl";
 import { nlAmintiri } from "./amintiri/nl";
+import { nlVremuri } from "./vremuri/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -287,4 +288,6 @@ export const nl: Catalog = {
   ...nlArbore,
   // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
   ...nlAmintiri,
+  // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
+  ...nlVremuri,
 };
