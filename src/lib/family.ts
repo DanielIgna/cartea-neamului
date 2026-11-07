@@ -55,8 +55,22 @@ export function childrenByUnion(g: Graph, drawn: (id: string) => boolean, id: st
 /** Numele fără diacritice și fără majuscule, ca „Onița”, „Oniţa” și „Onita” să fie același nume. */
 export const normName = (s: string | null | undefined) => (s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
 const firstName = (s: string) => normName(s).split(/[\s-]+/)[0] ?? "";
+/** Părinții fără nume puși automat, în fiecare limbă a site-ului (în baza de date rămân așa cum au fost puși, de obicei în română). */
+const UNKNOWN_PARENT: Record<string, { M: string; F: string }> = {
+  ro: { M: "Tată necunoscut", F: "Mamă necunoscută" }, "en-GB": { M: "Unknown father", F: "Unknown mother" }, "en-US": { M: "Unknown father", F: "Unknown mother" },
+  fr: { M: "Père inconnu", F: "Mère inconnue" }, es: { M: "Padre desconocido", F: "Madre desconocida" }, nl: { M: "Onbekende vader", F: "Onbekende moeder" },
+  de: { M: "Unbekannter Vater", F: "Unbekannte Mutter" }, it: { M: "Padre sconosciuto", F: "Madre sconosciuta" }, hu: { M: "Ismeretlen apa", F: "Ismeretlen anya" },
+};
+const UNKNOWN_PARENT_NAME = /^(tata|mama) necunoscut|^unknown (father|mother)|^(pere|mere) inconnu|^(padre|madre) (desconocid|sconosciut)|^onbekende (vader|moeder)|^unbekannter? (vater|mutter)|^ismeretlen (apa|anya)/;
+
 /** Părinții fără nume puși automat („Tată necunoscut”, „Mamă necunoscută”): nu sunt dubluri unii ai altora și nu primesc fișă în carte. */
-export const isPlaceholder = (given: string) => /^(tata|mama) necunoscut|^necunoscut/.test(normName(given));
+export const isPlaceholder = (given: string) => UNKNOWN_PARENT_NAME.test(normName(given)) || /^necunoscut/.test(normName(given));
+
+/** „Tată necunoscut” scris în limba celui care citește; orice alt nume rămâne cum e. */
+export function placeholderLabel(given: string, sex: "M" | "F" | "U", locale?: string): string {
+  if (!locale || sex === "U" || !UNKNOWN_PARENT_NAME.test(normName(given))) return given;
+  return (UNKNOWN_PARENT[locale] ?? UNKNOWN_PARENT.ro)[sex];
+}
 
 export type Lookalike = { id: string; givenName: string; surname: string; birthSurname: string | null; sex: Sex; birthYear: number | null };
 

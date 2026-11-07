@@ -9,6 +9,7 @@ import { aiConfigured } from "@/lib/ai";
 import { storageConfigured } from "@/lib/storage";
 import TreeScreen from "@/components/TreeScreen";
 import PageIntl from "@/i18n/PageIntl";
+import { getLocale } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -24,7 +25,7 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const generations = Math.min(Math.max(Number(g) || 5, 2), MAX_GENERATIONS);
   const start = mine?.id;
-  const [data, live] = await Promise.all([loadTreeView(db, id, p && UUID.test(p) ? p : start, generations), loadTreeLive(db, me.id, id)]);
+  const [data, live] = await Promise.all([loadTreeView(db, id, p && UUID.test(p) ? p : start, generations, await getLocale()), loadTreeLive(db, me.id, id)]);
   if (!data || !data.centerId || !data.slots[1]) notFound();
   const home = start ?? data.rootId;
   return (

@@ -20,6 +20,7 @@ import { questionsFor, sundayQuestion, type Question } from "@/lib/questions";
 import MemoryBox from "@/components/MemoryBox";
 import { hasConsent } from "@/lib/consent";
 import PageIntl from "@/i18n/PageIntl";
+import { getLocale } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -32,7 +33,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   const me = await requireUser(`/arbore/${id}/persoana/${pid}`);
   const role = await roleIn(db, id, me.id);
   if (!role) notFound();
-  const data = await loadTreeView(db, id, undefined, 1);
+  const locale = await getLocale();
+  const data = await loadTreeView(db, id, undefined, 1, locale);
   const p = data?.people[pid];
   if (!data || !p) notFound();
   const g = buildGraph(Object.values(data.people), data.rels);
