@@ -2,8 +2,9 @@ import { eq } from "drizzle-orm";
 import type { Db } from "@/db";
 import { person, placePin } from "@/db/schema";
 import { parseFuzzyDate } from "./dates";
-import { placeKey } from "./place-key";
-import { resolvePlaces, type PlaceRef, type Spot } from "./places";
+import { COUNTRY_NAMES, countryName, placeKey } from "./place-key";
+import { COUNTRY_ONLY, PIN_DETAIL, PIN_GROUP, resolvePlaces, type PlaceRef, type Spot } from "./places";
+import type { Locale } from "@/i18n/locales";
 import { placedMemories, type PlaceMemory } from "./lada-db";
 import type { Viewer } from "./lada";
 
@@ -25,13 +26,33 @@ export type TreeMap = {
   places: MapPlace[]; missing: MapMissing[]; people: Record<string, MapPerson>; routes: MapRoute[]; shared: SharedPlace[]; memoryMissing: MemoryMissing[];
 };
 
+/** Cuvintele hărții în limba cititorului (din catalogul „Map”): anii oamenilor, țările și locurile puse de mână. */
+export type MapWords = {
+  locale: Locale; born: (year: number, sex: MapPerson["sex"]) => string; died: (year: number, sex: MapPerson["sex"]) => string;
+  countryOnly: string; pinned: string; pinnedGroup: string;
+};
+
+/**
+ * Numele țărilor (grupul din listă, locul trecut doar cu țara, finalul descrierii „Piedmont, Italia”) și ce am scris noi
+ * despre un loc („pus de mână pe hartă”), în limba cititorului. Descrierile satelor din România rămân ca în registre.
+ */
+export function localizePlace<T extends Omit<Spot, "id">>(s: T, w: MapWords): T {
+  if (w.locale === "ro") return s;
+  const ro = COUNTRY_NAMES[s.cc], country = ro ? countryName(s.cc, w.locale) : null;
+  const group = s.group === PIN_GROUP ? w.pinnedGroup : country && s.group === ro ? country : s.group;
+  const detail = s.how === "country" || s.detail === COUNTRY_ONLY ? w.countryOnly : s.detail === PIN_DETAIL ? w.pinned
+    : country && s.cc !== "RO" && s.detail?.endsWith(ro) ? `${s.detail.slice(0, -ro.length)}${country}` : s.detail;
+  return { ...s, group, detail, name: s.how === "country" && country ? country : s.name };
+}
+
 /**
  * Locurile unui arbore, cu oamenii lor: unde s-au născut, unde au murit și, pentru cei în viață, unde locuiesc acum.
  * Persoanele discrete (de pildă o fostă soție) nu apar pe hartă, la fel ca în desenele arborelui.
  * Cu `viewer`, și amintirile din lăzi pe care le vede el, la locul unde s-au petrecut. Ele nu schimbă nimic din rest:
  * nici satele alese pentru oameni, nici drumurile, nici ce văd celelalte neamuri.
+ * Cu `words`, textele pentru cititor sunt în limba lui; satele pe care le văd celelalte neamuri (`shared`) rămân în română.
  */
-export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer): Promise<TreeMap> {
+export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer, words?: MapWords): Promise<TreeMap> {
   const rows = (await db.select().from(person).where(eq(person.treeId, treeId))).filter((p) => !p.discreet);
   const pins = await db.select().from(placePin).where(eq(placePin.treeId, treeId));
   const refs = new Map<string, PlaceRef>();
@@ -40,7 +61,7 @@ export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer): Prom
   for (const p of rows) {
     const b = parseFuzzyDate(p.birthDateText).year, d = parseFuzzyDate(p.deathDateText).year;
     people[p.id] = { id: p.id, name: `${p.givenName} ${p.surname}`.trim() || "Fără nume", sex: p.sex, living: p.living,
-      years: b && d ? `${b}–${d}` : b ? (p.living ? `n. ${b}` : `${b}–?`) : d ? `d. ${d}` : "" };
+      years: b && d ? `${b}–${d}` : b ? (p.living ? (words ? words.born(b, p.sex) : `n. ${b}`) : `${b}–?`) : d ? (words ? words.died(d, p.sex) : `d. ${d}`) : "" };
     const spots: [string | null, string | null, MapKind][] = [[p.birthPlace, p.birthCountry, "born"]];
     if (p.living) spots.push([p.residencePlace, p.residenceCountry, "lives"]);
     else spots.push([p.deathPlace, p.deathCountry, "died"]);
@@ -127,8 +148,9 @@ export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer): Prom
     surnames: [...names.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([n]) => n).join(", "),
   }));
   const byCount = <T extends { people: unknown[] }>(a: T, b: T) => b.people.length - a.people.length;
+  const placeList = [...places.values()].sort((a, b) => byCount(a, b) || b.memories.length - a.memories.length);
   return {
-    places: [...places.values()].sort((a, b) => byCount(a, b) || b.memories.length - a.memories.length), missing: [...missing.values()].sort(byCount),
+    places: words ? placeList.map((p) => localizePlace(p, words)) : placeList, missing: [...missing.values()].sort(byCount),
     people, routes: [...routes.values()], shared: sharedRows, memoryMissing: [...memoryMissing.values()].sort((a, b) => b.memories.length - a.memories.length),
   };
 }

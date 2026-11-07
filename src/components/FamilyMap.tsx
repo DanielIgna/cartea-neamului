@@ -2,20 +2,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "use-intl";
 import type * as Leaflet from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { MapKind, MapPlace, TreeMap } from "@/lib/map-data";
 import type { PlaceMemory } from "@/lib/lada-db";
 import type { Spot } from "@/lib/places";
 import { findPlaces, pinPlace, placeChoices, unpinPlace } from "@/app/harta-actions";
-import { amintiri, de, locuri, persoane } from "@/lib/ro-words";
 import NearbyFamilies, { type Nearby } from "./NearbyFamilies";
 
 type Filter = "all" | MapKind | "memories"; // „memories”: locurile amintirilor din lăzi, în loc de oameni
-const KINDS: { k: MapKind; label: string; here: string; color: string }[] = [
-  { k: "born", label: "Născuți", here: "S-au născut aici", color: "--accent" },
-  { k: "died", label: "Decedați", here: "Au murit aici", color: "--ochre" },
-  { k: "lives", label: "Trăiesc acum", here: "Trăiesc aici acum", color: "--good" },
+const KINDS: { k: MapKind; color: string }[] = [
+  { k: "born", color: "--accent" },
+  { k: "died", color: "--ochre" },
+  { k: "lives", color: "--good" },
 ];
 type Fix = { keys: { key: string; text: string; country: string | null }[]; label: string };
 type Drawn = { L: typeof Leaflet; map: Leaflet.Map; routes: Leaflet.LayerGroup; marks: Leaflet.LayerGroup; temp: Leaflet.LayerGroup; ro: ResizeObserver };
@@ -37,6 +37,7 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
   treeId: string; treeName: string; data: TreeMap; canEdit: boolean; focus: string | null; nearby: Nearby;
 }) {
   const router = useRouter();
+  const t = useTranslations("Map");
   const box = useRef<HTMLDivElement>(null);
   const drawn = useRef<Drawn | null>(null);
   const fitted = useRef(false);
@@ -62,7 +63,7 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
   const selected = sel ? data.places.find((p) => p.keys.some((k) => k.key === sel)) ?? null : null;
   const lostMemory = sel && !selected ? data.memoryMissing.find((x) => x.key === sel) ?? null : null;
   const hasMemories = data.memoryMissing.length > 0 || data.places.some((p) => p.memories.length > 0);
-  const count = filter === "memories" ? amintiri : persoane;
+  const count = (n: number) => t(filter === "memories" ? "memories" : "people", { count: n });
   const isSel = (p: MapPlace) => !!sel && p.keys.some((k) => k.key === sel);
   // Mijlocul neamului, ca alegerile dintre sate cu același nume să înceapă cu cel mai apropiat.
   const home = useMemo(() => {
@@ -90,7 +91,7 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
       map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 18,
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · sate: SIRUTA (INS) · orașe: GeoNames',
+        attribution: `© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · ${t("attribution")}`,
       }).addTo(map);
       // Contururile județelor rămân și când plăcile hărții nu se încarcă (fără internet, sau un server ocupat).
       const css = getComputedStyle(document.documentElement);
@@ -243,44 +244,44 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
     <div className="layout">
       <div className="card">
         <div className="toolbar">
-          <div className="title">Harta neamului · {treeName}</div>
-          <Link className="btn" href={`/arbore/${treeId}`}>Înapoi la arbore</Link>
+          <div className="title">{t("title", { tree: treeName })}</div>
+          <Link className="btn" href={`/arbore/${treeId}`}>{t("back")}</Link>
         </div>
         <div className="toolbar">
-          <div className="seg map-filter" role="group" aria-label="Ce arată harta">
-            <button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>Toți</button>
-            {KINDS.map((k) => <button key={k.k} aria-pressed={filter === k.k} onClick={() => setFilter(k.k)}>{k.label}</button>)}
-            {hasMemories && <button aria-pressed={filter === "memories"} onClick={() => { if (filter !== "memories") fit(data.places.filter((p) => p.memories.length > 0)); setFilter("memories"); }}>Amintiri</button>}
+          <div className="seg map-filter" role="group" aria-label={t("filterAria")}>
+            <button aria-pressed={filter === "all"} onClick={() => setFilter("all")}>{t("all")}</button>
+            {KINDS.map((k) => <button key={k.k} aria-pressed={filter === k.k} onClick={() => setFilter(k.k)}>{t(`kind.${k.k}`)}</button>)}
+            {hasMemories && <button aria-pressed={filter === "memories"} onClick={() => { if (filter !== "memories") fit(data.places.filter((p) => p.memories.length > 0)); setFilter("memories"); }}>{t("memoriesFilter")}</button>}
           </div>
           {nearHome.length > 0 && (
             <span className="actions" style={{ margin: 0 }}>
-              <button className="btn" onClick={() => fit(nearHome)}>Locurile de acasă</button>
-              <button className="btn" onClick={() => fit(shown)}>Tot neamul</button>
+              <button className="btn" onClick={() => fit(nearHome)}>{t("homePlaces")}</button>
+              <button className="btn" onClick={() => fit(shown)}>{t("wholeFamily")}</button>
             </span>
           )}
           {data.routes.length > 0 && filter !== "memories" && (
             <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 14 }}>
-              <input type="checkbox" checked={routesOn} onChange={(e) => setRoutesOn(e.target.checked)} /> Drumurile neamului
+              <input type="checkbox" checked={routesOn} onChange={(e) => setRoutesOn(e.target.checked)} /> {t("routes")}
             </label>
           )}
         </div>
         {picking && (
           <div className="confirm" style={{ marginBottom: 8 }}>
-            {pickAt ? <>Pun <b>„{picking.label}”</b> în punctul marcat cu roșu?{" "}
+            {pickAt ? <>{t.rich("pinAsk", { label: picking.label, b: (c) => <b>{c}</b> })}{" "}
               <span className="actions" style={{ display: "inline-flex", marginTop: 6 }}>
-                <button className="btn primary" disabled={busy} onClick={() => save(picking, { placeId: null, name: picking.label, detail: "pus de mână pe hartă", lat: pickAt.lat, lng: pickAt.lng })}>{busy ? "Se salvează…" : "Da, pune-l aici"}</button>
-                <button className="btn" onClick={() => setPickAt(null)}>Alt punct</button>
-                <button className="btn" onClick={() => { setPicking(null); setPickAt(null); }}>Renunță</button>
+                <button className="btn primary" disabled={busy} onClick={() => save(picking, { placeId: null, name: picking.label, detail: null, lat: pickAt.lat, lng: pickAt.lng })}>{busy ? t("saving") : t("pinYes")}</button>
+                <button className="btn" onClick={() => setPickAt(null)}>{t("otherPoint")}</button>
+                <button className="btn" onClick={() => { setPicking(null); setPickAt(null); }}>{t("cancel")}</button>
               </span></>
-              : <>Dă click pe hartă acolo unde e <b>„{picking.label}”</b>. Poți mări harta cu rotița sau cu +. <button className="btn" onClick={() => setPicking(null)}>Renunță</button></>}
+              : <>{t.rich("pinHelp", { label: picking.label, b: (c) => <b>{c}</b> })} <button className="btn" onClick={() => setPicking(null)}>{t("cancel")}</button></>}
           </div>
         )}
-        <div ref={box} className={`mapbox${picking ? " picking" : ""}`} role="application" aria-label={`Harta locurilor din neamul ${treeName}`} />
+        <div ref={box} className={`mapbox${picking ? " picking" : ""}`} role="application" aria-label={t("mapAria", { tree: treeName })} />
         <div className="legend">
-          <span>{shown.length ? `${locuri(shown.length)}${counties ? ` în ${counties} ${counties === 1 ? "județ" : "județe"}` : ""}${abroad ? ` și ${abroad} ${abroad === 1 ? "țară străină" : "țări străine"}` : ""} · ${count(total)}` : "Niciun loc încă."}</span>
-          <span>{filter === "memories" ? "Cercul e mai mare unde s-au petrecut mai multe amintiri." : "Cercul e mai mare unde sunt mai mulți oameni."}</span>
-          {filter !== "memories" && shown.some((p) => p.memories.length > 0) && <span><i className="sw" style={{ background: "transparent", border: "2.5px solid var(--plum)", borderRadius: "50%" }} />Locuri cu amintiri</span>}
-          {routesOn && data.routes.length > 0 && filter !== "born" && filter !== "memories" && <span><i className="sw" style={{ background: "var(--ochre)", height: 4, borderRadius: 2 }} />De unde au plecat și unde au ajuns</span>}
+          <span>{shown.length ? t("legend", { places: shown.length, counties, abroad, total: count(total) }) : t("noPlaces")}</span>
+          <span>{filter === "memories" ? t("circleMemories") : t("circlePeople")}</span>
+          {filter !== "memories" && shown.some((p) => p.memories.length > 0) && <span><i className="sw" style={{ background: "transparent", border: "2.5px solid var(--plum)", borderRadius: "50%" }} />{t("placesWithMemories")}</span>}
+          {routesOn && data.routes.length > 0 && filter !== "born" && filter !== "memories" && <span><i className="sw" style={{ background: "var(--ochre)", height: 4, borderRadius: 2 }} />{t("routesLegend")}</span>}
         </div>
       </div>
 
@@ -290,28 +291,26 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
             onBack={() => setSel(null)} onSave={save} onForget={forget} onPick={(fix) => { setPicking(fix); setPickAt(null); }} />
         ) : lostMemory ? (
           <div className="card panel">
-            <button className="btn" onClick={() => setSel(null)} style={{ marginBottom: 10 }}>← Toate locurile</button>
+            <button className="btn" onClick={() => setSel(null)} style={{ marginBottom: 10 }}>{t("allPlaces")}</button>
             <h2>{lostMemory.text}</h2>
-            <p className="muted" style={{ fontSize: 14 }}>Harta nu știe unde e acest loc. {canEdit ? "Dacă e un sat sau un oraș, caută-l sau pune-l de mână pe hartă: amintirea apare apoi acolo." : ""}</p>
-            <div className="section-label"><i className="dot" style={{ background: "var(--plum)" }} />{lostMemory.memories.length === 1 ? "Amintirea de aici" : `Amintiri de aici (${lostMemory.memories.length})`}</div>
+            <p className="muted" style={{ fontSize: 14 }}>{canEdit ? t("unknownPlaceEdit") : t("unknownPlace")}</p>
+            <div className="section-label"><i className="dot" style={{ background: "var(--plum)" }} />{t("memoriesHere", { count: lostMemory.memories.length })}</div>
             <MemoryLinks treeId={treeId} list={lostMemory.memories} />
             {canEdit && <Fixer treeId={treeId} fix={{ keys: [{ key: lostMemory.key, text: lostMemory.text, country: null }], label: lostMemory.text }} initial={lostMemory.text} country={null}
               near={home} busy={busy} onSave={save} onPick={(fix) => { setPicking(fix); setPickAt(null); }} />}
           </div>
         ) : (
           <div className="card">
-            <div className="section-label" style={{ marginTop: 0 }}>{filter === "memories" ? "Locurile amintirilor" : "Locurile neamului"}</div>
-            {!shown.length && <p className="muted" style={{ margin: 0 }}>{filter === "memories"
-              ? "Harta nu a găsit încă niciun loc al amintirilor. Uită-te mai jos."
-              : "Când treci în fișe locul nașterii, al morții sau unde locuiește cineva acum, satul apare aici, pe hartă."}</p>}
+            <div className="section-label" style={{ marginTop: 0 }}>{filter === "memories" ? t("memoryPlaces") : t("familyPlaces")}</div>
+            {!shown.length && <p className="muted" style={{ margin: 0 }}>{filter === "memories" ? t("noMemoryPlaces") : t("noPlacesHelp")}</p>}
             {groups.map((g) => (
               <div key={g.name} style={{ marginBottom: 10 }}>
                 <div className="meta" style={{ fontWeight: 700 }}>{g.name} · {g.n}</div>
                 <div className="place-list">
                   {g.places.map((p) => (
                     <button key={p.id} className="place-row" onClick={() => choose(p)}>
-                      <span>{p.name}{p.how === "country" ? " (doar țara)" : ""}{also.get(p.id) ? <small className="also" title="Neamuri din alți arbori cu strămoși în acest loc">+{de(also.get(p.id)!)} {also.get(p.id) === 1 ? "neam" : "neamuri"}</small> : null}
-                        {filter !== "memories" && p.memories.length > 0 ? <small className="mem-n" title="Amintiri petrecute aici">{amintiri(p.memories.length)}</small> : null}</span>
+                      <span>{p.name}{p.how === "country" ? ` ${t("countryOnlyShort")}` : ""}{also.get(p.id) ? <small className="also" title={t("alsoTitle")}>{t("alsoCount", { count: also.get(p.id)! })}</small> : null}
+                        {filter !== "memories" && p.memories.length > 0 ? <small className="mem-n" title={t("memHereTitle")}>{t("memories", { count: p.memories.length })}</small> : null}</span>
                       <span className="bar" style={{ width: Math.max(4, (60 * p.n) / most), ...(filter === "memories" ? { background: "var(--plum)" } : {}) }} />
                       <span className="n">{p.n}</span>
                     </button>
@@ -326,8 +325,8 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
           place={selected && selected.how !== "country" ? { id: selected.id, area: selected.area, name: selected.name } : null} />}
         {filter === "memories" && data.memoryMissing.some((m) => m !== lostMemory) && (
           <div className="card">
-            <div className="section-label" style={{ marginTop: 0 }}>Amintiri cu locuri pe care harta nu le știe ({data.memoryMissing.filter((m) => m !== lostMemory).length})</div>
-            <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>Harta știe satele și orașele, nu și „la moara bunicului”. {canEdit ? "Dacă e un sat scris altfel, caută-l sau pune-l de mână pe hartă." : ""}</p>
+            <div className="section-label" style={{ marginTop: 0 }}>{t("memoryMissingTitle", { count: data.memoryMissing.filter((m) => m !== lostMemory).length })}</div>
+            <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>{canEdit ? t("memoryMissingEdit") : t("memoryMissingText")}</p>
             <div className="stack" style={{ gap: 12 }}>
               {data.memoryMissing.filter((m) => m !== lostMemory).map((m) => (
                 <div key={m.key}>
@@ -342,8 +341,8 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
         )}
         {data.missing.length > 0 && filter !== "memories" && (
           <div className="card">
-            <div className="section-label" style={{ marginTop: 0 }}>Locuri pe care harta nu le-a găsit ({data.missing.length})</div>
-            <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>Poate sunt scrise altfel, au alt nume azi sau nu mai există. {canEdit ? "Caută-le sau pune-le de mână pe hartă; se schimbă pentru toate fișele care le au." : ""}</p>
+            <div className="section-label" style={{ marginTop: 0 }}>{t("missingTitle", { count: data.missing.length })}</div>
+            <p className="muted" style={{ marginTop: 0, fontSize: 14 }}>{canEdit ? t("missingEdit") : t("missingText")}</p>
             <div className="stack" style={{ gap: 10 }}>
               {data.missing.map((m) => (
                 <div key={m.key}>
@@ -366,29 +365,30 @@ function PlaceCard({ place: p, treeId, data, canEdit, home, busy, memoriesFirst,
   onBack: () => void; onSave: (fix: Fix, s: { placeId: string | null; name: string; detail: string | null; lat: number; lng: number }) => void;
   onForget: (p: MapPlace) => void; onPick: (fix: Fix) => void;
 }) {
+  const t = useTranslations("Map");
   const [fixing, setFixing] = useState(false);
   const fix: Fix = { keys: p.keys, label: p.keys[0]?.text || p.name };
   const told = p.memories.length > 0 && (
     <div>
-      <div className="section-label"><i className="dot" style={{ background: "var(--plum)" }} />{p.memories.length === 1 ? "Amintirea de aici" : `Amintiri de aici (${p.memories.length})`}</div>
+      <div className="section-label"><i className="dot" style={{ background: "var(--plum)" }} />{t("memoriesHere", { count: p.memories.length })}</div>
       <MemoryLinks treeId={treeId} list={p.memories} />
     </div>
   );
   return (
     <div className="card panel">
-      <button className="btn" onClick={onBack} style={{ marginBottom: 10 }}>← Toate locurile</button>
+      <button className="btn" onClick={onBack} style={{ marginBottom: 10 }}>{t("allPlaces")}</button>
       <h2>{p.name}</h2>
       <div className="meta">{p.detail}</div>
-      {p.how === "guess" && <p className="muted" style={{ fontSize: 14 }}>În România sunt {de(p.choices ?? 0)} locuri cu numele „{p.name}”. Am ales pe cel mai apropiat de restul neamului.</p>}
-      {p.how === "country" && <p className="muted" style={{ fontSize: 14 }}>În fișă e trecută doar țara, așa că cercul stă la mijlocul ei.</p>}
-      {p.keys.some((k) => !k.memory && k.text && k.text !== p.name) && <p className="muted" style={{ fontSize: 13 }}>În fișe: {p.keys.filter((k) => !k.memory).map((k) => `„${k.text || k.country}”`).join(", ")}</p>}
+      {p.how === "guess" && <p className="muted" style={{ fontSize: 14 }}>{t("guessText", { count: p.choices ?? 0, name: p.name })}</p>}
+      {p.how === "country" && <p className="muted" style={{ fontSize: 14 }}>{t("countryText")}</p>}
+      {p.keys.some((k) => !k.memory && k.text && k.text !== p.name) && <p className="muted" style={{ fontSize: 13 }}>{t("inProfiles", { list: p.keys.filter((k) => !k.memory).map((k) => t("quote", { text: k.text || k.country || "" })).join(", ") })}</p>}
       {memoriesFirst && told}
       {KINDS.map((k) => {
         const who = p.people.filter((x) => x.kind === k.k).map((x) => data.people[x.id]).filter(Boolean);
         if (!who.length) return null;
         return (
           <div key={k.k}>
-            <div className="section-label"><i className="dot" style={{ background: `var(${k.color})` }} />{k.here} ({who.length})</div>
+            <div className="section-label"><i className="dot" style={{ background: `var(${k.color})` }} />{t(`here.${k.k}`, { count: who.length })}</div>
             <ul className="people-list">
               {who.map((x) => <li key={x.id}><Link href={`/arbore/${treeId}?p=${x.id}`}>{x.name}</Link> {x.years && <small>{x.years}</small>}</li>)}
             </ul>
@@ -400,11 +400,11 @@ function PlaceCard({ place: p, treeId, data, canEdit, home, busy, memoriesFirst,
         <div style={{ marginTop: 14 }}>
           {p.how === "pin" ? (
             <div className="actions">
-              <button className="btn" disabled={busy} onClick={() => setFixing((f) => !f)}>Mută locul</button>
-              <button className="btn" disabled={busy} onClick={() => onForget(p)}>Lasă harta să-l caute singură</button>
+              <button className="btn" disabled={busy} onClick={() => setFixing((f) => !f)}>{t("move")}</button>
+              <button className="btn" disabled={busy} onClick={() => onForget(p)}>{t("letMapFind")}</button>
             </div>
           ) : (
-            <button className="btn" onClick={() => setFixing((f) => !f)}>{p.how === "guess" ? "Nu e acesta? Alege satul" : "Nu e aici? Mută locul"}</button>
+            <button className="btn" onClick={() => setFixing((f) => !f)}>{p.how === "guess" ? t("notThisChoose") : t("notHereMove")}</button>
           )}
           {fixing && <Fixer treeId={treeId} fix={fix} initial={p.keys[0]?.text || p.name} country={p.keys[0]?.country ?? null} near={home} busy={busy}
             sameName={p.how === "guess" ? p.keys[0] : undefined} onSave={onSave} onPick={onPick} />}
@@ -416,12 +416,13 @@ function PlaceCard({ place: p, treeId, data, canEdit, home, busy, memoriesFirst,
 
 /** Amintirile dintr-un loc: titlul (sau întrebarea, sau începutul) duce la amintire, în lada celui care a povestit-o. */
 function MemoryLinks({ treeId, list }: { treeId: string; list: PlaceMemory[] }) {
+  const t = useTranslations("Map");
   return (
     <ul className="people-list map-memories">
       {list.map((m) => (
         <li key={m.id}>
           <Link href={`/arbore/${treeId}/persoana/${m.personId}#amintire-${m.id}`}>{m.title}</Link>
-          <small>{[`povestită de ${m.teller}`, m.when, m.audio ? "cu glasul" : null].filter(Boolean).join(" · ")}</small>
+          <small>{[t("toldBy", { name: m.teller }), m.when, m.audio ? t("withVoice") : null].filter(Boolean).join(" · ")}</small>
         </li>
       ))}
     </ul>
@@ -434,6 +435,7 @@ function Fixer({ treeId, fix, initial, country, near, busy, sameName, onSave, on
   sameName?: { text: string; country: string | null };
   onSave: (fix: Fix, s: { placeId: string | null; name: string; detail: string | null; lat: number; lng: number }) => void; onPick: (fix: Fix) => void;
 }) {
+  const t = useTranslations("Map");
   const [q, setQ] = useState(initial);
   const [found, setFound] = useState<Spot[] | null>(null);
   const [open, setOpen] = useState(!!sameName);
@@ -449,18 +451,18 @@ function Fixer({ treeId, fix, initial, country, near, busy, sameName, onSave, on
   if (!open) {
     return (
       <div className="actions" style={{ marginTop: 6 }}>
-        <button className="btn" onClick={() => setOpen(true)}>Caută locul</button>
-        <button className="btn" onClick={() => onPick(fix)}>Pune-l de mână pe hartă</button>
+        <button className="btn" onClick={() => setOpen(true)}>{t("search")}</button>
+        <button className="btn" onClick={() => onPick(fix)}>{t("pinByHand")}</button>
       </div>
     );
   }
   return (
     <div style={{ marginTop: 8 }}>
-      <input value={q} onChange={(e) => setQ(e.target.value)} aria-label="Numele satului sau al orașului" placeholder="satul, comuna sau orașul"
+      <input value={q} onChange={(e) => setQ(e.target.value)} aria-label={t("searchAria")} placeholder={t("searchPlaceholder")}
         style={{ width: "100%", border: "1px solid var(--line)", borderRadius: 8, padding: "7px 10px", background: "var(--surface)" }} />
       <div className="suggest">
-        {found === null && <small className="muted">Caut…</small>}
-        {found?.length === 0 && <small className="muted">Nu găsesc „{q}”. Încearcă alt nume sau pune-l de mână pe hartă.</small>}
+        {found === null && <small className="muted">{t("searching")}</small>}
+        {found?.length === 0 && <small className="muted">{t("notFound", { q })}</small>}
         {found?.map((s) => (
           <button key={s.id} disabled={busy} onClick={() => onSave(fix, { placeId: s.id, name: s.name, detail: s.detail, lat: s.lat, lng: s.lng })}>
             {s.name}<small>{s.detail}</small>
@@ -468,7 +470,7 @@ function Fixer({ treeId, fix, initial, country, near, busy, sameName, onSave, on
         ))}
       </div>
       <div className="actions" style={{ marginTop: 6 }}>
-        <button className="btn" onClick={() => onPick(fix)}>Pune-l de mână pe hartă</button>
+        <button className="btn" onClick={() => onPick(fix)}>{t("pinByHand")}</button>
       </div>
     </div>
   );

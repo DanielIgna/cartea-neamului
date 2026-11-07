@@ -191,6 +191,9 @@ export function km(a: { lat: number; lng: number }, b: { lat: number; lng: numbe
 const median = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return s[Math.floor(s.length / 2)]; };
 
 export type PlaceRef = { key: string; text: string; country: string | null; weight: number };
+/** Descrierile puse de noi (nu din registrele de localități), în română; harta le arată în limba cititorului (map-data.ts). */
+export const PIN_DETAIL = "pus de mână pe hartă", PIN_GROUP = "Puse de mână pe hartă", COUNTRY_ONLY = "doar țara, fără localitate";
+
 export type Pin = { key: string; placeId: string | null; name: string; detail: string | null; lat: number; lng: number };
 
 /**
@@ -210,9 +213,9 @@ export async function resolvePlaces(refs: PlaceRef[], pins: Pin[] = []): Promise
       const cc = pin.placeId?.split(":")[0] ?? "";
       // Grupul (județul sau țara) îl scoatem din descriere: „com. Urmeniș, jud. Bistrița-Năsăud” → Bistrița-Năsăud.
       const group = cc === "RO" ? pin.detail?.match(/jud\. (.+)$/)?.[1] ?? (pin.detail === "capitala" ? "București" : "România")
-        : COUNTRY_NAMES[cc] ?? "Puse de mână pe hartă";
+        : COUNTRY_NAMES[cc] ?? PIN_GROUP;
       const area = areaOf(pin.placeId);
-      out.set(ref.key, { id: pin.placeId ?? `pin:${ref.key}`, name: pin.name, detail: pin.detail ?? "pus de mână pe hartă", lat: pin.lat, lng: pin.lng, cc, group, how: "pin", ...(area ? { area } : {}) });
+      out.set(ref.key, { id: pin.placeId ?? `pin:${ref.key}`, name: pin.name, detail: pin.detail ?? PIN_DETAIL, lat: pin.lat, lng: pin.lng, cc, group, how: "pin", ...(area ? { area } : {}) });
       if (ref.weight > 0) sure.push({ cc: pin.placeId?.split(":")[0] ?? "RO", lat: pin.lat, lng: pin.lng, w: ref.weight });
       continue;
     }
@@ -223,7 +226,7 @@ export async function resolvePlaces(refs: PlaceRef[], pins: Pin[] = []): Promise
     } else if (list.length > 1) pending.push({ ref, list });
     else if (approx && COUNTRY_CENTER[approx]) {
       const [lat, lng] = COUNTRY_CENTER[approx];
-      out.set(ref.key, { id: `country:${approx}`, name: COUNTRY_NAMES[approx] ?? approx, detail: "doar țara, fără localitate", lat, lng, cc: approx, group: COUNTRY_NAMES[approx] ?? approx, how: "country" });
+      out.set(ref.key, { id: `country:${approx}`, name: COUNTRY_NAMES[approx] ?? approx, detail: COUNTRY_ONLY, lat, lng, cc: approx, group: COUNTRY_NAMES[approx] ?? approx, how: "country" });
     } else out.set(ref.key, null);
   }
   // Mijlocul neamului în fiecare țară: mediana locurilor sigure, cântărită cu numărul de oameni.

@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { tree, person, relationship, treeMember, document, documentLink, message, raisedBy } from "@/db/schema";
 import { canMessage } from "@/lib/chat";
 import { importGedcom } from "@/lib/gedcom-db";
-import { parseFuzzyDate } from "@/lib/dates";
+import { normalizeTypedDate, parseFuzzyDate } from "@/lib/dates";
 import { ensureSchema } from "@/lib/bootstrap";
 import { currentUser, roleIn, can } from "@/lib/access";
 import { createInvitation, acceptInvitation } from "@/lib/invitations";
@@ -59,6 +59,7 @@ export async function createTree(_: unknown, form: FormData) {
   const gedcom = hasGedcom ? await file.text() : null;
 
   const NO_PEOPLE = "gedcom-fara-persoane";
+  const locale = await getLocale();
   const made = await db.transaction(async (tx) => {
     const [t] = await tx.insert(tree).values({ name, ownerId: me.id, region }).returning();
     await tx.insert(treeMember).values({ treeId: t.id, userId: me.id, role: "owner" });
@@ -69,9 +70,10 @@ export async function createTree(_: unknown, form: FormData) {
       const [any] = first ? [first] : await tx.select().from(person).where(eq(person.treeId, t.id)).limit(1);
       await tx.update(tree).set({ rootPersonId: any.id }).where(eq(tree.id, t.id));
     } else {
-      const b = parseFuzzyDate(String(form.get("birth") ?? ""));
+      const birth = normalizeTypedDate(String(form.get("birth") ?? ""), locale);
+      const b = parseFuzzyDate(birth);
       const [p] = await tx.insert(person).values({
-        treeId: t.id, givenName: given, surname, birthDateText: String(form.get("birth") ?? "") || null,
+        treeId: t.id, givenName: given, surname, birthDateText: birth || null,
         birthFrom: b.from, birthTo: b.to, living: true, sex: (String(form.get("sex") ?? "U") as "M" | "F" | "U"),
         claimedByUserId: me.id, privacy: "claimed", createdBy: me.id,
       }).returning();
@@ -100,12 +102,18 @@ const Relative = z.object({
   otherParentId: z.string().uuid().optional().or(z.literal("")), ...Fields,
 });
 
-const personValues = (v: z.infer<typeof Relative> | z.infer<typeof Edit>) => {
-  const b = parseFuzzyDate(v.birth), d = parseFuzzyDate(v.death);
+/**
+ * Valorile fișei din formular. Datele scrise acum le citim în felul limbii celui care scrie (în engleza americană luna vine
+ * întâi); cele lăsate cum erau (`before`) nu le atingem, ca „12.03.1985” scris de o rudă din România să nu devină 3 decembrie.
+ */
+const personValues = (v: z.infer<typeof Relative> | z.infer<typeof Edit>, locale: string, before?: { birth: string | null; death: string | null }) => {
+  const typed = (text: string | undefined, old: string | null | undefined) => (text && text !== old ? normalizeTypedDate(text, locale) : text);
+  const birth = typed(v.birth, before?.birth), death = typed(v.death, before?.death);
+  const b = parseFuzzyDate(birth), d = parseFuzzyDate(death);
   return {
     givenName: v.given, surname: v.surname, birthSurname: v.birthSurname || null,
-    birthDateText: v.birth || null, birthFrom: b.from, birthTo: b.to, birthPlace: v.birthPlace || null,
-    deathDateText: v.death || null, deathFrom: d.from, deathTo: d.to, deathPlace: v.deathPlace || null,
+    birthDateText: birth || null, birthFrom: b.from, birthTo: b.to, birthPlace: v.birthPlace || null,
+    deathDateText: death || null, deathFrom: d.from, deathTo: d.to, deathPlace: v.deathPlace || null,
     birthCountry: v.birthCountry || null, deathCountry: v.living === "on" ? null : v.deathCountry || null,
     residencePlace: v.living === "on" ? v.residencePlace || null : null, residenceCountry: v.living === "on" ? v.residenceCountry || null : null,
     living: v.living === "on", occupation: v.occupation || null, biography: v.biography || null, notes: v.notes || null,
@@ -171,8 +179,9 @@ export async function addRelative(_: unknown, form: FormData) {
     }
   }
 
+  const locale = await getLocale();
   const p = await db.transaction(async (tx) => {
-    const [p] = await tx.insert(person).values({ treeId: v.treeId, sex, createdBy: me.id, ...personValues(v) }).returning();
+    const [p] = await tx.insert(person).values({ treeId: v.treeId, sex, createdBy: me.id, ...personValues(v, locale) }).returning();
     if (v.kind === "father" || v.kind === "mother")
       for (const c of [anchor.id, ...shareWith]) await tx.insert(relationship).values({ treeId: v.treeId, type: "parent_child", personA: p.id, personB: c, subtype: "biologic" });
     else if (v.kind === "spouse") {
@@ -216,7 +225,8 @@ export async function updatePerson(_: unknown, form: FormData) {
   if (!p) return { error: te("personGone") };
   if (!can(role, "editor") && p.createdBy !== me.id && p.claimedByUserId !== me.id)
     return { error: te("onlyOwnEdit") };
-  await db.update(person).set({ ...personValues(v), sex: v.sex ?? p.sex, updatedAt: new Date() }).where(eq(person.id, p.id));
+  const values = personValues(v, await getLocale(), { birth: p.birthDateText, death: p.deathDateText });
+  await db.update(person).set({ ...values, sex: v.sex ?? p.sex, updatedAt: new Date() }).where(eq(person.id, p.id));
   revalidatePath(`/arbore/${v.treeId}`);
   placesChanged(v.treeId);
   return { ok: true, message: te("saved") };

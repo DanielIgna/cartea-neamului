@@ -79,7 +79,7 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised: await raisedIn(db, treeId) };
 }
 
-export async function loadTimeline(db: Db, treeId: string) {
+export async function loadTimeline(db: Db, treeId: string, locale?: string) {
   const people = await db.select().from(person).where(eq(person.treeId, treeId));
-  return people.map((p) => toView(p)).filter((p) => p.birthYear).sort((a, b) => a.birthYear! - b.birthYear!);
+  return people.map((p) => toView(p, [], null, locale)).filter((p) => p.birthYear).sort((a, b) => a.birthYear! - b.birthYear!);
 }

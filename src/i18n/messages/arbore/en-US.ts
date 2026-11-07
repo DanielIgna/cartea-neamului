@@ -15,6 +15,14 @@ export const enUSArbore: DeepPartial<ArboreCatalog> = {
   Profile: {
     back: "← Back to the tree, with {name} in the center",
   },
+  Map: {
+    memoryMissingEdit: "The map knows villages and towns, not “by grandpa’s mill”. If it’s a village spelled differently, search for it or put it on the map by hand.",
+    missingText: "They may be spelled differently, have another name today or no longer exist.",
+    missingEdit: "They may be spelled differently, have another name today or no longer exist. Search for them or put them on the map by hand; the change applies to every profile that has them.",
+  },
+  Timeline: {
+    events: { ww1: "World War I", collectivization: "Collectivization" },
+  },
   PersonForm: {
     surname: "Last name",
     birthPlaceholder: "03/12/1985, 1902 or c. 1870",

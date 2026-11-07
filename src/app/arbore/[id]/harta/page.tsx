@@ -7,6 +7,8 @@ import { isDemo } from "@/lib/demo";
 import { loadTreeMap } from "@/lib/map-data";
 import { placeMatches, storeSharedPlaces } from "@/lib/shared-places";
 import FamilyMap from "@/components/FamilyMap";
+import PageIntl from "@/i18n/PageIntl";
+import { getLocale, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,13 +20,22 @@ export default async function MapPage({ params, searchParams }: { params: Promis
   const me = await requireUser(`/arbore/${id}/harta`);
   const role = await roleIn(db, id, me.id);
   if (!role) notFound();
-  const [t] = await db.select({ name: tree.name, discoverable: tree.discoverable }).from(tree).where(eq(tree.id, id));
-  if (!t) notFound();
+  const [tr] = await db.select({ name: tree.name, discoverable: tree.discoverable }).from(tree).where(eq(tree.id, id));
+  if (!tr) notFound();
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
-  const data = await loadTreeMap(db, id, { userId: me.id, personId: mine?.id ?? null });
+  const locale = await getLocale();
+  const t = await getT("Map", locale);
+  const data = await loadTreeMap(db, id, { userId: me.id, personId: mine?.id ?? null }, {
+    locale, born: (y, sex) => t("bornYear", { year: String(y), sex }), died: (y, sex) => t("diedYear", { year: String(y), sex }),
+    countryOnly: t("countryOnlyDetail"), pinned: t("pinnedDetail"), pinnedGroup: t("pinnedGroup"),
+  });
   // Satele pe care le văd celelalte neamuri țin pasul cu harta (de pildă după ce un loc e mutat pe hartă).
-  if (t.discoverable) await storeSharedPlaces(db, id, data.shared).catch((e) => console.error("Din aceleași locuri", e));
-  const matches = t.discoverable ? await placeMatches(db, id, me.id) : [];
-  return <FamilyMap treeId={id} treeName={t.name} data={data} canEdit={can(role, "contributor")} focus={typeof loc === "string" ? loc : null}
-    nearby={{ on: t.discoverable, owner: role === "owner", demo: isDemo(me.email), matches }} />;
+  if (tr.discoverable) await storeSharedPlaces(db, id, data.shared).catch((e) => console.error("Din aceleași locuri", e));
+  const matches = tr.discoverable ? await placeMatches(db, id, me.id) : [];
+  return (
+    <PageIntl ns={["Map", "Nearby"]}>
+      <FamilyMap treeId={id} treeName={tr.name} data={data} canEdit={can(role, "contributor")} focus={typeof loc === "string" ? loc : null}
+        nearby={{ on: tr.discoverable, owner: role === "owner", demo: isDemo(me.email), matches }} />
+    </PageIntl>
+  );
 }
