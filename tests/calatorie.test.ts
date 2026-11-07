@@ -80,12 +80,11 @@ describe("călătoria în timp", () => {
     const evs = eventsFor({ area: "ardeal", county: "CJ" });
     const q = quizFor(avram, people.avram, evs, 2026)!;
     expect(q.options).toHaveLength(3);
-    const right = evs.find((e) => e.text === q.options[q.answer])!;
+    const right = q.options[q.answer];
+    expect(evs).toContain(right);
     expect(right.year >= 1930 && right.year <= 2008).toBe(true);
-    for (const [i, o] of q.options.entries()) if (i !== q.answer) {
-      const e = evs.find((x) => x.text === o)!;
-      expect((e.to ?? e.year) < 1930 || e.year > 2008).toBe(true);
-    }
+    expect(new Set(q.options.map((e) => e.id)).size).toBe(3);
+    for (const [i, e] of q.options.entries()) if (i !== q.answer) expect((e.to ?? e.year) < 1930 || e.year > 2008).toBe(true);
     expect(quizFor(avram, people.avram, evs, 2026)).toEqual(q);
   });
 

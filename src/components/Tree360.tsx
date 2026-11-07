@@ -203,7 +203,7 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
   const cur = story !== null ? steps[story] : null;
   const s = cur ? storyFor(cur, originOf(cur.id)) : null;
   const prev = story !== null && story > 0 ? steps[story - 1] : null;
-  const newEra = !!(s && (!prev || storyFor(prev, null)?.era.name !== s.era.name));
+  const newEra = !!(s && (!prev || storyFor(prev, null)?.era.id !== s.era.id));
 
   return (
     <div className="t360" ref={wrap}>
@@ -233,14 +233,14 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
       </svg>
       {cur && s && (
         <div className="t360-story" aria-live="polite">
-          {newEra && <div className="era-chip">{tt("newChapter", { era: s.era.name, years: w.eraYears(s) })}</div>}
+          {newEra && <div className="era-chip">{tt("newChapter", { era: w.era(s.era), years: w.eraYears(s) })}</div>}
           <h3>{cur.name}</h3>
           <p className="times-born">{w.born(cur, s)}{s.origin?.guess ? ` (${tt("guessShort", { name: s.origin.guess })})` : ""}.</p>
-          <p className="times-life">{s.life}</p>
+          <p className="times-life">{w.life(s)}</p>
           {s.lived.length > 0 && (
             <ul className="times-list">
               {s.lived.slice(0, 5).map(({ event: e, age, ongoing }) => (
-                <li key={`${e.year}${e.text}`}><i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} /><b>{e.year}</b> <span className="muted">({w.age(age, cur.sex, ongoing)})</span> {e.text}</li>
+                <li key={e.id}><i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} /><b>{e.year}</b> <span className="muted">({w.age(age, cur.sex, ongoing)})</span> {w.event(e)}</li>
               ))}
             </ul>
           )}

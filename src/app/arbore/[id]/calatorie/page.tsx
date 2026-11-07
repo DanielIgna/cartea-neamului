@@ -26,9 +26,10 @@ export default async function Journey({ params, searchParams }: { params: Promis
   const data = await loadTreeView(db, id, p && UUID.test(p) ? p : mine?.id, 2);
   if (!data || !data.centerId) notFound();
   const [origins, base] = await Promise.all([birthOrigins(db, id), baseWord(db)]);
-  // Călătoria e încă în română (etapa 4 a traducerii); cuvintele poveștii vremurilor vin deja din cataloage.
+  // Călătoria e încă scrisă în română (etapa 4 a traducerii), așa că și povestea vremurilor din ea rămâne în română
+  // până atunci, ca să nu amestecăm limbile în aceeași frază.
   return (
-    <PageIntl ns={["Times"]}>
+    <PageIntl ns={["Times", "Vremuri"]} locale="ro">
       <TimeJourney treeId={id} treeName={data.tree.name} meId={me.id} centerId={data.centerId} people={data.people} rels={data.rels} origins={origins}
         word={data.tree.journeyWord ?? null} defaultWord={base} isOwner={role === "owner"} demo={isDemo(me.email)} />
     </PageIntl>

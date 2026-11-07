@@ -13,7 +13,7 @@ import type { PersonView } from "@/lib/tree-data";
 import type { Origin } from "@/lib/vremuri";
 import { ageWords, eventsFor } from "@/lib/vremuri";
 import { setJourneyWord } from "@/app/calatorie-actions";
-import { originFor, bornLine, eraYears, toneColor, TONE_LABEL } from "./TimesStory";
+import { originFor, bornLine, eraYears, toneColor, TONE_LABEL, useTimesWords } from "./TimesStory";
 import "./time-journey.css";
 
 type Props = {
@@ -197,6 +197,7 @@ function StopCard({ stop, p, people, treeId, lineName, quiz, answered, onAnswer 
   stop: Stop; p: PersonView; people: Record<string, PersonView>; treeId: string; lineName: string; quiz: Quiz | null; answered: number | undefined; onAnswer: (a: number) => void;
 }) {
   const s = stop.story;
+  const w = useTimesWords();
   const bio = (p.biography ?? "").trim();
   return (
     <article className={`card journey-card line-${stop.line}`}>
@@ -209,17 +210,17 @@ function StopCard({ stop, p, people, treeId, lineName, quiz, answered, onAnswer 
       {s ? (
         <>
           <p className="times-born" style={{ marginTop: 10 }}>
-            {stop.estimated ? `Anul nașterii nu e trecut; l-am socotit cam cu o generație înaintea copilului: pe la ${stop.year}` : bornLine(p, s)}.
+            {stop.estimated ? `Anul nașterii nu e trecut; l-am socotit cam cu o generație înaintea copilului: pe la ${stop.year}` : bornLine(p, s, w.region)}.
             {s.origin?.guess && <span className="muted"> Locul nu e trecut în fișă; l-am luat după {s.origin.guess}.</span>}
           </p>
           {bio && <p className="journey-bio">{bio.length > 600 ? `${bio.slice(0, 600).trimEnd()}…` : bio}</p>}
-          <div className="era-chip">{s.era.name} · {eraYears(s)}</div>
-          <p className="times-life">{s.life}</p>
+          <div className="era-chip">{w.era(s.era)} · {eraYears(s)}</div>
+          <p className="times-life">{w.life(s)}</p>
           {s.before.length > 0 && (
             <>
               <div className="times-sub">Cu puțin înainte să vină pe lume</div>
               <ul className="times-list">
-                {s.before.map((e) => <li key={`${e.year}${e.text}`}><i style={{ background: toneColor(e.tone) }} title={TONE_LABEL[e.tone]} /><b>{e.to ? `${e.year}–${e.to}` : e.year}</b> {e.text}</li>)}
+                {s.before.map((e) => <li key={e.id}><i style={{ background: toneColor(e.tone) }} title={TONE_LABEL[e.tone]} /><b>{e.to ? `${e.year}–${e.to}` : e.year}</b> {w.event(e)}</li>)}
               </ul>
             </>
           )}
@@ -228,9 +229,9 @@ function StopCard({ stop, p, people, treeId, lineName, quiz, answered, onAnswer 
               <div className="times-sub">Cum i-a atins viața istoria</div>
               <ul className="times-list">
                 {s.lived.map(({ event: e, age, ongoing }) => (
-                  <li key={`${e.year}${e.text}`}>
+                  <li key={e.id}>
                     <i style={{ background: toneColor(e.tone) }} title={TONE_LABEL[e.tone]} />
-                    <b>{e.to ? `${e.year}–${e.to}` : e.year}</b> <span className="muted">({ageWords(age, p.sex, ongoing)})</span> {e.text}
+                    <b>{e.to ? `${e.year}–${e.to}` : e.year}</b> <span className="muted">({ageWords(age, p.sex, ongoing)})</span> {w.event(e)}
                   </li>
                 ))}
               </ul>
@@ -254,8 +255,8 @@ function StopCard({ stop, p, people, treeId, lineName, quiz, answered, onAnswer 
           <b>{quiz.question}</b>
           <div className="quiz-options">
             {quiz.options.map((o, i) => (
-              <button key={o} className={`btn${answered === undefined ? "" : i === quiz.answer ? " right" : i === answered ? " wrong" : ""}`}
-                disabled={answered !== undefined} onClick={() => onAnswer(i)}>{o}</button>
+              <button key={o.id} className={`btn${answered === undefined ? "" : i === quiz.answer ? " right" : i === answered ? " wrong" : ""}`}
+                disabled={answered !== undefined} onClick={() => onAnswer(i)}>{w.event(o)}</button>
             ))}
           </div>
           {answered !== undefined && <p role="status" style={{ margin: "6px 0 0" }}>{answered === quiz.answer ? "Corect: ai câștigat o filă de istorie." : "Nu chiar."} S-a întâmplat în {quiz.year}.</p>}
