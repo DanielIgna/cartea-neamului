@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "use-intl";
 
 /** O înregistrare gata de pus la o amintire: fișierul, cât ține și un link local ca să se poată asculta înainte de salvare. */
 export type Voice = { blob: Blob; seconds: number; url: string; name: string };
@@ -10,8 +11,11 @@ const MAX_BYTES = 4 * 1024 * 1024;
 const extOf = (type: string) => (type.includes("mp4") ? "m4a" : type.includes("ogg") ? "ogg" : "webm");
 export const clock = (s: number | null | undefined) => (s ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "");
 
-/** Încarcă poza sau glasul unei amintiri; fișierul nu intră în album și îl deschide doar cine vede amintirea. */
-export async function uploadForMemory(treeId: string, personId: string, file: Blob, name: string, kind: "photo" | "audio", title: string) {
+/**
+ * Încarcă poza sau glasul unei amintiri; fișierul nu intră în album și îl deschide doar cine vede amintirea.
+ * `failed` e textul arătat când serverul nu spune de ce n-a mers (de pildă când s-a rupt legătura).
+ */
+export async function uploadForMemory(treeId: string, personId: string, file: Blob, name: string, kind: "photo" | "audio", title: string, failed: string) {
   const up = new FormData();
   up.set("personId", personId);
   up.set("kind", kind);
@@ -20,7 +24,7 @@ export async function uploadForMemory(treeId: string, personId: string, file: Bl
   up.set("file", file, name);
   const res = await fetch(`/api/arbore/${treeId}/documente`, { method: "POST", body: up });
   const json = (await res.json().catch(() => ({}))) as { id?: string; error?: string };
-  if (!res.ok || !json.id) return { error: json.error ?? (kind === "audio" ? "Înregistrarea nu s-a încărcat. Încearcă din nou." : "Poza nu s-a încărcat. Încearcă din nou sau salvează fără poză.") };
+  if (!res.ok || !json.id) return { error: json.error ?? failed };
   return { id: json.id };
 }
 
@@ -28,9 +32,11 @@ export async function uploadForMemory(treeId: string, personId: string, file: Bl
  * Glasul din telefon sau din calculator: apeși, povestești, apeși „Gata”; asculți și, dacă vrei, reînregistrezi.
  * Merge și cu un mesaj vocal deja salvat (de pildă de pe WhatsApp), încărcat ca fișier. O înregistrare ține cel mult 5 minute.
  */
-export default function VoiceRecorder({ value, onChange, big = false, maxSeconds = 300, label = "Înregistrează cu glasul" }: {
+export default function VoiceRecorder({ value, onChange, big = false, maxSeconds = 300, label: wanted }: {
   value: Voice | null; onChange: (v: Voice | null) => void; big?: boolean; maxSeconds?: number; label?: string;
 }) {
+  const t = useTranslations("Voice");
+  const label = wanted ?? t("record");
   const [state, setState] = useState<"idle" | "asking" | "recording">("idle");
   const [secs, setSecs] = useState(0);
   const [err, setErr] = useState<string | null>(null);
@@ -47,7 +53,7 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
   const start = async () => {
     setErr(null);
     const ok = typeof window !== "undefined" && typeof MediaRecorder !== "undefined" && !!navigator.mediaDevices?.getUserMedia;
-    if (!ok) return setErr("Browserul acesta nu poate înregistra. Poți încărca un mesaj vocal salvat (de pildă de pe WhatsApp).");
+    if (!ok) return setErr(t("noRecorder"));
     const type = TYPES.find((t) => MediaRecorder.isTypeSupported?.(t)) ?? "";
     setState("asking");
     let stream: MediaStream;
@@ -55,7 +61,7 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
       stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
     } catch {
       setState("idle");
-      return setErr("Nu avem voie la microfon. Apasă pe lacătul de lângă adresa site-ului, permite microfonul și încearcă din nou.");
+      return setErr(t("noMic"));
     }
     const r = new MediaRecorder(stream, { ...(type ? { mimeType: type } : {}), audioBitsPerSecond: 48_000 });
     const chunks: Blob[] = [];
@@ -67,8 +73,8 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
       const blobType = (r.mimeType || type || "audio/webm").split(";")[0];
       const blob = new Blob(chunks, { type: blobType });
       setState("idle");
-      if (blob.size < 500) return setErr("N-am prins nimic. Verifică microfonul și încearcă din nou.");
-      if (blob.size > MAX_BYTES) return setErr("Înregistrarea a ieșit prea mare. Împarte povestea în două amintiri mai scurte.");
+      if (blob.size < 500) return setErr(t("nothing"));
+      if (blob.size > MAX_BYTES) return setErr(t("tooBig"));
       onChange({ blob, seconds, url: URL.createObjectURL(blob), name: `glas-${new Date().toISOString().slice(0, 10)}.${extOf(blobType)}` });
     };
     rec.current = r;
@@ -86,7 +92,7 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
 
   const pick = (f: File) => {
     setErr(null);
-    if (f.size > MAX_BYTES) return setErr("Fișierul e mai mare de 4 MB. Alege o înregistrare mai scurtă.");
+    if (f.size > MAX_BYTES) return setErr(t("fileTooBig"));
     const url = URL.createObjectURL(f);
     const a = new Audio();
     a.preload = "metadata";
@@ -102,23 +108,23 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
         <div className="voice-live" role="status">
           <span className="voice-dot" aria-hidden />
           <span className="voice-clock">{clock(secs) || "0:00"}<small> / {clock(maxSeconds)}</small></span>
-          <button type="button" className="btn primary voice-stop" onClick={stop}>■ Gata</button>
+          <button type="button" className="btn primary voice-stop" onClick={stop}>{t("stop")}</button>
         </div>
       ) : value ? (
         <div className="voice-done">
           <audio controls src={value.url} preload="metadata" />
           {value.seconds > 0 && <span className="muted">{clock(value.seconds)}</span>}
           <span className="voice-tools">
-            <button type="button" className="linklike" onClick={() => { onChange(null); void start(); }}>Înregistrează din nou</button>
-            <button type="button" className="linklike" onClick={() => onChange(null)}>Scoate</button>
+            <button type="button" className="linklike" onClick={() => { onChange(null); void start(); }}>{t("again")}</button>
+            <button type="button" className="linklike" onClick={() => onChange(null)}>{t("remove")}</button>
           </span>
         </div>
       ) : (
         <div className="voice-idle">
           <button type="button" className={big ? "voice-rec" : "btn"} onClick={start} disabled={state === "asking"} aria-label={label}>
-            {big ? <><span className="voice-rec-dot" aria-hidden /><span>{state === "asking" ? "Pornește microfonul…" : label}</span></> : <>● {state === "asking" ? "Pornește microfonul…" : label}</>}
+            {big ? <><span className="voice-rec-dot" aria-hidden /><span>{state === "asking" ? t("starting") : label}</span></> : <>● {state === "asking" ? t("starting") : label}</>}
           </button>
-          <button type="button" className="linklike voice-file" onClick={() => fileRef.current?.click()}>sau încarcă un mesaj vocal</button>
+          <button type="button" className="linklike voice-file" onClick={() => fileRef.current?.click()}>{t("uploadFile")}</button>
           <input ref={fileRef} type="file" accept="audio/*,.opus,.m4a" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) pick(f); }} />
         </div>
       )}

@@ -1,5 +1,6 @@
 import type { Catalog } from "./ro";
 import { deArbore } from "./arbore/de";
+import { deAmintiri } from "./amintiri/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -284,4 +285,6 @@ export const de: Catalog = {
     },
   },
   ...deArbore,
+  // Etapa 3: Lada cu amintiri, întrebările, „la bunici”, povestea și autobiografia.
+  ...deAmintiri,
 };

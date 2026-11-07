@@ -24,10 +24,11 @@ export default async function MapPage({ params, searchParams }: { params: Promis
   if (!tr) notFound();
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const locale = await getLocale();
-  const t = await getT("Map", locale);
+  const [t, tl] = await Promise.all([getT("Map", locale), getT("Lada", locale)]);
   const data = await loadTreeMap(db, id, { userId: me.id, personId: mine?.id ?? null }, {
     locale, born: (y, sex) => t("bornYear", { year: String(y), sex }), died: (y, sex) => t("diedYear", { year: String(y), sex }),
     countryOnly: t("countryOnlyDetail"), pinned: t("pinnedDetail"), pinnedGroup: t("pinnedGroup"),
+    memory: { quoted: (text) => tl("quoted", { text }), voice: tl("untitledVoice"), plain: tl("untitled") },
   });
   // Satele pe care le văd celelalte neamuri țin pasul cu harta (de pildă după ce un loc e mutat pe hartă).
   if (tr.discoverable) await storeSharedPlaces(db, id, data.shared).catch((e) => console.error("Din aceleași locuri", e));

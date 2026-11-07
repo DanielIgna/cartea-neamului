@@ -2,6 +2,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "use-intl";
+import { andList } from "@/lib/questions";
 import { Avatar } from "./Avatar";
 
 export type StoryMemory = {
@@ -16,9 +18,6 @@ export type Slide =
   | { kind: "memory"; chapter: string; m: StoryMemory }
   | { kind: "end"; givenName: string; isOwner: boolean; living: boolean; drafts: number; writeHref: string | null };
 
-const andList = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} și ${xs[xs.length - 1]}`);
-const many = (n: number) => `${n} ${n === 1 ? "amintire" : "amintiri"}`;
-
 /**
  * Povestea unui om, filă cu filă, ca pe telefon: atingi în dreapta pentru mai departe, în stânga pentru înapoi,
  * sau tragi cu degetul; pe calculator merg și săgețile, iar Escape te duce înapoi la profil.
@@ -26,6 +25,8 @@ const many = (n: number) => `${n} ${n === 1 ? "amintire" : "amintiri"}`;
 export default function StoryViewer({ slides, back, title }: { slides: Slide[]; back: string; title: string }) {
   const [i, setI] = useState(0);
   const router = useRouter();
+  const t = useTranslations("Story"), locale = useLocale();
+  const many = (count: number) => t("memories", { count });
   const n = slides.length;
   const go = useCallback((d: number) => setI((x) => Math.min(n - 1, Math.max(0, x + d))), [n]);
   const down = useRef<{ x: number; y: number; t: number } | null>(null);
@@ -54,13 +55,13 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
 
   const s = slides[i];
   return (
-    <div className="story" role="dialog" aria-modal="true" aria-label={`Povestea: ${title}`}>
+    <div className="story" role="dialog" aria-modal="true" aria-label={t("aria", { name: title })}>
       <div className="story-frame" onPointerDown={(e) => { down.current = { x: e.clientX, y: e.clientY, t: Date.now() }; }} onPointerUp={onUp} onPointerCancel={() => { down.current = null; }}>
         <div className="story-bars" aria-hidden>
           {n > 30 ? <span className="one"><i style={{ width: `${((i + 1) / n) * 100}%` }} /></span>
             : slides.map((_, k) => <span key={k} className={k <= i ? "done" : ""} />)}
         </div>
-        <div className="story-top"><span>{title}</span><Link href={back} aria-label="Închide povestea">×</Link></div>
+        <div className="story-top"><span>{title}</span><Link href={back} aria-label={t("close")}>×</Link></div>
         <div className="story-slide" key={i} aria-live="polite">
           {s.kind === "cover" && (
             <div className="story-cover">
@@ -68,8 +69,8 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
               <Avatar p={s.who} size={132} />
               <h1>{s.name}</h1>
               {s.dates && <div className="story-dates">{s.dates}</div>}
-              <p>{s.count ? many(s.count) : "Încă nicio amintire de răsfoit."}</p>
-              {n > 2 && <small className="story-hint">Atinge în dreapta pentru mai departe, în stânga pentru înapoi.</small>}
+              <p>{s.count ? many(s.count) : t("empty")}</p>
+              {n > 2 && <small className="story-hint">{t("hint")}</small>}
             </div>
           )}
           {s.kind === "chapter" && (
@@ -84,35 +85,35 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
               <div className="story-kicker">{s.chapter}</div>
               {s.m.photoId && <img className="photo" src={`/api/document/${s.m.photoId}`} alt="" draggable={false} />}
               {s.m.title && <h3>{s.m.title}</h3>}
-              {s.m.question && <p className="q">„{s.m.question}”</p>}
+              {s.m.question && <p className="q">{t("quoted", { text: s.m.question })}</p>}
               {s.m.audioId && <audio className="story-audio" controls preload="none" src={`/api/document/${s.m.audioId}`} />}
               {s.m.body && <p className="body">{s.m.body}</p>}
               {s.m.when && <div className="meta">{s.m.when}</div>}
-              {s.m.mentions.length > 0 && <div className="meta">Cu {andList(s.m.mentions)}</div>}
-              {s.m.from && <div className="meta">Scrisă de {s.m.from}</div>}
-              {s.m.recordedBy && <div className="meta">Înregistrată de {s.m.recordedBy}, „la bunici”</div>}
-              {s.m.replies > 0 && <Link className="story-replies" href={`${back}#amintire-${s.m.id}`}>{s.m.replies === 1 ? "Încă cineva își amintește" : `Încă ${s.m.replies} își amintesc`} ›</Link>}
+              {s.m.mentions.length > 0 && <div className="meta">{t("with", { names: andList(s.m.mentions, locale) })}</div>}
+              {s.m.from && <div className="meta">{t("writtenBy", { name: s.m.from })}</div>}
+              {s.m.recordedBy && <div className="meta">{t("recordedBy", { name: s.m.recordedBy })}</div>}
+              {s.m.replies > 0 && <Link className="story-replies" href={`${back}#amintire-${s.m.id}`}>{t("replies", { count: s.m.replies })} ›</Link>}
             </article>
           )}
           {s.kind === "end" && (
             <div className="story-end">
-              <div className="story-kicker">Deocamdată, atât</div>
-              <h2>{s.isOwner ? "Mai ai ceva de povestit?" : s.living ? `Ce ai vrea să mai afli de la ${s.givenName}?` : `Îți amintești și tu ceva despre ${s.givenName}?`}</h2>
+              <div className="story-kicker">{t("endKicker")}</div>
+              <h2>{s.isOwner ? t("endOwner") : s.living ? t("endLiving", { name: s.givenName }) : t("endDeceased", { name: s.givenName })}</h2>
               <div className="actions" style={{ justifyContent: "center" }}>
-                {s.isOwner && <Link className="btn primary" href={`${back}#lada`}>Scrie încă o amintire</Link>}
-                {!s.isOwner && s.living && <Link className="btn primary" href={`${back}#lada`}>Lasă-i o întrebare</Link>}
-                {!s.isOwner && !s.living && s.writeHref && <Link className="btn primary" href={s.writeHref}>Scrie o amintire cu {s.givenName}</Link>}
-                <button className="btn" onClick={() => setI(0)}>De la început</button>
-                <Link className="btn" href={back}>Înapoi la profil</Link>
+                {s.isOwner && <Link className="btn primary" href={`${back}#lada`}>{t("writeMore")}</Link>}
+                {!s.isOwner && s.living && <Link className="btn primary" href={`${back}#lada`}>{t("leaveQuestion")}</Link>}
+                {!s.isOwner && !s.living && s.writeHref && <Link className="btn primary" href={s.writeHref}>{t("writeWith", { name: s.givenName })}</Link>}
+                <button className="btn" onClick={() => setI(0)}>{t("restart")}</button>
+                <Link className="btn" href={back}>{t("backToProfile")}</Link>
               </div>
-              {s.isOwner && s.drafts > 0 && <small>Ciornele tale ({s.drafts}) nu apar în poveste.</small>}
+              {s.isOwner && s.drafts > 0 && <small>{t("drafts", { count: String(s.drafts) })}</small>}
             </div>
           )}
         </div>
         <div className="story-nav">
-          <button onClick={() => go(-1)} disabled={i === 0} aria-label="Înapoi">‹</button>
+          <button onClick={() => go(-1)} disabled={i === 0} aria-label={t("prev")}>‹</button>
           <span>{i + 1} / {n}</span>
-          <button onClick={() => go(1)} disabled={i === n - 1} aria-label="Mai departe">›</button>
+          <button onClick={() => go(1)} disabled={i === n - 1} aria-label={t("next")}>›</button>
         </div>
       </div>
     </div>

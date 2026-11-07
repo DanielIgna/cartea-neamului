@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useTranslations } from "use-intl";
 import type { Verse } from "@/lib/autobiografie";
 import type { Chapter } from "@/lib/questions";
 import type { MemoryView } from "@/lib/lada-db";
@@ -30,6 +31,7 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
   people: PersonOption[]; storage: boolean; defaultDegree: number; verse: Verse; faithConsent: boolean;
 }) {
   const router = useRouter();
+  const t = useTranslations("Auto");
   const keys = new Set(chapters.flatMap((c) => c.questions.map((q) => q.key)));
   // Răspunsul la o întrebare a cărții: cel mai nou, dacă a răspuns de două ori.
   const answers = new Map<string, MemoryView>();
@@ -59,10 +61,10 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
       {m.title && <b>{m.title}</b>}
       {m.body && <p>{excerpt(m.body)}</p>}
       <div className="auto-a-meta">
-        {m.audioId && <span className="chip">spusă cu glasul{m.audioSeconds ? `, ${clock(m.audioSeconds)}` : ""}</span>}
-        {m.photoId && <span className="chip">cu poză</span>}
-        {m.visibility === "private" && <span className="chip priv">ciornă: doar tu o vezi</span>}
-        <button className="linklike" onClick={() => start({ at, edit: m })}>Schimbă</button>
+        {m.audioId && <span className="chip">{m.audioSeconds ? t("voicedTime", { time: clock(m.audioSeconds) }) : t("voiced")}</span>}
+        {m.photoId && <span className="chip">{t("withPhoto")}</span>}
+        {m.visibility === "private" && <span className="chip priv">{t("draft")}</span>}
+        <button className="linklike" onClick={() => start({ at, edit: m })}>{t("change")}</button>
       </div>
     </div>
   );
@@ -70,18 +72,17 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
   return (
     <div className="stack auto">
       <div className="card auto-head">
-        <Link href={`/arbore/${treeId}/persoana/${owner.id}#lada`} style={{ fontSize: 14 }}>← Înapoi la profilul tău</Link>
-        <div className="section-label">Autobiografia ta</div>
-        <h2>Povestea vieții tale, scrisă de tine</h2>
-        <p>Cartea te ia de mână, capitol cu capitol. Răspunde la ce vrei și în ce ordine vrei, scris sau cu glasul. Fiecare răspuns intră în lada ta cu amintiri,
-          iar tu alegi cine îl vede. La sfârșit ai totul ca pe o carte, gata de tipărit.</p>
-        <blockquote className="auto-verse">„{verse.text}” <cite>{verse.ref}</cite></blockquote>
-        <div className="auto-progress" aria-label={`Ai răspuns la ${written} din ${total} întrebări`}>
+        <Link href={`/arbore/${treeId}/persoana/${owner.id}#lada`} style={{ fontSize: 14 }}>{t("back")}</Link>
+        <div className="section-label">{t("label")}</div>
+        <h2>{t("title")}</h2>
+        <p>{t("lead")}</p>
+        <blockquote className="auto-verse">{t("quoted", { text: verse.text })} <cite>{verse.ref}</cite></blockquote>
+        <div className="auto-progress" aria-label={t("progress", { done: String(written), total })}>
           <span style={{ width: `${total ? Math.round((written / total) * 100) : 0}%` }} />
         </div>
         <div className="actions" style={{ alignItems: "center" }}>
-          <span className="muted">{written ? `Ai răspuns la ${written} din ${total} întrebări.` : `${total} întrebări te așteaptă. Începe cu oricare.`}</span>
-          <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie/carte`} style={{ marginLeft: "auto" }}>Vezi cartea</Link>
+          <span className="muted">{written ? t("progress", { done: String(written), total }) : t("waiting", { total })}</span>
+          <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie/carte`} style={{ marginLeft: "auto" }}>{t("seeBook")}</Link>
         </div>
         {msg && <p className="notice" role="status" style={{ margin: "10px 0 0" }}>{msg}</p>}
       </div>
@@ -96,15 +97,15 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
             <button className="auto-ch-head" aria-expanded={isOpen} onClick={() => toggle(c.key)}>
               <span className="auto-ch-n">{ci + 1}</span>
               <span className="auto-ch-t">{c.title}</span>
-              <small className={done[ci] === c.questions.length && c.questions.length ? "auto-full" : ""}>{done[ci]} din {c.questions.length}{free.length ? ` · încă ${free.length}` : ""}</small>
+              <small className={done[ci] === c.questions.length && c.questions.length ? "auto-full" : ""}>{free.length
+                ? t("chapterMore", { done: String(done[ci]), total: String(c.questions.length), more: String(free.length) }) : t("chapterCount", { done: String(done[ci]), total: String(c.questions.length) })}</small>
             </button>
             {isOpen && (
               <div className="auto-ch-body">
                 <p className="auto-intro">{c.intro}</p>
-                {c.verse && <blockquote className="auto-verse">„{c.verse.text}” <cite>{c.verse.ref}</cite></blockquote>}
+                {c.verse && <blockquote className="auto-verse">{t("quoted", { text: c.verse.text })} <cite>{c.verse.ref}</cite></blockquote>}
                 {c.key === "credinta" && !faithConsent && (
-                  <p className="faith-note">Ce scrii aici despre credința ta e ocrotit mai strict de lege. Îl păstrăm doar cu acordul tău, pe care ți-l cerem
-                    la primul răspuns, și îl vede doar cine alegi tu. Îți poți retrage acordul oricând, din <Link href="/datele-mele">Datele mele</Link>.</p>
+                  <p className="faith-note">{t.rich("faithNote", { link: (x) => <Link href="/datele-mele">{x}</Link> })}</p>
                 )}
                 <ol className="auto-qs">
                   {shown.map((q) => {
@@ -113,18 +114,18 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
                       <li key={q.key} className={m ? "done" : ""}>
                         <p className="auto-q">{q.text}</p>
                         {m ? (writing?.at === q.key ? null : answer(m, q.key))
-                          : writing?.at !== q.key && <button className="btn" onClick={() => start({ at: q.key, draft: { question: q.text, questionKey: q.key, chapter: c.key, mentions: q.mentions } })}>Răspunde</button>}
+                          : writing?.at !== q.key && <button className="btn" onClick={() => start({ at: q.key, draft: { question: q.text, questionKey: q.key, chapter: c.key, mentions: q.mentions } })}>{t("answer")}</button>}
                         {form(q.key)}
                       </li>
                     );
                   })}
                 </ol>
                 {!all.has(c.key) && shown.length < c.questions.length && (
-                  <button className="linklike" onClick={() => setAll(new Set(all).add(c.key))}>Încă {c.questions.length - shown.length} întrebări în acest capitol</button>
+                  <button className="linklike" onClick={() => setAll(new Set(all).add(c.key))}>{t("moreQuestions", { count: c.questions.length - shown.length })}</button>
                 )}
                 {free.length > 0 && (
                   <>
-                    <div className="section-label">Ai mai scris aici</div>
+                    <div className="section-label">{t("alsoWrote")}</div>
                     <ul className="auto-qs auto-free">
                       {free.map((m) => (
                         <li key={m.id} className="done">
@@ -137,7 +138,7 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
                   </>
                 )}
                 <div className="actions">
-                  {writing?.at !== `ch-${c.key}` && <button className="btn" onClick={() => start({ at: `ch-${c.key}`, draft: { chapter: c.key } })}>Scrie altceva în acest capitol</button>}
+                  {writing?.at !== `ch-${c.key}` && <button className="btn" onClick={() => start({ at: `ch-${c.key}`, draft: { chapter: c.key } })}>{t("writeElse")}</button>}
                 </div>
                 {form(`ch-${c.key}`)}
               </div>

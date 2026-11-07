@@ -9,6 +9,8 @@ import { loadLada, type MemoryView } from "@/lib/lada-db";
 import { CHAPTERS } from "@/lib/questions";
 import { lifeDates } from "@/lib/person-text";
 import StoryViewer, { type Slide, type StoryMemory } from "@/components/StoryViewer";
+import PageIntl from "@/i18n/PageIntl";
+import { getLocale, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -23,7 +25,9 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   if (!UUID.test(id) || !UUID.test(pid)) notFound();
   const me = await requireUser(`/arbore/${id}/persoana/${pid}/poveste`);
   if (!(await roleIn(db, id, me.id))) notFound();
-  const data = await loadTreeView(db, id, undefined, 1);
+  const locale = await getLocale();
+  const [t, tl] = await Promise.all([getT("Story", locale), getT("Lada", locale)]);
+  const data = await loadTreeView(db, id, undefined, 1, locale);
   const p = data?.people[pid];
   if (!data || !p) notFound();
   const g = buildGraph(Object.values(data.people), data.rels);
@@ -39,21 +43,22 @@ export default async function StoryPage({ params }: { params: Promise<{ id: stri
   const own = lada.own.filter((m) => m.visibility !== "private");
   const about = lada.about.filter((m) => !m.mentions.some((x) => x.personId === pid && x.hidden)).sort(order);
 
-  const slides: Slide[] = [{ kind: "cover", name: p.name, dates: lifeDates(p), who: { givenName: p.givenName, surname: p.surname, photoId: p.photoId, accountImage: p.accountImage ?? null }, count: own.length + about.length,
-    kicker: p.living || own.length ? "Lada cu amintiri" : "Amintirile familiei" }];
+  const slides: Slide[] = [{ kind: "cover", name: p.name, dates: lifeDates(p, locale), who: { givenName: p.givenName, surname: p.surname, photoId: p.photoId, accountImage: p.accountImage ?? null }, count: own.length + about.length,
+    kicker: p.living || own.length ? t("kickerLada") : t("kickerFamily") }];
   let n = 0;
   for (const c of CHAPTERS) {
     const items = own.filter((m) => m.chapter === c.key).sort(order);
     if (!items.length) continue;
-    slides.push({ kind: "chapter", label: c.label, kicker: `Capitolul ${++n}`, count: items.length });
-    for (const m of items) slides.push({ kind: "memory", chapter: c.label, m: story(m, false) });
+    const label = tl(`chapters.${c.key}`);
+    slides.push({ kind: "chapter", label, kicker: t("chapterN", { n: String(++n) }), count: items.length });
+    for (const m of items) slides.push({ kind: "memory", chapter: label, m: story(m, false) });
   }
   if (about.length) {
-    slides.push({ kind: "chapter", label: `Cum ${p.sex === "F" ? "și-o" : "și-l"} amintesc ceilalți`, kicker: "Din lăzile celorlalți", count: about.length });
-    for (const m of about) slides.push({ kind: "memory", chapter: "Din lăzile celorlalți", m: story(m, true) });
+    slides.push({ kind: "chapter", label: t("othersRemember", { sex: p.sex === "F" ? "F" : "M" }), kicker: t("fromOthers"), count: about.length });
+    for (const m of about) slides.push({ kind: "memory", chapter: t("fromOthers"), m: story(m, true) });
   }
   slides.push({ kind: "end", givenName: p.givenName, isOwner: lada.isOwner, living: p.living, drafts: lada.own.length - own.length,
     writeHref: mine && mine.id !== pid ? `/arbore/${id}/persoana/${mine.id}?scrie=${pid}#lada` : null });
 
-  return <StoryViewer slides={slides} back={`/arbore/${id}/persoana/${pid}`} title={p.name} />;
+  return <PageIntl ns={["Story"]}><StoryViewer slides={slides} back={`/arbore/${id}/persoana/${pid}`} title={p.name} /></PageIntl>;
 }

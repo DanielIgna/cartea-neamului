@@ -30,6 +30,8 @@ export type TreeMap = {
 export type MapWords = {
   locale: Locale; born: (year: number, sex: MapPerson["sex"]) => string; died: (year: number, sex: MapPerson["sex"]) => string;
   countryOnly: string; pinned: string; pinnedGroup: string;
+  /** Titlul unei amintiri fără titlu: întrebarea, între ghilimelele limbii, sau „Amintire (spusă cu glasul)”. */
+  memory: { quoted: (text: string) => string; voice: string; plain: string };
 };
 
 /**
@@ -74,7 +76,7 @@ export async function loadTreeMap(db: Db, treeId: string, viewer?: Viewer, words
       marks.push({ pid: p.id, key, kind });
     }
   }
-  const memories = viewer ? await placedMemories(db, treeId, viewer) : [];
+  const memories = viewer ? await placedMemories(db, treeId, viewer, words?.memory) : [];
   const memMarks: { key: string; m: PlaceMemory }[] = [];
   for (const m of memories) {
     const key = placeKey(m.place, null);
