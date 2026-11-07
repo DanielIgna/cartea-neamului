@@ -51,7 +51,7 @@ async function placeLink(db: Db, treeId: string, a: string, b: string) {
     or(and(eq(placeContact.fromUserId, a), eq(placeContact.toUserId, b)), and(eq(placeContact.fromUserId, b), eq(placeContact.toUserId, a)))));
   if (!c) return null;
   if (c.status !== "accepted") {
-    return { ok: false as const, reason: c.status === "pending" ? "Cererea de legătură așteaptă încă răspunsul." : "Legătura dintre neamurile voastre s-a încheiat." };
+    return c.status === "pending" ? { ok: false as const, code: "pending" as const, reason: "Cererea de legătură așteaptă încă răspunsul." } : { ok: false as const, code: "ended" as const, reason: "Legătura dintre neamurile voastre s-a încheiat." };
   }
   const [other] = await db.select({ name: user.name }).from(user).where(eq(user.id, b));
   const [t] = await db.select({ name: tree.name }).from(tree).where(eq(tree.id, c.fromUserId === a ? c.toTreeId : c.fromTreeId));
@@ -62,10 +62,10 @@ async function placeLink(db: Db, treeId: string, a: string, b: string) {
 
 async function canMessageKin(db: Db, treeId: string, fromId: string, toId: string) {
   const { contacts, mePersonId, limit } = await chatContacts(db, treeId, fromId);
-  if (!mePersonId) return { ok: false as const, reason: "Revendică-ți întâi fișa din arbore, ca rudele să știe cine scrie." };
+  if (!mePersonId) return { ok: false as const, code: "claimFirst" as const, reason: "Revendică-ți întâi fișa din arbore, ca rudele să știe cine scrie." };
   const c = contacts.find((x) => x.userId === toId);
-  if (!c) return { ok: false as const, reason: "Persoana nu e în arbore sau nu și-a revendicat încă fișa." };
-  if (!c.allowed) return { ok: false as const, reason: `În acest arbore, mesajele merg doar între rude până la gradul ${limit}.` };
+  if (!c) return { ok: false as const, code: "notInTree" as const, reason: "Persoana nu e în arbore sau nu și-a revendicat încă fișa." };
+  if (!c.allowed) return { ok: false as const, code: "beyondLimit" as const, limit, reason: `În acest arbore, mesajele merg doar între rude până la gradul ${limit}.` };
   return { ok: true as const, contact: c };
 }
 

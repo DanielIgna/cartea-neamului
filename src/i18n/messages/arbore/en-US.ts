@@ -12,6 +12,9 @@ export const enUSArbore: DeepPartial<ArboreCatalog> = {
     putInCentre: "Put in the center",
     unclaimedText: "Send {name} a link. Once {sex, select, M {he has} F {she has} other {they have}} an account, {sex, select, M {he goes} F {she goes} other {they go}} straight into the tree with {sex, select, M {his} F {her} other {their}} own profile in the center, and can carry on the tree with {sex, select, M {his} F {her} other {their}} own family.",
   },
+  Profile: {
+    back: "← Back to the tree, with {name} in the center",
+  },
   PersonForm: {
     surname: "Last name",
     birthPlaceholder: "03/12/1985, 1902 or c. 1870",

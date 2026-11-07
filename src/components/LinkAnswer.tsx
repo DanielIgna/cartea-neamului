@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "use-intl";
 import { answerLink } from "@/app/harta-actions";
 import { answerJoinRequest } from "@/app/join-actions";
 
@@ -10,6 +11,7 @@ import { answerJoinRequest } from "@/app/join-actions";
  */
 export default function LinkAnswer({ id, mode, kind = "place" }: { id: string; mode: "ask" | "end" | "undo"; kind?: "place" | "join" }) {
   const router = useRouter();
+  const t = useTranslations("Chat");
   const [busy, setBusy] = useState(false);
   const [sure, setSure] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -22,13 +24,13 @@ export default function LinkAnswer({ id, mode, kind = "place" }: { id: string; m
   return (
     <span className="actions" style={{ margin: 0, alignItems: "center" }}>
       {mode === "ask" && <>
-        <button className="btn primary" disabled={busy} onClick={() => answer(true)}>Acceptă</button>
-        <button className="btn" disabled={busy} onClick={() => answer(false)}>Refuză</button>
+        <button className="btn primary" disabled={busy} onClick={() => answer(true)}>{t("accept")}</button>
+        <button className="btn" disabled={busy} onClick={() => answer(false)}>{t("refuse")}</button>
       </>}
-      {mode === "undo" && <button className="btn" disabled={busy} onClick={() => answer(true)}>Acceptă totuși</button>}
+      {mode === "undo" && <button className="btn" disabled={busy} onClick={() => answer(true)}>{t("acceptAnyway")}</button>}
       {mode === "end" && (sure
-        ? <><small>Nu vă veți mai putea scrie.</small><button className="btn" disabled={busy} onClick={() => answer(false)}>Da, încheie</button><button className="btn" onClick={() => setSure(false)}>Nu</button></>
-        : <button className="linklike" style={{ fontSize: 13 }} onClick={() => setSure(true)}>Încheie legătura</button>)}
+        ? <><small>{t("endWarn")}</small><button className="btn" disabled={busy} onClick={() => answer(false)}>{t("yesEnd")}</button><button className="btn" onClick={() => setSure(false)}>{t("no")}</button></>
+        : <button className="linklike" style={{ fontSize: 13 }} onClick={() => setSure(true)}>{t("endLink")}</button>)}
       {err && <small className="err">{err}</small>}
     </span>
   );

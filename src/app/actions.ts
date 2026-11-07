@@ -18,7 +18,8 @@ import { mergeInto } from "@/lib/merge";
 import { after } from "next/server";
 import { refreshTreePlaces } from "@/lib/shared-places";
 import { setRaised } from "@/lib/raised";
-import { getT } from "@/i18n/server";
+import { getLocale, getT } from "@/i18n/server";
+import { degreeWord } from "@/lib/kin-words";
 import { isPlaceholder } from "@/lib/family";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
@@ -343,7 +344,10 @@ export async function sendMessage(_: unknown, form: FormData) {
   const me = await currentUser();
   if (!me) return { error: te("signIn") };
   const ok = await canMessage(db, v.treeId, me.id, v.to);
-  if (!ok.ok) return { error: ok.reason };
+  if (!ok.ok) {
+    const [tc, locale] = await Promise.all([getT("Chat"), getLocale()]);
+    return { error: ok.code === "beyondLimit" ? tc("reasons.beyondLimit", { degree: degreeWord(ok.limit, locale) }) : tc(`reasons.${ok.code}`) };
+  }
   await db.insert(message).values({ treeId: v.treeId, fromUserId: me.id, toUserId: v.to, body: v.body });
   revalidatePath(`/mesaje/${v.treeId}/${v.to}`);
   return { ok: true, sentAt: Date.now() };
