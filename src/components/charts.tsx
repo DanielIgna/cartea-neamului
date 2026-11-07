@@ -1,4 +1,5 @@
 "use client";
+import { useLocale, useTranslations } from "use-intl";
 import type { PersonView } from "@/lib/tree-data";
 import type { DescNode } from "@/lib/family";
 import { clip, lifeDates, years } from "@/lib/person-text";
@@ -21,6 +22,7 @@ const keyAct = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "
  * Cu o singură spiță, neamul acelui părinte umple tot evantaiul: el e primul inel, părinții lui al doilea, și tot așa.
  */
 export function FanChart({ slots, selected, onSelect, onCenter, generations = 4, side }: Props) {
+  const t = useTranslations("Charts"), locale = useLocale();
   const R = fanRadii(generations), maxR = R[generations + 1];
   const cx = maxR + 20, cy = maxR + 10, A0 = -210, SPAN = 240;
   const W = 2 * cx, H = cy + maxR * 0.5 + 20;
@@ -44,7 +46,7 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4,
       const rot = radial ? (left ? mid + 180 : mid) : w <= 2 ? mid + 90 : left ? mid + 180 : mid;
       const fs = w <= 2 ? 13 : w === 3 ? 11 : w === 4 ? 10 : w <= 6 ? 9 : 8;
       let label;
-      if (!p) label = <tspan x={tx} dy={4} fill="var(--muted)">{radial ? "+" : "+ adaugă"}</tspan>;
+      if (!p) label = <tspan x={tx} dy={4} fill="var(--muted)">{radial ? "+" : `+ ${t("add")}`}</tspan>;
       else if (radial) label = (
         <>
           <tspan x={tx} dy={w >= 7 ? 3 : -2} fontWeight={700}>{p.givenName}</tspan>
@@ -55,13 +57,13 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4,
         <>
           <tspan x={tx} dy={w <= 2 ? -8 : -6} fontWeight={700}>{w >= 3 ? p.givenName : p.name}</tspan>
           {w >= 3 && <tspan x={tx} dy={11} fontWeight={700}>{p.surname}</tspan>}
-          <tspan x={tx} dy={w <= 2 ? 16 : 12} fill="var(--muted)">{w <= 2 ? lifeDates(p) : years(p)}</tspan>
+          <tspan x={tx} dy={w <= 2 ? 16 : 12} fill="var(--muted)">{w <= 2 ? lifeDates(p, locale) : years(p, locale)}</tspan>
         </>
       );
       sectors.push(
-        <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber, adaugă persoana"}
+        <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : t("emptyAdd")}
           onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
-          <title>{p ? `${p.name} ${lifeDates(p)}` : "Loc liber: adaugă persoana"}</title>
+          <title>{p ? `${p.name} ${lifeDates(p, locale)}` : t("emptyAdd")}</title>
           <path d={arc(R[g], R[g + 1], a1, a2, cx, cy)} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeWidth={g >= 6 ? 0.8 : 1.2} strokeDasharray={p ? undefined : "4 4"} />
           <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={fs}>{label}</text>
         </g>,
@@ -69,7 +71,7 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4,
     }
   }
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arbore în evantai" style={generations >= 7 ? { width: W, maxWidth: "none", display: "block", margin: "0 auto" } : { width: "100%", maxWidth: 760, display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("fanLabel")} style={generations >= 7 ? { width: W, maxWidth: "none", display: "block", margin: "0 auto" } : { width: "100%", maxWidth: 760, display: "block", margin: "0 auto" }}>
       {sectors}
       {center && (
         <g className={`sector${selected === 1 ? " sel" : ""}`} tabIndex={0} role="button" aria-label={center.name} onClick={() => onSelect(1)} onKeyDown={keyAct(() => onSelect(1))}>
@@ -77,7 +79,7 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4,
           <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--ink)" fontSize={15} fontWeight={700} style={{ fontFamily: "var(--display)" }}>
             <tspan x={cx}>{center.givenName}</tspan><tspan x={cx} dy={17}>{center.surname}</tspan>
           </text>
-          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{lifeDates(center)}</text>
+          <text x={cx} y={cy + 32} textAnchor="middle" fill="var(--muted)" fontSize={12}>{lifeDates(center, locale)}</text>
         </g>
       )}
     </svg>
@@ -89,6 +91,7 @@ export function FanChart({ slots, selected, onSelect, onCenter, generations = 4,
  * Cu o singură spiță, celălalt părinte și neamul lui nu se desenează deloc.
  */
 export function ClassicTree({ slots, selected, onSelect, onCenter, generations = 4, side }: Props) {
+  const t = useTranslations("Charts"), locale = useLocale();
   const colW = 176, bw = 160, bh = 38, rowH = 44;
   const visible = (n: number) => onSide(n, side) && genOf(n) <= generations && (n === 1 || !!slots[n] || !!slots[Math.floor(n / 2)]);
   const pos: Record<number, { x: number; y: number }> = {};
@@ -103,7 +106,7 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
   const all = Object.keys(pos).map(Number);
   const H = rowH * row + 40, W = (Math.max(...all.map(genOf)) + 1) * colW + 10;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Arbore clasic" style={{ width: W, maxWidth: "none", display: "block" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("classicLabel")} style={{ width: W, maxWidth: "none", display: "block" }}>
       {all.filter((n) => n > 1).map((n) => {
         const a = pos[Math.floor(n / 2)], b = pos[n], mx = a.x + bw + (colW - bw) / 2;
         return <path key={`l${n}`} d={`M${a.x + bw} ${a.y}H${mx}V${b.y}H${b.x}`} fill="none" stroke="var(--line)" strokeWidth={1.2} />;
@@ -111,15 +114,15 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
       {all.map((n) => {
         const p = slots[n], { x, y } = pos[n];
         return (
-          <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : "Loc liber"}
+          <g key={n} className={`sector${selected === n ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p ? p.name : t("empty")}
             onClick={() => onSelect(n)} onDoubleClick={() => p && onCenter(p.id)} onKeyDown={keyAct(() => onSelect(n))}>
             <rect x={x} y={y - bh / 2} width={bw} height={bh} rx={6} fill={p ? fillFor(n) : "var(--surface)"} stroke={p ? "var(--line)" : "var(--muted)"} strokeDasharray={p ? undefined : "4 4"} />
             {p ? (
               <>
                 <text x={x + 10} y={y - 3} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 22)}</text>
-                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(/\d\.\d/.test(lifeDates(p)) ? lifeDates(p) : [years(p), p.birthPlace].filter(Boolean).join(" · "), 26)}</text>
+                <text x={x + 10} y={y + 12} fill="var(--muted)" fontSize={11}>{clip(/\d[./-] ?\d/.test(lifeDates(p, locale)) ? lifeDates(p, locale) : [years(p, locale), p.birthPlace].filter(Boolean).join(" · "), 26)}</text>
               </>
-            ) : <text x={x + 10} y={y + 4} fill="var(--muted)" fontSize={12}>+ adaugă</text>}
+            ) : <text x={x + 10} y={y + 4} fill="var(--muted)" fontSize={12}>+ {t("add")}</text>}
           </g>
         );
       })}
@@ -134,6 +137,7 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
 export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter }: {
   root: DescNode; people: Record<string, PersonView>; selectedId: string | null; onSelectPerson: (id: string) => void; onCenter: (id: string) => void;
 }) {
+  const t = useTranslations("Charts"), locale = useLocale();
   const bw = 150, bh = 40, gapX = 16, rowH = 96, partnerW = 150;
   const shown = (d: DescNode) => d.partners.filter((id) => people[id]);
   // Întâi copiii fără celălalt părinte desenat (sub persoană), apoi cei din fiecare căsătorie, în ordine: liniile nu se mai încrucișează.
@@ -158,7 +162,7 @@ export function DescendantsChart({ root, people, selectedId, onSelectPerson, onC
   lay(root, 10, 0);
   const W = widthOf(root) + 20, H = Math.max(...boxes.map((b) => b.y)) + bh + 30;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Descendenți" style={{ width: Math.max(W, 320), maxWidth: "none", display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("descLabel")} style={{ width: Math.max(W, 320), maxWidth: "none", display: "block", margin: "0 auto" }}>
       {boxes.filter((b) => b.parent).map((b) => {
         // Copiii din altă relație au linia lor, puțin mai sus și mai subțire, separată de cea a copiilor cuplului.
         const mid = b.y - (rowH - bh) / 2 - (b.apart ? 8 : 0);
@@ -176,7 +180,7 @@ export function DescendantsChart({ root, people, selectedId, onSelectPerson, onC
             <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6}
               fill={isRoot ? "var(--accent-soft)" : b.partnerOf ? "var(--surface)" : "var(--desc)"} stroke={isRoot ? "var(--accent)" : "var(--line)"} strokeDasharray={b.partnerOf ? "4 3" : undefined} />
             <text x={b.x + 9} y={b.y + 17} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 20)}</text>
-            <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{lifeDates(p)}</text>
+            <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{lifeDates(p, locale)}</text>
           </g>
         );
       })}

@@ -2,9 +2,10 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from "react";
 import type { PersonView } from "@/lib/tree-data";
 import { layout360, project, type Seed, yawFacing, angleDiff, ROW_H, type Cam, type Node3 } from "@/lib/tree360";
-import { ageWords, storyFor, type Origin } from "@/lib/vremuri";
-import { bornLine, eraYears, toneColor, TONE_LABEL } from "./TimesStory";
-import { clip } from "@/lib/person-text";
+import { useLocale, useTranslations } from "use-intl";
+import { storyFor, type Origin } from "@/lib/vremuri";
+import { toneColor, useTimesWords } from "./TimesStory";
+import { clip, DATE_WORDS } from "@/lib/person-text";
 
 const PITCH = -0.38; // privit puțin de sus
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
@@ -21,6 +22,7 @@ type Props = {
  * lumea în care s-a născut, după ținutul lui, și ce a trăit.
  */
 export default function Tree360({ seeds, links = [], people, selectedId, egoPath, onSelectPerson, onCenter, originOf }: Props) {
+  const t = useTranslations("Charts"), tp = useTranslations("Person"), tt = useTranslations("Times"), w = useTimesWords(), locale = useLocale();
   const lay = useMemo(() => layout360(seeds), [seeds]);
   const root = seeds[0].node;
   // Pe telefon desenul stă în picioare, ca să încapă un copac înalt.
@@ -182,13 +184,13 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
       el: (
         <g key={`n${n.id}`} className="n360" transform={`translate(${q.x},${q.y})`} opacity={op} onClick={() => { if (!dragged.current) onSelectPerson(n.id); }}
           onDoubleClick={() => onCenter(n.id)} role="button" aria-label={p.name}>
-          <title>{`${p.name}${p.birthYear ? `, n. ${p.approx ? "cca. " : ""}${p.birthYear}` : ""}`}</title>
+          <title>{p.birthYear ? `${p.name}, ${tp("bornYear", { year: `${p.approx ? DATE_WORDS[locale].approx : ""}${p.birthYear}`, sex: p.sex })}` : p.name}</title>
           <circle r={r} fill={fill} stroke={sel ? "var(--accent)" : "var(--leaf-edge)"} strokeWidth={sel ? 3.2 : 1.4} />
           <text textAnchor="middle" dy="0.35em" fontSize={r * 0.85} fontWeight={700} fill="var(--ink)">{initials(p)}</text>
           {label && (
             <text className="n360-label" textAnchor="middle" y={r + fs + 1} fontSize={fs}>
               <tspan fontWeight={sel ? 700 : 600}>{clip(p.givenName || p.name, 16)}</tspan>
-              {p.birthYear !== null && <tspan x={0} dy={fs * 1.1} fontSize={fs * 0.82} fill="var(--muted)">{p.approx ? "cca. " : ""}{p.birthYear}{p.deathYear ? `–${p.deathYear}` : ""}</tspan>}
+              {p.birthYear !== null && <tspan x={0} dy={fs * 1.1} fontSize={fs * 0.82} fill="var(--muted)">{p.approx ? DATE_WORDS[locale].approx : ""}{p.birthYear}{p.deathYear ? `–${p.deathYear}` : ""}</tspan>}
             </text>
           )}
         </g>
@@ -207,19 +209,19 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
     <div className="t360" ref={wrap}>
       <div className="t360-tools">
         <button className="btn primary" onClick={() => (story === null ? goStep(0) : stopStory())} disabled={!steps.length}>
-          {story === null ? "▶ Povestea neamului" : "Oprește povestea"}
+          {story === null ? t("storyStart") : t("storyStop")}
         </button>
         <span className="t360-turn">
-          <button onClick={() => turn(-0.4)} aria-label="Rotește spre stânga" title="Rotește spre stânga">⟲</button>
-          <button className="zt-text" onClick={() => setSpin((v) => !v)} aria-pressed={spin}>{spin ? "⏸ Oprește" : "↻ Rotește singur"}</button>
-          <button onClick={() => turn(0.4)} aria-label="Rotește spre dreapta" title="Rotește spre dreapta">⟳</button>
-          <button onClick={() => zoomBy(1.25)} aria-label="Mărește">+</button>
-          <button onClick={() => zoomBy(0.8)} aria-label="Micșorează">−</button>
-          <button className="zt-text" onClick={() => { target.current = null; setZoom(1); setCam({ ...base, yaw: cam.yaw }); }}>Tot copacul</button>
+          <button onClick={() => turn(-0.4)} aria-label={t("rotateLeft")} title={t("rotateLeft")}>⟲</button>
+          <button className="zt-text" onClick={() => setSpin((v) => !v)} aria-pressed={spin}>{spin ? t("spinStop") : t("spinStart")}</button>
+          <button onClick={() => turn(0.4)} aria-label={t("rotateRight")} title={t("rotateRight")}>⟳</button>
+          <button onClick={() => zoomBy(1.25)} aria-label={t("zoomIn")}>+</button>
+          <button onClick={() => zoomBy(0.8)} aria-label={t("zoomOut")}>−</button>
+          <button className="zt-text" onClick={() => { target.current = null; setZoom(1); setCam({ ...base, yaw: cam.yaw }); }}>{t("wholeTree")}</button>
         </span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} className="t360-svg" tabIndex={0} onKeyDown={onKey} role="img"
-        aria-label={`Copacul neamului lui ${seeds.map((sd) => people[sd.node.id]?.name ?? "").join(" și ")}, văzut de jur împrejur. Trage ca să-l rotești.`}
+        aria-label={t("label360", { names: seeds.map((sd) => people[sd.node.id]?.name ?? "").join(` ${t("and")} `) })}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
         onWheel={(e) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); zoomBy(e.deltaY < 0 ? 1.1 : 1 / 1.1); } }}>
         <polygon points={ground.map((g) => `${g.x},${g.y}`).join(" ")} fill="var(--tree-ground)" opacity={0.7} />
@@ -231,24 +233,24 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
       </svg>
       {cur && s && (
         <div className="t360-story" aria-live="polite">
-          {newEra && <div className="era-chip">Capitol nou: {s.era.name} · {eraYears(s)}</div>}
+          {newEra && <div className="era-chip">{tt("newChapter", { era: s.era.name, years: w.eraYears(s) })}</div>}
           <h3>{cur.name}</h3>
-          <p className="times-born">{bornLine(cur, s)}{s.origin?.guess ? ` (după locul lui ${s.origin.guess})` : ""}.</p>
+          <p className="times-born">{w.born(cur, s)}{s.origin?.guess ? ` (${tt("guessShort", { name: s.origin.guess })})` : ""}.</p>
           <p className="times-life">{s.life}</p>
           {s.lived.length > 0 && (
             <ul className="times-list">
               {s.lived.slice(0, 5).map(({ event: e, age, ongoing }) => (
-                <li key={`${e.year}${e.text}`}><i style={{ background: toneColor(e.tone) }} title={TONE_LABEL[e.tone]} /><b>{e.year}</b> <span className="muted">({ageWords(age, cur.sex, ongoing)})</span> {e.text}</li>
+                <li key={`${e.year}${e.text}`}><i style={{ background: toneColor(e.tone) }} title={w.tone(e.tone)} /><b>{e.year}</b> <span className="muted">({w.age(age, cur.sex, ongoing)})</span> {e.text}</li>
               ))}
             </ul>
           )}
           <div className="t360-nav">
-            <button className="btn" onClick={() => goStep(story! - 1)} disabled={story === 0}>◀ Înapoi</button>
-            <span className="muted">{story! + 1} din {steps.length}</span>
-            <button className="btn primary" onClick={() => goStep(story! + 1)} disabled={story! + 1 >= steps.length}>Mai departe ▶</button>
-            <button className="btn" aria-pressed={autoplay} onClick={() => setAutoplay((a) => !a)}>{autoplay ? "⏸ Pauză" : "⏵ Redă singur"}</button>
+            <button className="btn" onClick={() => goStep(story! - 1)} disabled={story === 0}>{t("back")}</button>
+            <span className="muted">{t("stepOf", { n: story! + 1, total: steps.length })}</span>
+            <button className="btn primary" onClick={() => goStep(story! + 1)} disabled={story! + 1 >= steps.length}>{t("next")}</button>
+            <button className="btn" aria-pressed={autoplay} onClick={() => setAutoplay((a) => !a)}>{autoplay ? t("pause") : t("autoplay")}</button>
           </div>
-          {withoutYear > 0 && story === 0 && <p className="muted" style={{ fontSize: 12, margin: "6px 0 0" }}>{withoutYear === 1 ? "Un om nu are" : `${withoutYear} oameni nu au`} anul nașterii trecut, așa că nu intră în poveste.</p>}
+          {withoutYear > 0 && story === 0 && <p className="muted" style={{ fontSize: 12, margin: "6px 0 0" }}>{t("withoutYear", { count: withoutYear })}</p>}
         </div>
       )}
     </div>

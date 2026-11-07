@@ -27,7 +27,8 @@ const APPROX = /^(ABT|ABOUT|AROUND|CA\.?|CCA\.?|CIRCA|C\.|EST|CAL|VERS|ENVIRON|U
 const BEFORE = /^(BEF|BEFORE|INAINTE DE|AVANT|VOR|ANTES DE|ANTES|PRIMA DEL|PRIMA DI|VOOR)\b|\bELOTT$/;
 const AFTER = /^(AFT|AFTER|DUPA|APRES|NACH|DESPUES DE|DESPUES|DOPO IL|DOPO|NA)\b|\bUTAN$/;
 
-export type DateRange = { from: string | null; to: string | null; year: number | null; approx: boolean };
+/** `side`: „înainte de 1900” / „după 1900” (în orice limbă), ca să se poată scrie la fel în limba celui care citește. */
+export type DateRange = { from: string | null; to: string | null; year: number | null; approx: boolean; side?: "before" | "after" };
 
 /** „1985-03-12”, doar dacă ziua există cu adevărat (nu 31 februarie). */
 function day(y: number, m: number, d: number): string | null {
@@ -78,8 +79,8 @@ export function parseFuzzyDate(input: string | null | undefined): DateRange {
   if (!y) return empty;
   const year = +y[1];
   const span = approx ? 2 : 0;
-  if (before) return { from: `${year - 20}-01-01`, to: `${year}-01-01`, year, approx: true };
-  if (after) return { from: `${year}-01-01`, to: `${year + 20}-12-31`, year, approx: true };
+  if (before) return { from: `${year - 20}-01-01`, to: `${year}-01-01`, year, approx: true, side: "before" };
+  if (after) return { from: `${year}-01-01`, to: `${year + 20}-12-31`, year, approx: true, side: "after" };
   return { from: `${year - span}-01-01`, to: `${year + span}-12-31`, year, approx };
 }
 

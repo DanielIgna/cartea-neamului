@@ -15,22 +15,22 @@ export async function raisedIn(db: Db, treeId: string): Promise<Raised[]> {
 }
 
 /** Leagă sau dezleagă pe cine a crescut copilul. */
-export async function setRaised(db: Db, treeId: string, childId: string, carerId: string, on: boolean, by: string | null): Promise<{ ok?: true; error?: string }> {
-  if (childId === carerId) return { error: "Alege pe altcineva decât persoana însăși." };
+export async function setRaised(db: Db, treeId: string, childId: string, carerId: string, on: boolean, by: string | null): Promise<{ ok?: true; error?: string; code?: "self" | "gone" | "parent" | "descendant" }> {
+  if (childId === carerId) return { error: "Alege pe altcineva decât persoana însăși.", code: "self" };
   const both = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, treeId), inArray(person.id, [childId, carerId])));
-  if (both.length !== 2) return { error: "Persoana nu mai există în acest arbore." };
+  if (both.length !== 2) return { error: "Persoana nu mai există în acest arbore.", code: "gone" };
   if (!on) {
     await db.delete(raisedBy).where(and(eq(raisedBy.treeId, treeId), eq(raisedBy.childId, childId), eq(raisedBy.carerId, carerId)));
     return { ok: true };
   }
   const rels = await db.select({ a: relationship.personA, b: relationship.personB }).from(relationship)
     .where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child")));
-  if (rels.some((r) => r.a === carerId && r.b === childId)) return { error: "Îi este deja părinte; apare la „Părinți”." };
+  if (rels.some((r) => r.a === carerId && r.b === childId)) return { error: "Îi este deja părinte; apare la „Părinți”.", code: "parent" };
   // Un urmaș al copilului nu are cum să-l fi crescut.
   const seen = new Set([childId]);
   for (let frontier = [childId]; frontier.length; ) {
     const next = rels.filter((r) => frontier.includes(r.a) && !seen.has(r.b)).map((r) => r.b);
-    if (next.includes(carerId)) return { error: "Persoana aleasă e urmașul ei; nu are cum să o fi crescut." };
+    if (next.includes(carerId)) return { error: "Persoana aleasă e urmașul ei; nu are cum să o fi crescut.", code: "descendant" };
     next.forEach((n) => seen.add(n));
     frontier = next;
   }

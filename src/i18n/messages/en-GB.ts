@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { enGBArbore } from "./arbore/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -282,4 +283,5 @@ export const enGB: Catalog = {
       claimed: "Someone else has claimed this profile in the meantime.",
     },
   },
+  ...enGBArbore,
 };

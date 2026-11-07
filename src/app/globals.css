@@ -76,7 +76,7 @@ svg text{font-family:var(--body)}
 .facts dd{margin:0}
 .docs{display:grid;gap:8px}
 .doc{display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2)}
-.thumb{width:44px;height:44px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);
+.thumb{min-width:44px;padding:0 6px;box-sizing:border-box;height:44px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--muted);
   background:repeating-linear-gradient(135deg,var(--ochre-soft) 0 6px,var(--surface) 6px 12px);border:1px solid var(--line)}
 .doc small{display:block;color:var(--muted)}
 .audio{display:flex;align-items:center;gap:10px}

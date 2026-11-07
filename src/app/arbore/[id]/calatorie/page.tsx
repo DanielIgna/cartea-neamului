@@ -8,6 +8,7 @@ import { birthOrigins } from "@/lib/origins";
 import { isDemo } from "@/lib/demo";
 import { baseWord } from "@/lib/texte";
 import TimeJourney from "@/components/TimeJourney";
+import PageIntl from "@/i18n/PageIntl";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Călătoria în timp · Cartea Neamului" };
@@ -25,8 +26,11 @@ export default async function Journey({ params, searchParams }: { params: Promis
   const data = await loadTreeView(db, id, p && UUID.test(p) ? p : mine?.id, 2);
   if (!data || !data.centerId) notFound();
   const [origins, base] = await Promise.all([birthOrigins(db, id), baseWord(db)]);
+  // Călătoria e încă în română (etapa 4 a traducerii); cuvintele poveștii vremurilor vin deja din cataloage.
   return (
-    <TimeJourney treeId={id} treeName={data.tree.name} meId={me.id} centerId={data.centerId} people={data.people} rels={data.rels} origins={origins}
-      word={data.tree.journeyWord ?? null} defaultWord={base} isOwner={role === "owner"} demo={isDemo(me.email)} />
+    <PageIntl ns={["Times"]}>
+      <TimeJourney treeId={id} treeName={data.tree.name} meId={me.id} centerId={data.centerId} people={data.people} rels={data.rels} origins={origins}
+        word={data.tree.journeyWord ?? null} defaultWord={base} isOwner={role === "owner"} demo={isDemo(me.email)} />
+    </PageIntl>
   );
 }

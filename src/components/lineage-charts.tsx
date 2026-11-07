@@ -1,4 +1,5 @@
 "use client";
+import { useLocale, useTranslations } from "use-intl";
 import type { PersonView } from "@/lib/tree-data";
 import { genOf, fillFor, onSide, type DescNode, type Side, type Slots } from "./charts";
 import { clip, lifeDates, years } from "@/lib/person-text";
@@ -42,7 +43,6 @@ function place(root: DescNode) {
 }
 
 const keyAct = (fn: () => void) => (e: React.KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } };
-const kids = (d: DescNode) => (d.children.length === 1 ? "1 copil" : d.children.length ? `${d.children.length} copii` : "");
 
 /* ---------- Copacul adevărat ---------- */
 
@@ -77,7 +77,6 @@ const leafPath = (x: number, y: number, w: number, h: number, tilt = 0) => {
   return `M${P(-w / 2, 0)}Q${P(0, -h)} ${P(w / 2, 0)}Q${P(0, h)} ${P(-w / 2, 0)}Z`;
 };
 
-const nKids = (k: number) => (k === 1 ? "1 copil" : `${k} copii`);
 
 /**
  * Desenul copacului, după o așezare gata făcută (cu o rădăcină sau cu două): pământul și rădăcinile, coroana, trunchiul,
@@ -86,6 +85,8 @@ const nKids = (k: number) => (k === 1 ? "1 copil" : `${k} copii`);
 function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter, ariaLabel, label }: Omit<Props, "root"> & {
   scene: Scene; ariaLabel: string; label: (rootId: string) => string;
 }) {
+  const t = useTranslations("Charts"), locale = useLocale();
+  const nKids = (k: number) => t("kids", { count: k });
   const { rowH } = TREE;
   const { W, H, baseY, nodes, fam, trunk, bases, couple, roots, noShoots } = scene;
   // Pe trunchi, ramurile ies de pe marginea scoarței, nu din mijlocul ei: unde ajunge trunchiul în dreptul fiecărui om de pe el.
@@ -158,15 +159,15 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
           const sel = selectedId === who.id, ego = egoPath.has(who.id);
           const fill = n.trunk ? (roots.has(n.node.id) && blood ? "var(--accent-soft)" : "var(--surface)") : blood ? (ego ? "var(--leaf-pat)" : "var(--leaf-mat)") : "var(--leaf-spouse)";
           return (
-            <g key={who.id} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={blood ? who.name : `Soț/soție: ${who.name}`}
+            <g key={who.id} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={blood ? who.name : t("spouseOf", { name: who.name })}
               onClick={() => onSelectPerson(who.id)} onDoubleClick={() => onCenter(who.id)} onKeyDown={keyAct(() => onSelectPerson(who.id))}>
-              <title>{`${blood ? "" : "⚭ "}${who.name} ${lifeDates(who)}`}</title>
+              <title>{`${blood ? "" : "⚭ "}${who.name} ${lifeDates(who, locale)}`}</title>
               {n.trunk
                 ? <rect x={cx - 50} y={y - 24} width={100} height={46} rx={10} fill={fill} stroke={ego ? "var(--accent)" : "var(--tree-bark-dark)"} strokeWidth={ego ? 2 : 1.2} strokeDasharray={blood ? undefined : "4 3"} />
                 : <path d={leafPath(cx, y, 102, 36, unions.length ? (cx < P ? -0.06 : cx > P ? 0.06 : 0) : 0)} fill={fill} stroke={ego ? "var(--accent)" : "var(--leaf-edge)"} strokeWidth={ego ? 2 : 1} />}
               <text x={cx} y={y - 6} textAnchor="middle" fill="var(--ink)" fontSize={11} fontWeight={700}>{blood ? "" : "⚭ "}{clip(who.givenName, 12)}</text>
-              <text x={cx} y={y + 6} textAnchor="middle" fill="var(--ink)" fontSize={9.5}>{clip(who.birthSurname && !blood ? `${who.surname} (n. ${who.birthSurname})` : who.surname, 15)}</text>
-              <text x={cx} y={y + 17} textAnchor="middle" fill="var(--muted)" fontSize={9}>{years(who)}</text>
+              <text x={cx} y={y + 6} textAnchor="middle" fill="var(--ink)" fontSize={9.5}>{clip(who.birthSurname && !blood ? t("bornAsShort", { surname: who.surname, birth: who.birthSurname, sex: who.sex }) : who.surname, 15)}</text>
+              <text x={cx} y={y + 17} textAnchor="middle" fill="var(--muted)" fontSize={9}>{years(who, locale)}</text>
             </g>
           );
         };
@@ -182,7 +183,7 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
               const k = kidsOf(n.node, u.sp.id);
               return (
                 <g key={`k${u.sp.id}`}>
-                  <circle cx={u.knot} cy={y + 9} r={7} fill="var(--tree-bark-dark)" stroke="var(--surface)" strokeWidth={1.2}><title>{`Familia ${person.givenName} și ${u.sp.givenName}${k ? `: ${nKids(k)}` : ""}`}</title></circle>
+                  <circle cx={u.knot} cy={y + 9} r={7} fill="var(--tree-bark-dark)" stroke="var(--surface)" strokeWidth={1.2}><title>{t("couple", { a: person.givenName, b: u.sp.givenName, count: k })}</title></circle>
                   {k > 0 && <text x={u.x} y={y + 36} textAnchor="middle" fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(k)}</text>}
                 </g>
               );
@@ -194,7 +195,7 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
       {couple && father && mother && (
         <g>
           <circle data-focus="1" cx={couple.knot} cy={couple.y + 9} r={8} fill="var(--tree-bark-dark)" stroke="var(--surface)" strokeWidth={1.4}>
-            <title>{`Familia ${father.givenName} și ${mother.givenName}${couple.kids ? `: ${nKids(couple.kids)}` : ""}`}</title>
+            <title>{t("couple", { a: father.givenName, b: mother.givenName, count: couple.kids })}</title>
           </circle>
           {couple.kids > 0 && <text x={couple.knot} y={couple.y + 38} textAnchor="middle" fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(couple.kids)}</text>}
         </g>
@@ -208,10 +209,11 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
 
 /** Copacul neamului: trunchiul e linia de la cel mai vechi la cel mai tânăr; fiecare familie e o ramură, din ea ramuri mai subțiri și lăstari. */
 export function LineageTree(props: Props) {
+  const t = useTranslations("Charts");
   const { root, people, egoPath } = props;
   const scene = layoutSingle(root, (id) => !!people[id], egoPath);
-  return <TreeArt {...props} scene={scene} ariaLabel="Copacul neamului"
-    label={(id) => (people[id] ? `Neamul ${people[id].surname} · rădăcina: ${people[id].name}` : "")} />;
+  return <TreeArt {...props} scene={scene} ariaLabel={t("treeLabel")}
+    label={(id) => (people[id] ? t("treeRoot", { surname: people[id].surname, name: people[id].name }) : "")} />;
 }
 
 /**
@@ -219,14 +221,17 @@ export function LineageTree(props: Props) {
  * și se unesc în căsătoria părinților; de acolo crește o singură coroană, cu copiii lor și urmașii acestora.
  */
 export function TwinTree({ parts, ...props }: Omit<Props, "root"> & { parts: TwinParts }) {
+  const t = useTranslations("Charts");
   const { people, egoPath } = props;
   const scene = layoutTwin(parts, (id) => !!people[id], egoPath);
-  return <TreeArt {...props} scene={scene} ariaLabel="Copacul neamului cu două rădăcini: neamul tatălui și neamul mamei"
-    label={(id) => { const p = people[id], sur = p?.birthSurname?.trim() || p?.surname; return p ? (sur ? `Neamul ${sur}` : `Neamul lui ${p.name}`) : ""; }} />;
+  return <TreeArt {...props} scene={scene} ariaLabel={t("twinLabel")}
+    label={(id) => { const p = people[id], sur = p?.birthSurname?.trim() || p?.surname; return p ? (sur ? t("familyOf", { surname: sur }) : t("familyOfName", { name: p.name })) : ""; }} />;
 }
 
 /** Evantaiul urmașilor: trunchiul în mijloc, fiecare generație un inel, fiecare ramură o felie cât urmașii ei. */
 export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerson, onCenter }: Props) {
+  const t = useTranslations("Charts"), locale = useLocale();
+  const kids = (d: DescNode) => (d.children.length ? t("kids", { count: d.children.length }) : "");
   const { placed, depth } = place(root);
   const r0 = 70, ring = depth > 7 ? 62 : 74, maxR = r0 + depth * ring;
   const cx = maxR + 20, cy = maxR + 10, A0 = -210, SPAN = 240;
@@ -239,7 +244,7 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
   };
   const rootP = people[root.id];
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Evantaiul urmașilor" style={depth >= 6 ? { width: W, maxWidth: "none", display: "block", margin: "0 auto" } : { width: "100%", maxWidth: 820, display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("descFanLabel")} style={depth >= 6 ? { width: W, maxWidth: "none", display: "block", margin: "0 auto" } : { width: "100%", maxWidth: 820, display: "block", margin: "0 auto" }}>
       {placed.filter((p) => p.depth > 0).map((p) => {
         const person = people[p.node.id];
         if (!person) return null;
@@ -252,7 +257,7 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
         return (
           <g key={p.node.id} className={`sector${selectedId === p.node.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={person.name}
             onClick={() => onSelectPerson(p.node.id)} onDoubleClick={() => onCenter(p.node.id)} onKeyDown={keyAct(() => onSelectPerson(p.node.id))}>
-            <title>{`${person.name} ${lifeDates(person)}${kids(p.node) ? ` · ${kids(p.node)}` : ""}`}</title>
+            <title>{`${person.name} ${lifeDates(person, locale)}${kids(p.node) ? ` · ${kids(p.node)}` : ""}`}</title>
             <path d={arc(r1, r2, a1, a2)} fill={ego ? "var(--accent-soft)" : `var(--pat-${Math.min(1 + (p.depth % 4), 4)})`} stroke={ego ? "var(--accent)" : "var(--line)"} strokeWidth={ego ? 1.6 : 0.8} />
             <text x={tx} y={ty} textAnchor="middle" transform={`rotate(${rot} ${tx} ${ty})`} fill="var(--ink)" fontSize={wide ? 11 : 9}>
               <tspan x={tx} dy={-2} fontWeight={700}>{clip(person.givenName, wide ? 16 : 10)}</tspan>
@@ -267,7 +272,7 @@ export function DescendantFan({ root, people, selectedId, egoPath, onSelectPerso
           <text x={cx} y={cy - 4} textAnchor="middle" fill="var(--ink)" fontSize={14} fontWeight={700} style={{ fontFamily: "var(--display)" }}>
             <tspan x={cx}>{rootP.givenName}</tspan><tspan x={cx} dy={16}>{rootP.surname}</tspan>
           </text>
-          <text x={cx} y={cy + 30} textAnchor="middle" fill="var(--muted)" fontSize={11}>{lifeDates(rootP)}</text>
+          <text x={cx} y={cy + 30} textAnchor="middle" fill="var(--muted)" fontSize={11}>{lifeDates(rootP, locale)}</text>
         </g>
       )}
     </svg>
@@ -285,6 +290,7 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
   slots: Slots; generations: number; down: DescNode; people: Record<string, PersonView>; selectedId: string | null;
   onSelectPerson: (id: string) => void; onSelectSlot: (n: number) => void; onCenter: (id: string) => void; side?: Side | null;
 }) {
+  const t = useTranslations("Charts"), locale = useLocale();
   const bw = 118, bh = 40, rowH = 74, colW = bw + 10;
   const upGens = hourglassUp(generations, side);
   // Strămoșii ca un arbore „întors”: fiecare are loc doar cât îi trebuie, ca să nu rămână găuri pentru părinți necunoscuți.
@@ -304,14 +310,14 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
   const ups = [...upAt.keys()].filter((n) => n > 1);
   const box = (x: number, y: number, p: PersonView, key: string, fill: string, sel: boolean, onClick: () => void, onDbl?: () => void) => (
     <g key={key} className={`sector${sel ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name} onClick={onClick} onDoubleClick={onDbl} onKeyDown={keyAct(onClick)}>
-      <title>{`${p.name} ${lifeDates(p)}`}</title>
+      <title>{`${p.name} ${lifeDates(p, locale)}`}</title>
       <rect x={x - bw / 2} y={y - bh / 2} width={bw} height={bh} rx={6} fill={fill} stroke="var(--line)" />
       <text x={x} y={y - 3} textAnchor="middle" fill="var(--ink)" fontSize={11.5} fontWeight={700}>{clip(p.name, 17)}</text>
-      <text x={x} y={y + 12} textAnchor="middle" fill="var(--muted)" fontSize={10}>{lifeDates(p)}</text>
+      <text x={x} y={y + 12} textAnchor="middle" fill="var(--muted)" fontSize={10}>{lifeDates(p, locale)}</text>
     </g>
   );
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Clepsidra: strămoși deasupra, urmași dedesubt" style={{ width: W, maxWidth: "none", display: "block", margin: "0 auto" }}>
+    <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("hourglassLabel")} style={{ width: W, maxWidth: "none", display: "block", margin: "0 auto" }}>
       <text x={14} y={20} fill="var(--muted)" fontSize={12}>▲ Înaintea lui {people[down.id]?.givenName}</text>
       <text x={14} y={midY + rowH / 2 + 4} fill="var(--muted)" fontSize={12}>▼ După {people[down.id]?.givenName}</text>
       {ups.map((n) => {
@@ -337,9 +343,9 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
             {partners.map((partner, i) => {
               const two = partners.length === 2, tx = two ? x + (i === 0 ? -6 : 6) : x;
               return (
-                <g key={`s${partner.id}`} className={`sector${selectedId === partner.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={`Soț/soție: ${partner.name}`}
+                <g key={`s${partner.id}`} className={`sector${selectedId === partner.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={t("spouseOf", { name: partner.name })}
                   onClick={() => onSelectPerson(partner.id)} onKeyDown={keyAct(() => onSelectPerson(partner.id))}>
-                  <title>{`⚭ ${partner.name} ${lifeDates(partner)}`}</title>
+                  <title>{`⚭ ${partner.name} ${lifeDates(partner, locale)}`}</title>
                   <text x={tx} y={y + bh / 2 + 12} textAnchor={two ? (i === 0 ? "end" : "start") : "middle"} fill="var(--muted)" fontSize={10}>⚭ {clip(two ? partner.givenName : partner.name, two ? 10 : 20)}</text>
                 </g>
               );

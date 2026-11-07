@@ -6,6 +6,7 @@ import { tree } from "@/db/schema";
 import { loadTimeline } from "@/lib/tree-data";
 import { requireUser, roleIn } from "@/lib/access";
 import { HISTORICAL_EVENTS } from "@/lib/history";
+import { getLocale, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,9 @@ export default async function Timeline({ params }: { params: Promise<{ id: strin
   if (!(await roleIn(db, id, me.id))) notFound();
   const [t] = await db.select().from(tree).where(eq(tree.id, id));
   if (!t) notFound();
-  const people = await loadTimeline(db, id);
+  const locale = await getLocale();
+  const tt = await getT("Timeline", locale);
+  const people = await loadTimeline(db, id, locale);
   const now = new Date().getFullYear();
   const minY = Math.floor(Math.min(...people.map((p) => p.birthYear!), now - 60) / 20) * 20, maxY = now + 4;
   const events = HISTORICAL_EVENTS.filter((e) => e.to >= minY && (!t.region || e.regions.includes("*") || e.regions.includes(t.region)));
@@ -25,13 +28,13 @@ export default async function Timeline({ params }: { params: Promise<{ id: strin
   const ticks = Array.from({ length: Math.floor((maxY - minY) / 20) + 1 }, (_, i) => minY + i * 20);
   return (
     <div className="card">
-      <div className="toolbar"><div className="title">Viețile familiei pe fundalul istoriei</div><Link className="btn" href={`/arbore/${id}`}>Înapoi la arbore</Link></div>
+      <div className="toolbar"><div className="title">{tt("title")}</div><Link className="btn" href={`/arbore/${id}`}>{tt("back")}</Link></div>
       <div className="chartbox">
-        <svg viewBox={`0 0 920 ${H}`} role="img" aria-label="Cronologie" style={{ width: "100%", minWidth: 720 }}>
+        <svg viewBox={`0 0 920 ${H}`} role="img" aria-label={tt("aria")} style={{ width: "100%", minWidth: 720 }}>
           {events.map((e, i) => (
             <g key={e.title}>
               <rect x={X(e.from)} y={y0 - 10} width={Math.max(X(e.to) - X(e.from), 3)} height={H - y0 - 14} fill="var(--event)" />
-              <text x={X(e.from)} y={18 + (i % 3) * 15} fill="var(--accent)" fontSize={11} fontWeight={700}>{e.title} {e.from === e.to ? e.from : `${e.from}–${e.to}`}</text>
+              <text x={X(e.from)} y={18 + (i % 3) * 15} fill="var(--accent)" fontSize={11} fontWeight={700}>{tt(`events.${e.id}`)} {e.from === e.to ? e.from : `${e.from}–${e.to}`}</text>
             </g>
           ))}
           {ticks.map((y) => (

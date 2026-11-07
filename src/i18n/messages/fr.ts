@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { frArbore } from "./arbore/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -282,4 +283,5 @@ export const fr: Catalog = {
       claimed: "Quelqu’un d’autre a revendiqué cette fiche entre-temps.",
     },
   },
+  ...frArbore,
 };

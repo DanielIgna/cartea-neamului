@@ -13,7 +13,7 @@ import { BOOK_CHAPTERS, BOOK_VERSE, OTHER_CHAPTER, bookPlan, type Verse } from "
 import { lifeDates } from "@/lib/person-text";
 import { memoryShortPath } from "@/lib/short-link";
 import { siteOrigin } from "@/lib/site";
-import { Avatar } from "@/components/Album";
+import { Avatar } from "@/components/Avatar";
 import PrintButton from "@/components/PrintButton";
 
 export const dynamic = "force-dynamic";

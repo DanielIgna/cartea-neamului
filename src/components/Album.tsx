@@ -1,21 +1,16 @@
 "use client";
 import { useState, useTransition } from "react";
+import { useTranslations } from "use-intl";
 import { setProfilePhoto, updateDocumentDescription } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
 
 const isImage = (d: PersonView["documents"][number]) => d.hasFile && (d.kind === "photo" || !!d.mimeType?.startsWith("image/"));
-const initials = (p: { givenName: string; surname: string }) => `${p.givenName[0] ?? ""}${p.surname[0] ?? ""}`.toUpperCase();
-
-/** Poza de profil, rotundă: cea încărcată în arbore; altfel poza din contul Google al celui care și-a revendicat fișa; altfel inițialele. */
-export function Avatar({ p, size = 72 }: { p: Pick<PersonView, "givenName" | "surname" | "photoId"> & { accountImage?: string | null }; size?: number }) {
-  const src = p.photoId ? `/api/document/${p.photoId}` : p.accountImage ?? null;
-  return src
-    ? <img src={src} alt="" className="avatar" style={{ width: size, height: size }} referrerPolicy="no-referrer" />
-    : <span className="avatar avatar-empty" style={{ width: size, height: size, fontSize: size / 2.6 }} aria-hidden>{initials(p)}</span>;
-}
+export const DOC_KINDS = ["act", "photo", "letter", "audio", "other"] as const;
+const isKind = (k: string): k is (typeof DOC_KINDS)[number] => (DOC_KINDS as readonly string[]).includes(k);
 
 /** Albumul persoanei: fotografiile ca galerie cu descrieri, apoi actele și celelalte documente. */
 export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: PersonView; treeId: string; canEdit: boolean; onChanged: () => void; large?: boolean }) {
+  const t = useTranslations("Media");
   const photos = p.documents.filter(isImage), others = p.documents.filter((d) => !isImage(d));
   const [editing, setEditing] = useState<string | null>(null);
   const [text, setText] = useState("");
@@ -26,7 +21,7 @@ export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: Per
     setMsg(r.error ?? null);
     if (!r.error) { setEditing(null); onChanged(); }
   });
-  if (!p.documents.length) return <p className="muted" style={{ margin: 0, fontSize: 14 }}>Nicio poză sau document încă.</p>;
+  if (!p.documents.length) return <p className="muted" style={{ margin: 0, fontSize: 14 }}>{t("empty")}</p>;
   return (
     <>
       {photos.length > 0 && (
@@ -36,13 +31,13 @@ export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: Per
               <a href={`/api/document/${d.id}`} target="_blank" rel="noopener"><img src={`/api/document/${d.id}`} alt={d.description ?? d.title} loading="lazy" /></a>
               <figcaption>
                 <b>{d.title}</b>{d.dateText ? <small> · {d.dateText}</small> : null}
-                {p.photoId === d.id && <span className="chip ok" style={{ marginLeft: 6 }}>poză de profil</span>}
+                {p.photoId === d.id && <span className="chip ok" style={{ marginLeft: 6 }}>{t("profileChip")}</span>}
                 {editing === d.id ? (
                   <div className="form" style={{ marginTop: 6 }}>
-                    <textarea value={text} onChange={(e) => setText(e.target.value)} style={{ minHeight: 60 }} placeholder="Cine apare, unde, când, ce poveste are…" />
+                    <textarea value={text} onChange={(e) => setText(e.target.value)} style={{ minHeight: 60 }} placeholder={t("descPlaceholder")} />
                     <div className="actions">
-                      <button className="btn primary" disabled={pending} onClick={() => run(() => updateDocumentDescription(treeId, d.id, text))}>Salvează</button>
-                      <button className="btn" onClick={() => setEditing(null)}>Renunță</button>
+                      <button className="btn primary" disabled={pending} onClick={() => run(() => updateDocumentDescription(treeId, d.id, text))}>{t("save")}</button>
+                      <button className="btn" onClick={() => setEditing(null)}>{t("cancel")}</button>
                     </div>
                   </div>
                 ) : (
@@ -50,8 +45,8 @@ export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: Per
                     {d.description && <span className="desc">{d.description}</span>}
                     {canEdit && (
                       <span className="fig-actions">
-                        <button className="linklike" onClick={() => { setEditing(d.id); setText(d.description ?? ""); }}>{d.description ? "Schimbă descrierea" : "Adaugă descriere"}</button>
-                        {p.photoId !== d.id && <button className="linklike" disabled={pending} onClick={() => run(() => setProfilePhoto(treeId, p.id, d.id))}>Fă-o poză de profil</button>}
+                        <button className="linklike" onClick={() => { setEditing(d.id); setText(d.description ?? ""); }}>{d.description ? t("changeDesc") : t("addDesc")}</button>
+                        {p.photoId !== d.id && <button className="linklike" disabled={pending} onClick={() => run(() => setProfilePhoto(treeId, p.id, d.id))}>{t("makeProfile")}</button>}
                       </span>
                     )}
                   </>
@@ -65,7 +60,7 @@ export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: Per
         <div className="docs" style={{ marginTop: photos.length ? 10 : 0 }}>
           {others.map((d) => (
             <div className="doc" key={d.id}>
-              <div className="thumb">{d.kind}</div>
+              <div className="thumb">{isKind(d.kind) ? t(`kinds.${d.kind}`) : d.kind}</div>
               <div><b>{d.hasFile ? <a href={`/api/document/${d.id}`} target="_blank" rel="noopener">{d.title}</a> : d.title}</b><small>{d.dateText}</small>{d.description && <small>{d.description}</small>}</div>
             </div>
           ))}

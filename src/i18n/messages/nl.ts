@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { nlArbore } from "./arbore/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -282,4 +283,5 @@ export const nl: Catalog = {
       claimed: "Iemand anders heeft dit profiel intussen opgeëist.",
     },
   },
+  ...nlArbore,
 };

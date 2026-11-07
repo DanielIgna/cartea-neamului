@@ -123,25 +123,25 @@ export async function placeMatches(db: Db, treeId: string, meId: string, limit =
  */
 export async function askContact(db: Db, me: { id: string; email: string }, input: { fromTreeId: string; toTreeId: string; placeId: string; note: string | null }) {
   const { fromTreeId, toTreeId, placeId } = input;
-  if (isDemo(me.email)) return { error: DEMO_NO };
-  if (fromTreeId === toTreeId) return { error: "Alege alt neam decât al tău." };
+  if (isDemo(me.email)) return { error: DEMO_NO, code: "demo" as const };
+  if (fromTreeId === toTreeId) return { error: "Alege alt neam decât al tău.", code: "sameTree" as const };
   const mineTrees = await memberOf(db, me.id);
-  if (!mineTrees.includes(fromTreeId)) return { error: "Nu ești în acest arbore." };
-  if (mineTrees.includes(toTreeId)) return { error: "Faceți deja parte din același arbore; vă puteți scrie din Mesaje." };
+  if (!mineTrees.includes(fromTreeId)) return { error: "Nu ești în acest arbore.", code: "notMember" as const };
+  if (mineTrees.includes(toTreeId)) return { error: "Faceți deja parte din același arbore; vă puteți scrie din Mesaje.", code: "together" as const };
   const [from] = await db.select({ on: tree.discoverable }).from(tree).where(eq(tree.id, fromTreeId));
-  if (!from?.on) return { error: "Arată întâi neamul vostru celor din aceleași sate, ca să poți cere legătura." };
+  if (!from?.on) return { error: "Arată întâi neamul vostru celor din aceleași sate, ca să poți cere legătura.", code: "showFirst" as const };
   const [to] = await db.select({ on: tree.discoverable, ownerId: tree.ownerId, email: user.email }).from(tree).innerJoin(user, eq(user.id, tree.ownerId)).where(eq(tree.id, toTreeId));
-  if (!to?.on || !to.ownerId || isDemo(to.email)) return { error: "Acest neam nu mai poate fi găsit." };
-  if (to.ownerId === me.id) return { error: "Acesta e tot arborele tău." };
+  if (!to?.on || !to.ownerId || isDemo(to.email)) return { error: "Acest neam nu mai poate fi găsit.", code: "gone" as const };
+  if (to.ownerId === me.id) return { error: "Acesta e tot arborele tău.", code: "ownTree" as const };
   const [theirs] = await db.select().from(treePlace).where(and(eq(treePlace.treeId, toTreeId), eq(treePlace.placeId, placeId)));
   const ours = await db.select({ placeId: treePlace.placeId, area: treePlace.area }).from(treePlace).where(eq(treePlace.treeId, fromTreeId));
-  if (!theirs || !ours.some((o) => o.placeId === placeId || (!!theirs.area && o.area === theirs.area))) return { error: "Neamurile voastre nu mai au acest loc în comun." };
+  if (!theirs || !ours.some((o) => o.placeId === placeId || (!!theirs.area && o.area === theirs.area))) return { error: "Neamurile voastre nu mai au acest loc în comun.", code: "noCommon" as const };
   const [old] = await db.select().from(placeContact).where(and(eq(placeContact.fromUserId, me.id), eq(placeContact.toTreeId, toTreeId)));
   if (old?.status === "accepted") return { ok: true as const };
-  if (old?.status === "pending") return { error: "Ai trimis deja cererea. Așteaptă răspunsul." };
-  if (old) return { error: "Proprietarul acestui neam nu a acceptat legătura." };
+  if (old?.status === "pending") return { error: "Ai trimis deja cererea. Așteaptă răspunsul.", code: "alreadyAsked" as const };
+  if (old) return { error: "Proprietarul acestui neam nu a acceptat legătura.", code: "declined" as const };
   const [{ n }] = await db.select({ n: count() }).from(placeContact).where(and(eq(placeContact.fromUserId, me.id), gte(placeContact.createdAt, new Date(Date.now() - 864e5))));
-  if (n >= DAILY_REQUESTS) return { error: "Ai trimis multe cereri azi. Mai încearcă mâine." };
+  if (n >= DAILY_REQUESTS) return { error: "Ai trimis multe cereri azi. Mai încearcă mâine.", code: "tooMany" as const };
   await db.insert(placeContact).values({ fromUserId: me.id, fromTreeId, toTreeId, toUserId: to.ownerId, place: theirs.name, note: input.note?.trim() || null })
     .onConflictDoNothing();
   return { ok: true as const };
@@ -151,7 +151,7 @@ export async function askContact(db: Db, me: { id: string; email: string }, inpu
 export async function answerContact(db: Db, meId: string, id: string, accept: boolean) {
   const r = await db.update(placeContact).set({ status: accept ? "accepted" : "declined", answeredAt: new Date() })
     .where(and(eq(placeContact.id, id), eq(placeContact.toUserId, meId))).returning({ id: placeContact.id });
-  return r.length ? { ok: true as const } : { error: "Cererea nu mai există." };
+  return r.length ? { ok: true as const } : { error: "Cererea nu mai există.", code: "noRequest" as const };
 }
 
 /** Câte cereri de legătură îmi așteaptă răspunsul (se adună la numărul de pe „Mesaje”). */

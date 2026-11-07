@@ -5,7 +5,7 @@ import { CHAPTERS, type Chapter } from "@/lib/questions";
 import type { Visibility } from "@/lib/lada";
 import type { MemoryView } from "@/lib/lada-db";
 import { FAITH_CONSENT_TEXT } from "@/lib/legal";
-import { shrinkPhoto } from "./PhotoPick";
+import { shrinkPhoto } from "@/lib/shrink-photo";
 import VoiceRecorder, { clock, uploadForMemory, type Voice } from "./VoiceRecorder";
 
 export type PersonOption = { id: string; name: string; years: string };

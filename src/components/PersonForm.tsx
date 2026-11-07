@@ -1,8 +1,10 @@
 "use client";
 import { useActionState, useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "use-intl";
 import { addRelative, updatePerson } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
 import { sameLooking } from "@/lib/family";
+import { COUNTRY_NAMES, countryName } from "@/lib/place-key";
 
 /** Sexul ghicit după prenumele românesc: cele terminate în „a” sunt de obicei feminine (cu câteva excepții bărbătești). */
 const MALE_A = new Set(["toma", "luca", "mihăiță", "mihaita", "nicola", "costea", "sava", "ilia", "jean-luca", "andrea", "gheorghiță", "gheorghita", "ionuță", "ionuta", "costică", "costica", "nicușa", "nicusa", "mitrea", "petrea", "vasilică", "vasilica", "dumitra"]);
@@ -13,13 +15,7 @@ export function guessSex(given: string): "M" | "F" | "U" {
   return /[aă]$/.test(first) ? "F" : "M";
 }
 
-/** Țările din care vin cel mai des familiile din România; se poate scrie oricare alta. */
-const COUNTRIES = ["România", "Republica Moldova", "Italia", "Spania", "Germania", "Franța", "Austria", "Ungaria", "Marea Britanie", "Irlanda", "Belgia", "Olanda",
-  "Elveția", "Suedia", "Danemarca", "Norvegia", "Finlanda", "Portugalia", "Grecia", "Cipru", "Serbia", "Bulgaria", "Ucraina", "Cehia", "Polonia", "Israel",
-  "Statele Unite ale Americii", "Canada", "Australia", "Noua Zeelandă", "Emiratele Arabe Unite"];
-
 export type RelKind = "father" | "mother" | "child" | "spouse" | "sibling";
-const TITLE: Record<RelKind, string> = { father: "Adaugă tatăl", mother: "Adaugă mama", child: "Adaugă un copil", spouse: "Adaugă soțul sau soția", sibling: "Adaugă un frate sau o soră" };
 
 type Props =
   | {
@@ -32,6 +28,9 @@ type Props =
 
 /** Un singur formular pentru „adaugă o rudă” și „editează fișa”: date, locuri, ce se știe despre persoană și note. */
 export default function PersonForm(props: Props) {
+  const t = useTranslations("PersonForm"), locale = useLocale();
+  // Țările din care vin cel mai des familiile din România, scrise în limba omului; se poate scrie oricare alta.
+  const countries = Object.keys(COUNTRY_NAMES).map((cc) => countryName(cc, locale)), romania = countryName("RO", locale);
   const [state, action, pending] = useActionState(props.mode === "add" ? addRelative : updatePerson, null);
   useEffect(() => { if (state && "ok" in state && state.ok) props.onDone(); }, [state]);
   const p = props.mode === "edit" ? props.person : null;
@@ -39,10 +38,9 @@ export default function PersonForm(props: Props) {
   const askSex = kind === "child" || kind === "spouse" || kind === "sibling" || props.mode === "edit";
   const anchor = props.mode === "add" ? props.anchor : null;
   const defaultSurname = p ? p.surname : kind === "sibling" ? anchor!.birthSurname || anchor!.surname : kind === "father" || kind === "child" ? anchor!.surname : "";
-  const who = p ? p.givenName : "persoana";
   const [living, setLiving] = useState(p?.living ?? false);
   // Țara de naștere pornește de la a rudei de lângă care adaugi (copiii născuți în Italia ai unor părinți născuți în Italia…), altfel România.
-  const countryHint = p?.birthCountry ?? anchor?.birthCountry ?? "România";
+  const countryHint = p?.birthCountry ?? anchor?.birthCountry ?? romania;
   // Cât timp nu alegi tu sexul, îl potrivim după prenume (Ana → femeie, Ion → bărbat).
   const sexRef = useRef<HTMLSelectElement>(null);
   const sexTouched = useRef(props.mode === "edit");
@@ -55,109 +53,110 @@ export default function PersonForm(props: Props) {
     : [];
   return (
     <form action={action} className="form" style={{ marginTop: 10 }}>
-      <div className="section-label" style={{ marginTop: 0 }}>{p ? `Editează fișa lui ${p.givenName}` : `${TITLE[kind!]} lui ${anchor!.givenName}`}</div>
+      <div className="section-label" style={{ marginTop: 0 }}>{p ? t("editTitle", { name: p.givenName }) : t("addTitle", { kind: kind!, name: anchor!.givenName })}</div>
       <input type="hidden" name="treeId" value={props.treeId} />
       {p ? <input type="hidden" name="personId" value={p.id} /> : <><input type="hidden" name="anchorId" value={anchor!.id} /><input type="hidden" name="kind" value={kind!} /></>}
       <div className="row">
-        <label>Prenume<input name="given" required defaultValue={p?.givenName}
+        <label>{t("given")}<input name="given" required defaultValue={p?.givenName}
           onChange={(e) => {
             setTyped((t) => ({ ...t, given: e.target.value }));
             if (!sexTouched.current && sexRef.current && (kind === "child" || kind === "sibling")) sexRef.current.value = guessSex(e.target.value);
           }} /></label>
-        <label>Nume<input name="surname" defaultValue={defaultSurname} onChange={(e) => setTyped((t) => ({ ...t, surname: e.target.value }))} /></label>
+        <label>{t("surname")}<input name="surname" defaultValue={defaultSurname} onChange={(e) => setTyped((t) => ({ ...t, surname: e.target.value }))} /></label>
       </div>
       <div className="row">
-        <label>Nume de fată (dacă e cazul)<input name="birthSurname" defaultValue={p?.birthSurname ?? ""} /></label>
+        <label>{t("birthSurname")}<input name="birthSurname" defaultValue={p?.birthSurname ?? ""} /></label>
         {askSex && (
-          <label>Sex
+          <label>{t("sex")}
             <select name="sex" ref={sexRef} onChange={() => { sexTouched.current = true; }} defaultValue={p?.sex ?? (kind === "spouse" ? (anchor!.sex === "M" ? "F" : anchor!.sex === "F" ? "M" : "U") : "U")}>
-              <option value="M">bărbat</option><option value="F">femeie</option><option value="U">nu știu</option>
+              <option value="M">{t("man")}</option><option value="F">{t("woman")}</option><option value="U">{t("unknown")}</option>
             </select>
           </label>
         )}
       </div>
-      <datalist id="tari">{COUNTRIES.map((c) => <option key={c} value={c} />)}</datalist>
+      <datalist id="tari">{countries.map((c) => <option key={c} value={c} />)}</datalist>
       <div className="row">
-        <label>Născut(ă)<input name="birth" placeholder="12.03.1985, 1902 sau cca. 1870" defaultValue={p?.birthText ?? ""} /></label>
-        <label>Locul nașterii<input name="birthPlace" placeholder="sat, comună sau oraș" defaultValue={p?.birthPlace ?? ""} /></label>
-        <label>Țara<input name="birthCountry" list="tari" defaultValue={countryHint} /></label>
+        <label>{t("born")}<input name="birth" placeholder={t("birthPlaceholder")} defaultValue={p?.birthText ?? ""} /></label>
+        <label>{t("birthPlace")}<input name="birthPlace" placeholder={t("placePlaceholder")} defaultValue={p?.birthPlace ?? ""} /></label>
+        <label>{t("country")}<input name="birthCountry" list="tari" defaultValue={countryHint} /></label>
       </div>
-      <small className="muted" style={{ marginTop: -6 }}>La naștere și la deces scrie ziua, luna și anul, dacă le știi (12.03.1932); altfel doar anul sau „cca. 1870”.</small>
+      <small className="muted" style={{ marginTop: -6 }}>{t("dateHint")}</small>
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <input type="checkbox" name="living" checked={living} onChange={(e) => setLiving(e.target.checked)} /> Persoana e în viață (rămâne privată în arbore)
+        <input type="checkbox" name="living" checked={living} onChange={(e) => setLiving(e.target.checked)} /> {t("living")}
       </label>
-      {living && <small className="muted" style={{ marginTop: -6 }}>Cu data completă a nașterii (ziua, luna, anul), persoana își poate găsi singură fișa când își face cont, iar tu confirmi că e ea.</small>}
+      {living && <small className="muted" style={{ marginTop: -6 }}>{t("livingHint")}</small>}
       {living ? (
         <div className="row">
-          <label>Locuiește acum în<input name="residencePlace" placeholder="ex. Huedin, Cluj-Napoca, Torino" defaultValue={p?.residencePlace ?? ""} /></label>
-          <label>Țara<input name="residenceCountry" list="tari" defaultValue={p?.residenceCountry ?? "România"} /></label>
+          <label>{t("livesIn")}<input name="residencePlace" placeholder={t("livesPlaceholder")} defaultValue={p?.residencePlace ?? ""} /></label>
+          <label>{t("country")}<input name="residenceCountry" list="tari" defaultValue={p?.residenceCountry ?? romania} /></label>
         </div>
       ) : (
         <div className="row">
-          <label>Decedat(ă)<input name="death" placeholder="5.11.2008 sau 1980" defaultValue={p?.deathText ?? ""} /></label>
-          <label>Locul decesului<input name="deathPlace" defaultValue={p?.deathPlace ?? ""} /></label>
-          <label>Țara<input name="deathCountry" list="tari" defaultValue={p?.deathCountry ?? "România"} /></label>
+          <label>{t("died")}<input name="death" placeholder={t("deathPlaceholder")} defaultValue={p?.deathText ?? ""} /></label>
+          <label>{t("deathPlace")}<input name="deathPlace" defaultValue={p?.deathPlace ?? ""} /></label>
+          <label>{t("country")}<input name="deathCountry" list="tari" defaultValue={p?.deathCountry ?? romania} /></label>
         </div>
       )}
-      <label>Ocupație<input name="occupation" defaultValue={p?.occupation ?? ""} placeholder="agricultor, învățătoare, tâmplar…" /></label>
+      <label>{t("occupation")}<input name="occupation" defaultValue={p?.occupation ?? ""} placeholder={t("occupationPlaceholder")} /></label>
       {kind === "child" && props.mode === "add" && !!props.partners?.length && (
-        <label>Celălalt părinte
+        <label>{t("otherParent")}
           <select name="otherParentId" defaultValue={props.partners[0].id}>
-            {props.partners.map((x) => <option key={x.id} value={x.id}>{x.name}{x.discreet ? " (din altă relație)" : ""}</option>)}
-            <option value="">nu știu / altcineva</option>
+            {props.partners.map((x) => <option key={x.id} value={x.id}>{x.discreet ? t("otherRelationName", { name: x.name }) : x.name}</option>)}
+            <option value="">{t("otherParentUnknown")}</option>
           </select>
         </label>
       )}
       {(props.mode === "edit" || kind === "spouse" || kind === "father" || kind === "mother") && (
         <label style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
           <input type="checkbox" name="discreet" defaultChecked={p ? p.discreet : props.mode === "add" && !!props.discreet} style={{ marginTop: 4 }} />
-          <span>Discret(ă): nu apare în desenele arborelui, ci doar în fișele copiilor
-            <small className="muted" style={{ display: "block" }}>De pildă o fostă soție sau mama unui copil dintr-o altă relație. Copiii pornesc în desen doar din celălalt părinte.</small></span>
+          <span>{t("discreet")}
+            <small className="muted" style={{ display: "block" }}>{t("discreetHint")}</small></span>
         </label>
       )}
       {props.mode === "add" && !!props.shareWith?.length && (
         <fieldset className="share">
-          <legend>{kind === "spouse" ? `E și părintele copiilor lui ${anchor!.givenName}?` : `E ${kind === "father" ? "tatăl" : "mama"} și pentru frații lui ${anchor!.givenName}?`}</legend>
+          <legend>{kind === "spouse" ? t("shareSpouse", { name: anchor!.givenName }) : t("shareParent", { kind: kind === "father" ? "father" : "mother", name: anchor!.givenName })}</legend>
           {props.shareWith.map((x) => (
             <label key={x.id}><input type="checkbox" name="also" value={x.id} defaultChecked /> {x.name}{x.birthYear ? ` (${x.birthYear})` : ""}</label>
           ))}
-          <small className="muted">Debifează pe cei din altă căsătorie.</small>
+          <small className="muted">{t("shareHint")}</small>
         </fieldset>
       )}
-      <label>Ce se știe despre {who}
-        <textarea name="biography" defaultValue={p?.biography ?? ""} placeholder="Câteva rânduri: cum era, ce făcea, povești din familie, unde a trăit…" />
+      <label>{p ? t("aboutName", { name: p.givenName }) : t("aboutNew")}
+        <textarea name="biography" defaultValue={p?.biography ?? ""} placeholder={t("bioPlaceholder")} />
       </label>
-      <label>Note suplimentare
-        <textarea name="notes" defaultValue={p?.notes ?? ""} placeholder="Surse (registre, acte), lucruri de verificat, cine a povestit…" style={{ minHeight: 60 }} />
+      <label>{t("notes")}
+        <textarea name="notes" defaultValue={p?.notes ?? ""} placeholder={t("notesPlaceholder")} style={{ minHeight: 60 }} />
       </label>
       {props.mode === "add" && matches.length > 0 && (
         <div className="confirm">
           {matches.map((x) => (
             <div key={x.id} style={{ marginBottom: 6 }}>
-              <b>{x.name}{x.birthYear ? `, ${x.birthYear}` : ""}</b>{" "}
-              {kind === "mother" || kind === "father" ? `e deja în arbore, lângă familia lui ${props.anchor.givenName}. E aceeași persoană?`
-                : kind === "spouse" ? `e deja trecut(ă) lângă ${props.anchor.givenName}.`
-                : kind === "child" ? `e deja copilul lui ${props.anchor.givenName}.` : `e deja ${x.sex === "F" ? "sora" : "fratele"} lui ${props.anchor.givenName}.`}
+              {(() => {
+                const v = { who: `${x.name}${x.birthYear ? `, ${x.birthYear}` : ""}`, name: props.anchor.givenName, sex: x.sex, b: (c: React.ReactNode) => <b>{c}</b> };
+                return kind === "mother" || kind === "father" ? t.rich("matchParent", v) : kind === "spouse" ? t.rich("matchSpouse", v)
+                  : kind === "child" ? t.rich("matchChild", v) : t.rich("matchSibling", v);
+              })()}
               {props.useExisting && (
                 <div className="actions" style={{ marginTop: 4 }}>
                   <button type="button" className="btn primary" disabled={linking} onClick={async () => {
                     setLinking(true); setLinkErr(null);
                     const err = await props.useExisting!(x);
                     setLinking(false);
-                    if (err) setLinkErr(err); else props.onDone(`${x.name} este acum ${kind === "mother" ? "mama" : "tatăl"} lui ${props.anchor.givenName}.`);
-                  }}>{linking ? "Se leagă…" : `Da, e ${x.givenName}: ${x.sex === "M" ? "leagă-l" : "leag-o"} pe ${x.sex === "M" ? "el" : "ea"}`}</button>
+                    if (err) setLinkErr(err); else props.onDone(t("linked", { person: x.name, kind: kind === "mother" ? "mother" : "father", name: props.anchor.givenName }));
+                  }}>{linking ? t("linking") : t("linkYes", { name: x.givenName, sex: x.sex })}</button>
                 </div>
               )}
             </div>
           ))}
-          <small className="muted">Dacă e altă persoană, cu același nume, continuă cu „Adaugă”.</small>
+          <small className="muted">{t("otherSameName")}</small>
           {linkErr && <p className="err">{linkErr}</p>}
         </div>
       )}
       {state && "error" in state && state.error && <p className="err">{state.error}</p>}
       <div className="actions">
-        <button className="btn primary" disabled={pending}>{pending ? "Se salvează…" : p ? "Salvează" : "Adaugă"}</button>
-        {props.onCancel && <button type="button" className="btn" onClick={props.onCancel}>Renunță</button>}
+        <button className="btn primary" disabled={pending}>{pending ? t("saving") : p ? t("save") : t("add")}</button>
+        {props.onCancel && <button type="button" className="btn" onClick={props.onCancel}>{t("cancel")}</button>}
       </div>
     </form>
   );

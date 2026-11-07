@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { saveMemory } from "@/app/lada-actions";
 import { chapterLabel, type Chapter } from "@/lib/questions";
-import { Avatar } from "./Album";
+import { Avatar } from "./Avatar";
 import VoiceRecorder, { uploadForMemory, type Voice } from "./VoiceRecorder";
 
 type Person = { id: string; givenName: string; surname: string; sex: "M" | "F" | "U"; photoId: string | null; accountImage?: string | null };

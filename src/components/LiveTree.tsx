@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "use-intl";
 import { createRealtimeClient, type SealedLiveQuery } from "@neon/realtime/client";
 import { RealtimeProvider, useLiveQuery } from "@neon/realtime-react";
 import type { PersonVersion } from "@/lib/realtime";
@@ -21,6 +22,7 @@ export default function LiveTree(props: Props) {
 }
 
 function LiveStatus({ treeId, userId, sealedQuery, initialData }: Props) {
+  const t = useTranslations("Charts"), locale = useLocale();
   const router = useRouter();
   const [lastChange, setLastChange] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -47,16 +49,16 @@ function LiveStatus({ treeId, userId, sealedQuery, initialData }: Props) {
     const key = versionKey(data);
     if (key === seen.current) return;
     seen.current = key;
-    setLastChange(new Date().toLocaleTimeString("ro-RO"));
+    setLastChange(new Date().toLocaleTimeString(locale));
     // Mai multe schimbări apropiate = o singură reîncărcare.
     clearTimeout(timer.current);
     timer.current = setTimeout(() => router.refresh(), 300);
   }, [data, router]);
 
-  const label = status === "error" ? "actualizările live s-au oprit" : status === "live" ? "live" : "se conectează…";
+  const label = status === "error" ? t("liveStopped") : status === "live" ? t("live") : t("connecting");
   return (
-    <span className="chip" role="status" data-live-status={status} title="Arborele se actualizează singur când rudele adaugă persoane.">
-      ● {label}{lastChange ? ` · actualizat la ${lastChange}` : ""}
+    <span className="chip" role="status" data-live-status={status} title={t("liveTitle")}>
+      ● {label}{lastChange ? ` · ${t("updatedAt", { time: lastChange })}` : ""}
     </span>
   );
 }

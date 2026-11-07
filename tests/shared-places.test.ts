@@ -86,7 +86,7 @@ describe("din aceleași locuri", () => {
 
   it("cere legătura o singură dată; proprietarul acceptă, apoi își pot scrie", async () => {
     const huedin = "RO:55455";
-    expect(await askContact(db, demo, { fromTreeId: T.demo, toTreeId: T.pop, placeId: huedin, note: null })).toEqual({ error: DEMO_NO });
+    expect(await askContact(db, demo, { fromTreeId: T.demo, toTreeId: T.pop, placeId: huedin, note: null })).toEqual({ error: DEMO_NO, code: "demo" });
     expect((await askContact(db, ion, { fromTreeId: T.igna, toTreeId: T.rus, placeId: huedin, note: null })).error).toBeTruthy();
     expect((await askContact(db, ion, { fromTreeId: T.pop, toTreeId: T.igna, placeId: huedin, note: null })).error).toBe("Nu ești în acest arbore.");
     expect((await askContact(db, ion, { fromTreeId: T.igna, toTreeId: T.pop, placeId: "RO:1", note: null })).error).toBe("Neamurile voastre nu mai au acest loc în comun.");
@@ -103,7 +103,7 @@ describe("din aceleași locuri", () => {
 
     const before = await canMessage(db, T.pop, ion.id, maria.id);
     expect(before.ok).toBe(false);
-    expect(await answerContact(db, ion.id, inc.id, true)).toEqual({ error: "Cererea nu mai există." }); // doar proprietarul răspunde
+    expect(await answerContact(db, ion.id, inc.id, true)).toEqual({ error: "Cererea nu mai există.", code: "noRequest" }); // doar proprietarul răspunde
     expect(await answerContact(db, maria.id, inc.id, true)).toEqual({ ok: true });
     expect(await pendingContacts(db, maria.id)).toBe(0);
 

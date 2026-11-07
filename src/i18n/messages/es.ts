@@ -1,4 +1,5 @@
 import type { Catalog } from "./ro";
+import { esArbore } from "./arbore/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -282,4 +283,5 @@ export const es: Catalog = {
       claimed: "Otra persona ha reclamado esta ficha mientras tanto.",
     },
   },
+  ...esArbore,
 };

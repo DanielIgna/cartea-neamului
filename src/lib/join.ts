@@ -80,12 +80,12 @@ export async function myJoinRequests(db: Db, meId: string) {
 /** Cererile care așteaptă răspunsul meu, ca proprietar: cine cere, ce fișă spune că e a lui și ce a scris. */
 export async function joinRequestsFor(db: Db, ownerId: string) {
   const rows = await db.select({ r: joinRequest, treeName: tree.name, name: user.name, email: user.email,
-    given: person.givenName, surname: person.surname, born: person.birthDateText })
+    given: person.givenName, surname: person.surname, sex: person.sex, born: person.birthDateText })
     .from(joinRequest).innerJoin(tree, eq(tree.id, joinRequest.treeId)).innerJoin(user, eq(user.id, joinRequest.userId))
     .innerJoin(person, eq(person.id, joinRequest.personId))
     .where(and(eq(tree.ownerId, ownerId), eq(joinRequest.status, "pending"))).orderBy(desc(joinRequest.createdAt)).limit(100);
   return rows.map(({ r, ...x }) => ({ id: r.id, treeId: r.treeId, personId: r.personId, note: r.note, at: r.createdAt,
-    treeName: x.treeName, name: x.name, email: x.email, personName: `${x.given} ${x.surname}`.trim(), born: x.born }));
+    treeName: x.treeName, name: x.name, email: x.email, personName: `${x.given} ${x.surname}`.trim(), sex: x.sex, born: x.born }));
 }
 
 export async function pendingJoins(db: Db, ownerId: string) {

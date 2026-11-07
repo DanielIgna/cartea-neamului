@@ -7,6 +7,8 @@
  * Panoul de admin rămâne în română și nu are texte aici.
  */
 import { USAGE_CONSENT_TEXT } from "@/lib/legal";
+import type { DeepPartial, Widen } from "./types";
+import { roArbore } from "./arbore/ro";
 
 export const ro = {
   Meta: {
@@ -290,9 +292,10 @@ export const ro = {
       claimed: "Fișa a fost revendicată între timp de altcineva.",
     },
   },
+  // Etapa 2: arborele, fișa persoanei, rudenia, mesajele, harta (src/i18n/messages/arbore/).
+  ...roArbore,
 } as const;
 
-type Widen<T> = { -readonly [K in keyof T]: T[K] extends string ? string : Widen<T[K]> };
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */
 export type Catalog = Widen<typeof ro>;
-export type DeepPartial<T> = { [K in keyof T]?: T[K] extends string ? string : DeepPartial<T[K]> };
+export type { DeepPartial };

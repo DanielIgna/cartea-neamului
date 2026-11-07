@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
+import { useTranslations } from "use-intl";
 import { mergePeople } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
 import type { Duplicate } from "@/lib/family";
@@ -19,9 +20,10 @@ export default function Duplicates({ treeId, pairs, people, kids, onDone, inline
   const [asking, setAsking] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
+  const t = useTranslations("Duplicates");
   const shown = pairs.filter((d) => !dismissed.includes(pairKey(d)) && people[d.keep] && people[d.drop]);
   if (!shown.length) return null;
-  const label = (id: string) => { const n = kids(id); return `${people[id].name}${people[id].birthYear ? `, ${people[id].birthYear}` : ""}${n ? ` (${n === 1 ? "1 copil" : `${n} copii`})` : ""}`; };
+  const label = (id: string) => { const n = kids(id); return `${people[id].name}${people[id].birthYear ? `, ${people[id].birthYear}` : ""}${n ? ` (${t("kids", { count: n })})` : ""}`; };
   const notSame = (d: Duplicate) => {
     const next = [...dismissed, pairKey(d)];
     setDismissed(next);
@@ -31,24 +33,24 @@ export default function Duplicates({ treeId, pairs, people, kids, onDone, inline
     <>
       {shown.map((d) => (
         <div key={pairKey(d)} className="confirm" style={{ marginTop: 8 }}>
-          Pare aceeași persoană, trecută de două ori: <b>{label(d.keep)}</b> și <b>{label(d.drop)}</b>
-          {d.via && people[d.via] ? <>, amândouă legate de {people[d.via].name}</> : null}
-          {d.born && people[d.born] ? <>, {people[d.drop].sex === "M" ? "fiul" : people[d.drop].sex === "F" ? "fiica" : "copilul"} lui {people[d.born].name}</> : null}.
+          {t.rich("same", { first: label(d.keep), second: label(d.drop), b: (c) => <b>{c}</b> })}
+          {d.via && people[d.via] ? t("via", { name: people[d.via].name }) : null}
+          {d.born && people[d.born] ? t("childOf", { sex: people[d.drop].sex, parent: people[d.born].name }) : null}.
           {asking === pairKey(d) ? (
             <>
-              <div style={{ margin: "6px 0" }}>Păstrez fișa „{people[d.keep].name}” și mut la ea {d.born ? "părinții, " : ""}copiii, soții, pozele și datele celeilalte; dubla se șterge. Continui?</div>
+              <div style={{ margin: "6px 0" }}>{t("ask", { name: people[d.keep].name, parents: d.born ? "yes" : "no" })}</div>
               <div className="actions" style={{ marginTop: 0 }}>
                 <button className="btn primary" disabled={pending} onClick={() => start(async () => {
                   const r = await mergePeople(treeId, d.keep, d.drop);
-                  if (r.error) setErr(r.error); else { setAsking(null); onDone(r.message ?? "Fișele au fost unite.", d.keep); }
-                })}>{pending ? "Se unesc…" : "Da, unește-le"}</button>
-                <button className="btn" disabled={pending} onClick={() => setAsking(null)}>Renunță</button>
+                  if (r.error) setErr(r.error); else { setAsking(null); onDone(r.message ?? t("merged"), d.keep); }
+                })}>{pending ? t("merging") : t("yesMerge")}</button>
+                <button className="btn" disabled={pending} onClick={() => setAsking(null)}>{t("cancel")}</button>
               </div>
             </>
           ) : (
             <div className="actions" style={{ marginTop: 6 }}>
-              <button className="btn primary" onClick={() => { setErr(null); setAsking(pairKey(d)); }}>Unește-le într-o singură fișă</button>
-              <button className="btn" onClick={() => notSame(d)}>Nu e aceeași persoană</button>
+              <button className="btn primary" onClick={() => { setErr(null); setAsking(pairKey(d)); }}>{t("mergeBoth")}</button>
+              <button className="btn" onClick={() => notSame(d)}>{t("notSame")}</button>
             </div>
           )}
         </div>
@@ -59,7 +61,7 @@ export default function Duplicates({ treeId, pairs, people, kids, onDone, inline
   if (inline) return body;
   return (
     <div className="card">
-      <div className="section-label" style={{ marginTop: 0 }}>Persoane trecute de două ori?</div>
+      <div className="section-label" style={{ marginTop: 0 }}>{t("title")}</div>
       {body}
     </div>
   );
@@ -72,24 +74,25 @@ export function MergeWith({ treeId, p, candidates, onDone }: { treeId: string; p
   const [sure, setSure] = useState(false);
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
-  if (!open) return <button className="btn" onClick={() => setOpen(true)} title="Pentru o persoană trecută de două ori în arbore">Unește cu altă fișă</button>;
+  const t = useTranslations("Duplicates");
+  if (!open) return <button className="btn" onClick={() => setOpen(true)} title={t("mergeWithTitle")}>{t("mergeWith")}</button>;
   const chosen = candidates.find((c) => c.id === other);
   return (
     <div className="confirm" style={{ width: "100%" }}>
-      <label>Care fișă e tot {p.givenName}, trecut(ă) a doua oară?
+      <label>{t("which", { name: p.givenName, sex: p.sex })}
         <select value={other} onChange={(e) => { setOther(e.target.value); setSure(false); }}>
-          <option value="">alege…</option>
+          <option value="">{t("choose")}</option>
           {candidates.map((c) => <option key={c.id} value={c.id}>{c.name}{c.birthYear ? `, ${c.birthYear}` : ""}</option>)}
         </select>
       </label>
-      {chosen && <p style={{ margin: "6px 0" }}>Tot ce are fișa „{chosen.name}” (copii, soți, părinți, poze, date) trece la „{p.name}”, iar „{chosen.name}” se șterge.</p>}
+      {chosen && <p style={{ margin: "6px 0" }}>{t("moveAll", { other: chosen.name, name: p.name })}</p>}
       <div className="actions" style={{ marginTop: 6 }}>
-        {chosen && !sure && <button className="btn primary" onClick={() => setSure(true)}>Unește</button>}
+        {chosen && !sure && <button className="btn primary" onClick={() => setSure(true)}>{t("merge")}</button>}
         {chosen && sure && <button className="btn primary" disabled={pending} onClick={() => start(async () => {
           const r = await mergePeople(treeId, p.id, chosen.id);
-          if (r.error) setErr(r.error); else { setOpen(false); onDone(r.message ?? "Fișele au fost unite.", p.id); }
-        })}>{pending ? "Se unesc…" : `Da, e aceeași persoană`}</button>}
-        <button className="btn" disabled={pending} onClick={() => { setOpen(false); setOther(""); setSure(false); }}>Renunță</button>
+          if (r.error) setErr(r.error); else { setOpen(false); onDone(r.message ?? t("merged"), p.id); }
+        })}>{pending ? t("merging") : t("yesSame")}</button>}
+        <button className="btn" disabled={pending} onClick={() => { setOpen(false); setOther(""); setSure(false); }}>{t("cancel")}</button>
       </div>
       {err && <p className="err">{err}</p>}
     </div>

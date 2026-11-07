@@ -6,6 +6,8 @@ import { fetchAncestorRows, toAhnentafel } from "./ancestry";
 import { parseFuzzyDate } from "./dates";
 import { raisedIn, type Raised } from "./raised";
 import { memoryMediaIds } from "./lada-db";
+import { countryCode, countryName } from "./place-key";
+import { placeholderLabel } from "./family";
 
 export type PersonView = {
   id: string; name: string; givenName: string; surname: string; birthSurname: string | null; sex: "M" | "F" | "U";
@@ -19,10 +21,12 @@ export type PersonView = {
   documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean; description?: string | null; mimeType?: string | null }[];
 };
 
-export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = [], accountImage: string | null = null): PersonView {
+export function toView(p: typeof person.$inferSelect, docs: PersonView["documents"] = [], accountImage: string | null = null, locale?: string): PersonView {
   const b = parseFuzzyDate(p.birthDateText), d = parseFuzzyDate(p.deathDateText);
+  // „Tată necunoscut” se citește în limba celui care se uită; în baza de date rămâne cum a fost pus.
+  const given = placeholderLabel(p.givenName, p.sex, locale);
   return {
-    id: p.id, name: `${p.givenName} ${p.surname}`.trim(), givenName: p.givenName, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex,
+    id: p.id, name: `${given} ${p.surname}`.trim(), givenName: given, surname: p.surname, birthSurname: p.birthSurname, sex: p.sex,
     birthText: p.birthDateText, birthPlace: p.birthPlace, deathText: p.deathDateText, deathPlace: p.deathPlace,
     birthCountry: p.birthCountry, deathCountry: p.deathCountry, residencePlace: p.residencePlace, residenceCountry: p.residenceCountry,
     birthYear: b.year, deathYear: d.year, approx: b.approx, living: p.living, discreet: p.discreet, claimed: !!p.claimedByUserId,
@@ -38,16 +42,16 @@ export function safeAccountImage(url: string | null | undefined): string | null 
 }
 
 /** „Huedin” sau „Torino, Italia”: țara se scrie doar când nu e România. */
-export function where(place: string | null | undefined, country: string | null | undefined) {
-  const c = country?.trim();
-  return [place?.trim(), c && !/^rom[aâ]nia$/i.test(c) ? c : null].filter(Boolean).join(", ");
+export function where(place: string | null | undefined, country: string | null | undefined, locale?: string) {
+  const c = country?.trim(), cc = countryCode(c);
+  return [place?.trim(), c && cc !== "RO" ? (cc && locale ? countryName(cc, locale) : c) : null].filter(Boolean).join(", ");
 }
 
 /**
  * Tot ce are nevoie ecranul arborelui: toate persoanele și relațiile arborelui (pentru frați, soți, copii,
  * descendenți și gradul de rudenie), cine pe cine a crescut, plus ascendenții persoanei centrale numerotați Ahnentafel.
  */
-export async function loadTreeView(db: Db, treeId: string, centerId?: string, generations = 4) {
+export async function loadTreeView(db: Db, treeId: string, centerId?: string, generations = 4, locale?: string) {
   const [t] = await db.select().from(tree).where(eq(tree.id, treeId));
   if (!t) return null;
   const rows = await db.select().from(person).where(eq(person.treeId, treeId));
@@ -69,13 +73,13 @@ export async function loadTreeView(db: Db, treeId: string, centerId?: string, ge
   const claimers = [...new Set(rows.map((p) => p.claimedByUserId).filter((u): u is string => !!u))];
   const images = new Map(claimers.length ? (await db.select({ id: user.id, image: user.image }).from(user).where(inArray(user.id, claimers))).map((u) => [u.id, safeAccountImage(u.image)]) : []);
   const people: Record<string, PersonView> = {};
-  for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })), images.get(p.claimedByUserId ?? "") ?? null);
+  for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })), images.get(p.claimedByUserId ?? "") ?? null, locale);
   const slots: Record<number, string> = {};
   for (const [n, id] of ahnen) slots[n] = id;
   return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised: await raisedIn(db, treeId) };
 }
 
-export async function loadTimeline(db: Db, treeId: string) {
+export async function loadTimeline(db: Db, treeId: string, locale?: string) {
   const people = await db.select().from(person).where(eq(person.treeId, treeId));
-  return people.map((p) => toView(p)).filter((p) => p.birthYear).sort((a, b) => a.birthYear! - b.birthYear!);
+  return people.map((p) => toView(p, [], null, locale)).filter((p) => p.birthYear).sort((a, b) => a.birthYear! - b.birthYear!);
 }

@@ -22,6 +22,7 @@ import { siteOrigin } from "@/lib/site";
 import BookView from "@/components/BookView";
 import BookFan from "@/components/BookFan";
 import BookTree from "@/components/BookTree";
+import PageIntl from "@/i18n/PageIntl";
 import BookOptionsForm from "@/components/BookOptionsForm";
 import BookTextForm from "@/components/BookTextForm";
 
@@ -279,7 +280,7 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
           <p className="bk-chapter-sub">
             {urmasi}: {oameni(Object.keys(model.treePeople).length)}.{centerName ? ` Trunchiul duce până la ${centerName}.` : ""} În PDF, mărește desenul ca să citești toate numele.
           </p>
-          <figure className="bk-fig" data-fit><BookTree root={model.tree} people={model.treePeople} path={model.path} /></figure>
+          <figure className="bk-fig" data-fit><PageIntl ns={["Charts"]} locale="ro"><BookTree root={model.tree} people={model.treePeople} path={model.path} /></PageIntl></figure>
         </section>
       )}
 
