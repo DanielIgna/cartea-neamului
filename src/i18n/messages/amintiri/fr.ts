@@ -153,6 +153,12 @@ export const frAmintiri: AmintiriCatalog = {
     cancel: "Annuler",
   },
   Voice: {
+    noDevice: "Aucun micro n’a été trouvé sur cet appareil. Branchez-en un et réessayez.",
+    micBusy: "Une autre application utilise le micro. Fermez-la et réessayez.",
+    micTimeout: "Le navigateur n’a pas démarré le micro. Si une question s’affiche en haut, choisissez « Autoriser », puis réessayez.",
+    micFailed: "Le micro n’a pas démarré. Réessayez.",
+    retry: "Réessayer",
+    limit: "{minutes, number} minutes ou 4 Mo au maximum.",
     uploadAudioFailed: "L’enregistrement n’a pas pu être envoyé. Veuillez réessayer.",
     uploadPhotoFailed: "La photo n’a pas pu être envoyée. Réessayez ou enregistrez sans la photo.",
     record: "Enregistrer de vive voix",

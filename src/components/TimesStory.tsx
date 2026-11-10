@@ -102,7 +102,7 @@ export default function TimesStory({ p, origin, loading }: { p: PersonView; orig
           </ul>
         </>
       )}
-      <p className="muted" style={{ fontSize: 12, margin: "6px 0 0" }}>
+      <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>
         <i className="dot" style={{ background: "var(--good)" }} /> {w.tone("bine")} · <i className="dot" style={{ background: "var(--red)" }} /> {w.tone("greu")} · <i className="dot" style={{ background: "var(--ochre)" }} /> {w.tone("schimbare")}.{" "}
         {t("summaryNote")}
       </p>

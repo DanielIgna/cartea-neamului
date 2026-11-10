@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Deutsch (du). Verse aus der Lutherbibel 1912, mit „dass“ statt „daß“. */
 export const deCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "„{example}“ = ungefähres Jahr, aus den nahen Verwandten errechnet",
+    roadKeyStop: "„{word}“ = Halt in den Jahren des Kommunismus ({years})",
     title: "Zeitreise",
     titleTree: "Zeitreise · {tree}",
     pagesHint: "Die richtigen Antworten an den Haltestellen",

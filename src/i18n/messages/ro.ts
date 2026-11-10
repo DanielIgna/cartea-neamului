@@ -14,6 +14,7 @@ import { roVremuri } from "./vremuri/ro";
 import { roCarte } from "./carte/ro";
 import { roCalatorie } from "./calatorie/ro";
 import { roBiserica } from "./biserica/ro";
+import { roParteneri } from "./parteneri/ro";
 
 export const ro = {
   Meta: {
@@ -34,6 +35,7 @@ export const ro = {
     label: "Limba site-ului",
   },
   LanguageSuggest: {
+    close: "Închide și nu mai întreba",
     question: "Vrei să citești site-ul în română?",
     hint: "Limba se poate schimba oricând, sus, lângă temă.",
     accept: "În română",
@@ -115,6 +117,10 @@ export const ro = {
     failed: "Nu a mers. Încearcă din nou.",
   },
   Invitation: {
+    ogTitle: "{name} te invită în arborele familiei „{tree}”",
+    ogTitleNoName: "Ești invitat în arborele familiei „{tree}”",
+    ogDescription: "Intră în arbore pe Cartea Neamului: vezi rudele, adaugă ramura ta și amintirile celor dragi.",
+    invalid: "Invitația nu mai e valabilă",
     notFound: "Invitația nu există",
     expired: "Invitația a expirat",
     used: "Invitația a fost deja folosită",
@@ -307,6 +313,25 @@ export const ro = {
   ...roCarte,
   ...roCalatorie,
   ...roBiserica,
+  // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
+  ...roParteneri,
+  NotFound: {
+    title: "Pagina nu există",
+    text: "Poate linkul e greșit sau pagina a fost mutată. De pe prima pagină găsești tot ce e în Cartea Neamului.",
+    home: "Mergi la prima pagină",
+  },
+  LegalNote: {
+    text: "Textul de mai jos e în română; versiunea în română este cea oficială.",
+  },
+  AuthError: {
+    title: "Intrarea în cont nu a reușit",
+    denied: "Ai oprit conectarea cu Google. Poți încerca din nou sau poți intra cu emailul și parola.",
+    restart: "Conectarea a fost întreruptă (poate a durat prea mult sau s-a deschis în alt tab). Încearcă încă o dată, de la început.",
+    generic: "Ceva n-a mers la conectare. Încearcă din nou; dacă se repetă, scrie-ne și spune-ne codul de mai jos.",
+    again: "Încearcă din nou",
+    home: "Prima pagină",
+    code: "Codul erorii: {code}",
+  },
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

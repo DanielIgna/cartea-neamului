@@ -9,6 +9,10 @@ import type { Widen } from "../types";
 export const roCarte = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {O amintire spusă cu glasul nu e în carte, deci nici codul ei QR:} few {# amintiri spuse cu glasul nu sunt în carte, deci nici codurile lor QR:} other {# de amintiri spuse cu glasul nu sunt în carte, deci nici codurile lor QR:}}",
+      audioNotTicked: "{count, plural, one {una nu e bifată „Poate intra în Cartea neamului” (o bifează cine a scris-o, din ladă);} other {# nu sunt bifate „Poate intra în Cartea neamului” (le bifează cine le-a scris, din ladă);}}",
+      audioCloseOnly: "{count, plural, one {una e doar pentru familia apropiată și intră numai în ediția cu toate datele;} other {# sunt doar pentru familia apropiată și intră numai în ediția cu toate datele;}}",
+      audioLivingHidden: "{count, plural, one {una e a unui om în viață, ascuns în această ediție.} other {# sunt ale unor oameni în viață, ascunși în această ediție.}}",
       title: "Cartea neamului",
       back: "Înapoi la arbore",
       lead: "Coperta, cuprinsul, strămoșii în evantai, copacul neamului și câte o fișă pentru fiecare om, cu poze și povești. Se face din ce e acum în arbore: când familia mai adaugă ceva, deschide pagina din nou și cartea are și noutățile.",
@@ -39,6 +43,9 @@ export const roCarte = {
     },
     toc: "Cuprins",
     about: {
+      ofTree: "În carte {count, plural, one {este o persoană} few {sunt # persoane} other {sunt # de persoane}} din cele {all, number} ale arborelui",
+      livingHidden: "{count, plural, one {o persoană în viață ascunsă} few {# persoane în viață ascunse} other {# de persoane în viață ascunse}} în această ediție",
+      otherLeftOut: "{count, plural, one {o persoană discretă, fără nume sau fără legătură cu cei din carte} few {# persoane discrete, fără nume sau fără legătură cu cei din carte} other {# de persoane discrete, fără nume sau fără legătură cu cei din carte}}",
       title: "Despre această carte",
       people: "Cartea adună {count, plural, one {un om} few {# oameni} other {# de oameni}}.",
       peopleGenerations: "Cartea adună {count, plural, one {un om} few {# oameni} other {# de oameni}}, pe {generations, plural, one {o generație} few {# generații} other {# de generații}}.",

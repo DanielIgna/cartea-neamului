@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const enGBCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {One memory told aloud is not in the book, so neither is its QR code:} other {# memories told aloud are not in the book, so neither are their QR codes:}}",
+      audioNotTicked: "{count, plural, one {one isn’t ticked “May go in the family book” (whoever wrote it can tick it in the memory chest);} other {# aren’t ticked “May go in the family book” (whoever wrote them can tick them in the memory chest);}}",
+      audioCloseOnly: "{count, plural, one {one is for close family only and goes only into the edition with all details;} other {# are for close family only and go only into the edition with all details;}}",
+      audioLivingHidden: "{count, plural, one {one belongs to a living person hidden in this edition.} other {# belong to living people hidden in this edition.}}",
       title: "The family book",
       back: "Back to the tree",
       lead: "The cover, the contents, the ancestors in a fan, the family tree and a page for every person, with photos and stories. It is made from what is in the tree right now: when the family adds something, open this page again and the book will include it.",
@@ -32,6 +36,9 @@ export const enGBCarte: CarteCatalog = {
     },
     toc: "Contents",
     about: {
+      ofTree: "This book has {count, plural, one {# person} other {# people}} of the {all, number} in the tree",
+      livingHidden: "{count, plural, one {# living person hidden} other {# living people hidden}} in this edition",
+      otherLeftOut: "{count, plural, one {# person who is private, unnamed or not linked to those in the book} other {# people who are private, unnamed or not linked to those in the book}}",
       title: "About this book",
       people: "This book brings together {count, plural, one {one person} other {# people}}.",
       peopleGenerations: "This book brings together {count, plural, one {one person} other {# people}} across {generations, plural, one {one generation} other {# generations}}.",

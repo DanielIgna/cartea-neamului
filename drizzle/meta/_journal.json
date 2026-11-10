@@ -99,6 +99,27 @@
       "when": 1794006355596,
       "tag": "0013_folosire",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1794326400000,
+      "tag": "0014_parteneri",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1794340000000,
+      "tag": "0015_diacritice",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1794350000000,
+      "tag": "0016_diacritice_vechi",
+      "breakpoints": true
     }
   ]
 }

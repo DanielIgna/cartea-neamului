@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const deCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {Eine gesprochene Erinnerung steht nicht im Buch, also auch nicht ihr QR-Code:} other {# gesprochene Erinnerungen stehen nicht im Buch, also auch nicht ihre QR-Codes:}}",
+      audioNotTicked: "{count, plural, one {eine ist bei „Darf ins Familienbuch“ nicht angehakt (wer sie geschrieben hat, kann das in der Truhe tun);} other {# sind bei „Darf ins Familienbuch“ nicht angehakt (wer sie geschrieben hat, kann das in der Truhe tun);}}",
+      audioCloseOnly: "{count, plural, one {eine ist nur für die enge Familie und kommt nur in die vollständige Ausgabe;} other {# sind nur für die enge Familie und kommen nur in die vollständige Ausgabe;}}",
+      audioLivingHidden: "{count, plural, one {eine gehört einer lebenden Person, die in dieser Ausgabe ausgeblendet ist.} other {# gehören lebenden Personen, die in dieser Ausgabe ausgeblendet sind.}}",
       title: "Das Familienbuch",
       back: "Zurück zum Stammbaum",
       lead: "Der Umschlag, das Inhaltsverzeichnis, die Vorfahren als Fächer, der Stammbaum und eine Seite für jeden Menschen, mit Fotos und Geschichten. Das Buch entsteht aus dem, was gerade im Stammbaum steht: Wenn die Familie etwas ergänzt, öffne diese Seite noch einmal, und das Buch enthält auch das Neue.",
@@ -32,6 +36,9 @@ export const deCarte: CarteCatalog = {
     },
     toc: "Inhalt",
     about: {
+      ofTree: "Im Buch {count, plural, one {steht # Person} other {stehen # Personen}} von den {all, number} im Stammbaum",
+      livingHidden: "{count, plural, one {# lebende Person ausgeblendet} other {# lebende Personen ausgeblendet}} in dieser Ausgabe",
+      otherLeftOut: "{count, plural, one {# Person, die diskret ist, keinen Namen hat oder nicht mit den Personen im Buch verbunden ist} other {# Personen, die diskret sind, keinen Namen haben oder nicht mit den Personen im Buch verbunden sind}}",
       title: "Über dieses Buch",
       people: "Dieses Buch versammelt {count, plural, one {einen Menschen} other {# Menschen}}.",
       peopleGenerations: "Dieses Buch versammelt {count, plural, one {einen Menschen} other {# Menschen}} aus {generations, plural, one {einer Generation} other {# Generationen}}.",

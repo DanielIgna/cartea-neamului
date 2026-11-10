@@ -6,6 +6,9 @@ import { shrinkPhoto } from "@/lib/shrink-photo";
 import { DOC_KINDS } from "./Album";
 
 /** Încarcă un act, o fotografie sau o înregistrare în arhiva persoanei (Neon Object Storage, bucket privat). */
+/** Limita unui fișier încărcat (sub cei 4,5 MB pe care îi primește serverul într-o cerere). */
+const MAX_UPLOAD = 4 * 1024 * 1024;
+
 export function DocumentUpload({ treeId, personId, personName, onUploaded }: { treeId: string; personId: string; personName: string; onUploaded: () => void }) {
   const t = useTranslations("Media");
   const [open, setOpen] = useState(false);
@@ -17,8 +20,12 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
     // Pozele mari din telefon le micșorăm în browser, ca să încapă sub limita de 4 MB.
     const file = form.get("file");
     if (file instanceof File && file.type.startsWith("image/")) form.set("file", await shrinkPhoto(file));
+    // Actele PDF și înregistrările nu se pot micșora aici: le oprim înainte de trimitere, cu un mesaj clar.
+    const sent = form.get("file");
+    if (sent instanceof File && sent.size > MAX_UPLOAD) return setMsg({ error: t("tooBig", { size: (sent.size / 1048576).toFixed(1) }) });
     const res = await fetch(`/api/arbore/${treeId}/documente`, { method: "POST", body: form });
     const json = (await res.json().catch(() => ({}))) as { error?: string; title?: string };
+    if (res.status === 413) return setMsg({ error: t("tooBig", { size: sent instanceof File ? (sent.size / 1048576).toFixed(1) : "?" }) });
     if (!res.ok) return setMsg({ error: json.error ?? t("uploadFailed") });
     setMsg({ ok: t("uploaded", { title: json.title ?? "" }) });
     setOpen(false);
@@ -36,7 +43,8 @@ export function DocumentUpload({ treeId, personId, personName, onUploaded }: { t
         <label>{t("date")}<input name="dateText" placeholder={t("datePlaceholder")} /></label>
       </div>
       <label>{t("description")}<textarea name="description" style={{ minHeight: 60 }} /></label>
-      <label>{t("file")}<input type="file" name="file" required accept="image/*,application/pdf,audio/*" /></label>
+      <label>{t("file")}<input type="file" name="file" required accept="image/*,application/pdf,audio/*" />
+        <small className="muted">{t("limitHint")}</small></label>
       <label style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" name="asProfile" /> {t("asProfile")}</label>
       {msg.error && <p className="err">{msg.error}</p>}
       <div className="actions">

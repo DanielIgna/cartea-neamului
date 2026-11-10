@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Magyar (tegezve). Igeversek a Károli-bibliából, mai helyesírással. */
 export const huCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "„{example}” = becsült év, a közeli rokonokból számolva",
+    roadKeyStop: "„{word}” = megálló a kommunizmus éveiben ({years})",
     title: "Utazás az időben",
     titleTree: "Utazás az időben · {tree}",
     pagesHint: "A megállókban adott jó válaszok",

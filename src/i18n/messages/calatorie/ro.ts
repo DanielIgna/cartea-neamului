@@ -7,6 +7,8 @@ import type { Widen } from "../types";
 
 export const roCalatorie = {
   Journey: {
+    roadKeyApprox: "„{example}” = an aproximativ, socotit după rudele apropiate",
+    roadKeyStop: "„{word}” = oprire în anii comunismului ({years})",
     title: "Călătoria în timp",
     titleTree: "Călătoria în timp · {tree}",
     pagesHint: "Răspunsurile bune de la opriri",

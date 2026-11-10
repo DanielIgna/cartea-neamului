@@ -14,7 +14,7 @@ import { requireUser, roleIn, can } from "@/lib/access";
 import { bookOptions, bookWords, buildBook, cleanText, type BookModel, type BookOptions, type BookText, type BookUnion, type Entry, type Ref } from "@/lib/book";
 import { isPlaceholder, normName } from "@/lib/family";
 import type { Sex } from "@/lib/kinship";
-import { bookMemories, type BookMemory } from "@/lib/lada-db";
+import { audioLeftOut, bookMemories, type BookMemory } from "@/lib/lada-db";
 import { CHAPTERS, chapterKey } from "@/lib/questions";
 import { memoryShortPath } from "@/lib/short-link";
 import { siteOrigin } from "@/lib/site";
@@ -112,7 +112,7 @@ function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
   return (
     <article className="bk-person" data-anchor={`p-${e.id}`}>
       <div className="bk-person-top">
-        {e.photo && <img className="bk-photo" src={e.photo} alt="" referrerPolicy="no-referrer" loading="lazy" />}
+        {e.photo && <img className="bk-photo" src={e.photo} alt={e.name} referrerPolicy="no-referrer" loading="lazy" />}
         <div className="bk-person-main">
           <h3>{e.name}{maiden && <span className="bk-born"> {t("model.maiden", { name: maiden, sex: e.sex })}</span>}</h3>
           {e.dates && <div className="bk-dates">{e.dates}</div>}
@@ -132,7 +132,7 @@ function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
       {e.biography && <div className="bk-bio">{paragraphs(e.biography)}</div>}
       {e.album.length > 0 && (
         <div className="bk-album">
-          {e.album.map((a) => <figure key={a.src}><img src={a.src} alt="" loading="lazy" />{a.caption && <figcaption>{a.caption}</figcaption>}</figure>)}
+          {e.album.map((a) => <figure key={a.src}><img src={a.src} alt={a.caption || e.name} loading="lazy" />{a.caption && <figcaption>{a.caption}</figcaption>}</figure>)}
         </div>
       )}
     </article>
@@ -189,7 +189,7 @@ function Voices({ voices, options, w }: { voices: Voice[]; options: BookOptions;
                 {m.question && <p className="bk-q">{t("voices.question", { question: m.question })}{m.askedBy && <span> · {t("voices.askedBy", { name: m.askedBy })}</span>}</p>}
                 {(m.when || m.place) && <p className="bk-when">{[m.when, m.place].filter(Boolean).join(", ")}</p>}
               </div>
-              {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt="" loading="lazy" />}
+              {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt={m.title || v.name} loading="lazy" />}
               {m.body ? <div className="bk-memory-body">{paragraphs(m.body)}</div> : <p className="bk-memory-body bk-muted">{t("voices.toldAloud")}</p>}
               {m.qr && m.url && (
                 <div className="bk-listen">
@@ -207,9 +207,12 @@ function Voices({ voices, options, w }: { voices: Voice[]; options: BookOptions;
   );
 }
 
-function Book({ model, options, text, title, subtitle, author, treeName, when, voices, oldestSex, w }: {
+/** Câți oameni are arborele și de ce nu sunt toți în carte (aceeași cifră ca pe prima pagină și în arbore). */
+type Census = { all: number; livingHidden: number; other: number };
+
+function Book({ model, options, text, title, subtitle, author, treeName, when, voices, oldestSex, census, w }: {
   model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string;
-  voices: Voice[]; oldestSex: Sex; w: Words;
+  voices: Voice[]; oldestSex: Sex; census: Census; w: Words;
 }) {
   const { t } = w;
   const { stats, centerName, trunk } = model;
@@ -262,6 +265,13 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
             : t.rich("about.oldest", { sex: oldestSex, name: oldest.name, ref: refTag(oldest, w) })}</> : null}
           {stats.from && stats.to && stats.to > stats.from ? ` ${t("about.span", { from: String(stats.from), to: String(stats.to) })}` : ""}
         </p>
+        {census.all > stats.people && (
+          <p className="bk-note">{[
+            t("about.ofTree", { count: stats.people, all: census.all }),
+            census.livingHidden > 0 ? t("about.livingHidden", { count: census.livingHidden }) : "",
+            census.other > 0 ? t("about.otherLeftOut", { count: census.other }) : "",
+          ].filter(Boolean).join(" · ")}</p>
+        )}
         {stats.surnames.length > 0 && <><h3 className="bk-h">{t("about.surnames")}</h3><p>{stats.surnames.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
         {stats.places.length > 0 && <><h3 className="bk-h">{t("about.places")}</h3><p>{stats.places.map(([s, n]) => `${s} (${n})`).join(", ")}.</p></>}
         <h3 className="bk-h">{t("about.howTitle")}</h3>
@@ -386,8 +396,16 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const text = cleanText((draft?.options as { text?: Partial<BookText> } | undefined)?.text);
   const model = buildBook({ people: data.people, rels: data.rels, raised: data.raised, centerId: data.centerId, slots: data.slots, options, words: bookWords(locale, tb) });
   const { stats } = model;
+  // Câți sunt în arbore (cifra din arbore și de pe prima pagină) și câți lipsesc din carte: cei în viață ascunși în această ediție
+  // și ceilalți (discreți, fără nume ca „Tată necunoscut”, ori prea departe de persoana de la care pornește cartea).
+  const everyone = await db.select({ living: person.living, discreet: person.discreet, given: person.givenName }).from(person).where(eq(person.treeId, id));
+  const livingHidden = options.living === "ascunsi" ? everyone.filter((p) => p.living && !p.discreet && !isPlaceholder(p.given)).length : 0;
+  const census: Census = { all: everyone.length, livingHidden, other: Math.max(0, everyone.length - stats.people - livingHidden) };
   // „Cu vorbele lor”: amintirile bifate pentru carte pe care cel care face cartea le vede și pe site, pe oameni (în ordinea fișelor) și pe capitole.
-  const memories = await bookMemories(db, id, { userId: me.id, personId: mine?.id ?? null }, options.living, options.photos);
+  const [memories, leftOut] = await Promise.all([
+    bookMemories(db, id, { userId: me.id, personId: mine?.id ?? null }, options.living, options.photos),
+    audioLeftOut(db, id, { userId: me.id, personId: mine?.id ?? null }, options.living),
+  ]);
   const entries = model.generations.flatMap((g) => g.entries);
   const place = new Map(entries.map((e, i) => [e.id, i]));
   const chapterAt = (c: string) => { const i = CHAPTERS.findIndex((x) => x.key === c); return i < 0 ? CHAPTERS.length : i; };
@@ -425,6 +443,15 @@ export default async function BookPage({ params, searchParams }: { params: Promi
           </div>
           <p className="muted" style={{ margin: "0 0 10px" }}>{t("page.lead")}</p>
           <BookOptionsForm treeId={id} center={data.centerId} options={options} people={choices} bookLocale={locale} uiLocale={uiLocale} />
+          {leftOut.notTicked + leftOut.closeOnly + leftOut.livingHidden > 0 && (
+            // Codurile QR apar doar lângă amintirile care intră în carte; spunem de ce unele spuse cu glasul lipsesc.
+            <p className="muted" role="note" style={{ margin: "10px 0 0" }}>{[
+              t("page.audioOut", { count: leftOut.notTicked + leftOut.closeOnly + leftOut.livingHidden }),
+              leftOut.notTicked ? t("page.audioNotTicked", { count: leftOut.notTicked }) : "",
+              leftOut.closeOnly ? t("page.audioCloseOnly", { count: leftOut.closeOnly }) : "",
+              leftOut.livingHidden ? t("page.audioLivingHidden", { count: leftOut.livingHidden }) : "",
+            ].filter(Boolean).join(" ")}</p>
+          )}
         </div>
         {can(role, "editor") && <BookTextForm treeId={id} text={text} defaults={defaults} />}
         {stats.people === 0 ? (
@@ -432,7 +459,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
         ) : (
           <BookView format={options.format} renderKey={renderKey} fileName={title}>
             <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when}
-              voices={voices} oldestSex={oldestSex} w={w} />
+              voices={voices} oldestSex={oldestSex} census={census} w={w} />
           </BookView>
         )}
       </PageIntl>

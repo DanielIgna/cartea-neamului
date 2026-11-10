@@ -5,6 +5,7 @@ import { nlVremuri } from "./vremuri/nl";
 import { nlCarte } from "./carte/nl";
 import { nlCalatorie } from "./calatorie/nl";
 import { nlBiserica } from "./biserica/nl";
+import { nlParteneri } from "./parteneri/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -26,6 +27,7 @@ export const nl: Catalog = {
     label: "Taal van de site",
   },
   LanguageSuggest: {
+    close: "Sluiten en niet meer vragen",
     question: "Lees je de site liever in het Nederlands?",
     hint: "Je kunt de taal altijd wijzigen, bovenaan, naast het thema.",
     accept: "In het Nederlands",
@@ -107,6 +109,10 @@ export const nl: Catalog = {
     failed: "Dat is niet gelukt. Probeer het opnieuw.",
   },
   Invitation: {
+    ogTitle: "{name} nodigt je uit in de stamboom „{tree}”",
+    ogTitleNoName: "Je bent uitgenodigd in de stamboom „{tree}”",
+    ogDescription: "Kom in de stamboom op Cartea Neamului: zie je familie, voeg je tak en de herinneringen aan je dierbaren toe.",
+    invalid: "Deze uitnodiging is niet meer geldig",
     notFound: "Deze uitnodiging bestaat niet",
     expired: "Deze uitnodiging is verlopen",
     used: "Deze uitnodiging is al gebruikt",
@@ -296,4 +302,22 @@ export const nl: Catalog = {
   ...nlCarte,
   ...nlCalatorie,
   ...nlBiserica,
+  ...nlParteneri,
+  NotFound: {
+    title: "Deze pagina bestaat niet",
+    text: "De link klopt misschien niet of de pagina is verplaatst. Vanaf de startpagina vind je alles.",
+    home: "Naar de startpagina",
+  },
+  LegalNote: {
+    text: "Deze pagina is in het Roemeens. De Roemeense versie is de officiële.",
+  },
+  AuthError: {
+    title: "Inloggen is niet gelukt",
+    denied: "Je hebt het inloggen met Google gestopt. Probeer het opnieuw of log in met je e-mail en wachtwoord.",
+    restart: "Het inloggen werd onderbroken (misschien duurde het te lang of ging het open in een ander tabblad). Begin opnieuw.",
+    generic: "Er ging iets mis bij het inloggen. Probeer het opnieuw; gebeurt het weer, schrijf ons dan met de code hieronder.",
+    again: "Opnieuw proberen",
+    home: "Startpagina",
+    code: "Foutcode: {code}",
+  },
 };

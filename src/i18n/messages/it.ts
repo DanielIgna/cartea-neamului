@@ -5,6 +5,7 @@ import { itVremuri } from "./vremuri/it";
 import { itCarte } from "./carte/it";
 import { itCalatorie } from "./calatorie/it";
 import { itBiserica } from "./biserica/it";
+import { itParteneri } from "./parteneri/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -26,6 +27,7 @@ export const it: Catalog = {
     label: "Lingua del sito",
   },
   LanguageSuggest: {
+    close: "Chiudi e non chiedere più",
     question: "Preferisci leggere il sito in italiano?",
     hint: "Puoi cambiare lingua in qualsiasi momento, in alto, accanto al tema.",
     accept: "In italiano",
@@ -107,6 +109,10 @@ export const it: Catalog = {
     failed: "Non ha funzionato. Riprova.",
   },
   Invitation: {
+    ogTitle: "{name} ti invita nell’albero della famiglia «{tree}»",
+    ogTitleNoName: "Sei invitato nell’albero della famiglia «{tree}»",
+    ogDescription: "Entra nell’albero su Cartea Neamului: vedi i tuoi parenti, aggiungi il tuo ramo e i ricordi dei tuoi cari.",
+    invalid: "Questo invito non è più valido",
     notFound: "L’invito non esiste",
     expired: "L’invito è scaduto",
     used: "L’invito è già stato usato",
@@ -296,4 +302,22 @@ export const it: Catalog = {
   ...itCarte,
   ...itCalatorie,
   ...itBiserica,
+  ...itParteneri,
+  NotFound: {
+    title: "Questa pagina non esiste",
+    text: "Forse il link è sbagliato o la pagina è stata spostata. Dalla prima pagina trovi tutto.",
+    home: "Vai alla prima pagina",
+  },
+  LegalNote: {
+    text: "Questa pagina è in rumeno. La versione rumena è quella ufficiale.",
+  },
+  AuthError: {
+    title: "L’accesso non è riuscito",
+    denied: "Hai interrotto l’accesso con Google. Puoi riprovare o entrare con email e password.",
+    restart: "L’accesso è stato interrotto (forse ci è voluto troppo o si è aperto in un’altra scheda). Ricomincia da capo.",
+    generic: "Qualcosa non è andato durante l’accesso. Riprova; se succede di nuovo, scrivici con il codice qui sotto.",
+    again: "Riprova",
+    home: "Prima pagina",
+    code: "Codice di errore: {code}",
+  },
 };

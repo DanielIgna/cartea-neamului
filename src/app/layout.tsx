@@ -23,6 +23,7 @@ import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminUser } from "@/lib/admin";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
+import { SITE_URL } from "@/lib/site-url";
 import UsageBeat from "@/components/UsageBeat";
 import UsageNotice from "@/components/UsageNotice";
 import LanguagePicker from "@/components/LanguagePicker";
@@ -32,10 +33,22 @@ import { clientMessages } from "@/i18n/messages";
 import { getLocaleInfo, getMessages, getT, suggestedLocale } from "@/i18n/server";
 
 
+/**
+ * Previzualizarea linkului pe WhatsApp, Facebook și în alte aplicații: titlul, descrierea și poza (app/opengraph-image).
+ * Sunt fixe, în română, ca să arate la fel oricui trimite linkul; roboții acestor aplicații nu au cookie de limbă.
+ */
+const SHARE = {
+  title: "Cartea Neamului",
+  description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
+} as const;
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("Meta");
   return {
+    metadataBase: new URL(SITE_URL),
     title: "Cartea Neamului", description: t("description"), applicationName: "Cartea Neamului",
+    openGraph: { ...SHARE, url: "/", siteName: "Cartea Neamului", locale: "ro_RO", type: "website" },
+    twitter: { card: "summary_large_image", ...SHARE },
     // Pe iPhone, după „Adaugă pe ecranul principal”, se deschide ca o aplicație, cu numele întreg sub iconiță.
     appleWebApp: { capable: true, title: "Cartea Neamului", statusBarStyle: "default" },
     formatDetection: { telephone: false },
@@ -60,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const usage = me && !isDemo(me.email) ? await consentState(db, me.id, "usage").catch(() => null) : null;
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
-  const [messages, t, suggest] = await Promise.all([getMessages(locale), getT("Layout"), suggestedLocale()]);
+  const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
     <html lang={locale} data-theme={theme === "auto" ? undefined : theme}>
@@ -69,22 +82,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <PwaSetup />
           <div className="wrap">
             <header className="top">
-              <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><h1>Cartea Neamului</h1></Link></div>
+              <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><span className="brand-name">Cartea Neamului</span></Link></div>
               <div className="prefs">
                 <ThemeSwitch initial={theme} />
                 <LanguagePicker remember={source === "account"} />
               </div>
               {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminUser(me)} />}
             </header>
-            {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} />}
+            {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} close={ask.s("close")} />}
             {usage && !usage.at && <UsageNotice />}
-            {children}
+            <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <footer className="site-foot">
               <span>© {new Date().getFullYear()} Cartea Neamului</span>
               <Link href="/confidentialitate">{t("privacy")}</Link>
               <Link href="/termeni">{t("terms")}</Link>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
+              <Link href="/parteneri">{tp("menu")}</Link>
             </footer>
           </div>
         </IntlClient>

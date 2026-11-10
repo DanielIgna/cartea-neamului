@@ -5,6 +5,7 @@ import { enGBVremuri } from "./vremuri/en-GB";
 import { enGBCarte } from "./carte/en-GB";
 import { enGBCalatorie } from "./calatorie/en-GB";
 import { enGBBiserica } from "./biserica/en-GB";
+import { enGBParteneri } from "./parteneri/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -26,6 +27,7 @@ export const enGB: Catalog = {
     label: "Site language",
   },
   LanguageSuggest: {
+    close: "Close and don’t ask again",
     question: "Would you rather read the site in English?",
     hint: "You can change the language at any time, at the top, next to the theme.",
     accept: "In English",
@@ -107,6 +109,10 @@ export const enGB: Catalog = {
     failed: "That didn’t work. Please try again.",
   },
   Invitation: {
+    ogTitle: "{name} invites you to the family tree “{tree}”",
+    ogTitleNoName: "You’re invited to the family tree “{tree}”",
+    ogDescription: "Join the tree on Cartea Neamului: see your relatives, add your branch and the memories of your loved ones.",
+    invalid: "This invitation is no longer valid",
     notFound: "This invitation does not exist",
     expired: "This invitation has expired",
     used: "This invitation has already been used",
@@ -296,4 +302,22 @@ export const enGB: Catalog = {
   ...enGBCarte,
   ...enGBCalatorie,
   ...enGBBiserica,
+  ...enGBParteneri,
+  NotFound: {
+    title: "This page doesn’t exist",
+    text: "The link may be wrong or the page may have moved. You’ll find everything from the home page.",
+    home: "Go to the home page",
+  },
+  LegalNote: {
+    text: "This page is in Romanian. The Romanian version is the official one.",
+  },
+  AuthError: {
+    title: "Signing in didn’t work",
+    denied: "You stopped the Google sign-in. You can try again or sign in with your email and password.",
+    restart: "Signing in was interrupted (it may have taken too long or opened in another tab). Please start again.",
+    generic: "Something went wrong while signing in. Try again; if it happens again, write to us with the code below.",
+    again: "Try again",
+    home: "Home page",
+    code: "Error code: {code}",
+  },
 };

@@ -147,6 +147,12 @@ export const roAmintiri = {
     cancel: "Renunță",
   },
   Voice: {
+    noDevice: "Nu găsim niciun microfon la acest dispozitiv. Conectează unul și încearcă din nou.",
+    micBusy: "Microfonul e folosit acum de altă aplicație. Închide-o și încearcă din nou.",
+    micTimeout: "Browserul n-a pornit microfonul. Dacă vezi o întrebare sus, alege „Permite”, apoi încearcă din nou.",
+    micFailed: "Microfonul n-a pornit. Încearcă din nou.",
+    retry: "Încearcă din nou",
+    limit: "Cel mult {minutes, number} minute sau 4 MB.",
     uploadAudioFailed: "Înregistrarea nu s-a încărcat. Încearcă din nou.",
     uploadPhotoFailed: "Poza nu s-a încărcat. Încearcă din nou sau salvează fără poză.",
     record: "Înregistrează cu glasul",

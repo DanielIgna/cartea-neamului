@@ -5,6 +5,7 @@ import { esVremuri } from "./vremuri/es";
 import { esCarte } from "./carte/es";
 import { esCalatorie } from "./calatorie/es";
 import { esBiserica } from "./biserica/es";
+import { esParteneri } from "./parteneri/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -26,6 +27,7 @@ export const es: Catalog = {
     label: "Idioma del sitio",
   },
   LanguageSuggest: {
+    close: "Cerrar y no volver a preguntar",
     question: "¿Prefieres leer el sitio en español?",
     hint: "Puedes cambiar el idioma cuando quieras, arriba, junto al tema.",
     accept: "En español",
@@ -107,6 +109,10 @@ export const es: Catalog = {
     failed: "No ha funcionado. Inténtalo de nuevo.",
   },
   Invitation: {
+    ogTitle: "{name} te invita al árbol de la familia «{tree}»",
+    ogTitleNoName: "Estás invitado al árbol de la familia «{tree}»",
+    ogDescription: "Entra en el árbol en Cartea Neamului: ve a tus parientes, añade tu rama y los recuerdos de los tuyos.",
+    invalid: "La invitación ya no es válida",
     notFound: "La invitación no existe",
     expired: "La invitación ha caducado",
     used: "La invitación ya se ha usado",
@@ -296,4 +302,22 @@ export const es: Catalog = {
   ...esCarte,
   ...esCalatorie,
   ...esBiserica,
+  ...esParteneri,
+  NotFound: {
+    title: "Esta página no existe",
+    text: "Puede que el enlace esté mal o que la página se haya movido. Desde la portada encuentras todo.",
+    home: "Ir a la portada",
+  },
+  LegalNote: {
+    text: "Esta página está en rumano. La versión en rumano es la oficial.",
+  },
+  AuthError: {
+    title: "No se ha podido entrar",
+    denied: "Has detenido el acceso con Google. Puedes intentarlo de nuevo o entrar con tu correo y contraseña.",
+    restart: "El acceso se ha interrumpido (quizá tardó demasiado o se abrió en otra pestaña). Vuelve a empezar.",
+    generic: "Algo ha fallado al entrar. Inténtalo de nuevo; si se repite, escríbenos con el código de abajo.",
+    again: "Volver a intentarlo",
+    home: "Portada",
+    code: "Código de error: {code}",
+  },
 };

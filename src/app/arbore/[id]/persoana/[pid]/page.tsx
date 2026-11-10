@@ -25,6 +25,8 @@ import { degreeWord, kinLabel } from "@/lib/kin-words";
 import ProfileRelatives from "@/components/ProfileRelatives";
 import { closeFamily, closeKinIds, mayEdit, shareIds, type RelKind } from "@/lib/relatives";
 import { editLimits, limitFor } from "@/lib/edit-limits";
+import { loadHouses } from "@/lib/old-house";
+import OldHouse from "@/components/OldHouse";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -89,6 +91,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   const options = Object.values(data.people).filter((x) => !isPlaceholder(x.givenName))
     .map((x) => ({ id: x.id, name: x.name, years: years(x, locale) })).sort((a, b) => a.name.localeCompare(b.name, locale));
   const memories = lada.own.length + lada.about.length;
+  // Casa bătrânească: cele pe care le poate vedea, după aceleași reguli ca amintirile.
+  const houses = await loadHouses(db, id, pid, { userId: me.id, personId: mine?.id ?? null }, g, data.tree.chatMaxDegree, p.claimedBy ?? null);
   const bornIn = where(p.birthPlace, p.birthCountry, locale);
   const group = (title: string, ids: string[]) => ids.length > 0 && (
     <>
@@ -104,7 +108,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
-    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives"]}>
+    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>{t("back", { name: p.givenName })}</Link>
@@ -145,6 +149,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         <div className="section-label" style={{ marginTop: 0 }}>{t("album")}</div>
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />
       </div>
+      <OldHouse treeId={id} personId={pid} name={p.givenName} houses={houses} canAdd={can(role, "contributor")} canEditOrphans={can(role, "editor")}
+        storage={storageConfigured()} living={p.living} />
       {/* Soții discreți (de pildă o fostă soție) nu apar aici; se văd doar în profilurile copiilor lor, la „Părinți”. */}
       <ProfileRelatives treeId={id} personId={pid} own={mine?.id === pid} people={relPeople}
         data={{ father: cf.father, mother: cf.mother, paternal: cf.paternal, maternal: cf.maternal, partners: shownPartners, siblings: cf.siblings,

@@ -12,11 +12,13 @@
 import { and, asc, eq, inArray, isNull, ne, notInArray, or, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import {
-  account, accountPlan, consent, document, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
+  account, accountPlan, consent, document, oldHouse, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
   user, verification,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
+import { dropHouses } from "./old-house";
+import { partnerHistory } from "./partners";
 import { chapterLabel } from "./questions";
 import { recordConsent } from "./consent";
 import { CONSENT_LABEL, type ConsentPurpose } from "./legal";
@@ -107,6 +109,9 @@ export async function deleteAccount(db: Db, userId: string, opts: { scrub: boole
     const mine = await claimedIds(tx, userId);
     const gone = (await tx.select({ id: memory.id }).from(memory).where(hisMemories(userId, mine))).map((r) => r.id);
     fileKeys.push(...(await dropMemories(tx, gone)));
+    // Casele bătrânești scrise de el pleacă și ele, cu pozele puse doar la ele.
+    const houses = (await tx.select({ id: oldHouse.id }).from(oldHouse).where(eq(oldHouse.authorId, userId))).map((r) => r.id);
+    fileKeys.push(...(await dropHouses(tx, houses)));
     await tx.delete(memoryReply).where(eq(memoryReply.authorId, userId));
     // Întrebările lui fără răspuns pleacă; cele la care s-a răspuns rămân lângă răspuns, fără numele lui.
     await tx.delete(memoryQuestion).where(and(eq(memoryQuestion.askedBy, userId), isNull(memoryQuestion.memoryId)));
@@ -155,6 +160,8 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     .from(session).where(eq(session.userId, userId)).orderBy(asc(session.createdAt));
   const consents = await db.select().from(consent).where(eq(consent.userId, userId)).orderBy(asc(consent.createdAt));
   const [plan] = await db.select().from(accountPlan).where(eq(accountPlan.userId, userId));
+  const partners = await partnerHistory(db, userId);
+  const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const usage = await db.select().from(usageDay).where(eq(usageDay.userId, userId)).orderBy(asc(usageDay.day), asc(usageDay.section));
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, joinedAt: treeMember.joinedAt })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, userId)).orderBy(asc(treeMember.joinedAt));
@@ -171,10 +178,10 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     place: document.place, mimeType: document.mimeType, createdAt: document.createdAt }).from(document).where(eq(document.uploadedBy, userId)).orderBy(asc(document.createdAt));
 
   // Numele arborilor, ale oamenilor din lăzi și ale celor cu care a vorbit.
-  const treeIds = [...new Set([...trees.map((t) => t.id), ...mems.map((m) => m.treeId), ...replies.map((r) => r.treeId), ...msgs.map((m) => m.treeId), ...docs.map((d) => d.treeId),
+  const treeIds = [...new Set([...trees.map((t) => t.id), ...mems.map((m) => m.treeId), ...houses.map((h) => h.treeId), ...replies.map((r) => r.treeId), ...msgs.map((m) => m.treeId), ...docs.map((d) => d.treeId),
     ...joins.map((j) => j.treeId), ...contacts.flatMap((c) => [c.fromTreeId, c.toTreeId])])];
   const treeNames = new Map(treeIds.length ? (await db.select({ id: tree.id, name: tree.name }).from(tree).where(inArray(tree.id, treeIds))).map((t) => [t.id, t.name]) : []);
-  const personIds = [...new Set([...mems.map((m) => m.personId), ...replies.map((r) => r.personId), ...asked.map((q) => q.personId), ...joins.map((j) => j.personId)])];
+  const personIds = [...new Set([...mems.map((m) => m.personId), ...houses.map((h) => h.personId), ...replies.map((r) => r.personId), ...asked.map((q) => q.personId), ...joins.map((j) => j.personId)])];
   const people = new Map(personIds.length
     ? (await db.select({ id: person.id, given: person.givenName, surname: person.surname }).from(person).where(inArray(person.id, personIds))).map((p) => [p.id, `${p.given} ${p.surname}`.trim()])
     : []);
@@ -193,6 +200,9 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     sesiuni: sessions.map((s) => ({ inceput: iso(s.createdAt), expira: iso(s.expiresAt), ip: s.ip, browser: s.browser })),
     acorduri: consents.map((c) => ({ pentru: CONSENT_LABEL[c.purpose as ConsentPurpose] ?? c.purpose,
       versiune: c.textVersion, dat: c.granted, cand: iso(c.createdAt) })),
+    // Acordul pentru beneficiile de la parteneri (PropManage), cu tot istoricul: fiecare „da” și „nu”.
+    acorduriParteneri: partners.map((p) => ({ partener: p.partner === "propmanage" ? "PropManage" : p.partner, dat: p.granted, versiune: p.textVersion, limba: p.locale,
+      deUnde: p.source, dinData: iso(p.grantedAt), retrasPe: iso(p.revokedAt), scris: iso(p.createdAt) })),
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
     ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, schimbata: iso(plan.updatedAt) } } : {}),
     // Cât a folosit site-ul, pe zile, dacă a spus „Bine” la măsurare (doar timpul și partea din site).
@@ -211,6 +221,8 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
       inregistrata: m.helper ? (m.authorId === userId ? "de mine, pentru altcineva, în modul „la bunici”" : "de o rudă, în modul „la bunici”, cu acordul meu") : null,
       scrisa: iso(m.createdAt), schimbata: iso(m.updatedAt),
     })),
+    caseBatranesti: houses.map((h) => ({ arbore: treeOf(h.treeId), aLui: people.get(h.personId) ?? null, unde: h.place, construitaDe: h.builtBy, anul: h.builtYear,
+      povestea: h.story, poze: (h.photoIds ?? []).map((id) => file(id)), cineOVede: VIS[h.visibility] ?? h.visibility, scrisa: iso(h.createdAt), schimbata: iso(h.updatedAt) })),
     siEuImiAmintesc: replies.map((r) => ({ arbore: treeOf(r.treeId), subAmintireaDin: people.get(r.personId) ?? null, text: r.body, cand: iso(r.createdAt) })),
     intrebariPuse: asked.map((q) => ({ arbore: treeOf(q.treeId), pentru: people.get(q.personId) ?? null, text: q.text, raspuns: !!q.memoryId, cand: iso(q.createdAt) })),
     mesaje: msgs.map((m) => ({ arbore: treeOf(m.treeId), de: who(m.fromUserId), catre: who(m.toUserId), text: m.body, trimis: iso(m.createdAt), citit: iso(m.readAt) })),

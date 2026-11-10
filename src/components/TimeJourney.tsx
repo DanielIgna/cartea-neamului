@@ -161,6 +161,8 @@ export default function TimeJourney(props: Props) {
         ))}
         {word && <button className={idx === last ? "on" : ""} onClick={() => go(last)} title={t("beyond")}><i className="beyond" /><span>∞</span></button>}
       </nav>
+      {/* Ce înseamnă etichetele scurte de pe drum: anul aproximativ și popasul. */}
+      <p className="time-road-key">{t("roadKeyApprox", { example: t("approxYear", { year: "1900" }) })}{legs.some((l) => l.kind !== "person") ? ` · ${t("roadKeyStop", { word: t("stopShort"), years: `${REGIME.from}–${REGIME.to}` })}` : ""}</p>
 
       <div className="journey-nav">
         <button className="btn" onClick={() => go(idx - 1)} disabled={idx < 0}>{t("nav.back")}</button>

@@ -5,6 +5,7 @@ import { huVremuri } from "./vremuri/hu";
 import { huCarte } from "./carte/hu";
 import { huCalatorie } from "./calatorie/hu";
 import { huBiserica } from "./biserica/hu";
+import { huParteneri } from "./parteneri/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -26,6 +27,7 @@ export const hu: Catalog = {
     label: "Az oldal nyelve",
   },
   LanguageSuggest: {
+    close: "Bezárás, és ne kérdezze újra",
     question: "Inkább magyarul olvasnád az oldalt?",
     hint: "A nyelvet bármikor átállíthatod fent, a téma mellett.",
     accept: "Magyarul",
@@ -107,6 +109,10 @@ export const hu: Catalog = {
     failed: "Nem sikerült. Próbáld újra.",
   },
   Invitation: {
+    ogTitle: "{name} meghív a(z) „{tree}” családfába",
+    ogTitleNoName: "Meghívtak a(z) „{tree}” családfába",
+    ogDescription: "Lépj be a családfába a Cartea Neamului oldalon: lásd a rokonaidat, add hozzá az ágadat és szeretteid emlékeit.",
+    invalid: "Ez a meghívó már nem érvényes",
     notFound: "Ez a meghívó nem létezik",
     expired: "Ez a meghívó lejárt",
     used: "Ezt a meghívót már felhasználták",
@@ -296,4 +302,22 @@ export const hu: Catalog = {
   ...huCarte,
   ...huCalatorie,
   ...huBiserica,
+  ...huParteneri,
+  NotFound: {
+    title: "Ez az oldal nem létezik",
+    text: "Lehet, hogy hibás a link, vagy az oldal elköltözött. A kezdőlapról mindent megtalálsz.",
+    home: "Vissza a kezdőlapra",
+  },
+  LegalNote: {
+    text: "Ez az oldal románul olvasható. A román nyelvű változat a hivatalos.",
+  },
+  AuthError: {
+    title: "A belépés nem sikerült",
+    denied: "Leállítottad a Google-belépést. Próbáld újra, vagy lépj be e-maillel és jelszóval.",
+    restart: "A belépés megszakadt (talán túl sokáig tartott, vagy másik lapon nyílt meg). Kezdd újra az elejéről.",
+    generic: "Valami hiba történt a belépéskor. Próbáld újra; ha megismétlődik, írj nekünk az alábbi kóddal.",
+    again: "Újrapróbálom",
+    home: "Kezdőlap",
+    code: "Hibakód: {code}",
+  },
 };

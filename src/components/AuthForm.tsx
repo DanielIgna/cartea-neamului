@@ -5,9 +5,20 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "use-intl";
 import { authClient } from "@/lib/auth-client";
 import { MIN_AGE } from "@/lib/legal";
+import { SIGNUP_PARTNER_COOKIE } from "@/lib/partners-shared";
+
+/**
+ * Bifa pentru beneficiile de la PropManage ține minte alegerea într-un cookie scurt (30 de minute), pe care îl citește crearea
+ * contului pe server; așa merge și cu „Continuă cu Google”. Debifată, cookie-ul se șterge.
+ */
+function rememberPartner(on: boolean) {
+  document.cookie = on ? `${SIGNUP_PARTNER_COOKIE}=propmanage; Path=/; Max-Age=1800; SameSite=Lax` : `${SIGNUP_PARTNER_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
 
 export default function AuthForm({ next, startWithSignUp, google = false, oauthError }: { next: string; startWithSignUp: boolean; google?: boolean; oauthError?: string }) {
   const t = useTranslations("AuthForm");
+  const tp = useTranslations("Partners");
+  const [partner, setPartner] = useState(false);
   const [signUp, setSignUp] = useState(startWithSignUp);
   const [error, setError] = useState(oauthError ? t("googleFailed") : "");
   const [pending, setPending] = useState(false);
@@ -18,10 +29,12 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     setError(""); setPending(true);
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email")), password = String(f.get("password"));
+    rememberPartner(signUp && partner);
     const res = signUp
       ? await authClient.signUp.email({ email, password, name: String(f.get("name")) })
       : await authClient.signIn.email({ email, password });
     setPending(false);
+    rememberPartner(false);
     if (res.error) {
       const code = res.error.code;
       setError(code === "INVALID_EMAIL_OR_PASSWORD" ? t("wrongPassword")
@@ -38,6 +51,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
 
   async function withGoogle() {
     setError(""); setPending(true);
+    rememberPartner(signUp && partner);
     const res = await authClient.signIn.social({ provider: "google", callbackURL: next, errorCallbackURL: `/intrare?next=${encodeURIComponent(next)}&eroare=google` });
     if (res?.error) { setPending(false); setError(t("googleFailed")); }
   }
@@ -58,6 +72,13 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
       {signUp && <label>{t("name")}<input id="name" name="name" required autoComplete="name" /></label>}
       <label>{t("email")}<input id="email" name="email" type="email" required autoComplete="email" /></label>
       <label>{t("password")}<input id="password" name="password" type="password" required minLength={8} autoComplete={signUp ? "new-password" : "current-password"} /></label>
+      {signUp && (
+        // Separată de Termeni și nebifată de la sine: contul și arborele merg la fel și fără ea.
+        <label className="radio partner-optin">
+          <input type="checkbox" name="partner" checked={partner} onChange={(e) => setPartner(e.target.checked)} />
+          <span>{tp("checkbox")}<small className="muted">{tp("checkboxHint")}</small></span>
+        </label>
+      )}
       {error && <p className="err">{error}</p>}
       <button className="btn primary" disabled={pending}>{pending ? t("wait") : signUp ? t("create") : t("enter")}</button>
       {(signUp || google) && (

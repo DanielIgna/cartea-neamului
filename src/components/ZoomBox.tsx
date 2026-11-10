@@ -106,6 +106,7 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
         if (e.button === 0) drag = { id: e.pointerId, x: e.clientX, y: e.clientY, sl: el.scrollLeft, st: el.scrollTop, moved: false };
         return;
       }
+      if (e.pointerType === "touch") return; // atingerile le citim mai jos, din touchstart/touchmove
       touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (touches.size === 2) pinch = { d: two().d, z: fns.current.current() };
     };
@@ -154,6 +155,34 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
       const g = e as Event & { scale: number; clientX: number; clientY: number };
       fns.current.zoomTo(g0 * g.scale, g.clientX, g.clientY);
     };
+    // Pe ecranul tactil: un deget derulează pagina (desenul nu prinde degetul), două degete mută și măresc desenul.
+    let duo: { d: number; z: number; x: number; y: number } | null = null;
+    const mid = (l: TouchList) => ({ d: Math.hypot(l[0].clientX - l[1].clientX, l[0].clientY - l[1].clientY), x: (l[0].clientX + l[1].clientX) / 2, y: (l[0].clientY + l[1].clientY) / 2 });
+    const tStart = (e: TouchEvent) => {
+      if (e.touches.length !== 2) { duo = null; return; }
+      e.preventDefault();
+      const m = mid(e.touches);
+      duo = { d: m.d, z: fns.current.current(), x: m.x, y: m.y };
+      el.parentElement?.classList.remove("hint-on");
+    };
+    const tMove = (e: TouchEvent) => {
+      if (e.touches.length === 1 && !duo) { const w = el.parentElement; w?.classList.add("hint-on"); window.clearTimeout(hintT); hintT = window.setTimeout(() => w?.classList.remove("hint-on"), 1400); return; }
+      if (!duo || e.touches.length !== 2) return;
+      e.preventDefault();
+      const m = mid(e.touches), p = duo;
+      later(() => {
+        if (p.d > 0) fns.current.zoomTo((p.z * m.d) / p.d, m.x, m.y);
+        el.scrollLeft -= m.x - p.x;
+        el.scrollTop -= m.y - p.y;
+        p.x = m.x; p.y = m.y;
+      });
+    };
+    const tEnd = (e: TouchEvent) => { if (e.touches.length < 2) duo = null; };
+    let hintT = 0;
+    el.addEventListener("touchstart", tStart, { passive: false });
+    el.addEventListener("touchmove", tMove, { passive: false });
+    el.addEventListener("touchend", tEnd);
+    el.addEventListener("touchcancel", tEnd);
     el.addEventListener("pointerdown", down);
     el.addEventListener("pointermove", move);
     el.addEventListener("pointerup", up);
@@ -164,6 +193,11 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
     el.addEventListener("gesturechange", gChange);
     return () => {
       cancelAnimationFrame(frame);
+      window.clearTimeout(hintT);
+      el.removeEventListener("touchstart", tStart);
+      el.removeEventListener("touchmove", tMove);
+      el.removeEventListener("touchend", tEnd);
+      el.removeEventListener("touchcancel", tEnd);
       el.removeEventListener("pointerdown", down);
       el.removeEventListener("pointermove", move);
       el.removeEventListener("pointerup", up);
@@ -177,7 +211,7 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
 
   const zoomed = zoom !== null && natW.current > 0;
   return (
-    <div className="zoom-wrap">
+    <div className="zoom-wrap" data-hint={t("twoFingers")}>
       <div className="zoom-tools" role="group" aria-label={t("zoomGroup")}>
         <button type="button" onClick={() => zoomTo(current() / STEP)} aria-label={t("zoomOut")} title={t("zoomOut")}>−</button>
         {zoomed && <span className="zt-pct" aria-live="polite">{Math.round(zoom * 100)}%</span>}

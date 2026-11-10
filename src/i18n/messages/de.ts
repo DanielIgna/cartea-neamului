@@ -5,6 +5,7 @@ import { deVremuri } from "./vremuri/de";
 import { deCarte } from "./carte/de";
 import { deCalatorie } from "./calatorie/de";
 import { deBiserica } from "./biserica/de";
+import { deParteneri } from "./parteneri/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -26,6 +27,7 @@ export const de: Catalog = {
     label: "Sprache der Seite",
   },
   LanguageSuggest: {
+    close: "Schließen und nicht mehr fragen",
     question: "Möchtest du die Seite lieber auf Deutsch lesen?",
     hint: "Du kannst die Sprache jederzeit oben neben dem Farbschema ändern.",
     accept: "Auf Deutsch",
@@ -107,6 +109,10 @@ export const de: Catalog = {
     failed: "Das hat nicht geklappt. Versuch es noch einmal.",
   },
   Invitation: {
+    ogTitle: "{name} lädt dich in den Stammbaum „{tree}“ ein",
+    ogTitleNoName: "Du bist in den Stammbaum „{tree}“ eingeladen",
+    ogDescription: "Komm in den Stammbaum auf Cartea Neamului: sieh deine Verwandten, füge deinen Zweig und die Erinnerungen deiner Lieben hinzu.",
+    invalid: "Diese Einladung gilt nicht mehr",
     notFound: "Diese Einladung gibt es nicht",
     expired: "Diese Einladung ist abgelaufen",
     used: "Diese Einladung wurde schon benutzt",
@@ -296,4 +302,22 @@ export const de: Catalog = {
   ...deCarte,
   ...deCalatorie,
   ...deBiserica,
+  ...deParteneri,
+  NotFound: {
+    title: "Diese Seite gibt es nicht",
+    text: "Vielleicht ist der Link falsch oder die Seite wurde verschoben. Auf der Startseite findest du alles.",
+    home: "Zur Startseite",
+  },
+  LegalNote: {
+    text: "Diese Seite ist auf Rumänisch. Maßgeblich ist die rumänische Fassung.",
+  },
+  AuthError: {
+    title: "Die Anmeldung hat nicht geklappt",
+    denied: "Du hast die Anmeldung mit Google abgebrochen. Versuch es noch einmal oder melde dich mit E-Mail und Passwort an.",
+    restart: "Die Anmeldung wurde unterbrochen (vielleicht hat sie zu lange gedauert oder sich in einem anderen Tab geöffnet). Fang noch einmal von vorn an.",
+    generic: "Bei der Anmeldung ist etwas schiefgegangen. Versuch es noch einmal; wenn es wieder passiert, schreib uns mit dem Code unten.",
+    again: "Noch einmal versuchen",
+    home: "Startseite",
+    code: "Fehlercode: {code}",
+  },
 };
