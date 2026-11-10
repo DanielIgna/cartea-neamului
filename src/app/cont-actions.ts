@@ -8,6 +8,7 @@ import { currentUser } from "@/lib/access";
 import { deleteAccount, withdrawFaith } from "@/lib/account";
 import { isDemo } from "@/lib/demo";
 import { deleteObjects } from "@/lib/storage";
+import { getT } from "@/i18n/server";
 
 /**
  * Șterge contul celui intrat, după ce își scrie adresa de email ca să confirme. Contul de probă (cu parola publică) nu se
@@ -15,9 +16,10 @@ import { deleteObjects } from "@/lib/storage";
  */
 export async function deleteMyAccount(input: { confirm: string; scrub: boolean }): Promise<{ error?: string }> {
   const me = await currentUser();
-  if (!me) return { error: "Intră în cont." };
-  if (isDemo(me.email)) return { error: "Contul de probă e folosit de mai mulți oameni, așa că nu se poate șterge." };
-  if ((input.confirm ?? "").trim().toLowerCase() !== me.email.toLowerCase()) return { error: "Scrie adresa ta de email exact cum e în cont, ca să confirmi." };
+  if (!me) return { error: (await getT("Errors"))("signIn") };
+  const t = await getT("MyData");
+  if (isDemo(me.email)) return { error: t("errors.demoDelete") };
+  if ((input.confirm ?? "").trim().toLowerCase() !== me.email.toLowerCase()) return { error: t("errors.email") };
   const { fileKeys } = await deleteAccount(db, me.id, { scrub: !!input.scrub });
   await deleteObjects(fileKeys);
   // Sesiunea a plecat odată cu contul; ștergem și cookie-ul din browser.
@@ -29,7 +31,7 @@ export async function deleteMyAccount(input: { confirm: string; scrub: boolean }
 /** Retrage acordul pentru capitolul „Credința”: răspunsurile din acest capitol se șterg. */
 export async function withdrawFaithConsent(): Promise<{ ok?: boolean; removed?: number; error?: string }> {
   const me = await currentUser();
-  if (!me) return { error: "Intră în cont." };
+  if (!me) return { error: (await getT("Errors"))("signIn") };
   const r = await withdrawFaith(db, me.id);
   await deleteObjects(r.fileKeys);
   revalidatePath("/", "layout");

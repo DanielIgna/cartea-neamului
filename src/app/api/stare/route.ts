@@ -4,6 +4,7 @@ import { currentUser } from "@/lib/access";
 import { aiConfigured } from "@/lib/ai";
 import { realtimeConfigured } from "@/lib/realtime";
 import { bucketReachable, storageConfigured } from "@/lib/storage";
+import { getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ async function check(fn: () => Promise<unknown>) {
 
 /** Starea serviciilor Neon folosite de aplicație (doar pentru utilizatori logați; nu expune chei). */
 export async function GET() {
-  if (!(await currentUser())) return Response.json({ error: "Intră în cont." }, { status: 401 });
+  if (!(await currentUser())) return Response.json({ error: (await getT("Errors"))("signIn") }, { status: 401 });
   const fnUrl = process.env.NEON_FUNCTION_HELLO_BASE_URL;
   const [postgres, storage, fn] = await Promise.all([
     check(async () => {

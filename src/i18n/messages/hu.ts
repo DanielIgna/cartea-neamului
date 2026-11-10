@@ -7,6 +7,7 @@ import { huCalatorie } from "./calatorie/hu";
 import { huBiserica } from "./biserica/hu";
 import { huParteneri } from "./parteneri/hu";
 import { huLegal } from "./legal/hu";
+import { huDatele } from "./datele/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -307,6 +308,7 @@ export const hu: Catalog = {
   ...huBiserica,
   ...huParteneri,
   ...huLegal,
+  ...huDatele,
   NotFound: {
     title: "Ez az oldal nem létezik",
     text: "Lehet, hogy hibás a link, vagy az oldal elköltözött. A kezdőlapról mindent megtalálsz.",

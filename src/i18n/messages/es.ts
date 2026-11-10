@@ -7,6 +7,7 @@ import { esCalatorie } from "./calatorie/es";
 import { esBiserica } from "./biserica/es";
 import { esParteneri } from "./parteneri/es";
 import { esLegal } from "./legal/es";
+import { esDatele } from "./datele/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -307,6 +308,7 @@ export const es: Catalog = {
   ...esBiserica,
   ...esParteneri,
   ...esLegal,
+  ...esDatele,
   NotFound: {
     title: "Esta página no existe",
     text: "Puede que el enlace esté mal o que la página se haya movido. Desde la portada encuentras todo.",

@@ -4,7 +4,6 @@
  * Cât timp site-ul e în probă, fără firmă, de el răspunde Daniel Igna, ca persoană fizică. Variabilele de mediu OPERATOR_NAME
  * și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune, de pildă când în locul omului vine o firmă.
  */
-export const LEGAL_UPDATED = "6 noiembrie 2026";
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
 export const TERMS_DATE = new Date("2026-11-06T12:00:00Z");
 /** Ultima schimbare a Politicii de confidențialitate (partenerul PropManage și cookie-ul `limba`); Termenii au rămas din 6 noiembrie. */

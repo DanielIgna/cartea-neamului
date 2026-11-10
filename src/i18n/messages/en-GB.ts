@@ -7,6 +7,7 @@ import { enGBCalatorie } from "./calatorie/en-GB";
 import { enGBBiserica } from "./biserica/en-GB";
 import { enGBParteneri } from "./parteneri/en-GB";
 import { enGBLegal } from "./legal/en-GB";
+import { enGBDatele } from "./datele/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -307,6 +308,7 @@ export const enGB: Catalog = {
   ...enGBBiserica,
   ...enGBParteneri,
   ...enGBLegal,
+  ...enGBDatele,
   NotFound: {
     title: "This page doesn’t exist",
     text: "The link may be wrong or the page may have moved. You’ll find everything from the home page.",
