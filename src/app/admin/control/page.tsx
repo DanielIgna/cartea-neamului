@@ -5,6 +5,7 @@ import { peopleList } from "@/lib/admin-people";
 import { planOverview } from "@/lib/plans";
 import { AdminNav, PlanPill, Stat, count, eur, num } from "@/components/admin/ui";
 import { AccountPlanForm, LimitsForm } from "@/components/admin/PlanForms";
+import { partnerExport } from "@/lib/partners";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Manager control · Admin" };
@@ -15,7 +16,7 @@ export const metadata = { title: "Manager control · Admin" };
  */
 export default async function AdminControl() {
   await requireAdmin("/admin/control");
-  const [ov, people] = await Promise.all([planOverview(db), peopleList(db)]);
+  const [ov, people, pm] = await Promise.all([planOverview(db), peopleList(db), partnerExport(db, "")]);
   const s = ov.settings;
   const biggest = new Map<string, (typeof ov.trees)[number]>();
   for (const t of ov.trees) if (t.ownerId && (biggest.get(t.ownerId)?.persons ?? -1) < t.persons) biggest.set(t.ownerId, t);
@@ -52,6 +53,20 @@ export default async function AdminControl() {
           Încearcă alte cifre și vezi mai sus câți arbori ar trece peste ele. Un arbore e „peste” când trece de oricare dintre cele două limite.
         </p>
         <LimitsForm value={s} />
+      </div>
+
+      <div className="card" id="parteneri">
+        <h3 style={{ marginTop: 0 }}>Partenerul PropManage</h3>
+        <p className="muted" style={{ marginTop: 0, maxWidth: "78ch" }}>
+          Lista pentru PropManage are doar adresele de email ale celor care au bifat „Beneficii de la parteneri” și nu s-au răzgândit, cu data acordului
+          și legătura lor de dezabonare (de pus în fiecare email trimis). Nimic din arbori, nici rudele invitate. Descarc-o de fiecare dată înainte să
+          o trimiți: cine renunță iese din ea pe loc. Fiecare descărcare se trece în jurnalul site-ului (cine, când, câte adrese).
+        </p>
+        <div className="stats"><Stat label="Cu acordul dat acum" value={num(pm.length)} /></div>
+        <div className="actions">
+          <a className="btn primary" href="/api/parteneri/propmanage/export" download>Descarcă lista (CSV)</a>
+          <a className="btn" href="/parteneri" target="_blank">Pagina „Parteneri”</a>
+        </div>
       </div>
 
       <div className="card">

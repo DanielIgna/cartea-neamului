@@ -1,0 +1,91 @@
+/**
+ * Partenerii (acum doar PropManage) și casa bătrânească a familiei. `Partners` merge în browser pe fiecare pagină (bifa de la
+ * crearea contului, legătura din meniu, cardul de după „Descarcă PDF”), `PartnersPage` e pagina /parteneri și dezabonarea
+ * (pe server), `OldHouse` e secțiunea „Casa bătrânească” de pe pagina unei persoane. Aceleași reguli ca în ../ro.ts.
+ * Textul bifei e cel cerut de Daniel, cuvânt cu cuvânt; când se schimbă, se schimbă și PARTNER_TEXT_VERSION (src/lib/partners.ts).
+ */
+import type { Widen } from "../types";
+
+export const roParteneri = {
+  Partners: {
+    checkbox: "Vreau să primesc din când în când beneficii pentru casa mea de la PropManage, partenerul Cartea Neamului.",
+    checkboxHint: "Opțional. Arborele merge la fel și fără. Le dăm doar adresa ta de email și poți renunța oricând, dintr-un clic.",
+    menu: "Parteneri",
+    bookCard: {
+      label: "Un partener al nostru",
+      text: "Casa în care a crescut familia are și ea o poveste. Pe PropManage îi poți face gratuit Cartea Casei: actele, lucrările și reparațiile, toate într-un loc.",
+      cta: "Vezi PropManage",
+      close: "Închide și nu mai arăta",
+    },
+  },
+  PartnersPage: {
+    metaTitle: "Parteneri · Cartea Neamului",
+    metaDescription: "Partenerii Cartea Neamului și ce oferă ei familiilor.",
+    label: "Parteneri",
+    title: "Partenerii Cartea Neamului",
+    lead: "Arborele, amintirile și cartea rămân doar ale familiei, fără reclame. Aici, într-o singură pagină, sunt partenerii în care avem încredere.",
+    pmAlt: "Sigla PropManage",
+    pmWhat: "Pentru proprietarii de locuințe",
+    pmLine1: "PropManage îți ține casa în ordine: Cartea Casei, gratuită, adună într-un loc actele, lucrările făcute și întreținerea.",
+    pmLine2: "Când e nevoie de o reparație, găsești meșteri cu identitatea și firma verificate, iar banii pleacă abia după ce confirmi lucrarea.",
+    pmCta: "Mergi pe propmanage.ro",
+    dataTitle: "Ce află partenerii despre tine",
+    dataText: "Nimic, dacă nu vrei tu. Doar dacă bifezi „Beneficii de la parteneri” îi dăm PropManage adresa ta de email, ca să-ți trimită din când în când beneficii pentru casa ta. Despre arborele tău, rudele tale, satele, amintirile, pozele sau glasul celor dragi nu află nimic, niciodată.",
+    stateOn: "Acum primești beneficii de la PropManage. Poți renunța oricând, dintr-un clic, din <link>Datele mele</link>.",
+    stateOff: "Acum nu primești nimic de la parteneri. Dacă vrei, pornești beneficiile din <link>Datele mele</link>.",
+    stateGuest: "Dacă ai cont, alegi asta din „Datele mele”. Mai multe în <link>Politica de confidențialitate</link>.",
+    unsubTitle: "Renunți la beneficiile de la parteneri?",
+    unsubText: "După ce apeși butonul, adresa ta de email iese pe loc din lista pe care o primește PropManage. Arborele și contul tău rămân exact cum sunt.",
+    unsubButton: "Da, nu mai vreau beneficii",
+    unsubWorking: "Se retrage…",
+    unsubDone: "Gata. Nu mai primești beneficii de la PropManage prin Cartea Neamului. Te poți răzgândi oricând, din „Datele mele”.",
+    unsubBad: "Legătura nu e bună sau e incompletă. Copiaz-o întreagă din email, sau intră în cont și renunță din „Datele mele”.",
+  },
+  OldHouse: {
+    title: "Casa bătrânească",
+    intro: "Casa în care a trăit {name}: unde e, cine a ridicat-o, în ce an, poze și povestea ei.",
+    add: "Adaugă casa bătrânească",
+    edit: "Schimbă",
+    remove: "Șterge",
+    confirmRemove: "Sigur ștergi casa, cu pozele puse la ea?",
+    yes: "Da, șterge",
+    cancel: "Renunță",
+    place: "Adresa sau satul",
+    placeHint: "de pildă „Sâncraiu, nr. 112” sau doar satul",
+    builtBy: "Cine a construit-o",
+    builtYear: "Anul",
+    story: "Povestea casei",
+    photos: "Poze",
+    addPhotos: "Adaugă poze",
+    removePhoto: "Scoate poza",
+    photoTitle: "Casa bătrânească: {label}",
+    seeIt: "Cine o vede",
+    vis: { private: "Doar eu (ciornă)", close: "Familia apropiată", tree: "Tot arborele" },
+    save: "Salvează",
+    saving: "Se salvează…",
+    uploading: "Se încarcă pozele…",
+    builtByLine: "Construită de {who}",
+    builtInLine: "în {year}",
+    builtInOnly: "Construită în {year}",
+    writtenBy: "Scrisă de {name}",
+    draft: "Ciornă, o vezi doar tu",
+    noStorage: "Pozele se pot pune după ce e pornit locul pentru fișiere.",
+    partner: "Vrei să o renovezi sau să-i ții actele în ordine? <link>Fă-i gratuit Cartea Casei pe PropManage.</link>",
+    errors: {
+      empty: "Scrie măcar unde e casa sau povestea ei.",
+      tooLong: "Textul e prea lung.",
+      badYear: "Anul nu pare bun.",
+      tooManyPhotos: "Cel mult {max} poze.",
+      notMember: "Nu ești în acest arbore.",
+      noRight: "Doar cei care pot adăuga în arbore pot pune casa bătrânească.",
+      personGone: "Persoana nu mai e în arbore.",
+      gone: "Casa nu mai există.",
+      onlyAuthor: "Doar cel care a scris-o o poate schimba.",
+      already: "Ai pus deja casa bătrânească pentru acest om. Schimb-o pe aceea.",
+      badPhoto: "O poză nu e bună. Încarc-o din nou.",
+      badData: "Ceva nu e bine completat.",
+    },
+  },
+} as const;
+
+export type ParteneriCatalog = Widen<typeof roParteneri>;

@@ -737,3 +737,38 @@ body:has(.grand){overflow:hidden}
 .ch-influence li{margin:0 0 8px;max-width:70ch}
 @media (max-width:560px){.ch{padding:16px}.ch h2{font-size:24px}.ch-bible li{grid-template-columns:1fr;gap:2px}.ch-era{padding-left:14px}}
 @media print{.ch-nav,.ch-filter{display:none}.ch-hero{break-inside:avoid}}
+
+/* ---------- Parteneri (PropManage) și casa bătrânească ---------- */
+.menu-quiet{font-size:13px;color:var(--muted);text-decoration:none}
+.menu-quiet:hover{color:var(--ink);text-decoration:underline}
+@media (max-width:640px){.menu-quiet{display:none}}
+.partner-optin{align-items:flex-start;font-size:14px}
+.partner-optin small{display:block;margin-top:2px;font-size:12.5px}
+.partner-logo{display:block;max-width:220px;height:auto;margin-bottom:8px}
+:root[data-theme="dark"] .partner-logo{background:#fff;border-radius:8px;padding:6px 10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .partner-logo{background:#fff;border-radius:8px;padding:6px 10px}}
+.partner-card{position:relative;max-width:640px;margin:12px auto;font-size:14px}
+.partner-card p{margin:6px 0 10px}
+.partner-close{position:absolute;top:6px;right:10px;background:none;border:0;font-size:22px;line-height:1;color:var(--muted);cursor:pointer}
+.partner-card .linkish,.house-thumb .linkish{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.partner-note{margin:14px 0 0;font-size:13px;color:var(--muted)}
+.partner-note a{color:var(--muted)}
+.switch{display:inline-flex;align-items:center;gap:10px;background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;font:inherit;cursor:pointer;color:var(--ink)}
+.switch .switch-knob{width:34px;height:20px;border-radius:999px;background:var(--line);position:relative;transition:background .15s}
+.switch .switch-knob::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.switch.on .switch-knob{background:var(--accent)}
+.switch.on .switch-knob::after{left:16px}
+.old-house .house+.house{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.house-place{margin:0 0 2px;font-size:18px}
+.house-photos{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.house-photos img{width:120px;height:90px;object-fit:cover;border-radius:8px;display:block}
+.house-thumb{display:grid;gap:2px;justify-items:start}
+.house-file{display:inline-block;max-width:140px;padding:8px;border:1px dashed var(--line);border-radius:8px;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.house-foot{font-size:13px;margin-top:6px}
+.house-row{display:grid;grid-template-columns:1fr 120px;gap:10px}
+@media (max-width:520px){.house-row{grid-template-columns:1fr}}
+.house-form .label-like{font-size:14px;margin-bottom:4px}
+.house-form fieldset.vis{border:0;padding:0;margin:0;display:grid;gap:4px}
+.house-form fieldset.vis legend{font-size:14px;margin-bottom:4px;padding:0}
+.form .partner-optin{display:flex;flex-direction:row;gap:10px;align-items:flex-start;font-weight:400}
+.form .partner-optin input{width:auto;flex:none;margin-top:4px}

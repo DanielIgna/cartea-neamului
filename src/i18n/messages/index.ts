@@ -34,7 +34,7 @@ export async function loadMessages(locale: Locale): Promise<Messages> {
  * tests/i18n.test.ts verifică să fie aici toate cele cerute cu useTranslations(...) în componente.
  */
 export const CLIENT_NAMESPACES = [
-  "ThemeSwitch", "LanguagePicker", "UserMenu", "UsageNotice", "AuthForm", "InvitePanel", "FamilyStart", "JoinTree", "GedcomImport", "InstallApp",
+  "ThemeSwitch", "LanguagePicker", "UserMenu", "UsageNotice", "AuthForm", "InvitePanel", "FamilyStart", "JoinTree", "GedcomImport", "InstallApp", "Partners",
 ] as const satisfies readonly (keyof Messages)[];
 
 /**
@@ -43,7 +43,7 @@ export const CLIENT_NAMESPACES = [
  */
 export const PAGE_NAMESPACES = [
   "Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "PersonForm", "Media", "Relations", "Chat", "Map", "Nearby",
-  "Lada", "MemoryForm", "Voice", "Story", "Grand", "Auto", "Relatives", "BookUi", "Journey",
+  "Lada", "MemoryForm", "Voice", "Story", "Grand", "Auto", "Relatives", "BookUi", "Journey", "OldHouse",
 ] as const satisfies readonly (keyof Messages)[];
 export type PageNamespace = (typeof PAGE_NAMESPACES)[number];
 

@@ -5,6 +5,8 @@
  * și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune, de pildă când în locul omului vine o firmă.
  */
 export const LEGAL_UPDATED = "6 noiembrie 2026";
+/** Ultima schimbare a Politicii de confidențialitate (partenerul PropManage și cookie-ul `limba`); Termenii au rămas din LEGAL_UPDATED. */
+export const PRIVACY_UPDATED = "10 noiembrie 2026";
 export const TERMS_VERSION = "2026-11-06";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";

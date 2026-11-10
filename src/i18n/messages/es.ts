@@ -4,6 +4,7 @@ import { esAmintiri } from "./amintiri/es";
 import { esVremuri } from "./vremuri/es";
 import { esCarte } from "./carte/es";
 import { esCalatorie } from "./calatorie/es";
+import { esParteneri } from "./parteneri/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -294,4 +295,5 @@ export const es: Catalog = {
   ...esVremuri,
   ...esCarte,
   ...esCalatorie,
+  ...esParteneri,
 };

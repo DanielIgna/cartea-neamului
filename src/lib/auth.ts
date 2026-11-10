@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
 import { user, session, account, verification } from "@/db/schema";
 import { recordConsent } from "./consent";
+import { setPartnerConsent, signupPartnerFromCookie } from "./partners";
 import { DEFAULT_LOCALE, localeFromCookieHeader } from "@/i18n/locales";
 
 const DEV_SECRET = "dev-secret-cartea-neamului-schimba-in-productie";
@@ -50,7 +51,16 @@ export const auth = betterAuth({
           const locale = localeFromCookieHeader(ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie"));
           return locale ? { data: { ...u, locale } } : undefined;
         },
-        after: async (u) => { await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e)); },
+        after: async (u, ctx) => {
+          await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e));
+          // Bifa separată (nebifată de la sine) pentru beneficiile de la PropManage: doar dacă omul a bifat-o în formular.
+          const cookie = ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie");
+          const partner = signupPartnerFromCookie(cookie);
+          if (partner) {
+            await setPartnerConsent(db, u.id, true, { partner, source: "cont-nou", locale: localeFromCookieHeader(cookie) ?? DEFAULT_LOCALE })
+              .catch((e) => console.error("consent partner", e));
+          }
+        },
       },
     },
     account: {

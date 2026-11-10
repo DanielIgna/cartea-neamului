@@ -6,7 +6,8 @@ import { deletionPlan } from "@/lib/account";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import { LEGAL_UPDATED, operator } from "@/lib/legal";
-import { AccountDelete, FaithWithdraw, UsageToggle } from "@/components/MyDataTools";
+import { AccountDelete, FaithWithdraw, PartnerToggle, UsageToggle } from "@/components/MyDataTools";
+import { PROPMANAGE_CONSENT_TEXT, partnerState } from "@/lib/partners";
 import { duration, usageOf } from "@/lib/usage";
 import { inZile } from "@/lib/ro-words";
 
@@ -23,6 +24,7 @@ export default async function MyDataPage() {
   const me = await requireUser("/datele-mele");
   const [plan, terms, faith, usage] = await Promise.all([deletionPlan(db, me.id), consentState(db, me.id, "terms"), consentState(db, me.id, "faith"),
     consentState(db, me.id, "usage")]);
+  const partner = await partnerState(db, me.id);
   const mine = usage.granted ? await usageOf(db, me.id, 30) : null;
   const contact = operator().email;
   const trees = [...plan.owned.map((t) => ({ id: t.id, name: t.name })), ...plan.member];
@@ -74,6 +76,13 @@ export default async function MyDataPage() {
           </ul>
         )}
         <UsageToggle granted={usage.granted} demo={isDemo(me.email)} />
+        <p id="parteneri" style={{ marginTop: 18 }}>Beneficii de la parteneri: {partner.granted && partner.since
+          ? <>ai bifat pe {day(partner.since)} „{PROPMANAGE_CONSENT_TEXT}” Așa că doar adresa ta de email ajunge la PropManage, nimic din arbore.</>
+          : partner.since ? <>ai renunțat pe {day(partner.since)}, așa că adresa ta nu mai ajunge la PropManage.</>
+          : <>nu ți-ai dat acordul, așa că nu dăm nimic partenerilor. Dacă vrei, îl pornești de aici: „{PROPMANAGE_CONSENT_TEXT}”</>}
+          {" "}<Link href="/parteneri">Despre parteneri</Link>.
+        </p>
+        <PartnerToggle granted={partner.granted} demo={isDemo(me.email)} />
       </div>
 
       <div className="card my-danger">
