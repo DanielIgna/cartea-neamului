@@ -6,6 +6,7 @@ import { itCarte } from "./carte/it";
 import { itCalatorie } from "./calatorie/it";
 import { itBiserica } from "./biserica/it";
 import { itParteneri } from "./parteneri/it";
+import { itLegal } from "./legal/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -305,13 +306,14 @@ export const it: Catalog = {
   ...itCalatorie,
   ...itBiserica,
   ...itParteneri,
+  ...itLegal,
   NotFound: {
     title: "Questa pagina non esiste",
     text: "Forse il link è sbagliato o la pagina è stata spostata. Dalla prima pagina trovi tutto.",
     home: "Vai alla prima pagina",
   },
   LegalNote: {
-    text: "Questa pagina è in rumeno. La versione rumena è quella ufficiale.",
+    text: "Questa è una traduzione. La versione rumena è quella ufficiale.",
   },
   AuthError: {
     title: "L’accesso non è riuscito",

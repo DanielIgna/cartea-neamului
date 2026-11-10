@@ -6,6 +6,7 @@ import { esCarte } from "./carte/es";
 import { esCalatorie } from "./calatorie/es";
 import { esBiserica } from "./biserica/es";
 import { esParteneri } from "./parteneri/es";
+import { esLegal } from "./legal/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -305,13 +306,14 @@ export const es: Catalog = {
   ...esCalatorie,
   ...esBiserica,
   ...esParteneri,
+  ...esLegal,
   NotFound: {
     title: "Esta página no existe",
     text: "Puede que el enlace esté mal o que la página se haya movido. Desde la portada encuentras todo.",
     home: "Ir a la portada",
   },
   LegalNote: {
-    text: "Esta página está en rumano. La versión en rumano es la oficial.",
+    text: "Esto es una traducción. La versión en rumano es la oficial.",
   },
   AuthError: {
     title: "No se ha podido entrar",

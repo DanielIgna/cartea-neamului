@@ -1,0 +1,166 @@
+import type { LegalCatalog } from "./ro";
+
+export const huLegal: LegalCatalog = {
+  Legal: {
+    updated: "Utolsó módosítás: {date}",
+    contactTitle: "Kapcsolat",
+    contactLine: "{name}{person, select, yes {, magánszemély} other {}}. E-mail: <mail>{email}</mail>.",
+    Privacy: {
+      metaTitle: "Adatvédelmi tájékoztató",
+      metaDescription: "Milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket.",
+      label: "Adatvédelmi tájékoztató",
+      title: "Hogyan vigyázunk a családod adataira",
+      sections: {
+        intro: {
+          p1: "A Cartea Neamului olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Itt röviden és nehéz szavak nélkül leírjuk, milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket. Röviden: a családfák magánjellegűek, te döntöd el, ki látja az emlékeidet, semmit sem adunk el, és nem jelenítünk meg reklámot. Partnerünk, a PropManage csak az e-mail-címedet kapja meg, és csak akkor, ha ezt bejelölöd.",
+        },
+        controller: {
+          h: "Ki felel az adatokért",
+          p1: "A Cartea Neamului adataiért az általános adatvédelmi rendelet (az (EU) 2016/679 rendelet, „GDPR”) szerinti adatkezelőként <b>{name}</b>{person, select, yes {, magánszemély} other {}} felel. Ha bármilyen kérdésed vagy kérésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
+          beta: "A Cartea Neamului most próbaidőszakban van: csak a család és a közeli barátok használják, hogy elmondják, mi működik és mi nem. A próbaidőszakban is úgy őrizzük és védjük az adataitokat, ahogy itt áll.",
+        },
+        data: {
+          h: "Milyen adatokat őrzünk",
+          l1: "<b>A fiókod:</b> a neved, az e-mail-címed és a jelszavad (csak titkosított ujjlenyomatként tároljuk, amelyet mi sem tudunk elolvasni). Ha Google-lal lépsz be, a Google-fiók azonosítója és a profilképe. A fiókod biztonsága érdekében azok a munkamenetek, amelyekben be vagy jelentkezve, az IP-címmel és a böngésző típusával.",
+          l2: "<b>A családfák:</b> amit te és a rokonaid az emberekről írtok: nevek, a születés és a halál dátuma és helye, hol laknak az élők, foglalkozás, életrajz, jegyzetek, fényképek, beszkennelt iratok és rokoni kapcsolatok. Azt is megjegyezzük, ki végezte az egyes módosításokat, hogy a hibákat ki lehessen javítani.",
+          l3: "<b>Az emlékláda és az önéletrajz:</b> a leírt vagy élőszóban elmondott emlékek (hangfelvételek), a hozzájuk tartozó fényképek, a rokonok által feltett kérdések és a válaszok. Ha egy rokon „a nagyszülőknél” rögzíti valakinek a történeteit, akinek nincs fiókja, az ő hozzájárulását is megőrizzük, néha az ő hangján.",
+          l4: "<b>A hit:</b> amit a „Hit” fejezetbe írsz, az a vallási meggyőződésedet mutatja. A törvény ezeket különleges kategóriájú adatnak tekinti (GDPR 9. cikk), ezért csak a kifejezett hozzájárulásoddal őrizzük meg őket, amelyet ott kérünk tőled, az első válaszod előtt.",
+          l5: "<b>Az üzenetek</b>, amelyeket a rokonok egymásnak írnak.",
+          l6: "<b>„Szerepelsz már egy családfában?”:</b> a név és a születési dátum, amelyet megadsz, hogy megtaláld az adatlapodat. A keresés után csak a keresett családnevet tartjuk meg, és azt, hogy találtunk-e valamit, hogy korlátozhassuk a kereséseket (így senki sem találhatja ki valaki születési dátumát úgy, hogy napról napra próbálkozik).",
+          l7: "<b>„Ugyanonnan”:</b> csak ha a családfa tulajdonosa bekapcsolja, az elhunyt ősök falvai, a családnevük és az évek, hogy más családok, amelyeknek ugyanazokban a falvakban vannak a gyökereik, megtalálják a rokonaikat. A kapcsolatfelvételi kéréseket és az azokra adott válaszokat is megőrizzük.",
+          l8: "<b>Mennyit használod az oldalt</b>, csak ha „Rendben”-t mondasz arra a kérdésre, amelyet egyetlen egyszer teszünk fel: naponként, mennyi időt töltöttél az oldal egyes részein (például „Családfa · Fa” vagy „A család térképe”), hányszor nyitottad meg, és ebből mennyi volt telefonon vagy a telefonos alkalmazásban. Csak azt az időt számoljuk, amikor az oldal elöl van, és csinálsz benne valamit. Nem őrizzük meg az oldal címét, azt, amit írsz, és azt sem, mire kattintasz.",
+          l9: "<b>Partnerek kedvezményei</b>, csak ha ezt bejelölöd (a fiók létrehozásakor vagy az „Adataim” oldalon): minden „igen” és minden „nem”, a dátummal, a bejelölt szöveg változatával, a nyelvvel és azzal, hogy honnan választottál.",
+          l10: "<b>A régi családi ház:</b> amit egy személy oldalán a család házáról írsz (a cím vagy a falu, ki építette, az év, fényképek és a története). Csak az látja, akit te kiválasztasz, ahogy az emlékeknél.",
+          l11: "<b>A böngésződben:</b> a választott téma (világos vagy sötét), a családágak, amelyeket látni szeretnél, és hogy láttad-e már a partner kártyáját a könyv letöltése után. Ha „Rendben”-t mondtál az időmérésre, az utoljára számolt perc is, legfeljebb egy óra, hogy akkor is eljusson hozzánk, ha sietve bezárod az oldalt.",
+          l12: "<b>A szerver technikai naplói</b> (IP-cím, kért oldal, időpont), rövid ideig megőrizve, hogy kijavíthassuk a hibákat.",
+        },
+        why: {
+          h: "Miért és milyen jogalapon",
+          l1: "Hogy működjön, amit kérsz: a fiók, a családfák, az emlékláda, az üzenetek és a könyv. A jogalap a köztünk lévő szerződés, vagyis ezek a <terms>Feltételek</terms> (GDPR 6. cikk (1) bekezdés b) pont).",
+          l2: "Hogy megvédjük a fiókokat és a családfákat: a munkamenetek, a módosítások naplója és a keresések korlátozása. A jogalap a jogos érdekünk, hogy az oldal biztonságos maradjon (6. cikk (1) bekezdés f) pont).",
+          l3: "Hogy lássuk, mit használnak az emberek, és min kell javítani: a fiókokra és a családfákra vonatkozó számok az adminisztrációs felületen, anélkül, amit írtok. A jogalap a jogos érdekünk, hogy jobbá tegyük az oldalt (6. cikk (1) bekezdés f) pont).",
+          l4: "Az élő rokonok esetében, akiket a családfába beírsz, a jogalap a család jogos érdeke, hogy megőrizze a történetét, gondosan: a családfák magánjellegűek, az élők pedig csak a saját családfájukban láthatók, soha más családoknál. Aki egy családfában szerepel, kérheti, hogy javítsuk vagy töröljük az adatait.",
+          l5: "A hozzájárulásod alapján, amelyet bármikor visszavonhatsz: a „Hit” fejezet (9. cikk (2) bekezdés a) pont), a „nagyszülőknél” rögzített történetek, az „Ugyanonnan”, az oldal használatának mérése és a partnerek kedvezményei (6. cikk (1) bekezdés a) pont). A visszavonás nem változtat azon, ami előtte a megadott hozzájárulással történt.",
+        },
+        who: {
+          h: "Ki látja az adatokat",
+          l1: "<b>A családfák magánjellegűek.</b> Csak azok a tagok látják őket, akiket a tulajdonos meghív, vagy kérésre befogad. Mindenkinek van szerepe: a látogató csak néz, a közreműködő hozzáad, a szerkesztő javít, a tulajdonos dönti el, ki léphet be.",
+          l2: "<b>Az élők</b> csak a saját családfájukban láthatók. Nem jelennek meg az „Ugyanonnan” részben, és más családoknál sem. A családfán kívülről egyedül maga az ember találhatja meg az adatlapját, a nevével és a teljes születési dátumával; ekkor a családfa tulajdonosa dönti el, befogadja-e, addig pedig a kereső azt sem tudja meg, melyik családfáról van szó.",
+          l3: "<b>Az emlékeket</b> csak az látja, akit az írójuk kiválaszt: csak ő maga (piszkozat), aki a kérdést feltette, a közeli család egy bizonyos rokonsági fokig vagy az egész családfa. A család könyvébe csak a könyvhöz bejelöltek kerülnek.",
+          l4: "<b>Az üzeneteket</b> csak az a két ember látja, aki egymásnak írja őket.",
+          l5: "<b>Mi</b> az adminisztrációs felületen csak listákat és számokat látunk: a fiókokat (név, e-mail, mikor és milyen eszközről léptek be), a családfákat (név, hány személy és fájl van bennük), minden fióknál, mennyit adott hozzá (hány személyt, emléket, fényképet, meghívót és üzenetet), és azoknál, akik „Rendben”-t mondtak, mennyi időt töltenek az oldal egyes részein. Ott egy rövid megjegyzést is vezethetünk a fiókról, például hogy ingyenes marad. Az emlékeket és az üzeneteket nem olvassuk, a „Hit” fejezetből pedig semmit sem számolunk; csak akkor nézzük meg őket, ha te kérsz segítséget, vagy ha a törvény kötelez rá.",
+          l6: "Nem adunk el adatokat, nem jelenítünk meg reklámot, és senki másnak nem adjuk át őket, csak az alábbi szolgáltatóknak, partnerünknek, a PropManage-nek (csak azok e-mail-címét, akik bejelölték, ahogy lejjebb áll), valamint a hatóságoknak, ha a törvény kötelez rá.",
+        },
+        vendors: {
+          h: "A szolgáltatók, akik segítenek nekünk",
+          p1: "Néhány szolgáltatóval dolgozunk, akik csak azért kezelik az adatokat, hogy az oldal működjön, olyan szerződések alapján, amelyek kötelezik őket az adatok védelmére:",
+          l1: "<b>Vercel Inc.</b> (USA): az oldal tárhelye és az alkalmazás futtatása.",
+          l2: "<b>Neon</b> (Databricks Inc., USA): az adatbázis, a fényképek, az iratok és a felvételek tárolása egy frankfurti adatközpontban (Németország, EU).",
+          l3: "<b>Google</b>: csak ha a „Folytatás Google-fiókkal” lehetőséget választod, megerősíti a személyazonosságodat a belépéskor.",
+          l4: "<b>OpenStreetMap</b> (OpenStreetMap Alapítvány, Egyesült Királyság): „A család térképe” térképdarabjai. A böngésződ közvetlenül tőlük kéri le őket, így ők látják, milyen IP-címről kéred.",
+          p2: "Az Európai Unión kívüli adattovábbításhoz ezek a szolgáltatók az Európai Bizottság által jóváhagyott általános szerződési feltételeket vagy az EU–USA adatvédelmi keretrendszert használják. Az élőkről semmit sem küldünk mesterségesintelligencia-szolgáltatásoknak.",
+        },
+        partner: {
+          h: "Partnerünk, a PropManage",
+          p1: "A PropManage (<pm>propmanage.ro</pm>) lakástulajdonosoknak szóló platform, a Cartea Neamului partnere. Csak a <partners>Partnerek</partners> oldalon találod; a családfában, az emlékekben, az idővonalon, a térképen és a könyvben nincs reklám.",
+          l1: "<b>Mit kap:</b> csak az e-mail-címedet, és csak ha bejelölted ezt: „{consent}” A jelölőnégyzet külön van, nincs előre bejelölve, és semmi sem függ tőle az oldalon. A PropManage soha nem kap semmit a családfádról, a benne szereplő emberekről, a meghívott rokonaidról, falvakról, emlékekről, fényképekről vagy hangfelvételekről. A meghívott rokonok és a családfában szereplők soha nem kapnak üzenetet a PropManage-től.",
+          l2: "<b>A jogalap:</b> a hozzájárulásod (GDPR 6. cikk (1) bekezdés a) pont). Attól a pillanattól, hogy megkapja a címet, a PropManage önálló adatkezelőként, a saját adatvédelmi tájékoztatója szerint felel érte, és csak arra használja, hogy időnként kedvezményeket küldjön neked az otthonodhoz.",
+          l3: "<b>Meddig:</b> amíg a hozzájárulásod érvényes. A listát, amelyet a PropManage kap, minden alkalommal újra összeállítjuk az aktuális hozzájárulásokból, így a visszavonás után a címed már nem jut el hozzá. Megkérjük, hogy törölje a címedet, amint megtudja, hogy visszavontad a hozzájárulásodat.",
+          l4: "<b>Hogyan vonhatod vissza:</b> egy kattintással az <dataPartners>Adataim</dataPartners> oldalon (a „Partnerek kedvezményei” kapcsoló), vagy bármelyik kapott e-mail leiratkozási linkjével, belépés nélkül. A visszavonás semmin sem változtat a fiókodban vagy a családfádban.",
+          l5: "Az oldalon lévő, a PropManage-re mutató linkek (a Partnerek oldalon, a régi családi ház mellett és a könyv letöltése után) egyszerű hivatkozások: csak azt mutatják, hogy a Cartea Neamului oldaláról érkezel, rólad semmilyen adatot nem adnak át.",
+        },
+        keep: {
+          h: "Meddig őrizzük az adatokat",
+          p1: "Amíg fiókod van. Amit törölsz, azonnal eltűnik az oldalról, az adatbázis biztonsági másolatai pedig legfeljebb 30 napon belül maguktól felülíródnak. Ha törlöd a fiókodat, minden eltűnik, ami a tiéd: a fiók, a ládád emlékei, az üzenetek, amit másoknak írtál, és a hozzájárulások. A családfák a családé maradnak: a több taggal rendelkező családfa átszáll valamelyikükre, az pedig, amelyben egyedül vagy, teljesen törlődik. Az adatlapod a családfákban megmarad, hogy a családfa ne szakadjon meg, de a fiókoddal való kapcsolat nélkül; ha szeretnéd, az adataidtól is kiürítjük. Az oldal használatának mérését legfeljebb 13 hónapig őrizzük; ha azt mondod, „Már nem kérem”, azonnal töröljük.",
+        },
+        rights: {
+          h: "A jogaid",
+          p1: "Megtudhatod, milyen adataink vannak rólad, kijavíthatod, törölheted, magaddal viheted őket, kérheted, hogy egy bizonyos módon ne használjuk őket többé, és bármikor visszavonhatod a megadott hozzájárulásodat. Sok mindent magad is elintézhetsz az <data>Adataim</data> oldalon: letöltheted mindazt, ami a fiókodhoz tartozik, visszavonhatod a hozzájárulásodat a „Hit” fejezethez vagy a partnerek kedvezményeihez, leállíthatod az oldalon töltött idő mérését, vagy törölheted a fiókodat. Minden másért írj nekünk ide: <mail>{email}</mail>; legfeljebb egy hónapon belül válaszolunk.",
+          p2: "Ha úgy érzed, hogy nem tartottuk tiszteletben a jogaidat, panaszt tehetsz az Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP) hatóságnál: B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+        },
+        kids: {
+          h: "A gyerekek, az élők és azok, akik már nincsenek",
+          l1: "A fiók legalább {minAge} éveseknek szól. A gyerekeket a szüleik beírhatják a családfába.",
+          l2: "Aki élőként szerepel egy családfában, kérheti a családfa tulajdonosától vagy tőlünk, hogy javítsuk, rejtsük el vagy töröljük az adatait.",
+          l3: "Az adatvédelmi törvény nem vonatkozik azokra, akik már nincsenek, de az emléküket ugyanazzal a tisztelettel őrizzük.",
+        },
+        cookies: {
+          h: "Sütik",
+          p1: "Csak azokat a sütiket használjuk, amelyek nélkül az oldal nem működne, ezért ezekhez nem kérjük a hozzájárulásodat:",
+          l1: "amelyik bejelentkezve tart a fiókodban;",
+          l2: "a <code>limba</code>, azzal a nyelvvel, amelyen ezen a telefonon vagy számítógépen olvasni szeretnéd az oldalt (például „ro” vagy „hu”), egy évig megőrizve;",
+          l3: "amelyik a választott témát tárolja (világos vagy sötét);",
+          l4: "a <code>cn-parteneri</code>, csak ha a fiók létrehozásakor bejelölöd a partnerek kedvezményeit: legfeljebb 30 percig emlékszik a jelölésre, épp addig, amíg a választásod eljut az új fiókhoz (akkor is, ha Google-lal hozod létre), aztán eltűnik.",
+          p2: "Nem használunk reklámsütiket és látogatásszámláló sütiket.",
+        },
+        safety: {
+          h: "Biztonság",
+          p1: "Az oldallal való kapcsolat titkosított, a jelszavakat csak ujjlenyomatként tároljuk, a fényképek, iratok és felvételek pedig zárt helyen vannak: csak néhány perc után lejáró linkeken keresztül nyílnak meg, miután ellenőriztük, hogy jogosult vagy megnézni őket.",
+        },
+        changes: {
+          h: "Változások",
+          p1: "Ha valami fontosat változtatunk azon, amit őrzünk, vagy hogy kinek mutatjuk meg, még a változás hatályba lépése előtt értesítünk az oldalon.",
+        },
+      },
+    },
+    Terms: {
+      metaTitle: "Felhasználási feltételek",
+      metaDescription: "Mit jelent fiókkal rendelkezni a Cartea Neamului oldalon: mit tehetsz fel, kié, és mit ígérünk.",
+      label: "Felhasználási feltételek",
+      title: "Mit jelent fiókkal rendelkezni a Cartea Neamului oldalon",
+      sections: {
+        intro: {
+          p1: "A Cartea Neamului olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Amikor fiókot hozol létre, elfogadod ezeket a feltételeket és az <privacy>Adatvédelmi tájékoztatót</privacy>.",
+          beta: "A Cartea Neamului most próbaidőszakban van: csak a család és a közeli barátok előtt nyitott, hogy elmondják, mi működik és mi nem. Gyakran változhat, és néha hibázhat, ezért te is őrizz meg egy másolatot abból, ami fontos: bármikor letöltheted az „Adataim” oldalon.",
+        },
+        account: {
+          h: "1. A fiók",
+          l1: "A fiók legalább {minAge} éveseknek szól. A gyerekeket a szüleik beírhatják a családfába.",
+          l2: "Egy fiók egyetlen emberé. A jelszavadat csak te ismerd; amit a fiókodból tesznek, azért te felelsz.",
+          l3: "A próbafióknak nyilvános jelszava van, tehát mindenkié: ne tegyél bele semmit a családodból.",
+        },
+        content: {
+          h: "2. Mit teszel fel az oldalra",
+          l1: "Csak azt teszed fel, amihez jogod van: a család fényképeit és iratait, általad írt szövegeket, a beszélő hozzájárulásával készült felvételeket.",
+          l2: "Az élő rokonokról gondosan és józan ésszel írsz. Ha valaki arra kér, hogy vedd ki az adatait a családfából, kiveszed, vagy írsz nekünk.",
+          l3: "Nem teszel fel semmi törvénytelent, sértőt vagy gyűlöletre uszítót, és mások adatait sem, ha nincs hozzá jogod.",
+          l4: "Elrejthetjük vagy törölhetjük azt, ami sérti ezeket a feltételeket vagy a törvényt, és megmondjuk, miért.",
+        },
+        owner: {
+          h: "3. Kié, amit feltöltesz",
+          p1: "Amit feltöltesz, a tiéd és a családodé marad. Nekünk csak engedélyt adsz, hogy megőrizzük, megmutassuk azoknak, akiket kiválasztottál, és betegyük a könyvbe, amelyet kérsz, hogy az oldal működjön. Más célra nem használjuk, és nem adjuk el.",
+        },
+        trees: {
+          h: "4. A családfák és az emlékek",
+          l1: "A családfa tulajdonosa dönti el, ki léphet be, és milyen jogai vannak: a látogató csak néz, a közreműködő hozzáad, a szerkesztő javítja az adatlapokat.",
+          l2: "Az emlék azé, aki írja: csak ő választja ki, ki látja, és csak ő módosíthatja vagy törölheti.",
+          l3: "Az önéletrajz „Hit” fejezete csak az élőké, akik maguk válaszolnak, a hozzájárulásukkal.",
+        },
+        price: {
+          h: "5. Az ár",
+          p1: "Most minden ingyenes. Ha valaha előfizetést kérünk, a nagy családfákért vagy új dolgokért, időben szólunk. Amit feltöltöttél, a tiéd marad, a családfa megtekintése, a meghívók és a családfa letöltése (GEDCOM) pedig ingyenes marad.",
+        },
+        reliability: {
+          h: "6. Mennyire megbízható az oldal",
+          p1: "Igyekszünk, hogy az oldal jól működjön, és semmi ne vesszen el, de nem ígérhetjük, hogy soha nem lesznek kimaradások vagy hibák. Te is őrizz meg egy másolatot: a családfát GEDCOM-ként, a könyvet PDF-ként és az adataidat az <data>Adataim</data> oldalról.",
+        },
+        end: {
+          h: "7. A megszűnés",
+          p1: "A fiókodat bármikor törölheted az <data>Adataim</data> oldalon. Felfüggeszthetjük azt a fiókot, amely súlyosan megsérti ezeket a feltételeket, miután írtunk az illetőnek, és megmondtuk, miért.",
+        },
+        liability: {
+          h: "8. A felelősség",
+          p1: "A törvény keretein belül nem felelünk az oldal használatából eredő közvetett károkért. Ezekben a feltételekben semmi sem veszi el azokat a jogokat, amelyeket a törvény fogyasztóként biztosít neked.",
+        },
+        law: {
+          h: "9. Az alkalmazandó jog",
+          p1: "Ezekre a feltételekre a román jog vonatkozik. A nézeteltéréseket először békés úton próbáljuk rendezni; ha ez nem lehetséges, Románia bíróságai döntenek.",
+        },
+        changes: {
+          h: "10. Változások",
+          p1: "Ha ezekben a feltételekben valami fontosat változtatunk, még a változás hatályba lépése előtt értesítünk az oldalon.",
+        },
+      },
+    },
+  },
+};
