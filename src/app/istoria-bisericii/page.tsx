@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import ChurchHistory from "@/components/ChurchHistory";
+import PageIntl from "@/i18n/PageIntl";
+import { getT } from "@/i18n/server";
 
-export const metadata: Metadata = {
-  title: "Istoria Bisericii prigonite · Cartea Neamului",
-  description: "Biserica lui Hristos de la apostoli până azi: martiri, reformatori, Biblia în limba română și eroi ai credinței din închisorile comuniste.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT("Church");
+  return { title: `${t("meta.title")} · Cartea Neamului`, description: t("meta.description") };
+}
 
-/** Pagină deschisă tuturor, fără cont: istoria Bisericii prigonite, scrisă de mână, cu versete din Biblia Cornilescu. */
+/** Pagină deschisă tuturor, fără cont: istoria Bisericii prigonite, scrisă de mână, în limba cititorului. */
 export default function ChurchHistoryPage() {
-  return <ChurchHistory />;
+  return <PageIntl ns={["Church"]}><ChurchHistory /></PageIntl>;
 }

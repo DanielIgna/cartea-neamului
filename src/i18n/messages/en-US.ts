@@ -4,6 +4,7 @@ import { enUSAmintiri } from "./amintiri/en-US";
 import { enUSVremuri } from "./vremuri/en-US";
 import { enUSCarte } from "./carte/en-US";
 import { enUSCalatorie } from "./calatorie/en-US";
+import { enUSBiserica } from "./biserica/en-US";
 import { enUSParteneri } from "./parteneri/en-US";
 
 /**
@@ -38,5 +39,6 @@ export const enUS: DeepPartial<Catalog> = {
   ...enUSVremuri,
   ...enUSCarte,
   ...enUSCalatorie,
+  ...enUSBiserica,
   ...enUSParteneri,
 };

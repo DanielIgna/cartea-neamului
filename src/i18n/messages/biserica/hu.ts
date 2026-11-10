@@ -1,0 +1,479 @@
+import type { BisericaCatalog } from "./ro";
+
+/** Magyar. Igeversek a Károli-bibliából, mai helyesírással. */
+export const huBiserica: BisericaCatalog = {
+  Church: {
+    meta: {
+      title: "Az üldözött egyház története",
+      description: "Krisztus egyháza az apostoloktól napjainkig: vértanúk, reformátorok, a Biblia román nyelven és a kommunista börtönök hithősei.",
+    },
+    label: "Egyháztörténet",
+    title: "Krisztus egyháza, amelyet a kezdetektől napjainkig üldöznek",
+    toc: "Tartalom",
+    heroesChip: "Hithősök",
+    bibleChip: "A Biblia román nyelven",
+    filterLabel: "Mit mutassunk",
+    all: "Az egész világ",
+    onlyRo: "Csak Romániában",
+    today: "ma",
+    ourLand: "Romániában",
+    quoted: "„{text}”",
+    heroesLabel: "Erőt adó történetek",
+    heroesTitle: "A kommunista börtönök hithősei",
+    bibleLabel: "Az Ige a mi nyelvünkön",
+    bibleTitle: "Hogyan jutott el a Biblia a román nyelvre",
+    influenceTitle: "Mit változtatott a Biblia a románok életében",
+    endTitle: "Mi is egy lap vagyunk ebben a történetben",
+    endText: "Az egyház nem épület és nem intézmény, hanem mindazok, akik befogadták Krisztust, Istvántól a titokban imádkozó nagyszülőkig, és egészen mihozzánk. A fény kétezer éven át kézről kézre járt, sokszor az élet árán. Most a mi kezünkben van: égve tartani, olvasni az Igét, és imádkozni azokért, akiket ma üldöznek.",
+    readJohn: "Olvasd el János evangéliumát",
+    note: "Az igeversek a Károli-bibliából valók, mai helyesírással. Ahol valami csak hagyomány, a szöveg ezt megmondja.",
+    intro: "Az Úr Jézus nem könnyű életet ígért tanítványainak, hanem azt, hogy egyházát nem győzik le. Jeruzsálemtől napjainkig, valahányszor ki akarták oltani az evangélium fényét, az máshol újra fellángolt. Íme néhányan azok közül, akik szabadságukkal vagy életükkel fizettek a hitükért, és néhány pillanat, amikor az Ige visszakerült az egyszerű emberek kezébe.",
+    promise: {
+      text: "De én is mondom néked, hogy te Péter vagy, és ezen a kősziklán építem fel az én anyaszentegyházamat, és a pokol kapui sem vesznek rajta diadalmat.",
+      ref: "Máté 16,18",
+    },
+    eras: {
+      apostoli: {
+        name: "Az apostolok egyháza",
+        intro: "Az Úr feltámadása után néhány galileai halász és egyszerű ember elvitte az örömhírt Jeruzsálembe, majd az egész római világba. Az üldözés szinte azonnal elkezdődött: először a zsidó vezetők, aztán Róma részéről. Az üldözés azonban szétszórta őket, és a szétszórtak tovább vitték az Igét.",
+        verse: {
+          text: "Amazok annakokáért eloszolván, széjjeljártak, hirdetve az igét.",
+          ref: "Apostolok cselekedetei 8,4",
+        },
+        w: {
+          w1: {
+            name: "István, az első vértanú",
+            years: "kb. 34",
+            place: "Jeruzsálem",
+            text: "A jeruzsálemi gyülekezet hét diakónusának egyike. Miután a nagytanács előtt bizonyságot tett Krisztusról, kivitték a városból és megkövezték. Egy Saul nevű fiatalember, aki később Pál apostol lett, ott volt a halálánál.",
+            quote: "Uram, ne tulajdonítsd nékik e bűnt! (Apostolok cselekedetei 7,60)",
+          },
+          w2: {
+            name: "Jakab, Zebedeus fia",
+            years: "kb. 44",
+            place: "Jeruzsálem",
+            text: "János apostol testvére, a tizenkét apostol közül az első, aki meghalt Krisztusért: Heródes Agrippa király fegyverrel ölte meg (Apostolok cselekedetei 12,2).",
+          },
+          w3: {
+            name: "Róma keresztyénei Néró alatt",
+            years: "64",
+            place: "Róma",
+            text: "Róma nagy égése után Néró császár a keresztyénekre fogta a bűnt. Tacitus római történetíró azt írja, hogy némelyeket vadállatok elé vetettek, másokat keresztre feszítettek vagy fáklyaként elégettek a császár kertjeiben. Az egyház régi hagyománya szerint ebben az időben, Néró alatt halt meg Rómában Péter (keresztre feszítve) és Pál (lefejezve) apostol is.",
+          },
+          w4: {
+            name: "András apostol",
+            years: "1. század",
+            place: "Kis-Szkítia (a mai Dobrudzsa)",
+            text: "Egy régi hagyomány, amelyet Órigenész és Euszebiosz is említ, azt mondja, hogy Andrást, Péter testvérét, Szkítiába küldték az evangéliumot hirdetni. Ezért tekintik a románok a saját apostoluknak. Nem tudjuk biztosan, merre járt, de azt tudjuk, hogy Dobrudzsában nagyon korán voltak keresztyének.",
+          },
+          w5: {
+            name: "János, száműzve Patmoszra",
+            years: "kb. 95",
+            place: "Patmosz szigete",
+            text: "Az utolsó még élő apostolt egy szigetre száműzték „az Isten beszédéért és a Jézus Krisztus bizonyságtételéért” (Jelenések 1,9). Ott kapta a kijelentést, amelyet a Jelenések könyve őriz.",
+          },
+        },
+      },
+      roma: {
+        name: "Vértanúk Róma császárai alatt",
+        intro: "Kétszázötven éven át a keresztyénség halált jelenthetett. A keresztyének nem voltak hajlandók áldozatot bemutatni az isteneknek és a császárnak, ezért az állam ellenségeinek tekintették őket. Az üldözés hullámokban jött: hol helyi volt, hol az egész birodalomra kiterjedt. A legkeményebb az utolsó volt, Diocletianus alatt.",
+        verse: {
+          text: "Légy hív mind halálig, és néked adom az életnek koronáját.",
+          ref: "Jelenések 2,10",
+        },
+        w: {
+          w1: {
+            name: "Antiochiai Ignác",
+            years: "kb. 110",
+            place: "Antiochia → Róma",
+            text: "Antiochia püspöke, akit láncra verve vittek Rómába, hogy vadállatok elé vessék. Útközben hét levelet írt a gyülekezeteknek, ezek fennmaradtak: arra kéri őket, hogy maradjanak egységben, és ne próbálják megmenteni a haláltól.",
+          },
+          w2: {
+            name: "Szmirnai Polikárp",
+            years: "kb. 155",
+            place: "Szmirna (a mai Törökországban)",
+            text: "János apostol tanítványa és idős püspök. Amikor azt kívánták tőle, hogy tagadja meg Krisztust, és mentse az életét, azokkal a szavakkal felelt, amelyeket vértanúságának leírása megőrzött. Máglyán égették meg.",
+            quote: "Nyolcvanhat éve szolgálok neki, és soha semmi rosszat nem tett velem. Hogyan káromolhatnám királyomat, aki megváltott engem?",
+          },
+          w3: {
+            name: "Jusztinosz vértanú",
+            years: "kb. 165",
+            place: "Róma",
+            text: "Filozófus, aki Krisztusra talált, miután korának minden iskolájában kereste az igazságot. A császároknak címzett hitvédő iratokat írt, és tanítványaival együtt lefejezték.",
+          },
+          w4: {
+            name: "Perpétua és Felicitász",
+            years: "203",
+            place: "Karthágó (a mai Tunéziában)",
+            text: "Egy jó családból való fiatal anya és rabszolganője, aki nemrég szült. Nem voltak hajlandók áldozni az isteneknek, és együtt haltak meg az arénában. Perpétua maga írta le a börtönben a halála előtti napokat.",
+          },
+          w5: {
+            name: "Decius üldözése",
+            years: "250",
+            place: "Az egész birodalom",
+            text: "A császár elrendelte, hogy mindenki mutasson be áldozatot az isteneknek, és kapjon erről igazolást. Sok keresztyén meghalt, sokan elrejtőztek, és néhányan engedtek. Utána az egyháznak meg kellett tanulnia, hogyan fogadja vissza az elbukottakat.",
+          },
+          w6: {
+            name: "Epiktétosz és Asztion",
+            years: "kb. 290",
+            place: "Halmyris, Murighiol mellett (Tulcea)",
+            text: "Egy pap és egy fiatal tanítvány, akiket hitükért öltek meg Halmyris római erődjében, a Duna torkolatánál. Ereklyéiket a régészek 2001-ben találták meg az ottani bazilika kriptájában.",
+          },
+          w7: {
+            name: "A nagy üldözés és a niculițeli vértanúk",
+            years: "303–311",
+            place: "Az egész birodalom; Niculițel (Tulcea)",
+            text: "Diocletianus elrendelte, hogy rombolják le a templomokat, égessék el az Írásokat, és börtönözzék be a papságot. Ekkor sok dobrudzsai keresztyén halt meg. 1971-ben Niculițelben egy régi bazilika alatt kriptát találtak négy vértanú csontjaival, a nevük a falra volt írva: Zotikosz, Attalosz, Kamaszisz és Philipposz.",
+          },
+        },
+      },
+      "evul-mediu": {
+        name: "Szabad, de kísértésbe esett egyház",
+        intro: "313-ban a milánói rendelettel a keresztyének szabadon gyakorolhatták hitüket. Az egyház megmenekült Róma kardjától, de egy másik kísértéssel találkozott: a hatalommal. Idővel sokan csak névleg lettek keresztyének, és az Írás olyan nyelven maradt, amelyet a nép már nem értett. Akik az Igéhez való visszatérésre hívtak, azokat üldözték, ezúttal azok, akik egyháznak nevezték magukat.",
+        verse: {
+          text: "Az ég és a föld elmúlnak, de az én beszédeim semmiképpen el nem múlnak.",
+          ref: "Máté 24,35",
+        },
+        w: {
+          w1: {
+            name: "Gót Szabbász",
+            years: "372",
+            place: "A Bodza (Buzău) folyó",
+            text: "Gót keresztyén, aki nem volt hajlandó bálványoknak áldozott húst enni. A gót vezér 372. április 12-én a Muszaiosz folyóba, a mai Bodzába fojtatta. Ebben az időben a Dunától északra fekvő földön Wulfila lefordította a Bibliát gót nyelvre.",
+          },
+          w2: {
+            name: "Valdes Péter és a valdensek",
+            years: "kb. 1170",
+            place: "Lyon, majd az Alpok",
+            text: "Gazdag lyoni kereskedő, aki szétosztotta vagyonát, és lefordíttatta az Írást a nép nyelvére. Követői a falvakban hirdették a Bibliát. Eretneknek nyilvánították és évszázadokon át üldözték őket, de az Alpok völgyeiben elrejtőztek, és máig fennmaradtak.",
+          },
+          w3: {
+            name: "John Wycliffe",
+            years: "kb. 1330–1384",
+            place: "Oxford, Anglia",
+            text: "Oxfordi professzor, aki azt tanította, hogy az Írás a pápa fölött áll, és azt akarta, hogy a Bibliát lefordítsák angolra. Az ágyában halt meg, de 1428-ban az egyház kiásatta a csontjait, elégette, és a hamvait folyóba szórta.",
+          },
+          w4: {
+            name: "Husz János",
+            years: "1415",
+            place: "Prága → Konstanz",
+            text: "Prágai pap és professzor, aki csehül prédikált, és az Írás felé hívta vissza az egyházat. A konstanzi zsinatra hívták azzal az ígérettel, hogy szabadon távozhat; letartóztatták, és 1415. július 6-án máglyán megégették, mert nem volt hajlandó visszavonni azt, amit a Bibliából tanult.",
+          },
+        },
+      },
+      reforma: {
+        name: "A reformáció: az Írás a nép nyelvén",
+        intro: "Száz évvel Husz után egy német szerzetes a Rómabeliekhez írt levélben fedezte fel újra, hogy hit által üdvözülünk, Isten ajándékaként, nem cselekedetekből és nem pénzért. A könyvnyomtatás épp akkor jelent meg, így az Írás végre bejuthatott az otthonokba. Száz év küzdelem és üldözés következett, amelyben sajnos a keresztyének is üldözték egymást.",
+        verse: {
+          text: "Az igaz ember pedig hitből él.",
+          ref: "Róma 1,17",
+        },
+        w: {
+          w1: {
+            name: "Luther Márton",
+            years: "1483–1546",
+            place: "Wittenberg, Németország",
+            text: "Szerzetes és a teológia professzora. 1517. október 31-én megírta a 95 tételt a bűnbocsánat pénzért való árusítása ellen. 1521-ben a wormsi birodalmi gyűlésen, a császár előtt, nem volt hajlandó visszavonni írásait, mert Isten Igéje kötötte. Törvényen kívül helyezték; barátai Wartburg várában rejtették el, ahol lefordította németre az Újszövetséget (1522). Tanítása három kifejezésben foglalható össze: egyedül az Írás, egyedül a kegyelem, egyedül a hit. Nem volt hibák nélkül: öregkorában kemény és igazságtalan szavakat írt a zsidók ellen, amelyeket nem fogadhatunk el helyesnek.",
+            quote: "Lelkiismeretem Isten Igéjének foglya. Semmit sem tudok és semmit sem akarok visszavonni. (Worms, 1521)",
+          },
+          w2: {
+            name: "Felix Manz",
+            years: "1527",
+            place: "Zürich, Svájc",
+            text: "Az első „anabaptisták” egyike, akik azt hitték, hogy a keresztség azoké, akik hisznek és megtérnek. Zürich protestáns hatóságai a Limmat folyóba fojtották. Ebben az időben anabaptisták ezreit ölték meg, katolikusok és protestánsok egyaránt.",
+          },
+          w3: {
+            name: "William Tyndale",
+            years: "1536",
+            place: "Vilvoorde, Brüsszel mellett",
+            text: "Lefordította az Újszövetséget görögből angolra, bár ez tilos volt, és külföldön nyomtatta ki; a példányokat titokban vitték be Angliába. Elárulták, bebörtönözték, majd megfojtották és elégették. Fordítása a későbbi angol Biblia gyökerénél áll.",
+            quote: "Uram, nyisd meg Anglia királyának szemét!",
+          },
+          w4: {
+            name: "Coresi diakónus és az első román könyvek",
+            years: "1559–1582",
+            place: "Brassó (Brașov), Szászváros (Orăștie)",
+            text: "Brassóban, a reformáció idején, Coresi diakónus kinyomtatta az első román nyelvű könyveket, köztük az evangéliumokat (a Tetraevangéliumot, 1561). 1582-ben Szászvárosban kinyomtatták a Paliát, az Ószövetség első könyveit román nyelven. A románok először hallhatták az Igét a saját nyelvükön.",
+          },
+          w5: {
+            name: "A tordai országgyűlés",
+            years: "1568",
+            place: "Torda (Turda), Erdély",
+            text: "Az erdélyi országgyűlés kimondta, hogy minden közösség maga választhatja meg a prédikátorát, „mert a hit Isten ajándéka”. Ez volt Európa egyik első vallásszabadsági törvénye. Az ortodox románok azonban csak „megtűrtek” maradtak, ugyanazok a jogok nélkül.",
+          },
+          w6: {
+            name: "Latimer és Ridley",
+            years: "1555",
+            place: "Oxford, Anglia",
+            text: "Két angol püspök, akiket ugyanazon a máglyán égettek meg I. Mária királynő alatt, aki közel háromszáz protestánst végeztetett ki. Latimer azt mondta barátjának, hogy legyen bátor, mert azon a napon olyan gyertyát gyújtanak, amely soha nem alszik ki.",
+          },
+          w7: {
+            name: "A Szent Bertalan-éj",
+            years: "1572",
+            place: "Párizs és Franciaország",
+            text: "Augusztus 24-e éjszakáján francia protestánsok (hugenották) ezreit mészárolták le Párizsban, majd más városokban. A túlélők közül sokan elmenekültek az országból.",
+          },
+          w8: {
+            name: "A Biblia román nyelven",
+            years: "1648–1688",
+            place: "Gyulafehérvár (Alba Iulia), Bukarest",
+            text: "1648-ban Gyulafehérváron megjelent a román Újszövetség, 1688-ban pedig Bukarestben az első teljes román nyelvű Biblia, Șerban Cantacuzino fejedelem támogatásával.",
+          },
+        },
+      },
+      trezire: {
+        name: "Ébredés és misszió",
+        intro: "Ezek az évszázadok sok országban hoztak lelki ébredést, és elindultak az első misszionáriusok a föld végső határáig, de új vértanúk is születtek, a törökök alatt, a gyarmatokon és azokban az országokban, ahová az evangélium először jutott el.",
+        verse: {
+          text: "Jézus Krisztus tegnap és ma és örökké ugyanaz.",
+          ref: "Zsidók 13,8",
+        },
+        w: {
+          w1: {
+            name: "Constantin Brâncoveanu és fiai",
+            years: "1714",
+            place: "Konstantinápoly",
+            text: "Havasalföld fejedelmét letették, és négy fiával, valamint Ienache nevű tanácsosával Konstantinápolyba vitték. 1714. augusztus 15-én azt kívánták tőlük, hogy tagadják meg hitüket, és mentsék az életüket. Megtagadták, és lefejezték őket, először a fiúkat, apjuk szeme láttára, aztán magát a fejedelmet.",
+          },
+          w2: {
+            name: "A herrnhuti morva testvérek",
+            years: "1727",
+            place: "Szászország",
+            text: "A husziták leszármazottai, Zinzendorf gróf birtokán élő menekültek olyan imádságot kezdtek, amely száz évig megszakítás nélkül folyt, és misszionáriusokat küldtek a karib-tengeri rabszolgák közé, Grönlandra és Afrikába.",
+          },
+          w3: {
+            name: "Kína vértanúi (a boxerlázadás)",
+            years: "1900",
+            place: "Észak-Kína",
+            text: "Az idegenek elleni felkelésben több száz misszionáriust és több mint harmincezer kínai keresztyént öltek meg. Ahelyett, hogy eltűnt volna, a kínai egyház a következő században több tízmilliósra nőtt.",
+          },
+        },
+      },
+      "secolul-xx": {
+        name: "A vértanúk százada",
+        intro: "A 20. század hozta a történelem legnagyobb üldözéseit: az örmény népirtást, a szovjet terrort, a nácizmust, majd a második világháború után a Romániára is ráerőltetett kommunizmust. Az ateista állam ki akarta tépni a hitet az emberek szívéből. Nem sikerült neki. A börtönökben igeverseket tanultak kívülről, és a falakon át adták tovább egymásnak.",
+        verse: {
+          text: "Mindenütt nyomorgattatunk, de meg nem szoríttatunk; kétségeskedünk, de nem esünk kétségbe; üldöztetünk, de el nem hagyatunk; tiportatunk, de el nem veszünk.",
+          ref: "2Korinthus 4,8–9",
+        },
+        w: {
+          w1: {
+            name: "Az örmény népirtás",
+            years: "1915–1923",
+            place: "Az Oszmán Birodalom",
+            text: "Mintegy másfél millió örményt, a legrégebbi keresztyén népet, megöltek, vagy meghaltak a deportálások során. Ebben az időben több százezer asszír és görög keresztyén is életét vesztette.",
+          },
+          w2: {
+            name: "Iosif Trifa és az Úr Serege",
+            years: "1923–1948",
+            place: "Nagyszeben (Sibiu), majd az egész ország",
+            text: "1923-ban Iosif Trifa pap ébredési mozgalmat indított az ortodoxok között, a Bibliával, énekekkel, az ivás és a káromkodás elhagyásával. A kommunisták 1948-ban betiltották; testvérei évtizedekig titokban gyűltek össze. Traian Dorz költő és Nicolae Moldoveanu zeneszerző, a mozgalom két testvére, megjárta a börtönöket (történetük lejjebb olvasható).",
+          },
+          w3: {
+            name: "Dumitru Cornilescu",
+            years: "1921–1923",
+            place: "Stânca-Ștefănești, Bukarest",
+            text: "Fiatal ortodox diakónus, aki élő, világos román nyelvre fordította a Bibliát (1921, átdolgozva 1924-ben). Olvasás közben személyes hitre jutott Krisztusban. 1923-ban el kellett hagynia az országot, és soha nem tért vissza; 1975-ben Svájcban halt meg. Fordítását ma is románok milliói olvassák.",
+          },
+          w4: {
+            name: "Dietrich Bonhoeffer",
+            years: "1945",
+            place: "Flossenbürg, Németország",
+            text: "Német lelkész, aki szembeszállt Hitlerrel, és zsidókat segített menekülni. Két évig volt fogságban, és 1945. április 9-én felakasztották, néhány héttel a háború vége előtt.",
+          },
+          w5: {
+            name: "A görögkatolikus püspökök",
+            years: "1948–1970",
+            place: "Máramarossziget, Căldărușani, Balázsfalva",
+            text: "1948-ban a kommunisták felszámolták a görögkatolikus egyházat, elvették templomait, és letartóztatták valamennyi püspökét. Közülük öten börtönben vagy házi őrizetben haltak meg; Iuliu Hossu püspök, aki 1918. december 1-jén Gyulafehérváron felolvasta az egyesülési nyilatkozatot, 1970-ben halt meg anélkül, hogy valaha szabadon engedték volna.",
+          },
+          w6: {
+            name: "Richard és Sabina Wurmbrand",
+            years: "1948–1964",
+            place: "Văcărești, Jilava, Szamosújvár (Gherla)",
+            text: "Bukaresti evangélikus lelkész, Krisztushoz tért zsidó. 1948-ban letartóztatták, összesen tizennégy évet töltött börtönben, ebből hármat egyedül egy föld alatti cellában; felesége, Sabina is megjárta a munkatábort. 1964-ben szabadult, kiváltották az országból, megírta a „Krisztusért megkínozva” című könyvet, és missziót alapított, amely ma is segíti az üldözött keresztyéneket.",
+          },
+          w7: {
+            name: "Papok, lelkészek és hívők minden felekezetből",
+            years: "1948–1989",
+            place: "Nagyenyed (Aiud), Szamosújvár, Pitești, a Csatorna",
+            text: "Ortodox és görögkatolikus papok, baptista, pünkösdi és adventista lelkészek és a testvérgyülekezetek hívei ezrével járták meg a börtönöket és a munkatáborokat. Dumitru Stăniloae teológus öt évig raboskodott. Gheorghe Calciu pap huszonegy évet töltött börtönben, utoljára az 1978-ban fiataloknak mondott prédikációi miatt. Nyugati keresztyének Bibliákat csempésztek át a határon.",
+          },
+          w8: {
+            name: "Temesvár, 1989 decembere",
+            years: "1989",
+            place: "Temesvár (Timișoara)",
+            text: "A forradalom minden felekezetből való emberek láncával kezdődött, akik Tőkés László református lelkész háza elé álltak, hogy ne lakoltathassák ki. A téren a tömeg azt kiáltotta: „Van Isten!”",
+          },
+        },
+      },
+      azi: {
+        name: "Az üldözött egyház ma",
+        intro: "Az üldözés nem szűnt meg. A helyzetet évről évre figyelő Open Doors szerint ma több mint 380 millió keresztyén, nagyjából minden hetedik, olyan országban él, ahol a hite a munkájába, szabadságába vagy életébe kerülhet: Észak-Koreában, Afrika egyes részein, a Közel-Keleten, Ázsiában. Az egyház pedig ma éppen ott növekszik, ahol a legnehezebb.",
+        verse: {
+          text: "De mindazok is, akik kegyesen akarnak élni Krisztus Jézusban, üldöztetni fognak.",
+          ref: "2Timótheus 3,12",
+        },
+        w: {
+          w1: {
+            name: "A líbiai tengerpart 21 vértanúja",
+            years: "2015",
+            place: "Szirt, Líbia",
+            text: "Húsz egyiptomi kopt keresztyén munkást és egy ghánai fiatalembert ölt meg az Iszlám Állam csoport. A felvételen látszik, hogy sokan közülük az utolsó pillanatban Jézus nevét mondják.",
+          },
+          w2: {
+            name: "Nigéria keresztyénei",
+            years: "ma",
+            place: "Észak- és Közép-Nigéria",
+            text: "Szinte minden héten egész falvakat támadnak meg, és templomokat gyújtanak fel. Nigériában ölik meg a legtöbb keresztyént a hitéért.",
+          },
+          w3: {
+            name: "Az észak-koreai egyház",
+            years: "ma",
+            place: "Észak-Korea",
+            text: "Egy Biblia birtoklása miatt egy egész család munkatáborba kerülhet. És mégis, hívők tízezrei imádkoznak titokban.",
+          },
+          w4: {
+            name: "Szabadság Romániában",
+            years: "1990–ma",
+            place: "Románia",
+            text: "1989 óta Romániában szabadon nyomtatják és olvassák a Bibliát. Ez ajándék, amelyet az előttünk járók szenvedése fizetett meg, és kötelesség: imádkozni azokért, akik ma azt élik át, amit ők átéltek.",
+          },
+        },
+      },
+    },
+    heroesIntro: "Az egyház története nem csupán a szenvedések listája. Egyszerű emberek története is, falvainkból és városainkból, akik felfedezték, hogy Krisztus közelebb volt hozzájuk a börtöncellában, mint valaha szabadságban. Történeteik nem azért vannak itt, hogy megijesszenek, hanem hogy erőt adjanak.",
+    heroes: {
+      wurmbrand: {
+        name: "Richard Wurmbrand",
+        years: "1909–2001",
+        who: "Bukaresti evangélikus lelkész, Krisztushoz tért zsidó. Tizennégy év a kommunista börtönökben.",
+        story: {
+          p1: "1945-ben a kommunisták Bukarestben „Felekezetek Kongresszusát” hívták össze, ahol papok és lelkészek egymás után dicsérték az új rendszert. Sabina, a felesége, azt mondta neki: „Richard, állj fel, és mosd le ezt a gyalázatot Krisztus arcáról!” Ő azt felelte, hogy ha megszólal, Sabina elveszíti a férjét. Sabina azt mondta, nem akar gyáva férjet. Richard felállt, és mindenki előtt kimondta, hogy az egyház dolga Krisztust hirdetni, nem a hatalom birtokosait dicsérni.",
+          p2: "1948-ban elhurcolták az utcáról, és évekre eltűnt; a családja azt sem tudta, él-e még. Három évig volt egyedül egy föld alatti cellában, könyv nélkül, napfény nélkül, senkit sem látva az őrökön kívül. Hogy megőrizze az eszét, minden éjjel megírt magában egy prédikációt, és elmondta gondolatban, mintha egy egész gyülekezethez beszélne. A szomszédos cellák foglyaival a falon kopogva beszélt, betűről betűre; így hirdette az evangéliumot egy embernek, akinek az arcát soha nem látta.",
+          p3: "Később elmondta, hogy miközben az Úr szavait ismételgette: „Örüljetek azon a napon és örvendezzetek”, felállt a cellájában, és örömében táncolt. Az őrök azt hitték, megőrült, és több ennivalót hoztak neki.",
+          p4: "1964-ben szabadult, norvég keresztyének kiváltották az országból, és az amerikai szenátus előtt levetette az ingét, hogy megmutassa a kínzások nyomait. Megírta a „Krisztusért megkínozva” című könyvet, és missziót alapított, amely ma is segíti az üldözött keresztyéneket. Amit a leggyakrabban mondott: hogy szereti azokat, akik megkínozták, és imádkozik értük.",
+        },
+        lesson: "A hit nem olyan gondolat, amelyet elveszítesz, ha mindent elvesznek tőled. Amikor Wurmbrandnak már semmije sem maradt, felfedezte, hogy Krisztusa van, és ez elég volt neki.",
+        verse: {
+          text: "Örüljetek azon a napon és örvendezzetek; mert íme a ti jutalmatok bőséges a mennyben",
+          ref: "Lukács 6,23",
+        },
+      },
+      moldoveanu: {
+        name: "Nicolae Moldoveanu",
+        years: "1922–2007",
+        who: "Az Úr Seregének zeneszerzője, „a román ének Dávidja”. Öt év börtön, mert énekeket írt.",
+        story: {
+          p1: "Movileniben született, Tecuci megyében (ma Galați), és kisgyermekként elveszítette az apját. Szegény gyermekeknek szóló katonazenekarban nőtt fel, és eladta kenyéradagja felét és az összes tejét, hogy Bibliát és az Úr Seregének folyóiratát vehesse meg.",
+          p2: "1959-ben „vallásos énekek szerzése és vallási propaganda” miatt letartóztatták, és tizenkét évre ítélték; ötöt töltött le belőle. A börtönben nem volt sem ceruzája, sem papírja, sem kottája. Mégis háromszázötven éneket szerzett ott, amelyeket hangról hangra megőrzött az emlékezetében, és csak szabadulása után írt le.",
+          p3: "Richard Wurmbrand, aki Szamosújváron egy cellában volt vele, egy téli éjszakáról mesélt: nem volt meleg ruhájuk, a csupasz betonon aludtak, és az őrök parancsszóra újra meg újra felállították és lefektették őket. A többiek káromkodtak. Moldoveanu Istent dicsérte, és a betonon fekve új éneket énekelt neki, tele örömmel és reménységgel, amelyet ma sok országban énekelnek.",
+          p4: "Élete során több mint hétezer éneket írt, sokat Traian Dorz szövegeire, amelyeket ma is énekelnek a templomokban szerte az országban. Amikor Wurmbrand 1990-ben visszatért Romániába, ő volt az első, akit látott.",
+        },
+        lesson: "Be lehet zárni, de az éneklést nem lehet megtiltani. Ami sötétben vettetett el, azt ma telt templomokban éneklik.",
+        verse: {
+          text: "Mindenütt nyomorgattatunk, de meg nem szoríttatunk; kétségeskedünk, de nem esünk kétségbe;",
+          ref: "2Korinthus 4,8",
+        },
+      },
+      dorz: {
+        name: "Traian Dorz",
+        years: "1914–1989",
+        who: "Paraszt költő Livada Beiușuluiból (Bihar), az Úr Seregéből. Közel tizennyolc év börtönben és munkatelepeken.",
+        story: {
+          p1: "Szegény parasztok gyermekeként iskolai jutalomként Iosif Trifa pap egyik könyvét kapta. Elolvasta, tizenöt évesen Krisztusnak adta az életét, és azonnal verseket kezdett írni.",
+          p2: "Először 1947 decemberében tartóztatták le, aztán újra és újra: Nagyvárad, Szamosújvár, Déva, Periprava, a Bărăgan. 1959-ben tizenhat év kényszermunkára ítélték; 1964-ben szabadult. Egy kihallgatáson a falhoz állították, és pisztolyt szegeztek a halántékának, hogy megfélemlítsék; később azt mondta, akkor átment a saját halálán, és már semmitől sem kellett félnie.",
+          p3: "A cella olyan kicsi volt, hogy nem tudott egyenesen állni benne. Írnia nem volt szabad, ezért fejben költötte verseit, és több mint háromszázat őrzött meg emlékezetében, amelyeket szabadulása után leírt. Lánya csomagokat hozott neki, amelyeket az őrök a kutyáknak adtak; ekkor talált egy lyukat a kerítésen, amelyről csak ők ketten tudtak, és oda tette neki az ételt.",
+          p4: "A börtön után is figyelte a Securitate; ha éjjel égni látták a lámpáját, odakiáltottak neki, hogy nem szabad írnia. Ő tovább írt. 1989 júniusában halt meg, fél évvel a kommunizmus bukása előtt; bár a hatóságok igyekeztek távol tartani az embereket, több mint tízezren jöttek el a temetésére.",
+        },
+        lesson: "Amit a szív megőriz, azt nem lehet elkobozni. A titokban, lámpafénynél írt verseket ma az egész országban éneklik.",
+        verse: {
+          text: "Légy hív mind halálig, és néked adom az életnek koronáját.",
+          ref: "Jelenések 2,10",
+        },
+      },
+    },
+    bibleIntro: "A románok sokáig egyházi szláv nyelven hallották az istentiszteleteket, amelyet a pap is alig, a nép pedig egyáltalán nem értett. Isten Igéje lassan, könyvről könyvre, háromszáz év alatt jutott el hozzájuk az anyanyelvükön.",
+    steps: {
+      b1: {
+        year: "15–16. század",
+        title: "Az első kézírásos szövegek",
+        who: "Ismeretlen fordítók, Máramarosban és Észak-Erdélyben",
+        text: "A Biblia legrégebbi román nyelvű részei kéziratok: a Scheiu-i zsoltároskönyv, a voroneți zsoltároskönyv, a voroneți kódex (az Apostolok cselekedetei és a levelek). 16. századi másolatokban maradtak ránk, és északi nyelvjárásban íródtak. Nem tudjuk biztosan, ki fordította őket; egyes történészek szerint a husziták vagy a reformáció hatására születtek.",
+      },
+      b2: {
+        year: "1561",
+        title: "Coresi Tetraevangéliuma",
+        who: "Coresi diakónus, Brassóban, Hans Benkner szász bíró támogatásával",
+        text: "Az első nyomtatott könyv a négy evangéliummal román nyelven. Ezt követte az Apostol (1563) és a Zsoltároskönyv (1570). E könyvek előszavai megmondják, miért: minden népnek megvolt Isten Igéje a saját nyelvén, csak a románoknak nem. Könyvei eljutottak mindhárom román ország templomaiba, és Havasalföld és Dél-Erdély nyelvét tették a mai irodalmi nyelv alapjává.",
+      },
+      b3: {
+        year: "1582",
+        title: "A szászvárosi Palia",
+        who: "Mihail Tordaș püspök és négy másik pap, Geszti Ferenc támogatásával",
+        text: "Az Ószövetség első könyveinek első román fordítása: a Teremtés és a Kivonulás könyve. Az előszó elmondja az olvasóknak, hogy azért fordították le, hogy a románoknak is meglegyen az Írás, ahogyan a többi népnek.",
+      },
+      b4: {
+        year: "1648",
+        title: "A gyulafehérvári Újszövetség",
+        who: "Simion Ștefan erdélyi metropolita, Gyulafehérváron",
+        text: "Az első teljes román nyelvű Újszövetség, görögből és latinból fordítva. Az előszóban a metropolita azt írta, hogy olyan szavakat választott, amelyeket minden vidék románjai értenek, mert vidékenként másként beszéltek. Ez nyíltan a nyelv egységére irányuló gondolat volt.",
+        quote: "A szavak legyenek olyanok, mint a pénz: azok a jó pénzek, amelyek minden országban forognak; így azok a jó szavak is, amelyeket mindenki megért.",
+      },
+      b5: {
+        year: "1688",
+        title: "A bukaresti Biblia",
+        who: "Șerban Cantacuzino alatt kezdték, Constantin Brâncoveanu alatt fejezték be; fordítók: Nicolae Milescu és Radu és Șerban Greceanu testvérek",
+        text: "Az első teljes román nyelvű Biblia. Az Ószövetség a moldvai tudós, Nicolae Milescu fordításából indult ki, amelyet Bukarestben a Greceanu testvérek dolgoztak át. Moldvának, Havasalföldnek és Erdélynek először lett ugyanaz a Bibliája, ugyanazon a nyelven; több mint száz évig ez volt a románok könyvnyelve.",
+      },
+      b6: {
+        year: "1795",
+        title: "A balázsfalvi Biblia",
+        who: "Samuil Micu, az Erdélyi Iskolából",
+        text: "A Septuaginta alapján újrafordította egy görögkatolikus tudós. Erdélyi papok és tanítók sok nemzedékének kezén ment keresztül.",
+      },
+      b7: {
+        year: "1856–1858",
+        title: "Șaguna Bibliája",
+        who: "Andrei Șaguna metropolita, Nagyszebenben",
+        text: "Gondosan előkészített kiadás az erdélyi ortodox hívek számára, az emberek beszélt nyelvéhez közelebb álló nyelven.",
+      },
+      b8: {
+        year: "1921–1924",
+        title: "A Cornilescu-Biblia",
+        who: "Dumitru Cornilescu, Ralu Callimachi hercegnő segítségével",
+        text: "Egy fiatal ortodox diakónus élő, világos román nyelvre fordította a Bibliát, amelyet bárki megérthet. Olvasás közben maga is élő hitre jutott Krisztusban. A Brit és Külföldi Bibliatársulat 1924-ben átvette, és százezres példányszámban terjesztette. 1923-ban el kellett hagynia az országot, de fordítása maradt az a Biblia, amelyet románok milliói tartanak az ágyuk mellett.",
+      },
+      b9: {
+        year: "1914–1988",
+        title: "A zsinati Bibliák",
+        who: "A Román Ortodox Egyház (Gala Galaction, Vasile Radu és mások fordításai)",
+        text: "Az ortodox egyház hivatalos, többször átdolgozott kiadásai. Az 1988-as kiadás, amelyet a kommunisták alatt nyomtattak, kevés otthonba jutott el; akkoriban nehéz volt Bibliához jutni.",
+      },
+    },
+    influence: {
+      i1: "Az írott román nyelv nagyrészt az egyház könyveiből született. Minden vidéken a Bibliák és a liturgikus könyvek voltak az első olvasmányok, így segítettek közös nyelvet teremteni minden román számára, jóval az 1918-as egyesülés előtt. Eminescu azt mondta, hogy az egyház és könyvei adták meg a románoknak nyelvük egységét.",
+      i2: "Aki olvasni akarta az Írást, annak meg kellett tanulnia olvasni. A templomok mellett iskolák nyíltak, Balázsfalván 1754-ben az iskolákat „az ajándékok forrásainak” nevezték. Sokáig a falusi tanítók voltak a templom kántorai.",
+      i3: "Amikor az egyszerű emberek maguk olvashatták az Igét, ébredések születtek: az Úr Serege, az evangéliumi gyülekezetek, a falusi imakörök. A hit nem csak a papé maradt, hanem mindenkié lett.",
+      i4: "Ezért féltek a kommunisták a Bibliától jobban, mint sok fegyvertől: az a nép, amely olvassa az Igét, tudja, mi az igazság, és nem lehet többé könnyen becsapni.",
+    },
+    bibleVerse: {
+      text: "A te beszéded megnyilatkozása világosságot ad, és oktatja az együgyűeket.",
+      ref: "Zsoltárok 119,130",
+    },
+    endVerses: {
+      v1: {
+        text: "Ha engem üldöztek, titeket is üldöznek majd; ha az én beszédemet megtartották, a tiéteket is megtartják majd.",
+        ref: "János 15,20",
+      },
+      v2: {
+        text: "Boldogok, akik háborúságot szenvednek az igazságért: mert övék a mennyeknek országa.",
+        ref: "Máté 5,10",
+      },
+      v3: {
+        text: "Azért beszéltem ezeket néktek, hogy békességetek legyen énbennem. E világon nyomorúságtok lészen; de bízzatok: én meggyőztem a világot.",
+        ref: "János 16,33",
+      },
+    },
+  },
+};

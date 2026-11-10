@@ -4,6 +4,7 @@ import { frAmintiri } from "./amintiri/fr";
 import { frVremuri } from "./vremuri/fr";
 import { frCarte } from "./carte/fr";
 import { frCalatorie } from "./calatorie/fr";
+import { frBiserica } from "./biserica/fr";
 import { frParteneri } from "./parteneri/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
@@ -300,6 +301,7 @@ export const fr: Catalog = {
   ...frVremuri,
   ...frCarte,
   ...frCalatorie,
+  ...frBiserica,
   ...frParteneri,
   NotFound: {
     title: "Cette page n’existe pas",

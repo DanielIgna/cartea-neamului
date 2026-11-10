@@ -4,6 +4,7 @@ import { huAmintiri } from "./amintiri/hu";
 import { huVremuri } from "./vremuri/hu";
 import { huCarte } from "./carte/hu";
 import { huCalatorie } from "./calatorie/hu";
+import { huBiserica } from "./biserica/hu";
 import { huParteneri } from "./parteneri/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
@@ -300,6 +301,7 @@ export const hu: Catalog = {
   ...huVremuri,
   ...huCarte,
   ...huCalatorie,
+  ...huBiserica,
   ...huParteneri,
   NotFound: {
     title: "Ez az oldal nem létezik",

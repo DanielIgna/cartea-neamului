@@ -4,6 +4,7 @@ import { itAmintiri } from "./amintiri/it";
 import { itVremuri } from "./vremuri/it";
 import { itCarte } from "./carte/it";
 import { itCalatorie } from "./calatorie/it";
+import { itBiserica } from "./biserica/it";
 import { itParteneri } from "./parteneri/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
@@ -300,6 +301,7 @@ export const it: Catalog = {
   ...itVremuri,
   ...itCarte,
   ...itCalatorie,
+  ...itBiserica,
   ...itParteneri,
   NotFound: {
     title: "Questa pagina non esiste",
