@@ -309,4 +309,13 @@ export const de: Catalog = {
   LegalNote: {
     text: "Diese Seite ist auf Rumänisch. Maßgeblich ist die rumänische Fassung.",
   },
+  AuthError: {
+    title: "Die Anmeldung hat nicht geklappt",
+    denied: "Du hast die Anmeldung mit Google abgebrochen. Versuch es noch einmal oder melde dich mit E-Mail und Passwort an.",
+    restart: "Die Anmeldung wurde unterbrochen (vielleicht hat sie zu lange gedauert oder sich in einem anderen Tab geöffnet). Fang noch einmal von vorn an.",
+    generic: "Bei der Anmeldung ist etwas schiefgegangen. Versuch es noch einmal; wenn es wieder passiert, schreib uns mit dem Code unten.",
+    again: "Noch einmal versuchen",
+    home: "Startseite",
+    code: "Fehlercode: {code}",
+  },
 };

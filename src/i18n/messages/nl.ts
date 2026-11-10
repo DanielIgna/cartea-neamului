@@ -309,4 +309,13 @@ export const nl: Catalog = {
   LegalNote: {
     text: "Deze pagina is in het Roemeens. De Roemeense versie is de officiële.",
   },
+  AuthError: {
+    title: "Inloggen is niet gelukt",
+    denied: "Je hebt het inloggen met Google gestopt. Probeer het opnieuw of log in met je e-mail en wachtwoord.",
+    restart: "Het inloggen werd onderbroken (misschien duurde het te lang of ging het open in een ander tabblad). Begin opnieuw.",
+    generic: "Er ging iets mis bij het inloggen. Probeer het opnieuw; gebeurt het weer, schrijf ons dan met de code hieronder.",
+    again: "Opnieuw proberen",
+    home: "Startpagina",
+    code: "Foutcode: {code}",
+  },
 };

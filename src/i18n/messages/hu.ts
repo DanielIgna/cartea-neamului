@@ -309,4 +309,13 @@ export const hu: Catalog = {
   LegalNote: {
     text: "Ez az oldal románul olvasható. A román nyelvű változat a hivatalos.",
   },
+  AuthError: {
+    title: "A belépés nem sikerült",
+    denied: "Leállítottad a Google-belépést. Próbáld újra, vagy lépj be e-maillel és jelszóval.",
+    restart: "A belépés megszakadt (talán túl sokáig tartott, vagy másik lapon nyílt meg). Kezdd újra az elejéről.",
+    generic: "Valami hiba történt a belépéskor. Próbáld újra; ha megismétlődik, írj nekünk az alábbi kóddal.",
+    again: "Újrapróbálom",
+    home: "Kezdőlap",
+    code: "Hibakód: {code}",
+  },
 };

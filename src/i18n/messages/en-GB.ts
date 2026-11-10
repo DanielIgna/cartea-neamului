@@ -309,4 +309,13 @@ export const enGB: Catalog = {
   LegalNote: {
     text: "This page is in Romanian. The Romanian version is the official one.",
   },
+  AuthError: {
+    title: "Signing in didn’t work",
+    denied: "You stopped the Google sign-in. You can try again or sign in with your email and password.",
+    restart: "Signing in was interrupted (it may have taken too long or opened in another tab). Please start again.",
+    generic: "Something went wrong while signing in. Try again; if it happens again, write to us with the code below.",
+    again: "Try again",
+    home: "Home page",
+    code: "Error code: {code}",
+  },
 };

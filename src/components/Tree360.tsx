@@ -250,7 +250,7 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
             <button className="btn primary" onClick={() => goStep(story! + 1)} disabled={story! + 1 >= steps.length}>{t("next")}</button>
             <button className="btn" aria-pressed={autoplay} onClick={() => setAutoplay((a) => !a)}>{autoplay ? t("pause") : t("autoplay")}</button>
           </div>
-          {withoutYear > 0 && story === 0 && <p className="muted" style={{ fontSize: 12, margin: "6px 0 0" }}>{t("withoutYear", { count: withoutYear })}</p>}
+          {withoutYear > 0 && story === 0 && <p className="muted" style={{ fontSize: 13, margin: "6px 0 0" }}>{t("withoutYear", { count: withoutYear })}</p>}
         </div>
       )}
     </div>

@@ -112,7 +112,7 @@ function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
   return (
     <article className="bk-person" data-anchor={`p-${e.id}`}>
       <div className="bk-person-top">
-        {e.photo && <img className="bk-photo" src={e.photo} alt="" referrerPolicy="no-referrer" loading="lazy" />}
+        {e.photo && <img className="bk-photo" src={e.photo} alt={e.name} referrerPolicy="no-referrer" loading="lazy" />}
         <div className="bk-person-main">
           <h3>{e.name}{maiden && <span className="bk-born"> {t("model.maiden", { name: maiden, sex: e.sex })}</span>}</h3>
           {e.dates && <div className="bk-dates">{e.dates}</div>}
@@ -132,7 +132,7 @@ function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
       {e.biography && <div className="bk-bio">{paragraphs(e.biography)}</div>}
       {e.album.length > 0 && (
         <div className="bk-album">
-          {e.album.map((a) => <figure key={a.src}><img src={a.src} alt="" loading="lazy" />{a.caption && <figcaption>{a.caption}</figcaption>}</figure>)}
+          {e.album.map((a) => <figure key={a.src}><img src={a.src} alt={a.caption || e.name} loading="lazy" />{a.caption && <figcaption>{a.caption}</figcaption>}</figure>)}
         </div>
       )}
     </article>
@@ -189,7 +189,7 @@ function Voices({ voices, options, w }: { voices: Voice[]; options: BookOptions;
                 {m.question && <p className="bk-q">{t("voices.question", { question: m.question })}{m.askedBy && <span> · {t("voices.askedBy", { name: m.askedBy })}</span>}</p>}
                 {(m.when || m.place) && <p className="bk-when">{[m.when, m.place].filter(Boolean).join(", ")}</p>}
               </div>
-              {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt="" loading="lazy" />}
+              {m.photoId && <img className="bk-memory-photo" src={`/api/document/${m.photoId}`} alt={m.title || v.name} loading="lazy" />}
               {m.body ? <div className="bk-memory-body">{paragraphs(m.body)}</div> : <p className="bk-memory-body bk-muted">{t("voices.toldAloud")}</p>}
               {m.qr && m.url && (
                 <div className="bk-listen">

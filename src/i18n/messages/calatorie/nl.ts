@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Nederlands (je). Verzen uit de Statenvertaling. */
 export const nlCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "„{example}” = geschat jaar, afgeleid van naaste familie",
+    roadKeyStop: "„{word}” = stop in de communistische jaren ({years})",
     title: "Reis door de tijd",
     titleTree: "Reis door de tijd · {tree}",
     pagesHint: "De goede antwoorden bij de haltes",
