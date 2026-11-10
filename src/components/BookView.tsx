@@ -4,6 +4,12 @@ import type { BookFormat } from "@/lib/book";
 import { PAGE, ROT, bookCss, contentBox } from "@/lib/book-css";
 import type { Previewer } from "pagedjs";
 import { useTranslations } from "use-intl";
+import { partnerUrl } from "@/lib/partners-shared";
+
+/** Cardul partenerului de după „Descarcă PDF” apare o singură dată pe acest browser; închis, nu mai apare niciodată. */
+const PARTNER_SEEN = "cn-partener-carte";
+const seenPartner = () => { try { return !!localStorage.getItem(PARTNER_SEEN); } catch { return true; } };
+const markPartner = () => { try { localStorage.setItem(PARTNER_SEEN, "1"); } catch { /* fără localStorage, nu-l arătăm */ } };
 
 /**
  * Cartea, așezată pe pagini în browser cu Paged.js: conținutul vine gata de pe server (ascuns), iar aici o copie a lui
@@ -71,6 +77,8 @@ function fillPageNumbers(area: HTMLElement) {
 export default function BookView({ format, renderKey, fileName, children }: { format: BookFormat; renderKey: string; fileName: string; children: React.ReactNode }) {
   const src = useRef<HTMLDivElement>(null), out = useRef<HTMLDivElement>(null), stage = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<"work" | "done" | "error">("work");
+  const tp = useTranslations("Partners.bookCard");
+  const [partner, setPartner] = useState(false);
   const [pages, setPages] = useState(0);
   const [zoom, setZoom] = useState(1);
   const t = useTranslations("BookUi.view");
@@ -138,6 +146,8 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
     document.title = fileName; // numele fișierului PDF propus de browser
     window.print();
     document.title = title;
+    // După prima descărcare, o singură dată: un card discret despre partener, în afara cărții (nu se tipărește).
+    if (!seenPartner()) { markPartner(); setPartner(true); }
   };
 
   return (
@@ -152,6 +162,17 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
           </>
         )}
       </div>
+      {partner && (
+        <aside className="card book-chrome partner-card" aria-label={tp("label")}>
+          <button type="button" className="partner-close" onClick={() => setPartner(false)} aria-label={tp("close")} title={tp("close")}>×</button>
+          <div className="section-label" style={{ marginTop: 0 }}>{tp("label")}</div>
+          <p>{tp("text")}</p>
+          <div className="actions">
+            <a className="btn" href={partnerUrl("carte")} target="_blank" rel="noopener noreferrer">{tp("cta")}</a>
+            <button type="button" className="linkish" onClick={() => setPartner(false)}>{tp("close")}</button>
+          </div>
+        </aside>
+      )}
       <div ref={src} className="book-source" hidden>{children}</div>
       <div ref={stage} className="book-stage">
         <div ref={out} className={`book-pages${phase === "done" ? "" : " busy"}`} data-phase={phase} data-key={renderKey} style={phase === "done" && zoom < 1 ? { zoom } : undefined} />

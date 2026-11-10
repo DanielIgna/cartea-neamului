@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 
 export default function UserMenu({ name, unread = 0, image, admin = false }: { name: string; unread?: number; image?: string | null; admin?: boolean }) {
   const t = useTranslations("UserMenu");
+  const tp = useTranslations("Partners");
   const router = useRouter();
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   return (
@@ -18,6 +19,7 @@ export default function UserMenu({ name, unread = 0, image, admin = false }: { n
           : <span className="avatar avatar-empty" style={{ width: 30, height: 30, fontSize: 12 }} aria-hidden>{initials}</span>}
         <span className="muted">{name}</span>
       </Link>
+      <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
       <button className="btn" onClick={async () => { await authClient.signOut(); router.push("/"); router.refresh(); }}>{t("signOut")}</button>
     </div>
   );

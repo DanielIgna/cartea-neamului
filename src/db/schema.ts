@@ -397,3 +397,38 @@ export const memoryQuestion = pgTable("memory_question", {
   dismissed: boolean("dismissed").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("memory_question_person_idx").on(t.personId)]);
+
+/* ---------- Beneficii de la parteneri (acum doar PropManage), doar cu acordul omului ---------- */
+// Un rând pentru fiecare „da” și fiecare „nu” (nu un câmp suprascris), ca să se vadă oricând când și-a dat omul acordul, la ce
+// text și de unde (la crearea contului, din „Datele mele” sau din legătura de dezabonare). Ultimul rând spune starea de acum.
+// Partenerului îi pleacă doar adresa de email a celor cu acordul dat; vezi src/lib/partners.ts.
+export const partnerConsent = pgTable("partner_consent", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  partner: text("partner").notNull(), // propmanage
+  granted: boolean("granted").notNull(),
+  grantedAt: timestamp("granted_at"),
+  revokedAt: timestamp("revoked_at"),
+  textVersion: text("text_version").notNull(),
+  locale: text("locale"), // limba în care a citit textul acordului
+  source: text("source").notNull(), // cont-nou / datele-mele / dezabonare
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("partner_consent_user_idx").on(t.userId, t.partner, t.createdAt)]);
+
+/* ---------- Casa bătrânească a unui om din arbore ---------- */
+// Unde e (adresa sau satul), cine a ridicat-o, în ce an, poze și povestea ei. O vede doar cine alege autorul, ca la amintiri.
+export const oldHouse = pgTable("old_house", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  authorId: text("author_id").references(() => user.id, { onDelete: "set null" }),
+  place: text("place"),
+  builtBy: text("built_by"),
+  builtYear: integer("built_year"),
+  story: text("story"),
+  photoIds: jsonb("photo_ids").$type<string[]>().notNull().default([]),
+  visibility: memoryVisibility("visibility").notNull().default("tree"),
+  maxDegree: integer("max_degree"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [index("old_house_person_idx").on(t.personId), index("old_house_tree_idx").on(t.treeId)]);
