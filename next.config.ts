@@ -58,6 +58,10 @@ const config: NextConfig = {
   // Titlul, descrierea și poza pentru previzualizarea linkurilor stau în <head> chiar din primul HTML, pentru orice browser sau robot
   // (altfel Next le poate trimite mai târziu, în corpul paginii, celor pe care nu-i recunoaște ca roboți).
   htmlLimitedBots: /.*/,
+  // Pagina de eroare a bibliotecii de conectare (în engleză) e înlocuită de a noastră, cu același cod de eroare.
+  async redirects() {
+    return [{ source: "/api/auth/error", destination: "/intrare/eroare", permanent: false }];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

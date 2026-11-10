@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Italiano (tu). Versetti dalla Riveduta 1927 (Luzzi). */
 export const itCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "«{example}» = anno approssimativo, ricavato dai parenti stretti",
+    roadKeyStop: "«{word}» = sosta negli anni del comunismo ({years})",
     title: "Viaggio nel tempo",
     titleTree: "Viaggio nel tempo · {tree}",
     pagesHint: "Le risposte giuste alle tappe",

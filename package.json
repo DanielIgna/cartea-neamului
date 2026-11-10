@@ -12,6 +12,7 @@
     "test": "vitest run",
     "db:push": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:diacritice": "tsx --env-file=.env.local scripts/diacritice.ts",
     "e2e:neon": "tsx --env-file=.env.local scripts/e2e-neon.ts"
   },
   "dependencies": {

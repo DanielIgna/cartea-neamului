@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Français (vouvoiement). Versets de la Bible Louis Segond 1910. */
 export const frCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "« {example} » = année approximative, déduite des proches",
+    roadKeyStop: "« {word} » = arrêt dans les années communistes ({years})",
     title: "Voyage dans le temps",
     titleTree: "Voyage dans le temps · {tree}",
     pagesHint: "Les bonnes réponses aux escales",

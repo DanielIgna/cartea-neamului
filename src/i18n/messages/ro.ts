@@ -321,6 +321,15 @@ export const ro = {
   LegalNote: {
     text: "Textul de mai jos e în română; versiunea în română este cea oficială.",
   },
+  AuthError: {
+    title: "Intrarea în cont nu a reușit",
+    denied: "Ai oprit conectarea cu Google. Poți încerca din nou sau poți intra cu emailul și parola.",
+    restart: "Conectarea a fost întreruptă (poate a durat prea mult sau s-a deschis în alt tab). Încearcă încă o dată, de la început.",
+    generic: "Ceva n-a mers la conectare. Încearcă din nou; dacă se repetă, scrie-ne și spune-ne codul de mai jos.",
+    again: "Încearcă din nou",
+    home: "Prima pagină",
+    code: "Codul erorii: {code}",
+  },
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

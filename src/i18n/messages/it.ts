@@ -309,4 +309,13 @@ export const it: Catalog = {
   LegalNote: {
     text: "Questa pagina è in rumeno. La versione rumena è quella ufficiale.",
   },
+  AuthError: {
+    title: "L’accesso non è riuscito",
+    denied: "Hai interrotto l’accesso con Google. Puoi riprovare o entrare con email e password.",
+    restart: "L’accesso è stato interrotto (forse ci è voluto troppo o si è aperto in un’altra scheda). Ricomincia da capo.",
+    generic: "Qualcosa non è andato durante l’accesso. Riprova; se succede di nuovo, scrivici con il codice qui sotto.",
+    again: "Riprova",
+    home: "Prima pagina",
+    code: "Codice di errore: {code}",
+  },
 };

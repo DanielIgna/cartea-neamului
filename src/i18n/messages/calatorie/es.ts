@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** Español (de España, tuteo). Versículos de la Reina-Valera 1909, con acentos de hoy. */
 export const esCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "«{example}» = año aproximado, calculado a partir de los parientes cercanos",
+    roadKeyStop: "«{word}» = parada en los años del comunismo ({years})",
     title: "Viaje en el tiempo",
     titleTree: "Viaje en el tiempo · {tree}",
     pagesHint: "Las respuestas acertadas en las paradas",

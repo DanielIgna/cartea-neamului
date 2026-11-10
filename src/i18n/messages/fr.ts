@@ -309,4 +309,13 @@ export const fr: Catalog = {
   LegalNote: {
     text: "Cette page est en roumain. La version roumaine est la version officielle.",
   },
+  AuthError: {
+    title: "La connexion n’a pas réussi",
+    denied: "Vous avez arrêté la connexion avec Google. Vous pouvez réessayer ou vous connecter avec votre e-mail et votre mot de passe.",
+    restart: "La connexion a été interrompue (elle a peut-être pris trop de temps ou s’est ouverte dans un autre onglet). Recommencez depuis le début.",
+    generic: "Un problème est survenu lors de la connexion. Réessayez ; si cela se reproduit, écrivez-nous en indiquant le code ci-dessous.",
+    again: "Réessayer",
+    home: "Accueil",
+    code: "Code d’erreur : {code}",
+  },
 };

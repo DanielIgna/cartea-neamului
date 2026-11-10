@@ -3,6 +3,8 @@ import type { CalatorieCatalog } from "./ro";
 /** British English. Verses from the King James Version. */
 export const enGBCalatorie: CalatorieCatalog = {
   Journey: {
+    roadKeyApprox: "“{example}” = approximate year, worked out from close relatives",
+    roadKeyStop: "“{word}” = a stop in the communist years ({years})",
     title: "Journey through time",
     titleTree: "Journey through time · {tree}",
     pagesHint: "Right answers along the way",
