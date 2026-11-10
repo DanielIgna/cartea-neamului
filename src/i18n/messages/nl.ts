@@ -38,6 +38,8 @@ export const nl: Catalog = {
     messages: "Berichten",
     account: "Je account en je gegevens",
     signOut: "Uitloggen",
+    menu: "Menu",
+    home: "Start",
   },
   UsageNotice: {
     label: "Hoe je de site gebruikt",

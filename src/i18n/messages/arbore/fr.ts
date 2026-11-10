@@ -48,6 +48,8 @@ export const frArbore: ArboreCatalog = {
     legendFanDownHelp: "Chaque anneau est une génération, et chaque part est aussi large que la descendance de cette branche.",
     legendEmpty: "Place libre, à compléter",
     legendHowTo: "Un clic ouvre la fiche, un double clic met la personne au centre. Zoomez avec + et −, avec Ctrl et la molette de la souris, ou avec deux doigts sur un téléphone ; faites glisser le dessin pour vous y déplacer.",
+    legendHowToTouch: "Touchez une personne pour voir qui elle est ; touchez deux fois pour la mettre au centre. Déplacez et agrandissez le dessin avec deux doigts, ou avec un seul en plein écran (⛶).",
+    hideBar: "Masquer",
     cutStops: "{name} n’a pas encore de parents reliés dans l’arbre : la lignée {side, select, father {du père} mother {de la mère} other {de la mère}} s’arrête donc {sex, select, F {à elle} other {à lui}}.",
     cutNoFather: "Le père de {name} n’est pas relié {sex, select, F {à elle} other {à lui}} dans l’arbre : la lignée {side, select, father {du père} mother {de la mère} other {de la mère}} s’arrête donc {sex, select, F {à elle} other {à lui}}.",
     cutFound: "{stops, select, yes {Ses parents semblent déjà être dans l’arbre} other {Son père semble déjà être dans l’arbre}}, auprès de ses frères et sœurs ou sur une deuxième fiche à son nom : <open>ouvrez sa fiche</open> et reliez-{sex, select, F {la} other {le}} en un clic.",
@@ -661,6 +663,7 @@ export const frArbore: ArboreCatalog = {
     title: "Les vies de la famille sur fond d’histoire",
     back: "Retour à l’arbre",
     aria: "Chronologie",
+    eventsTitle: "Événements en arrière-plan",
     events: {
       rev1848: "Révolution de 1848",
       dualism: "Compromis austro-hongrois",

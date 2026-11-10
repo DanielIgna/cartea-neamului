@@ -46,6 +46,8 @@ export const ro = {
     messages: "Mesaje",
     account: "Contul tău și datele tale",
     signOut: "Ieși",
+    menu: "Meniu",
+    home: "Acasă",
   },
   UsageNotice: {
     label: "Cât folosești site-ul",

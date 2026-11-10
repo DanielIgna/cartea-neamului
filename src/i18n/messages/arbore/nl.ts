@@ -48,6 +48,8 @@ export const nlArbore: ArboreCatalog = {
     legendFanDownHelp: "Elke ring is een generatie, en elk stuk is zo breed als de nakomelingen van die tak.",
     legendEmpty: "Lege plek, nog in te vullen",
     legendHowTo: "Klik voor het profiel, dubbelklik om de persoon in het midden te zetten. Zoom in of uit met + en −, met Ctrl en het muiswiel of met twee vingers op je telefoon; sleep aan de tekening om je erin te verplaatsen.",
+    legendHowToTouch: "Tik op een persoon om te zien wie het is; tik twee keer om hem of haar in het midden te zetten. Verplaats en vergroot de tekening met twee vingers, of met één vinger op volledig scherm (⛶).",
+    hideBar: "Verbergen",
     cutStops: "{name} heeft nog geen ouders in de stamboom, dus de stamlijn van {side, select, father {de vader} mother {de moeder} other {de moeder}} stopt bij {sex, select, M {hem} F {haar} other {hem}}.",
     cutNoFather: "De vader van {name} is in de stamboom niet aan {sex, select, M {hem} F {haar} other {hem}} gekoppeld, dus de stamlijn van {side, select, father {de vader} mother {de moeder} other {de moeder}} stopt bij {sex, select, M {hem} F {haar} other {hem}}.",
     cutFound: "{stops, select, yes {{sex, select, M {Zijn} F {Haar} other {Zijn}} ouders lijken al in de stamboom te staan} other {De vader lijkt al in de stamboom te staan}}, bij {sex, select, M {zijn} F {haar} other {zijn}} broers en zussen of op een tweede profiel van {sex, select, M {hem} F {haar} other {hem}}: <open>open {sex, select, M {zijn} F {haar} other {zijn}} profiel</open> en koppel {sex, select, M {hem} F {haar} other {hem}} met één klik.",
@@ -661,6 +663,7 @@ export const nlArbore: ArboreCatalog = {
     title: "Het leven van de familie tegen de achtergrond van de geschiedenis",
     back: "Terug naar de stamboom",
     aria: "Tijdlijn",
+    eventsTitle: "Gebeurtenissen op de achtergrond",
     events: {
       rev1848: "Revolutie van 1848",
       dualism: "Oostenrijks-Hongaars Compromis",

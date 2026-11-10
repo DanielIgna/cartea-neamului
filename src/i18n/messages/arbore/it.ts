@@ -48,6 +48,8 @@ export const itArbore: ArboreCatalog = {
     legendFanDownHelp: "Ogni anello è una generazione, e ogni spicchio è largo quanto i discendenti di quel ramo.",
     legendEmpty: "Posto libero, da completare",
     legendHowTo: "Un clic apre la scheda, un doppio clic mette la persona al centro. Ingrandisci o rimpicciolisci con + e −, con Ctrl e la rotellina del mouse o con due dita sul telefono; trascina il disegno per muoverti al suo interno.",
+    legendHowToTouch: "Tocca una persona per vedere chi è; tocca due volte per metterla al centro. Sposta e ingrandisci il disegno con due dita, o con un dito a schermo intero (⛶).",
+    hideBar: "Nascondi",
     cutStops: "{name} non ha ancora genitori collegati nell’albero, quindi la linea {side, select, father {del padre} mother {della madre} other {della madre}} si ferma a {sex, select, M {lui} F {lei} other {lui}}.",
     cutNoFather: "Il padre di {name} non è collegato a {sex, select, M {lui} F {lei} other {lui}} nell’albero, quindi la linea {side, select, father {del padre} mother {della madre} other {della madre}} si ferma a {sex, select, M {lui} F {lei} other {lui}}.",
     cutFound: "{stops, select, yes {I suoi genitori sembrano essere già nell’albero} other {Il padre sembra essere già nell’albero}}, accanto ai suoi fratelli o in una seconda scheda a suo nome: <open>apri la sua scheda</open> e {sex, select, M {collegalo} F {collegala} other {collegalo}} con un clic.",
@@ -661,6 +663,7 @@ export const itArbore: ArboreCatalog = {
     title: "Le vite della famiglia sullo sfondo della storia",
     back: "Torna all’albero",
     aria: "Cronologia",
+    eventsTitle: "Eventi sullo sfondo",
     events: {
       rev1848: "Rivoluzione del 1848",
       dualism: "Compromesso austro-ungarico",

@@ -76,6 +76,7 @@ export default async function Timeline({ params, searchParams }: { params: Promi
   const events = HISTORICAL_EVENTS.filter((e) => e.to >= minY && (!t.region || e.regions.includes("*") || e.regions.includes(t.region)));
   const L = 170, R = 880, y0 = 72, rh = 22, H = y0 + people.length * rh + 30;
   const X = (y: number) => L + ((y - minY) / (maxY - minY)) * (R - L);
+  const pct = (y: number) => ((y - minY) / (maxY - minY)) * 100;
   const ticks = Array.from({ length: Math.floor((maxY - minY) / 20) + 1 }, (_, i) => minY + i * 20);
   return (
     <div className="card">
@@ -101,7 +102,36 @@ export default async function Timeline({ params, searchParams }: { params: Promi
         <span><i className="sw" style={{ background: "transparent", border: "2px solid var(--accent)" }} />{tt("livingLegend")}</span>
       </p>
       {!people.length && <p className="muted">{tt("noneHere")}</p>}
-      <div className="chartbox">
+      {/* Pe telefon: o listă, câte un rând pe om (numele și anii deasupra, bara dedesubt), în loc de desenul lat care se derula în lateral. */}
+      {people.length > 0 && (
+        <div className="tl-list">
+          {events.length > 0 && (
+            <details className="tl-events">
+              <summary>{tt("eventsTitle")} ({events.length})</summary>
+              <ul>{events.map((e) => <li key={e.id}><b>{e.from === e.to ? e.from : `${e.from}–${e.to}`}</b> {tt(`events.${e.id}`)}</li>)}</ul>
+            </details>
+          )}
+          <div className="tl-axis" aria-hidden>
+            {ticks.filter((y, i) => i % Math.ceil(ticks.length / 5) === 0 && pct(y) > 6 && pct(y) < 94).map((y) => <span key={y} style={{ left: `${pct(y)}%` }}>{y}</span>)}
+          </div>
+          <ol>
+            {people.map((p) => {
+              const end = p.deathYear ?? (p.living ? now : p.birthYear! + 1);
+              const years = p.living && !p.deathYear ? tt("toPresent", { from: String(p.birthYear) }) : `${p.birthYear}${p.deathYear ? `–${p.deathYear}` : ""}`;
+              return (
+                <li key={p.id}>
+                  <div className="tl-name"><span>{p.name}</span><small>{years}</small></div>
+                  <div className="tl-track">
+                    {events.map((e) => <i key={e.id} className="tl-ev" style={{ left: `${pct(e.from)}%`, width: `max(2px, ${pct(e.to) - pct(e.from)}%)` }} />)}
+                    <b className={p.living ? "tl-bar living" : "tl-bar"} style={{ left: `${pct(p.birthYear!)}%`, width: `max(6px, ${pct(end) - pct(p.birthYear!)}%)`, background: FILL[branchOf(p.id)] }} />
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+      <div className="chartbox tl-chart">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={tt("aria")} style={{ width: "100%", minWidth: 720 }}>
           {events.map((e, i) => (
             <g key={e.title}>

@@ -38,6 +38,8 @@ export const it: Catalog = {
     messages: "Messaggi",
     account: "Il tuo account e i tuoi dati",
     signOut: "Esci",
+    menu: "Menu",
+    home: "Home",
   },
   UsageNotice: {
     label: "Come usi il sito",

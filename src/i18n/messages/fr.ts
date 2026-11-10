@@ -38,6 +38,8 @@ export const fr: Catalog = {
     messages: "Messages",
     account: "Votre compte et vos données",
     signOut: "Se déconnecter",
+    menu: "Menu",
+    home: "Accueil",
   },
   UsageNotice: {
     label: "Votre utilisation du site",

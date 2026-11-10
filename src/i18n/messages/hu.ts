@@ -38,6 +38,8 @@ export const hu: Catalog = {
     messages: "Üzenetek",
     account: "A fiókod és az adataid",
     signOut: "Kilépés",
+    menu: "Menü",
+    home: "Kezdőlap",
   },
   UsageNotice: {
     label: "Hogyan használod az oldalt",
