@@ -6,6 +6,7 @@ import { frCarte } from "./carte/fr";
 import { frCalatorie } from "./calatorie/fr";
 import { frBiserica } from "./biserica/fr";
 import { frParteneri } from "./parteneri/fr";
+import { frLegal } from "./legal/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -303,13 +304,14 @@ export const fr: Catalog = {
   ...frCalatorie,
   ...frBiserica,
   ...frParteneri,
+  ...frLegal,
   NotFound: {
     title: "Cette page n’existe pas",
     text: "Le lien est peut-être erroné ou la page a été déplacée. Vous trouverez tout depuis la page d’accueil.",
     home: "Aller à l’accueil",
   },
   LegalNote: {
-    text: "Cette page est en roumain. La version roumaine est la version officielle.",
+    text: "Ceci est une traduction. La version roumaine est la version officielle.",
   },
   AuthError: {
     title: "La connexion n’a pas réussi",

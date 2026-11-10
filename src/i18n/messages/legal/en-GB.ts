@@ -1,0 +1,166 @@
+import type { LegalCatalog } from "./ro";
+
+export const enGBLegal: LegalCatalog = {
+  Legal: {
+    updated: "Last changed: {date}",
+    contactTitle: "Contact",
+    contactLine: "{name}{person, select, yes {, private individual} other {}}. Email: <mail>{email}</mail>.",
+    Privacy: {
+      metaTitle: "Privacy policy",
+      metaDescription: "What data we keep, why, who sees it and how you download or delete it.",
+      label: "Privacy policy",
+      title: "How we look after your family’s data",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului is a place where families build their family tree together, keep their memories and print their family book. Here we explain, briefly and in plain words, what data we keep, why, who sees it and how you download or delete it. In short: family trees are private, you choose who sees your memories, we sell nothing and we show no adverts. Our partner, PropManage, receives only your email address, and only if you tick the box for it.",
+        },
+        controller: {
+          h: "Who is responsible for the data",
+          p1: "The controller of the data in Cartea Neamului under the General Data Protection Regulation (EU Regulation 2016/679, “GDPR”) is <b>{name}</b>{person, select, yes {, private individual} other {}}. For any question or request about your data, write to us at <mail>{email}</mail>.",
+          beta: "Cartea Neamului is currently being tested: only family and close friends use it, to tell us what works and what does not. Even during testing, your data is kept and protected as described here.",
+        },
+        data: {
+          h: "What data we keep",
+          l1: "<b>Your account:</b> your name, email address and password (kept only as an encrypted fingerprint that even we cannot read). If you sign in with Google, the Google account identifier and its profile picture. For the safety of your account, the sessions in which you are signed in, with the IP address and the type of browser.",
+          l2: "<b>Family trees:</b> what you and your relatives write about people: names, dates and places of birth and death, where living people live, occupation, biography, notes, photos, scanned documents and family relationships. We also remember who made each change, so that mistakes can be put right.",
+          l3: "<b>The memory chest and the autobiography:</b> memories written down or recorded by voice (audio recordings), their photos, questions left by relatives and the answers. When a relative records the stories of someone without an account “at the grandparents’”, we also keep that person’s consent, sometimes in their own voice.",
+          l4: "<b>Faith:</b> what you write in the “Faith” chapter shows your religious beliefs. The law treats this as a special category of data (Art. 9 GDPR), so we keep it only with your explicit consent, which we ask for right there, before your first answer.",
+          l5: "<b>Messages</b> that relatives write to each other.",
+          l6: "<b>“Are you already in a family tree?”:</b> the name and date of birth you enter to find your record. After the search we keep only the surname searched for and whether anything was found, to limit searches (so nobody can guess someone’s date of birth by trying day after day).",
+          l7: "<b>“From the same places”:</b> only if the owner of the tree turns it on, the villages of deceased ancestors, their surnames and the years, so that other families with roots in the same villages can find their relatives. We also keep requests to connect and the answers to them.",
+          l8: "<b>How much you use the site</b>, only if you say “OK” to the question we ask you once: by day, how long you spent in each part of the site (for example “Family tree · Tree” or “Family map”), how many times you opened it and how much of that time was on a phone or in the phone app. We count only the time when the page is in front and you are doing something in it. We do not keep the page address, what you write or what you click.",
+          l9: "<b>Benefits from partners</b>, only if you tick the box for it (when creating your account or in “My data”): every “yes” and every “no”, with the date, the version of the text you ticked, the language and where you made the choice.",
+          l10: "<b>The old family home:</b> what you write about the family’s house on a person’s page (the address or village, who built it, the year, photos and its story). Only the people you choose can see it, just as with memories.",
+          l11: "<b>In your browser:</b> the theme you chose (light or dark), the family lines you chose to see and whether you have already seen the partner card shown after downloading the book. If you said “OK” to measuring time, also the last minute counted, at most one hour’s worth, so that it reaches us even when you close the page in a hurry.",
+          l12: "<b>Technical logs</b> of the server (IP address, page requested, time), kept for a short while so that we can fix errors.",
+        },
+        why: {
+          h: "Why, and on what legal basis",
+          l1: "To make what you ask for work: your account, family trees, the memory chest, messages and the book. The legal basis is the contract between us, that is these <terms>Terms</terms> (Art. 6(1)(b) GDPR).",
+          l2: "To protect accounts and family trees: sessions, the change log and limits on searches. The legal basis is our legitimate interest in keeping the site safe (Art. 6(1)(f)).",
+          l3: "To see what people use and what needs improving: figures about accounts and trees in the admin panel, without what you write. The legal basis is our legitimate interest in making the site better (Art. 6(1)(f)).",
+          l4: "For living relatives you add to a tree, the legal basis is the family’s legitimate interest in keeping its history, with care: family trees are private, and living people are visible only in their own tree, never to other families. Anyone who appears in a tree can ask us to correct or delete their data.",
+          l5: "Based on your consent, which you can withdraw at any time: the “Faith” chapter (Art. 9(2)(a)), stories recorded “at the grandparents’”, “From the same places”, how much you use the site and benefits from partners (Art. 6(1)(a)). Withdrawing consent does not change what was done before with the consent you gave.",
+        },
+        who: {
+          h: "Who sees the data",
+          l1: "<b>Family trees are private.</b> Only the members the owner invites, or accepts after a request, can see them. Each has a role: a visitor only views, a contributor adds, an editor corrects, and the owner decides who joins.",
+          l2: "<b>Living people</b> are visible only in their own tree. They do not appear in “From the same places” or to other families. The only person who can find their record from outside the tree is the person themselves, with their name and full date of birth; the owner of the tree then decides whether to accept them, and until then the person searching does not even learn which tree it is.",
+          l3: "<b>Memories</b> are seen only by the people their writer chooses: just the writer (draft), the person who asked, close family up to a certain degree of kinship, or the whole tree. Only those ticked for the book go into the family book.",
+          l4: "<b>Messages</b> are seen only by the two people writing to each other.",
+          l5: "<b>We</b> see only lists and figures in the admin panel: accounts (name, email, when and from what kind of device they signed in), family trees (name, how many people and files they have), for each account how much it has added (how many people, memories, photos, invitations and messages) and, for those who said “OK”, how long they spend in each part of the site. There we can also keep a short note about an account, for example that it stays free. We do not read memories or messages, and we count nothing from the “Faith” chapter; we look at them only if you ask us for help or if the law requires it.",
+          l6: "We do not sell data, we show no adverts and we give it to no one else apart from the providers below, our partner PropManage (only the email address of those who ticked the box, as described below) and the authorities, when the law requires it.",
+        },
+        vendors: {
+          h: "The providers who help us",
+          p1: "We work with a few providers, who process data only to make the site work, under contracts that require them to protect it:",
+          l1: "<b>Vercel Inc.</b> (USA) hosts the site and runs the application.",
+          l2: "<b>Neon</b> (Databricks Inc., USA) stores the database, photos, documents and recordings, in a data centre in Frankfurt (Germany, EU).",
+          l3: "<b>Google</b>, only if you choose “Continue with Google”, confirms your identity when you sign in.",
+          l4: "<b>OpenStreetMap</b> (the OpenStreetMap Foundation, United Kingdom) provides the map tiles in “Family map”. Your browser requests them directly from them, so they see the IP address you request them from.",
+          p2: "For transfers outside the European Union, these providers use the standard contractual clauses approved by the European Commission or the EU–US Data Privacy Framework. We send nothing about living people to artificial intelligence services.",
+        },
+        partner: {
+          h: "Our partner, PropManage",
+          p1: "PropManage (<pm>propmanage.ro</pm>) is a platform for home owners and a partner of Cartea Neamului. You find it only on the <partners>Partners</partners> page; there are no adverts in the family tree, memories, timeline, map or book.",
+          l1: "<b>What it receives:</b> only your email address, and only if you ticked “{consent}”. The box is separate, it is not ticked by default and nothing on the site depends on it. PropManage never receives anything about your family tree, the people in it, the relatives you invited, villages, memories, photos or voice recordings. Invited relatives and people in the tree never receive messages from PropManage.",
+          l2: "<b>Legal basis:</b> your consent (Art. 6(1)(a) GDPR). From the moment it receives your address, PropManage is responsible for it as a separate controller, under its own privacy policy, and uses it only to send you benefits for your home from time to time.",
+          l3: "<b>For how long:</b> for as long as your consent stands. We build the list PropManage receives afresh each time from the current consents, so once you withdraw yours, your address no longer reaches it. We ask it to delete your address when it learns that you have withdrawn your consent.",
+          l4: "<b>How to withdraw it:</b> with one click, in <dataPartners>My data</dataPartners> (the “Benefits from partners” switch), or from the unsubscribe link in any email you receive, without signing in. Withdrawing changes nothing in your account or your family tree.",
+          l5: "Links to PropManage on the site (on the Partners page, next to the old family home and after downloading the book) are simple links: they only show that you come from Cartea Neamului, with no data about you.",
+        },
+        keep: {
+          h: "How long we keep data",
+          p1: "For as long as you have an account. What you delete disappears from the site at once, and backup copies of the database are overwritten automatically within 30 days at most. When you delete your account, everything that is yours goes: your account, the memories in your chest, your messages, what you wrote to others and your consents. Family trees remain the family’s: a tree with other members passes to one of them, and one in which you are alone is deleted completely. Your record in family trees remains, so that the tree is not broken, without the link to your account; if you wish, it is also emptied of your data. We keep how much you use the site for at most 13 months; if you say “I no longer want this”, it is deleted at once.",
+        },
+        rights: {
+          h: "Your rights",
+          p1: "You can find out what data we hold about you, correct it, delete it, take it with you, ask us to stop using it in a certain way and withdraw your consent at any time. You can do much of this yourself, on the <data>My data</data> page: download everything linked to your account, withdraw your consent for “Faith” or for benefits from partners, stop the measuring of time spent on the site or delete your account. For everything else, write to us at <mail>{email}</mail>; we reply within one month at most.",
+          p2: "If you believe we have not respected your rights, you can complain to the Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+        },
+        kids: {
+          h: "Children, the living and those who have passed away",
+          l1: "Accounts are for people aged at least {minAge}. Children can be added to the family tree by their parents.",
+          l2: "Anyone added to a tree as living can ask the owner of the tree or us to correct, hide or delete their data.",
+          l3: "Data protection law does not apply to those who have passed away, but we keep their memory with the same respect.",
+        },
+        cookies: {
+          h: "Cookies",
+          p1: "We use only the cookies without which the site would not work, so we do not ask for your consent for them:",
+          l1: "the one that keeps you signed in;",
+          l2: "<code>limba</code>, with the language in which you chose to read the site on this phone or computer (for example “ro” or “de”), kept for a year;",
+          l3: "the one with the theme you chose (light or dark);",
+          l4: "<code>cn-parteneri</code>, only if you tick the benefits from partners when creating your account: it remembers the tick for at most 30 minutes, just long enough for your choice to reach your new account (also when you create it with Google), and then it disappears.",
+          p2: "We use no advertising cookies and no cookies for counting visits.",
+        },
+        safety: {
+          h: "Security",
+          p1: "The connection to the site is encrypted, passwords are kept only as a fingerprint, and photos, documents and recordings are kept in a private place: they open only through links that expire after a few minutes, after we check that you are allowed to see them.",
+        },
+        changes: {
+          h: "Changes",
+          p1: "If we change anything important about what we keep or whom we show it to, we will let you know on the site before the change takes effect.",
+        },
+      },
+    },
+    Terms: {
+      metaTitle: "Terms of use",
+      metaDescription: "What it means to have an account in Cartea Neamului: what you can add, whose it is and what we promise.",
+      label: "Terms of use",
+      title: "What it means to have an account in Cartea Neamului",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului is a place where families build their family tree together, keep their memories and print their family book. When you create an account, you agree to these terms and to the <privacy>Privacy policy</privacy>.",
+          beta: "Cartea Neamului is currently being tested: it is open only to family and close friends, so that they can tell us what works and what does not. It may change often and may sometimes go wrong, so keep your own copy of what matters: you can download it at any time from “My data”.",
+        },
+        account: {
+          h: "1. Your account",
+          l1: "Accounts are for people aged at least {minAge}. Children can be added to the family tree by their parents.",
+          l2: "An account belongs to one person only. Keep your password to yourself; what is done from your account is your responsibility.",
+          l3: "The demo account has a public password, so it belongs to everyone: do not put anything about your family in it.",
+        },
+        content: {
+          h: "2. What you add to the site",
+          l1: "Add only what you have the right to add: family photos and documents, texts you wrote yourself, recordings made with the consent of the person speaking.",
+          l2: "Write about living relatives with care and common sense. If someone asks you to remove their data from the tree, remove it or write to us.",
+          l3: "Do not add anything illegal, offensive or that incites hatred, nor other people’s data without the right to do so.",
+          l4: "We may hide or delete anything that breaks these terms or the law, and we will tell you why.",
+        },
+        owner: {
+          h: "3. Who owns what you add",
+          p1: "What you add remains yours and your family’s. You only give us permission to keep it, show it to the people you chose and put it in the book you ask for, so that the site works. We do not use it for any other purpose and we do not sell it.",
+        },
+        trees: {
+          h: "4. Family trees and memories",
+          l1: "The owner of the tree decides who joins and what rights they have: a visitor only views, a contributor adds, an editor corrects records.",
+          l2: "A memory belongs to the person who writes it: only they choose who sees it, and only they change or delete it.",
+          l3: "The “Faith” chapter of the autobiography is only for living people, who answer themselves, with their consent.",
+        },
+        price: {
+          h: "5. Price",
+          p1: "Everything is free for now. If we ever ask for a subscription, for large family trees or for new features, we will let you know in good time. What you added remains yours, and viewing the family tree, invitations and downloading it (GEDCOM) remain free.",
+        },
+        reliability: {
+          h: "6. How reliably the site works",
+          p1: "We do our best to keep the site working well and to make sure nothing is lost, but we cannot promise that it will never have interruptions or errors. Keep your own copy too: the family tree as GEDCOM, the book as PDF and your data from <data>My data</data>.",
+        },
+        end: {
+          h: "7. Ending",
+          p1: "You can delete your account at any time, from <data>My data</data>. We may suspend an account that seriously breaks these terms, after writing to the person and telling them why.",
+        },
+        liability: {
+          h: "8. Liability",
+          p1: "To the extent permitted by law, we are not liable for indirect damage arising from use of the site. Nothing in these terms takes away the rights the law gives you as a consumer.",
+        },
+        law: {
+          h: "9. Governing law",
+          p1: "These terms are governed by Romanian law. We will first try to settle any disagreement amicably; if that is not possible, it will be decided by the courts of Romania.",
+        },
+        changes: {
+          h: "10. Changes",
+          p1: "If we change anything important in these terms, we will let you know on the site before the change takes effect.",
+        },
+      },
+    },
+  },
+};
