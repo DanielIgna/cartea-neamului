@@ -347,6 +347,7 @@ export default function TreeScreen(props: Props) {
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendPathTo", { name: ego?.givenName ?? "" })}</span>
                 {twinOn && <span><i className="sw" style={{ border: "2px dashed var(--ochre)" }} />{t("legend360Twin")}</span>}
                 <span>{t("legend360Help")}</span>
+                <span className="only-touch">{t("legend360Pinch")}</span>
               </>
             ) : view === "desc" ? (
               <>

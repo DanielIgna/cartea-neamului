@@ -33,6 +33,7 @@ export const deArbore: ArboreCatalog = {
     legendPathTo: "Der Weg vom Stamm bis zu {name}",
     legend360Twin: "Die Familie des Vaters auf der einen Hälfte des Kreises, die der Mutter auf der anderen; die gepunktete Linie ist die Ehe der Eltern, und aus ihr wachsen ihre Kinder.",
     legend360Help: "Der Vorfahr steht unten, im Stamm; jede Generation ist ein Ring weiter oben, rundherum. Zieh am Baum, um ihn zu drehen (und nach oben oder unten, um ihn zu neigen), oder nimm die Pfeiltasten. „Die Geschichte der Familie“ geht die Menschen in der Reihenfolge ihrer Geburt durch und erzählt bei jedem, wie das Leben damals in seiner Gegend war.",
+    legend360Pinch: "Am Handy: Mit einem Finger drehst du den Baum, mit zwei Fingern vergrößerst oder verkleinerst du ihn.",
     legendDescendant: "Nachkomme",
     legendSpouse: "Ehemann / Ehefrau",
     legendDescHelp: "Die Kinder einer Ehe gehen von der Linie zwischen den Eheleuten aus; Kinder aus einer anderen Beziehung nur von ihrem Elternteil.",

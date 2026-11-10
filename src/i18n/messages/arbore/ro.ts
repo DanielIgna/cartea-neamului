@@ -36,6 +36,7 @@ export const roArbore = {
     legendPathTo: "Drumul de la trunchi până la {name}",
     legend360Twin: "Neamul tatălui pe o jumătate de cerc, neamul mamei pe cealaltă; linia punctată e căsătoria părinților, iar copiii lor cresc din ea.",
     legend360Help: "Strămoșul stă jos, în trunchi; fiecare generație e un inel mai sus, de jur împrejur. Trage de copac ca să-l rotești (și în sus sau în jos ca să-l înclini), sau folosește săgețile de pe tastatură. „Povestea neamului” trece prin oameni în ordinea nașterii și spune, pentru fiecare, cum era lumea în ținutul lui atunci.",
+    legend360Pinch: "Pe telefon: cu un deget rotești copacul, cu două degete îl mărești sau îl micșorezi.",
     legendDescendant: "Urmaș",
     legendSpouse: "Soț / soție",
     legendDescHelp: "Copiii unei căsătorii coboară din linia dintre soți; cei dintr-o altă relație, doar din părinte.",
