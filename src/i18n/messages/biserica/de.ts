@@ -1,0 +1,479 @@
+import type { BisericaCatalog } from "./ro";
+
+/** Deutsch. Verse aus der Lutherbibel 1912. */
+export const deBiserica: BisericaCatalog = {
+  Church: {
+    meta: {
+      title: "Die Geschichte der verfolgten Kirche",
+      description: "Die Kirche Christi von den Aposteln bis heute: Märtyrer, Reformatoren, die Bibel auf Rumänisch und Glaubenshelden aus den kommunistischen Gefängnissen.",
+    },
+    label: "Kirchengeschichte",
+    title: "Die Kirche Christi, verfolgt vom Anfang bis heute",
+    toc: "Inhalt",
+    heroesChip: "Glaubenshelden",
+    bibleChip: "Die Bibel auf Rumänisch",
+    filterLabel: "Was zeigen",
+    all: "Die ganze Welt",
+    onlyRo: "Nur in Rumänien",
+    today: "heute",
+    ourLand: "in Rumänien",
+    quoted: "„{text}“",
+    heroesLabel: "Geschichten, die Kraft geben",
+    heroesTitle: "Glaubenshelden aus den kommunistischen Gefängnissen",
+    bibleLabel: "Das Wort in unserer Sprache",
+    bibleTitle: "Wie die Bibel in die rumänische Sprache kam",
+    influenceTitle: "Was die Bibel im Leben der Rumänen verändert hat",
+    endTitle: "Auch wir sind eine Seite dieser Geschichte",
+    endText: "Die Kirche ist kein Gebäude und keine Institution, sondern alle, die Christus angenommen haben, von Stephanus bis zu den Großeltern, die im Verborgenen beteten, und bis zu uns. Das Licht ist zweitausend Jahre lang von Hand zu Hand gegangen, oft um den Preis des Lebens. Jetzt ist es in unseren Händen: es brennend zu halten, das Wort zu lesen und für die zu beten, die heute verfolgt werden.",
+    readJohn: "Das Johannesevangelium lesen",
+    note: "Die Verse stammen aus der Lutherbibel von 1912. Wo etwas nur Überlieferung ist, sagt es der Text.",
+    intro: "Der Herr Jesus hat seinen Jüngern kein leichtes Leben versprochen, sondern dass seine Gemeinde nicht überwunden wird. Von Jerusalem bis heute wurde das Licht des Evangeliums jedes Mal, wenn man es auslöschen wollte, an einem anderen Ort wieder entzündet. Hier sind einige von denen, die ihren Glauben mit ihrer Freiheit oder ihrem Leben bezahlt haben, und einige der Momente, in denen das Wort wieder in die Hände einfacher Menschen kam.",
+    promise: {
+      text: "Und ich sage dir auch: Du bist Petrus, und auf diesen Felsen will ich bauen meine Gemeinde, und die Pforten der Hölle sollen sie nicht überwältigen.",
+      ref: "Matthäus 16,18",
+    },
+    eras: {
+      apostoli: {
+        name: "Die Kirche der Apostel",
+        intro: "Nach der Auferstehung des Herrn trugen einige Fischer und einfache Leute aus Galiläa die gute Nachricht nach Jerusalem und dann in die ganze römische Welt. Die Verfolgung begann fast sofort: zuerst durch die jüdischen Führer, dann durch Rom. Aber die Verfolgung zerstreute sie, und die Zerstreuten trugen das Wort weiter.",
+        verse: {
+          text: "Die nun zerstreut waren, gingen um und predigten das Wort.",
+          ref: "Apostelgeschichte 8,4",
+        },
+        w: {
+          w1: {
+            name: "Stephanus, der erste Märtyrer",
+            years: "um 34",
+            place: "Jerusalem",
+            text: "Einer der sieben Diakone der Gemeinde in Jerusalem. Nachdem er vor dem Hohen Rat Zeugnis von Christus abgelegt hatte, wurde er aus der Stadt geführt und gesteinigt. Ein junger Mann namens Saulus, der später der Apostel Paulus werden sollte, war bei seinem Tod dabei.",
+            quote: "HERR, behalte ihnen diese Sünde nicht! (Apostelgeschichte 7,60)",
+          },
+          w2: {
+            name: "Jakobus, Sohn des Zebedäus",
+            years: "um 44",
+            place: "Jerusalem",
+            text: "Der Bruder des Apostels Johannes, der erste der zwölf Apostel, der für Christus starb: König Herodes Agrippa tötete ihn mit dem Schwert (Apostelgeschichte 12,2).",
+          },
+          w3: {
+            name: "Die Christen Roms unter Nero",
+            years: "64",
+            place: "Rom",
+            text: "Nach dem großen Brand Roms beschuldigte Kaiser Nero die Christen. Der römische Geschichtsschreiber Tacitus berichtet, dass manche den wilden Tieren vorgeworfen, andere gekreuzigt oder in den Gärten des Kaisers als Fackeln verbrannt wurden. Nach der alten Überlieferung der Kirche starben in dieser Zeit unter Nero auch die Apostel Petrus (gekreuzigt) und Paulus (enthauptet) in Rom.",
+          },
+          w4: {
+            name: "Der Apostel Andreas",
+            years: "1. Jahrhundert",
+            place: "Scythia Minor (die heutige Dobrudscha)",
+            text: "Eine alte Überlieferung, die Origenes und Eusebius erwähnen, sagt, dass Andreas, der Bruder des Petrus, ausgesandt wurde, um in Skythien das Evangelium zu predigen. Darum sehen die Rumänen ihn als ihren Apostel an. Wir wissen nicht sicher, wo er überall war, aber wir wissen, dass es in der Dobrudscha sehr früh Christen gab.",
+          },
+          w5: {
+            name: "Johannes, verbannt nach Patmos",
+            years: "um 95",
+            place: "Die Insel Patmos",
+            text: "Der letzte noch lebende Apostel wurde auf eine Insel verbannt, „um des Wortes Gottes willen und des Zeugnisses Jesu Christi“ (Offenbarung 1,9). Dort empfing er die Offenbarung, die im letzten Buch der Bibel aufgeschrieben ist.",
+          },
+        },
+      },
+      roma: {
+        name: "Märtyrer unter den Kaisern Roms",
+        intro: "Zweihundertfünfzig Jahre lang konnte es den Tod bedeuten, Christ zu sein. Die Christen wollten den Göttern und dem Kaiser nicht opfern, darum galten sie als Feinde des Staates. Die Verfolgung kam in Wellen: mal örtlich, mal im ganzen Reich. Die härteste war die letzte, unter Diokletian.",
+        verse: {
+          text: "Sei getreu bis an den Tod, so will ich dir die Krone des Lebens geben.",
+          ref: "Offenbarung 2,10",
+        },
+        w: {
+          w1: {
+            name: "Ignatius von Antiochien",
+            years: "um 110",
+            place: "Antiochien → Rom",
+            text: "Bischof von Antiochien, in Ketten nach Rom gebracht, um den wilden Tieren vorgeworfen zu werden. Unterwegs schrieb er sieben Briefe an die Gemeinden, die erhalten sind: Er bittet sie, einig zu bleiben und nicht zu versuchen, ihn vor dem Tod zu retten.",
+          },
+          w2: {
+            name: "Polykarp von Smyrna",
+            years: "um 155",
+            place: "Smyrna (in der heutigen Türkei)",
+            text: "Ein Schüler des Apostels Johannes und alter Bischof. Als man von ihm verlangte, Christus zu verleugnen, um sich zu retten, antwortete er mit den Worten, die im Bericht über sein Martyrium erhalten sind. Er wurde auf dem Scheiterhaufen verbrannt.",
+            quote: "Sechsundachtzig Jahre diene ich ihm, und er hat mir nie ein Unrecht getan. Wie könnte ich meinen König lästern, der mich erlöst hat?",
+          },
+          w3: {
+            name: "Justin der Märtyrer",
+            years: "um 165",
+            place: "Rom",
+            text: "Ein Philosoph, der Christus fand, nachdem er die Wahrheit in allen Schulen seiner Zeit gesucht hatte. Er schrieb an die Kaiser gerichtete Verteidigungen des Glaubens und wurde zusammen mit seinen Schülern enthauptet.",
+          },
+          w4: {
+            name: "Perpetua und Felicitas",
+            years: "203",
+            place: "Karthago (im heutigen Tunesien)",
+            text: "Eine junge Mutter aus gutem Haus und ihre Sklavin, die gerade ein Kind geboren hatte. Sie weigerten sich, den Göttern zu opfern, und starben gemeinsam in der Arena. Perpetua selbst schrieb im Gefängnis die Tage vor ihrem Tod auf.",
+          },
+          w5: {
+            name: "Die Verfolgung unter Decius",
+            years: "250",
+            place: "Das ganze Reich",
+            text: "Der Kaiser befahl, dass jeder den Göttern opfern und dafür eine Bescheinigung erhalten sollte. Viele Christen starben, viele versteckten sich, und manche gaben nach. Danach musste die Kirche lernen, wie sie die Gefallenen wieder aufnimmt.",
+          },
+          w6: {
+            name: "Epiktet und Astion",
+            years: "um 290",
+            place: "Halmyris, bei Murighiol (Tulcea)",
+            text: "Ein Priester und ein junger Schüler, getötet für ihren Glauben in der römischen Festung Halmyris an der Donaumündung. Ihre Reliquien wurden 2001 von Archäologen in der Krypta der dortigen Basilika gefunden.",
+          },
+          w7: {
+            name: "Die Große Verfolgung und die Märtyrer von Niculițel",
+            years: "303–311",
+            place: "Das ganze Reich; Niculițel (Tulcea)",
+            text: "Diokletian befahl, die Kirchen abzureißen, die Schriften zu verbrennen und die Geistlichen einzusperren. Viele Christen in der Dobrudscha starben damals. 1971 fand man in Niculițel unter einer alten Basilika eine Krypta mit den Gebeinen von vier Märtyrern, deren Namen an die Wand geschrieben waren: Zotikos, Attalos, Kamasis und Philippos.",
+          },
+        },
+      },
+      "evul-mediu": {
+        name: "Eine freie, aber versuchte Kirche",
+        intro: "Im Jahr 313 erhielten die Christen durch das Edikt von Mailand das Recht, ihren Glauben frei zu leben. Die Kirche entkam dem Schwert Roms, aber sie traf auf eine andere Versuchung: die Macht. Mit der Zeit wurden viele nur dem Namen nach Christen, und die Schrift blieb in einer Sprache, die das Volk nicht mehr verstand. Wer zur Rückkehr zum Wort aufrief, wurde verfolgt, diesmal von denen, die sich Kirche nannten.",
+        verse: {
+          text: "Himmel und Erde werden vergehen; aber meine Worte werden nicht vergehen.",
+          ref: "Matthäus 24,35",
+        },
+        w: {
+          w1: {
+            name: "Sabas der Gote",
+            years: "372",
+            place: "Der Fluss Buzău",
+            text: "Ein gotischer Christ, der sich weigerte, Götzenopferfleisch zu essen. Der gotische Anführer ließ ihn am 12. April 372 im Fluss Mousaios, dem heutigen Buzău, ertränken. Zu dieser Zeit hatte Wulfila im Land nördlich der Donau die Bibel ins Gotische übersetzt.",
+          },
+          w2: {
+            name: "Petrus Waldes und die Waldenser",
+            years: "um 1170",
+            place: "Lyon, dann die Alpen",
+            text: "Ein reicher Kaufmann aus Lyon, der seinen Besitz weggab und die Schrift in die Sprache des Volkes übersetzen ließ. Seine Anhänger predigten aus der Bibel in den Dörfern. Sie wurden zu Ketzern erklärt und jahrhundertelang verfolgt, aber sie versteckten sich in den Tälern der Alpen und haben bis heute überlebt.",
+          },
+          w3: {
+            name: "John Wyclif",
+            years: "um 1330–1384",
+            place: "Oxford, England",
+            text: "Ein Professor in Oxford, der lehrte, dass die Schrift über dem Papst steht, und der wollte, dass die Bibel ins Englische übersetzt wird. Er starb in seinem Bett, aber 1428 ließ die Kirche seine Gebeine ausgraben, verbrennen und die Asche in einen Fluss werfen.",
+          },
+          w4: {
+            name: "Jan Hus",
+            years: "1415",
+            place: "Prag → Konstanz",
+            text: "Priester und Professor in Prag, der auf Tschechisch predigte und die Kirche zur Rückkehr zur Schrift aufrief. Er wurde zum Konzil von Konstanz geladen, mit dem Versprechen freien Geleits; er wurde verhaftet und am 6. Juli 1415 auf dem Scheiterhaufen verbrannt, weil er nicht widerrufen wollte, was er aus der Bibel gelernt hatte.",
+          },
+        },
+      },
+      reforma: {
+        name: "Die Reformation: die Schrift in der Sprache des Volkes",
+        intro: "Hundert Jahre nach Hus entdeckte ein deutscher Mönch im Römerbrief neu, dass wir durch den Glauben gerettet werden, als Geschenk Gottes, nicht durch Werke oder Geld. Der Buchdruck war gerade erst erfunden, so dass die Schrift endlich in die Häuser kommen konnte. Es folgten hundert Jahre voller Kämpfe und Verfolgungen, in denen leider auch Christen einander verfolgten.",
+        verse: {
+          text: "Der Gerechte wird seines Glaubens leben.",
+          ref: "Römer 1,17",
+        },
+        w: {
+          w1: {
+            name: "Martin Luther",
+            years: "1483–1546",
+            place: "Wittenberg, Deutschland",
+            text: "Mönch und Professor der Theologie. Am 31. Oktober 1517 schrieb er die 95 Thesen gegen den Verkauf der Sündenvergebung für Geld. 1521 weigerte er sich auf dem Reichstag zu Worms vor dem Kaiser, seine Schriften zu widerrufen, weil er an das Wort Gottes gebunden war. Er wurde geächtet; seine Freunde versteckten ihn auf der Wartburg, wo er das Neue Testament ins Deutsche übersetzte (1522). Seine Lehre lässt sich in drei Worten zusammenfassen: allein die Schrift, allein die Gnade, allein der Glaube. Er war nicht ohne Fehler: Im Alter schrieb er harte und ungerechte Worte gegen die Juden, die wir nicht als richtig annehmen können.",
+            quote: "Mein Gewissen ist gefangen in Gottes Wort. Widerrufen kann und will ich nichts. (Worms, 1521)",
+          },
+          w2: {
+            name: "Felix Manz",
+            years: "1527",
+            place: "Zürich, Schweiz",
+            text: "Einer der ersten „Täufer“, die glaubten, dass die Taufe für die ist, die glauben und Buße tun. Die evangelische Obrigkeit von Zürich ertränkte ihn in der Limmat. Tausende Täufer wurden in dieser Zeit getötet, von Katholiken wie von Protestanten.",
+          },
+          w3: {
+            name: "William Tyndale",
+            years: "1536",
+            place: "Vilvoorde, bei Brüssel",
+            text: "Er übersetzte das Neue Testament aus dem Griechischen ins Englische, obwohl es verboten war, und ließ es im Ausland drucken; die Exemplare wurden heimlich nach England gebracht. Er wurde verraten, eingesperrt, dann erdrosselt und verbrannt. Seine Übersetzung steht am Ursprung der späteren englischen Bibel.",
+            quote: "Herr, öffne dem König von England die Augen!",
+          },
+          w4: {
+            name: "Diakon Coresi und die ersten rumänischen Bücher",
+            years: "1559–1582",
+            place: "Kronstadt (Brașov), Broos (Orăștie)",
+            text: "In Kronstadt druckte Diakon Coresi zur Zeit der Reformation die ersten Bücher in rumänischer Sprache, darunter die Evangelien (das Tetraevangelium, 1561). 1582 wurde in Broos die Palia gedruckt, die ersten Bücher des Alten Testaments auf Rumänisch. Zum ersten Mal konnten die Rumänen das Wort in ihrer eigenen Sprache hören.",
+          },
+          w5: {
+            name: "Der Landtag von Thorenburg (Turda)",
+            years: "1568",
+            place: "Turda, Siebenbürgen",
+            text: "Der Landtag von Siebenbürgen beschloss, dass jede Gemeinde ihren Prediger selbst wählen darf, „denn der Glaube ist eine Gabe Gottes“. Es war eines der ersten Gesetze über Religionsfreiheit in Europa. Die orthodoxen Rumänen blieben jedoch nur „geduldet“, ohne die gleichen Rechte.",
+          },
+          w6: {
+            name: "Latimer und Ridley",
+            years: "1555",
+            place: "Oxford, England",
+            text: "Zwei englische Bischöfe, auf demselben Scheiterhaufen verbrannt unter Königin Maria I., die fast dreihundert Protestanten hinrichten ließ. Latimer sagte zu seinem Freund, er solle mutig sein, denn an diesem Tag würden sie eine Kerze anzünden, die niemals erlöschen werde.",
+          },
+          w7: {
+            name: "Die Bartholomäusnacht",
+            years: "1572",
+            place: "Paris und Frankreich",
+            text: "In der Nacht zum 24. August wurden Tausende französische Protestanten (Hugenotten) in Paris und danach in anderen Städten ermordet. Viele der Überlebenden flohen aus dem Land.",
+          },
+          w8: {
+            name: "Die Bibel auf Rumänisch",
+            years: "1648–1688",
+            place: "Bălgrad (Alba Iulia), Bukarest",
+            text: "1648 erschien in Bălgrad das Neue Testament auf Rumänisch, und 1688 in Bukarest die erste vollständige Bibel in rumänischer Sprache, mit Unterstützung des Fürsten Șerban Cantacuzino.",
+          },
+        },
+      },
+      trezire: {
+        name: "Erweckung und Mission",
+        intro: "Diese Jahrhunderte brachten geistliche Erweckungen in vielen Ländern und die ersten Missionare, die bis an die Enden der Erde gingen, aber auch neue Märtyrer, unter den Türken, in den Kolonien und in den Ländern, in die das Evangelium zum ersten Mal kam.",
+        verse: {
+          text: "Jesus Christus gestern und heute und derselbe auch in Ewigkeit.",
+          ref: "Hebräer 13,8",
+        },
+        w: {
+          w1: {
+            name: "Constantin Brâncoveanu und seine Söhne",
+            years: "1714",
+            place: "Konstantinopel",
+            text: "Der Fürst der Walachei wurde abgesetzt und mit seinen vier Söhnen und seinem Ratgeber Ienache nach Konstantinopel gebracht. Am 15. August 1714 verlangte man von ihnen, ihren Glauben zu verleugnen, um ihr Leben zu retten. Sie weigerten sich und wurden enthauptet, zuerst die Söhne, vor den Augen des Vaters, dann der Fürst selbst.",
+          },
+          w2: {
+            name: "Die Herrnhuter Brüdergemeine",
+            years: "1727",
+            place: "Sachsen",
+            text: "Nachkommen der Hussiten, Flüchtlinge auf dem Gut des Grafen Zinzendorf, begannen ein Gebet, das hundert Jahre lang ohne Unterbrechung weiterging, und sandten Missionare zu den Sklaven in der Karibik, nach Grönland und nach Afrika.",
+          },
+          w3: {
+            name: "Die Märtyrer Chinas (der Boxeraufstand)",
+            years: "1900",
+            place: "Nordchina",
+            text: "Im Aufstand gegen die Ausländer wurden mehrere hundert Missionare und mehr als dreißigtausend chinesische Christen getötet. Statt zu verschwinden, wuchs die Kirche in China im folgenden Jahrhundert auf viele Millionen.",
+          },
+        },
+      },
+      "secolul-xx": {
+        name: "Das Jahrhundert der Märtyrer",
+        intro: "Das 20. Jahrhundert brachte die größten Verfolgungen der Geschichte: den Völkermord an den Armeniern, den sowjetischen Terror, den Nationalsozialismus und nach dem Zweiten Weltkrieg den Kommunismus, der auch Rumänien aufgezwungen wurde. Der atheistische Staat wollte den Glauben aus den Herzen der Menschen reißen. Es gelang ihm nicht. In den Gefängnissen lernte man Bibelverse auswendig und gab sie durch die Wände weiter.",
+        verse: {
+          text: "Wir haben allenthalben Trübsal, aber wir ängsten uns nicht; uns ist bange, aber wir verzagen nicht; wir leiden Verfolgung, aber wir werden nicht verlassen; wir werden unterdrückt, aber wir kommen nicht um.",
+          ref: "2. Korinther 4,8–9",
+        },
+        w: {
+          w1: {
+            name: "Der Völkermord an den Armeniern",
+            years: "1915–1923",
+            place: "Das Osmanische Reich",
+            text: "Etwa anderthalb Millionen Armenier, das älteste christliche Volk, wurden getötet oder starben bei den Deportationen. Damals kamen auch Hunderttausende assyrische und griechische Christen ums Leben.",
+          },
+          w2: {
+            name: "Iosif Trifa und die Armee des Herrn",
+            years: "1923–1948",
+            place: "Hermannstadt (Sibiu), dann das ganze Land",
+            text: "1923 begann der Priester Iosif Trifa eine Erweckungsbewegung unter den Orthodoxen, mit der Bibel, Liedern und der Abkehr von Trunk und Fluchen. Die Kommunisten verboten sie 1948; ihre Brüder trafen sich jahrzehntelang im Geheimen. Der Dichter Traian Dorz und der Komponist Nicolae Moldoveanu, zwei ihrer Brüder, gingen durch die Gefängnisse (ihre Geschichten stehen weiter unten).",
+          },
+          w3: {
+            name: "Dumitru Cornilescu",
+            years: "1921–1923",
+            place: "Stânca-Ștefănești, Bukarest",
+            text: "Ein junger orthodoxer Diakon, der die Bibel in ein lebendiges, klares Rumänisch übersetzte (1921, überarbeitet 1924). Beim Lesen kam er zu einem persönlichen Glauben an Christus. 1923 musste er das Land verlassen und kehrte nie zurück; er starb 1975 in der Schweiz. Seine Übersetzung wird bis heute von Millionen Rumänen gelesen.",
+          },
+          w4: {
+            name: "Dietrich Bonhoeffer",
+            years: "1945",
+            place: "Flossenbürg, Deutschland",
+            text: "Ein deutscher Pfarrer, der sich Hitler widersetzte und Juden zur Flucht verhalf. Er war zwei Jahre in Haft und wurde am 9. April 1945 erhängt, wenige Wochen vor Kriegsende.",
+          },
+          w5: {
+            name: "Die griechisch-katholischen Bischöfe",
+            years: "1948–1970",
+            place: "Sighet, Căldărușani, Blasendorf (Blaj)",
+            text: "1948 lösten die Kommunisten die griechisch-katholische Kirche auf, nahmen ihr die Kirchen weg und verhafteten alle ihre Bischöfe. Fünf von ihnen starben im Gefängnis oder unter Hausarrest; Bischof Iuliu Hossu, der am 1. Dezember 1918 in Alba Iulia die Vereinigungserklärung verlesen hatte, starb 1970, ohne je freigelassen worden zu sein.",
+          },
+          w6: {
+            name: "Richard und Sabina Wurmbrand",
+            years: "1948–1964",
+            place: "Văcărești, Jilava, Gherla",
+            text: "Ein lutherischer Pfarrer aus Bukarest, ein Jude, der zu Christus gefunden hatte. 1948 verhaftet, verbrachte er insgesamt vierzehn Jahre in Gefängnissen, drei davon allein in einer unterirdischen Zelle; auch seine Frau Sabina ging durch ein Arbeitslager. 1964 freigelassen und aus dem Land freigekauft, schrieb er „Gefoltert für Christus“ und gründete ein Missionswerk, das verfolgten Christen bis heute hilft.",
+          },
+          w7: {
+            name: "Priester, Pastoren und Gläubige aller Konfessionen",
+            years: "1948–1989",
+            place: "Aiud, Gherla, Pitești, der Kanal",
+            text: "Tausende orthodoxe und griechisch-katholische Priester, baptistische, pfingstliche und adventistische Pastoren und Gläubige der Brüdergemeinden gingen durch Gefängnisse und Arbeitslager. Der Theologe Dumitru Stăniloae war fünf Jahre in Haft. Der Priester Gheorghe Calciu verbrachte einundzwanzig Jahre im Gefängnis, das letzte Mal wegen der Predigten, die er 1978 vor jungen Leuten hielt. Christen aus dem Westen schmuggelten Bibeln über die Grenze.",
+          },
+          w8: {
+            name: "Temeswar, Dezember 1989",
+            years: "1989",
+            place: "Timișoara",
+            text: "Die Revolution begann mit einer Kette von Menschen aller Konfessionen, die sich vor das Haus des reformierten Pfarrers László Tőkés stellten, damit er nicht vertrieben wurde. Auf dem Platz rief die Menge: „Es gibt einen Gott!“",
+          },
+        },
+      },
+      azi: {
+        name: "Die verfolgte Kirche heute",
+        intro: "Die Verfolgung hat nicht aufgehört. Nach Open Doors, das die Lage jedes Jahr beobachtet, leben heute mehr als 380 Millionen Christen, etwa jeder siebte, in einem Land, in dem ihr Glaube sie die Arbeit, die Freiheit oder das Leben kosten kann: in Nordkorea, in Teilen Afrikas, im Nahen Osten, in Asien. Und gerade dort, wo es am schwersten ist, wächst die Kirche heute.",
+        verse: {
+          text: "Und alle, die gottselig leben wollen in Christo Jesu, müssen Verfolgung leiden.",
+          ref: "2. Timotheus 3,12",
+        },
+        w: {
+          w1: {
+            name: "Die 21 am Strand von Libyen",
+            years: "2015",
+            place: "Sirte, Libyen",
+            text: "Zwanzig koptische christliche Arbeiter aus Ägypten und ein junger Mann aus Ghana wurden von der Gruppe Islamischer Staat getötet. Die Aufnahme zeigt, wie viele von ihnen im letzten Augenblick den Namen Jesu aussprechen.",
+          },
+          w2: {
+            name: "Die Christen Nigerias",
+            years: "heute",
+            place: "Nord- und Zentralnigeria",
+            text: "Fast jede Woche werden ganze Dörfer überfallen und Kirchen niedergebrannt. Nigeria ist das Land, in dem die meisten Christen wegen ihres Glaubens getötet werden.",
+          },
+          w3: {
+            name: "Die Kirche in Nordkorea",
+            years: "heute",
+            place: "Nordkorea",
+            text: "Der Besitz einer Bibel kann eine ganze Familie ins Arbeitslager bringen. Und doch beten Zehntausende Gläubige im Verborgenen.",
+          },
+          w4: {
+            name: "Freiheit in Rumänien",
+            years: "1990–heute",
+            place: "Rumänien",
+            text: "Seit 1989 wird die Bibel in Rumänien frei gedruckt und gelesen. Das ist ein Geschenk, bezahlt mit dem Leiden derer, die vor uns waren, und eine Pflicht: für die zu beten, die heute durchmachen, was sie durchgemacht haben.",
+          },
+        },
+      },
+    },
+    heroesIntro: "Die Geschichte der Kirche ist nicht nur eine Liste von Leiden. Sie ist auch die Geschichte einfacher Menschen aus unseren Dörfern und Städten, die entdeckt haben, dass Christus in einer Gefängniszelle näher war, als er ihnen in der Freiheit je gewesen war. Ihre Geschichten sollen uns nicht Angst machen, sondern Kraft geben.",
+    heroes: {
+      wurmbrand: {
+        name: "Richard Wurmbrand",
+        years: "1909–2001",
+        who: "Lutherischer Pfarrer aus Bukarest, ein Jude, der zu Christus gefunden hatte. Vierzehn Jahre in den kommunistischen Gefängnissen.",
+        story: {
+          p1: "1945 versammelten die Kommunisten in Bukarest einen „Kongress der Kulte“, auf dem Priester und Pastoren einer nach dem anderen das neue Regime lobten. Sabina, seine Frau, sagte zu ihm: „Richard, steh auf und wasch diese Schande vom Angesicht Christi ab!“ Er antwortete, wenn er spreche, werde sie ihren Mann verlieren. Sabina sagte, sie wolle keinen Feigling zum Mann. Richard stand auf und sagte vor allen, die Aufgabe der Kirche sei es, Christus zu verkündigen, nicht die Mächtigen zu loben.",
+          p2: "1948 wurde er auf der Straße verschleppt und verschwand für Jahre; seine Familie wusste nicht einmal, ob er noch lebte. Drei Jahre lang war er allein in einer unterirdischen Zelle, ohne Buch, ohne Tageslicht, ohne jemanden außer den Wärtern zu sehen. Um bei klarem Verstand zu bleiben, verfasste er jede Nacht eine Predigt und hielt sie in Gedanken, als spräche er zu einer ganzen Gemeinde. Mit den Gefangenen in den Nachbarzellen sprach er durch Klopfen an die Wand, Buchstabe für Buchstabe; so verkündigte er einem Mann das Evangelium, dessen Gesicht er nie gesehen hat.",
+          p3: "Später erzählte er, wie er, während er sich die Worte des Herrn „Freuet euch alsdann und hüpfet“ wiederholte, in seiner Zelle aufstand und vor Freude tanzte. Die Wärter dachten, er sei verrückt geworden, und brachten ihm mehr zu essen.",
+          p4: "1964 freigelassen und von Christen aus Norwegen aus dem Land freigekauft, zog er vor dem amerikanischen Senat sein Hemd aus, um die Narben der Folter zu zeigen. Er schrieb „Gefoltert für Christus“ und gründete ein Missionswerk, das verfolgten Christen bis heute hilft. Was er am häufigsten sagte: dass er die liebte, die ihn gefoltert hatten, und für sie betete.",
+        },
+        lesson: "Der Glaube ist keine Idee, die man verliert, wenn einem alles genommen wird. Als Wurmbrand nichts mehr hatte, entdeckte er, dass er Christus hatte, und das genügte ihm.",
+        verse: {
+          text: "Freuet euch alsdann und hüpfet; denn siehe, euer Lohn ist groß im Himmel.",
+          ref: "Lukas 6,23",
+        },
+      },
+      moldoveanu: {
+        name: "Nicolae Moldoveanu",
+        years: "1922–2007",
+        who: "Komponist der Armee des Herrn, „der David des rumänischen Liedes“. Fünf Jahre Gefängnis, weil er geistliche Lieder schrieb.",
+        story: {
+          p1: "Er wurde in Movileni im Kreis Tecuci (heute Galați) geboren und verlor früh seinen Vater. Aufgewachsen in einer Militärkapelle für arme Kinder, verkaufte er die Hälfte seiner Brotration und seine ganze Milch, um sich eine Bibel und die Zeitschrift der Armee des Herrn zu kaufen.",
+          p2: "1959 wurde er wegen „Komposition religiöser Lieder und religiöser Propaganda“ verhaftet und zu zwölf Jahren verurteilt; fünf davon saß er ab. Im Gefängnis hatte er weder Bleistift noch Papier noch Notenblätter. Und doch komponierte er dort dreihundertfünfzig Lieder, die er Note für Note im Gedächtnis behielt und erst nach seiner Freilassung aufschrieb.",
+          p3: "Richard Wurmbrand, der in Gherla mit ihm in einer Zelle war, erzählte von einer Winternacht: Sie hatten keine warme Kleidung, schliefen auf nacktem Beton, und die Wärter ließen sie auf Befehl immer wieder aufstehen und sich hinlegen. Die anderen fluchten. Moldoveanu lobte Gott und sang ihm, auf dem Beton liegend, ein neues Lied voller Freude und Hoffnung, das heute in vielen Ländern gesungen wird.",
+          p4: "In seinem Leben schrieb er mehr als siebentausend Lieder, viele auf Texte von Traian Dorz, die bis heute in Kirchen im ganzen Land gesungen werden. Als Wurmbrand 1990 nach Rumänien zurückkam, war er der Erste, den er sah.",
+        },
+        lesson: "Man kann dich einsperren, aber man kann dich nicht am Singen hindern. Was im Dunkeln gesät wurde, wird heute in vollen Kirchen gesungen.",
+        verse: {
+          text: "Wir haben allenthalben Trübsal, aber wir ängsten uns nicht; uns ist bange, aber wir verzagen nicht;",
+          ref: "2. Korinther 4,8",
+        },
+      },
+      dorz: {
+        name: "Traian Dorz",
+        years: "1914–1989",
+        who: "Bauerndichter aus Livada Beiușului (Bihor), von der Armee des Herrn. Fast achtzehn Jahre in Gefängnissen und Arbeitskolonien.",
+        story: {
+          p1: "Als Kind armer Bauern bekam er als Schulpreis ein Buch des Priesters Iosif Trifa. Er las es, gab mit fünfzehn Jahren sein Leben Christus und begann sofort, Verse zu schreiben.",
+          p2: "Zum ersten Mal wurde er im Dezember 1947 verhaftet, dann immer wieder: Oradea, Gherla, Deva, Periprava, der Bărăgan. 1959 wurde er zu sechzehn Jahren Zwangsarbeit verurteilt; 1964 kam er frei. Bei einem Verhör stellte man ihn an eine Wand und hielt ihm eine Pistole an die Schläfe, um ihn einzuschüchtern; später sagte er, er sei damals durch seinen eigenen Tod gegangen und habe nichts mehr zu fürchten gehabt.",
+          p3: "Die Zelle war so klein, dass er nicht aufrecht stehen konnte. Schreiben durfte er nicht, also dichtete er im Kopf und behielt mehr als dreihundert Gedichte im Gedächtnis, die er nach seiner Freilassung aufschrieb. Seine Tochter brachte ihm Pakete, die die Wärter den Hunden gaben; da fand sie ein Loch im Zaun, das nur sie beide kannten, und legte ihm das Essen dorthin.",
+          p4: "Auch nach dem Gefängnis überwachte ihn die Securitate; wenn sie nachts seine Lampe brennen sahen, riefen sie ihm zu, er dürfe nicht schreiben. Er schrieb weiter. Er starb im Juni 1989, ein halbes Jahr vor dem Fall des Kommunismus; obwohl die Behörden die Leute fernzuhalten versuchten, kamen mehr als zehntausend zu seiner Beerdigung.",
+        },
+        lesson: "Was das Herz bewahrt, kann man nicht beschlagnahmen. Die im Verborgenen, beim Licht der Lampe geschriebenen Gedichte werden heute im ganzen Land gesungen.",
+        verse: {
+          text: "Sei getreu bis an den Tod, so will ich dir die Krone des Lebens geben.",
+          ref: "Offenbarung 2,10",
+        },
+      },
+    },
+    bibleIntro: "Lange Zeit hörten die Rumänen die Gottesdienste auf Kirchenslawisch, einer Sprache, die der Priester kaum und das Volk gar nicht verstand. Das Wort Gottes kam langsam zu ihnen in ihre Muttersprache, Buch für Buch, über dreihundert Jahre.",
+    steps: {
+      b1: {
+        year: "15.–16. Jh.",
+        title: "Die ersten handgeschriebenen Texte",
+        who: "Unbekannte Übersetzer, in der Maramuresch und im Norden Siebenbürgens",
+        text: "Die ältesten Teile der Bibel auf Rumänisch sind Handschriften: der Psalter von Schei, der Psalter von Voroneț, der Codex von Voroneț (die Apostelgeschichte und die Briefe). Sie sind uns in Abschriften aus dem 16. Jahrhundert überliefert und in der nördlichen Mundart geschrieben. Wer sie übersetzt hat, wissen wir nicht sicher; manche Historiker meinen, sie seien unter dem Einfluss der Hussiten oder der Reformation entstanden.",
+      },
+      b2: {
+        year: "1561",
+        title: "Das Tetraevangelium des Coresi",
+        who: "Diakon Coresi, in Kronstadt, mit Unterstützung des sächsischen Richters Hans Benkner",
+        text: "Das erste gedruckte Buch mit den vier Evangelien auf Rumänisch. Es folgten der Apostolos (1563) und der Psalter (1570). Die Vorworte dieser Bücher sagen, warum: Alle Völker hatten das Wort Gottes in ihrer Sprache, nur die Rumänen nicht. Seine Bücher kamen in die Kirchen aller drei rumänischen Länder und legten die Sprache der Walachei und Südsiebenbürgens zugrunde, auf der die heutige Schriftsprache aufbaut.",
+      },
+      b3: {
+        year: "1582",
+        title: "Die Palia von Broos (Orăștie)",
+        who: "Bischof Mihail Tordaș und vier weitere Priester, mit Unterstützung von Francisc Geszti",
+        text: "Die erste rumänische Übersetzung der ersten Bücher des Alten Testaments: Genesis und Exodus. Das Vorwort sagt den Lesern, sie sei übersetzt worden, damit auch die Rumänen die Schrift haben, wie die anderen Völker.",
+      },
+      b4: {
+        year: "1648",
+        title: "Das Neue Testament von Bălgrad",
+        who: "Metropolit Simion Ștefan von Siebenbürgen, in Alba Iulia",
+        text: "Das erste vollständige Neue Testament auf Rumänisch, übersetzt aus dem Griechischen und Lateinischen. Im Vorwort schrieb der Metropolit, er habe die Wörter gewählt, die die Rumänen in allen Ländern verstehen, denn sie sprachen von Gegend zu Gegend verschieden. Es war, offen ausgesprochen, ein Gedanke an die Einheit der Sprache.",
+        quote: "Die Wörter sollen sein wie das Geld: Gut sind die Münzen, die in allen Ländern gelten; so sind auch die Wörter gut, die alle verstehen.",
+      },
+      b5: {
+        year: "1688",
+        title: "Die Bukarester Bibel",
+        who: "Begonnen unter Șerban Cantacuzino, vollendet unter Constantin Brâncoveanu; Übersetzer: Nicolae Milescu und die Brüder Radu und Șerban Greceanu",
+        text: "Die erste vollständige Bibel in rumänischer Sprache. Das Alte Testament ging von der Übersetzung des moldauischen Gelehrten Nicolae Milescu aus, die in Bukarest von den Brüdern Greceanu überarbeitet wurde. Zum ersten Mal hatten die Moldau, die Walachei und Siebenbürgen dieselbe Bibel in derselben Sprache; sie war über hundert Jahre lang die Büchersprache der Rumänen.",
+      },
+      b6: {
+        year: "1795",
+        title: "Die Bibel von Blasendorf (Blaj)",
+        who: "Samuil Micu, von der Siebenbürgischen Schule",
+        text: "Neu übersetzt nach der Septuaginta von einem griechisch-katholischen Gelehrten. Sie ging durch die Hände vieler Generationen von Priestern und Lehrern in Siebenbürgen.",
+      },
+      b7: {
+        year: "1856–1858",
+        title: "Die Bibel des Șaguna",
+        who: "Metropolit Andrei Șaguna, in Hermannstadt (Sibiu)",
+        text: "Eine sorgfältig vorbereitete Ausgabe für die orthodoxen Gläubigen Siebenbürgens, in einer Sprache, die der gesprochenen näher war.",
+      },
+      b8: {
+        year: "1921–1924",
+        title: "Die Cornilescu-Bibel",
+        who: "Dumitru Cornilescu, unterstützt von Fürstin Ralu Callimachi",
+        text: "Ein junger orthodoxer Diakon übersetzte die Bibel in ein lebendiges, klares Rumänisch, das jeder verstehen kann. Beim Lesen kam er selbst zu einem lebendigen Glauben an Christus. Die Britische und Ausländische Bibelgesellschaft übernahm sie 1924 und verbreitete sie in Hunderttausenden Exemplaren. 1923 musste er das Land verlassen, aber seine Übersetzung blieb die Bibel, die Millionen Rumänen am Bett liegen haben.",
+      },
+      b9: {
+        year: "1914–1988",
+        title: "Die Synodalbibeln",
+        who: "Die Rumänische Orthodoxe Kirche (Übersetzungen von Gala Galaction, Vasile Radu und anderen)",
+        text: "Offizielle Ausgaben der orthodoxen Kirche, mehrmals überarbeitet. Die Ausgabe von 1988, unter den Kommunisten gedruckt, kam nur in wenige Häuser; Bibeln waren damals schwer zu bekommen.",
+      },
+    },
+    influence: {
+      i1: "Das geschriebene Rumänisch ist zu einem großen Teil aus den Büchern der Kirche entstanden. Bibeln und gottesdienstliche Bücher waren in jeder Gegend das Erste, was gelesen wurde, und halfen so, eine gemeinsame Sprache für alle Rumänen zu schaffen, lange vor der Vereinigung von 1918. Eminescu sagte, die Kirche und ihre Bücher hätten den Rumänen die Einheit ihrer Sprache gegeben.",
+      i2: "Wer die Schrift lesen wollte, musste lesen lernen. Neben den Kirchen wurden Schulen eröffnet, und in Blasendorf nannte man die Schulen 1754 „die Quellen der Gaben“. Lange Zeit waren die Dorflehrer die Kantoren der Kirche.",
+      i3: "Als einfache Menschen das Wort selbst lesen konnten, entstanden Erweckungen: die Armee des Herrn, die evangelischen Gemeinden, die Gebetskreise in den Dörfern. Der Glaube gehörte nicht mehr nur dem Priester, sondern wurde zum Glauben jedes Einzelnen.",
+      i4: "Darum fürchteten die Kommunisten die Bibel mehr als viele Waffen: Ein Volk, das das Wort liest, weiß, was Wahrheit ist, und lässt sich nicht mehr so leicht belügen.",
+    },
+    bibleVerse: {
+      text: "Wenn dein Wort offenbar wird, so erfreut es und macht klug die Einfältigen.",
+      ref: "Psalm 119,130",
+    },
+    endVerses: {
+      v1: {
+        text: "Haben sie mich verfolgt, sie werden euch auch verfolgen; haben sie mein Wort gehalten, so werden sie eures auch halten.",
+        ref: "Johannes 15,20",
+      },
+      v2: {
+        text: "Selig sind, die um Gerechtigkeit willen verfolgt werden; denn das Himmelreich ist ihr.",
+        ref: "Matthäus 5,10",
+      },
+      v3: {
+        text: "Solches habe ich mit euch geredet, dass ihr in mir Frieden habet. In der Welt habt ihr Angst; aber seid getrost, ich habe die Welt überwunden.",
+        ref: "Johannes 16,33",
+      },
+    },
+  },
+};

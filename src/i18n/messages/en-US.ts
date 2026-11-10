@@ -4,6 +4,7 @@ import { enUSAmintiri } from "./amintiri/en-US";
 import { enUSVremuri } from "./vremuri/en-US";
 import { enUSCarte } from "./carte/en-US";
 import { enUSCalatorie } from "./calatorie/en-US";
+import { enUSBiserica } from "./biserica/en-US";
 
 /**
  * US English: only what differs from British English (en-GB.ts), which fills in the rest.
@@ -37,4 +38,5 @@ export const enUS: DeepPartial<Catalog> = {
   ...enUSVremuri,
   ...enUSCarte,
   ...enUSCalatorie,
+  ...enUSBiserica,
 };

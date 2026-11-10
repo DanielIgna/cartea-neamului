@@ -1,0 +1,479 @@
+import type { BisericaCatalog } from "./ro";
+
+/** British English. Verses from the King James Version. */
+export const enGBBiserica: BisericaCatalog = {
+  Church: {
+    meta: {
+      title: "The history of the persecuted Church",
+      description: "The Church of Christ from the apostles to today: martyrs, reformers, the Bible in Romanian and heroes of faith from the communist prisons.",
+    },
+    label: "Church history",
+    title: "The Church of Christ, persecuted from the beginning until today",
+    toc: "Contents",
+    heroesChip: "Heroes of faith",
+    bibleChip: "The Bible in Romanian",
+    filterLabel: "What to show",
+    all: "The whole world",
+    onlyRo: "Only in Romania",
+    today: "today",
+    ourLand: "in Romania",
+    quoted: "“{text}”",
+    heroesLabel: "Stories that give strength",
+    heroesTitle: "Heroes of faith from the communist prisons",
+    bibleLabel: "The Word in our language",
+    bibleTitle: "How the Bible came to the Romanian language",
+    influenceTitle: "What the Bible changed in the lives of Romanians",
+    endTitle: "We too are a page in this history",
+    endText: "The Church is not a building or an institution, but all those who have received Christ, from Stephen to the grandparents who prayed in secret, and on to us. The light has passed from hand to hand for two thousand years, often at the cost of life. Now it is in our hands: to keep it burning, to read the Word and to pray for those who are persecuted today.",
+    readJohn: "Read the Gospel of John",
+    note: "The verses are from the King James Version. Where something is only tradition, the text says so.",
+    intro: "The Lord Jesus did not promise His disciples an easy life, but that His Church would not be overcome. From Jerusalem to today, every time people tried to put out the light of the Gospel, it was lit again somewhere else. Here are some of those who paid for their faith with their freedom or their lives, and some of the moments when the Word came back into the hands of ordinary people.",
+    promise: {
+      text: "And I say also unto thee, That thou art Peter, and upon this rock I will build my church; and the gates of hell shall not prevail against it.",
+      ref: "Matthew 16:18",
+    },
+    eras: {
+      apostoli: {
+        name: "The Church of the apostles",
+        intro: "After the Lord’s resurrection, a few fishermen and ordinary people from Galilee carried the good news to Jerusalem and then to the whole Roman world. Persecution began almost at once: first from the Jewish leaders, then from Rome. But persecution scattered them, and those who were scattered carried the Word further.",
+        verse: {
+          text: "Therefore they that were scattered abroad went every where preaching the word.",
+          ref: "Acts 8:4",
+        },
+        w: {
+          w1: {
+            name: "Stephen, the first martyr",
+            years: "c. 34",
+            place: "Jerusalem",
+            text: "One of the seven deacons of the Church in Jerusalem. After he bore witness to Christ before the Sanhedrin, he was taken out of the city and stoned to death. A young man named Saul, who would become the apostle Paul, was there when he died.",
+            quote: "Lord, lay not this sin to their charge. (Acts 7:60)",
+          },
+          w2: {
+            name: "James, son of Zebedee",
+            years: "c. 44",
+            place: "Jerusalem",
+            text: "The brother of the apostle John, the first of the twelve apostles to die for Christ: King Herod Agrippa killed him with the sword (Acts 12:2).",
+          },
+          w3: {
+            name: "The Christians of Rome under Nero",
+            years: "64",
+            place: "Rome",
+            text: "After the great fire of Rome, the emperor Nero blamed the Christians. The Roman historian Tacitus writes that some were thrown to wild beasts, others crucified or burned as torches in the emperor’s gardens. According to the old tradition of the Church, the apostles Peter (crucified) and Paul (beheaded) also died in Rome at that time, under Nero.",
+          },
+          w4: {
+            name: "The apostle Andrew",
+            years: "1st century",
+            place: "Scythia Minor (today’s Dobruja)",
+            text: "An old tradition, mentioned by Origen and Eusebius, says that Andrew, Peter’s brother, was sent to preach the Gospel in Scythia. That is why Romanians regard him as their apostle. We do not know for certain where he travelled, but we do know that there were Christians in Dobruja very early on.",
+          },
+          w5: {
+            name: "John, exiled to Patmos",
+            years: "c. 95",
+            place: "The island of Patmos",
+            text: "The last apostle still alive was sent into exile on an island “for the word of God, and for the testimony of Jesus Christ” (Revelation 1:9). There he received the revelation written down in the book of Revelation.",
+          },
+        },
+      },
+      roma: {
+        name: "Martyrs under the emperors of Rome",
+        intro: "For two hundred and fifty years, being a Christian could mean death. Christians would not offer sacrifice to the gods and to the emperor, so they were seen as enemies of the state. Persecution came in waves: sometimes local, sometimes across the whole empire. The hardest was the last, under Diocletian.",
+        verse: {
+          text: "Be thou faithful unto death, and I will give thee a crown of life.",
+          ref: "Revelation 2:10",
+        },
+        w: {
+          w1: {
+            name: "Ignatius of Antioch",
+            years: "c. 110",
+            place: "Antioch → Rome",
+            text: "Bishop of Antioch, taken in chains to Rome to be thrown to the wild beasts. On the way he wrote seven letters to the churches, which have survived: he asks them to stay united and not to try to save him from death.",
+          },
+          w2: {
+            name: "Polycarp of Smyrna",
+            years: "c. 155",
+            place: "Smyrna (in today’s Turkey)",
+            text: "A disciple of the apostle John and an old bishop. When he was told to deny Christ to save himself, he answered with the words preserved in the account of his martyrdom. He was burned at the stake.",
+            quote: "Eighty-six years I have served Him, and He has done me no wrong. How can I blaspheme my King who saved me?",
+          },
+          w3: {
+            name: "Justin Martyr",
+            years: "c. 165",
+            place: "Rome",
+            text: "A philosopher who found Christ after searching for the truth in all the schools of his day. He wrote defences of the faith addressed to the emperors and was beheaded together with his disciples.",
+          },
+          w4: {
+            name: "Perpetua and Felicity",
+            years: "203",
+            place: "Carthage (in today’s Tunisia)",
+            text: "A young mother of good family and her slave, who had just given birth. They refused to sacrifice to the gods and died together in the arena. Perpetua herself wrote down, in prison, the days before her death.",
+          },
+          w5: {
+            name: "The persecution of Decius",
+            years: "250",
+            place: "The whole empire",
+            text: "The emperor ordered every person to offer sacrifice to the gods and receive a certificate. Many Christians died, many hid, and some gave in. Afterwards the Church had to learn how to take back those who had fallen away.",
+          },
+          w6: {
+            name: "Epictetus and Astion",
+            years: "c. 290",
+            place: "Halmyris, near Murighiol (Tulcea)",
+            text: "A priest and a young disciple, killed for their faith in the Roman fortress of Halmyris, at the mouths of the Danube. Their relics were found by archaeologists in the crypt of the basilica there in 2001.",
+          },
+          w7: {
+            name: "The Great Persecution and the martyrs of Niculițel",
+            years: "303–311",
+            place: "The whole empire; Niculițel (Tulcea)",
+            text: "Diocletian ordered churches to be pulled down, the Scriptures burned and the clergy imprisoned. Many Christians in Dobruja died at that time. In 1971, at Niculițel, a crypt was found beneath an old basilica holding the bones of four martyrs, with their names written on the wall: Zoticus, Attalus, Kamasis and Philippus.",
+          },
+        },
+      },
+      "evul-mediu": {
+        name: "A free Church, but tempted",
+        intro: "In 313, by the Edict of Milan, Christians were allowed to worship freely. The Church escaped the sword of Rome but met another temptation: power. Over time, many became Christians in name only, and Scripture remained in a language the people no longer understood. Those who called for a return to the Word were persecuted, this time by those who called themselves the Church.",
+        verse: {
+          text: "Heaven and earth shall pass away, but my words shall not pass away.",
+          ref: "Matthew 24:35",
+        },
+        w: {
+          w1: {
+            name: "Sabbas the Goth",
+            years: "372",
+            place: "The Buzău river",
+            text: "A Gothic Christian who refused to eat meat sacrificed to idols. The Gothic chieftain drowned him in the river Mousaios, today’s Buzău, on 12 April 372. At that time, in the land north of the Danube, Ulfilas had translated the Bible into the Gothic language.",
+          },
+          w2: {
+            name: "Peter Waldo and the Waldensians",
+            years: "c. 1170",
+            place: "Lyon, then the Alps",
+            text: "A rich merchant from Lyon who gave away his wealth and had the Scriptures translated into the language of the people. His followers preached from the Bible in the villages. They were declared heretics and hunted for centuries, but they hid in the valleys of the Alps and have survived to this day.",
+          },
+          w3: {
+            name: "John Wycliffe",
+            years: "c. 1330–1384",
+            place: "Oxford, England",
+            text: "An Oxford professor who taught that Scripture stands above the pope and urged that the Bible be translated into English. He died in his bed, but in 1428 the Church dug up his bones, burned them and threw the ashes into a river.",
+          },
+          w4: {
+            name: "Jan Hus",
+            years: "1415",
+            place: "Prague → Konstanz",
+            text: "A priest and professor in Prague who preached in Czech and called for the Church to return to Scripture. He was summoned to the Council of Konstanz with the promise that he would be allowed to leave freely; he was arrested and burned at the stake on 6 July 1415, because he would not deny what he had learned from the Bible.",
+          },
+        },
+      },
+      reforma: {
+        name: "The Reformation: Scripture in the language of the people",
+        intro: "A hundred years after Hus, a German monk rediscovered in the Epistle to the Romans that we are saved through faith, as a gift of God, not by works or by money. Printing had only just appeared, so Scripture could at last reach people’s homes. A hundred years of struggle and persecution followed, in which, sadly, Christians also persecuted one another.",
+        verse: {
+          text: "The just shall live by faith.",
+          ref: "Romans 1:17",
+        },
+        w: {
+          w1: {
+            name: "Martin Luther",
+            years: "1483–1546",
+            place: "Wittenberg, Germany",
+            text: "A monk and professor of theology. On 31 October 1517 he wrote the 95 theses against selling the forgiveness of sins for money. In 1521, at the Diet of Worms, before the emperor, he refused to take back his writings, because he was bound by the Word of God. He was declared an outlaw; his friends hid him in Wartburg Castle, where he translated the New Testament into German (1522). His teaching can be summed up in three phrases: Scripture alone, grace alone, faith alone. He was not without faults: in his old age he wrote harsh and unjust words against the Jews, which we cannot accept as right.",
+            quote: "My conscience is captive to the Word of God. I cannot and will not recant anything. (Worms, 1521)",
+          },
+          w2: {
+            name: "Felix Manz",
+            years: "1527",
+            place: "Zürich, Switzerland",
+            text: "One of the first “Anabaptists”, who believed that baptism is for those who believe and repent. The Protestant authorities of Zürich drowned him in the river Limmat. Thousands of Anabaptists were killed at that time, by Catholics and by Protestants alike.",
+          },
+          w3: {
+            name: "William Tyndale",
+            years: "1536",
+            place: "Vilvoorde, near Brussels",
+            text: "He translated the New Testament from Greek into English, although it was forbidden, and printed it abroad; the copies were smuggled into England. He was betrayed, imprisoned, then strangled and burned. His translation lies at the root of the later English Bible.",
+            quote: "Lord, open the King of England’s eyes!",
+          },
+          w4: {
+            name: "Deacon Coresi and the first Romanian books",
+            years: "1559–1582",
+            place: "Brașov, Orăștie",
+            text: "In Brașov, at the time of the Reformation, Deacon Coresi printed the first books in the Romanian language, among them the Gospels (the Tetraevangelion, 1561). In 1582 the Palia was printed at Orăștie, the first books of the Old Testament in Romanian. For the first time, Romanians could hear the Word in their own language.",
+          },
+          w5: {
+            name: "The Diet of Turda",
+            years: "1568",
+            place: "Turda, Transylvania",
+            text: "The Diet of Transylvania decided that every community could choose its own preacher, “because faith is a gift of God”. It was one of the first laws of religious freedom in Europe. The Orthodox Romanians, however, remained only “tolerated”, without the same rights.",
+          },
+          w6: {
+            name: "Latimer and Ridley",
+            years: "1555",
+            place: "Oxford, England",
+            text: "Two English bishops burned at the same stake under Queen Mary I, who put nearly three hundred Protestants to death. Latimer told his friend to be brave, because that day they would light a candle that would never be put out.",
+          },
+          w7: {
+            name: "The St Bartholomew’s Day massacre",
+            years: "1572",
+            place: "Paris and France",
+            text: "On the night of 24 August, thousands of French Protestants (Huguenots) were slaughtered in Paris, and then in other towns. Many of those who survived fled the country.",
+          },
+          w8: {
+            name: "The Bible in Romanian",
+            years: "1648–1688",
+            place: "Bălgrad (Alba Iulia), Bucharest",
+            text: "In 1648 the New Testament in Romanian appeared at Bălgrad, and in 1688, in Bucharest, the first complete Bible in the Romanian language, with the support of Prince Șerban Cantacuzino.",
+          },
+        },
+      },
+      trezire: {
+        name: "Revival and mission",
+        intro: "These centuries brought spiritual revivals in many countries and the first missionaries who went to the ends of the earth, but also new martyrs, under the Turks, in the colonies and in the countries where the Gospel arrived for the first time.",
+        verse: {
+          text: "Jesus Christ the same yesterday, and to day, and for ever.",
+          ref: "Hebrews 13:8",
+        },
+        w: {
+          w1: {
+            name: "Constantin Brâncoveanu and his sons",
+            years: "1714",
+            place: "Constantinople",
+            text: "The Prince of Wallachia was deposed and taken to Constantinople with his four sons and his counsellor Ienache. On 15 August 1714 they were told to deny their faith to save themselves. They refused and were beheaded, first the sons, before their father’s eyes, then the prince himself.",
+          },
+          w2: {
+            name: "The Moravian brethren of Herrnhut",
+            years: "1727",
+            place: "Saxony",
+            text: "Descendants of the Hussites, refugees on the estate of Count Zinzendorf, began a prayer that went on without a break for a hundred years and sent missionaries among the slaves of the Caribbean, to Greenland and to Africa.",
+          },
+          w3: {
+            name: "The martyrs of China (the Boxer Rebellion)",
+            years: "1900",
+            place: "Northern China",
+            text: "In the uprising against foreigners, several hundred missionaries and more than thirty thousand Chinese Christians were killed. Instead of disappearing, the Church in China grew in the following century to tens of millions.",
+          },
+        },
+      },
+      "secolul-xx": {
+        name: "The century of the martyrs",
+        intro: "The twentieth century brought the greatest persecutions yet: the Armenian genocide, the Soviet terror, Nazism and, after the Second World War, the communism imposed on Romania too. The atheist state wanted to tear faith out of people’s hearts. It did not succeed. In the prisons, people learned verses by heart and passed them on through the walls.",
+        verse: {
+          text: "We are troubled on every side, yet not distressed; we are perplexed, but not in despair; Persecuted, but not forsaken; cast down, but not destroyed.",
+          ref: "2 Corinthians 4:8–9",
+        },
+        w: {
+          w1: {
+            name: "The Armenian genocide",
+            years: "1915–1923",
+            place: "The Ottoman Empire",
+            text: "About one and a half million Armenians, the oldest Christian nation, were killed or died in the deportations. Hundreds of thousands of Assyrian and Greek Christians also perished at that time.",
+          },
+          w2: {
+            name: "Iosif Trifa and the Lord’s Army",
+            years: "1923–1948",
+            place: "Sibiu, then the whole country",
+            text: "In 1923 the priest Iosif Trifa started a revival movement among the Orthodox, with the Bible, hymns and turning away from drink and swearing. The communists banned it in 1948; its brethren met in secret for decades. The poet Traian Dorz and the composer Nicolae Moldoveanu, two of its brethren, went through the prisons (see their stories below).",
+          },
+          w3: {
+            name: "Dumitru Cornilescu",
+            years: "1921–1923",
+            place: "Stânca-Ștefănești, Bucharest",
+            text: "A young Orthodox deacon who translated the Bible into living, clear Romanian (1921, revised in 1924). Reading it, he came to a personal faith in Christ. He was forced to leave the country in 1923 and never came back; he died in Switzerland in 1975. His translation is still read today by millions of Romanians.",
+          },
+          w4: {
+            name: "Dietrich Bonhoeffer",
+            years: "1945",
+            place: "Flossenbürg, Germany",
+            text: "A German pastor who opposed Hitler and helped Jews to escape. He was imprisoned for two years and hanged on 9 April 1945, a few weeks before the end of the war.",
+          },
+          w5: {
+            name: "The Greek Catholic bishops",
+            years: "1948–1970",
+            place: "Sighet, Căldărușani, Blaj",
+            text: "In 1948 the communists abolished the Greek Catholic Church, took its churches and arrested all its bishops. Five of them died in prison or under house arrest; Bishop Iuliu Hossu, who had read out the Declaration of Union at Alba Iulia on 1 December 1918, died in 1970 without ever being set free.",
+          },
+          w6: {
+            name: "Richard and Sabina Wurmbrand",
+            years: "1948–1964",
+            place: "Văcărești, Jilava, Gherla",
+            text: "A Lutheran pastor from Bucharest, a Jew who had come to Christ. He was arrested in 1948 and spent fourteen years in prisons altogether, three of them alone in an underground cell; his wife Sabina also went through a labour camp. Released in 1964 and ransomed out of the country, he wrote “Tortured for Christ” and founded a mission that still helps persecuted Christians today.",
+          },
+          w7: {
+            name: "Priests, pastors and believers of every denomination",
+            years: "1948–1989",
+            place: "Aiud, Gherla, Pitești, the Canal",
+            text: "Thousands of Orthodox and Greek Catholic priests, Baptist, Pentecostal and Adventist pastors and Brethren believers went through prisons and labour camps. The theologian Dumitru Stăniloae was imprisoned for five years. The priest Gheorghe Calciu spent twenty-one years in prison, the last time for the sermons he gave to young people in 1978. Bibles were smuggled across the border by Christians from the West.",
+          },
+          w8: {
+            name: "Timișoara, December 1989",
+            years: "1989",
+            place: "Timișoara",
+            text: "The revolution began with a chain of people of every denomination who stood in front of the house of the Reformed pastor László Tőkés so that he would not be evicted. In the square, the crowd shouted “There is a God!”.",
+          },
+        },
+      },
+      azi: {
+        name: "The persecuted Church today",
+        intro: "Persecution has not stopped. According to Open Doors, which follows the situation every year, more than 380 million Christians, about one in seven, live today in a country where their faith can cost them their job, their freedom or their life: in North Korea, in parts of Africa, in the Middle East, in Asia. And today the Church is growing precisely where things are hardest.",
+        verse: {
+          text: "Yea, and all that will live godly in Christ Jesus shall suffer persecution.",
+          ref: "2 Timothy 3:12",
+        },
+        w: {
+          w1: {
+            name: "The 21 on the shore of Libya",
+            years: "2015",
+            place: "Sirte, Libya",
+            text: "Twenty Coptic Christian workers from Egypt and a young man from Ghana were killed by the Islamic State group. The recording shows many of them saying the name of Jesus at the last moment.",
+          },
+          w2: {
+            name: "The Christians of Nigeria",
+            years: "today",
+            place: "Northern and central Nigeria",
+            text: "Whole villages are attacked and churches burned almost every week. Nigeria is the country where the most Christians are killed for their faith.",
+          },
+          w3: {
+            name: "The Church in North Korea",
+            years: "today",
+            place: "North Korea",
+            text: "Owning a Bible can send a whole family to a labour camp. And yet tens of thousands of believers pray in secret.",
+          },
+          w4: {
+            name: "Freedom in Romania",
+            years: "1990–today",
+            place: "Romania",
+            text: "Since 1989 the Bible has been printed and read freely in Romania. It is a gift paid for by the suffering of those who came before us, and a duty: to pray for those who go through today what they went through.",
+          },
+        },
+      },
+    },
+    heroesIntro: "The history of the Church is not just a list of sufferings. It is also the story of ordinary people, from our villages and towns, who discovered that Christ was closer in a prison cell than He had ever been in freedom. Their stories are not meant to frighten us, but to give us strength.",
+    heroes: {
+      wurmbrand: {
+        name: "Richard Wurmbrand",
+        years: "1909–2001",
+        who: "A Lutheran pastor from Bucharest, a Jew who had come to Christ. Fourteen years in the communist prisons.",
+        story: {
+          p1: "In 1945 the communists gathered a “Congress of Religions” in Bucharest, where priests and pastors, one after another, praised the new regime. Sabina, his wife, said to him: “Richard, stand up and wash this shame from the face of Christ!” He answered that if he spoke, she would lose her husband. Sabina said she did not want a coward for a husband. Richard stood up and said before everyone that the duty of the Church is to proclaim Christ, not to praise those in power.",
+          p2: "In 1948 he was taken off the street and disappeared for years; his family did not even know whether he was still alive. For three years he was alone in an underground cell, without a book, without daylight, without seeing anyone except the guards. To keep his mind, every night he composed a sermon and preached it in his head, as if he were speaking to a whole church. He talked with the prisoners in the neighbouring cells by tapping on the wall, letter by letter; that is how he came to share the Gospel with a man whose face he never saw.",
+          p3: "Later he told how, repeating in his mind the Lord’s words “Rejoice ye in that day, and leap for joy”, he stood up in his cell and danced for joy. The guards thought he had gone mad and brought him more food.",
+          p4: "Released in 1964 and ransomed out of the country by Christians from Norway, he took off his shirt before the American Senate to show the scars of torture. He wrote “Tortured for Christ” and founded a mission that still helps persecuted Christians today. What he said most often: that he loved those who had tortured him and that he prayed for them.",
+        },
+        lesson: "Faith is not an idea you lose when everything is taken from you. When Wurmbrand had nothing left, he discovered that he had Christ, and that was enough for him.",
+        verse: {
+          text: "Rejoice ye in that day, and leap for joy: for, behold, your reward is great in heaven",
+          ref: "Luke 6:23",
+        },
+      },
+      moldoveanu: {
+        name: "Nicolae Moldoveanu",
+        years: "1922–2007",
+        who: "A composer of the Lord’s Army, “the David of Romanian song”. Five years in prison for writing hymns.",
+        story: {
+          p1: "He was born in Movileni, in the county of Tecuci (today Galați), and lost his father when he was small. Brought up in a military band for poor children, he sold half of his bread ration and all of his milk to buy a Bible and the magazine of the Lord’s Army.",
+          p2: "In 1959 he was arrested for “composing religious songs and religious propaganda” and sentenced to twelve years; he served five. In prison he had no pencil, no paper and no music sheets. And yet he composed three hundred and fifty hymns there, which he kept in his memory, note by note, and wrote down only after he came out.",
+          p3: "Richard Wurmbrand, who shared a cell with him at Gherla, told of a winter night: they had no warm clothes, they slept on bare concrete, and the guards kept making them get up and lie down on command. The others swore. Moldoveanu praised God and, lying on the concrete, sang him a new hymn, full of joy and hope, which is sung today in many countries.",
+          p4: "In his lifetime he wrote more than seven thousand hymns, many to words by Traian Dorz, which are still sung in churches all over the country. When Wurmbrand came back to Romania in 1990, the first person he saw was him.",
+        },
+        lesson: "You can be locked up, but you cannot be stopped from singing. What was sown in darkness is sung today in full churches.",
+        verse: {
+          text: "We are troubled on every side, yet not distressed; we are perplexed, but not in despair;",
+          ref: "2 Corinthians 4:8",
+        },
+      },
+      dorz: {
+        name: "Traian Dorz",
+        years: "1914–1989",
+        who: "A peasant poet from Livada Beiușului (Bihor), of the Lord’s Army. Almost eighteen years in prisons and labour colonies.",
+        story: {
+          p1: "The child of poor peasants, he was given a book by the priest Iosif Trifa as a school prize. He read it, gave his life to Christ at fifteen and started writing verse straight away.",
+          p2: "He was first arrested in December 1947, then again and again: Oradea, Gherla, Deva, Periprava, the Bărăgan. In 1959 he was sentenced to sixteen years of hard labour; he was released in 1964. During one interrogation they stood him against a wall with a pistol to his temple, to frighten him; he said later that he had gone through his own death then and had nothing left to fear.",
+          p3: "The cell was so small that he could not stand up straight. He was not allowed to write, so he composed his poems in his head and kept more than three hundred of them in memory, writing them down after his release. His daughter brought him parcels that the guards gave to the dogs; so she found a hole in the fence, known only to the two of them, and left the food for him there.",
+          p4: "Even after prison the Securitate watched him; when they saw his lamp lit at night, they shouted at him that he was not allowed to write. He went on writing. He died in June 1989, half a year before the fall of communism; although the authorities tried to keep people away, more than ten thousand came to his funeral.",
+        },
+        lesson: "What the heart remembers cannot be confiscated. Poems written in secret, by lamplight, are sung today all over the country.",
+        verse: {
+          text: "Be thou faithful unto death, and I will give thee a crown of life.",
+          ref: "Revelation 2:10",
+        },
+      },
+    },
+    bibleIntro: "For a long time, Romanians heard the church services in Slavonic, a language the priest barely understood and the people not at all. The Word of God reached them in their mother tongue slowly, book by book, over three hundred years.",
+    steps: {
+      b1: {
+        year: "15th–16th c.",
+        title: "The first handwritten texts",
+        who: "Unknown translators, in Maramureș and northern Transylvania",
+        text: "The oldest pieces of the Bible in Romanian are manuscripts: the Psalter of Schei, the Psalter of Voroneț, the Codex of Voroneț (the Acts of the Apostles and the epistles). They have come down to us in 16th-century copies and are written in the northern dialect. We do not know for certain who translated them; some historians think they were prompted by echoes of the Hussites or of the Reformation.",
+      },
+      b2: {
+        year: "1561",
+        title: "Coresi’s Tetraevangelion",
+        who: "Deacon Coresi, in Brașov, with the support of the Saxon judge Hans Benkner",
+        text: "The first printed book with the four Gospels in Romanian. The Apostle (1563) and the Psalter (1570) followed. The prefaces of those books say why: all the nations had the Word of God in their own language, only the Romanians did not. His books reached the churches of all three Romanian lands and set the speech of Wallachia and southern Transylvania at the foundation of today’s literary language.",
+      },
+      b3: {
+        year: "1582",
+        title: "The Palia of Orăștie",
+        who: "Bishop Mihail Tordaș and four other priests, with the support of Francisc Geszti",
+        text: "The first Romanian translation of the first books of the Old Testament: Genesis and Exodus. The preface tells the readers that it was translated so that Romanians too might have the Scriptures, as the other nations have them.",
+      },
+      b4: {
+        year: "1648",
+        title: "The New Testament of Bălgrad",
+        who: "Metropolitan Simion Ștefan of Transylvania, at Alba Iulia",
+        text: "The first complete New Testament in Romanian, translated from Greek and Latin. In the preface, the metropolitan wrote that he had chosen the words understood by Romanians in every land, because they spoke differently from one region to another. It was, openly, a thought for the unity of the language.",
+        quote: "Words should be like money, for the good coins are those that go about in all lands; so too the good words are those that everyone understands.",
+      },
+      b5: {
+        year: "1688",
+        title: "The Bucharest Bible",
+        who: "Begun under Șerban Cantacuzino, finished under Constantin Brâncoveanu; translators: Nicolae Milescu and the brothers Radu and Șerban Greceanu",
+        text: "The first complete Bible in the Romanian language. The Old Testament started from the translation made by the Moldavian scholar Nicolae Milescu, revised in Bucharest by the Greceanu brothers. For the first time, Moldavia, Wallachia and Transylvania had the same Bible, in the same language; it was the book language of the Romanians for more than a hundred years.",
+      },
+      b6: {
+        year: "1795",
+        title: "The Blaj Bible",
+        who: "Samuil Micu, of the Transylvanian School",
+        text: "Translated anew, from the Septuagint, by a Greek Catholic scholar. It passed through the hands of many generations of priests and teachers in Transylvania.",
+      },
+      b7: {
+        year: "1856–1858",
+        title: "Șaguna’s Bible",
+        who: "Metropolitan Andrei Șaguna, in Sibiu",
+        text: "A carefully prepared edition for the Orthodox believers of Transylvania, in a language closer to the one people spoke.",
+      },
+      b8: {
+        year: "1921–1924",
+        title: "The Cornilescu Bible",
+        who: "Dumitru Cornilescu, helped by Princess Ralu Callimachi",
+        text: "A young Orthodox deacon translated the Bible into living, clear Romanian that anyone can understand. Reading it, he himself came to a living faith in Christ. The British and Foreign Bible Society took it on in 1924 and spread it in hundreds of thousands of copies. He was forced to leave the country in 1923, but his translation remained the Bible that millions of Romanians keep at their bedside.",
+      },
+      b9: {
+        year: "1914–1988",
+        title: "The Synodal Bibles",
+        who: "The Romanian Orthodox Church (translations by Gala Galaction, Vasile Radu and others)",
+        text: "Official editions of the Orthodox Church, revised several times. The 1988 edition, printed under the communists, reached few homes; Bibles were hard to find at that time.",
+      },
+    },
+    influence: {
+      i1: "Written Romanian was born, to a large extent, from the books of the Church. Bibles and service books were the first things read in every region, so they helped create a common language for all Romanians, long before the Union of 1918. Eminescu said that the Church and its books gave Romanians the unity of their language.",
+      i2: "Anyone who wanted to read the Scriptures had to learn to read. Schools were opened next to churches, and at Blaj, in 1754, the schools were called “the springs of gifts”. For a long time the village teachers were the church cantors.",
+      i3: "When ordinary people could read the Word for themselves, revivals were born: the Lord’s Army, the evangelical churches, the prayer circles in the villages. Faith stopped belonging only to the priest and became every person’s own.",
+      i4: "That is why the communists feared the Bible more than many weapons: a people that reads the Word knows what the truth is and can no longer be lied to easily.",
+    },
+    bibleVerse: {
+      text: "The entrance of thy words giveth light; it giveth understanding unto the simple.",
+      ref: "Psalm 119:130",
+    },
+    endVerses: {
+      v1: {
+        text: "If they have persecuted me, they will also persecute you; if they have kept my saying, they will keep yours also.",
+        ref: "John 15:20",
+      },
+      v2: {
+        text: "Blessed are they which are persecuted for righteousness’ sake: for theirs is the kingdom of heaven.",
+        ref: "Matthew 5:10",
+      },
+      v3: {
+        text: "These things I have spoken unto you, that in me ye might have peace. In the world ye shall have tribulation: but be of good cheer; I have overcome the world.",
+        ref: "John 16:33",
+      },
+    },
+  },
+};

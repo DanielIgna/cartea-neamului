@@ -13,6 +13,7 @@ import { roAmintiri } from "./amintiri/ro";
 import { roVremuri } from "./vremuri/ro";
 import { roCarte } from "./carte/ro";
 import { roCalatorie } from "./calatorie/ro";
+import { roBiserica } from "./biserica/ro";
 
 export const ro = {
   Meta: {
@@ -305,6 +306,7 @@ export const ro = {
   // Cartea neamului de tipărit, în limba cărții, și alegerile ei (src/i18n/messages/carte/).
   ...roCarte,
   ...roCalatorie,
+  ...roBiserica,
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

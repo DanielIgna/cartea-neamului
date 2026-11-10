@@ -4,6 +4,7 @@ import { nlAmintiri } from "./amintiri/nl";
 import { nlVremuri } from "./vremuri/nl";
 import { nlCarte } from "./carte/nl";
 import { nlCalatorie } from "./calatorie/nl";
+import { nlBiserica } from "./biserica/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -294,4 +295,5 @@ export const nl: Catalog = {
   ...nlVremuri,
   ...nlCarte,
   ...nlCalatorie,
+  ...nlBiserica,
 };

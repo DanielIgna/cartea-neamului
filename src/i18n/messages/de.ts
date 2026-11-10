@@ -4,6 +4,7 @@ import { deAmintiri } from "./amintiri/de";
 import { deVremuri } from "./vremuri/de";
 import { deCarte } from "./carte/de";
 import { deCalatorie } from "./calatorie/de";
+import { deBiserica } from "./biserica/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -294,4 +295,5 @@ export const de: Catalog = {
   ...deVremuri,
   ...deCarte,
   ...deCalatorie,
+  ...deBiserica,
 };

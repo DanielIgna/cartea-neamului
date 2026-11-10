@@ -147,7 +147,7 @@ describe("cataloagele de texte", () => {
   it("nicio literă românească (ă ș ț) rămasă în celelalte limbi, afară de nume", () => {
     // Nume proprii care rămân românești în orice limbă.
     // Locurile și oamenii din povestea vremurilor (Brașov, Ceaușescu…) se scriu ca în română, ca în orice carte de istorie.
-    const names = /Cartea Neamului|Lada cu amintiri|Călătoria în timp|Țara|Maramureș|Mărjel|Crișana|Brașov|Iași|Timișoara|Ploiești|Brăila|Galați|Constanța|Cernavodă|Năsăud|Bărăgan|Mărăști|Mărășești|Grivița|Trăznea|Cloșca|Crișan|Barițiu|Ceaușescu/gu;
+    const names = /Cartea Neamului|Lada cu amintiri|Călătoria în timp|Țara|Maramureș|Mărjel|Crișana|Brașov|Iași|Timișoara|Ploiești|Brăila|Galați|Constanța|Cernavodă|Năsăud|Bărăgan|Mărăști|Mărășești|Grivița|Trăznea|Cloșca|Crișan|Barițiu|Ceaușescu|Beiușului|Buzău|Bălgrad|Căldărușani|[Nn]iculițel|Orăștie|Pitești|Stânca-Ștefănești|Stăniloae|Tordaș|[Vv]oroneț|Văcărești|Șaguna|Șerban|Ștefan/gu;
     for (const l of others) for (const [key, msg] of leaves(catalogs[l])) expect(/[ăĂșȘțȚşŞţŢ]/.test(msg.replace(names, "")), `${l} ${key}: ${msg}`).toBe(false);
   });
 

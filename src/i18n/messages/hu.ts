@@ -4,6 +4,7 @@ import { huAmintiri } from "./amintiri/hu";
 import { huVremuri } from "./vremuri/hu";
 import { huCarte } from "./carte/hu";
 import { huCalatorie } from "./calatorie/hu";
+import { huBiserica } from "./biserica/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -294,4 +295,5 @@ export const hu: Catalog = {
   ...huVremuri,
   ...huCarte,
   ...huCalatorie,
+  ...huBiserica,
 };
