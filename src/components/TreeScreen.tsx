@@ -66,6 +66,8 @@ export default function TreeScreen(props: Props) {
   const [trunk, setTrunk] = useState<string | null>(null);
   // Copacul cu două rădăcini: null = ales singur (ambele spițe, când tata și mama au amândoi strămoși trecuți).
   const [twin, setTwin] = useState<boolean | null>(null);
+  // Copacul pornește strâns: linia neamului și frații de pe ea; ramurile verilor se desfac la „+N” sau toate deodată.
+  const [allBranches, setAllBranches] = useState(false);
   const [patRoot, setPatRoot] = useState<string | null>(null);
   const [matRoot, setMatRoot] = useState<string | null>(null);
   // Spița aleasă, a tatălui sau a mamei, rămâne aleasă și când treci de la un desen la altul (null = amândouă).
@@ -283,6 +285,7 @@ export default function TreeScreen(props: Props) {
               </label>
             )}
             {(patRoot || matRoot) && <button className="btn" onClick={resetPicks}>{t("resetLines")}</button>}
+            {view === "tree" && <button className="btn" aria-pressed={allBranches} onClick={() => setAllBranches((a) => !a)}>{allBranches ? t("foldBranches") : t("allBranches")}</button>}
             {!showsLineage && view !== "hour" && (
               <label className="gen-select">{t("generations")}
                 <select value={generations} onChange={(e) => go({ g: e.target.value })}>
@@ -295,13 +298,13 @@ export default function TreeScreen(props: Props) {
           </div>
           {view === "360" ? (
             <Tree360 seeds={seeds360.seeds} links={seeds360.links} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
-          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}`} full={full} onFull={setFull}>
+          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}|${allBranches}`} full={full} onFull={setFull}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} side={shownSide} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
             {view === "classic" && <ClassicTree {...chartProps} side={shownSide} />}
             {view === "tree" && (twinOn && parts
-              ? <TwinTree parts={parts} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} />
-              : <LineageTree {...lineageProps} />)}
+              ? <TwinTree parts={parts} allBranches={allBranches} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} />
+              : <LineageTree {...lineageProps} allBranches={allBranches} />)}
             {view === "hour" && <Hourglass slots={slots} generations={generations} down={mine} people={people} selectedId={selectedId}
               onSelectPerson={(id) => setSel({ id })} onSelectSlot={(n) => setSel({ n })} onCenter={center} side={shownSide} />}
             {view === "desc" && <DescendantsChart root={lineage} people={people} selectedId={selectedId} onSelectPerson={(id) => setSel({ id })} onCenter={center} />}
@@ -337,11 +340,13 @@ export default function TreeScreen(props: Props) {
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendTwinRoots", { name: ego?.givenName ?? "" })}</span>
                 <span>{t("legendTwinHelp")}</span>
+                {view === "tree" && !allBranches && <span>{t("legendFolded")}</span>}
               </>
             ) : showsLineage ? (
               <>
                 <span><i className="sw" style={{ background: "var(--accent-soft)", border: "1.5px solid var(--accent)" }} />{t("legendPathTo", { name: ego?.givenName ?? "" })}</span>
                 <span>{view === "tree" ? t("legendTreeHelp") : t("legendFanDownHelp")}</span>
+                {view === "tree" && !allBranches && <span>{t("legendFolded")}</span>}
               </>
             ) : (
               <>

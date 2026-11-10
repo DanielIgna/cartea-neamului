@@ -40,7 +40,7 @@ export const thick = (s: number) => Math.min(5 + 3.4 * Math.sqrt(s), 46);
  */
 export function growTree(root: DescNode, egoPath: Set<string>, cw: number, own: (d: DescNode) => number,
   pads: (trunk: DescNode[]) => { l: number; r: number } = () => ({ l: cw * 1.3, r: cw * 1.3 }),
-  prefer: (t: DescNode, c: DescNode, next?: DescNode) => -1 | 0 | 1 = () => 0, stop?: string) {
+  prefer: (t: DescNode, c: DescNode, next?: DescNode) => -1 | 0 | 1 = () => 0, stop?: string, compact = false) {
   const leaves = new Map<DescNode, number>(), size = new Map<DescNode, number>();
   const count = (d: DescNode): void => {
     d.children.forEach(count);
@@ -66,6 +66,7 @@ export function growTree(root: DescNode, egoPath: Set<string>, cw: number, own: 
     }
   });
   const pad = pads(trunk);
+  if (compact) return packed(trunk, left, right, pad, cw, leaves, size);
   const trunkX = lw * cw + pad.l;
   const out: TNode[] = [];
   const tnodes: TNode[] = [];
@@ -86,6 +87,61 @@ export function growTree(root: DescNode, egoPath: Set<string>, cw: number, own: 
   x = trunkX + pad.r;
   for (const { d, level } of [...right].sort((a, b) => b.level - a.level)) { const w = leaves.get(d)! * cw; lay(d, level + 1, x, x + w, tnodes[level], 1); x += w; }
   return { nodes: out, width: x, depth: Math.max(...out.map((n) => n.depth)), trunkX };
+}
+
+/**
+ * Copacul strâns: ramurile se așază pe rânduri, nu doar una lângă alta. Pornim cu ramurile de sus, lângă trunchi; o ramură de mai jos
+ * se apropie de trunchi cât îi lasă rândurile pe care stă ea (și drumul ramurilor de deasupra), așa că o ramură scurtă de jos nu mai
+ * pleacă tocmai la margine, ci stă sub celelalte. Ramurile nu se încrucișează: ramura de jos trece pe sub cele de sus.
+ */
+function packed(trunk: DescNode[], left: { d: DescNode; level: number }[], right: { d: DescNode; level: number }[],
+  pad: { l: number; r: number }, cw: number, leaves: Map<DescNode, number>, size: Map<DescNode, number>) {
+  type Local = { nodes: TNode[]; w: number; rows: Map<number, [number, number]>; rootX: number };
+  const local = (d: DescNode, level: number): Local => {
+    const nodes: TNode[] = [], rows = new Map<number, [number, number]>();
+    const lay = (n: DescNode, depth: number, a: number, b: number, parent: TNode | undefined) => {
+      const me: TNode = { node: n, depth, x: (a + b) / 2, y: 0, parent, trunk: false, size: size.get(n)!, side: 0 };
+      nodes.push(me);
+      const r = rows.get(depth);
+      rows.set(depth, r ? [Math.min(r[0], a), Math.max(r[1], b)] : [a, b]);
+      let x = a;
+      for (const c of n.children) { const w = ((b - a) * leaves.get(c)!) / leaves.get(n)!; lay(c, depth + 1, x, x + w, me); x += w; }
+    };
+    const w = leaves.get(d)! * cw;
+    lay(d, level + 1, 0, w, undefined);
+    return { nodes, w, rows, rootX: nodes[0].x };
+  };
+  // Pe fiecare parte: cât e ocupat pe fiecare rând, măsurat de la trunchi spre margine.
+  const place = (items: { d: DescNode; level: number }[], dir: -1 | 1) => {
+    const used = new Map<number, number>(), out: { l: Local; o: number; level: number }[] = [];
+    for (const { d, level } of [...items].sort((a, b) => b.level - a.level)) {
+      const l = local(d, level);
+      // dist(x) = cât de departe de trunchi stă punctul x al ramurii, dacă ramura începe la distanța o.
+      const inner = (lo: number, hi: number) => (dir === 1 ? lo : l.w - hi);
+      const outer = (lo: number, hi: number) => (dir === 1 ? hi : l.w - lo);
+      let o = 0;
+      for (const [r, [lo, hi]] of l.rows) o = Math.max(o, (used.get(r) ?? 0) - inner(lo, hi));
+      for (const [r, [lo, hi]] of l.rows) used.set(r, Math.max(used.get(r) ?? 0, o + outer(lo, hi)));
+      // Drumul ramurii: pe rândul părintelui, de la trunchi până sub omul ei.
+      used.set(level, Math.max(used.get(level) ?? 0, o + (dir === 1 ? l.rootX : l.w - l.rootX) + cw / 2));
+      out.push({ l, o, level });
+    }
+    return { out, extent: Math.max(0, ...out.map(({ l, o }) => o + l.w)) };
+  };
+  const L = place(left, -1), R = place(right, 1);
+  const trunkX = L.extent + pad.l;
+  const res: TNode[] = [], tnodes: TNode[] = [];
+  trunk.forEach((d, i) => {
+    const t: TNode = { node: d, depth: i, x: trunkX, y: 0, parent: tnodes[i - 1], trunk: true, size: size.get(d)!, side: 0 };
+    tnodes.push(t); res.push(t);
+  });
+  for (const [P, dir] of [[L, -1], [R, 1]] as const) {
+    for (const { l, o, level } of P.out) {
+      const base = dir === 1 ? trunkX + pad.r + o : trunkX - pad.l - o - l.w;
+      for (const n of l.nodes) { n.x += base; n.side = dir; if (!n.parent) n.parent = tnodes[level]; res.push(n); }
+    }
+  }
+  return { nodes: res, width: trunkX + pad.r + R.extent, depth: Math.max(...res.map((n) => n.depth)), trunkX };
 }
 
 /**
@@ -134,10 +190,10 @@ function geometry(known: (id: string) => boolean, mirror = false) {
 }
 
 /** Copacul cu o singură rădăcină: trunchiul de la strămoșul ales, prin persoana din centru, până la cel mai tânăr. */
-export function layoutSingle(root0: DescNode, known: (id: string) => boolean, egoPath: Set<string>): Scene {
+export function layoutSingle(root0: DescNode, known: (id: string) => boolean, egoPath: Set<string>, compact = false): Scene {
   const G = geometry(known);
   const root = G.regroup(root0);
-  const grown = growTree(root, egoPath, colW, G.own, G.pads, G.prefer);
+  const grown = growTree(root, egoPath, colW, G.own, G.pads, G.prefer, undefined, compact);
   const W0 = grown.width, W = Math.max(W0, 680), shift = (W - W0) / 2;
   const H = top + grown.depth * rowH + trunkH + 70;
   const baseY = H - 46;
@@ -264,16 +320,16 @@ function sides(line: DescNode[], first: number, gen: number, own: (d: DescNode) 
  * și spre mijloc, sub coroană. Trunchiurile se apleacă unul spre altul (bunicii se apropie, părinții se unesc), iar coroana comună
  * crește din nodul părinților, la mijloc între ele. Bucățile se apropie rând cu rând cât pot, fără ca vreo familie să calce peste alta.
  */
-export function layoutTwin(parts: TwinParts, known: (id: string) => boolean, egoPath: Set<string>): Scene {
+export function layoutTwin(parts: TwinParts, known: (id: string) => boolean, egoPath: Set<string>, compact = false): Scene {
   const GL = geometry(known, true), G = geometry(known);
   const left = GL.regroup(parts.left), right = G.regroup(parts.right);
   const lineL = lineTo(left, parts.father, egoPath), lineR = lineTo(right, parts.mother, egoPath);
   // Rândurile, numărate de jos: rădăcina cea mai veche stă pe primul rând, părinții pe rândul gen − 1.
   const gen = Math.max(lineL.length, lineR.length);
   const sL = sides(lineL, gen - lineL.length, gen, GL.own, 1), sR = sides(lineR, gen - lineR.length, gen, G.own, -1);
-  const L = growTree(left, egoPath, colW, GL.own, GL.pads, (_t, c) => sL.get(c.id) ?? -1, parts.father);
-  const R = growTree(right, egoPath, colW, G.own, G.pads, (_t, c) => sR.get(c.id) ?? 1, parts.mother);
-  const C = growTree(G.regroup(parts.crown), egoPath, colW, G.own, G.pads, G.prefer);
+  const L = growTree(left, egoPath, colW, GL.own, GL.pads, (_t, c) => sL.get(c.id) ?? -1, parts.father, compact);
+  const R = growTree(right, egoPath, colW, G.own, G.pads, (_t, c) => sR.get(c.id) ?? 1, parts.mother, compact);
+  const C = growTree(G.regroup(parts.crown), egoPath, colW, G.own, G.pads, G.prefer, undefined, compact);
   type Grown = typeof L;
   const geo = (B: Grown) => (B === L ? GL : G);
   const trunkOf = (B: Grown) => B.nodes.filter((n) => n.trunk);
@@ -401,4 +457,48 @@ export function layoutTwin(parts: TwinParts, known: (id: string) => boolean, ego
     roots: new Set([tL[0].node.id, tR[0].node.id]),
     noShoots: new Set([parts.father, parts.mother, coupleN.node.id]),
   };
+}
+
+/**
+ * Copacul strâns: trunchiul (linia neamului, aleasă ca în `growTree`) își păstrează toți copiii, iar ramurile din lături (frații celor de pe
+ * trunchi) apar doar cu omul lor; urmașii lor stau strânși până îi desfaci (`open`). `hidden` = câți urmași are fiecare ramură strânsă.
+ * Așa copacul nu se mai întinde în lături cât toate frunzele verilor, ci cât oamenii de pe linie și frații lor.
+ */
+/** Frunza care ține locul fraților strânși ai cuiva de pe linie: `more:` + id-ul părintelui. */
+export const MORE = "more:";
+
+export function fold(root: DescNode, egoPath: Set<string>, open: Set<string>, stop?: string) {
+  const size = new Map<DescNode, number>();
+  const count = (d: DescNode): number => { const n = 1 + d.children.reduce((s, c) => s + count(c), 0); size.set(d, n); return n; };
+  count(root);
+  const trunk = new Set<string>([root.id]);
+  for (let cur = root; cur.children.length && cur.id !== stop; ) {
+    cur = cur.children.find((c) => egoPath.has(c.id)) ?? [...cur.children].sort((a, b) => size.get(b)! - size.get(a)!)[0];
+    trunk.add(cur.id);
+  }
+  const hidden = new Map<string, number>();
+  const cut = (d: DescNode): DescNode => {
+    if (trunk.has(d.id) && !open.has(MORE + d.id)) {
+      // O familie mare pe linie (8–13 frați): pe desen rămân cei de pe linie și primii trei frați; ceilalți stau într-o frunză „+N”.
+      const side = d.children.filter((c) => !trunk.has(c.id) && !egoPath.has(c.id));
+      if (side.length > 4) {
+        const rest = side.slice(3), drop = new Set(rest);
+        const more: DescNode = { id: MORE + d.id, partners: [], children: [], via: rest[0].via ?? null };
+        hidden.set(more.id, rest.length);
+        const kept = d.children.filter((c) => !drop.has(c)).map(cut);
+        const at = kept.reduce((i, c, k) => (c.via === more.via ? k + 1 : i), kept.length);
+        return { ...d, children: [...kept.slice(0, at), more, ...kept.slice(at)] };
+      }
+    }
+    if (trunk.has(d.id) || egoPath.has(d.id) || open.has(d.id) || !d.children.length) return { ...d, children: d.children.map(cut) };
+    hidden.set(d.id, size.get(d)! - 1);
+    return { ...d, children: [] };
+  };
+  return { root: cut(root), hidden };
+}
+
+/** Același lucru pentru copacul cu două rădăcini: fiecare spiță până la părinte, plus coroana cu copiii părinților. */
+export function foldTwin(parts: TwinParts, egoPath: Set<string>, open: Set<string>) {
+  const L = fold(parts.left, egoPath, open, parts.father), R = fold(parts.right, egoPath, open, parts.mother), C = fold(parts.crown, egoPath, open);
+  return { parts: { ...parts, left: L.root, right: R.root, crown: C.root }, hidden: new Map([...L.hidden, ...R.hidden, ...C.hidden]) };
 }

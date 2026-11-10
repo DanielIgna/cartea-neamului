@@ -1,9 +1,10 @@
 "use client";
+import { useMemo, useState } from "react";
 import { useLocale, useTranslations } from "use-intl";
 import type { PersonView } from "@/lib/tree-data";
 import { genOf, fillFor, onSide, type DescNode, type Side, type Slots } from "./charts";
 import { clip, lifeDates, years } from "@/lib/person-text";
-import { TREE, layoutSingle, layoutTwin, thick, type Pt, type Scene, type TNode, type TwinParts } from "@/lib/tree-layout";
+import { MORE, TREE, fold, foldTwin, layoutSingle, layoutTwin, thick, type Pt, type Scene, type TNode, type TwinParts } from "@/lib/tree-layout";
 
 /**
  * Desenele „de la trunchi în sus”: copacul neamului și evantaiul urmașilor.
@@ -82,8 +83,9 @@ const leafPath = (x: number, y: number, w: number, h: number, tilt = 0) => {
  * Desenul copacului, după o așezare gata făcută (cu o rădăcină sau cu două): pământul și rădăcinile, coroana, trunchiul,
  * ramurile groase cât urmașii pe care îi poartă, lăstarii celor mai tineri și oamenii, ca frunze pe ramuri și plăcuțe pe trunchi.
  */
-function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter, ariaLabel, label }: Omit<Props, "root"> & {
+function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter, ariaLabel, label, hidden, open, onToggle }: Omit<Props, "root"> & {
   scene: Scene; ariaLabel: string; label: (rootId: string) => string;
+  hidden: Map<string, number>; open: Set<string>; onToggle: (id: string) => void;
 }) {
   const t = useTranslations("Charts"), locale = useLocale();
   const nKids = (k: number) => t("kids", { count: k });
@@ -107,7 +109,7 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
     return Array.from({ length: k }, (_, i) => ({ key: `${n.node.id}f${i}`, cx: f.mid + (rnd() - 0.5) * spread, cy: n.y - 6 + (rnd() - 0.5) * 56, r: 22 + rnd() * 20, tone: 1 + Math.floor(rnd() * 3) }));
   });
   // Lăstari: rămurele cu frunze la cei fără copii (vârfurile copacului).
-  const shoots = nodes.filter((n) => !n.node.children.length && n.depth > 0 && !noShoots.has(n.node.id)).flatMap((n) => {
+  const shoots = nodes.filter((n) => !n.node.children.length && n.depth > 0 && !noShoots.has(n.node.id) && !hidden.has(n.node.id) && !n.node.id.startsWith(MORE)).flatMap((n) => {
     const rnd = seeded(`${n.node.id}s`), f = fam.get(n.node.id)!, ox = f.unions.length ? f.unions[f.unions.length - 1].knot : f.P;
     return [-1, 0, 1].map((dir, i) => {
       const ang = -Math.PI / 2 + dir * (0.55 + rnd() * 0.3), len = 30 + rnd() * 14;
@@ -200,6 +202,44 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
           {couple.kids > 0 && <text x={couple.knot} y={couple.y + 38} textAnchor="middle" fill="var(--muted)" fontSize={9} fontWeight={600}>{nKids(couple.kids)}</text>}
         </g>
       )}
+      {/* Ramurile strânse: „+N” deasupra omului desface ramura lui; „−” o strânge la loc. */}
+      {/* Frații strânși ai cuiva de pe linie: o frunză „+N frați” în rândul lor; „−” la părinte îi strânge la loc. */}
+      {nodes.filter((n) => n.node.id.startsWith(MORE)).map((n) => {
+        const id = n.node.id, k = hidden.get(id) ?? 0, x = fam.get(id)!.P, label = t("showSiblings", { count: k });
+        return (
+          <g key={id} className="sector" tabIndex={0} role="button" aria-label={label} aria-expanded={false}
+            onClick={() => onToggle(id)} onKeyDown={keyAct(() => onToggle(id))} style={{ cursor: "pointer" }}>
+            <title>{label}</title>
+            <path d={leafPath(x, n.y, 92, 34)} fill="var(--surface)" stroke="var(--accent)" strokeWidth={1.4} strokeDasharray="5 3" />
+            <text x={x} y={n.y - 1} textAnchor="middle" fill="var(--accent)" fontSize={13} fontWeight={700}>+{k}</text>
+            <text x={x} y={n.y + 11} textAnchor="middle" fill="var(--muted)" fontSize={9}>{t("siblingsShort", { count: k })}</text>
+          </g>
+        );
+      })}
+      {nodes.filter((n) => n.trunk && open.has(MORE + n.node.id)).map((n) => {
+        const x = fam.get(n.node.id)!.P, y = n.y - 40, label = t("hideSiblings");
+        return (
+          <g key={`less${n.node.id}`} tabIndex={0} role="button" aria-label={label} aria-expanded onClick={() => onToggle(MORE + n.node.id)}
+            onKeyDown={keyAct(() => onToggle(MORE + n.node.id))} style={{ cursor: "pointer" }}>
+            <title>{label}</title>
+            <rect x={x - 11} y={y - 9} width={22} height={18} rx={9} fill="var(--surface)" stroke="var(--muted)" strokeWidth={1.2} />
+            <text x={x} y={y + 4} textAnchor="middle" fontSize={11} fontWeight={700} fill="var(--muted)">−</text>
+          </g>
+        );
+      })}
+      {nodes.filter((n) => !n.trunk && !n.node.id.startsWith(MORE) && (hidden.has(n.node.id) || (open.has(n.node.id) && n.node.children.length))).map((n) => {
+        const id = n.node.id, k = hidden.get(id), x = fam.get(id)!.P, y = n.y - 40, w = k ? 16 + String(k).length * 7 : 22;
+        const label = k ? t("showBranch", { count: k }) : t("hideBranch");
+        return (
+          <g key={`fold${id}`} className="fold-pill" tabIndex={0} role="button" aria-label={label} aria-expanded={!k}
+            onClick={() => onToggle(id)} onKeyDown={keyAct(() => onToggle(id))} style={{ cursor: "pointer" }}>
+            <title>{label}</title>
+            <line x1={x} y1={y + 9} x2={x} y2={n.y - 18} stroke={k ? "var(--accent)" : "var(--muted)"} strokeWidth={1.2} />
+            <rect x={x - w / 2} y={y - 9} width={w} height={18} rx={9} fill={k ? "var(--accent)" : "var(--surface)"} stroke={k ? "var(--accent)" : "var(--muted)"} strokeWidth={1.2} />
+            <text x={x} y={y + 4} textAnchor="middle" fontSize={11} fontWeight={700} fill={k ? "var(--on-accent, #fff)" : "var(--muted)"}>{k ? `+${k}` : "−"}</text>
+          </g>
+        );
+      })}
       {bases.map((b) => (
         <text key={`l${b.root}`} x={b.x} y={baseY + 36} textAnchor="middle" fill="var(--muted)" fontSize={11} style={{ fontFamily: "var(--display)" }}>{label(b.root)}</text>
       ))}
@@ -208,11 +248,22 @@ function TreeArt({ scene, people, selectedId, egoPath, onSelectPerson, onCenter,
 }
 
 /** Copacul neamului: trunchiul e linia de la cel mai vechi la cel mai tânăr; fiecare familie e o ramură, din ea ramuri mai subțiri și lăstari. */
-export function LineageTree(props: Props) {
+/** Ce ramuri sunt desfăcute de mână; `all` = toate (fără nimic strâns). */
+function useFolds(all: boolean) {
+  const [open, setOpen] = useState<Set<string>>(() => new Set());
+  const toggle = (id: string) => setOpen((o) => { const n = new Set(o); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  return { open, toggle, all };
+}
+
+type FoldProps = { allBranches?: boolean };
+
+export function LineageTree({ allBranches = false, ...props }: Props & FoldProps) {
   const t = useTranslations("Charts");
   const { root, people, egoPath } = props;
-  const scene = layoutSingle(root, (id) => !!people[id], egoPath);
-  return <TreeArt {...props} scene={scene} ariaLabel={t("treeLabel")}
+  const { open, toggle, all } = useFolds(allBranches);
+  const folded = useMemo(() => (all ? { root, hidden: new Map<string, number>() } : fold(root, egoPath, open)), [all, root, egoPath, open]);
+  const scene = layoutSingle(folded.root, (id) => !!people[id], egoPath, !all);
+  return <TreeArt {...props} scene={scene} hidden={folded.hidden} open={all ? new Set() : open} onToggle={toggle} ariaLabel={t("treeLabel")}
     label={(id) => (people[id] ? t("treeRoot", { surname: people[id].surname, name: people[id].name }) : "")} />;
 }
 
@@ -220,11 +271,13 @@ export function LineageTree(props: Props) {
  * Copacul cu două rădăcini: neamul tatălui în stânga, neamul mamei în dreapta. Cele două trunchiuri se apleacă unul spre altul
  * și se unesc în căsătoria părinților; de acolo crește o singură coroană, cu copiii lor și urmașii acestora.
  */
-export function TwinTree({ parts, ...props }: Omit<Props, "root"> & { parts: TwinParts }) {
+export function TwinTree({ parts, allBranches = false, ...props }: Omit<Props, "root"> & FoldProps & { parts: TwinParts }) {
   const t = useTranslations("Charts");
   const { people, egoPath } = props;
-  const scene = layoutTwin(parts, (id) => !!people[id], egoPath);
-  return <TreeArt {...props} scene={scene} ariaLabel={t("twinLabel")}
+  const { open, toggle, all } = useFolds(allBranches);
+  const folded = useMemo(() => (all ? { parts, hidden: new Map<string, number>() } : foldTwin(parts, egoPath, open)), [all, parts, egoPath, open]);
+  const scene = layoutTwin(folded.parts, (id) => !!people[id], egoPath, !all);
+  return <TreeArt {...props} scene={scene} hidden={folded.hidden} open={all ? new Set() : open} onToggle={toggle} ariaLabel={t("twinLabel")}
     label={(id) => { const p = people[id], sur = p?.birthSurname?.trim() || p?.surname; return p ? (sur ? t("familyOf", { surname: sur }) : t("familyOfName", { name: p.name })) : ""; }} />;
 }
 
