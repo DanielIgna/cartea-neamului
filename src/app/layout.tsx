@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const usage = me && !isDemo(me.email) ? await consentState(db, me.id, "usage").catch(() => null) : null;
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
-  const [messages, t, suggest] = await Promise.all([getMessages(locale), getT("Layout"), suggestedLocale()]);
+  const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
     <html lang={locale} data-theme={theme === "auto" ? undefined : theme}>
@@ -85,6 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Link href="/confidentialitate">{t("privacy")}</Link>
               <Link href="/termeni">{t("terms")}</Link>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
+              <Link href="/parteneri">{tp("menu")}</Link>
             </footer>
           </div>
         </IntlClient>

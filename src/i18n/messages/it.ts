@@ -3,6 +3,7 @@ import { itArbore } from "./arbore/it";
 import { itAmintiri } from "./amintiri/it";
 import { itVremuri } from "./vremuri/it";
 import { itCarte } from "./carte/it";
+import { itParteneri } from "./parteneri/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -292,4 +293,5 @@ export const it: Catalog = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...itVremuri,
   ...itCarte,
+  ...itParteneri,
 };

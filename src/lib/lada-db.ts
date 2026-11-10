@@ -3,6 +3,7 @@ import type { Db } from "@/db";
 import { document, documentLink, memory, memoryMention, memoryQuestion, memoryReply, person, relationship, tree, user } from "@/db/schema";
 import { buildGraph, type Graph } from "./kinship";
 import { canSee, type Viewer, type Visibility } from "./lada";
+import { canSeeHouse, housesWithPhoto } from "./old-house";
 
 /** Cine a scris: numele din fișa lui revendicată în arbore (sau numele contului), cu legătură spre profil când are fișă. */
 export type Author = { name: string; personId: string | null };
@@ -183,6 +184,18 @@ export async function memoryMediaIds(db: Db, treeId: string) {
 export async function canOpenDocument(db: Db, docId: string, treeId: string, uploadedBy: string | null, userId: string) {
   const uses = await db.select().from(memory).where(and(eq(memory.treeId, treeId),
     or(eq(memory.photoDocumentId, docId), eq(memory.audioDocumentId, docId), eq(memory.consentDocumentId, docId))));
+  // Pozele de la casa bătrânească: le deschide doar cine vede casa (aceleași reguli ca la amintiri).
+  const houses = await housesWithPhoto(db, treeId, docId);
+  if (houses.length) {
+    const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, treeId), eq(person.claimedByUserId, userId))).limit(1);
+    const viewer = { userId, personId: mine?.id ?? null };
+    const [t] = await db.select({ degree: tree.chatMaxDegree }).from(tree).where(eq(tree.id, treeId));
+    const people = await db.select({ id: person.id, sex: person.sex, claimedBy: person.claimedByUserId }).from(person).where(eq(person.treeId, treeId));
+    const rels = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
+    const g = buildGraph(people, rels);
+    for (const h of houses) if (canSeeHouse(h, viewer, g, t?.degree ?? 4, people.find((p) => p.id === h.personId)?.claimedBy ?? null)) return true;
+    if (!uses.length) return false;
+  }
   if (!uses.length) {
     if (uploadedBy === userId) return true;
     const [link] = await db.select({ id: documentLink.documentId }).from(documentLink).where(eq(documentLink.documentId, docId)).limit(1);

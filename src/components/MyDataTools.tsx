@@ -3,6 +3,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { deleteMyAccount, withdrawFaithConsent } from "@/app/cont-actions";
 import { answerUsage } from "@/app/folosire-actions";
+import { setPartnerBenefits } from "@/app/parteneri-actions";
 import type { DeletionPlan } from "@/lib/account";
 import { de, persoane } from "@/lib/ro-words";
 
@@ -59,6 +60,32 @@ export function UsageToggle({ granted, demo }: { granted: boolean; demo: boolean
 }
 
 /**
+ * Comutatorul „Beneficii de la parteneri” (PropManage): un clic pornește, un clic oprește. Oprit, adresa iese pe loc din lista
+ * partenerului. Contul de probă nu-și poate da acordul.
+ */
+export function PartnerToggle({ granted, demo }: { granted: boolean; demo: boolean }) {
+  const [pending, start] = useTransition();
+  const [msg, setMsg] = useState<string | null>(null);
+  const router = useRouter();
+  if (demo) return <p className="muted">Contul de probă e folosit de mai mulți oameni, așa că nu primește beneficii de la parteneri.</p>;
+  return (
+    <div className="actions" style={{ marginTop: 6, alignItems: "center" }}>
+      <button type="button" role="switch" aria-checked={granted} className={`switch${granted ? " on" : ""}`} disabled={pending}
+        onClick={() => start(async () => {
+          const r = await setPartnerBenefits(!granted);
+          if (r.error) return setMsg(r.error);
+          setMsg(granted ? "Am retras acordul. Adresa ta nu mai ajunge la PropManage." : "Gata, ți-ai dat acordul. Mulțumim!");
+          router.refresh();
+        })}>
+        <span className="switch-knob" aria-hidden />
+        <span>Beneficii de la parteneri</span>
+      </button>
+      {msg && <span role="status" className="muted">{msg}</span>}
+    </div>
+  );
+}
+
+/**
  * Ștergerea contului: întâi arată ce pleacă și ce rămâne (arbore cu arbore), apoi cere adresa de email ca semn că omul știe
  * ce face. Butonul se aprinde doar când adresa se potrivește.
  */
@@ -82,7 +109,7 @@ export function AccountDelete({ plan, email, demo }: { plan: DeletionPlan; email
         {plan.memories > 0 && <li>{many(plan.memories, "amintirea din lada ta", "amintiri din lada ta")}, cu glasul și pozele puse la ele{plan.faith ? `, inclusiv ${plan.faith === 1 ? "răspunsul" : `cele ${de(plan.faith)} răspunsuri`} despre credință` : ""};</li>}
         {plan.replies > 0 && <li>{many(plan.replies, "rândul scris", "rânduri scrise")} de tine la „Și eu îmi amintesc”;</li>}
         {plan.messages > 0 && <li>{many(plan.messages, "mesajul", "mesaje")} din „Mesaje”, și pentru cei cu care ai vorbit;</li>}
-        <li>întrebările tale încă fără răspuns, cererile și acordurile tale;</li>
+        <li>întrebările tale încă fără răspuns, casele bătrânești scrise de tine, cererile și acordurile tale (și cel pentru parteneri);</li>
         {gone.map((t) => (
           <li key={t.id}>arborele <b>„{t.name}”</b>, care n-are alți membri, cu {persoane(t.people)} și cu pozele și actele lor. Dacă vrei să rămână, invită înainte pe cineva în el sau descarcă-l ca GEDCOM, din pagina lui.</li>
         ))}

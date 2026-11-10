@@ -3,6 +3,7 @@ import { enUSArbore } from "./arbore/en-US";
 import { enUSAmintiri } from "./amintiri/en-US";
 import { enUSVremuri } from "./vremuri/en-US";
 import { enUSCarte } from "./carte/en-US";
+import { enUSParteneri } from "./parteneri/en-US";
 
 /**
  * US English: only what differs from British English (en-GB.ts), which fills in the rest.
@@ -35,4 +36,5 @@ export const enUS: DeepPartial<Catalog> = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...enUSVremuri,
   ...enUSCarte,
+  ...enUSParteneri,
 };

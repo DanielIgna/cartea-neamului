@@ -3,6 +3,7 @@ import { deArbore } from "./arbore/de";
 import { deAmintiri } from "./amintiri/de";
 import { deVremuri } from "./vremuri/de";
 import { deCarte } from "./carte/de";
+import { deParteneri } from "./parteneri/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -292,4 +293,5 @@ export const de: Catalog = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...deVremuri,
   ...deCarte,
+  ...deParteneri,
 };
