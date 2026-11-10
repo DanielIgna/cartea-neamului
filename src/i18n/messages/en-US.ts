@@ -3,6 +3,7 @@ import { enUSArbore } from "./arbore/en-US";
 import { enUSAmintiri } from "./amintiri/en-US";
 import { enUSVremuri } from "./vremuri/en-US";
 import { enUSCarte } from "./carte/en-US";
+import { enUSCalatorie } from "./calatorie/en-US";
 import { enUSParteneri } from "./parteneri/en-US";
 
 /**
@@ -36,5 +37,6 @@ export const enUS: DeepPartial<Catalog> = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...enUSVremuri,
   ...enUSCarte,
+  ...enUSCalatorie,
   ...enUSParteneri,
 };

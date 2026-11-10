@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createTranslator } from "use-intl/core";
-import { ERAS, EVENTS, eraOf, eventsFor, storyFor, regionOfCounty, ageWords, type Origin, type Story, type HistEvent } from "@/lib/vremuri";
+import { ERAS, EVENTS, eraOf, eventsFor, storyFor, regionOfCounty, type Origin, type Story, type HistEvent } from "@/lib/vremuri";
 import { resolvePlaces } from "@/lib/places";
 import { countyCode } from "@/lib/place-key";
 import { ro } from "@/i18n/messages/ro";
@@ -94,10 +94,11 @@ describe("povestea vremurilor", () => {
     expect(words.eras[eraOf(1989).id].name).toBe("Epoca Ceaușescu");
     expect(words.eras[eraOf(1990).id].name).toBe("Anii tranziției");
   });
-  it("vârsta în cuvinte", () => {
-    expect(ageWords(0, "M")).toBe("în anul nașterii");
-    expect(ageWords(3, "F")).toBe("copilă de 3 ani");
-    expect(ageWords(25, "M")).toBe("la 25 de ani");
+  it("vârsta în cuvinte", async () => {
+    const t = createTranslator({ locale: "ro", messages: await loadMessages("ro"), namespace: "Times" });
+    expect(t("ageBirthYear")).toBe("în anul nașterii");
+    expect(t("ageChild", { age: 3, sex: "F" })).toBe("copilă de 3 ani");
+    expect(t("ageAt", { age: 25 })).toBe("la 25 de ani");
   });
   it("satul găsit pe hartă dă județul, iar județul ținutul", async () => {
     const spots = await resolvePlaces([{ key: "huedin|RO", text: "Huedin", country: null, weight: 1 }]);

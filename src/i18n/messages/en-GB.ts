@@ -3,6 +3,7 @@ import { enGBArbore } from "./arbore/en-GB";
 import { enGBAmintiri } from "./amintiri/en-GB";
 import { enGBVremuri } from "./vremuri/en-GB";
 import { enGBCarte } from "./carte/en-GB";
+import { enGBCalatorie } from "./calatorie/en-GB";
 import { enGBParteneri } from "./parteneri/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
@@ -293,5 +294,6 @@ export const enGB: Catalog = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...enGBVremuri,
   ...enGBCarte,
+  ...enGBCalatorie,
   ...enGBParteneri,
 };

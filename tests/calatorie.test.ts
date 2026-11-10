@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { buildGraph, type Rel, type Sex } from "@/lib/kinship";
-import { journeyStops, journeyLegs, quizFor, lineUp, agoWords, yearsWords, type Person } from "@/lib/calatorie";
+import { createTranslator } from "use-intl/core";
+import { journeyStops, journeyLegs, quizFor, lineUp, type Person } from "@/lib/calatorie";
+import { loadMessages } from "@/i18n/messages";
+import { DEFAULT_WORDS } from "@/lib/cuvant-final-limbi";
+import { LOCALES } from "@/i18n/locales";
 import { eventsFor } from "@/lib/vremuri";
 import { parseWord, wordFor, DEFAULT_WORD } from "@/lib/cuvant-final";
 
@@ -88,13 +92,23 @@ describe("călătoria în timp", () => {
     expect(quizFor(avram, people.avram, evs, 2026)).toEqual(q);
   });
 
-  it("vorbe pentru ani", () => {
-    expect(agoWords(1930, 2026)).toBe("acum 96 de ani");
-    expect(agoWords(2020, 2026)).toBe("acum 6 ani");
-    expect(yearsWords(1)).toBe("un an");
-    expect(yearsWords(19)).toBe("19 ani");
-    expect(yearsWords(25)).toBe("25 de ani");
-    expect(yearsWords(101)).toBe("101 ani");
+  it("vorbe pentru ani", async () => {
+    const t = createTranslator({ locale: "ro", messages: await loadMessages("ro"), namespace: "Journey" });
+    expect(t("ago", { n: 96 })).toBe("acum 96 de ani");
+    expect(t("ago", { n: 6 })).toBe("acum 6 ani");
+    expect(t("ago", { n: 0 })).toBe("anul acesta");
+    expect(t("stop.age", { n: 1 })).toBe("un an");
+    expect(t("stop.age", { n: 19 })).toBe("19 ani");
+    expect(t("stop.age", { n: 25 })).toBe("25 de ani");
+    expect(t("stop.age", { n: 101 })).toBe("101 ani");
+    const de = createTranslator({ locale: "de", messages: await loadMessages("de"), namespace: "Journey" });
+    expect(de("ago", { n: 96 })).toBe("vor 96 Jahren");
+  });
+
+  it("legăturile se scriu în limba cititorului", () => {
+    const avram = journeyStops({ g, people, ego: "ioan", placeholder, now: 2026, locale: "en-GB" }).find((s) => s.id === "avram")!;
+    expect(avram.relation).toBe("father");
+    expect(avram.contemporaries.find((c) => c.id === "onita")?.relation).toBe("mother");
   });
 });
 
@@ -104,6 +118,14 @@ describe("cuvântul de la final", () => {
     expect(b.filter((x) => x.kind === "title").map((x) => x.text)).toContain("Spița lui Adam");
     const refs = b.flatMap((x) => (x.kind === "verse" ? [x.ref] : []));
     expect(refs).toEqual(expect.arrayContaining(["Geneza 5:1", "Matei 1:1", "Ioan 17:3", "Ioan 3:3", "2 Cronici 7:14"]));
+  });
+  it("textul de bază e tradus în fiecare limbă, cu aceleași părți și cu versetele cu trimiteri", () => {
+    const shape = (text: string) => parseWord(text).map((b) => b.kind);
+    for (const l of LOCALES) {
+      expect(shape(DEFAULT_WORDS[l])).toEqual(shape(DEFAULT_WORD));
+      expect(parseWord(DEFAULT_WORDS[l]).filter((b) => b.kind === "verse").every((b) => b.kind === "verse" && !!b.ref)).toBe(true);
+    }
+    expect(parseWord(DEFAULT_WORDS.de).flatMap((b) => (b.kind === "verse" ? [b.ref] : []))).toContain("1. Mose 5,1");
   });
   it("null = textul de bază, gol = ascuns, altfel textul proprietarului", () => {
     expect(wordFor(null)).toBe(DEFAULT_WORD);

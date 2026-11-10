@@ -12,6 +12,7 @@ import { roArbore } from "./arbore/ro";
 import { roAmintiri } from "./amintiri/ro";
 import { roVremuri } from "./vremuri/ro";
 import { roCarte } from "./carte/ro";
+import { roCalatorie } from "./calatorie/ro";
 import { roParteneri } from "./parteneri/ro";
 
 export const ro = {
@@ -304,6 +305,7 @@ export const ro = {
   ...roVremuri,
   // Cartea neamului de tipărit, în limba cărții, și alegerile ei (src/i18n/messages/carte/).
   ...roCarte,
+  ...roCalatorie,
   // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
   ...roParteneri,
 } as const;

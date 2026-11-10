@@ -3,6 +3,7 @@ import { nlArbore } from "./arbore/nl";
 import { nlAmintiri } from "./amintiri/nl";
 import { nlVremuri } from "./vremuri/nl";
 import { nlCarte } from "./carte/nl";
+import { nlCalatorie } from "./calatorie/nl";
 import { nlParteneri } from "./parteneri/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
@@ -293,5 +294,6 @@ export const nl: Catalog = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...nlVremuri,
   ...nlCarte,
+  ...nlCalatorie,
   ...nlParteneri,
 };

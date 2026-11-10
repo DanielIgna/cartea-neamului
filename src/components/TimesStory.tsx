@@ -16,10 +16,7 @@ export function originFor(id: string, graph: Graph, origins: Record<string, Orig
   return null;
 }
 
-export const TONE_LABEL: Record<Tone, string> = { bine: "an bun", greu: "an greu", schimbare: "cumpănă" };
 export const toneColor = (t: Tone) => (t === "bine" ? "var(--good)" : t === "greu" ? "var(--red)" : "var(--ochre)");
-
-export const eraYears = (s: Story) => (s.era.from === 0 ? `până la ${s.era.to + 1}` : s.era.to >= 2100 ? `din ${s.era.from}` : `${s.era.from}–${s.era.to}`);
 
 /** Fără diacritice și litere mari: „Maramureș” și „maramures” sunt același loc. */
 const plain = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().trim();
@@ -33,17 +30,9 @@ function sameAsRegion(place: string, name: string, o: Origin) {
   return p === plain(name) || p === o.region || (!!o.cc && p === plain(COUNTRY_NAMES[o.cc] ?? o.cc)) || (!!o.country && p === plain(o.country));
 }
 
-/** „S-a născut în 1932, în Transilvania (Huedin)” (pentru Călătoria în timp, încă în română). */
-export function bornLine(p: PersonView, s: Story, region: (o: Origin) => string) {
-  const o = s.origin, r = o ? region(o) : "";
-  const place = o ? (o.place && !o.guess && !sameAsRegion(o.place, r, o) ? `, în ${r} (${o.place})` : `, în ${r}`) : "";
-  return `S-a născut în ${p.approx ? "jurul anului " : ""}${s.year}${place}`;
-}
-
 /**
  * Cuvintele poveștii vremurilor în limba aleasă: epoca și viața de atunci, evenimentele, ținutul, felul anului,
  * anii epocii, nașterea cu ținutul ei și vârsta de atunci. Textele istorice vin din partea „Vremuri”.
- * (Călătoria în timp își scrie încă restul cuvintelor în română; trece la acestea în etapa 4 a traducerii.)
  */
 export function useTimesWords() {
   const t = useTranslations("Times"), tv = useTranslations("Vremuri"), locale = useLocale();

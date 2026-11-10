@@ -233,11 +233,3 @@ export function storyFor(p: { birthYear: number | null; deathYear: number | null
   return { year: y, era, life, before, lived, origin };
 }
 
-/** „la 12 ani”, „în anul nașterii”, „copil de 3 ani”. */
-export function ageWords(age: number, sex: "M" | "F" | "U", ongoing = false) {
-  if (ongoing) return "de când s-a născut";
-  if (age === 0) return "în anul nașterii";
-  const ani = age === 1 ? "un an" : age < 20 ? `${age} ani` : `${age} de ani`;
-  if (age < 7) return `copil${sex === "F" ? "ă" : ""} de ${ani}`;
-  return `la ${ani}`;
-}
