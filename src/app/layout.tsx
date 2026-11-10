@@ -83,11 +83,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="wrap">
             <header className="top">
               <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><span className="brand-name">Cartea Neamului</span></Link></div>
-              <div className="prefs">
+              <div className={me ? "prefs prefs-wide" : "prefs"}>
                 <ThemeSwitch initial={theme} />
                 <LanguagePicker remember={source === "account"} />
               </div>
-              {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminUser(me)} />}
+              {/* Pe telefon, cine e intrat în cont are tema și limba în meniul de lângă poză, ca antetul să încapă pe un rând. */}
+              {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminUser(me)}
+                prefs={<><ThemeSwitch initial={theme} /><LanguagePicker remember={source === "account"} /></>} />}
             </header>
             {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} close={ask.s("close")} />}
             {usage && !usage.at && <UsageNotice />}

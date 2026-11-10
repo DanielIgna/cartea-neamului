@@ -97,6 +97,23 @@ export default function TreeScreen(props: Props) {
   };
   const center = (id: string) => { setSel({ n: 1 }); go({ p: id }); };
   useEffect(() => setSel({ n: 1 }), [centerId]);
+  // Pe telefon fișa stă sub desen, departe: după ce atingi pe cineva, o bară jos îți arată pe cine ai ales și te duce la fișă.
+  // Bara dispare cât timp fișa e pe ecran (sau dacă o închizi); pe ecranele late (fișa e alături) n-o arătăm deloc (CSS).
+  const [barFor, setBarFor] = useState<string | null>(null);
+  const [panelSeen, setPanelSeen] = useState(false);
+  const lastSel = useRef(JSON.stringify(sel));
+  useEffect(() => {
+    const k = JSON.stringify(sel);
+    if (k !== lastSel.current) { lastSel.current = k; setBarFor(k); }
+  }, [sel]);
+  useEffect(() => {
+    const el = document.querySelector("aside.panel");
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(([e]) => setPanelSeen(e.isIntersecting), { rootMargin: "0px 0px -35% 0px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const toCard = () => document.querySelector("aside.panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
   const box = useRef<HTMLDivElement>(null);
   // Din ce ținut istoric e fiecare om (după satul nașterii), pentru povestea vremurilor. Se caută pe server, după ce se arată arborele.
   const [origins, setOrigins] = useState<Record<string, Origin> | null>(null);
@@ -316,6 +333,14 @@ export default function TreeScreen(props: Props) {
               {selectedId !== centerId && <button className="btn" onClick={() => center(selectedId)}>{t("putInCentre")}</button>}
             </div>
           )}
+          {!full && !panelSeen && barFor === JSON.stringify(sel) && selectedId && people[selectedId] && (
+            <div className="sel-bar" role="status">
+              <span className="sel-who"><b>{people[selectedId].name}</b> <span className="muted">{lifeDates(people[selectedId], locale)}</span></span>
+              <button className="btn primary" onClick={toCard}>{t("seeCard")}</button>
+              {selectedId !== centerId && <button className="btn" onClick={() => center(selectedId)}>{t("putInCentre")}</button>}
+              <button className="sel-x" onClick={() => setBarFor(null)} aria-label={t("hideBar")} title={t("hideBar")}>✕</button>
+            </div>
+          )}
           <div className="legend">
             {view === "360" ? (
               <>
@@ -355,7 +380,7 @@ export default function TreeScreen(props: Props) {
                 <span><i className="sw" style={{ border: "1.5px dashed var(--muted)" }} />{t("legendEmpty")}</span>
               </>
             )}
-            {view !== "360" && <span>{t("legendHowTo")}</span>}
+            {view !== "360" && <><span className="only-mouse">{t("legendHowTo")}</span><span className="only-touch">{t("legendHowToTouch")}</span></>}
           </div>
           {/* O spiță care se oprește la părinte, sau îi lipsește tatăl: de obicei părinții lui au fost legați doar de frații lui, ori e trecut de două ori. */}
           {treeLike && cut.map(({ who, x, stops, found }) => {

@@ -51,6 +51,8 @@ export const roArbore = {
     legendFanDownHelp: "Fiecare inel e o generație, iar fiecare felie e cât urmașii acelei ramuri.",
     legendEmpty: "Loc liber, de completat",
     legendHowTo: "Click pentru fișă, dublu click pune persoana în centru. Mărește sau micșorează cu + și −, cu Ctrl + rotița mouse-ului sau cu două degete pe telefon; trage de desen ca să te miști prin el.",
+    legendHowToTouch: "Atinge o persoană ca să vezi cine e; atinge de două ori ca s-o pui în centru. Pe desen te miști și mărești cu două degete, iar pe tot ecranul (⛶) și cu un deget.",
+    hideBar: "Ascunde",
     cutStops: "{name} nu are încă părinți legați în arbore, așa că spița {side, select, father {tatălui} mother {mamei} other {mamei}} se oprește la {sex, select, M {el} F {ea} other {el}}.",
     cutNoFather: "Tatăl lui {name} nu e legat de {sex, select, M {el} F {ea} other {el}} în arbore, așa că spița {side, select, father {tatălui} mother {mamei} other {mamei}} se oprește la {sex, select, M {el} F {ea} other {el}}.",
     cutFound: "{stops, select, no {Pare să fie deja în arbore} yes {Părinții {sex, select, M {lui} F {ei} other {lui}} par să fie deja în arbore} other {Pare să fie deja în arbore}}, la frații {sex, select, M {lui} F {ei} other {lui}} sau într-o a doua fișă a {sex, select, M {lui} F {ei} other {lui}}: <open>deschide fișa {sex, select, M {lui} F {ei} other {lui}}</open> și {sex, select, M {îl} F {o} other {îl}} legi cu un clic.",
@@ -668,6 +670,7 @@ export const roArbore = {
     title: "Viețile familiei pe fundalul istoriei",
     back: "Înapoi la arbore",
     aria: "Cronologie",
+    eventsTitle: "Evenimentele din fundal",
     events: {
       rev1848: "Revoluția de la 1848",
       dualism: "Dualismul austro-ungar",

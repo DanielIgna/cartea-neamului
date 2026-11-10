@@ -48,6 +48,8 @@ export const esArbore: ArboreCatalog = {
     legendFanDownHelp: "Cada anillo es una generación, y cada porción es tan ancha como los descendientes de esa rama.",
     legendEmpty: "Lugar libre, por completar",
     legendHowTo: "Un clic abre la ficha; con doble clic, la persona pasa al centro. Acerca o aleja con + y −, con Ctrl y la rueda del ratón o con dos dedos en el móvil; arrastra el dibujo para moverte por él.",
+    legendHowToTouch: "Toca a una persona para ver quién es; toca dos veces para ponerla en el centro. Mueve y amplía el dibujo con dos dedos, o con uno en pantalla completa (⛶).",
+    hideBar: "Ocultar",
     cutStops: "{name} todavía no tiene padres enlazados en el árbol, así que el linaje {side, select, father {del padre} mother {de la madre} other {de la madre}} se detiene en {sex, select, F {ella} other {él}}.",
     cutNoFather: "El padre de {name} no está enlazado con {sex, select, F {ella} other {él}} en el árbol, así que el linaje {side, select, father {del padre} mother {de la madre} other {de la madre}} se detiene en {sex, select, F {ella} other {él}}.",
     cutFound: "{stops, select, yes {Sus padres parecen estar ya en el árbol} other {Su padre parece estar ya en el árbol}}, con sus hermanos o en una segunda ficha suya: <open>abre su ficha</open> y {sex, select, F {enlázala} other {enlázalo}} con un clic.",
@@ -661,6 +663,7 @@ export const esArbore: ArboreCatalog = {
     title: "Las vidas de la familia sobre el fondo de la historia",
     back: "Volver al árbol",
     aria: "Cronología",
+    eventsTitle: "Acontecimientos de fondo",
     events: {
       rev1848: "Revolución de 1848",
       dualism: "Compromiso austrohúngaro",

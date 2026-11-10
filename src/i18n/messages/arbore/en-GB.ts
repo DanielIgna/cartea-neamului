@@ -48,6 +48,8 @@ export const enGBArbore: ArboreCatalog = {
     legendFanDownHelp: "Each ring is a generation, and each slice is as wide as the descendants of that branch.",
     legendEmpty: "Empty place, still to be filled in",
     legendHowTo: "Click for the profile; double-click to put the person in the centre. Zoom in or out with + and −, with Ctrl and the mouse wheel, or with two fingers on a phone; drag the chart to move around it.",
+    legendHowToTouch: "Tap a person to see who they are; tap twice to put them in the centre. Move and zoom the chart with two fingers, or with one finger in full screen (⛶).",
+    hideBar: "Hide",
     cutStops: "{name} has no parents linked in the tree yet, so the {side, select, father {father’s} mother {mother’s} other {mother’s}} line stops at {sex, select, M {him} F {her} other {them}}.",
     cutNoFather: "{name}’s father is not linked to {sex, select, M {him} F {her} other {them}} in the tree, so the {side, select, father {father’s} mother {mother’s} other {mother’s}} line stops at {sex, select, M {him} F {her} other {them}}.",
     cutFound: "{stops, select, yes {{sex, select, M {His} F {Her} other {Their}} parents seem to be in the tree already} other {The father seems to be in the tree already}}, with {sex, select, M {his} F {her} other {their}} brothers and sisters or on a second profile made for {sex, select, M {him} F {her} other {them}}: <open>open {sex, select, M {his} F {her} other {their}} profile</open> and link {sex, select, M {him} F {her} other {them}} with one click.",
@@ -661,6 +663,7 @@ export const enGBArbore: ArboreCatalog = {
     title: "The family’s lives against the backdrop of history",
     back: "Back to the tree",
     aria: "Timeline",
+    eventsTitle: "Events in the background",
     events: {
       rev1848: "Revolution of 1848",
       dualism: "Austro-Hungarian Compromise",

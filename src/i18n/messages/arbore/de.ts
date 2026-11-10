@@ -48,6 +48,8 @@ export const deArbore: ArboreCatalog = {
     legendFanDownHelp: "Jeder Ring ist eine Generation, und jedes Stück ist so breit wie die Nachkommen dieses Zweigs.",
     legendEmpty: "Freier Platz, noch auszufüllen",
     legendHowTo: "Ein Klick öffnet das Profil, ein Doppelklick setzt die Person in die Mitte. Vergrößere oder verkleinere mit + und −, mit Strg und dem Mausrad oder mit zwei Fingern am Handy; zieh an der Zeichnung, um dich darin zu bewegen.",
+    legendHowToTouch: "Tippe auf eine Person, um zu sehen, wer sie ist; tippe zweimal, um sie in die Mitte zu setzen. Mit zwei Fingern bewegst und vergrößerst du die Zeichnung, im Vollbild (⛶) auch mit einem Finger.",
+    hideBar: "Ausblenden",
     cutStops: "{name} hat im Stammbaum noch keine Eltern, deshalb endet die Stammlinie {side, select, father {des Vaters} mother {der Mutter} other {der Mutter}} bei {sex, select, M {ihm} F {ihr} other {ihm}}.",
     cutNoFather: "Der Vater von {name} ist im Stammbaum nicht mit {sex, select, M {ihm} F {ihr} other {ihm}} verbunden, deshalb endet die Stammlinie {side, select, father {des Vaters} mother {der Mutter} other {der Mutter}} bei {sex, select, M {ihm} F {ihr} other {ihm}}.",
     cutFound: "{stops, select, yes {{sex, select, M {Seine} F {Ihre} other {Seine}} Eltern scheinen schon im Stammbaum zu sein} other {Der Vater scheint schon im Stammbaum zu sein}}, bei {sex, select, M {seinen} F {ihren} other {seinen}} Geschwistern oder in einem zweiten Profil von {sex, select, M {ihm} F {ihr} other {ihm}}: <open>öffne {sex, select, M {sein} F {ihr} other {sein}} Profil</open> und verbinde {sex, select, M {ihn} F {sie} other {ihn}} mit einem Klick.",
@@ -661,6 +663,7 @@ export const deArbore: ArboreCatalog = {
     title: "Das Leben der Familie vor dem Hintergrund der Geschichte",
     back: "Zurück zum Stammbaum",
     aria: "Zeitleiste",
+    eventsTitle: "Ereignisse im Hintergrund",
     events: {
       rev1848: "Revolution von 1848",
       dualism: "Österreichisch-Ungarischer Ausgleich",

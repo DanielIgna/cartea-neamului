@@ -801,3 +801,80 @@ body:has(.grand){overflow:hidden}
 .house-form fieldset.vis legend{font-size:14px;margin-bottom:4px;padding:0}
 .form .partner-optin{display:flex;flex-direction:row;gap:10px;align-items:flex-start;font-weight:400}
 .form .partner-optin input{width:auto;flex:none;margin-top:4px}
+
+/* ---------- Telefon: antet, meniu, atingeri, arbore, cronologie ---------- */
+/* Meniul contului: pe calculator butoanele pe un rând; pe telefon poza + „☰”, care deschide lista cu rânduri mari. */
+.um-inline{display:flex;gap:10px;align-items:center}
+.um-mobile{display:none;position:relative}
+.um-mobile > summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 6px 4px 4px;border:1px solid var(--line);border-radius:999px;background:var(--surface);cursor:pointer}
+.um-mobile > summary::-webkit-details-marker{display:none}
+.um-mobile[open] > summary{border-color:var(--accent)}
+.um-face{position:relative;display:inline-flex}
+.um-badge{position:absolute;top:-6px;right:-10px;margin:0;font-size:12px;line-height:18px}
+.um-burger{display:inline-grid;gap:4px;padding:0 6px}
+.um-burger i{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink)}
+.um-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:1200;width:min(330px, calc(100vw - 24px));background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 10px 30px #0003;padding:12px;display:grid;gap:10px}
+.um-who{display:flex;align-items:center;gap:10px;font-size:17px}
+.um-links{display:grid;border-top:1px solid var(--line)}
+.um-links a{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 4px;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:17px}
+.um-prefs{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.um-out{width:100%;text-align:center}
+.only-touch{display:none}
+@media (pointer:coarse){.only-touch{display:inline}.only-mouse{display:none}}
+.zt-label{font-size:13px;margin-left:6px}
+/* Persoana aleasă în desen, pe telefon: o bară jos, cu drum spre fișă (fișa stă mai jos, sub desen). */
+.sel-bar{display:none}
+@media (max-width:900px){
+  .sel-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;position:fixed;z-index:1100;left:8px;right:8px;bottom:max(8px, env(safe-area-inset-bottom, 0px));
+    background:var(--surface);border:1px solid var(--accent);border-radius:14px;padding:10px 44px 10px 12px;box-shadow:0 8px 28px #0004}
+  .sel-who{flex:1 1 100%;min-width:0;font-size:15px}
+  .sel-who b{font-family:var(--display);font-size:17px}
+  .sel-x{position:absolute;top:6px;right:6px;width:36px;height:36px;border:0;border-radius:50%;background:var(--surface-2);color:var(--muted);font-size:16px}
+}
+/* Cronologia: pe ecran lat desenul, pe telefon lista. */
+.tl-list{display:none}
+@media (max-width:640px){
+  .tl-chart{display:none}
+  .tl-list{display:block}
+  .tl-list ol{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .tl-name{display:flex;justify-content:space-between;gap:10px;align-items:baseline;font-size:15px}
+  .tl-name small{color:var(--muted);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .tl-track{position:relative;height:12px;margin-top:3px;border-radius:6px;background:var(--surface-2)}
+  .tl-ev{position:absolute;top:0;bottom:0;background:var(--event)}
+  .tl-bar{position:absolute;top:1px;bottom:1px;border-radius:6px;border:1px solid var(--line)}
+  .tl-bar.living{border:1.5px solid var(--accent)}
+  .tl-axis{position:sticky;top:0;z-index:1;height:24px;margin:4px 0 8px;background:var(--surface);border-bottom:1px solid var(--line)}
+  .tl-axis span{position:absolute;transform:translateX(-50%);font-size:12px;color:var(--muted);white-space:nowrap}
+  .tl-events{margin:4px 0 10px;font-size:14px}
+  .tl-events summary{cursor:pointer;color:var(--accent);min-height:36px;display:flex;align-items:center}
+  .tl-events ul{margin:4px 0 0;padding-left:18px;display:grid;gap:3px}
+}
+/* Antetul pe telefon: numele site-ului și meniul pe un singur rând. */
+@media (max-width:640px){
+  body{padding-left:max(12px, env(safe-area-inset-left, 0px));padding-right:max(12px, env(safe-area-inset-right, 0px))}
+  header.top{flex-wrap:nowrap;gap:10px;padding-block:10px}
+  .brand{min-width:0}
+  .brand .brand-name{font-size:22px;white-space:nowrap}
+  .prefs.prefs-wide,.um-inline{display:none}
+  .um-mobile{display:block}
+  .card{padding:14px}
+  .toolbar .title{font-size:19px;flex:1 1 100%}
+  .panel h2{font-size:22px}
+  /* iPhone mărește pagina când atingi un câmp cu literele sub 16px; așa rămâne pe loc. */
+  input,select,textarea,.form input,.form select,.form textarea,.linkbox input,.lang-pick select,.gen-select select{font-size:16px}
+}
+@media (max-width:360px){.brand .brand-name{font-size:19px}}
+/* Pe ecranul tactil, butoanele și legăturile mici sunt mai ușor de nimerit cu degetul. */
+@media (pointer:coarse){
+  .btn{min-height:44px;padding:9px 14px;display:inline-flex;align-items:center;justify-content:center}
+  .seg button,.seg .seg-link{min-height:40px}
+  .theme-switch button{padding:6px 11px}
+  .lang-pick{min-height:40px}
+  .rel button,.chips a.chip{padding:6px 12px;font-size:14px}
+  .gen-select select{min-height:40px}
+  .zoom-tools button{min-width:40px;height:38px}
+  .linklike{padding:6px 0}
+  .kin-card .linkish,.partner-card .linkish,.house-thumb .linkish{font-size:15px;padding:6px 0;min-height:32px}
+  .form input,.form select{min-height:44px}
+}

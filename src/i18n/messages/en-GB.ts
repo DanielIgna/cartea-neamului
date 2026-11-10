@@ -38,6 +38,8 @@ export const enGB: Catalog = {
     messages: "Messages",
     account: "Your account and your data",
     signOut: "Sign out",
+    menu: "Menu",
+    home: "Home",
   },
   UsageNotice: {
     label: "How you use the site",

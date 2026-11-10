@@ -4,6 +4,10 @@ import { flushSync } from "react-dom";
 import { useTranslations } from "use-intl";
 
 const MIN = 0.1, MAX = 4, STEP = 1.25;
+/** Sub mărimea asta numele din desene nu se mai citesc pe un telefon. */
+const READABLE = 0.8;
+/** Ecran tactil fără mouse (telefon, tabletă). */
+const touchy = () => typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches;
 const clamp = (z: number) => Math.min(MAX, Math.max(MIN, z));
 
 /**
@@ -50,14 +54,17 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
     el.scrollTop += after.top + uy * z1 - ey;
   };
   /** Tot desenul pe ecran, cât încape și pe lățime, și pe înălțime. */
-  const fit = () => {
+  const fit = (auto = false) => {
     const el = box.current, n = natural();
     if (!el || !n) return;
     const h = full ? el.clientHeight : window.innerHeight * 0.78;
     natW.current = n.w;
-    flushSync(() => setZoom(clamp(Math.min((el.clientWidth - 4) / n.w, (h - 4) / n.h))));
+    const whole = Math.min((el.clientWidth - 4) / n.w, (h - 4) / n.h);
+    // Pe telefon, pe tot ecranul, „tot desenul” ar face numele prea mici: pornim de la o mărime la care se citesc
+    // și așezăm mijlocul desenului pe ecran; de acolo te miști cu un deget. Butonul „Tot” arată tot desenul oricum.
+    flushSync(() => setZoom(clamp(auto && full && touchy() ? Math.max(whole, READABLE) : whole)));
     el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
-    el.scrollTop = 0;
+    el.scrollTop = auto && full && touchy() ? Math.max(0, (el.scrollHeight - el.clientHeight) / 2) : 0;
   };
   const fns = useRef({ zoomTo, current, fit });
   fns.current = { zoomTo, current, fit };
@@ -66,13 +73,17 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
   // (dar nu sub jumătate, ca numele să rămână de citit); altfel rămâne cum e. Pe tot ecranul, tot desenul.
   useLayoutEffect(() => {
     if (full) {
-      const f = requestAnimationFrame(() => fns.current.fit());
+      const f = requestAnimationFrame(() => fns.current.fit(true));
       return () => cancelAnimationFrame(f);
     }
     const el = box.current, n = natural();
     if (el && n && n.w > el.clientWidth + 4) {
+      // Pe telefon pornim de la o mărime la care numele se citesc, cu mijlocul desenului pe ecran (acolo e persoana din centru).
+      const z = clamp(Math.max(touchy() ? READABLE : 0.5, (el.clientWidth - 4) / n.w));
       natW.current = n.w;
-      setZoom(clamp(Math.max(0.5, (el.clientWidth - 4) / n.w)));
+      setZoom(z);
+      const f = requestAnimationFrame(() => { el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2; });
+      return () => cancelAnimationFrame(f);
     } else setZoom(null);
   }, [resetKey, full]);
 
@@ -216,13 +227,14 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
         <button type="button" onClick={() => zoomTo(current() / STEP)} aria-label={t("zoomOut")} title={t("zoomOut")}>−</button>
         {zoomed && <span className="zt-pct" aria-live="polite">{Math.round(zoom * 100)}%</span>}
         <button type="button" onClick={() => zoomTo(current() * STEP)} aria-label={t("zoomIn")} title={t("zoomIn")}>+</button>
-        <button type="button" className="zt-text" onClick={fit} title={t("fitTitle")}>{t("fit")}</button>
+        <button type="button" className="zt-text" onClick={() => fit()} title={t("fitTitle")}>{t("fit")}</button>
         <button type="button" className="zt-text" onClick={() => onFull(!full)} aria-pressed={full} title={full ? t("closeEsc") : t("fullScreen")}>
           {full ? t("close") : (
             <svg width="16" height="16" viewBox="0 0 16 16" aria-label={t("fullScreen")} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
               <path d="M1.5 5.5v-4h4M10.5 1.5h4v4M14.5 10.5v4h-4M5.5 14.5h-4v-4" />
             </svg>
           )}
+          {!full && <span className="only-touch zt-label">{t("fullScreen")}</span>}
         </button>
       </div>
       <div ref={box} className="chartbox zoomable">

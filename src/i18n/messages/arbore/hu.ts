@@ -51,6 +51,8 @@ export const huArbore: ArboreCatalog = {
     legendFanDownHelp: "Minden gyűrű egy nemzedék, és minden szelet akkora, amekkora annak az ágnak a leszármazottsága.",
     legendEmpty: "Üres hely, kitöltésre vár",
     legendHowTo: "Kattintásra megnyílik az adatlap, dupla kattintásra a személy középre kerül. Nagyíts vagy kicsinyíts a + és − gombbal, Ctrl + egérgörgővel vagy két ujjal a telefonon; húzd a rajzot, hogy mozogj benne.",
+    legendHowToTouch: "Érints meg egy személyt, hogy lásd, ki az; érintsd meg kétszer, hogy középre kerüljön. A rajzot két ujjal mozgatod és nagyítod, teljes képernyőn (⛶) egy ujjal is.",
+    hideBar: "Elrejtés",
     cutStops: "{name} szülei még nincsenek összekötve a családfán, ezért az {side, select, father {apai} mother {anyai} other {anyai}} ág itt véget ér.",
     cutNoFather: "{name} apja nincs összekötve vele a családfán, ezért az {side, select, father {apai} mother {anyai} other {anyai}} ág itt véget ér.",
     cutFound: "{stops, select, yes {Úgy tűnik, a szülei már szerepelnek a családfán} other {Úgy tűnik, az apja már szerepel a családfán}}, a testvérei mellett vagy egy második adatlapján: <open>nyisd meg az adatlapját</open>, és egy kattintással összekötheted.",
@@ -664,6 +666,7 @@ export const huArbore: ArboreCatalog = {
     title: "A család élete a történelem hátterében",
     back: "Vissza a családfához",
     aria: "Idővonal",
+    eventsTitle: "Események a háttérben",
     events: {
       rev1848: "Az 1848-as forradalom",
       dualism: "A kiegyezés",
