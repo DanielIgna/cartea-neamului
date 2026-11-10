@@ -153,6 +153,12 @@ export const deAmintiri: AmintiriCatalog = {
     cancel: "Abbrechen",
   },
   Voice: {
+    noDevice: "Wir finden an diesem Gerät kein Mikrofon. Schließ eins an und versuch es noch einmal.",
+    micBusy: "Eine andere App benutzt gerade das Mikrofon. Schließ sie und versuch es noch einmal.",
+    micTimeout: "Der Browser hat das Mikrofon nicht gestartet. Wenn oben eine Frage erscheint, wähle „Zulassen“ und versuch es noch einmal.",
+    micFailed: "Das Mikrofon ist nicht angegangen. Versuch es noch einmal.",
+    retry: "Noch einmal versuchen",
+    limit: "Höchstens {minutes, number} Minuten oder 4 MB.",
     uploadAudioFailed: "Die Aufnahme wurde nicht hochgeladen. Versuch es noch einmal.",
     uploadPhotoFailed: "Das Foto wurde nicht hochgeladen. Versuch es noch einmal oder speichere ohne Foto.",
     record: "Mit der Stimme aufnehmen",

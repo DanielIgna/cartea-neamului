@@ -134,6 +134,9 @@ export const esArbore: ArboreCatalog = {
     unclaimedText: "Envíale un enlace a {name}. Cuando tenga su cuenta, entrará directamente en el árbol con su propia ficha en el centro y podrá seguir el árbol con su familia.",
   },
   Charts: {
+    hourBefore: "▲ Antes de {name}",
+    hourAfter: "▼ Después de {name}",
+    twoFingers: "Usa dos dedos para mover y ampliar el árbol",
     add: "añadir",
     emptyAdd: "Lugar libre: añade a la persona",
     empty: "Lugar libre",
@@ -527,6 +530,12 @@ export const esArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "{shown, number} de las {all, number} personas del árbol",
+    noPlaceKnown: "{count, plural, one {# persona sin lugar conocido} other {# personas sin lugar conocido}}",
+    discreetLeftOut: "{count, plural, one {# persona discreta, que no aparece en el mapa} other {# personas discretas, que no aparecen en el mapa}}",
+    hintWheel: "Mantén pulsado Ctrl (o ⌘) o haz clic en el mapa para ampliarlo con la rueda",
+    hintTouch: "Usa dos dedos para mover y ampliar el mapa",
+    clusterTitle: "{count, number} lugares cercanos: toca para verlos",
     title: "El mapa de la familia · {tree}",
     back: "Volver al árbol",
     filterAria: "Qué muestra el mapa",

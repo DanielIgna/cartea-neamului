@@ -25,6 +25,7 @@ export const nl: Catalog = {
     label: "Taal van de site",
   },
   LanguageSuggest: {
+    close: "Sluiten en niet meer vragen",
     question: "Lees je de site liever in het Nederlands?",
     hint: "Je kunt de taal altijd wijzigen, bovenaan, naast het thema.",
     accept: "In het Nederlands",
@@ -106,6 +107,10 @@ export const nl: Catalog = {
     failed: "Dat is niet gelukt. Probeer het opnieuw.",
   },
   Invitation: {
+    ogTitle: "{name} nodigt je uit in de stamboom „{tree}”",
+    ogTitleNoName: "Je bent uitgenodigd in de stamboom „{tree}”",
+    ogDescription: "Kom in de stamboom op Cartea Neamului: zie je familie, voeg je tak en de herinneringen aan je dierbaren toe.",
+    invalid: "Deze uitnodiging is niet meer geldig",
     notFound: "Deze uitnodiging bestaat niet",
     expired: "Deze uitnodiging is verlopen",
     used: "Deze uitnodiging is al gebruikt",
@@ -294,4 +299,12 @@ export const nl: Catalog = {
   ...nlVremuri,
   ...nlCarte,
   ...nlParteneri,
+  NotFound: {
+    title: "Deze pagina bestaat niet",
+    text: "De link klopt misschien niet of de pagina is verplaatst. Vanaf de startpagina vind je alles.",
+    home: "Naar de startpagina",
+  },
+  LegalNote: {
+    text: "Deze pagina is in het Roemeens. De Roemeense versie is de officiële.",
+  },
 };

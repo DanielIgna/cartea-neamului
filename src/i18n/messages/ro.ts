@@ -33,6 +33,7 @@ export const ro = {
     label: "Limba site-ului",
   },
   LanguageSuggest: {
+    close: "Închide și nu mai întreba",
     question: "Vrei să citești site-ul în română?",
     hint: "Limba se poate schimba oricând, sus, lângă temă.",
     accept: "În română",
@@ -114,6 +115,10 @@ export const ro = {
     failed: "Nu a mers. Încearcă din nou.",
   },
   Invitation: {
+    ogTitle: "{name} te invită în arborele familiei „{tree}”",
+    ogTitleNoName: "Ești invitat în arborele familiei „{tree}”",
+    ogDescription: "Intră în arbore pe Cartea Neamului: vezi rudele, adaugă ramura ta și amintirile celor dragi.",
+    invalid: "Invitația nu mai e valabilă",
     notFound: "Invitația nu există",
     expired: "Invitația a expirat",
     used: "Invitația a fost deja folosită",
@@ -306,6 +311,14 @@ export const ro = {
   ...roCarte,
   // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
   ...roParteneri,
+  NotFound: {
+    title: "Pagina nu există",
+    text: "Poate linkul e greșit sau pagina a fost mutată. De pe prima pagină găsești tot ce e în Cartea Neamului.",
+    home: "Mergi la prima pagină",
+  },
+  LegalNote: {
+    text: "Textul de mai jos e în română; versiunea în română este cea oficială.",
+  },
 } as const;
 
 /** Forma pe care trebuie s-o aibă fiecare limbă: aceleași chei ca în română, cu textul ei. */

@@ -25,6 +25,7 @@ export const fr: Catalog = {
     label: "Langue du site",
   },
   LanguageSuggest: {
+    close: "Fermer et ne plus demander",
     question: "Préférez-vous lire le site en français ?",
     hint: "Vous pouvez changer de langue à tout moment, en haut, à côté du thème.",
     accept: "En français",
@@ -106,6 +107,10 @@ export const fr: Catalog = {
     failed: "Cela n’a pas fonctionné. Réessayez.",
   },
   Invitation: {
+    ogTitle: "{name} vous invite dans l’arbre de la famille « {tree} »",
+    ogTitleNoName: "Vous êtes invité dans l’arbre de la famille « {tree} »",
+    ogDescription: "Rejoignez l’arbre sur Cartea Neamului : voyez vos proches, ajoutez votre branche et les souvenirs des vôtres.",
+    invalid: "Cette invitation n’est plus valable",
     notFound: "Cette invitation n’existe pas",
     expired: "Cette invitation a expiré",
     used: "Cette invitation a déjà été utilisée",
@@ -294,4 +299,12 @@ export const fr: Catalog = {
   ...frVremuri,
   ...frCarte,
   ...frParteneri,
+  NotFound: {
+    title: "Cette page n’existe pas",
+    text: "Le lien est peut-être erroné ou la page a été déplacée. Vous trouverez tout depuis la page d’accueil.",
+    home: "Aller à l’accueil",
+  },
+  LegalNote: {
+    text: "Cette page est en roumain. La version roumaine est la version officielle.",
+  },
 };

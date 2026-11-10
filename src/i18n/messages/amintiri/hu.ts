@@ -156,6 +156,12 @@ export const huAmintiri: AmintiriCatalog = {
     cancel: "Mégse",
   },
   Voice: {
+    noDevice: "Nem találunk mikrofont ezen az eszközön. Csatlakoztass egyet, és próbáld újra.",
+    micBusy: "Egy másik alkalmazás használja a mikrofont. Zárd be, és próbáld újra.",
+    micTimeout: "A böngésző nem indította el a mikrofont. Ha fent egy kérdést látsz, válaszd az „Engedélyezés” lehetőséget, majd próbáld újra.",
+    micFailed: "A mikrofon nem indult el. Próbáld újra.",
+    retry: "Újrapróbálom",
+    limit: "Legfeljebb {minutes, number} perc vagy 4 MB.",
     uploadAudioFailed: "A felvételt nem sikerült feltölteni. Próbáld újra.",
     uploadPhotoFailed: "A fényképet nem sikerült feltölteni. Próbáld újra, vagy mentsd fénykép nélkül.",
     record: "Felvétel élőszóban",

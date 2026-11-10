@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const esCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {Un recuerdo contado de viva voz no está en el libro, ni su código QR:} other {# recuerdos contados de viva voz no están en el libro, ni sus códigos QR:}}",
+      audioNotTicked: "{count, plural, one {uno no está marcado «Puede entrar en el libro de la familia» (lo marca quien lo escribió, desde el baúl);} other {# no están marcados «Puede entrar en el libro de la familia» (los marca quien los escribió, desde el baúl);}}",
+      audioCloseOnly: "{count, plural, one {uno es solo para la familia cercana y entra solo en la edición completa;} other {# son solo para la familia cercana y entran solo en la edición completa;}}",
+      audioLivingHidden: "{count, plural, one {uno es de una persona viva oculta en esta edición.} other {# son de personas vivas ocultas en esta edición.}}",
       title: "El libro de la familia",
       back: "Volver al árbol",
       lead: "La portada, el índice, los antepasados en abanico, el árbol de la familia y una ficha para cada persona, con fotos e historias. Se hace con lo que hay ahora en el árbol: cuando la familia añada algo, vuelve a abrir esta página y el libro tendrá también las novedades.",
@@ -32,6 +36,9 @@ export const esCarte: CarteCatalog = {
     },
     toc: "Índice",
     about: {
+      ofTree: "El libro tiene {count, plural, one {# persona} other {# personas}} de las {all, number} del árbol",
+      livingHidden: "{count, plural, one {# persona viva oculta} other {# personas vivas ocultas}} en esta edición",
+      otherLeftOut: "{count, plural, one {# persona discreta, sin nombre o sin relación con las del libro} other {# personas discretas, sin nombre o sin relación con las del libro}}",
       title: "Sobre este libro",
       people: "Este libro reúne a {count, plural, one {una persona} other {# personas}}.",
       peopleGenerations: "Este libro reúne a {count, plural, one {una persona} other {# personas}} de {generations, plural, one {una generación} other {# generaciones}}.",

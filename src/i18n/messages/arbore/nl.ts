@@ -134,6 +134,9 @@ export const nlArbore: ArboreCatalog = {
     unclaimedText: "Stuur {name} een link. Met een eigen account komt {sex, select, M {hij} F {ze} other {hij}} meteen in de stamboom, met {sex, select, M {zijn} F {haar} other {zijn}} eigen profiel in het midden, en kan {sex, select, M {hij} F {ze} other {hij}} de stamboom verder aanvullen met {sex, select, M {zijn} F {haar} other {zijn}} eigen familie.",
   },
   Charts: {
+    hourBefore: "▲ Vóór {name}",
+    hourAfter: "▼ Na {name}",
+    twoFingers: "Gebruik twee vingers om de stamboom te verschuiven en te zoomen",
     add: "toevoegen",
     emptyAdd: "Lege plek: voeg de persoon toe",
     empty: "Lege plek",
@@ -527,6 +530,12 @@ export const nlArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "{shown, number} van de {all, number} personen in de stamboom",
+    noPlaceKnown: "{count, plural, one {# persoon zonder bekende plaats} other {# personen zonder bekende plaats}}",
+    discreetLeftOut: "{count, plural, one {# discrete persoon, niet op de kaart} other {# discrete personen, niet op de kaart}}",
+    hintWheel: "Houd Ctrl (of ⌘) ingedrukt of klik op de kaart om met het scrollwiel te zoomen",
+    hintTouch: "Gebruik twee vingers om de kaart te verschuiven en te zoomen",
+    clusterTitle: "{count, number} plaatsen dicht bij elkaar: tik om ze te zien",
     title: "De familiekaart · {tree}",
     back: "Terug naar de stamboom",
     filterAria: "Wat de kaart laat zien",

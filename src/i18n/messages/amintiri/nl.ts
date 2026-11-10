@@ -153,6 +153,12 @@ export const nlAmintiri: AmintiriCatalog = {
     cancel: "Annuleren",
   },
   Voice: {
+    noDevice: "We vinden geen microfoon op dit apparaat. Sluit er een aan en probeer het opnieuw.",
+    micBusy: "Een andere app gebruikt de microfoon. Sluit die en probeer het opnieuw.",
+    micTimeout: "De browser heeft de microfoon niet gestart. Zie je bovenaan een vraag, kies dan „Toestaan” en probeer het opnieuw.",
+    micFailed: "De microfoon is niet gestart. Probeer het opnieuw.",
+    retry: "Opnieuw proberen",
+    limit: "Hoogstens {minutes, number} minuten of 4 MB.",
     uploadAudioFailed: "De opname is niet geüpload. Probeer het opnieuw.",
     uploadPhotoFailed: "De foto is niet geüpload. Probeer het opnieuw of sla op zonder foto.",
     record: "Opnemen met je stem",

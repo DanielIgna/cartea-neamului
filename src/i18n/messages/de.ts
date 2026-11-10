@@ -25,6 +25,7 @@ export const de: Catalog = {
     label: "Sprache der Seite",
   },
   LanguageSuggest: {
+    close: "Schließen und nicht mehr fragen",
     question: "Möchtest du die Seite lieber auf Deutsch lesen?",
     hint: "Du kannst die Sprache jederzeit oben neben dem Farbschema ändern.",
     accept: "Auf Deutsch",
@@ -106,6 +107,10 @@ export const de: Catalog = {
     failed: "Das hat nicht geklappt. Versuch es noch einmal.",
   },
   Invitation: {
+    ogTitle: "{name} lädt dich in den Stammbaum „{tree}“ ein",
+    ogTitleNoName: "Du bist in den Stammbaum „{tree}“ eingeladen",
+    ogDescription: "Komm in den Stammbaum auf Cartea Neamului: sieh deine Verwandten, füge deinen Zweig und die Erinnerungen deiner Lieben hinzu.",
+    invalid: "Diese Einladung gilt nicht mehr",
     notFound: "Diese Einladung gibt es nicht",
     expired: "Diese Einladung ist abgelaufen",
     used: "Diese Einladung wurde schon benutzt",
@@ -294,4 +299,12 @@ export const de: Catalog = {
   ...deVremuri,
   ...deCarte,
   ...deParteneri,
+  NotFound: {
+    title: "Diese Seite gibt es nicht",
+    text: "Vielleicht ist der Link falsch oder die Seite wurde verschoben. Auf der Startseite findest du alles.",
+    home: "Zur Startseite",
+  },
+  LegalNote: {
+    text: "Diese Seite ist auf Rumänisch. Maßgeblich ist die rumänische Fassung.",
+  },
 };

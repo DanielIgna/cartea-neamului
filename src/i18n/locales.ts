@@ -9,6 +9,8 @@ export const LOCALES = ["ro", "en-GB", "en-US", "fr", "es", "nl", "de", "it", "h
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "ro";
 export const LOCALE_COOKIE = "limba";
+/** Întrebarea despre limbă a fost închisă cu ✕ pe acest dispozitiv: nu mai apare. */
+export const SUGGEST_DISMISSED_COOKIE = "limba_intrebare";
 /** Ora după care se arată datele și orele, până știm ora fiecăruia. */
 export const TIME_ZONE = "Europe/Bucharest";
 

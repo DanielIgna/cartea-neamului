@@ -35,7 +35,7 @@ button{cursor:pointer}
 .wrap{max-width:1240px;margin:0 auto}
 header.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:18px 12px}
 .brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
-.brand h1{font-size:26px;letter-spacing:.2px}
+.brand .brand-name{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.2px;line-height:1.15;color:inherit}
 .brand span{color:var(--muted);font-size:14px}
 nav.views{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px;flex-wrap:wrap}
 nav.views a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500}
@@ -52,7 +52,10 @@ nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
 /* Pe telefon, filtrele hărții (cu „Amintiri”, cinci) trec pe două rânduri în loc să iasă din cutie. */
 @media (max-width:520px){.map-filter{display:flex;flex-wrap:wrap;width:100%}.map-filter button{flex:1 1 auto;white-space:nowrap;padding:6px 9px}}
 /* Pe telefon, butoanele desenelor (Clepsidră… Descendenți) și ale spițelor trec pe două rânduri în loc să se taie la margine. */
-@media (max-width:520px){.seg-wrap{display:flex;flex-wrap:wrap;width:100%}.seg-wrap button{flex:1 1 auto;white-space:nowrap;padding:6px 9px}}
+/* Tab-urile vederilor (Evantai, Copac…) nu se taie: pe ecran îngust se derulează orizontal. */
+.seg-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.seg-wrap button{flex:none;white-space:nowrap}
+@media (max-width:520px){.seg-wrap{display:flex;flex-wrap:nowrap;width:100%;-webkit-overflow-scrolling:touch}.seg-wrap button{flex:1 0 auto;padding:8px 11px}}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px;text-decoration:none;color:var(--ink);display:inline-block}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
 .btn:hover{border-color:var(--accent)}
@@ -65,6 +68,8 @@ svg text{font-family:var(--body)}
 .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
 /* person panel */
 .panel h2{font-size:24px}
+.landing-title{font-size:1.5em;line-height:1.2}
+.person-form{scroll-margin-top:12px}
 .meta{color:var(--muted);font-size:14px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .chip{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
@@ -160,13 +165,22 @@ a{color:var(--accent)}
 .chartbox.scroll{overflow:auto;max-height:78vh}
 /* Zoom pe desene: unelte deasupra colțului din dreapta, desenul se derulează și se trage cu mouse-ul */
 .zoom-wrap{position:relative;min-width:0}
-.zoom-tools{position:absolute;top:6px;right:6px;z-index:3;display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 1px 4px #0000001f}
+.zoom-tools{position:relative;margin:0 0 6px auto;width:max-content;z-index:3;display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;box-shadow:0 1px 4px #0000001f}
 .zoom-tools button{border:0;background:transparent;min-width:34px;height:32px;border-radius:7px;font-size:20px;line-height:1;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
 .zoom-tools button.zt-text{font-size:14px;font-weight:500}
 .zoom-tools button:hover{background:var(--accent-soft)}
 .zt-pct{font-size:12px;color:var(--muted);min-width:38px;text-align:center}
 .chartbox.zoomable{overflow:auto;max-height:78vh;touch-action:pan-x pan-y;cursor:grab;overscroll-behavior:contain}
 .chartbox.zoomable.dragging{cursor:grabbing;user-select:none}
+/* Pe ecranul tactil desenul nu prinde un singur deget (pagina se derulează); îl muți și îl mărești cu două degete. */
+@media (pointer:coarse){
+  .chartbox.zoomable{overflow:hidden;touch-action:pan-y;overscroll-behavior:auto;position:relative}
+  .zoom-wrap::after{content:attr(data-hint);position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:4;max-width:90%;padding:8px 14px;border-radius:10px;
+    background:#0b1626d9;color:#fff;font-size:15px;text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+  .zoom-wrap.hint-on::after{opacity:1}
+  .card.chart-full .chartbox.zoomable{overflow:auto;touch-action:pan-x pan-y}
+  .card.chart-full .zoom-wrap::after{display:none}
+}
 .chartbox.zoomable .sector,.chartbox.zoomable [role="button"]{cursor:pointer}
 .zoom-inner.zoomed{width:max-content;min-width:100%}
 .zoom-inner.zoomed > svg{width:var(--zw)!important;max-width:none!important;height:auto!important}
@@ -225,6 +239,12 @@ a{color:var(--accent)}
 /* Harta neamului */
 .mapbox{height:min(68vh,640px);min-height:360px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);overflow:hidden;z-index:0}
 .mapbox.picking{cursor:crosshair}
+/* Cum se mărește harta: rotița cu Ctrl sau după clic; pe telefon cu două degete. Apare o clipă, peste hartă. */
+.mapbox::after{content:attr(data-hint);position:absolute;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;
+  background:#0b1626a6;color:#fff;font-size:17px;font-weight:500;opacity:0;transition:opacity .25s;pointer-events:none}
+.mapbox.map-hint-on::after{opacity:1}
+.mapbox .map-cluster span{display:flex;align-items:center;justify-content:center;width:calc(var(--r)*2);height:calc(var(--r)*2);border-radius:50%;
+  background:var(--f);border:2.5px solid var(--b);color:#fff;font-weight:700;font-size:13px;box-shadow:0 0 0 4px color-mix(in srgb,var(--f) 30%,transparent);cursor:pointer}
 .mapbox.picking .leaflet-interactive{cursor:crosshair}
 /* „.mapbox.leaflet-container” bate stilul din leaflet.css, care se încarcă după al nostru */
 .mapbox.leaflet-container{font-family:var(--body);background:var(--surface-2)}
@@ -295,7 +315,7 @@ a{color:var(--accent)}
 @media print{
   body:has(.book-pages){padding:0!important;background:#fff!important}
   body:has(.book-pages) header.top,.book-chrome,.book-source{display:none!important}
-  body:has(.book-pages) .wrap,.book-root,.book-stage,.book-pages,.book-target{display:contents!important}
+  body:has(.book-pages) .wrap,body:has(.book-pages) .wrap>main,.book-root,.book-stage,.book-pages,.book-target{display:contents!important}
   /* după ultima pagină nu mai vine nimic: fără o foaie albă la final */
   .book-pages .pagedjs_page:last-child{break-after:auto!important;page-break-after:auto!important}
 }
@@ -419,6 +439,9 @@ body:has(.story){overflow:hidden}
 .usage-notice p,.lang-suggest p{margin:0 0 10px;max-width:80ch}
 .usage-actions,.lang-suggest-actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 .usage-actions .btn,.lang-suggest-actions .btn{padding:7px 16px}
+.lang-suggest{position:relative;padding-right:44px}
+.lang-suggest-close{position:absolute;top:6px;right:6px;width:36px;height:36px;border:0;border-radius:8px;background:transparent;color:var(--ink);font-size:18px;line-height:1;cursor:pointer}
+.lang-suggest-close:hover{background:var(--surface)}
 .my-usage{margin:4px 0 6px;padding-left:20px;columns:2 220px;font-size:14px}
 /* Oamenii (drumul lor, ce folosesc, fișa fiecăruia) și Manager control (planuri și limite) */
 .hbars{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -465,6 +488,8 @@ body:has(.story){overflow:hidden}
 .voice-done{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
 .voice-done audio,.voice-row audio{max-width:100%;height:40px}
 .voice-tools{display:flex;gap:12px;font-size:14px}
+.voice-limit{margin:0;font-size:13px}
+.voice-err{margin-top:2px}
 .voice-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 2px}
 .voice.big .voice-idle{flex-direction:column;align-items:center}
 .voice-rec{display:grid;justify-items:center;gap:10px;border:0;background:none;cursor:pointer;color:inherit;font:inherit;font-size:18px;font-weight:700;padding:4px}

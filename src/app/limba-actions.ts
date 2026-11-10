@@ -14,7 +14,7 @@ import { getT } from "@/i18n/server";
  */
 export async function chooseLanguage(locale: string): Promise<{ ok?: boolean; error?: string }> {
   if (!isLocale(locale)) return { error: (await getT("Errors"))("language") };
-  (await cookies()).set(LOCALE_COOKIE, locale, { path: "/", maxAge: 31_536_000, sameSite: "lax" });
+  (await cookies()).set(LOCALE_COOKIE, locale, { path: "/", maxAge: 31_536_000, sameSite: "lax", secure: process.env.NODE_ENV === "production" && !!process.env.VERCEL });
   const me = await currentUser();
   if (me && !isDemo(me.email)) await db.update(user).set({ locale }).where(eq(user.id, me.id));
   return { ok: true };

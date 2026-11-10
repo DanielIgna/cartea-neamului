@@ -171,6 +171,23 @@ export async function bookMemories(db: Db, treeId: string, viewer: Viewer, livin
   });
 }
 
+/**
+ * Amintirile spuse cu glasul pe care cel care face cartea le vede pe site, dar care nu intră în carte, și de ce: nebifate
+ * pentru carte de cel care le-a scris, „doar pentru familia apropiată” (intră numai în ediția cu toate datele) ori ale unui om
+ * în viață ascuns în această ediție. Cele private sau „doar pentru cel care a întrebat” nu se numără: nu intră niciodată.
+ */
+export async function audioLeftOut(db: Db, treeId: string, viewer: Viewer, living: "tot" | "nume" | "ascunsi") {
+  const { seen, byId } = await seenMemories(db, treeId, viewer, isNotNull(memory.audioDocumentId));
+  const out = { notTicked: 0, closeOnly: 0, livingHidden: 0 };
+  for (const m of seen) {
+    if (m.visibility === "asker") continue;
+    if (!m.inBook) out.notTicked++;
+    else if (byId.get(m.personId)?.living && living === "ascunsi") out.livingHidden++;
+    else if (m.visibility === "close" && living !== "tot") out.closeOnly++;
+  }
+  return out;
+}
+
 /** Pozele și glasul puse la amintiri (nu apar în album; le deschide doar cine vede amintirea). */
 export async function memoryMediaIds(db: Db, treeId: string) {
   const rows = await db.select({ a: memory.photoDocumentId, b: memory.audioDocumentId, c: memory.consentDocumentId }).from(memory).where(eq(memory.treeId, treeId));

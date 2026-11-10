@@ -153,6 +153,12 @@ export const enGBAmintiri: AmintiriCatalog = {
     cancel: "Cancel",
   },
   Voice: {
+    noDevice: "We can’t find a microphone on this device. Connect one and try again.",
+    micBusy: "Another app is using the microphone. Close it and try again.",
+    micTimeout: "The browser didn’t start the microphone. If you see a question at the top, choose “Allow”, then try again.",
+    micFailed: "The microphone didn’t start. Try again.",
+    retry: "Try again",
+    limit: "Up to {minutes, number} minutes or 4 MB.",
     uploadAudioFailed: "The recording did not upload. Please try again.",
     uploadPhotoFailed: "The photo did not upload. Try again or save without the photo.",
     record: "Record your voice",

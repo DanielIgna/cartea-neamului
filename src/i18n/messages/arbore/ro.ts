@@ -137,6 +137,9 @@ export const roArbore = {
     unclaimedText: "Trimite-i lui {name} un link. După ce își face cont, intră direct în arbore cu propria fișă în centru și poate continua arborele pe familia {sex, select, M {lui} F {ei} other {lui}}.",
   },
   Charts: {
+    hourBefore: "▲ Înaintea lui {name}",
+    hourAfter: "▼ După {name}",
+    twoFingers: "Folosește două degete ca să miști și să mărești arborele",
     add: "adaugă",
     emptyAdd: "Loc liber: adaugă persoana",
     empty: "Loc liber",
@@ -534,6 +537,12 @@ export const roArbore = {
     },
   },
   Map: {
+    ofTree: "{shown, number} din {all, number} de persoane ale arborelui",
+    noPlaceKnown: "{count, plural, one {o persoană fără loc cunoscut} few {# persoane fără loc cunoscut} other {# de persoane fără loc cunoscut}}",
+    discreetLeftOut: "{count, plural, one {o persoană discretă, care nu apare pe hartă} few {# persoane discrete, care nu apar pe hartă} other {# de persoane discrete, care nu apar pe hartă}}",
+    hintWheel: "Ține apăsat Ctrl (sau ⌘) ori dă un clic pe hartă ca s-o mărești cu rotița",
+    hintTouch: "Folosește două degete ca să miști și să mărești harta",
+    clusterTitle: "{count, number} locuri apropiate: apasă ca să le vezi",
     title: "Harta neamului · {tree}",
     back: "Înapoi la arbore",
     filterAria: "Ce arată harta",

@@ -13,7 +13,7 @@ export default function ThemeSwitch({ initial }: { initial: Theme }) {
     setTheme(v);
     if (v === "auto") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = v;
-    document.cookie = `${THEME_COOKIE}=${v}; path=/; max-age=31536000; samesite=lax`;
+    document.cookie = `${THEME_COOKIE}=${v}; path=/; max-age=31536000; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
   };
   return (
     <div className="seg theme-switch" role="group" aria-label={t("label")}>

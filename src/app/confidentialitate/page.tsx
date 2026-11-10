@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LegalLangNote from "@/components/LegalLangNote";
 import type { Metadata } from "next";
 import { BETA, MIN_AGE, PRIVACY_UPDATED, operator } from "@/lib/legal";
 import { PROPMANAGE_CONSENT_TEXT } from "@/lib/partners";
@@ -13,7 +14,8 @@ export default function PrivacyPage() {
   const op = operator();
   const contact = <a href={`mailto:${op.email}`}>{op.email}</a>;
   return (
-    <article className="card legal">
+    <article className="card legal" lang="ro">
+      <LegalLangNote />
       <div className="section-label" style={{ marginTop: 0 }}>Politica de confidențialitate</div>
       <h2>Cum avem grijă de datele familiei tale</h2>
       <p className="legal-date">Ultima schimbare: {PRIVACY_UPDATED}</p>

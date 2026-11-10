@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const frCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {Un souvenir raconté de vive voix n’est pas dans le livre, ni son code QR :} other {# souvenirs racontés de vive voix ne sont pas dans le livre, ni leurs codes QR :}}",
+      audioNotTicked: "{count, plural, one {un n’est pas coché « Peut figurer dans le livre de la famille » (son auteur peut le cocher dans le coffre aux souvenirs) ;} other {# ne sont pas cochés « Peut figurer dans le livre de la famille » (leurs auteurs peuvent les cocher dans le coffre aux souvenirs) ;}}",
+      audioCloseOnly: "{count, plural, one {un est réservé à la famille proche et n’entre que dans l’édition complète ;} other {# sont réservés à la famille proche et n’entrent que dans l’édition complète ;}}",
+      audioLivingHidden: "{count, plural, one {un appartient à une personne vivante masquée dans cette édition.} other {# appartiennent à des personnes vivantes masquées dans cette édition.}}",
       title: "Le livre de la famille",
       back: "Retour à l’arbre",
       lead: "La couverture, le sommaire, les ancêtres en éventail, l’arbre de la famille et une fiche pour chaque personne, avec photos et histoires. Le livre est fait à partir de ce qui se trouve dans l’arbre en ce moment : quand la famille ajoute quelque chose, rouvrez cette page et le livre contiendra aussi les nouveautés.",
@@ -32,6 +36,9 @@ export const frCarte: CarteCatalog = {
     },
     toc: "Sommaire",
     about: {
+      ofTree: "Ce livre compte {count, plural, one {# personne} other {# personnes}} sur les {all, number} de l’arbre",
+      livingHidden: "{count, plural, one {# personne vivante masquée} other {# personnes vivantes masquées}} dans cette édition",
+      otherLeftOut: "{count, plural, one {# personne discrète, sans nom ou sans lien avec celles du livre} other {# personnes discrètes, sans nom ou sans lien avec celles du livre}}",
       title: "À propos de ce livre",
       people: "Ce livre réunit {count, plural, one {une personne} other {# personnes}}.",
       peopleGenerations: "Ce livre réunit {count, plural, one {une personne} other {# personnes}} sur {generations, plural, one {une génération} other {# générations}}.",

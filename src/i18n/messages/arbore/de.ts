@@ -134,6 +134,9 @@ export const deArbore: ArboreCatalog = {
     unclaimedText: "Schick {name} einen Link. Sobald {sex, select, M {er} F {sie} other {er}} ein Konto hat, kommt {sex, select, M {er} F {sie} other {er}} direkt in den Stammbaum, mit dem eigenen Profil in der Mitte, und kann den Stammbaum mit {sex, select, M {seiner} F {ihrer} other {seiner}} Familie weiterführen.",
   },
   Charts: {
+    hourBefore: "▲ Vor {name}",
+    hourAfter: "▼ Nach {name}",
+    twoFingers: "Verschiebe und vergrößere den Stammbaum mit zwei Fingern",
     add: "hinzufügen",
     emptyAdd: "Freier Platz: Person hinzufügen",
     empty: "Freier Platz",
@@ -527,6 +530,12 @@ export const deArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "{shown, number} von {all, number} Personen im Stammbaum",
+    noPlaceKnown: "{count, plural, one {# Person ohne bekannten Ort} other {# Personen ohne bekannten Ort}}",
+    discreetLeftOut: "{count, plural, one {# diskrete Person, nicht auf der Karte} other {# diskrete Personen, nicht auf der Karte}}",
+    hintWheel: "Halte Strg (oder ⌘) gedrückt oder klick auf die Karte, um mit dem Mausrad zu zoomen",
+    hintTouch: "Verschiebe und vergrößere die Karte mit zwei Fingern",
+    clusterTitle: "{count, number} Orte nah beieinander: tippe, um sie zu sehen",
     title: "Die Familienkarte · {tree}",
     back: "Zurück zum Stammbaum",
     filterAria: "Was die Karte zeigt",

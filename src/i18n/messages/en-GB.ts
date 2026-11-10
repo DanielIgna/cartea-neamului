@@ -25,6 +25,7 @@ export const enGB: Catalog = {
     label: "Site language",
   },
   LanguageSuggest: {
+    close: "Close and don’t ask again",
     question: "Would you rather read the site in English?",
     hint: "You can change the language at any time, at the top, next to the theme.",
     accept: "In English",
@@ -106,6 +107,10 @@ export const enGB: Catalog = {
     failed: "That didn’t work. Please try again.",
   },
   Invitation: {
+    ogTitle: "{name} invites you to the family tree “{tree}”",
+    ogTitleNoName: "You’re invited to the family tree “{tree}”",
+    ogDescription: "Join the tree on Cartea Neamului: see your relatives, add your branch and the memories of your loved ones.",
+    invalid: "This invitation is no longer valid",
     notFound: "This invitation does not exist",
     expired: "This invitation has expired",
     used: "This invitation has already been used",
@@ -294,4 +299,12 @@ export const enGB: Catalog = {
   ...enGBVremuri,
   ...enGBCarte,
   ...enGBParteneri,
+  NotFound: {
+    title: "This page doesn’t exist",
+    text: "The link may be wrong or the page may have moved. You’ll find everything from the home page.",
+    home: "Go to the home page",
+  },
+  LegalNote: {
+    text: "This page is in Romanian. The Romanian version is the official one.",
+  },
 };
