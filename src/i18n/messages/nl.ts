@@ -7,6 +7,7 @@ import { nlCalatorie } from "./calatorie/nl";
 import { nlBiserica } from "./biserica/nl";
 import { nlParteneri } from "./parteneri/nl";
 import { nlLegal } from "./legal/nl";
+import { nlDatele } from "./datele/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -307,6 +308,7 @@ export const nl: Catalog = {
   ...nlBiserica,
   ...nlParteneri,
   ...nlLegal,
+  ...nlDatele,
   NotFound: {
     title: "Deze pagina bestaat niet",
     text: "De link klopt misschien niet of de pagina is verplaatst. Vanaf de startpagina vind je alles.",

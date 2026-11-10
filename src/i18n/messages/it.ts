@@ -7,6 +7,7 @@ import { itCalatorie } from "./calatorie/it";
 import { itBiserica } from "./biserica/it";
 import { itParteneri } from "./parteneri/it";
 import { itLegal } from "./legal/it";
+import { itDatele } from "./datele/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -307,6 +308,7 @@ export const it: Catalog = {
   ...itBiserica,
   ...itParteneri,
   ...itLegal,
+  ...itDatele,
   NotFound: {
     title: "Questa pagina non esiste",
     text: "Forse il link è sbagliato o la pagina è stata spostata. Dalla prima pagina trovi tutto.",

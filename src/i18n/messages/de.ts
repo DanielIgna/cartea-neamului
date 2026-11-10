@@ -7,6 +7,7 @@ import { deCalatorie } from "./calatorie/de";
 import { deBiserica } from "./biserica/de";
 import { deParteneri } from "./parteneri/de";
 import { deLegal } from "./legal/de";
+import { deDatele } from "./datele/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -307,6 +308,7 @@ export const de: Catalog = {
   ...deBiserica,
   ...deParteneri,
   ...deLegal,
+  ...deDatele,
   NotFound: {
     title: "Diese Seite gibt es nicht",
     text: "Vielleicht ist der Link falsch oder die Seite wurde verschoben. Auf der Startseite findest du alles.",

@@ -6,13 +6,13 @@ import { user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isDemo } from "@/lib/demo";
 import { readUnsubscribeToken, setPartnerConsent } from "@/lib/partners";
-import { getLocale } from "@/i18n/server";
+import { getLocale, getT } from "@/i18n/server";
 
 /** Comutatorul „Beneficii de la parteneri” din „Datele mele”: un clic dă acordul, un clic îl retrage. */
 export async function setPartnerBenefits(granted: boolean): Promise<{ ok?: boolean; error?: string }> {
   const me = await currentUser();
-  if (!me) return { error: "Intră în cont ca să schimbi acordul." };
-  if (granted && isDemo(me.email)) return { error: "Contul de probă e folosit de mai mulți oameni, așa că nu-și poate da acordul." };
+  if (!me) return { error: (await getT("MyData"))("errors.partnerSignIn") };
+  if (granted && isDemo(me.email)) return { error: (await getT("MyData"))("errors.partnerDemo") };
   await setPartnerConsent(db, me.id, !!granted, { source: "datele-mele", locale: await getLocale() });
   revalidatePath("/datele-mele");
   return { ok: true };
