@@ -6,6 +6,8 @@ import { deCarte } from "./carte/de";
 import { deCalatorie } from "./calatorie/de";
 import { deBiserica } from "./biserica/de";
 import { deParteneri } from "./parteneri/de";
+import { deLegal } from "./legal/de";
+import { deDatele } from "./datele/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -305,13 +307,15 @@ export const de: Catalog = {
   ...deCalatorie,
   ...deBiserica,
   ...deParteneri,
+  ...deLegal,
+  ...deDatele,
   NotFound: {
     title: "Diese Seite gibt es nicht",
     text: "Vielleicht ist der Link falsch oder die Seite wurde verschoben. Auf der Startseite findest du alles.",
     home: "Zur Startseite",
   },
   LegalNote: {
-    text: "Diese Seite ist auf Rumänisch. Maßgeblich ist die rumänische Fassung.",
+    text: "Dies ist eine Übersetzung. Maßgeblich ist die rumänische Fassung.",
   },
   AuthError: {
     title: "Die Anmeldung hat nicht geklappt",

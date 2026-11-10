@@ -15,6 +15,8 @@ import { roCarte } from "./carte/ro";
 import { roCalatorie } from "./calatorie/ro";
 import { roBiserica } from "./biserica/ro";
 import { roParteneri } from "./parteneri/ro";
+import { roLegal } from "./legal/ro";
+import { roDatele } from "./datele/ro";
 
 export const ro = {
   Meta: {
@@ -317,6 +319,8 @@ export const ro = {
   ...roBiserica,
   // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
   ...roParteneri,
+  ...roLegal,
+  ...roDatele,
   NotFound: {
     title: "Pagina nu există",
     text: "Poate linkul e greșit sau pagina a fost mutată. De pe prima pagină găsești tot ce e în Cartea Neamului.",

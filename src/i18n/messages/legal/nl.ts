@@ -1,0 +1,166 @@
+import type { LegalCatalog } from "./ro";
+
+export const nlLegal: LegalCatalog = {
+  Legal: {
+    updated: "Laatst gewijzigd: {date}",
+    contactTitle: "Contact",
+    contactLine: "{name}{person, select, yes {, natuurlijke persoon} other {}}. E-mail: <mail>{email}</mail>.",
+    Privacy: {
+      metaTitle: "Privacybeleid",
+      metaDescription: "Welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert.",
+      label: "Privacybeleid",
+      title: "Hoe we zorgen voor de gegevens van je familie",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Hier staat, kort en zonder moeilijke woorden, welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert. Kort gezegd: stambomen zijn privé, jij kiest wie je herinneringen ziet, we verkopen niets en we tonen geen advertenties. Onze partner PropManage krijgt alleen je e-mailadres, en alleen als je dat aanvinkt.",
+        },
+        controller: {
+          h: "Wie verantwoordelijk is voor de gegevens",
+          p1: "Verwerkingsverantwoordelijke voor de gegevens in Cartea Neamului volgens de Algemene verordening gegevensbescherming (Verordening (EU) 2016/679, ‘AVG’) is <b>{name}</b>{person, select, yes {, natuurlijke persoon} other {}}. Voor elke vraag of elk verzoek over je gegevens schrijf je ons op <mail>{email}</mail>.",
+          beta: "Cartea Neamului wordt nu uitgeprobeerd: alleen familie en goede vrienden gebruiken het, om ons te vertellen wat werkt en wat niet. Ook tijdens deze proef worden jullie gegevens bewaard en beschermd zoals hier staat.",
+        },
+        data: {
+          h: "Welke gegevens we bewaren",
+          l1: "<b>Je account:</b> naam, e-mailadres en wachtwoord (alleen bewaard als versleutelde vingerafdruk, die zelfs wij niet kunnen lezen). Als je inlogt met Google, de ID van het Google-account en de profielfoto. Voor de veiligheid van je account de sessies waarin je bent ingelogd, met het IP-adres en het soort browser.",
+          l2: "<b>De stambomen:</b> wat jij en je familieleden over mensen schrijven: namen, data en plaatsen van geboorte en overlijden, waar de levenden wonen, beroep, levensloop, notities, foto’s, gescande documenten en familiebanden. We onthouden ook wie elke wijziging heeft gedaan, zodat fouten kunnen worden hersteld.",
+          l3: "<b>De herinneringskist en de autobiografie:</b> herinneringen die zijn opgeschreven of met de stem verteld (geluidsopnamen), hun foto’s, vragen van familieleden en de antwoorden. Als een familielid ‘bij opa en oma’ de verhalen opneemt van iemand zonder account, bewaren we ook diens toestemming, soms met diens stem.",
+          l4: "<b>Het geloof:</b> wat je schrijft in het hoofdstuk ‘Geloof’ laat je religieuze overtuigingen zien. De wet rekent die tot een bijzondere categorie gegevens (art. 9 AVG), daarom bewaren we ze alleen met je uitdrukkelijke toestemming, die we je daar zelf vragen, vóór je eerste antwoord.",
+          l5: "<b>De berichten</b> die familieleden elkaar sturen.",
+          l6: "<b>‘Sta je al in een stamboom?’:</b> de naam en geboortedatum die je invult om je kaart te vinden. Na het zoeken bewaren we alleen de gezochte achternaam en of er iets is gevonden, om het zoeken te beperken (zo kan niemand iemands geboortedatum raden door dag na dag te proberen).",
+          l7: "<b>‘Uit dezelfde plaatsen’:</b> alleen als de eigenaar van de stamboom het aanzet, de dorpen van overleden voorouders, hun achternamen en de jaren, zodat andere families met wortels in dezelfde dorpen hun verwanten kunnen vinden. We bewaren ook de verzoeken om contact en de antwoorden erop.",
+          l8: "<b>Hoeveel je de site gebruikt</b>, alleen als je ‘Goed’ zegt op de vraag die we je één keer stellen: per dag hoe lang je in elk deel van de site was (bijvoorbeeld ‘Stamboom · Boom’ of ‘De familiekaart’), hoe vaak je het hebt geopend en hoeveel van die tijd op een telefoon of in de app op de telefoon was. We tellen alleen de tijd waarin de pagina vooraan staat en je er iets in doet. We bewaren niet het adres van de pagina, wat je schrijft of waarop je klikt.",
+          l9: "<b>Voordelen van partners</b>, alleen als je dat aanvinkt (bij het maken van je account of in ‘Mijn gegevens’): elk ‘ja’ en elk ‘nee’, met de datum, de versie van de aangevinkte tekst, de taal en de plek waar je koos.",
+          l10: "<b>Het ouderlijk huis:</b> wat je op de pagina van een persoon schrijft over het huis van de familie (het adres of het dorp, wie het heeft gebouwd, het jaar, foto’s en het verhaal ervan). Alleen wie jij kiest ziet het, net als bij herinneringen.",
+          l11: "<b>In je browser:</b> het gekozen thema (licht of donker), de familielijnen die je wilt zien en of je de kaart van de partner na het downloaden van het boek al hebt gezien. Als je ‘Goed’ hebt gezegd op het meten van de tijd, ook de laatst getelde minuut, hoogstens een uur, zodat die ons ook bereikt als je de pagina haastig sluit.",
+          l12: "<b>De technische logbestanden</b> van de server (IP-adres, opgevraagde pagina, tijd), kort bewaard, zodat we fouten kunnen herstellen.",
+        },
+        why: {
+          h: "Waarom en op welke grondslag",
+          l1: "Zodat werkt wat je ons vraagt: het account, de stambomen, de herinneringskist, de berichten en het boek. De grondslag is de overeenkomst tussen ons, namelijk deze <terms>Voorwaarden</terms> (art. 6 lid 1 sub b AVG).",
+          l2: "Om accounts en stambomen te beschermen: de sessies, het logboek van wijzigingen en de beperking van het zoeken. De grondslag is ons gerechtvaardigd belang om de site veilig te houden (art. 6 lid 1 sub f).",
+          l3: "Om te zien wat mensen gebruiken en wat beter moet: de cijfers over accounts en stambomen in het beheerpaneel, zonder wat jullie schrijven. De grondslag is ons gerechtvaardigd belang om de site te verbeteren (art. 6 lid 1 sub f).",
+          l4: "Voor de levende familieleden die je in de stamboom zet, is de grondslag het gerechtvaardigd belang van de familie om haar geschiedenis te bewaren, met zorg: stambomen zijn privé en levenden zijn alleen zichtbaar in hun eigen stamboom, nooit bij andere families. Iedereen die in een stamboom staat, kan ons vragen zijn gegevens te verbeteren of te verwijderen.",
+          l5: "Op basis van je toestemming, die je altijd kunt intrekken: het hoofdstuk ‘Geloof’ (art. 9 lid 2 sub a), de verhalen die ‘bij opa en oma’ zijn opgenomen, ‘Uit dezelfde plaatsen’, hoeveel je de site gebruikt en de voordelen van partners (art. 6 lid 1 sub a). Intrekken verandert niets aan wat eerder met de gegeven toestemming is gedaan.",
+        },
+        who: {
+          h: "Wie de gegevens ziet",
+          l1: "<b>Stambomen zijn privé.</b> Alleen de leden die de eigenaar uitnodigt of na een verzoek toelaat, zien ze. Ieder heeft een rol: de bezoeker kijkt alleen, de bijdrager voegt toe, de redacteur verbetert, de eigenaar beslist wie erbij komt.",
+          l2: "<b>Levenden</b> zijn alleen zichtbaar in hun eigen stamboom. Ze verschijnen niet bij ‘Uit dezelfde plaatsen’ en ook niet bij andere families. De enige die zijn kaart van buiten de stamboom kan vinden, is de persoon zelf, met zijn naam en volledige geboortedatum; dan beslist de eigenaar van de stamboom of hij hem toelaat, en tot die tijd komt wie zoekt niet eens te weten om welke stamboom het gaat.",
+          l3: "<b>Herinneringen</b> ziet alleen wie de schrijver kiest: alleen hijzelf (concept), wie de vraag stelde, de naaste familie tot een bepaalde graad van verwantschap of de hele stamboom. In het familieboek komen alleen de herinneringen die voor het boek zijn aangevinkt.",
+          l4: "<b>Berichten</b> zien alleen de twee die ze elkaar sturen.",
+          l5: "<b>Wij</b> zien in het beheerpaneel alleen lijsten en cijfers: de accounts (naam, e-mail, wanneer en met wat voor apparaat ze inlogden), de stambomen (naam, hoeveel personen en bestanden ze hebben), per account hoeveel het heeft toegevoegd (hoeveel personen, herinneringen, foto’s, uitnodigingen en berichten) en, bij wie ‘Goed’ heeft gezegd, hoe lang ze in elk deel van de site zijn. Daar kunnen we ook een korte notitie over een account bijhouden, bijvoorbeeld dat het gratis blijft. Herinneringen en berichten lezen we niet, en uit het hoofdstuk ‘Geloof’ tellen we niets; we bekijken ze alleen als jij ons om hulp vraagt of als de wet ons verplicht.",
+          l6: "We verkopen geen gegevens, tonen geen advertenties en geven ze aan niemand anders dan de leveranciers hieronder, onze partner PropManage (alleen het e-mailadres van wie het heeft aangevinkt, zoals hieronder staat) en de overheid, als de wet ons verplicht.",
+        },
+        vendors: {
+          h: "De leveranciers die ons helpen",
+          p1: "We werken met een paar leveranciers, die de gegevens alleen verwerken om de site te laten werken, volgens contracten die hen verplichten ze te beschermen:",
+          l1: "<b>Vercel Inc.</b> (VS) host de site en draait de toepassing.",
+          l2: "<b>Neon</b> (Databricks Inc., VS) bewaart de database, de foto’s, documenten en opnamen, in een datacenter in Frankfurt (Duitsland, EU).",
+          l3: "<b>Google</b> bevestigt bij het inloggen je identiteit, alleen als je kiest voor ‘Doorgaan met Google’.",
+          l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Verenigd Koninkrijk) levert de kaartstukken van ‘De familiekaart’. Je browser vraagt ze rechtstreeks bij hen op, dus zij zien het IP-adres waarvandaan je ze opvraagt.",
+          p2: "Voor doorgiften buiten de Europese Unie gebruiken deze leveranciers de door de Europese Commissie goedgekeurde modelcontractbepalingen of het EU-VS-kader voor gegevensbescherming. Over levenden sturen we niets naar diensten voor kunstmatige intelligentie.",
+        },
+        partner: {
+          h: "Onze partner, PropManage",
+          p1: "PropManage (<pm>propmanage.ro</pm>) is een platform voor woningeigenaren en een partner van Cartea Neamului. Je vindt het alleen op de pagina <partners>Partners</partners>; in de stamboom, de herinneringen, de tijdlijn, op de kaart en in het boek staan geen advertenties.",
+          l1: "<b>Wat het krijgt:</b> alleen je e-mailadres, en alleen als je ‘{consent}’ hebt aangevinkt. Het vakje staat apart, is niet vanzelf aangevinkt en niets op de site hangt ervan af. PropManage krijgt nooit iets over je stamboom, de mensen erin, de familieleden die je hebt uitgenodigd, dorpen, herinneringen, foto’s of stemmen. Uitgenodigde familieleden en de mensen in de stamboom krijgen nooit berichten van PropManage.",
+          l2: "<b>De grondslag:</b> je toestemming (art. 6 lid 1 sub a AVG). Vanaf het moment dat PropManage het adres krijgt, is het daarvoor verantwoordelijk als afzonderlijke verwerkingsverantwoordelijke, volgens zijn eigen privacybeleid, en gebruikt het het alleen om je af en toe voordelen voor je huis te sturen.",
+          l3: "<b>Hoe lang:</b> zolang je toestemming geldt. De lijst die PropManage krijgt, maken we elke keer opnieuw uit de huidige toestemmingen, dus na het intrekken komt je adres er niet meer. We vragen PropManage je adres te verwijderen zodra het hoort dat je je toestemming hebt ingetrokken.",
+          l4: "<b>Hoe je haar intrekt:</b> met één klik, in <dataPartners>Mijn gegevens</dataPartners> (de schakelaar ‘Voordelen van partners’), of via de afmeldlink in elke e-mail die je krijgt, zonder in te loggen. Intrekken verandert niets aan je account of je stamboom.",
+          l5: "De links naar PropManage op de site (op de pagina Partners, naast het ouderlijk huis en na het downloaden van het boek) zijn gewone links: ze laten alleen zien dat je van Cartea Neamului komt, zonder enig gegeven over jou.",
+        },
+        keep: {
+          h: "Hoe lang we de gegevens bewaren",
+          p1: "Zolang je een account hebt. Wat je verwijdert, verdwijnt meteen van de site, en de reservekopieën van de database worden binnen hoogstens 30 dagen vanzelf overschreven. Als je je account verwijdert, verdwijnt alles wat van jou is: het account, de herinneringen in je kist, de berichten, wat je anderen schreef en de toestemmingen. De stambomen blijven van de familie: een stamboom met andere leden gaat over naar een van hen, en een stamboom waarin je alleen bent, wordt helemaal verwijderd. Je kaart in de stambomen blijft, zodat de stamboom niet breekt, zonder de koppeling met het account; als je wilt, wordt ze ook leeggemaakt van je gegevens. Hoeveel je de site gebruikt, bewaren we hoogstens 13 maanden; als je zegt ‘Ik wil niet meer’, wordt het meteen verwijderd.",
+        },
+        rights: {
+          h: "Je rechten",
+          p1: "Je kunt te weten komen welke gegevens we over je hebben, ze verbeteren, verwijderen, meenemen, vragen dat we ze niet meer op een bepaalde manier gebruiken en je toestemming altijd intrekken. Veel doe je zelf, op de pagina <data>Mijn gegevens</data>: je downloadt alles wat bij je account hoort, trekt je toestemming in voor ‘Geloof’ of voor de voordelen van partners, stopt het meten van de tijd op de site of verwijdert je account. Voor de rest schrijf je ons op <mail>{email}</mail>; we antwoorden binnen hoogstens een maand.",
+          p2: "Als je vindt dat we je rechten niet hebben gerespecteerd, kun je een klacht indienen bij de Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+        },
+        kids: {
+          h: "Kinderen, de levenden en wie er niet meer is",
+          l1: "Een account is voor mensen van minstens {minAge} jaar. Kinderen kunnen door hun ouders in de stamboom worden gezet.",
+          l2: "Wie als levend in een stamboom staat, kan de eigenaar van de stamboom of ons vragen zijn gegevens te verbeteren, te verbergen of te verwijderen.",
+          l3: "De wet op persoonsgegevens geldt niet voor wie er niet meer is, maar hun nagedachtenis bewaren we met hetzelfde respect.",
+        },
+        cookies: {
+          h: "Cookies",
+          p1: "We gebruiken alleen de cookies zonder welke de site niet zou werken, dus vragen we daarvoor niet je toestemming:",
+          l1: "de cookie die je ingelogd houdt;",
+          l2: "<code>limba</code>, met de taal waarin je de site op deze telefoon of computer wilt lezen (bijvoorbeeld ‘ro’ of ‘de’), een jaar bewaard;",
+          l3: "de cookie met het gekozen thema (licht of donker);",
+          l4: "<code>cn-parteneri</code>, alleen als je bij het maken van je account de voordelen van partners aanvinkt: hij onthoudt het vinkje hoogstens 30 minuten, net lang genoeg om je keuze bij het nieuwe account te krijgen (ook als je het met Google maakt), en verdwijnt dan.",
+          p2: "We gebruiken geen advertentiecookies en geen cookies om bezoeken te tellen.",
+        },
+        safety: {
+          h: "Veiligheid",
+          p1: "De verbinding met de site is versleuteld, wachtwoorden bewaren we alleen als vingerafdruk, en foto’s, documenten en opnamen staan op een privéplek: ze openen alleen via links die na een paar minuten verlopen, nadat we hebben gecontroleerd dat je ze mag zien.",
+        },
+        changes: {
+          h: "Wijzigingen",
+          p1: "Als we iets belangrijks veranderen in wat we bewaren of aan wie we het laten zien, laten we het je op de site weten voordat de wijziging ingaat.",
+        },
+      },
+    },
+    Terms: {
+      metaTitle: "Gebruiksvoorwaarden",
+      metaDescription: "Wat het betekent om een account te hebben bij Cartea Neamului: wat je erop mag zetten, van wie het is en wat we beloven.",
+      label: "Gebruiksvoorwaarden",
+      title: "Wat het betekent om een account te hebben bij Cartea Neamului",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Als je een account maakt, ga je akkoord met deze voorwaarden en met het <privacy>Privacybeleid</privacy>.",
+          beta: "Cartea Neamului wordt nu uitgeprobeerd: het staat alleen open voor familie en goede vrienden, zodat ze ons kunnen vertellen wat werkt en wat niet. Het kan vaak veranderen en soms fouten maken, dus bewaar ook zelf een kopie van wat belangrijk is: je downloadt die altijd via ‘Mijn gegevens’.",
+        },
+        account: {
+          h: "1. Het account",
+          l1: "Een account is voor mensen van minstens {minAge} jaar. Kinderen kunnen door hun ouders in de stamboom worden gezet.",
+          l2: "Een account is van één persoon. Je wachtwoord houd je voor jezelf; wat er vanuit je account gebeurt, is jouw verantwoordelijkheid.",
+          l3: "Het proefaccount heeft een openbaar wachtwoord en is dus van iedereen: zet er niets van je familie in.",
+        },
+        content: {
+          h: "2. Wat je op de site zet",
+          l1: "Je zet er alleen op wat je mag: foto’s en documenten van de familie, teksten die je zelf schreef, opnamen gemaakt met toestemming van wie er spreekt.",
+          l2: "Over levende familieleden schrijf je met zorg en gezond verstand. Als iemand je vraagt zijn gegevens uit de stamboom te halen, haal je ze eruit of schrijf je ons.",
+          l3: "Je zet er niets op dat onwettig of beledigend is of tot haat aanzet, en ook geen gegevens van anderen zonder dat je daartoe het recht hebt.",
+          l4: "We kunnen verbergen of verwijderen wat in strijd is met deze voorwaarden of met de wet, en we zeggen je waarom.",
+        },
+        owner: {
+          h: "3. Van wie is wat je erop zet",
+          p1: "Wat je erop zet, blijft van jou en je familie. Ons geef je alleen toestemming om het te bewaren, het te laten zien aan wie je hebt gekozen en het in het boek te zetten dat je vraagt, zodat de site werkt. We gebruiken het niet voor iets anders en we verkopen het niet.",
+        },
+        trees: {
+          h: "4. Stambomen en herinneringen",
+          l1: "De eigenaar van de stamboom beslist wie erbij komt en welke rechten iemand heeft: de bezoeker kijkt alleen, de bijdrager voegt toe, de redacteur verbetert de kaarten.",
+          l2: "Een herinnering is van wie haar schrijft: alleen die kiest wie haar ziet, en alleen die verandert of verwijdert haar.",
+          l3: "Het hoofdstuk ‘Geloof’ van de autobiografie is alleen voor levenden, die zelf antwoorden, met hun toestemming.",
+        },
+        price: {
+          h: "5. De prijs",
+          p1: "Op dit moment is alles gratis. Als we ooit een abonnement vragen, voor grote stambomen of voor nieuwe dingen, laten we het je op tijd weten. Wat je erop hebt gezet, blijft van jou, en het bekijken van de stamboom, de uitnodigingen en het downloaden ervan (GEDCOM) blijven gratis.",
+        },
+        reliability: {
+          h: "6. Hoe betrouwbaar de site werkt",
+          p1: "We doen ons best om de site goed te laten werken en niets te laten verloren gaan, maar we kunnen niet beloven dat er nooit onderbrekingen of fouten zullen zijn. Bewaar ook zelf een kopie: de stamboom als GEDCOM, het boek als pdf en je gegevens via <data>Mijn gegevens</data>.",
+        },
+        end: {
+          h: "7. Beëindiging",
+          p1: "Je kunt je account altijd verwijderen, via <data>Mijn gegevens</data>. We kunnen een account dat ernstig in strijd is met deze voorwaarden schorsen, nadat we de persoon hebben geschreven en hebben uitgelegd waarom.",
+        },
+        liability: {
+          h: "8. Aansprakelijkheid",
+          p1: "Binnen de grenzen van de wet zijn we niet aansprakelijk voor indirecte schade door het gebruik van de site. Niets in deze voorwaarden neemt je de rechten af die de wet je als consument geeft.",
+        },
+        law: {
+          h: "9. Toepasselijk recht",
+          p1: "Op deze voorwaarden is het Roemeense recht van toepassing. Een meningsverschil proberen we eerst in goed overleg op te lossen; als dat niet lukt, beslissen de rechtbanken in Roemenië.",
+        },
+        changes: {
+          h: "10. Wijzigingen",
+          p1: "Als we iets belangrijks veranderen in deze voorwaarden, laten we het je op de site weten voordat de wijziging ingaat.",
+        },
+      },
+    },
+  },
+};

@@ -6,6 +6,8 @@ import { nlCarte } from "./carte/nl";
 import { nlCalatorie } from "./calatorie/nl";
 import { nlBiserica } from "./biserica/nl";
 import { nlParteneri } from "./parteneri/nl";
+import { nlLegal } from "./legal/nl";
+import { nlDatele } from "./datele/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -305,13 +307,15 @@ export const nl: Catalog = {
   ...nlCalatorie,
   ...nlBiserica,
   ...nlParteneri,
+  ...nlLegal,
+  ...nlDatele,
   NotFound: {
     title: "Deze pagina bestaat niet",
     text: "De link klopt misschien niet of de pagina is verplaatst. Vanaf de startpagina vind je alles.",
     home: "Naar de startpagina",
   },
   LegalNote: {
-    text: "Deze pagina is in het Roemeens. De Roemeense versie is de officiële.",
+    text: "Dit is een vertaling. De Roemeense versie is de officiële.",
   },
   AuthError: {
     title: "Inloggen is niet gelukt",

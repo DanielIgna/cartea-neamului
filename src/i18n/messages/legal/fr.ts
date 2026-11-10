@@ -1,0 +1,166 @@
+import type { LegalCatalog } from "./ro";
+
+export const frLegal: LegalCatalog = {
+  Legal: {
+    updated: "Dernière modification : {date}",
+    contactTitle: "Contact",
+    contactLine: "{name}{person, select, yes {, personne physique} other {}}. E-mail : <mail>{email}</mail>.",
+    Privacy: {
+      metaTitle: "Politique de confidentialité",
+      metaDescription: "Quelles données nous gardons, pourquoi, qui les voit et comment vous les téléchargez ou les supprimez.",
+      label: "Politique de confidentialité",
+      title: "Comment nous prenons soin des données de votre famille",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. Vous trouverez ici, brièvement et sans mots compliqués, quelles données nous gardons, pourquoi, qui les voit et comment vous les téléchargez ou les supprimez. En bref : les arbres sont privés, vous choisissez qui voit vos souvenirs, nous ne vendons rien et nous ne faisons pas de publicité. Notre partenaire, PropManage, ne reçoit que votre adresse e-mail, et seulement si vous cochez la case prévue.",
+        },
+        controller: {
+          h: "Qui est responsable des données",
+          p1: "Le responsable du traitement des données de Cartea Neamului au sens du règlement général sur la protection des données (règlement UE 2016/679, « RGPD ») est <b>{name}</b>{person, select, yes {, personne physique} other {}}. Pour toute question ou demande concernant vos données, écrivez-nous à <mail>{email}</mail>.",
+          beta: "Cartea Neamului est actuellement en phase d’essai : seuls la famille et les amis proches l’utilisent, pour nous dire ce qui marche et ce qui ne marche pas. Même pendant l’essai, vos données sont gardées et protégées comme décrit ici.",
+        },
+        data: {
+          h: "Quelles données nous gardons",
+          l1: "<b>Le compte :</b> le nom, l’adresse e-mail et le mot de passe (gardé seulement sous forme d’empreinte chiffrée, que même nous ne pouvons pas lire). Si vous vous connectez avec Google, l’identifiant du compte Google et sa photo de profil. Pour la sécurité du compte, les sessions où vous êtes connecté, avec l’adresse IP et le type de navigateur.",
+          l2: "<b>Les arbres :</b> ce que vous et vos proches écrivez sur les personnes : noms, dates et lieux de naissance et de décès, lieu de résidence des vivants, profession, biographie, notes, photos, documents numérisés et liens de parenté. Nous gardons aussi la trace de qui a fait chaque modification, pour que les erreurs puissent être corrigées.",
+          l3: "<b>Le coffre à souvenirs et l’autobiographie :</b> les souvenirs écrits ou racontés de vive voix (enregistrements audio), leurs photos, les questions laissées par la famille et les réponses. Lorsqu’un proche enregistre « chez les grands-parents » les histoires d’une personne sans compte, nous gardons aussi son accord, parfois avec sa voix.",
+          l4: "<b>La foi :</b> ce que vous écrivez dans le chapitre « La foi » révèle vos convictions religieuses. La loi les considère comme une catégorie particulière de données (art. 9 RGPD) ; nous ne les gardons donc qu’avec votre consentement explicite, que nous vous demandons à cet endroit même, avant votre première réponse.",
+          l5: "<b>Les messages</b> que les membres de la famille s’écrivent entre eux.",
+          l6: "<b>« Êtes-vous déjà dans un arbre ? » :</b> le nom et la date de naissance que vous saisissez pour trouver votre fiche. Après la recherche, nous ne gardons que le nom de famille recherché et si quelque chose a été trouvé, pour limiter les recherches (ainsi personne ne peut deviner la date de naissance de quelqu’un en essayant jour après jour).",
+          l7: "<b>« Des mêmes lieux » :</b> seulement si le propriétaire de l’arbre l’active, les villages des ancêtres décédés, leurs noms de famille et les années, pour que d’autres familles ayant des racines dans les mêmes villages retrouvent leurs proches. Nous gardons aussi les demandes de mise en relation et les réponses.",
+          l8: "<b>Votre utilisation du site</b>, seulement si vous répondez « D’accord » à la question que nous vous posons une seule fois : par jour, le temps passé dans chaque partie du site (par exemple « Arbre · Arbre » ou « La carte de la famille »), combien de fois vous l’avez ouverte et quelle part de ce temps était sur téléphone ou dans l’application du téléphone. Nous ne comptons que le temps pendant lequel la page est au premier plan et où vous y faites quelque chose. Nous ne gardons ni l’adresse de la page, ni ce que vous écrivez, ni ce sur quoi vous cliquez.",
+          l9: "<b>Avantages des partenaires</b>, seulement si vous cochez cette case (à la création du compte ou dans « Mes données ») : chaque « oui » et chaque « non », avec la date, la version du texte coché, la langue et l’endroit où vous avez fait ce choix.",
+          l10: "<b>La maison de famille :</b> ce que vous écrivez sur la maison de la famille sur la page d’une personne (l’adresse ou le village, qui l’a construite, l’année, des photos et son histoire). Seules les personnes que vous choisissez la voient, comme pour les souvenirs.",
+          l11: "<b>Dans votre navigateur :</b> le thème choisi (clair ou sombre), les lignées que vous avez choisi de voir et si vous avez déjà vu la carte du partenaire après le téléchargement du livre. Si vous avez dit « D’accord » à la mesure du temps, aussi la dernière minute comptée, au plus une heure, pour qu’elle nous parvienne même si vous fermez la page précipitamment.",
+          l12: "<b>Les journaux techniques</b> du serveur (adresse IP, page demandée, heure), gardés peu de temps, pour pouvoir corriger les erreurs.",
+        },
+        why: {
+          h: "Pourquoi et sur quelle base légale",
+          l1: "Pour que fonctionne ce que vous nous demandez : le compte, les arbres, le coffre à souvenirs, les messages et le livre. La base légale est le contrat entre nous, c’est-à-dire ces <terms>Conditions</terms> (art. 6, par. 1, point b du RGPD).",
+          l2: "Pour protéger les comptes et les arbres : les sessions, l’historique des modifications et la limitation des recherches. La base légale est notre intérêt légitime à garder le site sûr (art. 6, par. 1, point f).",
+          l3: "Pour voir ce que les gens utilisent et ce qu’il faut améliorer : les chiffres sur les comptes et les arbres dans le panneau d’administration, sans ce que vous écrivez. La base légale est notre intérêt légitime à améliorer le site (art. 6, par. 1, point f).",
+          l4: "Pour les proches vivants que vous ajoutez à l’arbre, la base légale est l’intérêt légitime de la famille à garder son histoire, avec soin : les arbres sont privés et les vivants ne sont visibles que dans leur propre arbre, jamais par d’autres familles. Toute personne inscrite dans un arbre peut nous demander de corriger ou de supprimer ses données.",
+          l5: "Sur la base de votre consentement, que vous pouvez retirer à tout moment : le chapitre « La foi » (art. 9, par. 2, point a), les histoires enregistrées « chez les grands-parents », « Des mêmes lieux », votre utilisation du site et les avantages des partenaires (art. 6, par. 1, point a). Le retrait ne change pas ce qui a été fait auparavant avec le consentement donné.",
+        },
+        who: {
+          h: "Qui voit les données",
+          l1: "<b>Les arbres sont privés.</b> Seuls les voient les membres que le propriétaire invite ou accepte après une demande. Chacun a un rôle : le visiteur ne fait que voir, le contributeur ajoute, l’éditeur corrige, le propriétaire décide qui entre.",
+          l2: "<b>Les vivants</b> ne sont visibles que dans leur propre arbre. Ils n’apparaissent ni dans « Des mêmes lieux » ni chez d’autres familles. La seule personne qui peut trouver sa fiche depuis l’extérieur de l’arbre est la personne elle-même, avec son nom et sa date de naissance complète ; le propriétaire de l’arbre décide alors s’il l’accepte, et d’ici là, celui qui cherche n’apprend même pas de quel arbre il s’agit.",
+          l3: "<b>Les souvenirs</b> ne sont vus que par ceux que choisit leur auteur : lui seul (brouillon), la personne qui a posé la question, la famille proche jusqu’à un certain degré de parenté ou tout l’arbre. Seuls ceux cochés pour le livre entrent dans le livre de la famille.",
+          l4: "<b>Les messages</b> ne sont vus que par les deux personnes qui se les écrivent.",
+          l5: "<b>Nous</b> ne voyons dans le panneau d’administration que des listes et des chiffres : les comptes (nom, e-mail, quand et depuis quel type d’appareil ils se sont connectés), les arbres (nom, nombre de personnes et de fichiers), pour chaque compte ce qu’il a ajouté (combien de personnes, souvenirs, photos, invitations et messages) et, pour ceux qui ont dit « D’accord », le temps passé dans chaque partie du site. Nous pouvons aussi y garder une courte note sur le compte, par exemple qu’il reste gratuit. Nous ne lisons ni les souvenirs ni les messages, et nous ne comptons rien du chapitre « La foi » ; nous ne les regardons que si vous nous demandez de l’aide ou si la loi nous y oblige.",
+          l6: "Nous ne vendons pas de données, nous ne faisons pas de publicité et nous ne les donnons à personne d’autre que les prestataires ci-dessous, notre partenaire PropManage (seulement l’e-mail de ceux qui ont coché la case, comme décrit plus bas) et les autorités, lorsque la loi nous y oblige.",
+        },
+        vendors: {
+          h: "Les prestataires qui nous aident",
+          p1: "Nous travaillons avec quelques prestataires, qui traitent les données uniquement pour faire fonctionner le site, selon des contrats qui les obligent à les protéger :",
+          l1: "<b>Vercel Inc.</b> (États-Unis) héberge le site et fait tourner l’application.",
+          l2: "<b>Neon</b> (Databricks Inc., États-Unis) conserve la base de données, les photos, les documents et les enregistrements, dans un centre de données à Francfort (Allemagne, UE).",
+          l3: "<b>Google</b>, seulement si vous choisissez « Continuer avec Google », confirme votre identité à la connexion.",
+          l4: "<b>OpenStreetMap</b> (Fondation OpenStreetMap, Royaume-Uni) fournit les morceaux de carte de « La carte de la famille ». Votre navigateur les leur demande directement, ils voient donc l’adresse IP depuis laquelle vous les demandez.",
+          p2: "Pour les transferts hors de l’Union européenne, ces prestataires utilisent les clauses contractuelles types approuvées par la Commission européenne ou le cadre de protection des données UE–États-Unis. Nous n’envoyons rien sur les vivants à des services d’intelligence artificielle.",
+        },
+        partner: {
+          h: "Notre partenaire, PropManage",
+          p1: "PropManage (<pm>propmanage.ro</pm>) est une plateforme pour les propriétaires de logements et un partenaire de Cartea Neamului. Vous ne le trouvez que sur la page <partners>Partenaires</partners> ; il n’y a pas de publicité dans l’arbre, les souvenirs, la chronologie, la carte ou le livre.",
+          l1: "<b>Ce qu’il reçoit :</b> seulement votre adresse e-mail, et seulement si vous avez coché « {consent} ». La case est séparée, elle n’est pas cochée d’office et rien sur le site n’en dépend. PropManage ne reçoit jamais rien sur votre arbre, les personnes qui y figurent, les proches que vous avez invités, les villages, les souvenirs, les photos ou la voix. Les proches invités et les personnes de l’arbre ne reçoivent jamais de messages de PropManage.",
+          l2: "<b>La base légale :</b> votre consentement (art. 6, par. 1, point a du RGPD). Dès qu’il reçoit l’adresse, PropManage en est responsable en tant que responsable de traitement distinct, selon sa propre politique de confidentialité, et ne l’utilise que pour vous envoyer de temps en temps des avantages pour votre logement.",
+          l3: "<b>Combien de temps :</b> tant que votre consentement est donné. Nous refaisons à chaque fois la liste que reçoit PropManage à partir des consentements actuels ; une fois que vous l’avez retiré, votre adresse ne lui parvient donc plus. Nous lui demandons de supprimer votre adresse dès qu’il apprend que vous avez retiré votre consentement.",
+          l4: "<b>Comment le retirer :</b> d’un clic, dans <dataPartners>Mes données</dataPartners> (l’interrupteur « Avantages des partenaires »), ou par le lien de désinscription de chaque e-mail reçu, sans vous connecter. Le retrait ne change rien à votre compte ni à votre arbre.",
+          l5: "Les liens vers PropManage sur le site (sur la page Partenaires, à côté de la maison de famille et après le téléchargement du livre) sont de simples liens : ils indiquent seulement que vous venez de Cartea Neamului, sans aucune donnée sur vous.",
+        },
+        keep: {
+          h: "Combien de temps nous gardons les données",
+          p1: "Tant que vous avez un compte. Ce que vous supprimez disparaît immédiatement du site, et les copies de sauvegarde de la base de données sont réécrites automatiquement en 30 jours au plus. Quand vous supprimez votre compte, tout ce qui est à vous part : le compte, les souvenirs de votre coffre, les messages, ce que vous avez écrit à d’autres et les consentements. Les arbres restent à la famille : un arbre avec d’autres membres passe à l’un d’eux, et celui où vous êtes seul est entièrement supprimé. Votre fiche dans les arbres reste, pour que l’arbre ne se brise pas, sans lien avec le compte ; si vous le souhaitez, elle est aussi vidée de vos données. Nous gardons votre utilisation du site au plus 13 mois ; si vous dites « Je ne veux plus », elle est supprimée immédiatement.",
+        },
+        rights: {
+          h: "Vos droits",
+          p1: "Vous pouvez savoir quelles données nous avons sur vous, les corriger, les supprimer, les emporter, demander que nous ne les utilisions plus d’une certaine façon et retirer à tout moment le consentement donné. Vous pouvez faire beaucoup de choses vous-même, sur la page <data>Mes données</data> : télécharger tout ce qui concerne votre compte, retirer votre consentement pour « La foi » ou pour les avantages des partenaires, arrêter la mesure du temps passé sur le site ou supprimer votre compte. Pour le reste, écrivez-nous à <mail>{email}</mail> ; nous vous répondons dans un délai d’un mois au plus.",
+          p2: "Si vous estimez que nous n’avons pas respecté vos droits, vous pouvez porter plainte auprès de l’Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+        },
+        kids: {
+          h: "Les enfants, les vivants et ceux qui ne sont plus",
+          l1: "Le compte est pour les personnes âgées d’au moins {minAge} ans. Les enfants peuvent être ajoutés à l’arbre par leurs parents.",
+          l2: "Toute personne inscrite comme vivante dans un arbre peut demander au propriétaire de l’arbre ou à nous de corriger, de masquer ou de supprimer ses données.",
+          l3: "La loi sur les données personnelles ne s’applique pas à ceux qui ne sont plus, mais nous gardons leur mémoire avec le même respect.",
+        },
+        cookies: {
+          h: "Cookies",
+          p1: "Nous n’utilisons que les cookies sans lesquels le site ne fonctionnerait pas ; nous ne vous demandons donc pas votre accord pour eux :",
+          l1: "celui qui vous garde connecté à votre compte ;",
+          l2: "<code>limba</code>, avec la langue dans laquelle vous avez choisi de lire le site sur ce téléphone ou cet ordinateur (par exemple « ro » ou « fr »), gardé un an ;",
+          l3: "celui du thème choisi (clair ou sombre) ;",
+          l4: "<code>cn-parteneri</code>, seulement si vous cochez les avantages des partenaires en créant votre compte : il retient la case cochée au plus 30 minutes, le temps que votre choix arrive à votre nouveau compte (même si vous le créez avec Google), puis disparaît.",
+          p2: "Nous n’utilisons pas de cookies publicitaires ni de cookies pour compter les visites.",
+        },
+        safety: {
+          h: "La sécurité",
+          p1: "La connexion au site est chiffrée, les mots de passe ne sont gardés que sous forme d’empreinte, et les photos, documents et enregistrements sont dans un espace privé : ils ne s’ouvrent que par des liens qui expirent au bout de quelques minutes, après que nous avons vérifié que vous avez le droit de les voir.",
+        },
+        changes: {
+          h: "Modifications",
+          p1: "Si nous changeons quelque chose d’important dans ce que nous gardons ou à qui nous le montrons, nous vous prévenons sur le site avant que la modification ne prenne effet.",
+        },
+      },
+    },
+    Terms: {
+      metaTitle: "Conditions d’utilisation",
+      metaDescription: "Ce que signifie avoir un compte sur Cartea Neamului : ce que vous pouvez y mettre, à qui cela appartient et ce que nous promettons.",
+      label: "Conditions d’utilisation",
+      title: "Ce que signifie avoir un compte sur Cartea Neamului",
+      sections: {
+        intro: {
+          p1: "Cartea Neamului est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. En créant un compte, vous acceptez ces conditions et la <privacy>Politique de confidentialité</privacy>.",
+          beta: "Cartea Neamului est actuellement en phase d’essai : il n’est ouvert qu’à la famille et aux amis proches, pour qu’ils nous disent ce qui marche et ce qui ne marche pas. Il peut changer souvent et parfois se tromper ; gardez donc vous aussi une copie de ce qui compte : vous la téléchargez à tout moment dans « Mes données ».",
+        },
+        account: {
+          h: "1. Le compte",
+          l1: "Le compte est pour les personnes âgées d’au moins {minAge} ans. Les enfants peuvent être ajoutés à l’arbre par leurs parents.",
+          l2: "Un compte appartient à une seule personne. Gardez votre mot de passe pour vous ; ce qui est fait depuis votre compte relève de votre responsabilité.",
+          l3: "Le compte de démonstration a un mot de passe public, il est donc à tout le monde : n’y mettez rien de votre famille.",
+        },
+        content: {
+          h: "2. Ce que vous mettez sur le site",
+          l1: "Vous ne mettez que ce que vous avez le droit de mettre : photos et documents de la famille, textes écrits par vous, enregistrements faits avec l’accord de la personne qui parle.",
+          l2: "Vous écrivez sur les proches vivants avec soin et bon sens. Si quelqu’un vous demande de retirer ses données de l’arbre, vous les retirez ou vous nous écrivez.",
+          l3: "Vous ne mettez rien d’illégal, d’injurieux ou qui incite à la haine, ni les données d’autrui sans en avoir le droit.",
+          l4: "Nous pouvons masquer ou supprimer ce qui enfreint ces conditions ou la loi, et nous vous disons pourquoi.",
+        },
+        owner: {
+          h: "3. À qui appartient ce que vous mettez",
+          p1: "Ce que vous mettez reste à vous et à votre famille. Vous nous donnez seulement le droit de le garder, de le montrer aux personnes que vous avez choisies et de le mettre dans le livre que vous demandez, pour que le site fonctionne. Nous ne l’utilisons à aucune autre fin et nous ne le vendons pas.",
+        },
+        trees: {
+          h: "4. Les arbres et les souvenirs",
+          l1: "Le propriétaire de l’arbre décide qui entre et quels droits il a : le visiteur ne fait que voir, le contributeur ajoute, l’éditeur corrige les fiches.",
+          l2: "Un souvenir appartient à celui qui l’écrit : lui seul choisit qui le voit, et lui seul le modifie ou le supprime.",
+          l3: "Le chapitre « La foi » de l’autobiographie n’est que pour les vivants, qui répondent eux-mêmes, avec leur consentement.",
+        },
+        price: {
+          h: "5. Le prix",
+          p1: "Pour l’instant, tout est gratuit. Si nous demandons un jour un abonnement, pour les grands arbres ou pour de nouvelles fonctions, nous vous prévenons à l’avance. Ce que vous avez mis reste à vous, et la consultation de l’arbre, les invitations et son téléchargement (GEDCOM) restent gratuits.",
+        },
+        reliability: {
+          h: "6. La fiabilité du site",
+          p1: "Nous faisons de notre mieux pour que le site fonctionne bien et que rien ne se perde, mais nous ne pouvons pas promettre qu’il n’y aura jamais d’interruptions ou d’erreurs. Gardez vous aussi une copie : l’arbre en GEDCOM, le livre en PDF et vos données depuis <data>Mes données</data>.",
+        },
+        end: {
+          h: "7. La fin",
+          p1: "Vous pouvez supprimer votre compte à tout moment, dans <data>Mes données</data>. Nous pouvons suspendre un compte qui enfreint gravement ces conditions, après avoir écrit à la personne et lui avoir dit pourquoi.",
+        },
+        liability: {
+          h: "8. La responsabilité",
+          p1: "Dans les limites de la loi, nous ne sommes pas responsables des dommages indirects liés à l’utilisation du site. Rien dans ces conditions ne vous retire les droits que la loi vous donne en tant que consommateur.",
+        },
+        law: {
+          h: "9. Le droit applicable",
+          p1: "Ces conditions sont régies par le droit roumain. Nous essayons d’abord de régler un désaccord à l’amiable ; si ce n’est pas possible, il est tranché par les tribunaux de Roumanie.",
+        },
+        changes: {
+          h: "10. Modifications",
+          p1: "Si nous changeons quelque chose d’important dans ces conditions, nous vous prévenons sur le site avant que la modification ne prenne effet.",
+        },
+      },
+    },
+  },
+};
