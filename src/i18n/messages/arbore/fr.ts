@@ -33,6 +33,7 @@ export const frArbore: ArboreCatalog = {
     legendPathTo: "Le chemin du tronc jusqu’à {name}",
     legend360Twin: "La famille du père sur une moitié du cercle, celle de la mère sur l’autre ; la ligne pointillée est le mariage des parents, et leurs enfants en partent.",
     legend360Help: "L’ancêtre est en bas, dans le tronc ; chaque génération forme un anneau plus haut, tout autour. Faites glisser l’arbre pour le tourner (et vers le haut ou le bas pour l’incliner), ou utilisez les flèches du clavier. « L’histoire de la famille » passe d’une personne à l’autre dans l’ordre des naissances et raconte, pour chacune, comment était la vie dans sa région à cette époque.",
+    legend360Pinch: "Sur un téléphone : tournez l’arbre avec un doigt, agrandissez-le ou réduisez-le avec deux doigts.",
     legendDescendant: "Descendant",
     legendSpouse: "Époux / épouse",
     legendDescHelp: "Les enfants d’un mariage descendent de la ligne entre les époux ; ceux d’une autre relation, seulement de leur parent.",

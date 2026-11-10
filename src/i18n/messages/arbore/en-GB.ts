@@ -33,6 +33,7 @@ export const enGBArbore: ArboreCatalog = {
     legendPathTo: "The path from the trunk to {name}",
     legend360Twin: "The father’s family on one half of the circle, the mother’s on the other; the dotted line is the parents’ marriage, and their children grow out of it.",
     legend360Help: "The ancestor sits at the bottom, in the trunk; each generation is a ring higher up, all the way round. Drag the tree to turn it (and up or down to tilt it), or use the arrow keys. “The family story” goes through the people in order of birth and tells you, for each of them, what life was like in their part of the world at the time.",
+    legend360Pinch: "On a phone: turn the tree with one finger, zoom in or out with two fingers.",
     legendDescendant: "Descendant",
     legendSpouse: "Husband / wife",
     legendDescHelp: "The children of a marriage come down from the line between the couple; children from another relationship come only from their parent.",

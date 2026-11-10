@@ -102,13 +102,38 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
     return () => clearTimeout(t);
   }, [autoplay, story, steps.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Rotire cu mouse-ul sau cu degetul; un clic fără mișcare alege omul.
+  // Rotire cu mouse-ul sau cu un deget; un clic fără mișcare alege omul. Cu două degete (pe telefon) se mărește și se micșorează.
+  const fingers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<{ d: number; z: number } | null>(null);
+  const spread = () => {
+    const [a, b] = [...fingers.current.values()];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  };
   const onDown = (e: RPointerEvent<SVGSVGElement>) => {
+    if (e.pointerType === "touch") {
+      fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (fingers.current.size === 2) {
+        // Al doilea deget: nu mai rotim, ci mărim după cât se depărtează degetele.
+        pinch.current = { d: spread(), z: zoomRef.current };
+        drag.current = null;
+        dragged.current = true;
+        target.current = null;
+        return;
+      }
+      if (fingers.current.size > 2) return;
+    }
     drag.current = { x: e.clientX, y: e.clientY, moved: false, id: e.pointerId };
     setSpin(false); // l-ai prins cu mâna: stă pe loc până îl pornești din nou
     dragged.current = false;
   };
   const onMove = (e: RPointerEvent<SVGSVGElement>) => {
+    if (fingers.current.has(e.pointerId)) fingers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const p = pinch.current;
+    if (p && fingers.current.size >= 2) {
+      const d = spread();
+      if (p.d > 0) setZoom(clamp((p.z * d) / p.d, 0.5, 4));
+      return;
+    }
     const d = drag.current;
     if (!d || d.id !== e.pointerId) return;
     const dx = e.clientX - d.x, dy = e.clientY - d.y;
@@ -118,6 +143,13 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
     setCam((c) => ({ ...c, yaw: c.yaw + dx * 0.009, pitch: clamp(c.pitch + dy * 0.005, -1.2, 0.3) }));
   };
   const onUp = (e: RPointerEvent<SVGSVGElement>) => {
+    fingers.current.delete(e.pointerId);
+    if (pinch.current) {
+      // După ciupit, degetul rămas pe ecran nu sare în rotire și nici nu alege pe cineva.
+      if (fingers.current.size < 2) pinch.current = null;
+      drag.current = null;
+      return;
+    }
     const d = drag.current;
     drag.current = null;
     if (d?.moved) { dragged.current = true; e.currentTarget.releasePointerCapture?.(e.pointerId); }

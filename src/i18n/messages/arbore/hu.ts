@@ -36,6 +36,7 @@ export const huArbore: ArboreCatalog = {
     legendPathTo: "A törzstől {name} felé vezető út",
     legend360Twin: "Az apai család a kör egyik felén, az anyai a másikon; a pontozott vonal a szülők házassága, és belőle nőnek ki a gyermekeik.",
     legend360Help: "Az ős lent van, a törzsben; minden nemzedék egy gyűrűvel feljebb van, körös-körül. Húzd a fát, hogy elforgasd (felfelé vagy lefelé, hogy megdöntsd), vagy használd a nyílbillentyűket. „A család története” születési sorrendben végigmegy az embereken, és mindegyiknél elmondja, milyen volt akkor az élet azon a vidéken.",
+    legend360Pinch: "Telefonon: egy ujjal forgatod a fát, két ujjal nagyítod vagy kicsinyíted.",
     legendDescendant: "Leszármazott",
     legendSpouse: "Férj / feleség",
     legendDescHelp: "Egy házasság gyermekei a házastársak közötti vonalból ágaznak le; a más kapcsolatból születettek csak a saját szülőjükből.",

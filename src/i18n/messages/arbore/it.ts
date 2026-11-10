@@ -33,6 +33,7 @@ export const itArbore: ArboreCatalog = {
     legendPathTo: "Il percorso dal tronco fino a {name}",
     legend360Twin: "La famiglia del padre su una metà del cerchio, quella della madre sull’altra; la linea tratteggiata è il matrimonio dei genitori, e da lì crescono i loro figli.",
     legend360Help: "L’antenato sta in basso, nel tronco; ogni generazione è un anello più in alto, tutto intorno. Trascina l’albero per ruotarlo (e in su o in giù per inclinarlo), oppure usa le frecce della tastiera. «La storia della famiglia» passa tra le persone in ordine di nascita e racconta, per ognuna, com’era la vita nella sua regione in quel tempo.",
+    legend360Pinch: "Sul telefono: ruota l’albero con un dito, ingrandiscilo o rimpiccioliscilo con due dita.",
     legendDescendant: "Discendente",
     legendSpouse: "Marito / moglie",
     legendDescHelp: "I figli di un matrimonio scendono dalla linea tra i coniugi; quelli di un’altra relazione, solo dal loro genitore.",

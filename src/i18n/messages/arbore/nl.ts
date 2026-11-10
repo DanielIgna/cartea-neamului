@@ -33,6 +33,7 @@ export const nlArbore: ArboreCatalog = {
     legendPathTo: "De weg van de stam naar {name}",
     legend360Twin: "De familie van de vader op de ene helft van de cirkel, die van de moeder op de andere; de stippellijn is het huwelijk van de ouders, en daaruit groeien hun kinderen.",
     legend360Help: "De voorouder staat onderaan, in de stam; elke generatie is een ring hoger, helemaal rondom. Sleep aan de boom om hem te draaien (en omhoog of omlaag om hem te kantelen), of gebruik de pijltjestoetsen. ‘Het verhaal van de familie’ gaat de mensen langs in volgorde van geboorte en vertelt bij ieder hoe het leven er in die streek toen uitzag.",
+    legend360Pinch: "Op je telefoon: draai de boom met één vinger, zoom in of uit met twee vingers.",
     legendDescendant: "Nakomeling",
     legendSpouse: "Echtgenoot / echtgenote",
     legendDescHelp: "De kinderen van een huwelijk komen uit de lijn tussen de echtgenoten; kinderen uit een andere relatie alleen uit hun ouder.",
