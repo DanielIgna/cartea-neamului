@@ -9,9 +9,12 @@ import { isDemo } from "@/lib/demo";
 import { baseWord } from "@/lib/texte";
 import TimeJourney from "@/components/TimeJourney";
 import PageIntl from "@/i18n/PageIntl";
+import { getLocale, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Călătoria în timp · Cartea Neamului" };
+export async function generateMetadata() {
+  return { title: `${(await getT("Journey"))("title")} · Cartea Neamului` };
+}
 const UUID = /^[0-9a-f-]{36}$/i;
 
 /** Călătoria în timp: nava pornește din prezent, de la cel din centru (implicit fișa ta), și coboară pe cele două spițe. */
@@ -25,11 +28,11 @@ export default async function Journey({ params, searchParams }: { params: Promis
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const data = await loadTreeView(db, id, p && UUID.test(p) ? p : mine?.id, 2);
   if (!data || !data.centerId) notFound();
-  const [origins, base] = await Promise.all([birthOrigins(db, id), baseWord(db)]);
-  // Călătoria e încă scrisă în română (etapa 4 a traducerii), așa că și povestea vremurilor din ea rămâne în română
-  // până atunci, ca să nu amestecăm limbile în aceeași frază.
+  // Cuvântul de la final, în limba cititorului (cel schimbat din panou pentru limba aceasta, altfel traducerea textului inițial).
+  const locale = await getLocale();
+  const [origins, base] = await Promise.all([birthOrigins(db, id), baseWord(db, locale)]);
   return (
-    <PageIntl ns={["Times", "Vremuri"]} locale="ro">
+    <PageIntl ns={["Times", "Vremuri", "Journey"]}>
       <TimeJourney treeId={id} treeName={data.tree.name} meId={me.id} centerId={data.centerId} people={data.people} rels={data.rels} origins={origins}
         word={data.tree.journeyWord ?? null} defaultWord={base} isOwner={role === "owner"} demo={isDemo(me.email)} />
     </PageIntl>

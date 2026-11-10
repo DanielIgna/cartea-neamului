@@ -114,7 +114,7 @@ export default function ChurchHistory() {
         <p>Biserica nu e o clădire și nici o instituție, ci toți cei care L-au primit pe Hristos, de la Ștefan până la bunicii care se rugau în ascuns și până la noi.
           Lumina a trecut din mână în mână două mii de ani, adesea cu prețul vieții. Acum e în mâinile noastre: s-o ținem aprinsă, să citim Cuvântul și să ne rugăm pentru cei care sunt prigoniți azi.</p>
         {CHURCH_END.map((v) => <Quote key={v.ref} v={v} />)}
-        <p><a className="btn primary" href={READ_JOHN} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a></p>
+        <p><a className="btn primary" href={READ_JOHN.ro} target="_blank" rel="noopener noreferrer">Citește Evanghelia după Ioan</a></p>
         <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Versetele sunt din Biblia tradusă de Dumitru Cornilescu. Unde un lucru e doar tradiție, textul o spune.</p>
       </section>
     </article>

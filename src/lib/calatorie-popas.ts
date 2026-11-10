@@ -1,19 +1,18 @@
 /**
- * Popasul din anii comunismului: istorie, fără judecăți de partid. Versetul și întrebarea de la capăt se arată doar când
- * cuvântul de la final nu e ascuns de proprietar (sunt partea de credință a călătoriei).
+ * Unde citești Evanghelia după Ioan, gratuit și fără cont, pe bible.com, în traducerea obișnuită a fiecărei limbi:
+ * Cornilescu, King James, Segond 1910, Reina-Valera 1909, Statenvertaling, Luther 1912, Nuova Riveduta, Károli.
+ * (Textele popasului din anii comunismului sunt în texte, la `Journey.regime`.)
  */
-export const REGIME_TEXT = {
-  title: "Anii minciunii și ai fricii",
-  years: "1947–1989",
-  paragraphs: [
-    "Aici nava trece prin anii comunismului. Oamenilor li s-a luat pământul la colectivizare, iar cine se împotrivea ajungea la Sighet, la Aiud sau la Canal. Securitatea asculta, iar vecinii erau puși să se pârască între ei.",
-    "Ziarele și școala spuneau ce hotăra partidul. Biserica greco-catolică a fost desființată în 1948, preoți și credincioși au fost închiși, iar cei care se adunau să citească Biblia erau urmăriți. Un sistem care se ține prin minciună, frică și manipulare are nevoie de oameni care nu mai pun întrebări.",
-    "Sistemele cad, dar ispita rămâne: și azi, ideologii de tot felul promit o lume nouă și cer în schimb să nu mai întrebi ce e adevărat.",
-  ],
-  question: "Ce a însemnat asta pentru ai tăi? Și pe ce adevăr te sprijini tu, când ți se spune ce să crezi?",
-  verse: "Veți cunoaște adevărul, și adevărul vă va face slobozi.",
-  verseRef: "Ioan 8:32",
-};
+import type { Locale } from "@/i18n/locales";
 
-/** Evanghelia după Ioan, în traducerea Cornilescu, pe bible.com (gratuit, fără cont). */
-export const READ_JOHN = "https://www.bible.com/ro/bible/191/JHN.1.VDC";
+export const READ_JOHN: Record<Locale, string> = {
+  ro: "https://www.bible.com/ro/bible/191/JHN.1.VDC",
+  "en-GB": "https://www.bible.com/bible/1/JHN.1.KJV",
+  "en-US": "https://www.bible.com/bible/1/JHN.1.KJV",
+  fr: "https://www.bible.com/fr/bible/93/JHN.1.LSG",
+  es: "https://www.bible.com/es/bible/1718/JHN.1.RVR09",
+  nl: "https://www.bible.com/nl/bible/165/JHN.1.STV",
+  de: "https://www.bible.com/de/bible/51/JHN.1.DELUT",
+  it: "https://www.bible.com/it/bible/122/JHN.1.NR06",
+  hu: "https://www.bible.com/hu/bible/84/JHN.1.HUNK",
+};

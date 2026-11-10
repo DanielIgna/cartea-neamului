@@ -9,6 +9,7 @@ import { isAdminUser } from "@/lib/admin";
 import { PlanSettings, isPlan, savePlanSettings, setAccountPlan } from "@/lib/plans";
 import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
+import { isLocale } from "@/i18n/locales";
 import { undoChange } from "@/lib/admin-istoric";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
@@ -49,13 +50,14 @@ export async function saveAccountPlan(_: AdminFormState, form: FormData): Promis
  * „Texte”: cuvântul de la finalul Călătoriei în timp, pentru toți arborii unde proprietarul n-a scris altul.
  * `null` = înapoi la textul inițial (cel din cod).
  */
-export async function saveJourneyBaseWord(text: string | null): Promise<AdminFormState> {
+export async function saveJourneyBaseWord(text: string | null, locale: string = "ro"): Promise<AdminFormState> {
   const me = await admin();
   if (!me) return { error: "Nu ai voie aici." };
   const parsed = z.string().max(MAX_WORD).nullable().safeParse(text);
   if (!parsed.success) return { error: `Textul poate avea cel mult ${MAX_WORD} de caractere.` };
   if (parsed.data !== null && !parsed.data.trim()) return { error: "Textul e gol. Scrie-l sau pune înapoi textul inițial." };
-  await saveBaseWord(db, parsed.data, me.id);
+  if (!isLocale(locale)) return { error: "Limba nu există." };
+  await saveBaseWord(db, parsed.data, me.id, new Date(), locale);
   revalidatePath("/admin", "layout");
   revalidatePath("/arbore/[id]/calatorie", "page");
   return { ok: parsed.data === null ? "Am pus înapoi textul inițial." : "Am salvat. Așa se vede de acum la capătul călătoriei." };

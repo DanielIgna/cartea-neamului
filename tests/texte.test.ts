@@ -4,6 +4,7 @@ import { runMigrations } from "@/db/migrate";
 import { tree, user } from "@/db/schema";
 import { DEFAULT_WORD, MAX_WORD, wordFor } from "@/lib/cuvant-final";
 import { baseWord, baseWordInfo, ownWordCounts, saveBaseWord } from "@/lib/texte";
+import { DEFAULT_WORDS } from "@/lib/cuvant-final-limbi";
 
 describe("textele schimbate din panou", () => {
   let db: Db;
@@ -35,6 +36,16 @@ describe("textele schimbate din panou", () => {
     await saveBaseWord(db, `  ${DEFAULT_WORD}\n`, "admin");
     expect((await baseWordInfo(db)).changed).toBe(false);
     await expect(saveBaseWord(db, "x".repeat(MAX_WORD + 1), "admin")).rejects.toThrow();
+  });
+
+  it("fiecare limbă are textul ei: ce schimbi în germană nu schimbă româna", async () => {
+    expect((await baseWordInfo(db, "de")).text).toBe(DEFAULT_WORDS.de);
+    await saveBaseWord(db, "## Zwei Bücher", "admin", new Date(), "de");
+    expect(await baseWord(db, "de")).toBe("## Zwei Bücher");
+    expect((await baseWordInfo(db, "ro")).changed).toBe(false);
+    expect(await baseWord(db, "fr")).toBe(DEFAULT_WORDS.fr);
+    await saveBaseWord(db, DEFAULT_WORDS.de, "admin", new Date(), "de");
+    expect((await baseWordInfo(db, "de")).changed).toBe(false);
   });
 
   it("numără arborii care au textul lor sau l-au ascuns", async () => {

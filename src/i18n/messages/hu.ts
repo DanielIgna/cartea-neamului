@@ -3,6 +3,7 @@ import { huArbore } from "./arbore/hu";
 import { huAmintiri } from "./amintiri/hu";
 import { huVremuri } from "./vremuri/hu";
 import { huCarte } from "./carte/hu";
+import { huCalatorie } from "./calatorie/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -292,4 +293,5 @@ export const hu: Catalog = {
   // Povestea vremurilor: epocile, viața de atunci, evenimentele și ținuturile.
   ...huVremuri,
   ...huCarte,
+  ...huCalatorie,
 };

@@ -5,6 +5,8 @@
  */
 import { isAncestor } from "./family";
 import { kinship, type Graph, type Sex } from "./kinship";
+import { kinLabel } from "./kin-words";
+import type { Locale } from "@/i18n/locales";
 import { storyFor, type HistEvent, type Origin, type Story } from "./vremuri";
 
 export type Line = "ego" | "father" | "mother";
@@ -19,7 +21,7 @@ export type Stop = {
   year: number;
   /** Anul nu e trecut în fișă: l-am socotit după copil (cu vreo 28 de ani înainte). */
   estimated: boolean;
-  /** „tată”, „bunic”, „străbunic”: cum îi e celui din centru. */
+  /** „tată”, „bunic”, „străbunic” (în limba cititorului): cum îi e celui din centru. */
   relation: string;
   /** A câta generație în urmă (0 = cel din centru). */
   gen: number;
@@ -77,8 +79,11 @@ function aliveIn(p: Person, year: number, now: number) {
 export function journeyStops(opts: {
   g: Graph; people: Record<string, Person>; ego: string; origins?: (id: string) => Origin | null;
   patRoot?: string | null; matRoot?: string | null; placeholder?: (id: string) => boolean; now?: number; maxContemporaries?: number;
+  /** Limba în care se scriu legăturile („tată”, “father”…) și cuvântul pentru un strămoș fără legătură găsită. */
+  locale?: Locale; ancestor?: string;
 }): Stop[] {
-  const { g, people, ego, patRoot = null, matRoot = null, placeholder = () => false, now = new Date().getFullYear(), maxContemporaries = 8 } = opts;
+  const { g, people, ego, patRoot = null, matRoot = null, placeholder = () => false, now = new Date().getFullYear(), maxContemporaries = 8, locale = "ro", ancestor = "strămoș" } = opts;
+  const label = (k: { term: Parameters<typeof kinLabel>[0]; sex: Sex }) => kinLabel(k.term, k.sex, locale);
   const origin = opts.origins ?? (() => null);
   if (!people[ego]) return [];
   const father = parentOf(g, ego, "M", people, placeholder), mother = parentOf(g, ego, "F", people, placeholder);
@@ -100,7 +105,8 @@ export function journeyStops(opts: {
       const year = p.birthYear ?? childYear - GEN_YEARS;
       childYear = year;
       const gen = line === "ego" ? 0 : i + 1;
-      const relation = line === "ego" ? "" : kinship(g, ego, id)?.label ?? "strămoș";
+      const kin = line === "ego" ? null : kinship(g, ego, id);
+      const relation = line === "ego" ? "" : kin ? label(kin) : ancestor;
       const story = storyFor({ birthYear: year, deathYear: p.deathYear, living: p.living }, origin(id), now);
       const contemporaries = Object.values(people)
         .filter((x) => !onRoad.has(x.id) && !x.discreet && !placeholder(x.id) && aliveIn(x, year, now))
@@ -108,28 +114,13 @@ export function journeyStops(opts: {
         .filter((c): c is { x: Person; k: NonNullable<typeof c.k> } => !!c.k)
         .sort((a, b) => (a.k.degree ?? 3.5) - (b.k.degree ?? 3.5) || (b.x.birthYear ?? 0) - (a.x.birthYear ?? 0))
         .slice(0, maxContemporaries)
-        .map(({ x, k }) => ({ id: x.id, age: year - x.birthYear!, relation: k.label }));
+        .map(({ x, k }) => ({ id: x.id, age: year - x.birthYear!, relation: label(k) }));
       stops.push({ id, line, year, estimated, relation, gen, story, contemporaries });
     });
   }
   // Din prezent spre trecut; la același an, întâi spița tatălui, apoi a mamei, cei mai apropiați întâi.
   const order: Record<Line, number> = { ego: 0, father: 1, mother: 2 };
   return stops.sort((a, b) => (a.line === "ego" ? -1 : b.line === "ego" ? 1 : 0) || b.year - a.year || a.gen - b.gen || order[a.line] - order[b.line]);
-}
-
-/** „acum 94 de ani”, „acum un an”, „anul acesta”. */
-export function agoWords(year: number, now = new Date().getFullYear()) {
-  const n = now - year;
-  if (n <= 0) return "anul acesta";
-  if (n === 1) return "acum un an";
-  return n < 20 ? `acum ${n} ani` : `acum ${n} de ani`;
-}
-
-/** „un an”, „7 ani”, „25 de ani”, „nou-născut”. */
-export function yearsWords(n: number) {
-  if (n <= 0) return "nou-născut";
-  if (n === 1) return "un an";
-  return n % 100 === 0 || n % 100 >= 20 ? `${n} de ani` : `${n} ani`;
 }
 
 /** Anii comunismului în România: nava face un popas când drumul trece prin ei. */
@@ -157,8 +148,8 @@ export function journeyLegs(stops: Stop[], people: Record<string, Person>, now =
 
 /** Un număr mic din id, ca întrebarea și răspunsurile să fie mereu aceleași pentru același om. */
 const seed = (id: string) => [...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
-/** Răspunsurile sunt evenimente: fiecare se scrie în limba cititorului (partea „Vremuri” din texte). */
-export type Quiz = { question: string; options: HistEvent[]; answer: number; year: number };
+/** Răspunsurile sunt evenimente: fiecare se scrie în limba cititorului (partea „Vremuri” din texte), ca și întrebarea. */
+export type Quiz = { options: HistEvent[]; answer: number; year: number };
 
 /**
  * Jocul de la fiecare oprire: „Pe care dintre acestea a apucat-o?” Una din ce a trăit omul și două din afara vieții lui,
@@ -176,5 +167,5 @@ export function quizFor(stop: Stop, p: Person, events: HistEvent[], now = new Da
   if (a === b) return null;
   const answer = k % 3, options = [a, b];
   options.splice(answer, 0, inLife);
-  return { question: `Pe care dintre acestea a apucat-o ${p.givenName || p.name}?`, options, answer, year: inLife.year };
+  return { options, answer, year: inLife.year };
 }
