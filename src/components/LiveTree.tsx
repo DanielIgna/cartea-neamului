@@ -21,7 +21,10 @@ export default function LiveTree(props: Props) {
   return <RealtimeProvider client={client}><LiveStatus {...props} /></RealtimeProvider>;
 }
 
-function LiveStatus({ treeId, userId, sealedQuery, initialData }: Props) {
+function LiveStatus({ treeId, userId, sealedQuery: fresh, initialData }: Props) {
+  // Interogarea sigilată vine din nou la fiecare reîncărcare a datelor paginii (router.refresh); dacă am da-o mai departe,
+  // abonamentul s-ar relua și eticheta ar sări pe „se conectează…”. O păstrăm pe prima; o reînnoiește refreshQuery.
+  const [sealedQuery] = useState(fresh);
   const t = useTranslations("Charts"), locale = useLocale();
   const router = useRouter();
   const [lastChange, setLastChange] = useState<string | null>(null);
@@ -55,9 +58,18 @@ function LiveStatus({ treeId, userId, sealedQuery, initialData }: Props) {
     timer.current = setTimeout(() => router.refresh(), 300);
   }, [data, router]);
 
-  const label = status === "error" ? t("liveStopped") : status === "live" ? t("live") : t("connecting");
+  // După ce a fost o dată „live”, o reconectare scurtă nu mai schimbă eticheta; doar o eroare care ține o vreme.
+  const [everLive, setEverLive] = useState(false);
+  const [down, setDown] = useState(false);
+  useEffect(() => {
+    if (status === "live") { setEverLive(true); setDown(false); return; }
+    if (status !== "error") return;
+    const k = setTimeout(() => setDown(true), 5000);
+    return () => clearTimeout(k);
+  }, [status]);
+  const label = down ? t("liveStopped") : status === "live" || everLive ? t("live") : status === "error" ? t("liveStopped") : t("connecting");
   return (
-    <span className="chip" role="status" data-live-status={status} title={t("liveTitle")}>
+    <span className="chip" role="status" data-live-status={down ? "error" : everLive ? "live" : status} title={t("liveTitle")}>
       ● {label}{lastChange ? ` · ${t("updatedAt", { time: lastChange })}` : ""}
     </span>
   );

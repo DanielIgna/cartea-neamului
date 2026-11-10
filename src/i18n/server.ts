@@ -3,7 +3,7 @@ import { cookies, headers } from "next/headers";
 import { createFormatter, createTranslator, type Messages, type NamespaceKeys, type NestedKeyOf } from "use-intl/core";
 import { currentUser } from "@/lib/access";
 import { isDemo } from "@/lib/demo";
-import { DEFAULT_LOCALE, LOCALE_COOKIE, TIME_ZONE, isLocale, localeFromAcceptLanguage, type Locale } from "./locales";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, TIME_ZONE, isLocale, localeFromAcceptLanguage, type Locale } from "./locales";
 import { loadMessages } from "./messages";
 
 /** Unde a găsit serverul limba: aleasă pe acest telefon (cookie), din cont sau niciuna (româna, de la sine). */
@@ -42,8 +42,13 @@ export async function getFormat(locale?: Locale) {
  * și browserul lui e într-o limbă pe care o avem, alta decât româna.
  */
 export async function suggestedLocale(): Promise<Locale | null> {
-  const { source } = await getLocaleInfo();
+  const { locale, source } = await getLocaleInfo();
   if (source !== "default") return null;
-  const l = localeFromAcceptLanguage((await headers()).get("accept-language"));
-  return l && l !== DEFAULT_LOCALE ? l : null;
+  // Închisă o dată cu ✕: nu mai întrebăm pe acest telefon sau calculator.
+  if ((await cookies()).get(SUGGEST_DISMISSED_COOKIE)?.value) return null;
+  const header = (await headers()).get("accept-language");
+  // Cine are browserul în română (prima limbă din listă) nu e întrebat, chiar dacă mai știe și alte limbi.
+  if (localeFromAcceptLanguage(header?.split(",")[0]) === DEFAULT_LOCALE) return null;
+  const l = localeFromAcceptLanguage(header);
+  return l && l !== DEFAULT_LOCALE && l !== locale ? l : null;
 }

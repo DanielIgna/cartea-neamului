@@ -7,6 +7,10 @@ import type { CarteCatalog } from "./ro";
 export const huCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, number} hangban elmondott emlék nincs a könyvben, így a QR-kódja sem:",
+      audioNotTicked: "{count, number} nincs bejelölve a család könyvéhez (aki írta, az emlékládában bejelölheti);",
+      audioCloseOnly: "{count, number} csak a szűk családnak szól, és csak a teljes kiadásba kerül be;",
+      audioLivingHidden: "{count, number} olyan élő emberé, aki ebben a kiadásban rejtve van.",
       title: "A család könyve",
       back: "Vissza a családfához",
       lead: "A borító, a tartalomjegyzék, az ősök legyezője, a családfa és mindenkinek egy-egy lap, fényképekkel és történetekkel. A könyv abból készül, ami most a családfában van: ha a család hozzáad valamit, nyisd meg újra ezt az oldalt, és a könyvben az újdonságok is benne lesznek.",
@@ -35,6 +39,9 @@ export const huCarte: CarteCatalog = {
     },
     toc: "Tartalom",
     about: {
+      ofTree: "A könyvben a családfa {all, number} személyéből {count, number} szerepel",
+      livingHidden: "{count, number} élő személy rejtve ebben a kiadásban",
+      otherLeftOut: "{count, number} személy diszkrét, név nélküli vagy nem kapcsolódik a könyvben szereplőkhöz",
       title: "A könyvről",
       people: "A könyv {count, plural, one {egy embert} other {# embert}} gyűjt egybe.",
       peopleGenerations: "A könyv {count, plural, one {egy embert} other {# embert}} gyűjt egybe, {generations, plural, one {egy nemzedékből} other {# nemzedékből}}.",

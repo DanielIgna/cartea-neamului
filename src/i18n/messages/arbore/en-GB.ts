@@ -134,6 +134,9 @@ export const enGBArbore: ArboreCatalog = {
     unclaimedText: "Send {name} a link. Once {sex, select, M {he has} F {she has} other {they have}} an account, {sex, select, M {he goes} F {she goes} other {they go}} straight into the tree with {sex, select, M {his} F {her} other {their}} own profile in the centre, and can carry on the tree with {sex, select, M {his} F {her} other {their}} own family.",
   },
   Charts: {
+    hourBefore: "▲ Before {name}",
+    hourAfter: "▼ After {name}",
+    twoFingers: "Use two fingers to move and zoom the tree",
     add: "add",
     emptyAdd: "Empty place: add the person",
     empty: "Empty place",
@@ -527,6 +530,12 @@ export const enGBArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "{shown, number} of the {all, number} people in the tree",
+    noPlaceKnown: "{count, plural, one {# person with no known place} other {# people with no known place}}",
+    discreetLeftOut: "{count, plural, one {# private person, not shown on the map} other {# private people, not shown on the map}}",
+    hintWheel: "Hold Ctrl (or ⌘) or click the map to zoom with the scroll wheel",
+    hintTouch: "Use two fingers to move and zoom the map",
+    clusterTitle: "{count, number} places close together: tap to see them",
     title: "The family map · {tree}",
     back: "Back to the tree",
     filterAria: "What the map shows",

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { person, tree } from "@/db/schema";
 import { requireUser, roleIn, can } from "@/lib/access";
@@ -32,11 +32,12 @@ export default async function MapPage({ params, searchParams }: { params: Promis
   });
   // Satele pe care le văd celelalte neamuri țin pasul cu harta (de pildă după ce un loc e mutat pe hartă).
   if (tr.discoverable) await storeSharedPlaces(db, id, data.shared).catch((e) => console.error("Din aceleași locuri", e));
+  const [{ n: treeTotal }] = await db.select({ n: sql<number>`count(*)::int` }).from(person).where(eq(person.treeId, id));
   const matches = tr.discoverable ? await placeMatches(db, id, me.id) : [];
   return (
     <PageIntl ns={["Map", "Nearby"]}>
       <FamilyMap treeId={id} treeName={tr.name} data={data} canEdit={can(role, "contributor")} focus={typeof loc === "string" ? loc : null}
-        nearby={{ on: tr.discoverable, owner: role === "owner", demo: isDemo(me.email), matches }} />
+        nearby={{ on: tr.discoverable, owner: role === "owner", demo: isDemo(me.email), matches }} treeTotal={treeTotal} />
     </PageIntl>
   );
 }

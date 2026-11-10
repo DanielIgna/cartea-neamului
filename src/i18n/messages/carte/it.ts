@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const itCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {Un ricordo raccontato a voce non è nel libro, e quindi nemmeno il suo codice QR:} other {# ricordi raccontati a voce non sono nel libro, e quindi nemmeno i loro codici QR:}}",
+      audioNotTicked: "{count, plural, one {uno non ha la spunta «Può entrare nel libro della famiglia» (chi l’ha scritto può farlo dal baule);} other {# non hanno la spunta «Può entrare nel libro della famiglia» (chi li ha scritti può farlo dal baule);}}",
+      audioCloseOnly: "{count, plural, one {uno è solo per la famiglia stretta ed entra solo nell’edizione completa;} other {# sono solo per la famiglia stretta ed entrano solo nell’edizione completa;}}",
+      audioLivingHidden: "{count, plural, one {uno è di una persona in vita nascosta in questa edizione.} other {# sono di persone in vita nascoste in questa edizione.}}",
       title: "Il libro della famiglia",
       back: "Torna all’albero",
       lead: "La copertina, il sommario, gli antenati a ventaglio, l’albero della famiglia e una scheda per ogni persona, con foto e storie. Si fa con ciò che c’è adesso nell’albero: quando la famiglia aggiunge qualcosa, riapri questa pagina e il libro avrà anche le novità.",
@@ -32,6 +36,9 @@ export const itCarte: CarteCatalog = {
     },
     toc: "Sommario",
     about: {
+      ofTree: "Nel libro {count, plural, one {c’è # persona} other {ci sono # persone}} delle {all, number} dell’albero",
+      livingHidden: "{count, plural, one {# persona in vita nascosta} other {# persone in vita nascoste}} in questa edizione",
+      otherLeftOut: "{count, plural, one {# persona riservata, senza nome o non collegata a quelle del libro} other {# persone riservate, senza nome o non collegate a quelle del libro}}",
       title: "Questo libro",
       people: "Il libro riunisce {count, plural, one {una persona} other {# persone}}.",
       peopleGenerations: "Il libro riunisce {count, plural, one {una persona} other {# persone}} di {generations, plural, one {una generazione} other {# generazioni}}.",

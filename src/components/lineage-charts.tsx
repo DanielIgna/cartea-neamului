@@ -318,8 +318,8 @@ export function Hourglass({ slots, generations, down, people, selectedId, onSele
   );
   return (
     <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t("hourglassLabel")} style={{ width: W, maxWidth: "none", display: "block", margin: "0 auto" }}>
-      <text x={14} y={20} fill="var(--muted)" fontSize={12}>▲ Înaintea lui {people[down.id]?.givenName}</text>
-      <text x={14} y={midY + rowH / 2 + 4} fill="var(--muted)" fontSize={12}>▼ După {people[down.id]?.givenName}</text>
+      <text x={14} y={20} fill="var(--muted)" fontSize={12}>{t("hourBefore", { name: people[down.id]?.givenName ?? "" })}</text>
+      <text x={14} y={midY + rowH / 2 + 4} fill="var(--muted)" fontSize={12}>{t("hourAfter", { name: people[down.id]?.givenName ?? "" })}</text>
       {ups.map((n) => {
         const a = upPos(n), b = upPos(Math.floor(n / 2));
         if (!b) return null;

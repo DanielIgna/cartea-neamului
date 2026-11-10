@@ -153,6 +153,12 @@ export const esAmintiri: AmintiriCatalog = {
     cancel: "Cancelar",
   },
   Voice: {
+    noDevice: "No encontramos ningún micrófono en este dispositivo. Conecta uno y vuelve a intentarlo.",
+    micBusy: "Otra aplicación está usando el micrófono. Ciérrala y vuelve a intentarlo.",
+    micTimeout: "El navegador no ha encendido el micrófono. Si ves una pregunta arriba, elige «Permitir» y vuelve a intentarlo.",
+    micFailed: "El micrófono no se ha encendido. Vuelve a intentarlo.",
+    retry: "Volver a intentarlo",
+    limit: "Como máximo {minutes, number} minutos o 4 MB.",
     uploadAudioFailed: "La grabación no se ha podido subir. Inténtalo de nuevo.",
     uploadPhotoFailed: "La foto no se ha podido subir. Inténtalo de nuevo o guarda sin la foto.",
     record: "Grabar de viva voz",

@@ -13,7 +13,7 @@ export default function LanguagePicker({ remember = false }: { remember?: boolea
   const t = useTranslations("LanguagePicker");
   const locale = useLocale();
   useEffect(() => {
-    if (remember) document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=31536000; samesite=lax`;
+    if (remember) document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=31536000; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
   }, [remember, locale]);
   const router = useRouter();
   const [pending, start] = useTransition();

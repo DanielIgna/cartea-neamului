@@ -8,6 +8,7 @@ export type Voice = { blob: Blob; seconds: number; url: string; name: string };
 // Chrome și Android înregistrează în WebM/Opus, iPhone-ul în MP4/AAC; luăm primul pe care îl știe browserul.
 const TYPES = ["audio/webm;codecs=opus", "audio/mp4", "audio/ogg;codecs=opus", "audio/webm"];
 const MAX_BYTES = 4 * 1024 * 1024;
+const MIC_TIMEOUT_MS = 10_000;
 const extOf = (type: string) => (type.includes("mp4") ? "m4a" : type.includes("ogg") ? "ogg" : "webm");
 export const clock = (s: number | null | undefined) => (s ? `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}` : "");
 
@@ -50,6 +51,25 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
     rec.current?.stream.getTracks().forEach((t) => t.stop());
   }, []);
 
+  // Cererea de microfon: dacă omul nu răspunde la întrebarea browserului (sau browserul n-o arată deloc) în 10 secunde,
+  // ne oprim și spunem ce poate face, în loc să rămânem la „Pornește microfonul…”. Un microfon venit după aceea se oprește.
+  const askMic = () => new Promise<MediaStream>((resolve, reject) => {
+    let late = false;
+    const timeout = window.setTimeout(() => { late = true; reject(new DOMException("timeout", "TimeoutError")); }, MIC_TIMEOUT_MS);
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }).then(
+      (s) => { window.clearTimeout(timeout); if (late) s.getTracks().forEach((x) => x.stop()); else resolve(s); },
+      (e) => { window.clearTimeout(timeout); if (!late) reject(e); },
+    );
+  });
+  const micError = (e: unknown) => {
+    const name = e instanceof DOMException || e instanceof Error ? e.name : "";
+    if (name === "NotAllowedError" || name === "PermissionDeniedError" || name === "SecurityError") return t("noMic");
+    if (name === "NotFoundError" || name === "DevicesNotFoundError" || name === "OverconstrainedError") return t("noDevice");
+    if (name === "NotReadableError" || name === "TrackStartError" || name === "AbortError") return t("micBusy");
+    if (name === "TimeoutError") return t("micTimeout");
+    return t("micFailed");
+  };
+
   const start = async () => {
     setErr(null);
     const ok = typeof window !== "undefined" && typeof MediaRecorder !== "undefined" && !!navigator.mediaDevices?.getUserMedia;
@@ -58,10 +78,10 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
     setState("asking");
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-    } catch {
+      stream = await askMic();
+    } catch (e) {
       setState("idle");
-      return setErr(t("noMic"));
+      return setErr(micError(e));
     }
     const r = new MediaRecorder(stream, { ...(type ? { mimeType: type } : {}), audioBitsPerSecond: 48_000 });
     const chunks: Blob[] = [];
@@ -128,7 +148,18 @@ export default function VoiceRecorder({ value, onChange, big = false, maxSeconds
           <input ref={fileRef} type="file" accept="audio/*,.opus,.m4a" hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) pick(f); }} />
         </div>
       )}
-      {err && <p className="err" role="alert" style={{ margin: "6px 0 0" }}>{err}</p>}
+      {state !== "recording" && !value && <p className="muted voice-limit">{t("limit", { minutes: Math.round(maxSeconds / 60) })}</p>}
+      {err && (
+        <div className="err voice-err" role="alert">
+          <p style={{ margin: 0 }}>{err}</p>
+          {!value && state === "idle" && (
+            <p style={{ margin: "6px 0 0" }}>
+              <button type="button" className="btn" onClick={start}>{t("retry")}</button>{" "}
+              <button type="button" className="linklike" onClick={() => fileRef.current?.click()}>{t("uploadFile")}</button>
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

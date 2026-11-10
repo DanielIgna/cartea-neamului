@@ -4,6 +4,10 @@ import type { CarteCatalog } from "./ro";
 export const nlCarte: CarteCatalog = {
   Book: {
     page: {
+      audioOut: "{count, plural, one {Eén ingesproken herinnering staat niet in het boek, en dus ook haar QR-code niet:} other {# ingesproken herinneringen staan niet in het boek, en dus ook hun QR-codes niet:}}",
+      audioNotTicked: "{count, plural, one {één is niet aangevinkt bij „Mag in het familieboek” (wie haar schreef, kan dat in de kist doen);} other {# zijn niet aangevinkt bij „Mag in het familieboek” (wie ze schreef, kan dat in de kist doen);}}",
+      audioCloseOnly: "{count, plural, one {één is alleen voor naaste familie en komt alleen in de volledige uitgave;} other {# zijn alleen voor naaste familie en komen alleen in de volledige uitgave;}}",
+      audioLivingHidden: "{count, plural, one {één is van een levende persoon die in deze uitgave verborgen is.} other {# zijn van levende personen die in deze uitgave verborgen zijn.}}",
       title: "Het familieboek",
       back: "Terug naar de stamboom",
       lead: "De kaft, de inhoud, de voorouders in een waaier, de stamboom en een pagina voor ieder mens, met foto’s en verhalen. Het boek wordt gemaakt van wat er nu in de stamboom staat: voegt de familie iets toe, open deze pagina dan opnieuw en het nieuwe staat er ook in.",
@@ -32,6 +36,9 @@ export const nlCarte: CarteCatalog = {
     },
     toc: "Inhoud",
     about: {
+      ofTree: "Dit boek bevat {count, plural, one {# persoon} other {# personen}} van de {all, number} in de stamboom",
+      livingHidden: "{count, plural, one {# levende persoon verborgen} other {# levende personen verborgen}} in deze uitgave",
+      otherLeftOut: "{count, plural, one {# persoon die discreet is, geen naam heeft of niet verbonden is met wie in het boek staat} other {# personen die discreet zijn, geen naam hebben of niet verbonden zijn met wie in het boek staat}}",
       title: "Over dit boek",
       people: "Dit boek brengt {count, plural, one {één persoon} other {# personen}} samen.",
       peopleGenerations: "Dit boek brengt {count, plural, one {één persoon} other {# personen}} uit {generations, plural, one {één generatie} other {# generaties}} samen.",

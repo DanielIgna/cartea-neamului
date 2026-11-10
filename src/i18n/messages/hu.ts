@@ -26,6 +26,7 @@ export const hu: Catalog = {
     label: "Az oldal nyelve",
   },
   LanguageSuggest: {
+    close: "Bezárás, és ne kérdezze újra",
     question: "Inkább magyarul olvasnád az oldalt?",
     hint: "A nyelvet bármikor átállíthatod fent, a téma mellett.",
     accept: "Magyarul",
@@ -107,6 +108,10 @@ export const hu: Catalog = {
     failed: "Nem sikerült. Próbáld újra.",
   },
   Invitation: {
+    ogTitle: "{name} meghív a(z) „{tree}” családfába",
+    ogTitleNoName: "Meghívtak a(z) „{tree}” családfába",
+    ogDescription: "Lépj be a családfába a Cartea Neamului oldalon: lásd a rokonaidat, add hozzá az ágadat és szeretteid emlékeit.",
+    invalid: "Ez a meghívó már nem érvényes",
     notFound: "Ez a meghívó nem létezik",
     expired: "Ez a meghívó lejárt",
     used: "Ezt a meghívót már felhasználták",
@@ -296,4 +301,12 @@ export const hu: Catalog = {
   ...huCarte,
   ...huCalatorie,
   ...huParteneri,
+  NotFound: {
+    title: "Ez az oldal nem létezik",
+    text: "Lehet, hogy hibás a link, vagy az oldal elköltözött. A kezdőlapról mindent megtalálsz.",
+    home: "Vissza a kezdőlapra",
+  },
+  LegalNote: {
+    text: "Ez az oldal románul olvasható. A román nyelvű változat a hivatalos.",
+  },
 };

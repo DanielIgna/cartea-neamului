@@ -134,6 +134,9 @@ export const itArbore: ArboreCatalog = {
     unclaimedText: "Manda un link a {name}. Quando avrà il suo account, entrerà direttamente nell’albero con la propria scheda al centro e potrà continuare l’albero con la sua famiglia.",
   },
   Charts: {
+    hourBefore: "▲ Prima di {name}",
+    hourAfter: "▼ Dopo {name}",
+    twoFingers: "Usa due dita per spostare e ingrandire l’albero",
     add: "aggiungi",
     emptyAdd: "Posto libero: aggiungi la persona",
     empty: "Posto libero",
@@ -527,6 +530,12 @@ export const itArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "{shown, number} delle {all, number} persone dell’albero",
+    noPlaceKnown: "{count, plural, one {# persona senza luogo noto} other {# persone senza luogo noto}}",
+    discreetLeftOut: "{count, plural, one {# persona riservata, non mostrata sulla mappa} other {# persone riservate, non mostrate sulla mappa}}",
+    hintWheel: "Tieni premuto Ctrl (o ⌘) o fai clic sulla mappa per ingrandirla con la rotellina",
+    hintTouch: "Usa due dita per spostare e ingrandire la mappa",
+    clusterTitle: "{count, number} luoghi vicini: tocca per vederli",
     title: "La mappa della famiglia · {tree}",
     back: "Torna all’albero",
     filterAria: "Cosa mostra la mappa",

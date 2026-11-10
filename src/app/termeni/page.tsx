@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LegalLangNote from "@/components/LegalLangNote";
 import type { Metadata } from "next";
 import { BETA, LEGAL_UPDATED, MIN_AGE, operator } from "@/lib/legal";
 
@@ -8,7 +9,8 @@ export const metadata: Metadata = { title: "Termeni de utilizare · Cartea Neamu
 export default function TermsPage() {
   const op = operator();
   return (
-    <article className="card legal">
+    <article className="card legal" lang="ro">
+      <LegalLangNote />
       <div className="section-label" style={{ marginTop: 0 }}>Termeni de utilizare</div>
       <h2>Ce înseamnă să ai cont în Cartea Neamului</h2>
       <p className="legal-date">Ultima schimbare: {LEGAL_UPDATED}</p>

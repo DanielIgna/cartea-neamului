@@ -137,6 +137,9 @@ export const huArbore: ArboreCatalog = {
     unclaimedText: "Küldj egy linket {name} részére. Miután fiókot nyitott, egyenesen a családfába jut, középen a saját adatlapjával, és tovább bővítheti a családfát a saját családjával.",
   },
   Charts: {
+    hourBefore: "▲ {name} előtt",
+    hourAfter: "▼ {name} után",
+    twoFingers: "Két ujjal mozgathatod és nagyíthatod a családfát",
     add: "hozzáadás",
     emptyAdd: "Üres hely: add hozzá a személyt",
     empty: "Üres hely",
@@ -530,6 +533,12 @@ export const huArbore: ArboreCatalog = {
     },
   },
   Map: {
+    ofTree: "A családfa {all, number} személyéből {shown, number}",
+    noPlaceKnown: "{count, number} személy ismert hely nélkül",
+    discreetLeftOut: "{count, number} diszkrét személy, aki nem jelenik meg a térképen",
+    hintWheel: "Tartsd lenyomva a Ctrl (vagy ⌘) billentyűt, vagy kattints a térképre a görgővel nagyításhoz",
+    hintTouch: "Két ujjal mozgathatod és nagyíthatod a térképet",
+    clusterTitle: "{count, number} közeli hely: koppints, hogy lásd őket",
     title: "A család térképe · {tree}",
     back: "Vissza a családfához",
     filterAria: "Mit mutat a térkép",

@@ -26,6 +26,7 @@ export const es: Catalog = {
     label: "Idioma del sitio",
   },
   LanguageSuggest: {
+    close: "Cerrar y no volver a preguntar",
     question: "¿Prefieres leer el sitio en español?",
     hint: "Puedes cambiar el idioma cuando quieras, arriba, junto al tema.",
     accept: "En español",
@@ -107,6 +108,10 @@ export const es: Catalog = {
     failed: "No ha funcionado. Inténtalo de nuevo.",
   },
   Invitation: {
+    ogTitle: "{name} te invita al árbol de la familia «{tree}»",
+    ogTitleNoName: "Estás invitado al árbol de la familia «{tree}»",
+    ogDescription: "Entra en el árbol en Cartea Neamului: ve a tus parientes, añade tu rama y los recuerdos de los tuyos.",
+    invalid: "La invitación ya no es válida",
     notFound: "La invitación no existe",
     expired: "La invitación ha caducado",
     used: "La invitación ya se ha usado",
@@ -296,4 +301,12 @@ export const es: Catalog = {
   ...esCarte,
   ...esCalatorie,
   ...esParteneri,
+  NotFound: {
+    title: "Esta página no existe",
+    text: "Puede que el enlace esté mal o que la página se haya movido. Desde la portada encuentras todo.",
+    home: "Ir a la portada",
+  },
+  LegalNote: {
+    text: "Esta página está en rumano. La versión en rumano es la oficial.",
+  },
 };

@@ -51,8 +51,18 @@ export default function PersonForm(props: Props) {
   const matches = props.mode === "add" && typed.given.trim().length > 1
     ? (props.lookalikes ?? []).filter((x) => sameLooking({ id: "", givenName: typed.given, surname: typed.surname, birthSurname: null, sex: x.sex, birthYear: null }, x))
     : [];
+  // Deschis din „+ Frate / soră” și celelalte butoane, formularul poate apărea mai jos de ecran (mai ales pe telefon):
+  // îl aducem în fața ochilor și punem cursorul în primul câmp.
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    const f = formRef.current;
+    if (!f) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    f.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    f.querySelector<HTMLInputElement>("input:not([type=hidden]), select, textarea")?.focus({ preventScroll: true });
+  }, []);
   return (
-    <form action={action} className="form" style={{ marginTop: 10 }}>
+    <form ref={formRef} action={action} className="form person-form" style={{ marginTop: 10 }}>
       <div className="section-label" style={{ marginTop: 0 }}>{p ? t("editTitle", { name: p.givenName }) : t("addTitle", { kind: kind!, name: anchor!.givenName })}</div>
       <input type="hidden" name="treeId" value={props.treeId} />
       {p ? <input type="hidden" name="personId" value={p.id} /> : <><input type="hidden" name="anchorId" value={anchor!.id} /><input type="hidden" name="kind" value={kind!} /></>}

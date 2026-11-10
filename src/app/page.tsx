@@ -9,6 +9,15 @@ import InstallApp from "@/components/InstallApp";
 import JoinTree from "@/components/JoinTree";
 import { myJoinRequests } from "@/lib/join";
 import { getT } from "@/i18n/server";
+import { SITE_URL } from "@/lib/site-url";
+import type { Metadata } from "next";
+
+// Prima pagină are o singură adresă (fără ?cont=…), iar motoarele de căutare află numele site-ului din datele WebSite.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+const WEBSITE = {
+  "@context": "https://schema.org", "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL, inLanguage: "ro",
+  description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
+};
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +29,10 @@ async function Landing({ deleted }: { deleted: boolean }) {
   const b = (c: React.ReactNode) => <b>{c}</b>;
   return (
     <div className="landing">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE) }} />
       {deleted && <p className="notice" role="status">{t("deleted")}</p>}
       <section className="card landing-hero">
-        <h2>{t("heroTitle")}</h2>
+        <h1 className="landing-title">{t("heroTitle")}</h1>
         {t("brandNote") && <p className="muted landing-brand">{t("brandNote")}</p>}
         <p>{t("heroText")}</p>
         <div className="actions"><Link className="btn primary" href="/intrare?mod=cont-nou">{t("signUp")}</Link><Link className="btn" href="/intrare">{t("signIn")}</Link></div>

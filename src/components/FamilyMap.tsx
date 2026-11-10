@@ -33,14 +33,17 @@ function arc(a: [number, number], b: [number, number]): [number, number][] {
   });
 }
 
-export default function FamilyMap({ treeId, treeName, data, canEdit, focus, nearby }: {
+export default function FamilyMap({ treeId, treeName, data, canEdit, focus, nearby, treeTotal }: {
   treeId: string; treeName: string; data: TreeMap; canEdit: boolean; focus: string | null; nearby: Nearby;
+  /** Câți oameni are arborele de tot (cifra din arbore și de pe prima pagină), ca să spunem de ce pe hartă sunt mai puțini. */
+  treeTotal: number;
 }) {
   const router = useRouter();
   const t = useTranslations("Map");
   const box = useRef<HTMLDivElement>(null);
   const drawn = useRef<Drawn | null>(null);
   const fitted = useRef(false);
+  const cleanup = useRef<(() => void) | null>(null);
   const [ready, setReady] = useState(false);
   const [zoom, setZoom] = useState(0);
   // Venit de la o amintire (`?loc=`) într-un loc fără oameni din fișe: harta pornește cu amintirile.
@@ -87,7 +90,34 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
       const L = (await import("leaflet")).default;
       const judete = (await import("@/data/places/judete.json")).default as { c: string; n: string; g: [number, number][][] }[];
       if (gone || !box.current) return;
-      const map = L.map(box.current, { worldCopyJump: true, zoomSnap: 0.5 }).setView([45.9, 24.97], 6);
+      // Pe telefon un deget derulează pagina, două degete mută și măresc harta. Pe calculator rotița mărește harta doar cu Ctrl
+      // (sau Cmd) apăsat ori după un clic pe hartă; altfel derulează pagina, ca de obicei.
+      const touch = window.matchMedia("(pointer: coarse)").matches || ("ontouchstart" in window && navigator.maxTouchPoints > 0);
+      const map = L.map(box.current, { worldCopyJump: true, zoomSnap: 0.5, scrollWheelZoom: false, dragging: !touch, touchZoom: true }).setView([45.9, 24.97], 6);
+      const el = box.current;
+      let clicked = false, hintTimer = 0;
+      const showHint = (on: boolean) => { el.classList.toggle("map-hint-on", on); };
+      const flash = () => { showHint(true); window.clearTimeout(hintTimer); hintTimer = window.setTimeout(() => showHint(false), 1400); };
+      const wheelOn = () => { if (!map.scrollWheelZoom.enabled()) map.scrollWheelZoom.enable(); };
+      const wheelOff = () => { if (!clicked) map.scrollWheelZoom.disable(); };
+      const keys = (e: KeyboardEvent) => { if (e.ctrlKey || e.metaKey) wheelOn(); else wheelOff(); };
+      window.addEventListener("keydown", keys);
+      window.addEventListener("keyup", keys);
+      // Ctrl ținut apăsat dinainte: rotița vine deja cu ctrlKey; fără Ctrl și fără clic, arătăm cum se mărește.
+      el.addEventListener("wheel", (e) => {
+        if (map.scrollWheelZoom.enabled()) return;
+        if (e.ctrlKey || e.metaKey) { e.preventDefault(); wheelOn(); map.setZoomAround(map.mouseEventToContainerPoint(e as unknown as MouseEvent), map.getZoom() + (e.deltaY < 0 ? 0.5 : -0.5)); }
+        else flash();
+      }, { passive: false });
+      el.addEventListener("pointerdown", (e) => { if (e.pointerType === "mouse") { clicked = true; wheelOn(); } });
+      el.addEventListener("mouseleave", () => { clicked = false; map.scrollWheelZoom.disable(); });
+      // Pe telefon, un singur deget pe hartă: o clipă, ce faci ca s-o miști.
+      if (touch) {
+        el.addEventListener("touchmove", (e) => { if (e.touches.length === 1) flash(); }, { passive: true });
+        el.addEventListener("touchstart", (e) => { if (e.touches.length > 1) showHint(false); }, { passive: true });
+      }
+      el.dataset.hint = touch ? t("hintTouch") : t("hintWheel");
+      cleanup.current = () => { window.removeEventListener("keydown", keys); window.removeEventListener("keyup", keys); window.clearTimeout(hintTimer); };
       map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 18,
@@ -105,7 +135,7 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
       drawn.current = { L, map, routes, marks, temp, ro };
       setReady(true);
     })();
-    return () => { gone = true; drawn.current?.ro.disconnect(); drawn.current?.map.remove(); drawn.current = null; };
+    return () => { gone = true; cleanup.current?.(); drawn.current?.ro.disconnect(); drawn.current?.map.remove(); drawn.current = null; };
   }, []);
 
   // Cercurile locurilor și drumurile, la fiecare schimbare de filtru, de loc ales sau de date.
@@ -129,32 +159,63 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
           .addTo(routes);
       }
     }
-    // Numele satelor stau scrise lângă cerc doar unde au loc: întâi cele cu mai mulți oameni, fără să se calce unul pe altul.
-    const order = [...shown].sort((a, b) => b.n - a.n);
-    type Box = { x1: number; y1: number; x2: number; y2: number };
+    // Locurile apropiate (de pildă satele din jurul Clujului, la zoom mic) se adună într-un singur cerc cu numărul lor;
+    // un clic pe el mărește harta pe ele. Locul ales rămâne mereu singur.
     const pt = (p: { lat: number; lng: number }) => map.latLngToContainerPoint([p.lat, p.lng]);
-    const dots: Box[] = order.map((p) => { const c = pt(p), r = radius(p.n); return { x1: c.x - r, y1: c.y - r, x2: c.x + r, y2: c.y + r }; });
+    const sorted = [...shown].sort((a, b) => b.n - a.n);
+    type Group = { places: typeof shown; n: number; x: number; y: number };
+    const groups: Group[] = [];
+    const clusterOn = map.getZoom() < 13;
+    for (const p of sorted) {
+      const c = pt(p);
+      const g = clusterOn && !isSel(p) ? groups.find((g) => !g.places.some(isSel) && Math.hypot(g.x - c.x, g.y - c.y) < radius(g.n) + radius(p.n) - 2) : undefined;
+      if (g) { g.places.push(p); g.n += p.n; } else groups.push({ places: [p], n: p.n, x: c.x, y: c.y });
+    }
+    // Numele satelor stau scrise lângă cerc doar unde au loc: întâi cele cu mai mulți oameni, fără să se calce unul pe altul.
+    const order = [...groups].sort((a, b) => b.n - a.n);
+    type Box = { x1: number; y1: number; x2: number; y2: number };
+    const nameOf = (g: Group) => (g.places.length > 1 ? `${g.places[0].name} +${g.places.length - 1}` : g.places[0].name);
+    const dots: Box[] = order.map((g) => { const r = radius(g.n); return { x1: g.x - r, y1: g.y - r, x2: g.x + r, y2: g.y + r }; });
     const taken: Box[] = [];
     const size = map.getSize();
     const clash = (b: Box, own: number) => b.x1 < 2 || b.y1 < 2 || b.x2 > size.x - 2 || b.y2 > size.y - 2 ||
       [...taken, ...dots.filter((_, i) => i !== own)].some((o) => !(b.x2 < o.x1 || b.x1 > o.x2 || b.y2 < o.y1 || b.y1 > o.y2));
-    const side = new Map<string, "right" | "left">();
-    order.forEach((p, i) => {
-      const c = pt(p), r = radius(p.n), w = p.name.length * 6.8 + 6, h = 15;
-      const right = { x1: c.x + r + 2, y1: c.y - h / 2, x2: c.x + r + 2 + w, y2: c.y + h / 2 };
-      const left = { x1: c.x - r - 2 - w, y1: c.y - h / 2, x2: c.x - r - 2, y2: c.y + h / 2 };
-      if (!clash(right, i)) { taken.push(right); side.set(p.id, "right"); }
-      else if (!clash(left, i)) { taken.push(left); side.set(p.id, "left"); }
+    const side = new Map<Group, "right" | "left">();
+    order.forEach((g, i) => {
+      const r = radius(g.n), w = nameOf(g).length * 6.8 + 6, h = 15;
+      const right = { x1: g.x + r + 2, y1: g.y - h / 2, x2: g.x + r + 2 + w, y2: g.y + h / 2 };
+      const left = { x1: g.x - r - 2 - w, y1: g.y - h / 2, x2: g.x - r - 2, y2: g.y + h / 2 };
+      if (!clash(right, i)) { taken.push(right); side.set(g, "right"); }
+      else if (!clash(left, i)) { taken.push(left); side.set(g, "left"); }
     });
-    for (const p of order) {
-      const r = radius(p.n);
+    for (const g of order) {
+      const r = radius(g.n), s = side.get(g);
+      if (g.places.length > 1) {
+        const lead = g.places[0];
+        const told = filter !== "memories" && g.places.some((p) => p.memories.length > 0);
+        const m = L.marker([lead.lat, lead.lng], {
+          icon: L.divIcon({ className: "map-cluster", html: `<span style="--r:${r}px;--f:${fill};--b:${told ? col("--plum") : col("--surface")}">${g.places.length}</span>`, iconSize: [r * 2, r * 2] }),
+          keyboard: true, title: t("clusterTitle", { count: g.places.length }),
+        });
+        const list = `${g.places.map((p) => p.name).join(", ")} · ${count(g.n)}`;
+        if (s) m.bindTooltip(nameOf(g), { permanent: true, direction: s, offset: [s === "right" ? r : -r, 0], className: "map-label" });
+        else m.bindTooltip(list, { direction: "top" });
+        if (s) m.on("mouseover", () => m.setTooltipContent(list)).on("mouseout", () => m.setTooltipContent(nameOf(g)));
+        m.on("click", (e: Leaflet.LeafletMouseEvent) => {
+          if (pickingRef.current) return;
+          L.DomEvent.stopPropagation(e);
+          map.fitBounds(L.latLngBounds(g.places.map((p) => [p.lat, p.lng] as [number, number])), { padding: [60, 60], maxZoom: Math.max(map.getZoom() + 2, 13) });
+        });
+        m.addTo(marks);
+        continue;
+      }
+      const p = g.places[0];
       // Când harta arată oamenii, locurile cu amintiri au marginea mov.
       const told = filter !== "memories" && p.memories.length > 0;
       const m = L.circleMarker([p.lat, p.lng], {
         radius: r, color: isSel(p) ? col("--ink") : told ? col("--plum") : col("--surface"), weight: isSel(p) ? 3 : told ? 2.5 : 1.5,
         fillColor: fill, fillOpacity: p.how === "country" ? 0.45 : 0.85, dashArray: p.how === "country" ? "3 3" : undefined,
       });
-      const s = side.get(p.id);
       if (s) m.bindTooltip(p.name, { permanent: true, direction: s, offset: [s === "right" ? r : -r, 0], className: "map-label" });
       else m.bindTooltip(`${p.name} · ${count(p.n)}`, { direction: "top" });
       if (s) m.on("mouseover", () => m.setTooltipContent(`${p.name} · ${count(p.n)}`)).on("mouseout", () => m.setTooltipContent(p.name));
@@ -279,6 +340,13 @@ export default function FamilyMap({ treeId, treeName, data, canEdit, focus, near
         <div ref={box} className={`mapbox${picking ? " picking" : ""}`} role="application" aria-label={t("mapAria", { tree: treeName })} />
         <div className="legend">
           <span>{shown.length ? t("legend", { places: shown.length, counties, abroad, total: count(total) }) : t("noPlaces")}</span>
+          {filter === "all" && treeTotal > total && (
+            <span className="muted">{[
+              t("ofTree", { shown: total, all: treeTotal }),
+              Object.keys(data.people).length > total ? t("noPlaceKnown", { count: Object.keys(data.people).length - total }) : "",
+              treeTotal > Object.keys(data.people).length ? t("discreetLeftOut", { count: treeTotal - Object.keys(data.people).length }) : "",
+            ].filter(Boolean).join(" · ")}</span>
+          )}
           <span>{filter === "memories" ? t("circleMemories") : t("circlePeople")}</span>
           {filter !== "memories" && shown.some((p) => p.memories.length > 0) && <span><i className="sw" style={{ background: "transparent", border: "2.5px solid var(--plum)", borderRadius: "50%" }} />{t("placesWithMemories")}</span>}
           {routesOn && data.routes.length > 0 && filter !== "born" && filter !== "memories" && <span><i className="sw" style={{ background: "var(--ochre)", height: 4, borderRadius: 2 }} />{t("routesLegend")}</span>}
