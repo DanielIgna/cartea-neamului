@@ -4,7 +4,7 @@ export const enGBLegal: LegalCatalog = {
   Legal: {
     updated: "Last changed: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}{person, select, yes {, private individual} other {}}. Email: <mail>{email}</mail>.",
+    contactLine: "{name}, registered office {address} (tax ID CUI {cui}, Trade Register no. {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Privacy policy",
       metaDescription: "What data we keep, why, who sees it and how you download or delete it.",
@@ -16,7 +16,7 @@ export const enGBLegal: LegalCatalog = {
         },
         controller: {
           h: "Who is responsible for the data",
-          p1: "The controller of the data in the Family Book under the General Data Protection Regulation (EU Regulation 2016/679, “GDPR”) is <b>{name}</b>{person, select, yes {, private individual} other {}}. For any question or request about your data, write to us at <mail>{email}</mail>.",
+          p1: "The controller of the data in the Family Book under the General Data Protection Regulation (EU Regulation 2016/679, “GDPR”) is <b>{name}</b>, registered office {address} (tax ID CUI {cui}, Trade Register no. {regCom}, EUID {euid}). For any question or request about your data, write to us at <mail>{email}</mail>.",
           beta: "The Family Book is currently being tested: only family and close friends use it, to tell us what works and what does not. Even during testing, your data is kept and protected as described here.",
         },
         data: {

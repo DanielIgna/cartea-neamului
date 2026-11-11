@@ -4,7 +4,7 @@ export const nlLegal: LegalCatalog = {
   Legal: {
     updated: "Laatst gewijzigd: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}{person, select, yes {, natuurlijke persoon} other {}}. E-mail: <mail>{email}</mail>.",
+    contactLine: "{name}, gevestigd te {address} (CUI {cui}, handelsregisternr. {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Privacybeleid",
       metaDescription: "Welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert.",
@@ -16,7 +16,7 @@ export const nlLegal: LegalCatalog = {
         },
         controller: {
           h: "Wie verantwoordelijk is voor de gegevens",
-          p1: "Verwerkingsverantwoordelijke voor de gegevens in het Familieboek volgens de Algemene verordening gegevensbescherming (Verordening (EU) 2016/679, ‘AVG’) is <b>{name}</b>{person, select, yes {, natuurlijke persoon} other {}}. Voor elke vraag of elk verzoek over je gegevens schrijf je ons op <mail>{email}</mail>.",
+          p1: "Verwerkingsverantwoordelijke voor de gegevens in het Familieboek volgens de Algemene verordening gegevensbescherming (Verordening (EU) 2016/679, ‘AVG’) is <b>{name}</b>, gevestigd te {address} (CUI {cui}, handelsregisternr. {regCom}, EUID {euid}). Voor elke vraag of elk verzoek over je gegevens schrijf je ons op <mail>{email}</mail>.",
           beta: "Het Familieboek wordt nu uitgeprobeerd: alleen familie en goede vrienden gebruiken het, om ons te vertellen wat werkt en wat niet. Ook tijdens deze proef worden jullie gegevens bewaard en beschermd zoals hier staat.",
         },
         data: {

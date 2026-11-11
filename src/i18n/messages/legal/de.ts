@@ -4,7 +4,7 @@ export const deLegal: LegalCatalog = {
   Legal: {
     updated: "Zuletzt geändert: {date}",
     contactTitle: "Kontakt",
-    contactLine: "{name}{person, select, yes {, Privatperson} other {}}. E-Mail: <mail>{email}</mail>.",
+    contactLine: "{name} mit Sitz in {address} (CUI {cui}, Handelsregisternr. {regCom}, EUID {euid}). E-Mail: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Datenschutzerklärung",
       metaDescription: "Welche Daten wir speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst.",
@@ -16,7 +16,7 @@ export const deLegal: LegalCatalog = {
         },
         controller: {
           h: "Wer für die Daten verantwortlich ist",
-          p1: "Verantwortlicher für die Daten im Familienbuch im Sinne der Datenschutz-Grundverordnung (Verordnung (EU) 2016/679, „DSGVO“) ist <b>{name}</b>{person, select, yes {, Privatperson} other {}}. Bei jeder Frage oder Bitte zu deinen Daten schreibst du uns an <mail>{email}</mail>.",
+          p1: "Verantwortlicher für die Daten im Familienbuch im Sinne der Datenschutz-Grundverordnung (Verordnung (EU) 2016/679, „DSGVO“) ist <b>{name}</b> mit Sitz in {address} (CUI {cui}, Handelsregisternr. {regCom}, EUID {euid}). Bei jeder Frage oder Bitte zu deinen Daten schreibst du uns an <mail>{email}</mail>.",
           beta: "Das Familienbuch wird gerade erprobt: Nur Familie und enge Freunde nutzen es, um uns zu sagen, was funktioniert und was nicht. Auch in dieser Zeit werden eure Daten so gespeichert und geschützt, wie es hier steht.",
         },
         data: {

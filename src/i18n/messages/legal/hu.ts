@@ -4,7 +4,7 @@ export const huLegal: LegalCatalog = {
   Legal: {
     updated: "Utolsó módosítás: {date}",
     contactTitle: "Kapcsolat",
-    contactLine: "{name}{person, select, yes {, magánszemély} other {}}. E-mail: <mail>{email}</mail>.",
+    contactLine: "{name} (székhely: {address}; CUI {cui}, cégjegyzékszám {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Adatvédelmi tájékoztató",
       metaDescription: "Milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket.",
@@ -16,7 +16,7 @@ export const huLegal: LegalCatalog = {
         },
         controller: {
           h: "Ki felel az adatokért",
-          p1: "A Család Könyve adataiért az általános adatvédelmi rendelet (az (EU) 2016/679 rendelet, „GDPR”) szerinti adatkezelőként <b>{name}</b>{person, select, yes {, magánszemély} other {}} felel. Ha bármilyen kérdésed vagy kérésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
+          p1: "A Család Könyve adataiért az általános adatvédelmi rendelet (az (EU) 2016/679 rendelet, „GDPR”) szerinti adatkezelőként <b>{name}</b> (székhely: {address}; CUI {cui}, cégjegyzékszám {regCom}, EUID {euid}) felel. Ha bármilyen kérdésed vagy kérésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
           beta: "A Család Könyve most próbaidőszakban van: csak a család és a közeli barátok használják, hogy elmondják, mi működik és mi nem. A próbaidőszakban is úgy őrizzük és védjük az adataitokat, ahogy itt áll.",
         },
         data: {
