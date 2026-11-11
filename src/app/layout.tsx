@@ -61,16 +61,19 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
   // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
-  const unread = me ? (await Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0)))).reduce((a, b) => a + b, 0) : 0;
-  const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value);
-  // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
-  const myPhoto = me
-    ? await db.select({ photo: person.photoDocumentId }).from(person).where(and(eq(person.claimedByUserId, me.id), isNotNull(person.photoDocumentId))).limit(1)
-        .then((r) => r[0]?.photo ?? null).catch(() => null)
-    : null;
+  // Totul deodată, nu pe rând: fiecare întrebare la baza de date costă un drum dus-întors.
+  const [unread, myPhoto, usage, theme] = await Promise.all([
+    me ? Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0))).then((n) => n.reduce((a, b) => a + b, 0)) : 0,
+    // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
+    me
+      ? db.select({ photo: person.photoDocumentId }).from(person).where(and(eq(person.claimedByUserId, me.id), isNotNull(person.photoDocumentId))).limit(1)
+          .then((r) => r[0]?.photo ?? null).catch(() => null)
+      : null,
+    // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
+    me && !isDemo(me.email) ? consentState(db, me.id, "usage").catch(() => null) : null,
+    cookies().then((c) => parseTheme(c.get(THEME_COOKIE)?.value)),
+  ]);
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
-  // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
-  const usage = me && !isDemo(me.email) ? await consentState(db, me.id, "usage").catch(() => null) : null;
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
