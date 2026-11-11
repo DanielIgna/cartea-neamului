@@ -97,6 +97,11 @@ export const ro = {
     quoteText: "Cartea Neamului e făcută ca fiecare familie să-și păstreze oamenii, poveștile și glasul, pentru cei care vin după.",
     ctaTitle: "Începe arborele familiei tale azi",
     ctaText: "Durează un minut. Primul pas ești tu.",
+    heroTitleRich: "Arborele familiei, construit <em>împreună</em>",
+    stat1: "generații în același arbore",
+    stat2: "limbi, pentru rudele de departe",
+    stat3: "link pe WhatsApp ca să-ți chemi rudele",
+    stat4: "minut ca să începi",
   },
   Home: {
     yourTrees: "Arborii tăi",

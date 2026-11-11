@@ -89,6 +89,11 @@ export const hu: Catalog = {
     quoteText: "A Cartea Neamului azért készült, hogy minden család megőrizze az embereit, a történeteit és a hangjait az utánuk jövőknek.",
     ctaTitle: "Kezdd el ma a családod fáját",
     ctaText: "Egy perc az egész. Az első lépés te vagy.",
+    heroTitleRich: "Családfa, <em>közösen</em> építve",
+    stat1: "generáció egy családfán",
+    stat2: "nyelv, a messze élő rokonoknak",
+    stat3: "WhatsApp-link a rokonok meghívásához",
+    stat4: "perc az induláshoz",
   },
   Home: {
     yourTrees: "A családfáid",

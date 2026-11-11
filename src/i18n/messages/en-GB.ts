@@ -89,6 +89,11 @@ export const enGB: Catalog = {
     quoteText: "Cartea Neamului is made so that every family keeps its people, its stories and its voices for those who come after.",
     ctaTitle: "Start your family tree today",
     ctaText: "It takes a minute. The first step is you.",
+    heroTitleRich: "Your family tree, built <em>together</em>",
+    stat1: "generations in one tree",
+    stat2: "languages, for relatives far away",
+    stat3: "WhatsApp link to invite your relatives",
+    stat4: "minute to get started",
   },
   Home: {
     yourTrees: "Your trees",
