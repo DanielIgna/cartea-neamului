@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { getT } from "@/i18n/server";
-import BannerScene from "@/components/BannerScene";
+import Image from "next/image";
 
 /**
- * Prima pagină pentru cine intră prima dată: deschiderea pe fond de noapte cu arborele în evantai,
- * cifrele, ce găsești aici (cu desene mici ale fiecărei părți), cum începi, gândul din spate și chemarea de la sfârșit.
- * Totul e desenat în pagină (SVG și CSS), fără poze de descărcat, ca să se deschidă repede și pe telefon.
- * Numele din desene sunt de probă, o familie din satele noastre, la fel în orice limbă.
+ * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
+ * ce găsești aici, gândul din spate peste apus, cum începi și chemarea de la sfârșit.
+ * Fotografiile sunt din public/home, de pe Unsplash, cu licență liberă (sursele în public/home/CREDITS.md).
+ * Numele din evantai sunt de probă, o familie din satele noastre, la fel în orice limbă.
  */
 
 /* Arborele în evantai: tu în mijloc, părinții, bunicii și străbunicii pe inele; tata în stânga, mama în dreapta. */
@@ -58,37 +58,6 @@ function VoiceArt({ title }: { title: string }) {
     </div>
   );
 }
-function MapArt() {
-  return (
-    <svg className="lp-art-svg" viewBox="0 0 300 150" aria-hidden="true">
-      <defs><pattern id="lp-dots" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" className="lp-dot" /></pattern></defs>
-      <rect width="300" height="150" fill="url(#lp-dots)" />
-      <path className="lp-route" d="M62 98Q110 30 168 62M168 62Q214 90 246 52" />
-      {[[62, 98, "Ieud"], [168, 62, "Breb"], [246, 52, "Rimetea"]].map(([x, y, n]) => (
-        <g key={n as string} transform={`translate(${x} ${y})`}>
-          <path className="lp-pin" d="M0 0c-9-11-13-17-13-23a13 13 0 1 1 26 0c0 6-4 12-13 23z" /><circle cy="-23" r="4.5" className="lp-pin-hole" />
-          <text y="18" className="lp-pin-t">{n}</text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-function BookArt() {
-  const qr = [0, 1, 2, 3, 5, 6, 8, 10, 12, 13, 15, 17, 18, 19, 20, 21, 23, 24];
-  return (
-    <svg className="lp-art-svg" viewBox="0 0 320 190" aria-hidden="true">
-      <path className="lp-book-shadow" d="M30 172Q160 186 290 172" />
-      <path className="lp-page" d="M160 34Q110 16 34 26V166Q110 156 160 172z" />
-      <path className="lp-page" d="M160 34Q210 16 286 26V166Q210 156 160 172z" />
-      <path className="lp-spine" d="M160 34V172" />
-      <path className="lp-text-line" d="M56 50H136M56 62H140M56 74H128M56 96H138M56 108H134M56 120H122M56 132H136" />
-      <g className="lp-mini-tree"><circle cx="223" cy="56" r="7" /><circle cx="203" cy="86" r="7" /><circle cx="243" cy="86" r="7" /><path d="M223 63V74H203V79M223 74H243V79" /></g>
-      <g transform="translate(240 112)">{qr.map((q) => <rect key={q} x={(q % 5) * 6} y={Math.floor(q / 5) * 6} width="5" height="5" className="lp-qr" />)}</g>
-      <path className="lp-text-line" d="M184 116H228M184 128H224M184 140H230" />
-    </svg>
-  );
-}
-
 const CHECK = <path d="M5 12.5l4.5 4.5L19 7.5" />;
 const LOCK = <><rect x="5" y="10.5" width="14" height="10" rx="2" /><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" /></>;
 const GLOBE = <><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18" /></>;
@@ -97,24 +66,31 @@ const Icon = ({ children }: { children: React.ReactNode }) => (
 );
 const STATS = [["10", "stat1"], ["9", "stat2"], ["1", "stat3"], ["1", "stat4"]] as const;
 
+/* O fotografie din public/home, servită de Next la mărimea potrivită ecranului (WebP/AVIF). */
+const Photo = ({ src, sizes, priority = false, className }: { src: string; sizes: string; priority?: boolean; className?: string }) => (
+  <Image src={`/home/${src}.jpg`} alt="" fill sizes={sizes} priority={priority} className={className ?? "lp-img"} />
+);
+const GENS = [["gen1", "bunici", "50% 30%"], ["gen2", "familie", "50% 40%"], ["gen3", "tineri", "50% 35%"], ["gen4", "copii", "50% 45%"]] as const;
+
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
   const t = await getT("Landing");
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
-  const tiles = [
-    { k: "memories", art: <VoiceArt title={t("voiceTitle")} /> },
-    { k: "map", art: <MapArt /> },
-    { k: "book", art: <BookArt /> },
+  const cards = [
+    { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
+    { k: "memories", art: <><Photo src="bunic-nepot" sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
+    { k: "map", art: <Photo src="sat" sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "book", art: <Photo src="album" sizes="(max-width:640px) 100vw, 300px" /> },
   ] as const;
   return (
     <div className="lp">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
 
-      {/* Bannerul: scena la apus pe toată lățimea, cu panoul întunecat la mijloc */}
+      {/* Bannerul: familia pe toată lățimea, cu panoul întunecat la mijloc */}
       <section className="lp-band lp-banner">
-        <BannerScene /><BannerScene phone />
+        <Photo src="banner" sizes="100vw" priority className="lp-img lp-banner-img" />
         <div className="lp-banner-panel">
           <p className="lp-tagline">{t("eyebrow")}</p>
           <h1 className="lp-name">Cartea Neamului</h1>
@@ -134,8 +110,27 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         </ul>
       </section>
 
-      {/* Ce găsești aici: rame albe ca pozele de familie, pe maro cald */}
-      <section className="lp-band lp-dark" aria-labelledby="lp-features">
+      {/* Patru generații, în rame albe ca pozele de familie */}
+      <section className="lp-band lp-dark" aria-labelledby="lp-gens">
+        <div className="lp-in">
+          <header className="lp-head">
+            <h2 id="lp-gens">{t("gensTitle")}</h2>
+            {ornament}
+            <p>{t("gensText")}</p>
+          </header>
+          <div className="lp-gens">
+            {GENS.map(([k, src, pos]) => (
+              <figure key={k} className="lp-gen">
+                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo src={src} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
+                <figcaption><h3>{t(`${k}Title`)}</h3><p>{t(`${k}Text`)}</p></figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ce găsești aici */}
+      <section className="lp-band lp-light" aria-labelledby="lp-features">
         <div className="lp-in">
           <header className="lp-head">
             <p className="lp-eyebrow">{t("featuresLabel")}</p>
@@ -143,70 +138,52 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
             {ornament}
             <p>{t("featuresText")}</p>
           </header>
-          <div className="lp-frames">
-            {tiles.map(({ k, art }) => (
-              <article key={k} className={`lp-frame lp-frame-${k}`}>
-                <div className="lp-photo">{art}</div>
-                <h3>{t(`${k}Title`)}</h3>
-                <p>{t(`${k}Text`)}</p>
+          <div className="lp-cards">
+            {cards.map(({ k, art }) => (
+              <article key={k} className={`lp-card lp-card-${k}`}>
+                <div className="lp-card-art">{art}</div>
+                <div className="lp-card-text"><h3>{t(`${k}Title`)}</h3><p>{t(`${k}Text`)}</p></div>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Arborele: evantaiul răsare ca soarele, cu cifrele dedesubt */}
-      <section className="lp-band lp-sunset" aria-labelledby="lp-tree">
-        <div className="lp-in lp-tree">
-          <div className="lp-tree-text">
-            <p className="lp-eyebrow">{t("eyebrow")}</p>
-            <h2 id="lp-tree">{t("treeTitle")}</h2>
-            <p>{t("treeText")}</p>
-            <div className="lp-actions"><Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("start")}<span aria-hidden="true">→</span></Link></div>
-          </div>
-          <figure className="lp-visual" role="img" aria-label={t("visualLabel")}>
-            <FanChart you={t("visualYou")} />
-            <div className="lp-float lp-float-join" aria-hidden="true">
-              <span className="lp-avatar">I</span>
-              <span>{t.rich("joinText", { b })}</span>
-            </div>
-          </figure>
-        </div>
-        <dl className="lp-in lp-stats">
-          {STATS.map(([n, k]) => <div key={k}><dt>{n}</dt><dd>{t(k)}</dd></div>)}
-        </dl>
-      </section>
-
-      <section className="lp-band lp-light" aria-labelledby="lp-how">
-        <div className="lp-in">
-          <header className="lp-head">
-            <h2 id="lp-how">{t("howTitle")}</h2>
-            {ornament}
-            <p>{t("howText")}</p>
-          </header>
-          <ol className="lp-steps">
-            <li>{t.rich("step1", { b })}</li>
-            <li>{t.rich("step2", { b })}</li>
-            <li>{t.rich("step3", { b })}</li>
-          </ol>
-        </div>
-      </section>
-
-      <section className="lp-band lp-paper">
+      {/* Gândul din spate, peste siluetele unei familii la apus, cu cifrele dedesubt */}
+      <section className="lp-band lp-sunset">
+        <Photo src="apus" sizes="100vw" className="lp-img lp-sunset-img" />
         <div className="lp-in lp-quote">
           <span className="lp-quote-mark" aria-hidden="true">“</span>
           <blockquote><p>{t("quote")}</p></blockquote>
           {ornament}
           <p className="lp-quote-text">{t("quoteText")}</p>
         </div>
+        <dl className="lp-in lp-stats">
+          {STATS.map(([n, k]) => <div key={k}><dt>{n}</dt><dd>{t(k)}</dd></div>)}
+        </dl>
       </section>
 
-      <section className="lp-band lp-dark lp-cta" aria-labelledby="lp-cta">
-        <svg className="lp-cta-rings" viewBox="0 0 400 200" aria-hidden="true">
-          {[60, 100, 140, 180].map((r) => <path key={r} d={`M${200 - r} 200A${r} ${r} 0 0 1 ${200 + r} 200`} />)}
-        </svg>
+      {/* Cum începi, lângă o masă în familie */}
+      <section className="lp-band lp-paper" aria-labelledby="lp-how">
+        <div className="lp-in lp-how">
+          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo src="masa" sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
+          <div>
+            <h2 id="lp-how">{t("howTitle")}</h2>
+            <p className="lp-how-text">{t("howText")}</p>
+            <ol className="lp-steps">
+              <li>{t.rich("step1", { b })}</li>
+              <li>{t.rich("step2", { b })}</li>
+              <li>{t.rich("step3", { b })}</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section className="lp-band lp-cta" aria-labelledby="lp-cta">
+        <Photo src="maini" sizes="100vw" className="lp-img lp-cta-img" />
         <div className="lp-in">
           <h2 id="lp-cta">{t("ctaTitle")}</h2>
+          {ornament}
           <p className="lp-cta-lead">{t("ctaText")}</p>
           <div className="lp-actions">
             <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("start")}<span aria-hidden="true">→</span></Link>
