@@ -143,7 +143,7 @@ export const enGBAmintiri: AmintiriCatalog = {
     degreeHint: "Degree 1: parents and children; 2: brothers, sisters and grandparents; 3: uncles, aunts, nephews and nieces; 4: first cousins. Spouses always see it.",
     inBook: "May go in the family book",
     faithConsentOther: "{name} agrees that we may keep what they have said about their faith.",
-    faithConsent: "I agree that what I write about my faith is kept in Cartea Neamului and seen only by the people I choose. I can withdraw my consent at any time from “My data”, and the answers in this chapter are then deleted.",
+    faithConsent: "I agree that what I write about my faith is kept in the Family Book and seen only by the people I choose. I can withdraw my consent at any time from “My data”, and the answers in this chapter are then deleted.",
     faithInvalid: "Tick the consent box so that the answer can be kept.",
     uploadingVoice: "Uploading the recording…",
     uploadingPhoto: "Uploading the photo…",

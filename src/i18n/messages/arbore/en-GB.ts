@@ -65,6 +65,7 @@ export const enGBArbore: ArboreCatalog = {
     timeline: "Timeline",
     journey: "Journey through time",
     churchHistory: "Church history",
+    adamToChrist: "From Adam to Christ",
     exportGedcom: "Export GEDCOM",
     inviteRelative: "Invite a relative to the tree",
     pickPerson: "Choose a person from the tree.",

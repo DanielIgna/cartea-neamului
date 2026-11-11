@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import LegalLangNote from "@/components/LegalLangNote";
-import { getFormat, getLocale, getT } from "@/i18n/server";
+import { getFormat, getLocale, getAppName, getT } from "@/i18n/server";
 import { roLegal } from "@/i18n/messages/legal/ro";
 import { BETA, MIN_AGE, operator } from "@/lib/legal";
 
@@ -72,5 +72,5 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
 /** Titlul și descrierea paginii, în limba cititorului. */
 export async function legalMetadata(page: Page) {
   const t = await getT("Legal");
-  return { title: `${t(`${page}.metaTitle`)} · Cartea Neamului`, description: t(`${page}.metaDescription`) };
+  return { title: `${t(`${page}.metaTitle`)} · ${await getAppName()}`, description: t(`${page}.metaDescription`) };
 }

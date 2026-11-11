@@ -31,6 +31,7 @@ export const roBiserica = {
     endTitle: "Și noi suntem o filă din istoria aceasta",
     endText: "Biserica nu e o clădire și nici o instituție, ci toți cei care L-au primit pe Hristos, de la Ștefan până la bunicii care se rugau în ascuns și până la noi. Lumina a trecut din mână în mână două mii de ani, adesea cu prețul vieții. Acum e în mâinile noastre: s-o ținem aprinsă, să citim Cuvântul și să ne rugăm pentru cei care sunt prigoniți azi.",
     readJohn: "Citește Evanghelia după Ioan",
+    adamToChrist: "De la Adam la Hristos",
     note: "Versetele sunt din Biblia tradusă de Dumitru Cornilescu. Unde un lucru e doar tradiție, textul o spune.",
     intro: "Domnul Isus nu le-a promis ucenicilor Lui o viață ușoară, ci că Biserica Lui nu va fi biruită. De la Ierusalim până azi, de fiecare dată când oamenii au vrut să stingă lumina Evangheliei, ea s-a aprins în alte locuri. Aici sunt câțiva dintre cei care au plătit pentru credința lor cu libertatea sau cu viața, și câteva dintre clipele în care Cuvântul a ajuns din nou în mâna oamenilor simpli.",
     promise: {

@@ -26,6 +26,7 @@ export const esBiserica: BisericaCatalog = {
     endTitle: "También nosotros somos una página de esta historia",
     endText: "La Iglesia no es un edificio ni una institución, sino todos los que han recibido a Cristo, desde Esteban hasta los abuelos que oraban a escondidas, y hasta nosotros. La luz ha pasado de mano en mano durante dos mil años, muchas veces a costa de la vida. Ahora está en nuestras manos: mantenerla encendida, leer la Palabra y orar por los que hoy son perseguidos.",
     readJohn: "Leer el Evangelio de Juan",
+    adamToChrist: "De Adán a Cristo",
     note: "Los versículos son de la Biblia Reina-Valera de 1909. Donde algo es solo tradición, el texto lo dice.",
     intro: "El Señor Jesús no prometió a sus discípulos una vida fácil, sino que su Iglesia no sería vencida. Desde Jerusalén hasta hoy, cada vez que alguien quiso apagar la luz del Evangelio, se volvió a encender en otro lugar. Aquí están algunos de los que pagaron su fe con la libertad o con la vida, y algunos de los momentos en que la Palabra volvió a las manos de la gente sencilla.",
     promise: {

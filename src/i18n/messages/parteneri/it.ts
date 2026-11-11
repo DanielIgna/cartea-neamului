@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Italiano (tu). */
 export const itParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Voglio ricevere ogni tanto vantaggi per la mia casa da PropManage, partner di Cartea Neamului.",
+    checkbox: "Voglio ricevere ogni tanto vantaggi per la mia casa da PropManage, partner del Libro della Famiglia.",
     checkboxHint: "Facoltativo. L’albero funziona allo stesso modo anche senza. Condividiamo solo il tuo indirizzo email e puoi rinunciare in qualsiasi momento, con un clic.",
     menu: "Partner",
     bookCard: {
@@ -14,10 +14,10 @@ export const itParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partner · Cartea Neamului",
-    metaDescription: "I partner di Cartea Neamului e cosa offrono alle famiglie.",
+    metaTitle: "Partner · Il Libro della Famiglia",
+    metaDescription: "I partner del Libro della Famiglia e cosa offrono alle famiglie.",
     label: "Partner",
-    title: "I partner di Cartea Neamului",
+    title: "I partner del Libro della Famiglia",
     lead: "L’albero, i ricordi e il libro sono solo della famiglia, senza pubblicità. Qui, in un’unica pagina, ci sono i partner di cui ci fidiamo.",
     pmAlt: "Logo di PropManage",
     pmWhat: "Per i proprietari di casa",
@@ -33,7 +33,7 @@ export const itParteneri: ParteneriCatalog = {
     unsubText: "Appena premi il pulsante, il tuo indirizzo email esce subito dall’elenco che riceve PropManage. Il tuo albero e il tuo account restano esattamente come sono.",
     unsubButton: "Sì, niente più vantaggi",
     unsubWorking: "Rinuncia in corso…",
-    unsubDone: "Fatto. Non riceverai più vantaggi da PropManage tramite Cartea Neamului. Puoi cambiare idea in qualsiasi momento, da «I miei dati».",
+    unsubDone: "Fatto. Non riceverai più vantaggi da PropManage tramite il Libro della Famiglia. Puoi cambiare idea in qualsiasi momento, da «I miei dati».",
     unsubBad: "Il link non è valido o è incompleto. Copialo per intero dall’email, oppure accedi e rinuncia da «I miei dati».",
   },
   OldHouse: {

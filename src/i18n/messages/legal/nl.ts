@@ -12,12 +12,12 @@ export const nlLegal: LegalCatalog = {
       title: "Hoe we zorgen voor de gegevens van je familie",
       sections: {
         intro: {
-          p1: "Cartea Neamului is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Hier staat, kort en zonder moeilijke woorden, welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert. Kort gezegd: stambomen zijn privé, jij kiest wie je herinneringen ziet, we verkopen niets en we tonen geen advertenties. Onze partner PropManage krijgt alleen je e-mailadres, en alleen als je dat aanvinkt.",
+          p1: "Het Familieboek is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Hier staat, kort en zonder moeilijke woorden, welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert. Kort gezegd: stambomen zijn privé, jij kiest wie je herinneringen ziet, we verkopen niets en we tonen geen advertenties. Onze partner PropManage krijgt alleen je e-mailadres, en alleen als je dat aanvinkt.",
         },
         controller: {
           h: "Wie verantwoordelijk is voor de gegevens",
-          p1: "Verwerkingsverantwoordelijke voor de gegevens in Cartea Neamului volgens de Algemene verordening gegevensbescherming (Verordening (EU) 2016/679, ‘AVG’) is <b>{name}</b>{person, select, yes {, natuurlijke persoon} other {}}. Voor elke vraag of elk verzoek over je gegevens schrijf je ons op <mail>{email}</mail>.",
-          beta: "Cartea Neamului wordt nu uitgeprobeerd: alleen familie en goede vrienden gebruiken het, om ons te vertellen wat werkt en wat niet. Ook tijdens deze proef worden jullie gegevens bewaard en beschermd zoals hier staat.",
+          p1: "Verwerkingsverantwoordelijke voor de gegevens in het Familieboek volgens de Algemene verordening gegevensbescherming (Verordening (EU) 2016/679, ‘AVG’) is <b>{name}</b>{person, select, yes {, natuurlijke persoon} other {}}. Voor elke vraag of elk verzoek over je gegevens schrijf je ons op <mail>{email}</mail>.",
+          beta: "Het Familieboek wordt nu uitgeprobeerd: alleen familie en goede vrienden gebruiken het, om ons te vertellen wat werkt en wat niet. Ook tijdens deze proef worden jullie gegevens bewaard en beschermd zoals hier staat.",
         },
         data: {
           h: "Welke gegevens we bewaren",
@@ -62,12 +62,12 @@ export const nlLegal: LegalCatalog = {
         },
         partner: {
           h: "Onze partner, PropManage",
-          p1: "PropManage (<pm>propmanage.ro</pm>) is een platform voor woningeigenaren en een partner van Cartea Neamului. Je vindt het alleen op de pagina <partners>Partners</partners>; in de stamboom, de herinneringen, de tijdlijn, op de kaart en in het boek staan geen advertenties.",
+          p1: "PropManage (<pm>propmanage.ro</pm>) is een platform voor woningeigenaren en een partner van het Familieboek. Je vindt het alleen op de pagina <partners>Partners</partners>; in de stamboom, de herinneringen, de tijdlijn, op de kaart en in het boek staan geen advertenties.",
           l1: "<b>Wat het krijgt:</b> alleen je e-mailadres, en alleen als je ‘{consent}’ hebt aangevinkt. Het vakje staat apart, is niet vanzelf aangevinkt en niets op de site hangt ervan af. PropManage krijgt nooit iets over je stamboom, de mensen erin, de familieleden die je hebt uitgenodigd, dorpen, herinneringen, foto’s of stemmen. Uitgenodigde familieleden en de mensen in de stamboom krijgen nooit berichten van PropManage.",
           l2: "<b>De grondslag:</b> je toestemming (art. 6 lid 1 sub a AVG). Vanaf het moment dat PropManage het adres krijgt, is het daarvoor verantwoordelijk als afzonderlijke verwerkingsverantwoordelijke, volgens zijn eigen privacybeleid, en gebruikt het het alleen om je af en toe voordelen voor je huis te sturen.",
           l3: "<b>Hoe lang:</b> zolang je toestemming geldt. De lijst die PropManage krijgt, maken we elke keer opnieuw uit de huidige toestemmingen, dus na het intrekken komt je adres er niet meer. We vragen PropManage je adres te verwijderen zodra het hoort dat je je toestemming hebt ingetrokken.",
           l4: "<b>Hoe je haar intrekt:</b> met één klik, in <dataPartners>Mijn gegevens</dataPartners> (de schakelaar ‘Voordelen van partners’), of via de afmeldlink in elke e-mail die je krijgt, zonder in te loggen. Intrekken verandert niets aan je account of je stamboom.",
-          l5: "De links naar PropManage op de site (op de pagina Partners, naast het ouderlijk huis en na het downloaden van het boek) zijn gewone links: ze laten alleen zien dat je van Cartea Neamului komt, zonder enig gegeven over jou.",
+          l5: "De links naar PropManage op de site (op de pagina Partners, naast het ouderlijk huis en na het downloaden van het boek) zijn gewone links: ze laten alleen zien dat je van het Familieboek komt, zonder enig gegeven over jou.",
         },
         keep: {
           h: "Hoe lang we de gegevens bewaren",
@@ -105,13 +105,13 @@ export const nlLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Gebruiksvoorwaarden",
-      metaDescription: "Wat het betekent om een account te hebben bij Cartea Neamului: wat je erop mag zetten, van wie het is en wat we beloven.",
+      metaDescription: "Wat het betekent om een account te hebben bij het Familieboek: wat je erop mag zetten, van wie het is en wat we beloven.",
       label: "Gebruiksvoorwaarden",
-      title: "Wat het betekent om een account te hebben bij Cartea Neamului",
+      title: "Wat het betekent om een account te hebben bij het Familieboek",
       sections: {
         intro: {
-          p1: "Cartea Neamului is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Als je een account maakt, ga je akkoord met deze voorwaarden en met het <privacy>Privacybeleid</privacy>.",
-          beta: "Cartea Neamului wordt nu uitgeprobeerd: het staat alleen open voor familie en goede vrienden, zodat ze ons kunnen vertellen wat werkt en wat niet. Het kan vaak veranderen en soms fouten maken, dus bewaar ook zelf een kopie van wat belangrijk is: je downloadt die altijd via ‘Mijn gegevens’.",
+          p1: "Het Familieboek is een plek waar families samen hun stamboom opbouwen, hun herinneringen bewaren en hun familieboek laten drukken. Als je een account maakt, ga je akkoord met deze voorwaarden en met het <privacy>Privacybeleid</privacy>.",
+          beta: "Het Familieboek wordt nu uitgeprobeerd: het staat alleen open voor familie en goede vrienden, zodat ze ons kunnen vertellen wat werkt en wat niet. Het kan vaak veranderen en soms fouten maken, dus bewaar ook zelf een kopie van wat belangrijk is: je downloadt die altijd via ‘Mijn gegevens’.",
         },
         account: {
           h: "1. Het account",

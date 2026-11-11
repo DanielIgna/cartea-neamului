@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getT } from "@/i18n/server";
+import { getAppName, getT } from "@/i18n/server";
 import Image from "next/image";
 import { db } from "@/db";
 import { homeImages, type HomeImage } from "@/lib/home-images";
@@ -98,7 +98,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         <BannerSlides imgs={imgs.banner.map(({ src, custom }) => ({ src, custom }))} />
         <div className="lp-banner-panel">
           <p className="lp-tagline">{t("eyebrow")}</p>
-          <h1 className="lp-name">Cartea Neamului</h1>
+          <h1 className="lp-name">{await getAppName()}</h1>
           {ornament}
           <p className="lp-subtitle">{t.rich("heroTitleRich", { em })}</p>
           {t("brandNote") && <p className="lp-brand">{t("brandNote")}</p>}

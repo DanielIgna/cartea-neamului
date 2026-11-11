@@ -12,6 +12,7 @@ import { enGBDatele } from "./datele/en-GB";
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
   Meta: {
+    appName: "The Family Book",
     description: "The family tree, built together, printed as a book.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const enGB: Catalog = {
   UsageNotice: {
     label: "How you use the site",
     lead: "One question, just once.",
-    text: "To make Cartea Neamului better, we would like to know how long you spend on the site and which parts of it you use (the tree, the memory chest, the map…). Only the time and the name of the part, not what you write or what you tap. You can stop this at any time, in “My data”.",
+    text: "To make the Family Book better, we would like to know how long you spend on the site and which parts of it you use (the tree, the memory chest, the map…). Only the time and the name of the part, not what you write or what you tap. You can stop this at any time, in “My data”.",
     yes: "OK",
     no: "No, thanks",
     more: "What this means",
@@ -54,7 +55,7 @@ export const enGB: Catalog = {
   Landing: {
     deleted: "Your account has been deleted, together with everything that was yours. Thank you for being with us.",
     heroTitle: "Your family tree, built together",
-    brandNote: "Cartea Neamului means “the book of the family” in Romanian.",
+    brandNote: "In Romanian: Cartea Neamului.",
     heroText: "You start with yourself and invite your relatives, and each of them fills in their own branch with names, photos, documents and memories. In the end, the family prints its own book.",
     signUp: "Create a free account",
     signIn: "Sign in",
@@ -86,7 +87,7 @@ export const enGB: Catalog = {
     featuresText: "From your great-great-grandparents to today’s grandchildren: people, places, stories and voices, gathered by the whole family.",
     howText: "You don’t need to know everything at the start. Begin with what you know and your relatives fill in the rest.",
     quote: "What we don’t write down today, our grandchildren will never know.",
-    quoteText: "Cartea Neamului is made so that every family keeps its people, its stories and its voices for those who come after.",
+    quoteText: "The Family Book is made so that every family keeps its people, its stories and its voices for those who come after.",
     ctaTitle: "Start your family tree today",
     ctaText: "It takes a minute. The first step is you.",
     heroTitleRich: "Your family tree, built <em>together</em>",
@@ -95,7 +96,7 @@ export const enGB: Catalog = {
     stat3: "WhatsApp link to invite your relatives",
     stat4: "minute to get started",
     gensTitle: "Four generations, one story",
-    gensText: "Cartea Neamului is for the whole family: every generation has something to add and something to receive.",
+    gensText: "The Family Book is for the whole family: every generation has something to add and something to receive.",
     gen1Title: "Grandparents",
     gen1Text: "Their voices and memories, kept for those who come after.",
     gen2Title: "Parents",
@@ -146,7 +147,7 @@ export const enGB: Catalog = {
   Invitation: {
     ogTitle: "{name} invites you to the family tree “{tree}”",
     ogTitleNoName: "You’re invited to the family tree “{tree}”",
-    ogDescription: "Join the tree on Cartea Neamului: see your relatives, add your branch and the memories of your loved ones.",
+    ogDescription: "Join the tree on the Family Book: see your relatives, add your branch and the memories of your loved ones.",
     invalid: "This invitation is no longer valid",
     notFound: "This invitation does not exist",
     expired: "This invitation has expired",
@@ -288,8 +289,8 @@ export const enGB: Catalog = {
     bring: "Bring in the tree",
   },
   InstallApp: {
-    titlePhone: "Put Cartea Neamului on your phone",
-    titleComputer: "Put Cartea Neamului on your computer",
+    titlePhone: "Put the Family Book on your phone",
+    titleComputer: "Put the Family Book on your computer",
     promptPhone: "It opens like an app, straight from your home screen, without having to look for the site.",
     promptComputer: "It opens like an app, from its own icon, without having to look for the site.",
     ios: "In Safari, tap the <b>Share</b> button (the square with the arrow pointing up), then <b>Add to Home Screen</b>.",

@@ -111,7 +111,7 @@ export const huCarte: CarteCatalog = {
     },
     index: "Névmutató",
     colophon: {
-      made: "Összeállította: {author}, a Cartea Neamului oldalon, {when}. Forrása a „{tree}” családfa: {count, plural, one {egy ember} other {# ember}}.",
+      made: "Összeállította: {author}, a Család Könyvében, {when}. Forrása a „{tree}” családfa: {count, plural, one {egy ember} other {# ember}}.",
       redo: "A könyv bármikor újra elkészíthető az oldalon, mindazzal, amit a család azóta hozzáadott.",
     },
     defaults: {

@@ -12,6 +12,7 @@ import { huDatele } from "./datele/hu";
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
   Meta: {
+    appName: "A Család Könyve",
     description: "A család fája, közösen építve, könyvként kinyomtatva.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const hu: Catalog = {
   UsageNotice: {
     label: "Hogyan használod az oldalt",
     lead: "Egy kérdés, csak egyszer.",
-    text: "Hogy jobbá tegyük a Cartea Neamului oldalt, szeretnénk tudni, mennyi időt töltesz az oldalon, és mely részeit használod (a családfát, az emlékládát, a térképet…). Csak az időt és a rész nevét, azt nem, amit írsz, és azt sem, mire koppintasz. Bármikor leállíthatod az „Adataim” oldalon.",
+    text: "Hogy jobbá tegyük a Család Könyvét, szeretnénk tudni, mennyi időt töltesz az oldalon, és mely részeit használod (a családfát, az emlékládát, a térképet…). Csak az időt és a rész nevét, azt nem, amit írsz, és azt sem, mire koppintasz. Bármikor leállíthatod az „Adataim” oldalon.",
     yes: "Rendben",
     no: "Nem kérem",
     more: "Mit jelent ez",
@@ -54,7 +55,7 @@ export const hu: Catalog = {
   Landing: {
     deleted: "A fiókodat töröltük, mindazzal együtt, ami a tiéd volt. Köszönjük, hogy velünk voltál.",
     heroTitle: "Családfa, közösen építve",
-    brandNote: "A „Cartea Neamului” románul azt jelenti: „a család könyve”.",
+    brandNote: "Románul: Cartea Neamului.",
     heroText: "Magadtól indulsz, meghívod a rokonaidat, és mindenki kiegészíti a saját ágát nevekkel, fényképekkel, iratokkal és emlékekkel. A végén a család kinyomtatja a saját könyvét.",
     signUp: "Ingyenes fiók létrehozása",
     signIn: "Belépés",
@@ -86,7 +87,7 @@ export const hu: Catalog = {
     featuresText: "Az ükszülőktől a mai unokákig: emberek, helyek, történetek és hangok, az egész család gyűjtésében.",
     howText: "Nem kell rögtön mindent tudnod. Kezdd azzal, amit tudsz, a többit a rokonok pótolják.",
     quote: "Amit ma nem írunk le, azt az unokáink már sosem tudják meg.",
-    quoteText: "A Cartea Neamului azért készült, hogy minden család megőrizze az embereit, a történeteit és a hangjait az utánuk jövőknek.",
+    quoteText: "A Család Könyve azért készült, hogy minden család megőrizze az embereit, a történeteit és a hangjait az utánuk jövőknek.",
     ctaTitle: "Kezdd el ma a családod fáját",
     ctaText: "Egy perc az egész. Az első lépés te vagy.",
     heroTitleRich: "Családfa, <em>közösen</em> építve",
@@ -95,7 +96,7 @@ export const hu: Catalog = {
     stat3: "WhatsApp-link a rokonok meghívásához",
     stat4: "perc az induláshoz",
     gensTitle: "Négy nemzedék, egy történet",
-    gensText: "A Cartea Neamului az egész családé: minden nemzedéknek van mit hozzátennie és mit kapnia.",
+    gensText: "A Család Könyve az egész családé: minden nemzedéknek van mit hozzátennie és mit kapnia.",
     gen1Title: "A nagyszülők",
     gen1Text: "A hangjuk és az emlékeik, megőrizve az utánuk jövőknek.",
     gen2Title: "A szülők",
@@ -146,7 +147,7 @@ export const hu: Catalog = {
   Invitation: {
     ogTitle: "{name} meghív a(z) „{tree}” családfába",
     ogTitleNoName: "Meghívtak a(z) „{tree}” családfába",
-    ogDescription: "Lépj be a családfába a Cartea Neamului oldalon: lásd a rokonaidat, add hozzá az ágadat és szeretteid emlékeit.",
+    ogDescription: "Lépj be a családfába a Család Könyvében: lásd a rokonaidat, add hozzá az ágadat és szeretteid emlékeit.",
     invalid: "Ez a meghívó már nem érvényes",
     notFound: "Ez a meghívó nem létezik",
     expired: "Ez a meghívó lejárt",
@@ -288,8 +289,8 @@ export const hu: Catalog = {
     bring: "A családfa behozása",
   },
   InstallApp: {
-    titlePhone: "Cartea Neamului a telefonodon",
-    titleComputer: "Cartea Neamului a számítógépeden",
+    titlePhone: "A Család Könyve a telefonodon",
+    titleComputer: "A Család Könyve a számítógépeden",
     promptPhone: "Alkalmazásként nyílik meg, közvetlenül a kezdőképernyőről, anélkül, hogy keresnéd az oldalt.",
     promptComputer: "Alkalmazásként nyílik meg, a saját ikonjáról, anélkül, hogy keresnéd az oldalt.",
     ios: "A Safariban koppints a <b>Megosztás</b> gombra (a négyzet, felfelé mutató nyíllal), majd a <b>Főképernyőhöz adás</b> lehetőségre.",

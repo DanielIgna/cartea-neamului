@@ -52,31 +52,41 @@ export function where(place: string | null | undefined, country: string | null |
  * descendenți și gradul de rudenie), cine pe cine a crescut, plus ascendenții persoanei centrale numerotați Ahnentafel.
  */
 export async function loadTreeView(db: Db, treeId: string, centerId?: string, generations = 4, locale?: string) {
-  const [t] = await db.select().from(tree).where(eq(tree.id, treeId));
+  // Întrebările care nu depind una de alta pleacă deodată: fiecare drum până la baza de date costă timp.
+  const [[t], rows] = await Promise.all([
+    db.select().from(tree).where(eq(tree.id, treeId)),
+    db.select().from(person).where(eq(person.treeId, treeId)),
+  ]);
   if (!t) return null;
-  const rows = await db.select().from(person).where(eq(person.treeId, treeId));
   const center = centerId && rows.some((p) => p.id === centerId) ? centerId : t.rootPersonId;
   const empty = { tree: t, centerId: null, rootId: t.rootPersonId, slots: {} as Record<number, string>, people: {} as Record<string, PersonView>, rels: [] as Rel[], raised: [] as Raised[] };
   if (!center) return empty;
   const gens = Math.min(Math.max(generations, 1), MAX_GENERATIONS);
-  const ahnen = toAhnentafel(await fetchAncestorRows(db, center, gens));
-  const relRows: Rel[] = (await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB, start: relationship.startText, created: relationship.createdAt })
-    .from(relationship).where(eq(relationship.treeId, treeId))).map((r) => ({ ...r, created: r.created.getTime() }));
   const ids = rows.map((p) => p.id);
-  // Pozele și glasul puse la amintiri nu intră în album (le deschide doar cine vede amintirea).
-  const media = await memoryMediaIds(db, treeId);
-  const links = (ids.length
-    ? await db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey, description: document.description, mimeType: document.mimeType })
-        .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
-    : []).filter((l) => !media.has(l.id));
   // Cine și-a revendicat fișa poate avea poză în cont (din Google): o arătăm când fișa nu are poză încărcată.
   const claimers = [...new Set(rows.map((p) => p.claimedByUserId).filter((u): u is string => !!u))];
-  const images = new Map(claimers.length ? (await db.select({ id: user.id, image: user.image }).from(user).where(inArray(user.id, claimers))).map((u) => [u.id, safeAccountImage(u.image)]) : []);
+  const [ancestorRows, relList, media, linkRows, imageRows, raised] = await Promise.all([
+    fetchAncestorRows(db, center, gens),
+    db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB, start: relationship.startText, created: relationship.createdAt })
+      .from(relationship).where(eq(relationship.treeId, treeId)),
+    // Pozele și glasul puse la amintiri nu intră în album (le deschide doar cine vede amintirea).
+    memoryMediaIds(db, treeId),
+    ids.length
+      ? db.select({ personId: documentLink.personId, id: document.id, title: document.title, kind: document.kind, dateText: document.dateText, fileKey: document.fileKey, description: document.description, mimeType: document.mimeType })
+          .from(documentLink).innerJoin(document, eq(document.id, documentLink.documentId)).where(inArray(documentLink.personId, ids))
+      : Promise.resolve([]),
+    claimers.length ? db.select({ id: user.id, image: user.image }).from(user).where(inArray(user.id, claimers)) : Promise.resolve([]),
+    raisedIn(db, treeId),
+  ]);
+  const ahnen = toAhnentafel(ancestorRows);
+  const relRows: Rel[] = relList.map((r) => ({ ...r, created: r.created.getTime() }));
+  const links = linkRows.filter((l) => !media.has(l.id));
+  const images = new Map(imageRows.map((u) => [u.id, safeAccountImage(u.image)]));
   const people: Record<string, PersonView> = {};
   for (const p of rows) people[p.id] = toView(p, links.filter((l) => l.personId === p.id).map(({ personId: _, fileKey, ...d }) => ({ ...d, hasFile: !!fileKey })), images.get(p.claimedByUserId ?? "") ?? null, locale);
   const slots: Record<number, string> = {};
   for (const [n, id] of ahnen) slots[n] = id;
-  return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised: await raisedIn(db, treeId) };
+  return { tree: t, centerId: center, rootId: t.rootPersonId, slots, people, rels: relRows, raised };
 }
 
 export async function loadTimeline(db: Db, treeId: string, locale?: string) {

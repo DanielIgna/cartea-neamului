@@ -12,6 +12,7 @@ import { esDatele } from "./datele/es";
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
   Meta: {
+    appName: "El Libro de la Familia",
     description: "El árbol de la familia, construido juntos e impreso como un libro.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const es: Catalog = {
   UsageNotice: {
     label: "Cómo usas el sitio",
     lead: "Una pregunta, solo una vez.",
-    text: "Para mejorar Cartea Neamului, nos gustaría saber cuánto tiempo pasas en el sitio y qué partes usas (el árbol, el baúl de los recuerdos, el mapa…). Solo el tiempo y el nombre de la parte, no lo que escribes ni lo que pulsas. Puedes pararlo cuando quieras, en «Mis datos».",
+    text: "Para mejorar el Libro de la Familia, nos gustaría saber cuánto tiempo pasas en el sitio y qué partes usas (el árbol, el baúl de los recuerdos, el mapa…). Solo el tiempo y el nombre de la parte, no lo que escribes ni lo que pulsas. Puedes pararlo cuando quieras, en «Mis datos».",
     yes: "De acuerdo",
     no: "No, gracias",
     more: "Qué significa",
@@ -54,7 +55,7 @@ export const es: Catalog = {
   Landing: {
     deleted: "Tu cuenta se ha borrado, con todo lo que era tuyo. Gracias por haber estado con nosotros.",
     heroTitle: "El árbol de la familia, construido juntos",
-    brandNote: "«Cartea Neamului» significa «el libro de la familia» en rumano.",
+    brandNote: "En rumano: Cartea Neamului.",
     heroText: "Empiezas por ti, invitas a tus familiares y cada uno completa su rama con nombres, fotos, documentos y recuerdos. Al final, la familia imprime su propio libro.",
     signUp: "Crear una cuenta gratis",
     signIn: "Entrar",
@@ -86,7 +87,7 @@ export const es: Catalog = {
     featuresText: "De los tatarabuelos a los nietos de hoy: personas, lugares, historias y voces, reunidos por toda la familia.",
     howText: "No hace falta saberlo todo desde el principio. Empiezas con lo que sabes y tus familiares completan el resto.",
     quote: "Lo que no escribimos hoy, nuestros nietos ya no lo sabrán.",
-    quoteText: "Cartea Neamului existe para que cada familia guarde a su gente, sus historias y sus voces para los que vienen después.",
+    quoteText: "El Libro de la Familia existe para que cada familia guarde a su gente, sus historias y sus voces para los que vienen después.",
     ctaTitle: "Empieza hoy el árbol de tu familia",
     ctaText: "Tarda un minuto. El primer paso eres tú.",
     heroTitleRich: "El árbol de la familia, construido <em>juntos</em>",
@@ -95,7 +96,7 @@ export const es: Catalog = {
     stat3: "enlace de WhatsApp para invitar a tu familia",
     stat4: "minuto para empezar",
     gensTitle: "Cuatro generaciones, una sola historia",
-    gensText: "Cartea Neamului es para toda la familia: cada generación tiene algo que aportar y algo que recibir.",
+    gensText: "El Libro de la Familia es para toda la familia: cada generación tiene algo que aportar y algo que recibir.",
     gen1Title: "Los abuelos",
     gen1Text: "Su voz y sus recuerdos, guardados para los que vienen después.",
     gen2Title: "Los padres",
@@ -146,7 +147,7 @@ export const es: Catalog = {
   Invitation: {
     ogTitle: "{name} te invita al árbol de la familia «{tree}»",
     ogTitleNoName: "Estás invitado al árbol de la familia «{tree}»",
-    ogDescription: "Entra en el árbol en Cartea Neamului: ve a tus parientes, añade tu rama y los recuerdos de los tuyos.",
+    ogDescription: "Entra en el árbol en el Libro de la Familia: ve a tus parientes, añade tu rama y los recuerdos de los tuyos.",
     invalid: "La invitación ya no es válida",
     notFound: "La invitación no existe",
     expired: "La invitación ha caducado",
@@ -288,8 +289,8 @@ export const es: Catalog = {
     bring: "Traer el árbol",
   },
   InstallApp: {
-    titlePhone: "Pon Cartea Neamului en tu móvil",
-    titleComputer: "Pon Cartea Neamului en tu ordenador",
+    titlePhone: "Pon el Libro de la Familia en tu móvil",
+    titleComputer: "Pon el Libro de la Familia en tu ordenador",
     promptPhone: "Se abre como una aplicación, directamente desde la pantalla de inicio, sin tener que buscar el sitio.",
     promptComputer: "Se abre como una aplicación, desde su propio icono, sin tener que buscar el sitio.",
     ios: "En Safari, toca el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba) y luego <b>Añadir a pantalla de inicio</b>.",

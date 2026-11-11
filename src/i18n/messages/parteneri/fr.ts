@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Français (vous). Espace insécable avant : ; ! ? et à l’intérieur des « ». */
 export const frParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Je souhaite recevoir de temps en temps des avantages pour mon logement de la part de PropManage, partenaire de Cartea Neamului.",
+    checkbox: "Je souhaite recevoir de temps en temps des avantages pour mon logement de la part de PropManage, partenaire du Livre de la Famille.",
     checkboxHint: "Facultatif. L’arbre fonctionne de la même façon sans cela. Nous ne transmettons que votre adresse e-mail, et vous pouvez vous désinscrire à tout moment, en un clic.",
     menu: "Partenaires",
     bookCard: {
@@ -14,10 +14,10 @@ export const frParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partenaires · Cartea Neamului",
-    metaDescription: "Les partenaires de Cartea Neamului et ce qu’ils proposent aux familles.",
+    metaTitle: "Partenaires · Le Livre de la Famille",
+    metaDescription: "Les partenaires du Livre de la Famille et ce qu’ils proposent aux familles.",
     label: "Partenaires",
-    title: "Les partenaires de Cartea Neamului",
+    title: "Les partenaires du Livre de la Famille",
     lead: "L’arbre, les souvenirs et le livre n’appartiennent qu’à la famille, sans publicité. Ici, sur une seule page, se trouvent les partenaires en qui nous avons confiance.",
     pmAlt: "Logo de PropManage",
     pmWhat: "Pour les propriétaires de logement",
@@ -33,7 +33,7 @@ export const frParteneri: ParteneriCatalog = {
     unsubText: "Dès que vous appuyez sur le bouton, votre adresse e-mail est retirée de la liste que reçoit PropManage. Votre arbre et votre compte restent exactement tels quels.",
     unsubButton: "Oui, je ne veux plus d’avantages",
     unsubWorking: "Retrait en cours…",
-    unsubDone: "C’est fait. Vous ne recevrez plus d’avantages de PropManage par Cartea Neamului. Vous pouvez changer d’avis à tout moment, dans « Mes données ».",
+    unsubDone: "C’est fait. Vous ne recevrez plus d’avantages de PropManage par le Livre de la Famille. Vous pouvez changer d’avis à tout moment, dans « Mes données ».",
     unsubBad: "Ce lien n’est pas valide ou il est incomplet. Copiez-le en entier depuis l’e-mail, ou connectez-vous et désinscrivez-vous dans « Mes données ».",
   },
   OldHouse: {

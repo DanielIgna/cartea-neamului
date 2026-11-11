@@ -108,7 +108,7 @@ export const frCarte: CarteCatalog = {
     },
     index: "Index des noms",
     colophon: {
-      made: "Réalisé par {author} sur Cartea Neamului en {when}, à partir de l’arbre « {tree} » : {count, plural, one {une personne} other {# personnes}}.",
+      made: "Réalisé par {author} sur le Livre de la Famille en {when}, à partir de l’arbre « {tree} » : {count, plural, one {une personne} other {# personnes}}.",
       redo: "Le livre peut être refait à tout moment sur le site, avec tout ce que la famille a ajouté entre-temps.",
     },
     defaults: {

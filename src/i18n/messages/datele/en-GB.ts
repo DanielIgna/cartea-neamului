@@ -4,7 +4,7 @@ export const enGBDatele: DateleCatalog = {
   MyData: {
     metaTitle: "My data",
     label: "My data",
-    title: "What you put into Cartea Neamului is yours",
+    title: "What you put into the Family Book is yours",
     intro: "Your account: <b>{name}</b>, with the address {email}, since {date}. Here you can download your data at any time, see the consents you have given and, if you wish, delete your account. How we keep it and who sees it is set out in the <privacy>Privacy policy</privacy>.",
     download: {
       label: "Download",
@@ -54,6 +54,8 @@ export const enGBDatele: DateleCatalog = {
       harta: "Family map",
       calatorie: "Journey through time",
       "istoria-bisericii": "Church history",
+      "adam-hristos": "From Adam to Christ",
+      "firul-vremii": "The thread of time",
       mesaje: "Messages",
       amintire: "A memory received",
       "datele-mele": "My data",

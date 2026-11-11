@@ -4,7 +4,7 @@ export const frDatele: DateleCatalog = {
   MyData: {
     metaTitle: "Mes données",
     label: "Mes données",
-    title: "Ce que vous mettez dans Cartea Neamului vous appartient",
+    title: "Ce que vous mettez dans le Livre de la Famille vous appartient",
     intro: "Votre compte : <b>{name}</b>, avec l’adresse {email}, depuis le {date}. Ici, vous téléchargez vos données à tout moment, vous voyez les consentements que vous avez donnés et, si vous le souhaitez, vous supprimez votre compte. La façon dont nous les conservons et qui les voit est décrite dans la <privacy>Politique de confidentialité</privacy>.",
     download: {
       label: "Télécharger",
@@ -54,6 +54,8 @@ export const frDatele: DateleCatalog = {
       harta: "La carte de la famille",
       calatorie: "Le voyage dans le temps",
       "istoria-bisericii": "L’histoire de l’Église",
+      "adam-hristos": "D’Adam au Christ",
+      "firul-vremii": "Le fil du temps",
       mesaje: "Les messages",
       amintire: "Un souvenir reçu",
       "datele-mele": "Mes données",

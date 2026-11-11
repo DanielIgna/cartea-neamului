@@ -12,6 +12,7 @@ import { nlDatele } from "./datele/nl";
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
   Meta: {
+    appName: "Het Familieboek",
     description: "De stamboom van de familie, samen opgebouwd en gedrukt als een boek.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const nl: Catalog = {
   UsageNotice: {
     label: "Hoe je de site gebruikt",
     lead: "Eén vraag, maar één keer.",
-    text: "Om Cartea Neamului beter te maken, willen we graag weten hoe lang je op de site bent en welke onderdelen je gebruikt (de stamboom, de herinneringskist, de kaart…). Alleen de tijd en de naam van het onderdeel, niet wat je schrijft en ook niet waarop je tikt. Je kunt dit altijd stoppen, via ‘Mijn gegevens’.",
+    text: "Om het Familieboek beter te maken, willen we graag weten hoe lang je op de site bent en welke onderdelen je gebruikt (de stamboom, de herinneringskist, de kaart…). Alleen de tijd en de naam van het onderdeel, niet wat je schrijft en ook niet waarop je tikt. Je kunt dit altijd stoppen, via ‘Mijn gegevens’.",
     yes: "Goed",
     no: "Liever niet",
     more: "Wat dit betekent",
@@ -54,7 +55,7 @@ export const nl: Catalog = {
   Landing: {
     deleted: "Je account is verwijderd, met alles wat van jou was. Bedankt dat je bij ons was.",
     heroTitle: "De stamboom van je familie, samen opgebouwd",
-    brandNote: "‘Cartea Neamului’ is Roemeens voor ‘het boek van de familie’.",
+    brandNote: "In het Roemeens: Cartea Neamului.",
     heroText: "Je begint bij jezelf, nodigt je familieleden uit, en ieder vult zijn eigen tak aan met namen, foto’s, documenten en herinneringen. Aan het eind drukt de familie haar eigen boek.",
     signUp: "Gratis account maken",
     signIn: "Inloggen",
@@ -86,7 +87,7 @@ export const nl: Catalog = {
     featuresText: "Van je betovergrootouders tot de kleinkinderen van nu: mensen, plaatsen, verhalen en stemmen, verzameld door de hele familie.",
     howText: "Je hoeft niet alles meteen te weten. Begin met wat je weet, je familie vult de rest aan.",
     quote: "Wat we vandaag niet opschrijven, zullen onze kleinkinderen nooit weten.",
-    quoteText: "Cartea Neamului is gemaakt zodat elke familie haar mensen, verhalen en stemmen bewaart voor wie na ons komt.",
+    quoteText: "Het Familieboek is gemaakt zodat elke familie haar mensen, verhalen en stemmen bewaart voor wie na ons komt.",
     ctaTitle: "Begin vandaag de stamboom van je familie",
     ctaText: "Het duurt een minuut. De eerste stap ben jij.",
     heroTitleRich: "De stamboom van je familie, <em>samen</em> opgebouwd",
@@ -95,7 +96,7 @@ export const nl: Catalog = {
     stat3: "WhatsApp-link om je familie uit te nodigen",
     stat4: "minuut om te beginnen",
     gensTitle: "Vier generaties, één verhaal",
-    gensText: "Cartea Neamului is voor de hele familie: elke generatie heeft iets toe te voegen en iets te ontvangen.",
+    gensText: "Het Familieboek is voor de hele familie: elke generatie heeft iets toe te voegen en iets te ontvangen.",
     gen1Title: "Grootouders",
     gen1Text: "Hun stem en herinneringen, bewaard voor wie na hen komt.",
     gen2Title: "Ouders",
@@ -146,7 +147,7 @@ export const nl: Catalog = {
   Invitation: {
     ogTitle: "{name} nodigt je uit in de stamboom „{tree}”",
     ogTitleNoName: "Je bent uitgenodigd in de stamboom „{tree}”",
-    ogDescription: "Kom in de stamboom op Cartea Neamului: zie je familie, voeg je tak en de herinneringen aan je dierbaren toe.",
+    ogDescription: "Kom in de stamboom op het Familieboek: zie je familie, voeg je tak en de herinneringen aan je dierbaren toe.",
     invalid: "Deze uitnodiging is niet meer geldig",
     notFound: "Deze uitnodiging bestaat niet",
     expired: "Deze uitnodiging is verlopen",
@@ -288,8 +289,8 @@ export const nl: Catalog = {
     bring: "Stamboom binnenhalen",
   },
   InstallApp: {
-    titlePhone: "Zet Cartea Neamului op je telefoon",
-    titleComputer: "Zet Cartea Neamului op je computer",
+    titlePhone: "Zet het Familieboek op je telefoon",
+    titleComputer: "Zet het Familieboek op je computer",
     promptPhone: "Hij opent als een app, rechtstreeks vanaf je beginscherm, zonder dat je de site hoeft te zoeken.",
     promptComputer: "Hij opent als een app, met een eigen pictogram, zonder dat je de site hoeft te zoeken.",
     ios: "Tik in Safari op de knop <b>Deel</b> (het vierkantje met de pijl omhoog) en daarna op <b>Zet op beginscherm</b>.",

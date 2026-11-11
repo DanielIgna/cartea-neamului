@@ -26,6 +26,7 @@ export const enGBBiserica: BisericaCatalog = {
     endTitle: "We too are a page in this history",
     endText: "The Church is not a building or an institution, but all those who have received Christ, from Stephen to the grandparents who prayed in secret, and on to us. The light has passed from hand to hand for two thousand years, often at the cost of life. Now it is in our hands: to keep it burning, to read the Word and to pray for those who are persecuted today.",
     readJohn: "Read the Gospel of John",
+    adamToChrist: "From Adam to Christ",
     note: "The verses are from the King James Version. Where something is only tradition, the text says so.",
     intro: "The Lord Jesus did not promise His disciples an easy life, but that His Church would not be overcome. From Jerusalem to today, every time people tried to put out the light of the Gospel, it was lit again somewhere else. Here are some of those who paid for their faith with their freedom or their lives, and some of the moments when the Word came back into the hands of ordinary people.",
     promise: {

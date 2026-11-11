@@ -58,6 +58,8 @@ export const roDatele = {
       harta: "Harta neamului",
       calatorie: "Călătoria în timp",
       "istoria-bisericii": "Istoria Bisericii",
+      "adam-hristos": "De la Adam la Hristos",
+      "firul-vremii": "Firul vremii",
       mesaje: "Mesajele",
       amintire: "O amintire primită",
       "datele-mele": "Datele mele",

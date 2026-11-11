@@ -27,6 +27,8 @@ export const SECTIONS = {
   harta: "Harta neamului",
   calatorie: "Călătoria în timp",
   "istoria-bisericii": "Istoria Bisericii",
+  "adam-hristos": "De la Adam la Hristos",
+  "firul-vremii": "Firul vremii",
   mesaje: "Mesajele",
   amintire: "O amintire primită",
   "datele-mele": "Datele mele",
@@ -46,6 +48,8 @@ export function sectionOf(path: string, hint?: string | null): Section | null {
   if (p === "/mesaje" || p.startsWith("/mesaje/")) return "mesaje";
   if (p === "/datele-mele") return "datele-mele";
   if (p === "/istoria-bisericii" || p.startsWith("/istoria-bisericii/")) return "istoria-bisericii";
+  if (p === "/de-la-adam-la-hristos") return "adam-hristos";
+  if (p === "/firul-vremii") return "firul-vremii";
   if (p.startsWith("/a/")) return "amintire";
   if (tree) {
     const rest = tree[1] ?? "";

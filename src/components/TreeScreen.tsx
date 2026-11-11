@@ -414,6 +414,7 @@ export default function TreeScreen(props: Props) {
             <Link className="btn" href={`/arbore/${treeId}/cronologie`}>{t("timeline")}</Link>
             <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>{t("journey")}</Link>
             <Link className="btn" href="/istoria-bisericii">{t("churchHistory")}</Link>
+            <Link className="btn" href="/de-la-adam-la-hristos">{t("adamToChrist")}</Link>
             <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>
           </div>
         </div>

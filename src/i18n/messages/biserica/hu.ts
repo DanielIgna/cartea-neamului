@@ -26,6 +26,7 @@ export const huBiserica: BisericaCatalog = {
     endTitle: "Mi is egy lap vagyunk ebben a történetben",
     endText: "Az egyház nem épület és nem intézmény, hanem mindazok, akik befogadták Krisztust, Istvántól a titokban imádkozó nagyszülőkig, és egészen mihozzánk. A fény kétezer éven át kézről kézre járt, sokszor az élet árán. Most a mi kezünkben van: égve tartani, olvasni az Igét, és imádkozni azokért, akiket ma üldöznek.",
     readJohn: "Olvasd el János evangéliumát",
+    adamToChrist: "Ádámtól Krisztusig",
     note: "Az igeversek a Károli-bibliából valók, mai helyesírással. Ahol valami csak hagyomány, a szöveg ezt megmondja.",
     intro: "Az Úr Jézus nem könnyű életet ígért tanítványainak, hanem azt, hogy egyházát nem győzik le. Jeruzsálemtől napjainkig, valahányszor ki akarták oltani az evangélium fényét, az máshol újra fellángolt. Íme néhányan azok közül, akik szabadságukkal vagy életükkel fizettek a hitükért, és néhány pillanat, amikor az Ige visszakerült az egyszerű emberek kezébe.",
     promise: {

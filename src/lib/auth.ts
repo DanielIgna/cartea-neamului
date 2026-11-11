@@ -13,8 +13,12 @@ if (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-p
   console.warn("BETTER_AUTH_SECRET lipsește: setează-l înainte de lansare (vezi .env.example).");
 }
 
-/** Pe Vercel acceptăm și domeniul de producție și adresele de preview, pe lângă BETTER_AUTH_URL. */
-const vercelOrigins = [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_URL]
+/**
+ * Pe Vercel acceptăm domeniul nostru (carteaneamului.ro, cu și fără www), vechea adresă .vercel.app,
+ * domeniul de producție și adresele de preview, pe lângă BETTER_AUTH_URL.
+ */
+const vercelOrigins = ["carteaneamului.ro", "www.carteaneamului.ro", "cartea-neamului.vercel.app",
+  process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_URL]
   .filter((h): h is string => !!h).map((h) => `https://${h}`);
 
 const googleId = process.env.GOOGLE_CLIENT_ID, googleSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -37,6 +41,8 @@ export const auth = betterAuth({
   trustedOrigins: vercelOrigins,
   database: drizzleAdapter(db, { provider: "pg", schema: { user, session, account, verification } }),
   emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  // Cine e intrat în cont: ținut 5 minute într-un cookie semnat, ca fiecare pagină să nu mai întrebe baza de date la fiecare clic.
+  session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   // Limba contului (aleasă din site, nu trimisă la creare): îl urmează pe alt telefon sau calculator.
   user: { additionalFields: { locale: { type: "string", required: false, defaultValue: DEFAULT_LOCALE, input: false } } },
   socialProviders: googleEnabled() ? { google: { clientId: googleId!, clientSecret: googleSecret!, prompt: "select_account" } } : undefined,

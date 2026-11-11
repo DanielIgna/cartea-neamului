@@ -9,13 +9,13 @@ import { TERMS_DATE, operator } from "@/lib/legal";
 import { AccountDelete, FaithWithdraw, PartnerToggle, UsageToggle } from "@/components/MyDataTools";
 import { partnerState } from "@/lib/partners";
 import { usageOf } from "@/lib/usage";
-import { getFormat, getLocale, getT } from "@/i18n/server";
+import { getFormat, getLocale, getAppName, getT } from "@/i18n/server";
 import PageIntl from "@/i18n/PageIntl";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
   const t = await getT("MyData");
-  return { title: `${t("metaTitle")} · Cartea Neamului` };
+  return { title: `${t("metaTitle")} · ${await getAppName()}` };
 }
 
 const tags = {

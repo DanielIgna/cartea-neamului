@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getT } from "@/i18n/server";
+import { getAppName, getT } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("NotFound");
-  return { title: `${t("title")} · Cartea Neamului`, robots: { index: false, follow: false } };
+  return { title: `${t("title")} · ${await getAppName()}`, robots: { index: false, follow: false } };
 }
 
 /** Pagina pentru adresele care nu există (status 404), în limba aleasă. */

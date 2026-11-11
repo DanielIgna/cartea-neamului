@@ -143,7 +143,7 @@ export const deAmintiri: AmintiriCatalog = {
     degreeHint: "1. Grad: Eltern und Kinder; 2.: Geschwister und Großeltern; 3.: Onkel, Tanten, Neffen und Nichten; 4.: Cousins und Cousinen. Ehepartner sehen sie immer.",
     inBook: "Darf ins Familienbuch",
     faithConsentOther: "{name} ist einverstanden, dass wir aufbewahren, was über den eigenen Glauben erzählt wurde.",
-    faithConsent: "Ich bin einverstanden, dass das, was ich über meinen Glauben schreibe, in Cartea Neamului aufbewahrt wird und nur von den Menschen gesehen wird, die ich auswähle. Ich kann mein Einverständnis jederzeit unter „Meine Daten“ zurückziehen; dann werden die Antworten in diesem Kapitel gelöscht.",
+    faithConsent: "Ich bin einverstanden, dass das, was ich über meinen Glauben schreibe, im Familienbuch aufbewahrt wird und nur von den Menschen gesehen wird, die ich auswähle. Ich kann mein Einverständnis jederzeit unter „Meine Daten“ zurückziehen; dann werden die Antworten in diesem Kapitel gelöscht.",
     faithInvalid: "Setz das Häkchen beim Einverständnis, damit die Antwort aufbewahrt werden kann.",
     uploadingVoice: "Aufnahme wird hochgeladen…",
     uploadingPhoto: "Foto wird hochgeladen…",
