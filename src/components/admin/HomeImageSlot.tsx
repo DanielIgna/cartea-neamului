@@ -1,8 +1,7 @@
 "use client";
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { deleteHomeUpload, setHomeActive } from "@/app/admin-actions";
+import { useRef, useState } from "react";
+import { deleteHomeUpload, refreshHomeImages, setHomeActive } from "@/app/admin-actions";
 import { shrinkPhoto } from "@/lib/shrink-photo";
 
 type Option = { id: string; src: string; custom: boolean; credit?: string };
@@ -13,21 +12,24 @@ type Option = { id: string; src: string; custom: boolean; credit?: string };
  */
 export default function HomeImageSlot({ slot, label, hint, wide, multi, max, options, active: initial }:
   { slot: string; label: string; hint: string; wide: boolean; multi: boolean; max: number; options: Option[]; active: string[] }) {
-  const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [active, setActive] = useState(initial);
   const [msg, setMsg] = useState<{ ok?: string; error?: string } | null>(null);
   const [busy, setBusy] = useState(false);
-  const [pending, start] = useTransition();
+  // Fără useTransition: acțiunea își reîmprospătează singură pagina (revalidatePath), iar butoanele nu trebuie să rămână
+  // blocate dacă o reîmprospătare e întreruptă de alta.
+  const [pending, setPending] = useState(false);
+  async function run(fn: () => Promise<{ ok?: string; error?: string } | null>) {
+    setPending(true);
+    try { const r = await fn(); setMsg(r); return r; }
+    catch { setMsg({ error: "Nu s-a putut salva. Încearcă din nou." }); return null; }
+    finally { setPending(false); }
+  }
 
   function save(next: string[]) {
     const prev = active;
     setActive(next); setMsg(null);
-    start(async () => {
-      const r = await setHomeActive(slot, next);
-      if (r?.error) setActive(prev);
-      setMsg(r); router.refresh();
-    });
+    void run(() => setHomeActive(slot, next)).then((r) => { if (!r || r.error) setActive(prev); });
   }
   function pick(id: string) {
     if (!multi) { if (active[0] !== id) save([id]); return; }
@@ -47,7 +49,7 @@ export default function HomeImageSlot({ slot, label, hint, wide, multi, max, opt
       const res = await fetch("/api/admin/poze", { method: "POST", body: fd });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) setMsg({ error: body.error ?? "Nu s-a putut încărca poza." });
-      else { setMsg({ ok: multi ? "Am adăugat poza în banner." : "Am pus poza ta pe pagină." }); router.refresh(); }
+      else { setMsg({ ok: multi ? "Am adăugat poza în banner." : "Am pus poza ta pe pagină." }); await refreshHomeImages(); }
     } catch {
       setMsg({ error: "Nu s-a putut încărca poza. Încearcă din nou." });
     } finally {
@@ -77,7 +79,7 @@ export default function HomeImageSlot({ slot, label, hint, wide, multi, max, opt
               </button>
               {o.custom && (
                 <button type="button" className="home-opt-del" disabled={pending || busy} aria-label="Șterge poza"
-                  onClick={() => { if (confirm("Ștergi poza asta?")) start(async () => { const r = await deleteHomeUpload(slot, o.id.slice(2)); setMsg(r); router.refresh(); }); }}>
+                  onClick={() => { if (confirm("Ștergi poza asta?")) void run(() => deleteHomeUpload(slot, o.id.slice(2))); }}>
                   ×
                 </button>
               )}
