@@ -903,7 +903,9 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 
 /* Bannerul */
 .lp-banner{min-height:clamp(660px,92vh,900px);display:grid;place-items:center;align-content:end;gap:24px;padding-block:72px 32px;overflow:hidden;background:#1b120f;color:var(--cream)}
-.lp-banner-img{object-position:50% 30%}
+.lp-banner-slides{display:contents}
+.lp-banner-img{object-position:50% 30%;opacity:0;transition:opacity 1.6s ease}
+.lp-banner-img.on{opacity:1}
 .lp-banner::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#1b120f66 0%,transparent 22%,transparent 45%,#1b120fb3 72%,#140b08f2 100%)}
 .lp-banner-panel{position:relative;width:min(880px,100%);text-align:center;padding:clamp(26px,3vw,40px) clamp(20px,4vw,56px);
   background:#1d130fb8;border:1px solid #f5ecdd2e;border-radius:6px;box-shadow:0 30px 80px -30px #000c;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
@@ -1056,14 +1058,24 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 @media (prefers-reduced-motion:reduce){.lp-btn,.lp-btn span,.lp-gen .lp-photo,.lp-img{transition:none}.lp-btn:hover,.lp-gen:hover .lp-photo,.lp-gen:hover .lp-img,.lp-card:hover .lp-img{transform:none}}
 
 /* Admin → Poze prima pagină */
-.home-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
-.home-slot h3{margin:12px 0 4px;font-size:18px}
+.home-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px}
+.home-slot.wide{grid-column:1/-1}
+.home-slot h3{margin:0 0 4px;font-size:18px}
 .home-slot p{margin:0 0 10px;font-size:14px}
-.home-slot .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.home-slot-img{position:relative;aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:var(--surface-2);max-height:260px;width:100%}
-.home-slot-img.wide{aspect-ratio:16/9}
-.home-slot-img img{width:100%;height:100%;object-fit:cover;display:block}
-.home-slot-img .pill{position:absolute;top:8px;left:8px}
+.home-slot .actions{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:12px}
+.home-opts{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.home-opts.wide{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.home-opts li{position:relative;display:grid;gap:3px;min-width:0}
+.home-opts li>button:first-child{position:relative;display:block;width:100%;aspect-ratio:4/5;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:var(--surface-2);cursor:pointer}
+.home-opts.wide li>button:first-child{aspect-ratio:16/10}
+.home-opts li>button:first-child img{object-fit:cover}
+.home-opts li.on>button:first-child{border-color:var(--ochre);box-shadow:0 0 0 2px color-mix(in srgb,var(--ochre) 35%,transparent)}
+.home-opts li:not(.on)>button:first-child img{opacity:.78}
+.home-opts li:not(.on)>button:first-child:hover img{opacity:1}
+.home-opts .pill{position:absolute;top:6px;left:6px;font-size:11px}
+.home-opts .home-opt-own{top:auto;bottom:6px}
+.home-opt-del{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:#000a;color:#fff;font-size:17px;line-height:1;cursor:pointer}
+.home-opts small{font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* De la Adam la Hristos (/de-la-adam-la-hristos): arborii Bibliei, prefix .ah- (folosește și stilurile .ch- ale Istoriei Bisericii) */
 .ah{max-width:980px}

@@ -3,6 +3,7 @@ import { getAppName, getT } from "@/i18n/server";
 import Image from "next/image";
 import { db } from "@/db";
 import { homeImages, type HomeImage } from "@/lib/home-images";
+import BannerSlides from "@/components/BannerSlides";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -83,9 +84,9 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
   const cards = [
     { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
-    { k: "memories", art: <><Photo img={imgs.memories} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
-    { k: "map", art: <Photo img={imgs.map} sizes="(max-width:640px) 100vw, 300px" /> },
-    { k: "book", art: <Photo img={imgs.book} sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "memories", art: <><Photo img={imgs.memories[0]} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
+    { k: "map", art: <Photo img={imgs.map[0]} sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "book", art: <Photo img={imgs.book[0]} sizes="(max-width:640px) 100vw, 300px" /> },
   ] as const;
   return (
     <div className="lp">
@@ -94,7 +95,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
 
       {/* Bannerul: familia pe toată lățimea, cu panoul întunecat la mijloc */}
       <section className="lp-band lp-banner">
-        <Photo img={imgs.banner} sizes="100vw" priority className="lp-img lp-banner-img" />
+        <BannerSlides imgs={imgs.banner.map(({ src, custom }) => ({ src, custom }))} />
         <div className="lp-banner-panel">
           <p className="lp-tagline">{t("eyebrow")}</p>
           <h1 className="lp-name">{await getAppName()}</h1>
@@ -125,7 +126,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
           <div className="lp-gens">
             {GENS.map(([k, pos]) => (
               <figure key={k} className="lp-gen">
-                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo img={imgs[k]} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
+                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo img={imgs[k][0]} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
                 <figcaption><h3>{t(`${k}Title`)}</h3><p>{t(`${k}Text`)}</p></figcaption>
               </figure>
             ))}
@@ -155,7 +156,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
 
       {/* Gândul din spate, peste siluetele unei familii la apus, cu cifrele dedesubt */}
       <section className="lp-band lp-sunset">
-        <Photo img={imgs.sunset} sizes="100vw" className="lp-img lp-sunset-img" />
+        <Photo img={imgs.sunset[0]} sizes="100vw" className="lp-img lp-sunset-img" />
         <div className="lp-in lp-quote">
           <span className="lp-quote-mark" aria-hidden="true">“</span>
           <blockquote><p>{t("quote")}</p></blockquote>
@@ -170,7 +171,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       {/* Cum începi, lângă o masă în familie */}
       <section className="lp-band lp-paper" aria-labelledby="lp-how">
         <div className="lp-in lp-how">
-          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo img={imgs.table} sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
+          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo img={imgs.table[0]} sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
           <div>
             <h2 id="lp-how">{t("howTitle")}</h2>
             <p className="lp-how-text">{t("howText")}</p>
@@ -184,7 +185,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       </section>
 
       <section className="lp-band lp-cta" aria-labelledby="lp-cta">
-        <Photo img={imgs.hands} sizes="100vw" className="lp-img lp-cta-img" />
+        <Photo img={imgs.hands[0]} sizes="100vw" className="lp-img lp-cta-img" />
         <div className="lp-in">
           <h2 id="lp-cta">{t("ctaTitle")}</h2>
           {ornament}

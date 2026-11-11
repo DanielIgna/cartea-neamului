@@ -3,8 +3,8 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
-import { isHomeSlot, setHomeImage } from "@/lib/home-images";
-import { deleteObjects, putObject, storageConfigured } from "@/lib/storage";
+import { homeImagesState, isHomeSlot, MAX_UPLOADS, saveHomeImagesState, withUpload } from "@/lib/home-images";
+import { putObject, storageConfigured } from "@/lib/storage";
 import { fileType } from "@/lib/file-type";
 
 // Sub limita de 4,5 MB a corpului unei cereri pe Vercel; pagina micșorează poza în browser înainte s-o trimită.
@@ -18,7 +18,7 @@ function looksLikeImage(b: Uint8Array) {
   return jpeg || png || webp;
 }
 
-/** Admin → Poze prima pagină: înlocuiește poza unui loc. Poza veche încărcată se șterge din bucket. */
+/** Admin → Poze prima pagină: adaugă o poză la un loc și o pune pe pagină (la banner, alături de celelalte). */
 export async function POST(req: Request) {
   const me = await currentUser();
   if (!isAdminUser(me) || !me) return Response.json({ error: "Nu ai voie aici." }, { status: 403 });
@@ -31,11 +31,13 @@ export async function POST(req: Request) {
   const type = fileType(file);
   const bytes = new Uint8Array(await file.arrayBuffer());
   if (!ALLOWED.test(type) || !looksLikeImage(bytes)) return Response.json({ error: "Merg doar poze JPG, PNG sau WebP." }, { status: 415 });
+  const state = await homeImagesState(db);
+  if ((state[slot]?.uploads.length ?? 0) >= MAX_UPLOADS) return Response.json({ error: `Locul are deja ${MAX_UPLOADS} poze încărcate; șterge una înainte.` }, { status: 409 });
   const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
-  const key = `site/acasa/${slot}-${randomUUID()}.${ext}`;
+  const id = randomUUID();
+  const key = `site/acasa/${slot}-${id}.${ext}`;
   await putObject(key, bytes, type);
-  const old = await setHomeImage(db, slot, { key, type, at: new Date().toISOString(), by: me.id }, me.id);
-  await deleteObjects([old]);
+  await saveHomeImagesState(db, withUpload(state, slot, { id, key, type, at: new Date().toISOString(), by: me.id }), me.id);
   revalidatePath("/");
   revalidatePath("/admin/poze");
   return Response.json({ ok: true });

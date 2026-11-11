@@ -11,7 +11,7 @@ import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
 import { isLocale } from "@/i18n/locales";
 import { undoChange } from "@/lib/admin-istoric";
-import { isHomeSlot, setHomeImage } from "@/lib/home-images";
+import { homeImagesState, isHomeSlot, saveHomeImagesState, withActive, withoutUpload } from "@/lib/home-images";
 import { deleteObjects } from "@/lib/storage";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
@@ -111,13 +111,28 @@ export async function saveTreeLimit(_: AdminFormState, form: FormData): Promise<
 /* ---------- „Poze prima pagină” ---------- */
 
 /** Pune înapoi poza inițială a unui loc de pe prima pagină și șterge din bucket poza încărcată (încărcarea e în /api/admin/poze). */
-export async function resetHomeImage(slot: string): Promise<AdminFormState> {
+/** Admin → Poze prima pagină: ce poze stau pe pagină într-un loc (la banner pot fi mai multe, în ordinea dată). */
+export async function setHomeActive(slot: string, ids: string[]): Promise<AdminFormState> {
   const me = await admin();
   if (!me) return { error: "Nu ai voie aici." };
-  if (!isHomeSlot(slot)) return { error: "Locul pozei nu există." };
-  const old = await setHomeImage(db, slot, null, me.id);
-  await deleteObjects([old]);
+  if (!isHomeSlot(slot) || !Array.isArray(ids) || ids.some((i) => typeof i !== "string")) return { error: "Locul pozei nu există." };
+  if (!ids.length) return { error: "Lasă măcar o poză pe pagină." };
+  await saveHomeImagesState(db, withActive(await homeImagesState(db), slot, ids), me.id);
   revalidatePath("/");
   revalidatePath("/admin/poze");
-  return { ok: "Am pus înapoi poza inițială." };
+  return { ok: "Gata, prima pagină arată acum pozele alese." };
+}
+
+/** Șterge o poză încărcată (și fișierul ei din bucket). */
+export async function deleteHomeUpload(slot: string, id: string): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  if (!isHomeSlot(slot) || typeof id !== "string") return { error: "Locul pozei nu există." };
+  const { state, key } = withoutUpload(await homeImagesState(db), slot, id);
+  if (!key) return { error: "Poza nu mai există." };
+  await saveHomeImagesState(db, state, me.id);
+  await deleteObjects([key]);
+  revalidatePath("/");
+  revalidatePath("/admin/poze");
+  return { ok: "Am șters poza." };
 }
