@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 export const viewport: Viewport = {
-  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#eef1f2" }, { media: "(prefers-color-scheme: dark)", color: "#0b1626" }],
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f6efe4" }, { media: "(prefers-color-scheme: dark)", color: "#16100d" }],
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

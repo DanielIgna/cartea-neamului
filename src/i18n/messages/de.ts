@@ -118,6 +118,10 @@ export const de: Catalog = {
     gen4Text: "Sie wachsen auf und kennen ihre Wurzeln.",
   },
   Home: {
+    welcomeEyebrow: "Willkommen zurück",
+    welcomeLead: "Dein Stammbaum, deine Erinnerungen und euer Familienbuch, alles an einem Ort.",
+    openTree: "Stammbaum öffnen",
+    myProfile: "Mein Profil",
     yourTrees: "Deine Stammbäume",
     persons: "{count, plural, one {# Person} other {# Personen}}",
     owner: "Eigentümer",

@@ -127,6 +127,10 @@ export const ro = {
     gen4Text: "Vor crește știindu-și rădăcinile.",
   },
   Home: {
+    welcomeEyebrow: "Bine ai revenit",
+    welcomeLead: "Arborele, amintirile și cartea neamului vostru, toate într-un singur loc.",
+    openTree: "Deschide arborele",
+    myProfile: "Profilul meu",
     yourTrees: "Arborii tăi",
     persons: "{count, plural, one {o persoană} few {# persoane} other {# de persoane}}",
     owner: "proprietar",

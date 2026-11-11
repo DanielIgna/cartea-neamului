@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
-import { tree, treeMember } from "@/db/schema";
+import { person, tree, treeMember } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import FamilyStart from "@/components/FamilyStart";
 import GedcomImport from "@/components/GedcomImport";
@@ -10,6 +10,8 @@ import JoinTree from "@/components/JoinTree";
 import { myJoinRequests } from "@/lib/join";
 import { getT } from "@/i18n/server";
 import Landing from "@/components/Landing";
+import Image from "next/image";
+import { homeImages } from "@/lib/home-images";
 import { SITE_URL } from "@/lib/site-url";
 import type { Metadata } from "next";
 
@@ -47,7 +49,31 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
       </div>
     );
   }
+  // Coperta de bun venit, ca bannerul de pe prima pagină: numele, arborele cel mai nou și fișa ta din el.
+  const first = trees[0];
+  const imgs = await homeImages(db);
+  const stack = (["gen1", "gen2", "gen4"] as const).map((k) => imgs[k][0]).filter(Boolean);
+  const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, first.id), eq(person.claimedByUserId, me.id))).limit(1);
+  const firstName = (me.name ?? "").replace(/\s*\(.*\)\s*$/, "").split(/\s+/)[0] || me.name;
   return (
+    <>
+    <header className="pf-cover home-cover">
+      <div className="pf-cover-grain" aria-hidden="true" />
+      {/* Aceleași fotografii cu generații ca pe prima pagină, așezate ca niște poze vechi puse una peste alta. */}
+      <div className="hc-stack" aria-hidden="true">
+        {stack.map((img, i) => (
+          <div key={img.id + i} className="hc-photo"><div className="hc-photo-in"><Image src={img.src} alt="" fill sizes="200px" unoptimized={img.custom} /></div></div>
+        ))}
+      </div>
+      <p className="pf-eyebrow">{t("welcomeEyebrow")}</p>
+      <h1 className="pf-name">{firstName}</h1>
+      <div className="pf-orn" aria-hidden="true"><i /><b /><i /></div>
+      <p className="meta">{t("welcomeLead")}</p>
+      <div className="actions">
+        <Link className="btn primary" href={`/arbore/${first.id}`}>{t("openTree")} · {first.name}</Link>
+        {mine && <Link className="btn" href={`/arbore/${first.id}/persoana/${mine.id}`}>{t("myProfile")}</Link>}
+      </div>
+    </header>
     <div className="layout">
       <div className="stack">
         <div className="card">
@@ -72,5 +98,6 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
         <InstallApp compact />
       </aside>
     </div>
+    </>
   );
 }

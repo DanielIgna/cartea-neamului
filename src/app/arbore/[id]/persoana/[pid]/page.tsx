@@ -118,16 +118,19 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   return (
     <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse", "Film"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
-      <div className="card">
-        <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>{t("back", { name: p.givenName })}</Link>
-        <div className="profile-hero" style={{ marginTop: 12 }}>
-          <div style={{ display: "grid", justifyItems: "center", gap: 6 }}>
-            <Avatar p={p} size={128} />
-            {storageConfigured() && (canEdit || (can(role, "contributor") && !p.photoId)) && <span style={{ fontSize: 14 }}><PhotoPick treeId={id} p={{ id: p.id, name: p.name, photoId: p.photoId }} /></span>}
+      {/* Coperta profilului: aceeași bandă maro, cu fir de film vechi și auriu, ca bannerul de pe prima pagină. */}
+      <header className="pf-cover">
+        <div className="pf-cover-grain" aria-hidden="true" />
+        <Link className="pf-back" href={`/arbore/${id}?p=${pid}`}>{t("back", { name: p.givenName })}</Link>
+        <div className="profile-hero">
+          <div className="pf-portrait">
+            <div className="pf-frame"><Avatar p={p} size={148} /></div>
+            {storageConfigured() && (canEdit || (can(role, "contributor") && !p.photoId)) && <span className="pf-photo-pick"><PhotoPick treeId={id} p={{ id: p.id, name: p.name, photoId: p.photoId }} /></span>}
           </div>
           <div>
             {kin && <div className="pf-eyebrow">{kinLabel(kin.term, kin.sex, locale)}{kin.degree ? ` · ${t("degree", { degree: degreeWord(kin.degree, locale) })}` : ""}</div>}
-            <h2 className="pf-name">{p.name}</h2>
+            <h1 className="pf-name">{p.name}</h1>
+            <div className="pf-orn" aria-hidden="true"><i /><b /><i /></div>
             <div className="meta">{p.birthSurname ? `${tp("bornAs", { sex: p.sex, surname: p.birthSurname })} · ` : ""}{lifeDates(p, locale)}{bornIn ? ` · ${t("bornIn", { sex: p.sex, place: bornIn })}` : ""}
               {p.living && (p.residencePlace || p.residenceCountry) ? ` · ${t("livesIn", { place: where(p.residencePlace, p.residenceCountry, locale) || p.residenceCountry || "" })}` : ""}</div>
             <div className="chips">
@@ -144,7 +147,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
             </div>
           </div>
         </div>
-      </div>
+      </header>
       <nav className="pf-toc" aria-label={tf("nav.label")}>
         {toc.map(([k, label]) => <a key={k} href={`#${k}`} className={k === "film" ? "pf-film" : undefined}>{label}</a>)}
       </nav>
