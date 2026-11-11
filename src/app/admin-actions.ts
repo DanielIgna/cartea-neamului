@@ -13,6 +13,7 @@ import { isLocale } from "@/i18n/locales";
 import { undoChange } from "@/lib/admin-istoric";
 import { homeImagesState, isHomeSlot, saveHomeImagesState, withActive, withoutUpload } from "@/lib/home-images";
 import { deleteObjects } from "@/lib/storage";
+import { markRemovedByUpload } from "@/lib/home-submissions";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -138,6 +139,7 @@ export async function deleteHomeUpload(slot: string, id: string): Promise<AdminF
   if (!key) return { error: "Poza nu mai există." };
   await saveHomeImagesState(db, state, me.id);
   await deleteObjects([key]);
+  await markRemovedByUpload(db, id, me.id);
   revalidatePath("/");
   revalidatePath("/admin/poze");
   return { ok: "Am șters poza." };

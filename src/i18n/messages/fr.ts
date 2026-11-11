@@ -6,6 +6,7 @@ import { frCarte } from "./carte/fr";
 import { frCalatorie } from "./calatorie/fr";
 import { frBiserica } from "./biserica/fr";
 import { frParteneri } from "./parteneri/fr";
+import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
 
@@ -339,6 +340,7 @@ export const fr: Catalog = {
   ...frCalatorie,
   ...frBiserica,
   ...frParteneri,
+  ...frFilm,
   ...frLegal,
   ...frDatele,
   NotFound: {

@@ -6,6 +6,7 @@ import { deCarte } from "./carte/de";
 import { deCalatorie } from "./calatorie/de";
 import { deBiserica } from "./biserica/de";
 import { deParteneri } from "./parteneri/de";
+import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
 
@@ -339,6 +340,7 @@ export const de: Catalog = {
   ...deCalatorie,
   ...deBiserica,
   ...deParteneri,
+  ...deFilm,
   ...deLegal,
   ...deDatele,
   NotFound: {
