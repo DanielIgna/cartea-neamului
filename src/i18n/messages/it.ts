@@ -21,12 +21,16 @@ export const it: Catalog = {
     privacy: "Privacy",
     terms: "Termini",
     myData: "I miei dati",
+    signIn: "Accedi",
+    signInShort: "Accedi",
   },
   ThemeSwitch: {
     label: "Tema dei colori",
     auto: "Automatico",
     light: "Chiaro",
     dark: "Scuro",
+    toDark: "Passa al tema scuro",
+    toLight: "Passa al tema chiaro",
   },
   LanguagePicker: {
     label: "Lingua del sito",

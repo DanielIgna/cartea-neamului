@@ -149,18 +149,39 @@ table.plain th{font-size:13px;color:var(--muted);text-transform:uppercase;letter
 .err{color:var(--red);font-size:14px}
 a{color:var(--accent)}
 
-/* Comutator de temă din antet: Automat / Luminos / Întunecat */
-.theme-switch{font-size:13px}
-.theme-switch button{padding:4px 9px}
-/* Tema și limba, una lângă alta în antet. Limba: globul și lista, cu numele fiecărei limbi scris în limba ei. */
+/* Colțul din dreapta al antetului: iconița temei, limba (globul și codul scurt) și „Intră în cont”. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .prefs{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.lang-pick{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:8px;padding:0 2px 0 8px;background:var(--surface);color:var(--muted);font-size:13px}
-.lang-pick:hover{border-color:var(--accent)}
+/* Tema: soarele în luminos, luna în întunecat. Care se vede o hotărăsc data-theme și setarea aparatului, ca la culori. */
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;padding:0;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--ink);transition:background .15s ease,border-color .15s ease}
+.theme-toggle:hover{background:var(--surface);border-color:var(--line)}
+.theme-toggle>span{display:inline-flex;align-items:center;gap:10px}
+.theme-toggle .tt-moon{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .theme-toggle .tt-sun{display:none}:root:not([data-theme="light"]) .theme-toggle .tt-moon{display:inline-flex}}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:none}
+:root[data-theme="dark"] .theme-toggle .tt-moon{display:inline-flex}
+.theme-toggle-labeled{width:auto;height:auto;min-height:44px;padding:0 14px;border-color:var(--line);background:var(--surface);font-size:15px}
+/* Limba: arată doar globul și codul (RO, EN…); lista nativă, invizibilă, acoperă tot butonul și se deschide la atingere. */
+.lang-pick{position:relative;display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--muted);font-size:14px;cursor:pointer}
+.lang-pick:hover{border-color:var(--accent);color:var(--ink)}
 .lang-pick:has(select:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 .lang-pick svg{flex:none}
-.lang-pick select{border:0;background:transparent;color:var(--ink);padding:4px 2px;font-size:13px;line-height:inherit;max-width:9.5em;cursor:pointer}
-.lang-pick select:focus-visible{outline:none}
+.lang-code{font-weight:700;letter-spacing:.4px;color:var(--ink)}
+.lang-caret{opacity:.7}
+.lang-pick select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;font-size:16px}
 .lang-pick option{background:var(--surface);color:var(--ink)}
+/* „Intră în cont”: butonul plin, cel mai vizibil din colț. */
+.signin-btn{display:inline-flex;align-items:center;justify-content:center;height:38px;padding:0 16px;border-radius:10px;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap;box-shadow:0 6px 16px -8px color-mix(in srgb, var(--accent) 80%, transparent);transition:transform .15s ease,filter .15s ease}
+.signin-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.signin-btn .si-short{display:none}
+/* Pe prima pagină (maro și auriu): butonul e maro închis pe luminos și auriu pe întunecat. */
+body:has(.lp) .signin-btn{background:#231713;color:#f5ecdd;box-shadow:0 8px 18px -10px #231713cc}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body:has(.lp) .signin-btn{background:linear-gradient(180deg,#ecc078,#d39b4f);color:#1f1408;box-shadow:0 8px 20px -10px #d39b4fcc}}
+:root[data-theme="dark"] body:has(.lp) .signin-btn{background:linear-gradient(180deg,#ecc078,#d39b4f);color:#1f1408;box-shadow:0 8px 20px -10px #d39b4fcc}
+/* Tema și limba pe prima pagină: în tonurile ei calde, nu în albastrul restului site-ului. */
+body:has(.lp) header.top{--surface:#fffaf2;--line:#e4d6c1;--accent:#8a5f17}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body:has(.lp) header.top{--surface:#211814;--line:#3a2b22;--accent:#e0b469}}
+:root[data-theme="dark"] body:has(.lp) header.top{--surface:#211814;--line:#3a2b22;--accent:#e0b469}
 
 /* fișa persoanei: rude, rudenie, editare */
 .kin{background:var(--ochre-soft);border-radius:8px;padding:6px 10px;font-size:14px;margin-top:8px}
@@ -851,23 +872,31 @@ body:has(.grand){overflow:hidden}
   .brand .brand-link{gap:8px}
   .brand .brand-mark{height:28px;width:auto}
   .prefs.prefs-wide,.um-inline{display:none}
-  /* Cine n-are cont: numele site-ului și limba pe un rând; tema rămâne cea a telefonului. */
-  .prefs:not(.prefs-wide){flex-wrap:nowrap;flex:none}
-  .prefs:not(.prefs-wide) .theme-switch{display:none}
+  /* Cine n-are cont: numele site-ului, tema, limba și „Intră” pe un rând. */
+  .prefs:not(.prefs-wide){flex-wrap:nowrap;flex:none;gap:6px}
+  .prefs:not(.prefs-wide) .theme-toggle{width:36px}
+  .prefs:not(.prefs-wide) .lang-pick{padding:0 8px;gap:4px}
+  .prefs:not(.prefs-wide) .lang-caret{display:none}
+  .signin-btn{padding:0 12px;font-size:14.5px}
+  .signin-btn .si-long{display:none}
+  .signin-btn .si-short{display:inline}
+  header.top:has(.signin-btn) .brand .brand-name{font-size:clamp(16px, 4.9vw, 22px);overflow:hidden;text-overflow:ellipsis}
   .um-mobile{display:block}
   .card{padding:14px}
   .toolbar .title{font-size:19px;flex:1 1 100%}
   .panel h2{font-size:22px}
   /* iPhone mărește pagina când atingi un câmp cu literele sub 16px; așa rămâne pe loc. */
-  input,select,textarea,.form input,.form select,.form textarea,.linkbox input,.lang-pick select,.gen-select select{font-size:16px}
+  input,select,textarea,.form input,.form select,.form textarea,.linkbox input,.gen-select select{font-size:16px}
 }
 @media (max-width:360px){.brand .brand-name{font-size:19px}}
+/* Pe telefon, cine n-are cont: tema rămâne cea a telefonului (ca înainte), ca numele site-ului să încapă întreg. */
+@media (max-width:480px){.prefs:not(.prefs-wide) .theme-toggle{display:none}}
 /* Pe ecranul tactil, butoanele și legăturile mici sunt mai ușor de nimerit cu degetul. */
 @media (pointer:coarse){
   .btn{min-height:44px;padding:9px 14px;display:inline-flex;align-items:center;justify-content:center}
   .seg button,.seg .seg-link{min-height:40px}
-  .theme-switch button{padding:6px 11px}
-  .lang-pick{min-height:40px}
+  .theme-toggle,.lang-pick,.signin-btn{height:42px}
+  .theme-toggle{width:42px}
   .rel button,.chips a.chip{padding:6px 12px;font-size:14px}
   .gen-select select{min-height:40px}
   .zoom-tools button{min-width:40px;height:38px}

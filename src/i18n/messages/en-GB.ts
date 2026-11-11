@@ -21,12 +21,16 @@ export const enGB: Catalog = {
     privacy: "Privacy",
     terms: "Terms",
     myData: "My data",
+    signIn: "Sign in",
+    signInShort: "Sign in",
   },
   ThemeSwitch: {
     label: "Colour theme",
     auto: "Auto",
     light: "Light",
     dark: "Dark",
+    toDark: "Switch to dark theme",
+    toLight: "Switch to light theme",
   },
   LanguagePicker: {
     label: "Site language",

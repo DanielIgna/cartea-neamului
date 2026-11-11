@@ -21,12 +21,16 @@ export const nl: Catalog = {
     privacy: "Privacy",
     terms: "Voorwaarden",
     myData: "Mijn gegevens",
+    signIn: "Inloggen",
+    signInShort: "Inloggen",
   },
   ThemeSwitch: {
     label: "Kleurthema",
     auto: "Automatisch",
     light: "Licht",
     dark: "Donker",
+    toDark: "Naar donker thema",
+    toLight: "Naar licht thema",
   },
   LanguagePicker: {
     label: "Taal van de site",
