@@ -13,8 +13,12 @@ if (process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-p
   console.warn("BETTER_AUTH_SECRET lipsește: setează-l înainte de lansare (vezi .env.example).");
 }
 
-/** Pe Vercel acceptăm și domeniul de producție și adresele de preview, pe lângă BETTER_AUTH_URL. */
-const vercelOrigins = [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_URL]
+/**
+ * Pe Vercel acceptăm domeniul nostru (carteaneamului.ro, cu și fără www), vechea adresă .vercel.app,
+ * domeniul de producție și adresele de preview, pe lângă BETTER_AUTH_URL.
+ */
+const vercelOrigins = ["carteaneamului.ro", "www.carteaneamului.ro", "cartea-neamului.vercel.app",
+  process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_URL]
   .filter((h): h is string => !!h).map((h) => `https://${h}`);
 
 const googleId = process.env.GOOGLE_CLIENT_ID, googleSecret = process.env.GOOGLE_CLIENT_SECRET;

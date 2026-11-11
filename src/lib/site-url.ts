@@ -4,4 +4,4 @@
  */
 export const SITE_URL = (process.env.BETTER_AUTH_URL
   || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "")
-  || "https://cartea-neamului.vercel.app").replace(/\/+$/, "");
+  || "https://carteaneamului.ro").replace(/\/+$/, "");
