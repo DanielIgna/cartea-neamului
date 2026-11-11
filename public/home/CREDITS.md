@@ -38,3 +38,5 @@ Tot Unsplash License. `vechi-*` sunt pozele inițiale de dinainte; `s1-*` vin di
 | s1-parinti-1.jpg | Femeie în ie, vestă roșie și basma | Alexander Zvir | https://unsplash.com/photos/a-woman-sitting-on-a-bench-wearing-a-head-scarf-YY0atEIjO1E |
 | s1-tineri-2.jpg | Tânără cu coroniță de flori și cămașă brodată | Olek Buzunov | https://unsplash.com/photos/a-smiling-girl-wears-a-floral-headdress-and-embroidered-shirt-L83fggugaVQ |
 | s1-copii-1.jpg | Băiat în cămașă brodată | Olek Buzunov | https://unsplash.com/photos/boy-in-traditional-embroidered-shirt-A6N_ckPyZMo |
+
+Setul al doilea de variante (`banner-N`, `bunici-N`, `familie-N`, `tineri-N`, `copii-N`, `bunic-nepot-N`, `sat-N`, `album-N`, `masa-N`, `apus-N`, `maini-N`) are sursele în public/home/variante/VARIANTE.md (tot Unsplash License).

@@ -124,6 +124,12 @@ export async function setHomeActive(slot: string, ids: string[]): Promise<AdminF
   return { ok: "Gata, prima pagină arată acum pozele alese." };
 }
 
+/** După o încărcare prin /api/admin/poze: aduce pagina la zi (o acțiune o reîmprospătează sigur, router.refresh nu mereu). */
+export async function refreshHomeImages(): Promise<void> {
+  if (!(await admin())) return;
+  revalidatePath("/admin/poze");
+}
+
 /** Șterge o poză încărcată (și fișierul ei din bucket). */
 export async function deleteHomeUpload(slot: string, id: string): Promise<AdminFormState> {
   const me = await admin();
