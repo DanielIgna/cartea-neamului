@@ -118,7 +118,7 @@ export default function ChurchHistory() {
         <h3 className="ch-part-title">{t("endTitle")}</h3>
         <p>{t("endText")}</p>
         {END_VERSES.map((v) => <Quote key={v} k={`endVerses.${v}`} />)}
-        <p><a className="btn primary" href={READ_JOHN[locale] ?? READ_JOHN.ro} target="_blank" rel="noopener noreferrer">{t("readJohn")}</a></p>
+        <p><a className="btn primary" href={READ_JOHN[locale] ?? READ_JOHN.ro} target="_blank" rel="noopener noreferrer">{t("readJohn")}</a> <a className="btn" href="/de-la-adam-la-hristos">{t("adamToChrist")}</a></p>
         <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>{t("note")}</p>
       </section>
     </article>

@@ -68,6 +68,7 @@ export const huArbore: ArboreCatalog = {
     timeline: "Időrend",
     journey: "Időutazás",
     churchHistory: "Egyháztörténet",
+    adamToChrist: "Ádámtól Krisztusig",
     exportGedcom: "GEDCOM exportálása",
     inviteRelative: "Rokon meghívása a családfába",
     pickPerson: "Válassz egy személyt a családfából.",

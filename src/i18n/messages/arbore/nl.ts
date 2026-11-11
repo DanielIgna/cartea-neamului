@@ -65,6 +65,7 @@ export const nlArbore: ArboreCatalog = {
     timeline: "Tijdlijn",
     journey: "Reis door de tijd",
     churchHistory: "Kerkgeschiedenis",
+    adamToChrist: "Van Adam tot Christus",
     exportGedcom: "GEDCOM exporteren",
     inviteRelative: "Nodig een familielid uit in de stamboom",
     pickPerson: "Kies een persoon uit de stamboom.",

@@ -26,6 +26,7 @@ export const frBiserica: BisericaCatalog = {
     endTitle: "Nous aussi, nous sommes une page de cette histoire",
     endText: "L’Église n’est pas un bâtiment ni une institution, mais tous ceux qui ont reçu le Christ, depuis Étienne jusqu’aux grands-parents qui priaient en cachette, et jusqu’à nous. La lumière est passée de main en main pendant deux mille ans, souvent au prix de la vie. Maintenant elle est entre nos mains : la garder allumée, lire la Parole et prier pour ceux qui sont persécutés aujourd’hui.",
     readJohn: "Lire l’Évangile selon Jean",
+    adamToChrist: "D’Adam au Christ",
     note: "Les versets sont tirés de la Bible Louis Segond (1910). Là où il ne s’agit que d’une tradition, le texte le dit.",
     intro: "Le Seigneur Jésus n’a pas promis à ses disciples une vie facile, mais que son Église ne serait pas vaincue. De Jérusalem jusqu’à aujourd’hui, chaque fois qu’on a voulu éteindre la lumière de l’Évangile, elle s’est rallumée ailleurs. Voici quelques-uns de ceux qui ont payé leur foi de leur liberté ou de leur vie, et quelques-uns des moments où la Parole est revenue entre les mains des gens simples.",
     promise: {

@@ -26,6 +26,7 @@ export const nlBiserica: BisericaCatalog = {
     endTitle: "Ook wij zijn een bladzijde van deze geschiedenis",
     endText: "De Kerk is geen gebouw en geen instelling, maar allen die Christus hebben aangenomen, van Stefanus tot de grootouders die in het verborgen baden, en tot ons. Het licht is tweeduizend jaar van hand tot hand gegaan, vaak ten koste van het leven. Nu is het in onze handen: het brandend houden, het Woord lezen en bidden voor wie vandaag vervolgd worden.",
     readJohn: "Lees het Evangelie van Johannes",
+    adamToChrist: "Van Adam tot Christus",
     note: "De verzen komen uit de Statenvertaling. Waar iets alleen overlevering is, zegt de tekst dat.",
     intro: "De Heere Jezus heeft Zijn discipelen geen gemakkelijk leven beloofd, maar wel dat Zijn Kerk niet overwonnen zou worden. Van Jeruzalem tot vandaag werd het licht van het Evangelie, telkens als men het wilde doven, ergens anders opnieuw aangestoken. Hier zijn enkelen van hen die hun geloof met hun vrijheid of hun leven hebben betaald, en enkele van de momenten waarop het Woord weer in de handen van gewone mensen kwam.",
     promise: {

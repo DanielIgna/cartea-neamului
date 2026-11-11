@@ -65,6 +65,7 @@ export const esArbore: ArboreCatalog = {
     timeline: "Cronología",
     journey: "Viaje en el tiempo",
     churchHistory: "Historia de la Iglesia",
+    adamToChrist: "De Adán a Cristo",
     exportGedcom: "Exportar GEDCOM",
     inviteRelative: "Invitar a un familiar al árbol",
     pickPerson: "Elige una persona del árbol.",

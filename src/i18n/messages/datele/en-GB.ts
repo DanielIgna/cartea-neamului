@@ -54,6 +54,7 @@ export const enGBDatele: DateleCatalog = {
       harta: "Family map",
       calatorie: "Journey through time",
       "istoria-bisericii": "Church history",
+      "adam-hristos": "From Adam to Christ",
       mesaje: "Messages",
       amintire: "A memory received",
       "datele-mele": "My data",
