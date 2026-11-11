@@ -1064,3 +1064,78 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .home-slot-img.wide{aspect-ratio:16/9}
 .home-slot-img img{width:100%;height:100%;object-fit:cover;display:block}
 .home-slot-img .pill{position:absolute;top:8px;left:8px}
+
+/* De la Adam la Hristos (/de-la-adam-la-hristos): arborii Bibliei, prefix .ah- (folosește și stilurile .ch- ale Istoriei Bisericii) */
+.ah{max-width:980px}
+.ah-tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;margin:14px 0 4px;scroll-margin-top:12px;scrollbar-width:thin}
+.ah-tab{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);border-radius:999px;padding:7px 13px 7px 7px;font:inherit;font-size:14px;cursor:pointer;min-height:40px}
+.ah-tab.on{background:var(--ochre-soft);border-color:var(--ochre);font-weight:700}
+.ah-tab-n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--surface);border:1px solid var(--line);font-size:12.5px;font-weight:700}
+.ah-tab.on .ah-tab-n{background:var(--ochre);border-color:var(--ochre);color:var(--surface)}
+.ah-search{margin:6px 0 4px}
+.ah-search input{width:100%;max-width:420px;font:inherit;font-size:16px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.ah-hits{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ah-hits .chip{cursor:pointer;font-size:14px;min-height:34px}
+.ah-none{margin:6px 0 0;font-size:14px}
+.ah-epoch{margin-top:10px}
+.ah-legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 0;padding:0;font-size:13.5px;color:var(--muted)}
+.ah-legend li{display:flex;align-items:center;gap:6px}
+.ah-legend .k{display:inline-block;width:22px;height:12px;border-radius:4px;border:2px solid var(--line);background:var(--surface-2)}
+.ah-legend .k.main{border-color:var(--ochre);background:var(--ochre-soft)}
+.ah-legend .k.luke{border-color:var(--plum);background:color-mix(in srgb,var(--plum) 14%,var(--surface))}
+.ah-legend .k.omitted{border-style:dashed;border-color:var(--ochre)}
+.ah-tree{padding:8px;margin:12px 0 0;background:var(--surface-2)}
+.ah-svg .ah-edge{fill:none;stroke:var(--line);stroke-width:1.6}
+.ah-svg .ah-edge.main{stroke:var(--ochre);stroke-width:3}
+.ah-svg .ah-edge.luke{stroke:var(--plum);stroke-width:2.4}
+.ah-svg .ah-edge.omitted{stroke:var(--ochre);stroke-width:2.4;stroke-dasharray:6 5}
+.ah-svg .ah-edge.link{stroke:var(--plum);stroke-width:2.4;stroke-dasharray:3 5}
+.ah-link-label{font-size:11px;fill:var(--plum);font-style:italic}
+.ah-node{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.ah-node rect{fill:var(--surface);stroke:var(--line);stroke-width:1.4}
+.ah-node.main rect{fill:var(--ochre-soft);stroke:var(--ochre);stroke-width:2.2}
+.ah-node.luke rect{fill:color-mix(in srgb,var(--plum) 12%,var(--surface));stroke:var(--plum);stroke-width:1.8}
+.ah-node.omitted rect{fill:var(--surface);stroke-dasharray:6 4}
+.ah-node.gap rect{fill:none;stroke-dasharray:3 4}
+.ah-node.woman rect{stroke:var(--plum)}
+.ah-node.sel rect,.ah-node:focus-visible rect{stroke:var(--accent);stroke-width:3.2}
+.ah-node:hover rect{stroke:var(--accent)}
+.ah-name{font-family:var(--display);font-size:15px;font-weight:700;fill:var(--ink)}
+.ah-node.gap .ah-name{font-family:var(--body);font-weight:400;font-style:italic;font-size:13px;fill:var(--muted)}
+.ah-sub{font-size:11.5px;fill:var(--muted)}
+.ah-wife{font-size:11px;fill:var(--muted);font-style:italic}
+.ah-card{margin-top:12px;border:1px solid var(--line);border-left:4px solid var(--ochre);border-radius:12px;padding:12px 14px;background:var(--surface-2);scroll-margin-top:12px}
+.ah-card .ch-w-top{flex-wrap:wrap;font-size:22px}
+.ah-card .ch-w-top .muted{white-space:normal}
+.ah-card p{font-size:15.5px;margin:8px 0 0}
+.ah-alt{font-size:14px;color:var(--muted);margin-top:2px}
+.ah-facts{margin:8px 0 0;padding-left:18px;font-size:15px}
+.ah-facts li{margin:2px 0}
+.ah-link{background:none;border:0;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer}
+.ah-more{display:flex;flex-wrap:wrap;gap:8px}
+.ah-step{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin:14px 0 4px}
+.ah-life-wrap{overflow-x:auto;margin-top:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.ah-life{display:block;width:100%;height:auto}
+.ah-grid{stroke:var(--line);stroke-width:1}
+.ah-tick{font-size:11px;fill:var(--muted)}
+.ah-flood{stroke:var(--accent);stroke-width:2;stroke-dasharray:5 4}
+.ah-flood-label{font-size:11.5px;fill:var(--accent);font-weight:700}
+.ah-bar{cursor:pointer;outline:none}
+.ah-bar-hit{fill:transparent}
+.ah-bar:hover .ah-bar-hit,.ah-bar:focus-visible .ah-bar-hit{fill:var(--ochre-soft)}
+.ah-bar-name{font-family:var(--display);font-size:13.5px;font-weight:700;fill:var(--ink)}
+.ah-bar-fill{fill:var(--ochre)}
+.ah-bar-years{font-size:11px;fill:var(--muted)}
+.ah-bar.on .ah-bar-fill{fill:var(--accent)}
+.ah-bar.near .ah-bar-fill{fill:var(--good)}
+.ah-bar.dim{opacity:.35}
+.ah-life-note{font-size:14.5px;margin:8px 0 0}
+.ah-table-wrap{overflow-x:auto;margin:10px 0 4px}
+.ah-table{border-collapse:collapse;font-size:14px;min-width:420px;width:100%;max-width:640px}
+.ah-table th,.ah-table td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:right}
+.ah-table th:first-child,.ah-table td:first-child{text-align:left}
+.ah-table tr.diff td{background:var(--ochre-soft)}
+.ah-table tfoot td{font-weight:700;border-top:2px solid var(--line)}
+.ah-small{font-size:13.5px}
+@media (max-width:640px){.ah.ch{padding:16px 14px}.ah-card .ch-w-top{font-size:20px}}
+.ah-tree .ah-svg{margin:0 auto}

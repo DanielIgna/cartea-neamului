@@ -54,6 +54,7 @@ export const nlDatele: DateleCatalog = {
       harta: "De familiekaart",
       calatorie: "De reis door de tijd",
       "istoria-bisericii": "Kerkgeschiedenis",
+      "adam-hristos": "Van Adam tot Christus",
       mesaje: "Berichten",
       amintire: "Een ontvangen herinnering",
       "datele-mele": "Mijn gegevens",

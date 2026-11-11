@@ -54,6 +54,7 @@ export const frDatele: DateleCatalog = {
       harta: "La carte de la famille",
       calatorie: "Le voyage dans le temps",
       "istoria-bisericii": "L’histoire de l’Église",
+      "adam-hristos": "D’Adam au Christ",
       mesaje: "Les messages",
       amintire: "Un souvenir reçu",
       "datele-mele": "Mes données",

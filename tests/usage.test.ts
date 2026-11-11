@@ -24,6 +24,7 @@ describe("partea din site a unei adrese", () => {
     expect(sectionOf("/mesaje/t/u")).toBe("mesaje");
     expect(sectionOf("/a/XYZ")).toBe("amintire");
     expect(sectionOf("/istoria-bisericii")).toBe("istoria-bisericii");
+    expect(sectionOf("/de-la-adam-la-hristos")).toBe("adam-hristos");
     expect(sectionOf("/termeni")).toBe("altele");
   });
   it("panoul de admin nu se numără, iar un indiciu necunoscut nu schimbă nimic", () => {

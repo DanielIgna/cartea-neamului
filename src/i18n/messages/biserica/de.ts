@@ -26,6 +26,7 @@ export const deBiserica: BisericaCatalog = {
     endTitle: "Auch wir sind eine Seite dieser Geschichte",
     endText: "Die Kirche ist kein Gebäude und keine Institution, sondern alle, die Christus angenommen haben, von Stephanus bis zu den Großeltern, die im Verborgenen beteten, und bis zu uns. Das Licht ist zweitausend Jahre lang von Hand zu Hand gegangen, oft um den Preis des Lebens. Jetzt ist es in unseren Händen: es brennend zu halten, das Wort zu lesen und für die zu beten, die heute verfolgt werden.",
     readJohn: "Das Johannesevangelium lesen",
+    adamToChrist: "Von Adam bis Christus",
     note: "Die Verse stammen aus der Lutherbibel von 1912. Wo etwas nur Überlieferung ist, sagt es der Text.",
     intro: "Der Herr Jesus hat seinen Jüngern kein leichtes Leben versprochen, sondern dass seine Gemeinde nicht überwunden wird. Von Jerusalem bis heute wurde das Licht des Evangeliums jedes Mal, wenn man es auslöschen wollte, an einem anderen Ort wieder entzündet. Hier sind einige von denen, die ihren Glauben mit ihrer Freiheit oder ihrem Leben bezahlt haben, und einige der Momente, in denen das Wort wieder in die Hände einfacher Menschen kam.",
     promise: {

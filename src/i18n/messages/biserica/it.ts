@@ -26,6 +26,7 @@ export const itBiserica: BisericaCatalog = {
     endTitle: "Anche noi siamo una pagina di questa storia",
     endText: "La Chiesa non è un edificio né un’istituzione, ma tutti coloro che hanno ricevuto Cristo, da Stefano fino ai nonni che pregavano di nascosto, e fino a noi. La luce è passata di mano in mano per duemila anni, spesso a prezzo della vita. Ora è nelle nostre mani: tenerla accesa, leggere la Parola e pregare per chi oggi è perseguitato.",
     readJohn: "Leggi il Vangelo di Giovanni",
+    adamToChrist: "Da Adamo a Cristo",
     note: "I versetti sono tratti dalla Bibbia Riveduta di Giovanni Luzzi (1927). Dove si tratta solo di una tradizione, il testo lo dice.",
     intro: "Il Signore Gesù non ha promesso ai suoi discepoli una vita facile, ma che la sua Chiesa non sarebbe stata vinta. Da Gerusalemme fino a oggi, ogni volta che si è voluto spegnere la luce del Vangelo, essa si è riaccesa altrove. Ecco alcuni di coloro che hanno pagato la loro fede con la libertà o con la vita, e alcuni dei momenti in cui la Parola è tornata nelle mani della gente semplice.",
     promise: {

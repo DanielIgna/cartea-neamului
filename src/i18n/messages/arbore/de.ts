@@ -65,6 +65,7 @@ export const deArbore: ArboreCatalog = {
     timeline: "Zeitleiste",
     journey: "Zeitreise",
     churchHistory: "Kirchengeschichte",
+    adamToChrist: "Von Adam bis Christus",
     exportGedcom: "Als GEDCOM exportieren",
     inviteRelative: "Verwandte in den Stammbaum einladen",
     pickPerson: "Wähle eine Person aus dem Stammbaum.",

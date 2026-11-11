@@ -68,6 +68,7 @@ export const roArbore = {
     timeline: "Cronologie",
     journey: "Călătoria în timp",
     churchHistory: "Istoria Bisericii",
+    adamToChrist: "De la Adam la Hristos",
     exportGedcom: "Exportă GEDCOM",
     inviteRelative: "Invită o rudă în arbore",
     pickPerson: "Alege o persoană din arbore.",
