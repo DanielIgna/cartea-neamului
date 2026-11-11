@@ -118,6 +118,10 @@ export const nl: Catalog = {
     gen4Text: "Ze groeien op en kennen hun wortels.",
   },
   Home: {
+    welcomeEyebrow: "Welkom terug",
+    welcomeLead: "Je stamboom, je herinneringen en je familieboek, alles op één plek.",
+    openTree: "Open de stamboom",
+    myProfile: "Mijn profiel",
     yourTrees: "Je stambomen",
     persons: "{count, plural, one {# persoon} other {# personen}}",
     owner: "eigenaar",

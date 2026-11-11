@@ -140,8 +140,6 @@
 }
 
 /* Profilul, în spiritul paginilor premiate: numele mare ca pe o copertă, un cuprins care stă sus și secțiuni care intră ușor în pagină. */
-.pf-eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--ochre-ink);font-weight:700;margin-bottom:4px}
-.profile-hero h2.pf-name{font-family:var(--display);font-size:clamp(32px,5.4vw,56px);line-height:1.02;letter-spacing:-.015em}
 .pf-years{font-family:var(--display);font-size:clamp(18px,2.4vw,24px);color:var(--muted);margin-top:4px}
 .pf-toc{position:sticky;top:8px;z-index:20;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:6px;border-radius:999px;
   background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);
@@ -149,7 +147,8 @@
 .pf-toc::-webkit-scrollbar{display:none}
 .pf-toc a{flex:0 0 auto;padding:7px 14px;border-radius:999px;text-decoration:none;color:var(--ink);font-size:14px;font-weight:600;white-space:nowrap}
 .pf-toc a:hover,.pf-toc a:focus-visible{background:var(--accent-soft)}
-.pf-toc a.pf-film{background:#16110c;color:#f3eadb}
+.pf-toc a.pf-film{background:var(--brown);color:var(--cream)}
+.pf-toc a.pf-film:hover{background:#3a2419}
 .pf-sec{scroll-margin-top:72px;min-width:0}
 @supports (animation-timeline:view()){
   @media (prefers-reduced-motion:no-preference){

@@ -118,6 +118,10 @@ export const enGB: Catalog = {
     gen4Text: "They will grow up knowing their roots.",
   },
   Home: {
+    welcomeEyebrow: "Welcome back",
+    welcomeLead: "Your family tree, your memories and your family book, all in one place.",
+    openTree: "Open the tree",
+    myProfile: "My profile",
     yourTrees: "Your trees",
     persons: "{count, plural, one {# person} other {# people}}",
     owner: "owner",

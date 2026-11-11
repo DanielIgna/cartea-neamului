@@ -118,6 +118,10 @@ export const hu: Catalog = {
     gen4Text: "Úgy nőnek fel, hogy ismerik a gyökereiket.",
   },
   Home: {
+    welcomeEyebrow: "Üdv újra itt",
+    welcomeLead: "A családfád, az emlékeid és a családod könyve, mind egy helyen.",
+    openTree: "A családfa megnyitása",
+    myProfile: "A profilom",
     yourTrees: "A családfáid",
     persons: "{count, plural, one {# személy} other {# személy}}",
     owner: "tulajdonos",
