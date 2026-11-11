@@ -1240,3 +1240,16 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 @keyframes pl-shine{0%{background-position:200% 0}100%{background-position:-200% 0}}
 @keyframes pl-in{to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.page-loading-bar,.page-loading .sk{animation:none}.page-loading-card{animation:none;opacity:1}}
+
+/* Contact: WhatsApp și formularul de email, alăturate pe calculator, unul sub altul pe telefon */
+.contact-ways{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+@media (max-width:720px){.contact-ways{grid-template-columns:minmax(0,1fr)}}
+.contact-form textarea{font:inherit;min-height:120px;resize:vertical}
+.contact-trap{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.contact-sent{margin:0;font-weight:600}
+.btn.wa-btn{display:inline-flex;align-items:center;gap:8px;background:#1f8f4e;border-color:#1f8f4e;color:#fff;font-weight:700}
+.btn.wa-btn:hover{background:#18763f;border-color:#18763f}
+.wa-float{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:#1f8f4e;color:#fff;box-shadow:0 6px 18px #0004}
+.wa-float:hover{background:#18763f;color:#fff}
+@media (max-width:520px){.wa-float{width:52px;height:52px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom))}}
+@media print{.wa-float{display:none!important}}

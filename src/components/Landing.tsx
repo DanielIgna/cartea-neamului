@@ -1,4 +1,6 @@
 import Link from "next/link";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { whatsappUrl } from "@/lib/contact";
 import { getAppName, getT } from "@/i18n/server";
 import Image from "next/image";
 import { db } from "@/db";
@@ -78,7 +80,7 @@ const Photo = ({ img, sizes, priority = false, className }: { img: HomeImage; si
 const GENS = [["gen1", "50% 30%"], ["gen2", "50% 40%"], ["gen3", "50% 35%"], ["gen4", "50% 45%"]] as const;
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, imgs] = await Promise.all([getT("Landing"), homeImages(db)]);
+  const [t, tc, imgs] = await Promise.all([getT("Landing"), getT("ContactPage"), homeImages(db)]);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
@@ -92,6 +94,10 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
     <div className="lp">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
+      {/* Butonul rotund de WhatsApp, în colț, pentru cine vrea să ne scrie (Daniel, 11 noiembrie 2026). */}
+      <a className="wa-float" href={whatsappUrl(tc("waGreeting"))} target="_blank" rel="noopener noreferrer" aria-label={tc("waFloat")} title={tc("waFloat")}>
+        <WhatsAppIcon size={30} />
+      </a>
 
       {/* Bannerul: familia pe toată lățimea, cu panoul întunecat la mijloc */}
       <section className="lp-band lp-banner">

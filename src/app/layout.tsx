@@ -78,6 +78,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
+  const tc = await getT("ContactPage");
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
@@ -106,6 +107,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <Link href="/termeni">{t("terms")}</Link>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
               <Link href="/parteneri">{tp("menu")}</Link>
+              <Link href="/contact">{tc("menu")}</Link>
             </footer>
           </div>
         </IntlClient>

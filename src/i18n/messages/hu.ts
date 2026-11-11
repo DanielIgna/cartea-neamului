@@ -6,6 +6,7 @@ import { huCarte } from "./carte/hu";
 import { huCalatorie } from "./calatorie/hu";
 import { huBiserica } from "./biserica/hu";
 import { huParteneri } from "./parteneri/hu";
+import { huContact } from "./contact/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
@@ -340,6 +341,7 @@ export const hu: Catalog = {
   ...huCalatorie,
   ...huBiserica,
   ...huParteneri,
+  ...huContact,
   ...huFilm,
   ...huLegal,
   ...huDatele,
