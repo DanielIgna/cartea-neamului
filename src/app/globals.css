@@ -37,6 +37,8 @@ header.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-
 .brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
 .brand .brand-name{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.2px;line-height:1.15;color:inherit}
 .brand span{color:var(--muted);font-size:14px}
+.brand .brand-link{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;min-width:0}
+.brand .brand-mark{flex:none;display:block}
 nav.views{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px;flex-wrap:wrap}
 nav.views a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500}
 nav.views a[aria-current="page"]{background:var(--accent-soft);color:var(--ink)}
@@ -846,6 +848,8 @@ body:has(.grand){overflow:hidden}
   header.top{flex-wrap:nowrap;gap:10px;padding-block:10px}
   .brand{min-width:0}
   .brand .brand-name{font-size:22px;white-space:nowrap}
+  .brand .brand-link{gap:8px}
+  .brand .brand-mark{height:28px;width:auto}
   .prefs.prefs-wide,.um-inline{display:none}
   /* Cine n-are cont: numele site-ului și limba pe un rând; tema rămâne cea a telefonului. */
   .prefs:not(.prefs-wide){flex-wrap:nowrap;flex:none}

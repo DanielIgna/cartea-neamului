@@ -3,7 +3,7 @@
  * Doar când telefonul n-are internet, în locul paginii cerute arată o pagină care spune asta, cu un buton de reîncercare.
  * Tot restul merge direct la site, ca înainte.
  */
-const CACHE = "cartea-neamului-v1";
+const CACHE = "cartea-neamului-v2";
 const OFFLINE = "/offline.html";
 
 self.addEventListener("install", (event) => {

@@ -1,3 +1,4 @@
+import { Logo } from "@/components/Logo";
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
@@ -86,7 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <PwaSetup />
           <div className="wrap">
             <header className="top">
-              <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><span className="brand-name">{appName}</span></Link></div>
+              <div className="brand"><Link href="/" className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
               <div className={me ? "prefs prefs-wide" : "prefs"}>
                 <ThemeSwitch initial={theme} />
                 <LanguagePicker remember={source === "account"} />
