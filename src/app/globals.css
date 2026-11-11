@@ -872,22 +872,23 @@ body:has(.grand){overflow:hidden}
   .form input,.form select{min-height:44px}
 }
 
-/* Prima pagină pentru cine intră prima dată (src/components/Landing.tsx), în tonuri calde de maro și auriu:
-   bannerul pe toată lățimea, apoi benzi întunecate și luminoase, una după alta. Benzile întunecate arată la fel în ambele teme. */
+/* Prima pagină pentru cine intră prima dată (src/components/Landing.tsx): fotografii cu oameni de toate vârstele,
+   în tonuri calde de maro și auriu, benzi întunecate și luminoase una după alta. Benzile întunecate arată la fel în ambele teme. */
 body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) body:has(.lp){--bg:#16100d}}
 :root[data-theme="dark"] body:has(.lp){--bg:#16100d}
-.lp{--brown:#231713;--brown-2:#33221b;--cream:#f5ecdd;--cream-muted:#cdbfa9;--gold:#d39b4f;--gold-2:#ecc078;--gold-ink:#1f1408;
-  --paper:#fbf6ec;--light:#f6efe4;--l-ink:#2a1d17;--l-muted:#6c5a4d;--l-line:#e3d5c2;--l-card:#fffdf8;
+.lp{--brown:#231713;--cream:#f5ecdd;--cream-muted:#d2c4ae;--gold:#d39b4f;--gold-2:#ecc078;--gold-ink:#1f1408;
+  --paper:#fbf6ec;--light:#f6efe4;--l-ink:#2a1d17;--l-muted:#6c5a4d;--l-line:#e3d5c2;--l-card:#fffdf8;--l-gold:#a8722f;
   --lp-shadow:0 1px 2px #2a1d1714,0 22px 44px -22px #2a1d1755;
   display:grid;margin-top:-4px}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lp{--paper:#1d1511;--light:#16100d;--l-ink:#f2e8d9;--l-muted:#c3b29c;--l-line:#3a2b22;--l-card:#211814;--lp-shadow:0 1px 2px #0008,0 22px 44px -22px #000d}}
-:root[data-theme="dark"] .lp{--paper:#1d1511;--light:#16100d;--l-ink:#f2e8d9;--l-muted:#c3b29c;--l-line:#3a2b22;--l-card:#211814;--lp-shadow:0 1px 2px #0008,0 22px 44px -22px #000d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lp{--paper:#1d1511;--light:#16100d;--l-ink:#f2e8d9;--l-muted:#c3b29c;--l-line:#3a2b22;--l-card:#211814;--l-gold:#e0b469;--lp-shadow:0 1px 2px #0008,0 22px 44px -22px #000d}}
+:root[data-theme="dark"] .lp{--paper:#1d1511;--light:#16100d;--l-ink:#f2e8d9;--l-muted:#c3b29c;--l-line:#3a2b22;--l-card:#211814;--l-gold:#e0b469;--lp-shadow:0 1px 2px #0008,0 22px 44px -22px #000d}
 .lp .notice{margin:0 auto 12px}
-.lp-band{position:relative;margin-inline:calc(50% - 50vw);padding:clamp(72px,9vw,128px) 16px}
-.lp-in{max-width:1180px;margin-inline:auto}
+.lp-band{position:relative;isolation:isolate;margin-inline:calc(50% - 50vw);padding:clamp(72px,9vw,128px) 16px}
+.lp-in{position:relative;max-width:1180px;margin-inline:auto}
+.lp-img{object-fit:cover;z-index:-2}
 .lp-icon{width:18px;height:18px;flex:none}
-.lp-eyebrow{display:inline-flex;align-items:center;gap:12px;margin:0 0 16px;font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.lp-eyebrow{display:inline-flex;align-items:center;gap:12px;margin:0 0 16px;font-size:12.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--l-gold)}
 .lp-ornament{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--gold);margin:22px auto}
 .lp-ornament i{display:block;width:64px;height:1px;background:linear-gradient(90deg,transparent,currentColor)}
 .lp-ornament i:last-child{background:linear-gradient(270deg,transparent,currentColor)}
@@ -897,85 +898,80 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .lp-btn:hover{transform:translateY(-1px)}
 .lp-btn-gold{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:var(--gold-ink);box-shadow:0 12px 28px -12px #d39b4fcc,inset 0 1px 0 #fff7}
 .lp-btn-gold span{transition:transform .15s ease}.lp-btn-gold:hover span{transform:translateX(3px)}
-.lp-btn-ghost{color:var(--cream);border:1px solid #f5ecdd55;background:#f5ecdd10}
+.lp-btn-ghost{color:var(--cream);border:1px solid #f5ecdd66;background:#1d130f40}
 .lp-btn-ghost:hover{background:#f5ecdd22;border-color:#f5ecdd99}
 
 /* Bannerul */
-.lp-banner{min-height:clamp(620px,86vh,820px);display:grid;place-items:center;align-content:center;gap:28px;padding-block:72px 40px;overflow:hidden;background:#1b120f;color:var(--cream)}
-.lp-scene{position:absolute;inset:0;width:100%;height:100%}
-.lp-scene-dark{fill:#140b08}
-.lp-scene-phone{display:none}
-@media (max-width:640px){.lp-scene-wide{display:none}.lp-scene-phone{display:block}}
-.lp-scene-stroke{fill:none;stroke:#140b08;stroke-linecap:round;stroke-linejoin:round}
-.lp-banner::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#1b120f66 0%,transparent 30%,transparent 70%,#140b08aa 100%);pointer-events:none}
-.lp-banner-panel{position:relative;z-index:1;width:min(720px,100%);text-align:center;padding:clamp(28px,4vw,48px) clamp(20px,4vw,56px);
-  background:#1d130fa8;border:1px solid #f5ecdd2e;border-radius:6px;box-shadow:0 30px 80px -30px #000c;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.lp-banner{min-height:clamp(660px,92vh,900px);display:grid;place-items:center;align-content:end;gap:24px;padding-block:72px 32px;overflow:hidden;background:#1b120f;color:var(--cream)}
+.lp-banner-img{object-position:50% 30%}
+.lp-banner::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#1b120f66 0%,transparent 22%,transparent 45%,#1b120fb3 72%,#140b08f2 100%)}
+.lp-banner-panel{position:relative;width:min(880px,100%);text-align:center;padding:clamp(26px,3vw,40px) clamp(20px,4vw,56px);
+  background:#1d130fb8;border:1px solid #f5ecdd2e;border-radius:6px;box-shadow:0 30px 80px -30px #000c;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .lp-banner-panel::before{content:"";position:absolute;inset:8px;border:1px solid #d39b4f40;border-radius:3px;pointer-events:none}
 .lp-tagline{margin:0 0 12px;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-2)}
-.lp-name{font-size:clamp(38px,6.4vw,76px);line-height:1;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#fff8ec;text-shadow:0 2px 24px #0008}
+.lp-name{font-size:clamp(38px,5.4vw,68px);line-height:1;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#fff8ec;text-shadow:0 2px 24px #0008}
 .lp-banner .lp-ornament{margin:18px auto}
 .lp-subtitle{font-family:var(--display);font-size:clamp(22px,2.6vw,30px);line-height:1.2;margin:0;color:var(--cream)}
 .lp-subtitle em{font-style:italic;color:var(--gold-2)}
 .lp-brand{font-style:italic;color:var(--cream-muted);margin:10px 0 0;font-size:15px}
-.lp-banner-lead{color:var(--cream-muted);font-size:clamp(16px,1.5vw,18px);line-height:1.6;max-width:50ch;margin:16px auto 0}
+.lp-banner-lead{color:var(--cream-muted);font-size:clamp(16px,1.5vw,18px);line-height:1.6;max-width:62ch;margin:16px auto 0}
 .lp-banner .lp-actions{justify-content:center}
-.lp-trust{position:relative;z-index:1;list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;color:var(--cream);font-size:15px;text-shadow:0 1px 8px #000a}
+.lp-trust{position:relative;list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;color:var(--cream);font-size:15px;text-shadow:0 1px 8px #000c}
 .lp-trust li{display:flex;align-items:center;gap:8px}
 .lp-trust .lp-icon{color:var(--gold-2)}
 
 /* Titlurile secțiunilor */
 .lp-head{max-width:700px;margin:0 auto clamp(40px,5vw,64px);text-align:center}
-.lp-head h2,.lp-tree-text h2,.lp-cta h2{font-size:clamp(29px,4.2vw,52px);line-height:1.08;letter-spacing:-.005em}
+.lp-head h2,.lp-how h2,.lp-cta h2{font-size:clamp(29px,4.2vw,52px);line-height:1.08;letter-spacing:-.005em}
 .lp-head .lp-ornament{margin:20px auto}
 .lp-head p:not(.lp-eyebrow){font-size:18px;line-height:1.6;margin:0 auto;max-width:54ch}
 
-/* Benzile întunecate */
-.lp-dark{background:radial-gradient(70% 60% at 50% 0%,#4a2e2266,transparent 70%),var(--brown);color:var(--cream)}
-.lp-dark .lp-head p:not(.lp-eyebrow){color:var(--cream-muted)}
-.lp-dark h2{color:#fff8ec}
-.lp-frames{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px)}
-.lp-frame{text-align:center}
-.lp-photo{background:#fbf6ec;padding:12px 12px 14px;border-radius:3px;box-shadow:0 26px 50px -24px #000,0 2px 6px #0006;transform:rotate(-1.2deg);transition:transform .25s ease}
-.lp-frame:nth-child(2) .lp-photo{transform:rotate(1deg) translateY(-10px)}
-.lp-frame:nth-child(3) .lp-photo{transform:rotate(-.6deg)}
-.lp-frame:hover .lp-photo{transform:rotate(0) translateY(-6px)}
-.lp-photo>*{display:grid;place-items:center;min-height:210px;border-radius:2px}
-.lp-frame h3{font-size:25px;margin:28px 0 8px;color:#fff8ec}
-.lp-frame p{margin:0 auto;color:var(--cream-muted);font-size:16.5px;line-height:1.6;max-width:36ch}
-.lp-art-voice{display:grid!important;align-content:center;gap:14px;padding:20px;background:linear-gradient(160deg,#f3e2c4,#e8cfa5);color:#2a1d17;text-align:left}
-.lp-art-voice b{font-family:var(--display);font-size:19px}
-.lp-art-voice .lp-row{display:flex}
-.lp-art-voice{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;align-items:center}
-.lp-art-voice b{grid-column:1/-1}
-.lp-play{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:#2a1d17;color:#f5ecdd;flex:none}
-.lp-play svg{width:20px;height:20px}
-.lp-bars{display:flex;align-items:center;justify-content:space-between;gap:2px;height:44px;min-width:0;overflow:hidden}
-.lp-bars i{display:block;width:3px;border-radius:2px;background:#8a5a2b;flex:none}
-.lp-bars i:nth-child(n+15){opacity:.35}
-.lp-time{font-size:13px;color:#6c5a4d;font-variant-numeric:tabular-nums}
-.lp-photo>.lp-art-svg{padding:14px;width:100%;height:auto}
-.lp-frame-map .lp-photo>*{background:linear-gradient(180deg,#e4e9d4,#f1ead8)}
-.lp-frame-book .lp-photo>*{background:radial-gradient(80% 80% at 50% 50%,#f1e2c6,#e6d2ae)}
-.lp-art-svg text{text-anchor:middle;font-family:var(--display);font-weight:700;font-size:13px;fill:#2a1d17}
-.lp-dot{fill:#5d7a45;opacity:.35}
-.lp-route{fill:none;stroke:#5d7a45;stroke-width:2;stroke-dasharray:5 6}
-.lp-pin{fill:#a8322a}.lp-pin-hole{fill:#fbf6ec}
-.lp-page{fill:#fffdf8;stroke:#cdb894;stroke-width:1.5}
-.lp-spine{stroke:#cdb894;stroke-width:2}
-.lp-book-shadow{fill:none;stroke:#0000002a;stroke-width:10;stroke-linecap:round;filter:blur(4px)}
-.lp-text-line{stroke:#6c5a4d;stroke-width:3;stroke-linecap:round;opacity:.3}
-.lp-mini-tree circle{fill:#e4c48f;stroke:#8a5a2b;stroke-width:1.5}
-.lp-mini-tree path{fill:none;stroke:#6c5a4d;stroke-width:1.4}
-.lp-qr{fill:#2a1d17}
+/* Rame albe, ca pozele de familie */
+.lp-photo{background:#fbf6ec;padding:10px;border-radius:3px;box-shadow:0 26px 50px -24px #000,0 2px 6px #0005}
+.lp-photo-in{position:relative;aspect-ratio:4/5;overflow:hidden;border-radius:2px}
+.lp-photo-in .lp-img{z-index:0;object-position:var(--pos,50% 40%);transition:transform .6s ease}
 
-/* Banda cu arborele, ca un apus */
-.lp-sunset{background:radial-gradient(60% 70% at 70% 100%,#e0a05a55,transparent 70%),linear-gradient(180deg,var(--brown-2) 0%,#4a2b1d 60%,#6a3b22 100%);color:var(--cream);padding-bottom:0}
-.lp-tree{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(28px,5vw,72px);align-items:end}
-.lp-tree-text{padding-bottom:clamp(40px,6vw,96px)}
-.lp-tree-text h2{color:#fff8ec}
-.lp-tree-text p:not(.lp-eyebrow){color:var(--cream-muted);font-size:18px;line-height:1.6;margin:18px 0 0;max-width:46ch}
-.lp-visual{position:relative;margin:0}
-.lp-fan{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 -10px 40px #f2a65a44)}
+/* Patru generații */
+.lp-dark{background:radial-gradient(70% 60% at 50% 0%,#4a2e2266,transparent 70%),var(--brown);color:var(--cream)}
+.lp-dark h2{color:#fff8ec}
+.lp-dark .lp-head p{color:var(--cream-muted)}
+.lp-gens{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(18px,2.6vw,36px)}
+.lp-gen{margin:0;text-align:center}
+.lp-gen .lp-photo{transform:rotate(-1.4deg);transition:transform .3s ease}
+.lp-gen:nth-child(2) .lp-photo{transform:rotate(1.2deg) translateY(14px)}
+.lp-gen:nth-child(3) .lp-photo{transform:rotate(-.8deg)}
+.lp-gen:nth-child(4) .lp-photo{transform:rotate(1.6deg) translateY(14px)}
+.lp-gen:hover .lp-photo{transform:rotate(0) translateY(-6px)}
+.lp-gen:hover .lp-img{transform:scale(1.04)}
+.lp-gen figcaption{margin-top:30px}
+.lp-gen h3{font-size:25px;color:#fff8ec;margin:0 0 6px}
+.lp-gen p{margin:0 auto;color:var(--cream-muted);font-size:16px;line-height:1.55;max-width:28ch}
+
+/* Ce găsești aici */
+.lp-light{background:var(--light);color:var(--l-ink)}
+.lp-light .lp-head p:not(.lp-eyebrow){color:var(--l-muted)}
+.lp-light .lp-ornament,.lp-paper .lp-ornament{color:var(--l-gold)}
+.lp-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.lp-card{display:flex;flex-direction:column;background:var(--l-card);border:1px solid var(--l-line);border-radius:18px;overflow:hidden;box-shadow:var(--lp-shadow)}
+.lp-card-art{position:relative;aspect-ratio:4/3;overflow:hidden;background:#2a1a12}
+.lp-card-art .lp-img{z-index:0;transition:transform .6s ease}
+.lp-card:hover .lp-img{transform:scale(1.04)}
+.lp-card-text{padding:22px 22px 26px}
+.lp-card h3{font-size:22px;margin:0 0 8px}
+.lp-card p{margin:0;color:var(--l-muted);font-size:15.5px;line-height:1.6}
+.lp-card-fan{position:absolute;inset:0;display:grid;place-items:end center;padding:18px 14px 0;background:radial-gradient(70% 80% at 50% 100%,#e0a05a55,transparent 70%),linear-gradient(180deg,#3a2419,#5a3420)}
+.lp-card-badge{position:absolute;left:12px;right:12px;bottom:12px}
+.lp-art-voice{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 12px;padding:10px 14px;background:#fffdf8f2;color:#2a1d17;border-radius:12px;box-shadow:0 10px 24px -10px #000a}
+.lp-art-voice b{grid-column:1/-1;font-family:var(--display);font-size:15px}
+.lp-play{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#2a1d17;color:#f5ecdd;flex:none}
+.lp-play svg{width:16px;height:16px}
+.lp-bars{display:flex;align-items:center;justify-content:space-between;gap:2px;height:26px;min-width:0;overflow:hidden}
+.lp-bars i{display:block;width:2px;border-radius:2px;background:#8a5a2b;flex:none;max-height:26px}
+.lp-bars i:nth-child(n+15){opacity:.35}
+.lp-time{font-size:12px;color:#6c5a4d;font-variant-numeric:tabular-nums}
+
+/* Evantaiul */
+.lp-fan{display:block;width:100%;height:auto;overflow:visible}
 .lp-fan-orbit{fill:none;stroke:var(--gold-2);stroke-width:1;stroke-dasharray:2 6;opacity:.7}
 .lp-seg{stroke:#4a2b1d;stroke-width:2.5}
 .lp-pat-1{fill:#e0b06a}.lp-pat-2{fill:#c8924d}.lp-pat-3{fill:#a9763a}
@@ -986,67 +982,75 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .lp-fan-year{font-size:11px;opacity:.75}
 .lp-fan .lp-you{fill:#fff1d6}
 .lp-fan .lp-you-text{fill:#2a1608;font-family:var(--display);font-weight:700;font-size:19px}
-.lp-float{position:absolute;display:flex;align-items:center;gap:12px;background:#fffdf8;color:#2a1d17;border-radius:14px;padding:10px 16px;box-shadow:0 20px 44px -18px #000c;font-size:14px;line-height:1.3;max-width:280px}
-.lp-float-join{left:-8px;top:0}
-.lp-avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#ecc078,#b5803c);color:#1f1408;font-family:var(--display);font-weight:700;flex:none}
-.lp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #f5ecdd26;margin-top:0}
+
+/* Gândul din spate, peste apus */
+.lp-sunset{color:var(--cream);overflow:hidden;padding-bottom:0;background:#1b120f}
+.lp-sunset-img{object-position:50% 60%}
+.lp-sunset::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#1b120fcc 0%,#1b120f66 40%,#1b120f99 75%,#1b120ff2 100%)}
+.lp-quote{text-align:center;max-width:900px;padding-bottom:clamp(64px,8vw,110px)}
+.lp-quote-mark{display:block;font-family:var(--display);font-size:120px;line-height:.5;height:44px;color:var(--gold-2);opacity:.9}
+.lp-quote blockquote{margin:0}
+.lp-quote blockquote p{font-family:var(--display);font-weight:500;font-style:italic;font-size:clamp(28px,4vw,52px);line-height:1.18;margin:0 auto;max-width:22ch;text-wrap:balance;color:#fff8ec;text-shadow:0 2px 20px #0009}
+.lp-quote-text{margin:0 auto;max-width:56ch;color:var(--cream);font-size:18px;line-height:1.6;text-shadow:0 1px 10px #000c}
+.lp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #f5ecdd33}
 .lp-stats div{padding:30px 24px 34px;display:grid;gap:6px;align-content:start;text-align:center}
-.lp-stats div+div{border-left:1px solid #f5ecdd26}
+.lp-stats div+div{border-left:1px solid #f5ecdd33}
 .lp-stats dt{font-family:var(--display);font-weight:700;font-size:clamp(36px,3.6vw,48px);line-height:1;color:var(--gold-2)}
 .lp-stats dd{margin:0;color:var(--cream-muted);font-size:15px;line-height:1.4}
 
-/* Benzile luminoase */
-.lp-light{background:var(--light);color:var(--l-ink)}
-.lp-paper{background:var(--paper);color:var(--l-ink);border-block:1px solid var(--l-line)}
-.lp-light .lp-head p:not(.lp-eyebrow){color:var(--l-muted)}
-.lp-light .lp-eyebrow,.lp-paper .lp-ornament,.lp-light .lp-ornament{color:#b07a33}
-.lp-steps{list-style:none;counter-reset:lp;padding:0;margin:0 auto;max-width:1060px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
-.lp-steps li{counter-increment:lp;position:relative;background:var(--l-card);border:1px solid var(--l-line);border-radius:6px;padding:40px 28px 30px;
-  font-size:16.5px;line-height:1.6;color:var(--l-muted);box-shadow:var(--lp-shadow)}
-.lp-steps li::before{content:counter(lp,upper-roman);position:absolute;top:-22px;left:28px;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
-  background:var(--brown);color:var(--gold-2);font-family:var(--display);font-weight:700;font-size:17px;box-shadow:0 0 0 5px var(--light)}
-.lp-steps b{display:block;color:var(--l-ink);font-family:var(--display);font-size:22px;line-height:1.2;margin-bottom:8px}
-.lp-quote{text-align:center;max-width:900px}
-.lp-quote-mark{display:block;font-family:var(--display);font-size:120px;line-height:.5;height:44px;color:#b07a33;opacity:.8}
-.lp-quote blockquote{margin:0}
-.lp-quote blockquote p{font-family:var(--display);font-weight:500;font-style:italic;font-size:clamp(28px,3.8vw,48px);line-height:1.2;margin:0 auto;max-width:22ch;text-wrap:balance}
-.lp-quote-text{margin:0 auto;max-width:56ch;color:var(--l-muted);font-size:17.5px;line-height:1.6}
+/* Cum începi */
+.lp-paper{background:var(--paper);color:var(--l-ink)}
+.lp-how{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);gap:clamp(36px,6vw,88px);align-items:center}
+.lp-how-photo .lp-photo{transform:rotate(-1.5deg)}
+.lp-how-photo .lp-photo-in{aspect-ratio:3/2.3}
+.lp-how-text{color:var(--l-muted);font-size:18px;line-height:1.6;margin:16px 0 32px;max-width:48ch}
+.lp-steps{list-style:none;counter-reset:lp;padding:0;margin:0;display:grid;gap:14px}
+.lp-steps li{counter-increment:lp;position:relative;background:var(--l-card);border:1px solid var(--l-line);border-radius:12px;padding:18px 22px 18px 82px;
+  font-size:16px;line-height:1.55;color:var(--l-muted);box-shadow:var(--lp-shadow);min-height:76px}
+.lp-steps li::before{content:counter(lp,upper-roman);position:absolute;left:20px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;
+  background:var(--brown);color:var(--gold-2);font-family:var(--display);font-weight:700;font-size:16px}
+.lp-steps b{display:block;color:var(--l-ink);font-family:var(--display);font-size:20px;line-height:1.2;margin-bottom:2px}
 
-.lp-cta{text-align:center;overflow:hidden}
-.lp-cta .lp-in{position:relative}
-.lp-cta-rings{position:absolute;left:50%;bottom:0;width:min(1000px,160%);transform:translateX(-50%);opacity:.1}
-.lp-cta-rings path{fill:none;stroke:var(--gold);stroke-width:1}
-.lp-cta-lead{color:var(--cream-muted);font-size:19px;margin:16px auto 0}
+/* Chemarea de la final, peste mâini bătrâne și mâini mici */
+.lp-cta{text-align:center;overflow:hidden;color:var(--cream);background:#1b120f;padding-block:clamp(96px,12vw,160px)}
+.lp-cta-img{object-position:50% 50%;filter:sepia(.35)}
+.lp-cta::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(70% 90% at 50% 50%,#1b120fb3,#1b120fe6)}
+.lp-cta h2{color:#fff8ec}
+.lp-cta-lead{color:var(--cream);font-size:19px;margin:0 auto}
 .lp-cta .lp-actions{justify-content:center}
 .lp-privacy{color:var(--cream-muted);font-size:14px;margin:30px auto 0;max-width:60ch}
 .lp-privacy a{color:var(--gold-2)}
-main#continut:has(.lp)+.site-foot,.wrap:has(.lp) .site-foot{border-top:0;margin-top:0}
+.wrap:has(.lp) .site-foot{border-top:0;margin-top:0}
 
 @media (max-width:1000px){
-  .lp-frames{grid-template-columns:minmax(0,1fr);max-width:520px;margin-inline:auto;gap:56px}
-  .lp-tree{grid-template-columns:minmax(0,1fr);text-align:center}
-  .lp-tree-text{padding-bottom:0}
-  .lp-tree-text p:not(.lp-eyebrow){margin-inline:auto}
-  .lp-tree .lp-actions{justify-content:center}
-  .lp-visual{max-width:620px;width:100%;margin:0 auto}
-  .lp-steps{grid-template-columns:minmax(0,1fr);max-width:560px;gap:40px}
+  .lp-gens{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:56px;max-width:640px;margin-inline:auto}
+  .lp-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lp-how{grid-template-columns:minmax(0,1fr);max-width:620px;margin-inline:auto}
 }
 @media (max-width:760px){
   .lp-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lp-stats div:nth-child(3){border-left:0}
-  .lp-stats div:nth-child(n+3){border-top:1px solid #f5ecdd26}
+  .lp-stats div:nth-child(n+3){border-top:1px solid #f5ecdd33}
 }
 @media (max-width:640px){
   .lp-band{padding:72px 16px}
-  .lp-banner{min-height:0;padding:44px 12px 28px}
+  /* Pe telefon, poza stă deasupra, întreagă, iar panoul vine sub ea. */
+  .lp-banner{min-height:0;padding:calc(72vw - 56px) 12px 28px}
+  .lp-banner-img{height:72vw!important;object-position:50% 35%}
+  .lp-banner::after{background:linear-gradient(180deg,#1b120f40 0,transparent 20vw,transparent calc(72vw - 110px),#1b120f 72vw)}
   .lp-banner-panel{padding:30px 18px}
   .lp-name{letter-spacing:.03em}
   .lp-actions .lp-btn{flex:1 1 100%}
   .lp-trust{flex-direction:column;align-items:center;gap:8px}
-  .lp-photo,.lp-frame:nth-child(n) .lp-photo{transform:none}
-  .lp-float{position:static;margin:0 auto 18px;width:max-content;max-width:100%}
-  .lp-visual{display:flex;flex-direction:column-reverse}
+  .lp-gens{gap:40px 14px}
+  .lp-gen .lp-photo,.lp-gen:nth-child(n) .lp-photo{transform:none;padding:6px}
+  .lp-gen figcaption{margin-top:16px}
+  .lp-gen h3{font-size:20px}
+  .lp-gen p{font-size:14.5px}
+  .lp-cards{grid-template-columns:minmax(0,1fr)}
   .lp-sunset{padding-bottom:0}
   .lp-stats div{padding:22px 12px 24px}
+  .lp-steps li{padding:16px 16px 16px 72px}
+  .lp-steps li::before{left:14px}
 }
-@media (prefers-reduced-motion:reduce){.lp-btn,.lp-btn span,.lp-photo{transition:none}.lp-btn:hover,.lp-frame:hover .lp-photo{transform:none}}
+@media (prefers-reduced-motion:reduce){.lp-btn,.lp-btn span,.lp-gen .lp-photo,.lp-img{transition:none}.lp-btn:hover,.lp-gen:hover .lp-photo,.lp-gen:hover .lp-img,.lp-card:hover .lp-img{transform:none}}
