@@ -6,7 +6,11 @@
  * Anii înainte de Hristos sunt numere negative (-586 = 586 î.Hr.).
  */
 
-export type LaneId = "linia" | "israel" | "iuda" | "nord" | "prooroci" | "egipt" | "mesopotamia" | "apus" | "persia-roma" | "noi";
+import { CHURCH_ERAS } from "./istoria-bisericii";
+import { roBiserica } from "@/i18n/messages/biserica/ro";
+import { roVremuri } from "@/i18n/messages/vremuri/ro";
+
+export type LaneId = "linia" | "israel" | "iuda" | "nord" | "prooroci" | "biserica" | "egipt" | "mesopotamia" | "apus" | "persia-roma" | "puteri" | "noi" | "credinta-noi";
 
 export const LANES: { id: LaneId; label: string; group: "biblia" | "lumea" | "noi" }[] = [
   { id: "linia", label: "Oameni din neamul lui Hristos", group: "biblia" },
@@ -14,11 +18,14 @@ export const LANES: { id: LaneId; label: string; group: "biblia" | "lumea" | "no
   { id: "iuda", label: "Împărații lui Iuda (miazăzi)", group: "biblia" },
   { id: "nord", label: "Împărații lui Israel (miazănoapte)", group: "biblia" },
   { id: "prooroci", label: "Prooroci", group: "biblia" },
+  { id: "biserica", label: "Biserica lui Hristos", group: "biblia" },
   { id: "egipt", label: "Egiptul", group: "lumea" },
   { id: "mesopotamia", label: "Mesopotamia: Ur, Babilon, Asiria", group: "lumea" },
   { id: "apus", label: "Asia Mică și Grecia", group: "lumea" },
-  { id: "persia-roma", label: "Persia și Roma", group: "lumea" },
+  { id: "persia-roma", label: "Persia, Roma și Bizanțul", group: "lumea" },
+  { id: "puteri", label: "Stăpâniri și popoare din jurul nostru", group: "lumea" },
   { id: "noi", label: "Pe pământul nostru", group: "noi" },
+  { id: "credinta-noi", label: "Credința pe pământul nostru", group: "noi" },
 ];
 
 export type Span = {
@@ -31,15 +38,25 @@ export type Span = {
   approx?: boolean;
   /** Pentru o legătură spre un arbore din pagina „De la Adam la Hristos” (id-ul persoanei de acolo). */
   person?: string;
+  /** Legătură spre altă pagină din site (de ex. o epocă din Istoria Bisericii). */
+  href?: string;
   note?: string;
   refs?: string;
 };
 
-export type Moment = { id: string; year: number; label: string; note?: string; refs?: string; approx?: boolean };
+export type Moment = { id: string; year: number; label: string; note?: string; refs?: string; approx?: boolean; href?: string };
 
 /** Prima și ultima dată de pe axă. */
 export const START = -2200;
-export const END = 40;
+export const END = 2030;
+
+/** Ce bucată din axă se vede: înainte de Hristos, după Hristos sau toată. */
+export const WINDOWS = {
+  inainte: { from: -2200, to: 40, label: "Înainte de Hristos", jumps: [["Avraam", -2166], ["Moise", -1526], ["David", -1040], ["Asiria", -900], ["Robia", -605], ["Perșii", -550], ["Hristos", -120]] },
+  dupa: { from: -60, to: 2030, label: "După Hristos", lanes: ["biserica", "persia-roma", "puteri", "noi", "credinta-noi"], jumps: [["Apostolii", -40], ["Dacia romană", 90], ["Constantin", 290], ["Migrațiile", 450], ["Ștefan cel Mare", 1400], ["Biblia românească", 1550], ["Unirea", 1820], ["Azi", 1880]] },
+  tot: { from: -2200, to: 2030, label: "Toată axa", jumps: [["Avraam", -2166], ["David", -1040], ["Hristos", -120], ["Dacia romană", 90], ["Ștefan cel Mare", 1400], ["Azi", 1880]] },
+} as const satisfies Record<string, { from: number; to: number; label: string; lanes?: readonly LaneId[]; jumps: readonly (readonly [string, number])[] }>;
+export type WindowId = keyof typeof WINDOWS;
 
 const s = (lane: LaneId, id: string, label: string, from: number, to: number, extra: Partial<Span> = {}): Span => ({ id, lane, label, from, to, ...extra });
 
@@ -67,7 +84,7 @@ export const SPANS: Span[] = [
   s("israel", "persana", "Sub perși: Templul rezidit", -538, -332, { refs: "Ezra; Neemia; Estera; Hagai; Zaharia; Maleahi" }),
   s("israel", "greaca", "Sub greci", -332, -167, { note: "După Alexandru cel Mare, Iudeea a fost întâi sub Ptolemeii din Egipt, apoi sub Seleucizii din Siria." }),
   s("israel", "macabei", "Macabeii", -167, -63, { note: "Răscoala împotriva lui Antioh al IV-lea, care pângărise Templul. Templul a fost curățit în 164 î.Hr. (sărbătoarea Hanuka, pomenită în Ioan 10:22)." }),
-  s("israel", "roma", "Sub romani", -63, END, { note: "Pompei intră în Ierusalim în 63 î.Hr. Irod cel Mare domnește între 37 și 4 î.Hr.; el a mărit Templul în care a intrat Domnul Isus." }),
+  s("israel", "roma", "Sub romani", -63, 70, { note: "Pompei intră în Ierusalim în 63 î.Hr. Irod cel Mare domnește între 37 și 4 î.Hr.; el a mărit Templul în care a intrat Domnul Isus. În anul 70 romanii au distrus Ierusalimul și Templul, cum spusese Domnul Isus (Luca 21:6)." }),
 
   // Împărații lui Iuda
   s("iuda", "saul", "Saul", -1050, -1010, { refs: "1 Samuel 9–31", note: "Primul împărat, din seminția lui Beniamin." }),
@@ -150,18 +167,55 @@ export const SPANS: Span[] = [
   s("persia-roma", "persia", "Imperiul persan", -550, -330, { note: "Cirus a cucerit Babilonul (539) și i-a lăsat pe iudei să se întoarcă (Ezra 1). Darius, Xerxes (Ahașveroș din cartea Estera), Artaxerxe." }),
   s("persia-roma", "roma-regi", "Roma: regii", -753, -509, { approx: true }),
   s("persia-roma", "roma-rep", "Republica romană", -509, -27),
-  s("persia-roma", "roma-imp", "Imperiul roman", -27, END, { note: "August (27 î.Hr.–14 d.Hr.) a dat porunca recensământului din Luca 2:1. Sub Tiberiu a început lucrarea Domnului Isus (Luca 3:1)." }),
+  s("persia-roma", "roma-imp", "Imperiul roman", -27, 476, { note: "August (27 î.Hr.–14 d.Hr.) a dat porunca recensământului din Luca 2:1. Sub Tiberiu a început lucrarea Domnului Isus (Luca 3:1)." }),
 
   // Pe pământul nostru: întâi ce spune arheologia (culturile, numite după locul unde au fost găsite), apoi oamenii pomeniți în scris.
   s("noi", "bronz", "Epoca bronzului: Monteoru, Wietenberg, Otomani", -2000, -1500, { approx: true, note: "Sate de agricultori și păstori, cu cetăți pe dealuri, unelte și arme de bronz și podoabe din aurul Transilvaniei, ca pumnalele de aur de la Perșinari (Dâmbovița). Nu știm cum se numeau oamenii aceștia; arheologii le dau culturilor numele locului unde le-au găsit." }),
   s("noi", "bronz-tarziu", "Noua și Coslogeni", -1500, -1150, { approx: true, note: "Sfârșitul epocii bronzului, cu așezări de păstori de la Carpați până la Nistru și în Dobrogea." }),
   s("noi", "tracii", "Tracii din nord: epoca fierului", -1150, -650, { approx: true, note: "Odată cu fierul, arheologii văd aici aceeași lume de la Balcani la Carpați: tracii. Din ramura lor de la nordul Dunării se vor desprinde geții și dacii. Grecii vorbeau de traci ca de cel mai numeros neam după indieni (Herodot)." }),
-  s("noi", "geto-dacii", "Geții și dacii", -650, END, { approx: true, note: "Grecii îi numeau geți, romanii daci; Strabon spune că e același neam și aceeași limbă. Se închinau lui Zalmoxis, despre care Herodot povestește că le învățase nemurirea sufletului (Herodot scrie despre el ca despre o tradiție, nu ca despre un fapt pe care l-a văzut)." }),
+  s("noi", "geto-dacii", "Geții și dacii", -650, 106, { approx: true, note: "Grecii îi numeau geți, romanii daci; Strabon spune că e același neam și aceeași limbă. Se închinau lui Zalmoxis, despre care Herodot povestește că le învățase nemurirea sufletului (Herodot scrie despre el ca despre o tradiție, nu ca despre un fapt pe care l-a văzut)." }),
   s("noi", "colonii", "Histria, Tomis, Callatis", -657, -100, { approx: true, note: "Colonii grecești pe țărmul Dobrogei. Histria, întemeiată pe la 657 î.Hr., e cel mai vechi oraș atestat de pe pământul României." }),
   s("noi", "dromihete", "Dromihete", -300, -280, { approx: true, note: "Rege get din Câmpia Dunării. L-a învins și l-a prins pe Lisimah, unul dintre urmașii lui Alexandru, apoi l-a lăsat liber după un ospăț." }),
   s("noi", "burebista", "Burebista", -82, -44, { note: "A unit triburile geto-dacilor într-un stat mare, de la Dunărea de mijloc până la Marea Neagră, în aceeași vreme cu Iulius Cezar. Strabon scrie că marele preot Deceneu l-a ajutat să-i învețe pe daci ascultarea și cumpătarea, până acolo încât și-au tăiat viile." }),
-  s("noi", "sarmizegetusa", "Cetățile din Munții Orăștiei", -100, END, { approx: true, note: "Sarmizegetusa Regia, Costești, Blidaru, Piatra Roșie: centrul statului dac, cu sanctuarul de la Sarmizegetusa. Aici se va da războiul cu romanii, după Hristos (101–106)." }),
+  s("noi", "sarmizegetusa", "Cetățile din Munții Orăștiei", -100, 106, { approx: true, note: "Sarmizegetusa Regia, Costești, Blidaru, Piatra Roșie: centrul statului dac, cu sanctuarul de la Sarmizegetusa. Aici se va da războiul cu romanii, după Hristos (101–106)." }),
+
+  // ——— După Hristos ———
+  // Biserica: epocile din Istoria Bisericii, cu numele de acolo și legătură spre ele.
+  ...CHURCH_ERAS.map((e) => s("biserica", `b-${e.id}`, roBiserica.Church.eras[e.id as keyof typeof roBiserica.Church.eras].name, e.from, Math.min(e.to, END), {
+    href: `/istoria-bisericii#${e.id}`, note: roBiserica.Church.eras[e.id as keyof typeof roBiserica.Church.eras].intro,
+  })),
+
+  s("persia-roma", "bizant", "Imperiul bizantin", 330, 1453, { note: "Jumătatea de răsărit a Imperiului roman, cu capitala la Constantinopol. A ținut Dobrogea până pe la anul 600 și, din nou, în secolele X–XII. De la Bizanț au venit la noi rânduiala Bisericii și multe cuvinte." }),
+  s("puteri", "migratii", "Popoarele migratoare", 271, 1241, { approx: true, note: "Goți, huni, gepizi, avari, slavi, bulgari, unguri, pecenegi, cumani și, în 1241, tătarii. Au trecut sau au stăpânit pe rând pe pământul nostru; slavii au lăsat multe cuvinte în limba română." }),
+  s("puteri", "ungaria", "Regatul Ungariei", 1000, 1526, { approx: true, note: "Ardealul a intrat treptat în Regatul Ungariei, ca voievodat cu conducere a lui." }),
+  s("puteri", "otomani", "Imperiul otoman", 1299, 1922, { note: "Țara Românească și Moldova au plătit tribut turcilor secole la rând, dar și-au păstrat domnii, legile și Biserica." }),
+  s("puteri", "habsburgi", "Habsburgii, apoi Austro-Ungaria", 1526, 1918, { note: "Au stăpânit Ardealul din 1699 și Bucovina din 1775; din 1867 Ardealul a fost dat Ungariei, în Austro-Ungaria." }),
+  s("puteri", "rusia", "Rusia, apoi Uniunea Sovietică", 1721, 1991, { note: "A luat Basarabia în 1812, iar după 1944 a ținut România sub influența ei până la căderea comunismului." }),
+
+  s("noi", "decebal", "Decebal", 87, 106, { note: "Ultimul rege al dacilor. După două războaie (101–102 și 105–106), împăratul Traian a cucerit Sarmizegetusa; Decebal și-a luat viața ca să nu fie dus prizonier la Roma. Columna lui Traian, la Roma, povestește războaiele în piatră." }),
+  s("noi", "dobrogea-romana", "Dobrogea romană și bizantină", 46, 600, { approx: true, note: "Dobrogea a intrat sub Roma înaintea Daciei și a rămas romană, apoi bizantină, până pe la anul 600. Monumentul de la Adamclisi (Tropaeum Traiani, 109) sărbătorea biruința lui Traian." }),
+  s("noi", "dacia-romana", "Dacia romană", 106, 271, { note: "Coloniști din tot imperiul, drumuri, orașe ca Ulpia Traiana Sarmizegetusa, Apulum (Alba Iulia), Napoca (Cluj), Porolissum. Latina devine limba vorbită." }),
+  s("noi", "etnogeneza", "Se naște poporul român", 106, 800, { approx: true, note: "Din dacii romanizați și din coloniștii romani se naște un popor cu limbă latină, pe ambele maluri ale Dunării. Istoricii încă discută unde anume și cum a decurs, pentru că din aceste secole s-au păstrat puține scrieri." }),
+  s("noi", "transilvania", "Voievodatul, apoi Principatul Transilvaniei", 1000, 1699, { approx: true }),
+  s("noi", "tara-romaneasca", "Țara Românească", 1330, 1859, { note: "Basarab I câștigă la Posada (1330) independența față de Ungaria. Mircea cel Bătrân, Vlad Țepeș, Neagoe Basarab, Mihai Viteazul, Constantin Brâncoveanu." }),
+  s("noi", "moldova", "Moldova", 1359, 1859, { note: "Bogdan I întemeiază Moldova neatârnată (1359). Alexandru cel Bun, Ștefan cel Mare, Petru Rareș, Vasile Lupu, Dimitrie Cantemir." }),
+  s("noi", "stefan", "Ștefan cel Mare", 1457, 1504, { note: "47 de ani de domnie în Moldova; a apărat țara de turci și a zidit biserici și mănăstiri, ca Putna și Voroneț." }),
+  s("noi", "mihai", "Mihai Viteazul", 1593, 1601),
+  s("noi", "romania", "România", 1859, END, { note: "Unirea Principatelor (1859), independența (1877), regatul (1881), Marea Unire (1918), comunismul (1947–1989), Uniunea Europeană (2007)." }),
+
+  s("credinta-noi", "andrei", "Apostolul Andrei (tradiție)", 50, 70, { approx: true, href: "/istoria-bisericii#apostoli", note: "O tradiție veche, păstrată de Eusebiu după Origen, spune că lui Andrei i-a revenit Sciția; mulți o leagă de Dobrogea de azi. E o tradiție, nu un lucru dovedit, dar arată cât de devreme a ajuns Evanghelia la gurile Dunării." }),
+  s("credinta-noi", "crestini-dacia", "Primii creștini daco-romani", 150, 400, { approx: true, note: "Credința a venit odată cu soldații, negustorii și coloniștii din imperiu. Românii n-au fost botezați la o dată anume, de un rege, ci s-au făcut creștini odată cu nașterea lor ca popor; de aceea cuvintele de bază ale credinței noastre vin din latină: Dumnezeu, cruce, biserică, creștin, a boteza, Paște, rugăciune." }),
+  s("credinta-noi", "martirii", "Martirii din Dobrogea", 290, 311, { href: "/istoria-bisericii#roma", note: "Epictet și Astion la Halmyris, lângă Murighiol, și martirii ale căror moaște s-au găsit în cripta de la Niculițel (Tulcea), din vremea marii prigoane." }),
+  s("credinta-noi", "tomis", "Episcopia de Tomis", 369, 600, { approx: true, note: "La Tomis (Constanța) sunt pomeniți episcopi din secolul al IV-lea, ca Bretanion și Teotim, cu biserici ale căror ruine se văd și azi în Dobrogea." }),
+  s("credinta-noi", "slavona", "Slujba în slavonă", 900, 1650, { approx: true, note: "După creștinarea bulgarilor (864), slujba la românii de la nord de Dunăre s-a ținut secole la rând în slavonă, o limbă pe care poporul n-o înțelegea. Abia din secolul al XVI-lea încep cărțile în românește." }),
+  s("credinta-noi", "coresi", "Coresi tipărește în românește", 1559, 1582, { href: "/istoria-bisericii#reforma", note: "Diaconul Coresi, la Brașov, tipărește primele cărți bisericești în limba română: Evanghelia, Faptele Apostolilor, Psaltirea." }),
+  s("credinta-noi", "oastea", "Oastea Domnului", 1923, 1948, { href: "/istoria-bisericii#secolul-xx", note: "Mișcare de trezire pornită de preotul Iosif Trifa la Sibiu: întoarcere la Biblie, pocăință și trăire curată." }),
+  s("credinta-noi", "prigoana", "Prigoana comunistă", 1948, 1989, { href: "/istoria-bisericii#secolul-xx", note: "Închisori pentru preoți, pastori și credincioși de toate confesiunile: Aiud, Gherla, Pitești, Canalul. Richard Wurmbrand, Traian Dorz, Nicolae Moldoveanu și mulți alții." }),
+  s("credinta-noi", "libertatea", "Libertatea credinței", 1990, END, { href: "/istoria-bisericii#azi" }),
 ];
+
+/** Evenimente din istoria românilor care există deja în „Povestea vremurilor” din arbore: textul lor e cel de acolo. */
+const v = (id: keyof typeof roVremuri.Vremuri.events, year: number, label: string): Moment => ({ id: `v-${id}`, year, label, note: roVremuri.Vremuri.events[id] });
 
 export const MOMENTS: Moment[] = [
   { id: "chemarea", year: -2091, label: "Chemarea lui Avraam", refs: "Geneza 12:1–4", note: "Avraam avea 75 de ani când a plecat din Haran." },
@@ -185,6 +239,40 @@ export const MOMENTS: Moment[] = [
   { id: "pompei", year: -63, label: "Pompei intră în Ierusalim" },
   { id: "nasterea", year: -5, label: "Nașterea Domnului Isus", approx: true, refs: "Matei 2; Luca 2", note: "Pe la 6–4 î.Hr. Numărătoarea anilor de după Hristos, făcută în secolul al VI-lea, a ieșit cu câțiva ani mai târziu." },
   { id: "crucea", year: 30, label: "Răstignirea și învierea", approx: true, refs: "Evangheliile; 1 Corinteni 15:3–8", note: "Pe la anul 30 (unii socotesc 33)." },
+
+  // ——— După Hristos ———
+  { id: "rusalii", year: 31, label: "Rusaliile: se naște Biserica", approx: true, refs: "Faptele Apostolilor 2", note: "Duhul Sfânt Se coboară peste ucenici la Ierusalim; în ziua aceea se botează aproape trei mii de oameni." },
+  { id: "pavel", year: 46, label: "Pavel pornește în călătoriile lui", approx: true, refs: "Faptele Apostolilor 13–28", note: "În trei călătorii, Pavel duce Evanghelia în Asia Mică, Macedonia și Grecia, apoi ajunge la Roma." },
+  { id: "nero", year: 64, label: "Prigoana lui Nero", href: "/istoria-bisericii#apostoli" },
+  { id: "templul-70", year: 70, label: "Romanii distrug Templul" },
+  { id: "traian", year: 106, label: "Traian cucerește Dacia" },
+  { id: "aurelian", year: 271, label: "Romanii părăsesc Dacia", approx: true, note: "Împăratul Aurelian retrage armata și conducerea la sud de Dunăre. Mare parte din populația romanizată rămâne pe loc." },
+  { id: "milano", year: 313, label: "Edictul de la Milano", href: "/istoria-bisericii#evul-mediu", note: "Constantin cel Mare și Liciniu dau libertate creștinilor în tot imperiul." },
+  { id: "niceea", year: 325, label: "Sinodul de la Niceea", note: "Primul sinod al întregii Biserici; a mărturisit că Fiul este Dumnezeu ca și Tatăl." },
+  { id: "sava", year: 372, label: "Sava Gotul, martir la Buzău", href: "/istoria-bisericii#roma" },
+  { id: "biertan", year: 350, label: "Donariul de la Biertan", approx: true, note: "O tăbliță de bronz cu un monogram creștin și cuvintele „Ego Zenovius votum posui” („Eu, Zenovie, am pus darul acesta”), găsită lângă Mediaș: un semn al creștinilor din Transilvania de după romani." },
+  { id: "roma-cade", year: 476, label: "Cade Roma de apus" },
+  { id: "dionisie", year: 525, label: "Dionisie cel Mic numără anii de la Hristos", note: "Călugăr învățat din Sciția Mică, adică din Dobrogea de azi. El a propus să numărăm anii „de la Întruparea Domnului”, cum facem și azi; a pus nașterea Domnului cu câțiva ani mai târziu decât a fost." },
+  { id: "bulgari", year: 864, label: "Creștinarea bulgarilor", note: "De la ei a venit la noi slujba în slavonă." },
+  { id: "schisma", year: 1054, label: "Marea Schismă: Răsăritul și Apusul se despart" },
+  { id: "tatari", year: 1241, label: "Marea invazie a tătarilor" },
+  { id: "posada", year: 1330, label: "Basarab I la Posada" },
+  { id: "mitropolia", year: 1359, label: "Mitropolia Țării Românești", note: "Recunoscută de Patriarhia de la Constantinopol în același an în care se întemeia Moldova." },
+  { id: "constantinopol", year: 1453, label: "Turcii cuceresc Constantinopolul" },
+  { id: "luther", year: 1517, label: "Luther și Reforma", href: "/istoria-bisericii#reforma" },
+  v("1600-mihai-viteazul", 1600, "Mihai Viteazul unește cele trei țări"),
+  { id: "nt-1648", year: 1648, label: "Noul Testament de la Bălgrad", href: "/istoria-bisericii#biblia" },
+  { id: "biblia-1688", year: 1688, label: "Biblia de la București", href: "/istoria-bisericii#biblia", note: "Prima Biblie întreagă în limba română, tipărită în vremea lui Șerban Cantacuzino, terminată sub Constantin Brâncoveanu." },
+  { id: "brancoveanu", year: 1714, label: "Martiriul Brâncovenilor", href: "/istoria-bisericii#trezire" },
+  v("1821-revolutia-tudor", 1821, "Tudor Vladimirescu"),
+  v("1848-revolutia-adunarea", 1848, "Revoluția de la 1848"),
+  v("1859-unirea-principatelor", 1859, "Unirea Principatelor"),
+  v("1877-razboiul-independenta", 1877, "Războiul de Independență"),
+  v("1918-unire-basarabia", 1918, "Marea Unire"),
+  { id: "cornilescu", year: 1921, label: "Biblia Cornilescu", href: "/istoria-bisericii#biblia" },
+  v("1947-regele-mihai", 1947, "Regele Mihai e silit să abdice"),
+  v("1989-revolutia-timisoara", 1989, "Revoluția"),
+  v("2007-romania-uniunea", 2007, "România în Uniunea Europeană"),
 ];
 
 /** „586 î.Hr.” / „30 d.Hr.” */
@@ -205,7 +293,7 @@ export function spanText(a: number, b: number, approx = false): string {
  * Așază barele unui rând fără să se suprapună: fiecare bară intră pe primul sub-rând unde încape (cu o mică distanță).
  * Întoarce sub-rândul fiecărei bare și câte sub-rânduri are rândul.
  */
-export function packLane(spans: Span[], gapYears = 2): { row: Map<string, number>; rows: number } {
+export function packLane(spans: Span[], gapYears = 0): { row: Map<string, number>; rows: number } {
   const ends: number[] = [];
   const row = new Map<string, number>();
   for (const sp of [...spans].sort((a, b) => a.from - b.from || b.to - a.to)) {
