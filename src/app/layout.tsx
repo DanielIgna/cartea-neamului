@@ -28,6 +28,7 @@ import { SITE_URL } from "@/lib/site-url";
 import UsageBeat from "@/components/UsageBeat";
 import UsageNotice from "@/components/UsageNotice";
 import LanguagePicker from "@/components/LanguagePicker";
+import SignInLink from "@/components/SignInLink";
 import LanguageSuggest from "@/components/LanguageSuggest";
 import IntlClient from "@/i18n/IntlClient";
 import { clientMessages } from "@/i18n/messages";
@@ -90,12 +91,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <header className="top">
               <div className="brand"><Link href="/" className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
               <div className={me ? "prefs prefs-wide" : "prefs"}>
-                <ThemeSwitch initial={theme} />
+                <ThemeSwitch />
                 <LanguagePicker remember={source === "account"} />
+                {!me && <SignInLink label={t("signIn")} short={t("signInShort")} />}
               </div>
               {/* Pe telefon, cine e intrat în cont are tema și limba în meniul de lângă poză, ca antetul să încapă pe un rând. */}
               {me && <UserMenu name={me.name} unread={unread} image={avatar} admin={isAdminUser(me)}
-                prefs={<><ThemeSwitch initial={theme} /><LanguagePicker remember={source === "account"} /></>} />}
+                prefs={<><ThemeSwitch labeled /><LanguagePicker remember={source === "account"} /></>} />}
             </header>
             {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} close={ask.s("close")} />}
             {usage && !usage.at && <UsageNotice />}

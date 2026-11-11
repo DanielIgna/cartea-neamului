@@ -21,12 +21,16 @@ export const hu: Catalog = {
     privacy: "Adatvédelem",
     terms: "Feltételek",
     myData: "Adataim",
+    signIn: "Belépés",
+    signInShort: "Belépés",
   },
   ThemeSwitch: {
     label: "Színtéma",
     auto: "Automatikus",
     light: "Világos",
     dark: "Sötét",
+    toDark: "Váltás sötét témára",
+    toLight: "Váltás világos témára",
   },
   LanguagePicker: {
     label: "Az oldal nyelve",

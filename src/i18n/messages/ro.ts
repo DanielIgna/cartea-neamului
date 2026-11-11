@@ -30,12 +30,16 @@ export const ro = {
     privacy: "Confidențialitate",
     terms: "Termeni",
     myData: "Datele mele",
+    signIn: "Intră în cont",
+    signInShort: "Intră",
   },
   ThemeSwitch: {
     label: "Tema culorilor",
     auto: "Automat",
     light: "Luminos",
     dark: "Întunecat",
+    toDark: "Treci la tema întunecată",
+    toLight: "Treci la tema luminoasă",
   },
   LanguagePicker: {
     label: "Limba site-ului",
