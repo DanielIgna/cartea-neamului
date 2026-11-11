@@ -55,6 +55,7 @@ export const deDatele: DateleCatalog = {
       calatorie: "Reise durch die Zeit",
       "istoria-bisericii": "Kirchengeschichte",
       "adam-hristos": "Von Adam bis Christus",
+      "firul-vremii": "Der Faden der Zeit",
       mesaje: "Nachrichten",
       amintire: "Eine erhaltene Erinnerung",
       "datele-mele": "Meine Daten",

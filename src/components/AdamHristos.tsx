@@ -149,6 +149,16 @@ export default function AdamHristos() {
   const treeTop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Din „Firul vremii” se poate veni direct la o persoană: ?p=<id>.
+    const wanted = new URLSearchParams(window.location.search).get("p");
+    const hit = wanted ? index.get(wanted) : undefined;
+    if (hit) {
+      setEpochId(hit.epoch);
+      setSel(hit.node.id);
+      reveal(hit.node.id, 600);
+      setTimeout(() => box.current?.scrollIntoView({ block: "start" }), 650);
+      return;
+    }
     try {
       const saved = localStorage.getItem(KEY);
       const e = EPOCHS.find((x) => x.id === saved);
@@ -167,13 +177,13 @@ export default function AdamHristos() {
     if (scroll) treeTop.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   /** După o căutare, aducem persoana în mijlocul ferestrei desenului. */
-  const reveal = (id: string) => requestAnimationFrame(() => requestAnimationFrame(() => {
+  function reveal(id: string, wait = 250) { return setTimeout(() => {
     const el = box.current, g = el?.querySelector(`[data-id="${id}"]`);
     if (!el || !g) return;
     const r = g.getBoundingClientRect(), b = el.getBoundingClientRect();
     el.scrollLeft += r.left + r.width / 2 - (b.left + el.clientWidth / 2);
     el.scrollTop += r.top + r.height / 2 - (b.top + el.clientHeight / 2);
-  }));
+  }, wait); }
 
   // Pe un ecran îngust, desenul pornește cu linia lui Hristos la mijloc (nu cu mijlocul desenului, unde poate fi o ramură laterală).
   useEffect(() => {
@@ -296,6 +306,7 @@ export default function AdamHristos() {
         <h3 className="ch-part-title">Cine cu cine a trăit în același timp</h3>
         <p>Dacă aduni anii din Geneza 5 și 11 (câți ani avea fiecare tată la nașterea fiului), afli în ce an „de la facerea lumii” s-a născut fiecare. Așezate una lângă alta, viețile lungi se suprapun în chip neașteptat: Adam a trăit până când Lameh, tatăl lui Noe, avea 56 de ani; Metusala a murit în anul potopului; iar Sem a trăit mai mult decât Avraam. Socoteala aceasta folosește textul ebraic; mai jos vezi cum diferă celelalte.</p>
         <Lifespans pick={lifePick} onPick={setLifePick} />
+        <p><Link className="btn" href="/firul-vremii">Firul vremii: Biblia și popoarele lumii pe aceeași axă, de la Avraam la Hristos</Link></p>
       </section>
 
       <section className="ch-part" id="socoteli">

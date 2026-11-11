@@ -55,6 +55,7 @@ export const enGBDatele: DateleCatalog = {
       calatorie: "Journey through time",
       "istoria-bisericii": "Church history",
       "adam-hristos": "From Adam to Christ",
+      "firul-vremii": "The thread of time",
       mesaje: "Messages",
       amintire: "A memory received",
       "datele-mele": "My data",
