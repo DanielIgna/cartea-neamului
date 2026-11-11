@@ -31,7 +31,9 @@ export const enGBLegal: LegalCatalog = {
           l8: "<b>How much you use the site</b>, only if you say “OK” to the question we ask you once: by day, how long you spent in each part of the site (for example “Family tree · Tree” or “Family map”), how many times you opened it and how much of that time was on a phone or in the phone app. We count only the time when the page is in front and you are doing something in it. We do not keep the page address, what you write or what you click.",
           l9: "<b>Benefits from partners</b>, only if you tick the box for it (when creating your account or in “My data”): every “yes” and every “no”, with the date, the version of the text you ticked, the language and where you made the choice.",
           l10: "<b>The old family home:</b> what you write about the family’s house on a person’s page (the address or village, who built it, the year, photos and its story). Only the people you choose can see it, just as with memories.",
-          l11: "<b>In your browser:</b> the theme you chose (light or dark), the family lines you chose to see and whether you have already seen the partner card shown after downloading the book. If you said “OK” to measuring time, also the last minute counted, at most one hour’s worth, so that it reaches us even when you close the page in a hurry.",
+          l13: "<b>Photos proposed for the home page</b>, only if you choose to propose one from the family album: a copy of the photo, the line written under it, who proposed it, when, in which language and the version of the consent you ticked. Until it is approved, only we can see it.",
+          l14: "<b>When you write to us</b> from the Contact page: your name, your email address (so that we can reply) and your message. We do not keep them on the site: they go straight to our email inbox. If you write to us on WhatsApp, we see your phone number, your WhatsApp name and what you write.",
+          l11: "<b>In your browser</b>, besides the cookies listed at the end of this page, a few choices kept only on your phone or computer, so that you do not have to make them every time: the family lines you chose to see, what you last chose in “The thread of time”, “From Adam to Christ” and “Church history”, the records you marked as not being duplicates, whether you hid the card for installing the app and whether you have already seen the partner card shown after downloading the book. If you said “OK” to measuring time, also the last minute counted, at most one hour’s worth, so that it reaches us even when you close the page in a hurry.",
           l12: "<b>Technical logs</b> of the server (IP address, page requested, time), kept for a short while so that we can fix errors.",
         },
         why: {
@@ -40,7 +42,8 @@ export const enGBLegal: LegalCatalog = {
           l2: "To protect accounts and family trees: sessions, the change log and limits on searches. The legal basis is our legitimate interest in keeping the site safe (Art. 6(1)(f)).",
           l3: "To see what people use and what needs improving: figures about accounts and trees in the admin panel, without what you write. The legal basis is our legitimate interest in making the site better (Art. 6(1)(f)).",
           l4: "For living relatives you add to a tree, the legal basis is the family’s legitimate interest in keeping its history, with care: family trees are private, and living people are visible only in their own tree, never to other families. Anyone who appears in a tree can ask us to correct or delete their data.",
-          l5: "Based on your consent, which you can withdraw at any time: the “Faith” chapter (Art. 9(2)(a)), stories recorded “at the grandparents’”, “From the same places”, how much you use the site and benefits from partners (Art. 6(1)(a)). Withdrawing consent does not change what was done before with the consent you gave.",
+          l5: "Based on your consent, which you can withdraw at any time: the “Faith” chapter (Art. 9(2)(a)), stories recorded “at the grandparents’”, “From the same places”, how much you use the site, benefits from partners and photos proposed for the home page (Art. 6(1)(a)). Withdrawing consent does not change what was done before with the consent you gave.",
+          l6: "To reply when you write to us (from the Contact page, by email or on WhatsApp). The legal basis is our legitimate interest in answering those who contact us (Art. 6(1)(f)) or, when you write about your account, the contract between us (point (b)).",
         },
         who: {
           h: "Who sees the data",
@@ -48,16 +51,18 @@ export const enGBLegal: LegalCatalog = {
           l2: "<b>Living people</b> are visible only in their own tree. They do not appear in “From the same places” or to other families. The only person who can find their record from outside the tree is the person themselves, with their name and full date of birth; the owner of the tree then decides whether to accept them, and until then the person searching does not even learn which tree it is.",
           l3: "<b>Memories</b> are seen only by the people their writer chooses: just the writer (draft), the person who asked, close family up to a certain degree of kinship, or the whole tree. Only those ticked for the book go into the family book.",
           l4: "<b>Messages</b> are seen only by the two people writing to each other.",
-          l5: "<b>We</b> see only lists and figures in the admin panel: accounts (name, email, when and from what kind of device they signed in), family trees (name, how many people and files they have), for each account how much it has added (how many people, memories, photos, invitations and messages) and, for those who said “OK”, how long they spend in each part of the site. There we can also keep a short note about an account, for example that it stays free. We do not read memories or messages, and we count nothing from the “Faith” chapter; we look at them only if you ask us for help or if the law requires it.",
+          l7: "<b>The photos on the home page</b> can be seen by anyone who opens the site: they are photos chosen by us and photos proposed by you, once we approve them. You can withdraw the ones you proposed at any time, from “A life on film” on your page in the family tree; they then leave the home page and their copy is deleted.",
+          l5: "<b>We</b> see in the admin panel only what we need to keep the site running: lists and figures about accounts (name, email, when and from what kind of device they signed in), about family trees (name, how many people and files they have), for each account how much it has added (how many people, memories, photos, invitations and messages) and, for those who said “OK”, how long they spend in each part of the site. We also see the history of changes to the records in family trees (who changed which names, dates or places, and when), so that we can undo a deletion or a mistake and stop someone who is damaging a tree, and the photos proposed for the home page, so that we can approve them. There we can also keep a short note about an account, for example that it stays free. We do not read memories or messages, and we count nothing from the “Faith” chapter; we look at them only if you ask us for help or if the law requires it.",
           l6: "We do not sell data, we show no adverts and we give it to no one else apart from the providers below, our partner PropManage (only the email address of those who ticked the box, as described below) and the authorities, when the law requires it.",
         },
         vendors: {
           h: "The providers who help us",
           p1: "We work with a few providers, who process data only to make the site work, under contracts that require them to protect it:",
-          l1: "<b>Vercel Inc.</b> (USA) hosts the site and runs the application.",
+          l1: "<b>Vercel Inc.</b> (USA) hosts the site. The application runs on their servers in Frankfurt (Germany, EU), next to the database; pages reach you through their network, which may also pass through other countries, so that they load quickly.",
           l2: "<b>Neon</b> (Databricks Inc., USA) stores the database, photos, documents and recordings, in a data centre in Frankfurt (Germany, EU).",
           l3: "<b>Google</b>, only if you choose “Continue with Google”, confirms your identity when you sign in.",
           l4: "<b>OpenStreetMap</b> (the OpenStreetMap Foundation, United Kingdom) provides the map tiles in “Family map”. Your browser requests them directly from them, so they see the IP address you request them from.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) delivers to our email the messages sent from the Contact page. <b>WhatsApp</b> (WhatsApp Ireland Ltd., part of the Meta group), only if you choose to write to us there, under its own privacy rules.",
           p2: "For transfers outside the European Union, these providers use the standard contractual clauses approved by the European Commission or the EU–US Data Privacy Framework. We send nothing about living people to artificial intelligence services.",
         },
         partner: {
@@ -72,6 +77,7 @@ export const enGBLegal: LegalCatalog = {
         keep: {
           h: "How long we keep data",
           p1: "For as long as you have an account. What you delete disappears from the site at once, and backup copies of the database are overwritten automatically within 30 days at most. When you delete your account, everything that is yours goes: your account, the memories in your chest, your messages, what you wrote to others and your consents. Family trees remain the family’s: a tree with other members passes to one of them, and one in which you are alone is deleted completely. Your record in family trees remains, so that the tree is not broken, without the link to your account; if you wish, it is also emptied of your data. We keep how much you use the site for at most 13 months; if you say “I no longer want this”, it is deleted at once.",
+          p2: "We keep photos proposed for the home page until you withdraw them or delete your account; one we do not choose stays only with us and is not shown publicly. We keep messages received from the Contact page or on WhatsApp for as long as we need to deal with what you wrote; if you want us to delete them sooner, just tell us.",
         },
         rights: {
           h: "Your rights",
@@ -87,11 +93,13 @@ export const enGBLegal: LegalCatalog = {
         cookies: {
           h: "Cookies",
           p1: "We use only the cookies without which the site would not work, so we do not ask for your consent for them:",
-          l1: "the one that keeps you signed in;",
+          l1: "<code>better-auth.session_token</code> (on the encrypted connection, with <code>__Secure-</code> in front), which keeps you signed in, for at most 7 days after you last used the site, and <code>better-auth.session_data</code>, a signed copy of it kept for 5 minutes so that pages open faster. Both disappear when you sign out;",
           l2: "<code>limba</code>, with the language in which you chose to read the site on this phone or computer (for example “ro” or “de”), kept for a year;",
-          l3: "the one with the theme you chose (light or dark);",
+          l5: "<code>limba_intrebare</code>, only if you close the question about the site’s language with ✕, so that we do not ask again, kept for a year;",
+          l3: "<code>tema</code>, with the theme you chose (light, dark or automatic), kept for a year;",
+          l6: "<code>cn-cookie-uri</code>, after you press “Got it” on the notice about cookies, so that you do not see it again, kept for a year;",
           l4: "<code>cn-parteneri</code>, only if you tick the benefits from partners when creating your account: it remembers the tick for at most 30 minutes, just long enough for your choice to reach your new account (also when you create it with Google), and then it disappears.",
-          p2: "We use no advertising cookies and no cookies for counting visits.",
+          p2: "We use no advertising, analytics or social media cookies, and the site loads no scripts from other companies. The only things your browser requests directly from others are the map tiles from OpenStreetMap and, if you signed in with Google, your Google account picture.",
         },
         safety: {
           h: "Security",
@@ -125,6 +133,7 @@ export const enGBLegal: LegalCatalog = {
           l2: "Write about living relatives with care and common sense. If someone asks you to remove their data from the tree, remove it or write to us.",
           l3: "Do not add anything illegal, offensive or that incites hatred, nor other people’s data without the right to do so.",
           l4: "We may hide or delete anything that breaks these terms or the law, and we will tell you why.",
+          l5: "When you propose a photo for the home page, you confirm that you are in it or that you have the consent of everyone in it (for children, of their parents), and you allow us to show it publicly on the home page for as long as you do not withdraw it. We may choose not to show it or remove it at any time.",
         },
         owner: {
           h: "3. Who owns what you add",

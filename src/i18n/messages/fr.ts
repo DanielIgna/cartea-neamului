@@ -23,6 +23,11 @@ export const fr: Catalog = {
     myData: "Mes données",
     signIn: "Se connecter",
     signInShort: "Connexion",
+    cookies: "Cookies",
+    cookieLead: "Uniquement des cookies strictement nécessaires.",
+    cookieText: "Nous les utilisons pour que vous restiez connecté et pour retenir la langue et le thème choisis. Pas de publicité ni de mesure d’audience, donc nous ne vous demandons pas votre consentement.",
+    cookieMore: "Voir la liste",
+    cookieOk: "J’ai compris",
   },
   ThemeSwitch: {
     label: "Thème des couleurs",

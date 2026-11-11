@@ -1282,3 +1282,10 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .wa-float:hover{background:#18763f;color:#fff}
 @media (max-width:520px){.wa-float{width:52px;height:52px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom))}}
 @media print{.wa-float{display:none!important}}
+/* Anunțul despre cookie-uri (doar cele strict necesare): discret, o singură dată pe dispozitiv */
+.cookie-notice{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px;color:var(--muted)}
+.cookie-notice p{margin:0;flex:1 1 280px;max-width:90ch}
+.cookie-notice b{color:var(--ink)}
+.cookie-notice .btn{padding:6px 16px}
+@media print{.cookie-notice{display:none}}
+@media (max-width:600px){.cookie-notice{font-size:13px;line-height:1.4;padding:8px 12px;gap:6px 10px;margin-bottom:12px}.cookie-notice p{flex-basis:200px}.cookie-notice .btn{padding:5px 12px;font-size:13px;min-height:0}}

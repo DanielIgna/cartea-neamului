@@ -23,6 +23,11 @@ export const hu: Catalog = {
     myData: "Adataim",
     signIn: "Belépés",
     signInShort: "Belépés",
+    cookies: "Sütik",
+    cookieLead: "Csak feltétlenül szükséges sütik.",
+    cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs látogatásszámlálás, ezért nem kérünk hozzájárulást.",
+    cookieMore: "A teljes lista",
+    cookieOk: "Értem",
   },
   ThemeSwitch: {
     label: "Színtéma",

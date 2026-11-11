@@ -18,6 +18,8 @@ import ThemeSwitch from "@/components/ThemeSwitch";
 import { PwaSetup } from "@/components/InstallApp";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
+import CookieNotice from "@/components/CookieNotice";
+import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
@@ -64,7 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const me = await currentUser();
   // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
   // Totul deodată, nu pe rând: fiecare întrebare la baza de date costă un drum dus-întors.
-  const [unread, myPhoto, usage, theme] = await Promise.all([
+  const [unread, myPhoto, usage, prefs] = await Promise.all([
     me ? Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0))).then((n) => n.reduce((a, b) => a + b, 0)) : 0,
     // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
     me
@@ -73,8 +75,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       : null,
     // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
     me && !isDemo(me.email) ? consentState(db, me.id, "usage").catch(() => null) : null,
-    cookies().then((c) => parseTheme(c.get(THEME_COOKIE)?.value)),
+    cookies().then((c) => ({ theme: parseTheme(c.get(THEME_COOKIE)?.value), cookieSeen: c.has(COOKIE_NOTICE_COOKIE) })),
   ]);
+  const { theme, cookieSeen } = prefs;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
@@ -101,12 +104,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </header>
             {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} close={ask.s("close")} />}
             {usage && !usage.at && <UsageNotice />}
+            {/* Anunțul despre cookie-uri vine o singură dată, dar nu peste celelalte două întrebări: așteaptă pagina următoare. */}
+            {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
+              && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <footer className="site-foot">
               <span>© {new Date().getFullYear()} {appName}</span>
               <Link href="/confidentialitate">{t("privacy")}</Link>
               <Link href="/termeni">{t("terms")}</Link>
+              <a href="/confidentialitate#cookie-uri">{t("cookies")}</a>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
               <Link href="/parteneri">{tp("menu")}</Link>
               <Link href="/contact">{tc("menu")}</Link>
