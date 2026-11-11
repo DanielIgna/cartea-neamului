@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getT } from "@/i18n/server";
 import Image from "next/image";
+import { db } from "@/db";
+import { homeImages, type HomeImage } from "@/lib/home-images";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -67,21 +69,23 @@ const Icon = ({ children }: { children: React.ReactNode }) => (
 const STATS = [["10", "stat1"], ["9", "stat2"], ["1", "stat3"], ["1", "stat4"]] as const;
 
 /* O fotografie din public/home, servită de Next la mărimea potrivită ecranului (WebP/AVIF). */
-const Photo = ({ src, sizes, priority = false, className }: { src: string; sizes: string; priority?: boolean; className?: string }) => (
-  <Image src={`/home/${src}.jpg`} alt="" fill sizes={sizes} priority={priority} className={className ?? "lp-img"} />
+/* O fotografie a primei pagini: cea inițială o servește Next la mărimea ecranului (WebP/AVIF); cea pusă de admin vine
+   gata micșorată din /api/poza-acasa (vezi src/lib/home-images.ts și Admin → Poze prima pagină). */
+const Photo = ({ img, sizes, priority = false, className }: { img: HomeImage; sizes: string; priority?: boolean; className?: string }) => (
+  <Image src={img.src} alt="" fill sizes={sizes} priority={priority} unoptimized={img.custom} className={className ?? "lp-img"} />
 );
-const GENS = [["gen1", "bunici", "50% 30%"], ["gen2", "familie", "50% 40%"], ["gen3", "tineri", "50% 35%"], ["gen4", "copii", "50% 45%"]] as const;
+const GENS = [["gen1", "50% 30%"], ["gen2", "50% 40%"], ["gen3", "50% 35%"], ["gen4", "50% 45%"]] as const;
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const t = await getT("Landing");
+  const [t, imgs] = await Promise.all([getT("Landing"), homeImages(db)]);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
   const cards = [
     { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
-    { k: "memories", art: <><Photo src="bunic-nepot" sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
-    { k: "map", art: <Photo src="sat" sizes="(max-width:640px) 100vw, 300px" /> },
-    { k: "book", art: <Photo src="album" sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "memories", art: <><Photo img={imgs.memories} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
+    { k: "map", art: <Photo img={imgs.map} sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "book", art: <Photo img={imgs.book} sizes="(max-width:640px) 100vw, 300px" /> },
   ] as const;
   return (
     <div className="lp">
@@ -90,7 +94,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
 
       {/* Bannerul: familia pe toată lățimea, cu panoul întunecat la mijloc */}
       <section className="lp-band lp-banner">
-        <Photo src="banner" sizes="100vw" priority className="lp-img lp-banner-img" />
+        <Photo img={imgs.banner} sizes="100vw" priority className="lp-img lp-banner-img" />
         <div className="lp-banner-panel">
           <p className="lp-tagline">{t("eyebrow")}</p>
           <h1 className="lp-name">Cartea Neamului</h1>
@@ -119,9 +123,9 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
             <p>{t("gensText")}</p>
           </header>
           <div className="lp-gens">
-            {GENS.map(([k, src, pos]) => (
+            {GENS.map(([k, pos]) => (
               <figure key={k} className="lp-gen">
-                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo src={src} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
+                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo img={imgs[k]} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
                 <figcaption><h3>{t(`${k}Title`)}</h3><p>{t(`${k}Text`)}</p></figcaption>
               </figure>
             ))}
@@ -151,7 +155,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
 
       {/* Gândul din spate, peste siluetele unei familii la apus, cu cifrele dedesubt */}
       <section className="lp-band lp-sunset">
-        <Photo src="apus" sizes="100vw" className="lp-img lp-sunset-img" />
+        <Photo img={imgs.sunset} sizes="100vw" className="lp-img lp-sunset-img" />
         <div className="lp-in lp-quote">
           <span className="lp-quote-mark" aria-hidden="true">“</span>
           <blockquote><p>{t("quote")}</p></blockquote>
@@ -166,7 +170,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       {/* Cum începi, lângă o masă în familie */}
       <section className="lp-band lp-paper" aria-labelledby="lp-how">
         <div className="lp-in lp-how">
-          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo src="masa" sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
+          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo img={imgs.table} sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
           <div>
             <h2 id="lp-how">{t("howTitle")}</h2>
             <p className="lp-how-text">{t("howText")}</p>
@@ -180,7 +184,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       </section>
 
       <section className="lp-band lp-cta" aria-labelledby="lp-cta">
-        <Photo src="maini" sizes="100vw" className="lp-img lp-cta-img" />
+        <Photo img={imgs.hands} sizes="100vw" className="lp-img lp-cta-img" />
         <div className="lp-in">
           <h2 id="lp-cta">{t("ctaTitle")}</h2>
           {ornament}

@@ -11,6 +11,8 @@ import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
 import { isLocale } from "@/i18n/locales";
 import { undoChange } from "@/lib/admin-istoric";
+import { isHomeSlot, setHomeImage } from "@/lib/home-images";
+import { deleteObjects } from "@/lib/storage";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -104,4 +106,18 @@ export async function saveTreeLimit(_: AdminFormState, form: FormData): Promise<
   await setTreeLimit(db, treeId, mode === "normal" ? null : (mode as TreeMode), String(form.get("note") ?? ""), me.id);
   revalidatePath("/admin", "layout");
   return { ok: mode === "normal" ? "Arborele e din nou deschis, ca înainte." : "Limita arborelui e pusă." };
+}
+
+/* ---------- „Poze prima pagină” ---------- */
+
+/** Pune înapoi poza inițială a unui loc de pe prima pagină și șterge din bucket poza încărcată (încărcarea e în /api/admin/poze). */
+export async function resetHomeImage(slot: string): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  if (!isHomeSlot(slot)) return { error: "Locul pozei nu există." };
+  const old = await setHomeImage(db, slot, null, me.id);
+  await deleteObjects([old]);
+  revalidatePath("/");
+  revalidatePath("/admin/poze");
+  return { ok: "Am pus înapoi poza inițială." };
 }

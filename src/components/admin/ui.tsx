@@ -31,7 +31,7 @@ export function ago(isoDate: string | null | undefined) {
   return d === 1 ? "ieri" : `acum ${d} zile`;
 }
 
-export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "istoric" | "texte" | "infra" }) {
+export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "istoric" | "texte" | "poze" | "infra" }) {
   const tab = (key: typeof active, href: string, label: string) => (
     <Link href={href} className="btn" aria-current={active === key ? "page" : undefined}>{label}</Link>
   );
@@ -44,6 +44,7 @@ export function AdminNav({ active }: { active: "home" | "oameni" | "business" | 
       {tab("control", "/admin/control", "Manager control")}
       {tab("istoric", "/admin/istoric", "Istoric și limite")}
       {tab("texte", "/admin/texte", "Texte")}
+      {tab("poze", "/admin/poze", "Poze prima pagină")}
       {tab("infra", "/admin/infra", "Infra & Dev")}
     </nav>
   );

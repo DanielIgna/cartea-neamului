@@ -1054,3 +1054,13 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
   .lp-steps li::before{left:14px}
 }
 @media (prefers-reduced-motion:reduce){.lp-btn,.lp-btn span,.lp-gen .lp-photo,.lp-img{transition:none}.lp-btn:hover,.lp-gen:hover .lp-photo,.lp-gen:hover .lp-img,.lp-card:hover .lp-img{transform:none}}
+
+/* Admin → Poze prima pagină */
+.home-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.home-slot h3{margin:12px 0 4px;font-size:18px}
+.home-slot p{margin:0 0 10px;font-size:14px}
+.home-slot .actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.home-slot-img{position:relative;aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:var(--surface-2);max-height:260px;width:100%}
+.home-slot-img.wide{aspect-ratio:16/9}
+.home-slot-img img{width:100%;height:100%;object-fit:cover;display:block}
+.home-slot-img .pill{position:absolute;top:8px;left:8px}
