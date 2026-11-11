@@ -12,12 +12,12 @@ export const itLegal: LegalCatalog = {
       title: "Come ci prendiamo cura dei dati della tua famiglia",
       sections: {
         intro: {
-          p1: "Cartea Neamului è un luogo in cui le famiglie costruiscono insieme il loro albero, custodiscono i ricordi e stampano il libro della famiglia. Qui trovi, in breve e senza parole difficili, quali dati conserviamo, perché, chi li vede e come li scarichi o li cancelli. In breve: gli alberi sono privati, scegli tu chi vede i tuoi ricordi, non vendiamo nulla e non facciamo pubblicità. Al nostro partner, PropManage, diamo solo il tuo indirizzo email, e solo se metti la spunta apposita.",
+          p1: "Il Libro della Famiglia è un luogo in cui le famiglie costruiscono insieme il loro albero, custodiscono i ricordi e stampano il libro della famiglia. Qui trovi, in breve e senza parole difficili, quali dati conserviamo, perché, chi li vede e come li scarichi o li cancelli. In breve: gli alberi sono privati, scegli tu chi vede i tuoi ricordi, non vendiamo nulla e non facciamo pubblicità. Al nostro partner, PropManage, diamo solo il tuo indirizzo email, e solo se metti la spunta apposita.",
         },
         controller: {
           h: "Chi è responsabile dei dati",
-          p1: "Il titolare del trattamento dei dati di Cartea Neamului ai sensi del Regolamento generale sulla protezione dei dati (Regolamento UE 2016/679, «GDPR») è <b>{name}</b>{person, select, yes {, persona fisica} other {}}. Per qualsiasi domanda o richiesta sui tuoi dati scrivici a <mail>{email}</mail>.",
-          beta: "Ora Cartea Neamului è in prova: lo usano solo la famiglia e gli amici stretti, per dirci cosa funziona e cosa no. Anche durante la prova, i vostri dati sono conservati e protetti come scritto qui.",
+          p1: "Il titolare del trattamento dei dati del Libro della Famiglia ai sensi del Regolamento generale sulla protezione dei dati (Regolamento UE 2016/679, «GDPR») è <b>{name}</b>{person, select, yes {, persona fisica} other {}}. Per qualsiasi domanda o richiesta sui tuoi dati scrivici a <mail>{email}</mail>.",
+          beta: "Ora il Libro della Famiglia è in prova: lo usano solo la famiglia e gli amici stretti, per dirci cosa funziona e cosa no. Anche durante la prova, i vostri dati sono conservati e protetti come scritto qui.",
         },
         data: {
           h: "Quali dati conserviamo",
@@ -62,12 +62,12 @@ export const itLegal: LegalCatalog = {
         },
         partner: {
           h: "Il nostro partner, PropManage",
-          p1: "PropManage (<pm>propmanage.ro</pm>) è una piattaforma per i proprietari di case ed è partner di Cartea Neamului. Lo trovi solo nella pagina <partners>Partner</partners>; nell’albero, nei ricordi, nella cronologia, sulla mappa e nel libro non c’è pubblicità.",
+          p1: "PropManage (<pm>propmanage.ro</pm>) è una piattaforma per i proprietari di case ed è partner del Libro della Famiglia. Lo trovi solo nella pagina <partners>Partner</partners>; nell’albero, nei ricordi, nella cronologia, sulla mappa e nel libro non c’è pubblicità.",
           l1: "<b>Cosa riceve:</b> solo il tuo indirizzo email, e solo se hai spuntato «{consent}». La spunta è separata, non è già messa e niente nel sito dipende da essa. PropManage non riceve mai nulla sul tuo albero, sulle persone che ci sono, sui parenti che hai invitato, sui paesi, sui ricordi, sulle foto o sulla voce. I parenti invitati e le persone dell’albero non ricevono mai messaggi da PropManage.",
           l2: "<b>La base giuridica:</b> il tuo consenso (art. 6, par. 1, lett. a GDPR). Dal momento in cui riceve l’indirizzo, PropManage ne risponde come titolare autonomo, secondo la propria informativa sulla privacy, e lo usa solo per mandarti di tanto in tanto vantaggi per la tua casa.",
           l3: "<b>Per quanto tempo:</b> finché il tuo consenso è dato. La lista che riceve PropManage la rifacciamo ogni volta dai consensi attuali, quindi, dopo che lo revochi, il tuo indirizzo non gli arriva più. Gli chiediamo di cancellare il tuo indirizzo quando viene a sapere che hai revocato il consenso.",
           l4: "<b>Come lo revochi:</b> con un clic, in <dataPartners>I miei dati</dataPartners> (l’interruttore «Vantaggi dai partner»), o con il link di disiscrizione in qualsiasi email ricevuta, senza entrare nell’account. La revoca non cambia nulla nel tuo account o nel tuo albero.",
-          l5: "I link a PropManage nel sito (nella pagina Partner, accanto alla casa di famiglia e dopo aver scaricato il libro) sono semplici collegamenti: mostrano solo che arrivi da Cartea Neamului, senza alcun dato su di te.",
+          l5: "I link a PropManage nel sito (nella pagina Partner, accanto alla casa di famiglia e dopo aver scaricato il libro) sono semplici collegamenti: mostrano solo che arrivi dal Libro della Famiglia, senza alcun dato su di te.",
         },
         keep: {
           h: "Per quanto tempo conserviamo i dati",
@@ -105,13 +105,13 @@ export const itLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Condizioni d’uso",
-      metaDescription: "Che cosa significa avere un account su Cartea Neamului: cosa puoi mettere, di chi è e cosa promettiamo.",
+      metaDescription: "Che cosa significa avere un account sul Libro della Famiglia: cosa puoi mettere, di chi è e cosa promettiamo.",
       label: "Condizioni d’uso",
-      title: "Che cosa significa avere un account su Cartea Neamului",
+      title: "Che cosa significa avere un account sul Libro della Famiglia",
       sections: {
         intro: {
-          p1: "Cartea Neamului è un luogo in cui le famiglie costruiscono insieme il loro albero, custodiscono i ricordi e stampano il libro della famiglia. Quando crei un account, accetti queste condizioni e l’<privacy>Informativa sulla privacy</privacy>.",
-          beta: "Ora Cartea Neamului è in prova: è aperto solo alla famiglia e agli amici stretti, perché ci dicano cosa funziona e cosa no. Può cambiare spesso e a volte sbagliare, quindi conserva anche tu una copia di ciò che conta: la scarichi quando vuoi da «I miei dati».",
+          p1: "Il Libro della Famiglia è un luogo in cui le famiglie costruiscono insieme il loro albero, custodiscono i ricordi e stampano il libro della famiglia. Quando crei un account, accetti queste condizioni e l’<privacy>Informativa sulla privacy</privacy>.",
+          beta: "Ora il Libro della Famiglia è in prova: è aperto solo alla famiglia e agli amici stretti, perché ci dicano cosa funziona e cosa no. Può cambiare spesso e a volte sbagliare, quindi conserva anche tu una copia di ciò che conta: la scarichi quando vuoi da «I miei dati».",
         },
         account: {
           h: "1. L’account",

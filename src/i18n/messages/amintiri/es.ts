@@ -143,7 +143,7 @@ export const esAmintiri: AmintiriCatalog = {
     degreeHint: "Grado 1: los padres y los hijos; 2: los hermanos y los abuelos; 3: los tíos y los sobrinos; 4: los primos hermanos. Los cónyuges siempre lo ven.",
     inBook: "Puede entrar en el libro de la familia",
     faithConsentOther: "{name} está de acuerdo en que guardemos lo que ha contado sobre su fe.",
-    faithConsent: "Acepto que lo que escribo sobre mi fe se guarde en Cartea Neamului y que solo lo vean las personas que yo elija. Puedo retirar mi consentimiento cuando quiera, desde «Mis datos», y entonces se borran las respuestas de este capítulo.",
+    faithConsent: "Acepto que lo que escribo sobre mi fe se guarde en el Libro de la Familia y que solo lo vean las personas que yo elija. Puedo retirar mi consentimiento cuando quiera, desde «Mis datos», y entonces se borran las respuestas de este capítulo.",
     faithInvalid: "Marca la casilla del consentimiento para poder guardar la respuesta.",
     uploadingVoice: "Subiendo la grabación…",
     uploadingPhoto: "Subiendo la foto…",

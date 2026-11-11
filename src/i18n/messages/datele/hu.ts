@@ -4,7 +4,7 @@ export const huDatele: DateleCatalog = {
   MyData: {
     metaTitle: "Adataim",
     label: "Adataim",
-    title: "Ami a Cartea Neamului oldalra kerül tőled, az a tiéd",
+    title: "Ami a Család Könyvébe kerül tőled, az a tiéd",
     intro: "A fiókod: <b>{name}</b>, {email} címmel, {date} óta. Itt bármikor letöltheted az adataidat, láthatod a megadott hozzájárulásaidat, és ha szeretnéd, törölheted a fiókodat. Hogy hogyan őrizzük őket, és ki látja őket, az <privacy>Adatvédelmi tájékoztatóban</privacy> áll.",
     download: {
       label: "Letöltés",

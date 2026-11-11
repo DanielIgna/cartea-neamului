@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Nederlands (je). */
 export const nlParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Ik wil af en toe voordelen voor mijn huis ontvangen van PropManage, partner van Cartea Neamului.",
+    checkbox: "Ik wil af en toe voordelen voor mijn huis ontvangen van PropManage, partner van het Familieboek.",
     checkboxHint: "Optioneel. De stamboom werkt zonder dit precies hetzelfde. We delen alleen je e-mailadres en je kunt je altijd met één klik afmelden.",
     menu: "Partners",
     bookCard: {
@@ -14,10 +14,10 @@ export const nlParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partners · Cartea Neamului",
-    metaDescription: "De partners van Cartea Neamului en wat ze families bieden.",
+    metaTitle: "Partners · Het Familieboek",
+    metaDescription: "De partners van het Familieboek en wat ze families bieden.",
     label: "Partners",
-    title: "De partners van Cartea Neamului",
+    title: "De partners van het Familieboek",
     lead: "De stamboom, de herinneringen en het boek zijn alleen van de familie, zonder reclame. Hier, op één pagina, staan de partners die we vertrouwen.",
     pmAlt: "Logo van PropManage",
     pmWhat: "Voor huiseigenaren",
@@ -33,7 +33,7 @@ export const nlParteneri: ParteneriCatalog = {
     unsubText: "Zodra je op de knop drukt, wordt je e-mailadres meteen uit de lijst gehaald die PropManage ontvangt. Je stamboom en je account blijven precies zoals ze zijn.",
     unsubButton: "Ja, geen voordelen meer",
     unsubWorking: "Bezig met afmelden…",
-    unsubDone: "Klaar. Je ontvangt via Cartea Neamului geen voordelen meer van PropManage. Je kunt altijd van gedachten veranderen, via ‘Mijn gegevens’.",
+    unsubDone: "Klaar. Je ontvangt via het Familieboek geen voordelen meer van PropManage. Je kunt altijd van gedachten veranderen, via ‘Mijn gegevens’.",
     unsubBad: "Deze link is niet geldig of niet volledig. Kopieer de hele link uit de e-mail, of log in en meld je af via ‘Mijn gegevens’.",
   },
   OldHouse: {

@@ -143,7 +143,7 @@ export const nlAmintiri: AmintiriCatalog = {
     degreeHint: "Graad 1: ouders en kinderen; 2: broers, zussen en grootouders; 3: ooms, tantes en de kinderen van broers en zussen; 4: volle neven en nichten. Partners zien het altijd.",
     inBook: "Mag in het familieboek",
     faithConsentOther: "{name} vindt het goed dat we bewaren wat er over het eigen geloof is verteld.",
-    faithConsent: "Ik ga ermee akkoord dat wat ik over mijn geloof schrijf in Cartea Neamului wordt bewaard en alleen te zien is voor de mensen die ik kies. Ik kan mijn toestemming altijd intrekken via ‘Mijn gegevens’; dan worden de antwoorden in dit hoofdstuk verwijderd.",
+    faithConsent: "Ik ga ermee akkoord dat wat ik over mijn geloof schrijf in het Familieboek wordt bewaard en alleen te zien is voor de mensen die ik kies. Ik kan mijn toestemming altijd intrekken via ‘Mijn gegevens’; dan worden de antwoorden in dit hoofdstuk verwijderd.",
     faithInvalid: "Vink de toestemming aan, dan kan het antwoord worden bewaard.",
     uploadingVoice: "Opname wordt geüpload…",
     uploadingPhoto: "Foto wordt geüpload…",

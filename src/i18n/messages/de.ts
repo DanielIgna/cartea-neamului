@@ -12,6 +12,7 @@ import { deDatele } from "./datele/de";
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
   Meta: {
+    appName: "Das Familienbuch",
     description: "Der Stammbaum der Familie, gemeinsam aufgebaut und als Buch gedruckt.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const de: Catalog = {
   UsageNotice: {
     label: "Wie du die Seite nutzt",
     lead: "Eine Frage, nur einmal.",
-    text: "Damit wir Cartea Neamului besser machen können, möchten wir gern wissen, wie lange du auf der Seite bist und welche Bereiche du nutzt (den Stammbaum, die Erinnerungstruhe, die Karte …). Nur die Zeit und den Namen des Bereichs, nicht was du schreibst und auch nicht, worauf du tippst. Du kannst das jederzeit unter „Meine Daten“ beenden.",
+    text: "Damit wir das Familienbuch besser machen können, möchten wir gern wissen, wie lange du auf der Seite bist und welche Bereiche du nutzt (den Stammbaum, die Erinnerungstruhe, die Karte …). Nur die Zeit und den Namen des Bereichs, nicht was du schreibst und auch nicht, worauf du tippst. Du kannst das jederzeit unter „Meine Daten“ beenden.",
     yes: "Einverstanden",
     no: "Lieber nicht",
     more: "Was das bedeutet",
@@ -54,7 +55,7 @@ export const de: Catalog = {
   Landing: {
     deleted: "Dein Konto wurde gelöscht, mit allem, was dir gehörte. Danke, dass du bei uns warst.",
     heroTitle: "Der Stammbaum der Familie, gemeinsam aufgebaut",
-    brandNote: "„Cartea Neamului“ heißt auf Rumänisch „das Buch der Familie“.",
+    brandNote: "Auf Rumänisch: Cartea Neamului.",
     heroText: "Du fängst bei dir selbst an, lädst deine Verwandten ein, und jeder ergänzt seinen Zweig mit Namen, Fotos, Dokumenten und Erinnerungen. Am Ende druckt die Familie ihr eigenes Buch.",
     signUp: "Kostenloses Konto erstellen",
     signIn: "Anmelden",
@@ -86,7 +87,7 @@ export const de: Catalog = {
     featuresText: "Von den Ururgroßeltern bis zu den Enkeln von heute: Menschen, Orte, Geschichten und Stimmen, von der ganzen Familie gesammelt.",
     howText: "Du musst nicht gleich alles wissen. Fang mit dem an, was du weißt, den Rest ergänzen deine Verwandten.",
     quote: "Was wir heute nicht aufschreiben, werden unsere Enkel nie erfahren.",
-    quoteText: "Cartea Neamului ist dafür gemacht, dass jede Familie ihre Menschen, Geschichten und Stimmen für die bewahrt, die nach uns kommen.",
+    quoteText: "Das Familienbuch ist dafür gemacht, dass jede Familie ihre Menschen, Geschichten und Stimmen für die bewahrt, die nach uns kommen.",
     ctaTitle: "Beginne heute den Stammbaum deiner Familie",
     ctaText: "Es dauert eine Minute. Der erste Schritt bist du.",
     heroTitleRich: "Der Stammbaum der Familie, <em>gemeinsam</em> aufgebaut",
@@ -95,7 +96,7 @@ export const de: Catalog = {
     stat3: "WhatsApp-Link, um deine Verwandten einzuladen",
     stat4: "Minute bis zum Start",
     gensTitle: "Vier Generationen, eine Geschichte",
-    gensText: "Cartea Neamului ist für die ganze Familie: Jede Generation hat etwas beizutragen und etwas zu empfangen.",
+    gensText: "Das Familienbuch ist für die ganze Familie: Jede Generation hat etwas beizutragen und etwas zu empfangen.",
     gen1Title: "Die Großeltern",
     gen1Text: "Ihre Stimmen und Erinnerungen, bewahrt für die, die nach ihnen kommen.",
     gen2Title: "Die Eltern",
@@ -146,7 +147,7 @@ export const de: Catalog = {
   Invitation: {
     ogTitle: "{name} lädt dich in den Stammbaum „{tree}“ ein",
     ogTitleNoName: "Du bist in den Stammbaum „{tree}“ eingeladen",
-    ogDescription: "Komm in den Stammbaum auf Cartea Neamului: sieh deine Verwandten, füge deinen Zweig und die Erinnerungen deiner Lieben hinzu.",
+    ogDescription: "Komm in den Stammbaum im Familienbuch: sieh deine Verwandten, füge deinen Zweig und die Erinnerungen deiner Lieben hinzu.",
     invalid: "Diese Einladung gilt nicht mehr",
     notFound: "Diese Einladung gibt es nicht",
     expired: "Diese Einladung ist abgelaufen",
@@ -288,8 +289,8 @@ export const de: Catalog = {
     bring: "Stammbaum übernehmen",
   },
   InstallApp: {
-    titlePhone: "Hol dir Cartea Neamului aufs Handy",
-    titleComputer: "Hol dir Cartea Neamului auf den Computer",
+    titlePhone: "Hol dir das Familienbuch aufs Handy",
+    titleComputer: "Hol dir das Familienbuch auf den Computer",
     promptPhone: "Sie öffnet sich wie eine App, direkt vom Home-Bildschirm, ohne dass du die Seite suchen musst.",
     promptComputer: "Sie öffnet sich wie eine App, über ein eigenes Symbol, ohne dass du die Seite suchen musst.",
     ios: "Tippe in Safari auf <b>Teilen</b> (das Quadrat mit dem Pfeil nach oben) und dann auf <b>Zum Home-Bildschirm</b>.",

@@ -12,12 +12,12 @@ export const huLegal: LegalCatalog = {
       title: "Hogyan vigyázunk a családod adataira",
       sections: {
         intro: {
-          p1: "A Cartea Neamului olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Itt röviden és nehéz szavak nélkül leírjuk, milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket. Röviden: a családfák magánjellegűek, te döntöd el, ki látja az emlékeidet, semmit sem adunk el, és nem jelenítünk meg reklámot. Partnerünk, a PropManage csak az e-mail-címedet kapja meg, és csak akkor, ha ezt bejelölöd.",
+          p1: "A Család Könyve olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Itt röviden és nehéz szavak nélkül leírjuk, milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket. Röviden: a családfák magánjellegűek, te döntöd el, ki látja az emlékeidet, semmit sem adunk el, és nem jelenítünk meg reklámot. Partnerünk, a PropManage csak az e-mail-címedet kapja meg, és csak akkor, ha ezt bejelölöd.",
         },
         controller: {
           h: "Ki felel az adatokért",
-          p1: "A Cartea Neamului adataiért az általános adatvédelmi rendelet (az (EU) 2016/679 rendelet, „GDPR”) szerinti adatkezelőként <b>{name}</b>{person, select, yes {, magánszemély} other {}} felel. Ha bármilyen kérdésed vagy kérésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
-          beta: "A Cartea Neamului most próbaidőszakban van: csak a család és a közeli barátok használják, hogy elmondják, mi működik és mi nem. A próbaidőszakban is úgy őrizzük és védjük az adataitokat, ahogy itt áll.",
+          p1: "A Család Könyve adataiért az általános adatvédelmi rendelet (az (EU) 2016/679 rendelet, „GDPR”) szerinti adatkezelőként <b>{name}</b>{person, select, yes {, magánszemély} other {}} felel. Ha bármilyen kérdésed vagy kérésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
+          beta: "A Család Könyve most próbaidőszakban van: csak a család és a közeli barátok használják, hogy elmondják, mi működik és mi nem. A próbaidőszakban is úgy őrizzük és védjük az adataitokat, ahogy itt áll.",
         },
         data: {
           h: "Milyen adatokat őrzünk",
@@ -62,12 +62,12 @@ export const huLegal: LegalCatalog = {
         },
         partner: {
           h: "Partnerünk, a PropManage",
-          p1: "A PropManage (<pm>propmanage.ro</pm>) lakástulajdonosoknak szóló platform, a Cartea Neamului partnere. Csak a <partners>Partnerek</partners> oldalon találod; a családfában, az emlékekben, az idővonalon, a térképen és a könyvben nincs reklám.",
+          p1: "A PropManage (<pm>propmanage.ro</pm>) lakástulajdonosoknak szóló platform, a Család Könyve partnere. Csak a <partners>Partnerek</partners> oldalon találod; a családfában, az emlékekben, az idővonalon, a térképen és a könyvben nincs reklám.",
           l1: "<b>Mit kap:</b> csak az e-mail-címedet, és csak ha bejelölted ezt: „{consent}” A jelölőnégyzet külön van, nincs előre bejelölve, és semmi sem függ tőle az oldalon. A PropManage soha nem kap semmit a családfádról, a benne szereplő emberekről, a meghívott rokonaidról, falvakról, emlékekről, fényképekről vagy hangfelvételekről. A meghívott rokonok és a családfában szereplők soha nem kapnak üzenetet a PropManage-től.",
           l2: "<b>A jogalap:</b> a hozzájárulásod (GDPR 6. cikk (1) bekezdés a) pont). Attól a pillanattól, hogy megkapja a címet, a PropManage önálló adatkezelőként, a saját adatvédelmi tájékoztatója szerint felel érte, és csak arra használja, hogy időnként kedvezményeket küldjön neked az otthonodhoz.",
           l3: "<b>Meddig:</b> amíg a hozzájárulásod érvényes. A listát, amelyet a PropManage kap, minden alkalommal újra összeállítjuk az aktuális hozzájárulásokból, így a visszavonás után a címed már nem jut el hozzá. Megkérjük, hogy törölje a címedet, amint megtudja, hogy visszavontad a hozzájárulásodat.",
           l4: "<b>Hogyan vonhatod vissza:</b> egy kattintással az <dataPartners>Adataim</dataPartners> oldalon (a „Partnerek kedvezményei” kapcsoló), vagy bármelyik kapott e-mail leiratkozási linkjével, belépés nélkül. A visszavonás semmin sem változtat a fiókodban vagy a családfádban.",
-          l5: "Az oldalon lévő, a PropManage-re mutató linkek (a Partnerek oldalon, a régi családi ház mellett és a könyv letöltése után) egyszerű hivatkozások: csak azt mutatják, hogy a Cartea Neamului oldaláról érkezel, rólad semmilyen adatot nem adnak át.",
+          l5: "Az oldalon lévő, a PropManage-re mutató linkek (a Partnerek oldalon, a régi családi ház mellett és a könyv letöltése után) egyszerű hivatkozások: csak azt mutatják, hogy a Család Könyvéből érkezel, rólad semmilyen adatot nem adnak át.",
         },
         keep: {
           h: "Meddig őrizzük az adatokat",
@@ -105,13 +105,13 @@ export const huLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Felhasználási feltételek",
-      metaDescription: "Mit jelent fiókkal rendelkezni a Cartea Neamului oldalon: mit tehetsz fel, kié, és mit ígérünk.",
+      metaDescription: "Mit jelent fiókkal rendelkezni a Család Könyvében: mit tehetsz fel, kié, és mit ígérünk.",
       label: "Felhasználási feltételek",
-      title: "Mit jelent fiókkal rendelkezni a Cartea Neamului oldalon",
+      title: "Mit jelent fiókkal rendelkezni a Család Könyvében",
       sections: {
         intro: {
-          p1: "A Cartea Neamului olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Amikor fiókot hozol létre, elfogadod ezeket a feltételeket és az <privacy>Adatvédelmi tájékoztatót</privacy>.",
-          beta: "A Cartea Neamului most próbaidőszakban van: csak a család és a közeli barátok előtt nyitott, hogy elmondják, mi működik és mi nem. Gyakran változhat, és néha hibázhat, ezért te is őrizz meg egy másolatot abból, ami fontos: bármikor letöltheted az „Adataim” oldalon.",
+          p1: "A Család Könyve olyan hely, ahol a családok közösen építik a családfájukat, megőrzik az emlékeiket, és kinyomtatják a családjuk könyvét. Amikor fiókot hozol létre, elfogadod ezeket a feltételeket és az <privacy>Adatvédelmi tájékoztatót</privacy>.",
+          beta: "A Család Könyve most próbaidőszakban van: csak a család és a közeli barátok előtt nyitott, hogy elmondják, mi működik és mi nem. Gyakran változhat, és néha hibázhat, ezért te is őrizz meg egy másolatot abból, ami fontos: bármikor letöltheted az „Adataim” oldalon.",
         },
         account: {
           h: "1. A fiók",

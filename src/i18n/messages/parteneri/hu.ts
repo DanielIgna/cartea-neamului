@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Magyar (tegező). */
 export const huParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Szeretnék időnként kedvezményeket kapni az otthonomhoz a PropManage-től, a Cartea Neamului partnerétől.",
+    checkbox: "Szeretnék időnként kedvezményeket kapni az otthonomhoz a PropManage-től, a Család Könyve partnerétől.",
     checkboxHint: "Nem kötelező. A családfa nélküle is ugyanúgy működik. Csak az e-mail-címedet adjuk át, és bármikor leiratkozhatsz egy kattintással.",
     menu: "Partnerek",
     bookCard: {
@@ -14,10 +14,10 @@ export const huParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partnerek · Cartea Neamului",
-    metaDescription: "A Cartea Neamului partnerei, és amit a családoknak kínálnak.",
+    metaTitle: "Partnerek · A Család Könyve",
+    metaDescription: "A Család Könyve partnerei, és amit a családoknak kínálnak.",
     label: "Partnerek",
-    title: "A Cartea Neamului partnerei",
+    title: "A Család Könyve partnerei",
     lead: "A családfa, az emlékek és a könyv csak a családé, reklámok nélkül. Itt, egyetlen oldalon, azok a partnerek vannak, akikben megbízunk.",
     pmAlt: "A PropManage logója",
     pmWhat: "Lakástulajdonosoknak",
@@ -33,7 +33,7 @@ export const huParteneri: ParteneriCatalog = {
     unsubText: "Amint megnyomod a gombot, az e-mail-címed azonnal kikerül abból a listából, amelyet a PropManage kap. A családfád és a fiókod pontosan úgy marad, ahogy van.",
     unsubButton: "Igen, nem kérek több kedvezményt",
     unsubWorking: "Leiratkozás…",
-    unsubDone: "Kész. A Cartea Neamului révén többé nem kapsz kedvezményeket a PropManage-től. Bármikor meggondolhatod magad az „Adataim” oldalon.",
+    unsubDone: "Kész. A Család Könyve révén többé nem kapsz kedvezményeket a PropManage-től. Bármikor meggondolhatod magad az „Adataim” oldalon.",
     unsubBad: "A hivatkozás érvénytelen vagy hiányos. Másold ki teljes egészében az e-mailből, vagy lépj be, és iratkozz le az „Adataim” oldalon.",
   },
   OldHouse: {

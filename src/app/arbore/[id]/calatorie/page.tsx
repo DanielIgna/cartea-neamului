@@ -9,11 +9,11 @@ import { isDemo } from "@/lib/demo";
 import { baseWord } from "@/lib/texte";
 import TimeJourney from "@/components/TimeJourney";
 import PageIntl from "@/i18n/PageIntl";
-import { getLocale, getT } from "@/i18n/server";
+import { getLocale, getAppName, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
-  return { title: `${(await getT("Journey"))("title")} · Cartea Neamului` };
+  return { title: `${(await getT("Journey"))("title")} · ${await getAppName()}` };
 }
 const UUID = /^[0-9a-f-]{36}$/i;
 

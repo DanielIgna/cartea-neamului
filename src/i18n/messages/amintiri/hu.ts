@@ -146,7 +146,7 @@ export const huAmintiri: AmintiriCatalog = {
     degreeHint: "1. fok: a szülők és a gyerekek; 2.: a testvérek és a nagyszülők; 3.: a nagybácsik, a nagynénik és a testvérek gyerekei; 4.: az első unokatestvérek. A házastársak mindig látják.",
     inBook: "Bekerülhet a család könyvébe",
     faithConsentOther: "{name} beleegyezik, hogy megőrizzük, amit a hitéről mondott.",
-    faithConsent: "Beleegyezem, hogy amit a hitemről írok, azt a Cartea Neamului megőrizze, és csak az általam választott emberek lássák. A beleegyezésemet bármikor visszavonhatom az „Adataim” oldalon, és ekkor ennek a fejezetnek a válaszai törlődnek.",
+    faithConsent: "Beleegyezem, hogy amit a hitemről írok, azt a Család Könyve megőrizze, és csak az általam választott emberek lássák. A beleegyezésemet bármikor visszavonhatom az „Adataim” oldalon, és ekkor ennek a fejezetnek a válaszai törlődnek.",
     faithInvalid: "Jelöld be a beleegyezést, hogy a választ megőrizhessük.",
     uploadingVoice: "A felvétel feltöltése…",
     uploadingPhoto: "A fénykép feltöltése…",

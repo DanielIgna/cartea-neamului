@@ -143,7 +143,7 @@ export const frAmintiri: AmintiriCatalog = {
     degreeHint: "1er degré : les parents et les enfants ; 2e : les frères, les sœurs et les grands-parents ; 3e : les oncles, les tantes, les neveux et les nièces ; 4e : les cousins germains. Les conjoints voient toujours.",
     inBook: "Peut figurer dans le livre de la famille",
     faithConsentOther: "{name} accepte que nous gardions ce qui a été dit sur sa foi.",
-    faithConsent: "J’accepte que ce que j’écris sur ma foi soit conservé dans Cartea Neamului et vu uniquement par les personnes que je choisis. Je peux retirer mon accord à tout moment depuis « Mes données », et les réponses de ce chapitre sont alors supprimées.",
+    faithConsent: "J’accepte que ce que j’écris sur ma foi soit conservé dans le Livre de la Famille et vu uniquement par les personnes que je choisis. Je peux retirer mon accord à tout moment depuis « Mes données », et les réponses de ce chapitre sont alors supprimées.",
     faithInvalid: "Cochez la case d’accord pour que la réponse puisse être conservée.",
     uploadingVoice: "Envoi de l’enregistrement…",
     uploadingPhoto: "Envoi de la photo…",

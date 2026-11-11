@@ -108,7 +108,7 @@ export const nlCarte: CarteCatalog = {
     },
     index: "Namenregister",
     colophon: {
-      made: "Samengesteld door {author} op Cartea Neamului in {when}, uit de stamboom ‘{tree}’: {count, plural, one {één persoon} other {# personen}}.",
+      made: "Samengesteld door {author} op het Familieboek in {when}, uit de stamboom ‘{tree}’: {count, plural, one {één persoon} other {# personen}}.",
       redo: "Het boek kan op elk moment opnieuw worden gemaakt op de website, met alles wat de familie intussen heeft toegevoegd.",
     },
     defaults: {

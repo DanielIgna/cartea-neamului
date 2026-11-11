@@ -12,12 +12,12 @@ export const frLegal: LegalCatalog = {
       title: "Comment nous prenons soin des données de votre famille",
       sections: {
         intro: {
-          p1: "Cartea Neamului est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. Vous trouverez ici, brièvement et sans mots compliqués, quelles données nous gardons, pourquoi, qui les voit et comment vous les téléchargez ou les supprimez. En bref : les arbres sont privés, vous choisissez qui voit vos souvenirs, nous ne vendons rien et nous ne faisons pas de publicité. Notre partenaire, PropManage, ne reçoit que votre adresse e-mail, et seulement si vous cochez la case prévue.",
+          p1: "Le Livre de la Famille est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. Vous trouverez ici, brièvement et sans mots compliqués, quelles données nous gardons, pourquoi, qui les voit et comment vous les téléchargez ou les supprimez. En bref : les arbres sont privés, vous choisissez qui voit vos souvenirs, nous ne vendons rien et nous ne faisons pas de publicité. Notre partenaire, PropManage, ne reçoit que votre adresse e-mail, et seulement si vous cochez la case prévue.",
         },
         controller: {
           h: "Qui est responsable des données",
-          p1: "Le responsable du traitement des données de Cartea Neamului au sens du règlement général sur la protection des données (règlement UE 2016/679, « RGPD ») est <b>{name}</b>{person, select, yes {, personne physique} other {}}. Pour toute question ou demande concernant vos données, écrivez-nous à <mail>{email}</mail>.",
-          beta: "Cartea Neamului est actuellement en phase d’essai : seuls la famille et les amis proches l’utilisent, pour nous dire ce qui marche et ce qui ne marche pas. Même pendant l’essai, vos données sont gardées et protégées comme décrit ici.",
+          p1: "Le responsable du traitement des données du Livre de la Famille au sens du règlement général sur la protection des données (règlement UE 2016/679, « RGPD ») est <b>{name}</b>{person, select, yes {, personne physique} other {}}. Pour toute question ou demande concernant vos données, écrivez-nous à <mail>{email}</mail>.",
+          beta: "Le Livre de la Famille est actuellement en phase d’essai : seuls la famille et les amis proches l’utilisent, pour nous dire ce qui marche et ce qui ne marche pas. Même pendant l’essai, vos données sont gardées et protégées comme décrit ici.",
         },
         data: {
           h: "Quelles données nous gardons",
@@ -62,12 +62,12 @@ export const frLegal: LegalCatalog = {
         },
         partner: {
           h: "Notre partenaire, PropManage",
-          p1: "PropManage (<pm>propmanage.ro</pm>) est une plateforme pour les propriétaires de logements et un partenaire de Cartea Neamului. Vous ne le trouvez que sur la page <partners>Partenaires</partners> ; il n’y a pas de publicité dans l’arbre, les souvenirs, la chronologie, la carte ou le livre.",
+          p1: "PropManage (<pm>propmanage.ro</pm>) est une plateforme pour les propriétaires de logements et un partenaire du Livre de la Famille. Vous ne le trouvez que sur la page <partners>Partenaires</partners> ; il n’y a pas de publicité dans l’arbre, les souvenirs, la chronologie, la carte ou le livre.",
           l1: "<b>Ce qu’il reçoit :</b> seulement votre adresse e-mail, et seulement si vous avez coché « {consent} ». La case est séparée, elle n’est pas cochée d’office et rien sur le site n’en dépend. PropManage ne reçoit jamais rien sur votre arbre, les personnes qui y figurent, les proches que vous avez invités, les villages, les souvenirs, les photos ou la voix. Les proches invités et les personnes de l’arbre ne reçoivent jamais de messages de PropManage.",
           l2: "<b>La base légale :</b> votre consentement (art. 6, par. 1, point a du RGPD). Dès qu’il reçoit l’adresse, PropManage en est responsable en tant que responsable de traitement distinct, selon sa propre politique de confidentialité, et ne l’utilise que pour vous envoyer de temps en temps des avantages pour votre logement.",
           l3: "<b>Combien de temps :</b> tant que votre consentement est donné. Nous refaisons à chaque fois la liste que reçoit PropManage à partir des consentements actuels ; une fois que vous l’avez retiré, votre adresse ne lui parvient donc plus. Nous lui demandons de supprimer votre adresse dès qu’il apprend que vous avez retiré votre consentement.",
           l4: "<b>Comment le retirer :</b> d’un clic, dans <dataPartners>Mes données</dataPartners> (l’interrupteur « Avantages des partenaires »), ou par le lien de désinscription de chaque e-mail reçu, sans vous connecter. Le retrait ne change rien à votre compte ni à votre arbre.",
-          l5: "Les liens vers PropManage sur le site (sur la page Partenaires, à côté de la maison de famille et après le téléchargement du livre) sont de simples liens : ils indiquent seulement que vous venez de Cartea Neamului, sans aucune donnée sur vous.",
+          l5: "Les liens vers PropManage sur le site (sur la page Partenaires, à côté de la maison de famille et après le téléchargement du livre) sont de simples liens : ils indiquent seulement que vous venez du Livre de la Famille, sans aucune donnée sur vous.",
         },
         keep: {
           h: "Combien de temps nous gardons les données",
@@ -105,13 +105,13 @@ export const frLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Conditions d’utilisation",
-      metaDescription: "Ce que signifie avoir un compte sur Cartea Neamului : ce que vous pouvez y mettre, à qui cela appartient et ce que nous promettons.",
+      metaDescription: "Ce que signifie avoir un compte sur le Livre de la Famille : ce que vous pouvez y mettre, à qui cela appartient et ce que nous promettons.",
       label: "Conditions d’utilisation",
-      title: "Ce que signifie avoir un compte sur Cartea Neamului",
+      title: "Ce que signifie avoir un compte sur le Livre de la Famille",
       sections: {
         intro: {
-          p1: "Cartea Neamului est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. En créant un compte, vous acceptez ces conditions et la <privacy>Politique de confidentialité</privacy>.",
-          beta: "Cartea Neamului est actuellement en phase d’essai : il n’est ouvert qu’à la famille et aux amis proches, pour qu’ils nous disent ce qui marche et ce qui ne marche pas. Il peut changer souvent et parfois se tromper ; gardez donc vous aussi une copie de ce qui compte : vous la téléchargez à tout moment dans « Mes données ».",
+          p1: "Le Livre de la Famille est un lieu où les familles construisent ensemble leur arbre, gardent leurs souvenirs et impriment le livre de leur famille. En créant un compte, vous acceptez ces conditions et la <privacy>Politique de confidentialité</privacy>.",
+          beta: "Le Livre de la Famille est actuellement en phase d’essai : il n’est ouvert qu’à la famille et aux amis proches, pour qu’ils nous disent ce qui marche et ce qui ne marche pas. Il peut changer souvent et parfois se tromper ; gardez donc vous aussi une copie de ce qui compte : vous la téléchargez à tout moment dans « Mes données ».",
         },
         account: {
           h: "1. Le compte",

@@ -46,11 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("Meta");
   return {
     metadataBase: new URL(SITE_URL),
-    title: "Cartea Neamului", description: t("description"), applicationName: "Cartea Neamului",
+    title: t("appName"), description: t("description"), applicationName: t("appName"),
     openGraph: { ...SHARE, url: "/", siteName: "Cartea Neamului", locale: "ro_RO", type: "website" },
     twitter: { card: "summary_large_image", ...SHARE },
     // Pe iPhone, după „Adaugă pe ecranul principal”, se deschide ca o aplicație, cu numele întreg sub iconiță.
-    appleWebApp: { capable: true, title: "Cartea Neamului", statusBarStyle: "default" },
+    appleWebApp: { capable: true, title: t("appName"), statusBarStyle: "default" },
     formatDetection: { telephone: false },
   };
 }
@@ -74,6 +74,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
+  const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
     <html lang={locale} data-theme={theme === "auto" ? undefined : theme}>
@@ -82,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <PwaSetup />
           <div className="wrap">
             <header className="top">
-              <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><span className="brand-name">Cartea Neamului</span></Link></div>
+              <div className="brand"><Link href="/" style={{ textDecoration: "none", color: "inherit" }}><span className="brand-name">{appName}</span></Link></div>
               <div className={me ? "prefs prefs-wide" : "prefs"}>
                 <ThemeSwitch initial={theme} />
                 <LanguagePicker remember={source === "account"} />
@@ -96,7 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <footer className="site-foot">
-              <span>© {new Date().getFullYear()} Cartea Neamului</span>
+              <span>© {new Date().getFullYear()} {appName}</span>
               <Link href="/confidentialitate">{t("privacy")}</Link>
               <Link href="/termeni">{t("terms")}</Link>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
