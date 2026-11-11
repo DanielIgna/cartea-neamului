@@ -55,6 +55,7 @@ export const huDatele: DateleCatalog = {
       calatorie: "Utazás az időben",
       "istoria-bisericii": "Az egyház története",
       "adam-hristos": "Ádámtól Krisztusig",
+      "firul-vremii": "Az idő fonala",
       mesaje: "Üzenetek",
       amintire: "Egy kapott emlék",
       "datele-mele": "Adataim",

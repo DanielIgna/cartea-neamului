@@ -1139,3 +1139,51 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .ah-small{font-size:13.5px}
 @media (max-width:640px){.ah.ch{padding:16px 14px}.ah-card .ch-w-top{font-size:20px}}
 .ah-tree .ah-svg{margin:0 auto}
+
+/* Firul vremii (/firul-vremii): axa anilor, prefix .fv- (folosește și .ch- și .ah-) */
+.fv{max-width:1080px}
+.fv-jump{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0 4px;font-size:14px}
+.fv-jump .chip{cursor:pointer;min-height:34px}
+.fv-tree{padding:8px;margin:10px 0 0;background:var(--surface)}
+.fv-lane.biblia{fill:color-mix(in srgb,var(--ochre) 9%,var(--surface))}
+.fv-lane.lumea{fill:var(--surface-2)}
+.fv-lane.noi{fill:color-mix(in srgb,var(--accent) 9%,var(--surface))}
+.fv-grid{stroke:var(--line);stroke-width:.8;opacity:.6}
+.fv-grid.strong{opacity:1;stroke-width:1.4}
+.fv-tick{font-size:11px;fill:var(--muted)}
+.fv-tick.strong{font-weight:700;fill:var(--ink)}
+.fv-band{fill:var(--accent);opacity:.1}
+.fv-lane-label{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.fv-lane-label.biblia{fill:var(--ochre-ink)}
+.fv-lane-label.lumea{fill:var(--muted)}
+.fv-lane-label.noi{fill:var(--accent)}
+.fv-moment{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.fv-mline{stroke:var(--red);stroke-width:1;stroke-dasharray:2 4;opacity:.45}
+.fv-mhit{fill:transparent}
+.fv-dot{fill:var(--red)}
+.fv-mlabel{font-size:11.5px;fill:var(--ink)}
+.fv-moment:hover .fv-mlabel,.fv-moment.on .fv-mlabel,.fv-moment:focus-visible .fv-mlabel{font-weight:700;fill:var(--red)}
+.fv-moment.on .fv-mline{opacity:1;stroke-dasharray:none}
+.fv-bar{cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent}
+.fv-bar rect{stroke-width:1.2}
+.fv-bar.biblia rect{fill:var(--ochre-soft);stroke:var(--ochre)}
+.fv-bar.lumea rect{fill:var(--surface);stroke:var(--muted)}
+.fv-bar.noi rect{fill:var(--accent-soft);stroke:var(--accent)}
+.fv-bar.approx rect{stroke-dasharray:4 3}
+.fv-bar text{font-size:12px;fill:var(--ink);pointer-events:none}
+.fv-bar:hover rect,.fv-bar:focus-visible rect{stroke-width:2.4}
+.fv-bar.on rect{stroke:var(--accent);stroke-width:3}
+.fv-legend{margin-top:10px}
+.fv-legend .fv-k.biblia{border-color:var(--ochre);background:var(--ochre-soft)}
+.fv-legend .fv-k.lumea{border-color:var(--muted);background:var(--surface)}
+.fv-legend .fv-k.noi{border-color:var(--accent);background:var(--accent-soft)}
+.fv-legend .fv-k.approx{border-style:dashed;border-color:var(--muted)}
+.fv-card-wrap{scroll-margin-top:12px}
+.fv-hint{font-size:14.5px;margin:12px 0 0}
+.fv-h{font-family:var(--display);font-size:16px;margin:12px 0 6px}
+.fv-chips{display:flex;flex-wrap:wrap;gap:6px}
+.fv-chips .chip{cursor:pointer;font-size:13.5px;text-align:left}
+.fv-chip.biblia{border-color:var(--ochre)}
+.fv-chip.noi{border-color:var(--accent)}
+.fv-steps{padding-left:20px}
+.fv-steps li{margin:0 0 10px;max-width:72ch}

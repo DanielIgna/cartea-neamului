@@ -15,8 +15,10 @@ const clamp = (z: number) => Math.min(MAX, Math.max(MIN, z));
  * ciupit cu două degete (pe telefon și pe trackpad) și tras cu mouse-ul ca să te miști prin desen.
  * Desenele sunt SVG, deci rămân clare la orice mărime: schimbăm doar lățimea lor, înălțimea vine din proporții.
  */
-export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
+export default function ZoomBox({ children, resetKey, boxRef, full, onFull, startZoom }: {
   children: ReactNode; resetKey: string; boxRef?: RefObject<HTMLDivElement | null>; full: boolean; onFull: (on: boolean) => void;
+  /** Pentru desene foarte late (axa anilor): pornește cel puțin de la mărimea asta și lasă desenul să se deruleze pe lățime. */
+  startZoom?: number;
 }) {
   const t = useTranslations("Charts");
   const own = useRef<HTMLDivElement>(null);
@@ -79,7 +81,7 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull }: {
     const el = box.current, n = natural();
     if (el && n && n.w > el.clientWidth + 4) {
       // Pe telefon pornim de la o mărime la care numele se citesc, cu mijlocul desenului pe ecran (acolo e persoana din centru).
-      const z = clamp(Math.max(touchy() ? READABLE : 0.5, (el.clientWidth - 4) / n.w));
+      const z = clamp(Math.max(startZoom ?? (touchy() ? READABLE : 0.5), (el.clientWidth - 4) / n.w));
       natW.current = n.w;
       setZoom(z);
       const f = requestAnimationFrame(() => { el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2; });
