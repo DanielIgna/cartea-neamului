@@ -19,10 +19,12 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   const { p, g } = await searchParams;
   if (!UUID.test(id)) notFound();
   const me = await requireUser(`/arbore/${id}`);
-  const role = await roleIn(db, id, me.id);
-  if (!role) notFound();
   // Cine și-a revendicat profilul în arbore pornește din propria fișă: el e în centru și continuă de acolo.
-  const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
+  const [role, [mine]] = await Promise.all([
+    roleIn(db, id, me.id),
+    db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1),
+  ]);
+  if (!role) notFound();
   const generations = Math.min(Math.max(Number(g) || 5, 2), MAX_GENERATIONS);
   const start = mine?.id;
   const [data, live] = await Promise.all([loadTreeView(db, id, p && UUID.test(p) ? p : start, generations, await getLocale()), loadTreeLive(db, me.id, id)]);

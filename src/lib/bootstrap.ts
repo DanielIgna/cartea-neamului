@@ -127,8 +127,13 @@ export async function applySchema(target: Db) {
 }
 
 let done: Promise<void> | null = null;
-/** Schema se aplică automat la prima cerere (PGlite local și Neon), ca aplicația să pornească fără pași în plus. */
+/**
+ * Local (PGlite), schema se aplică automat la prima cerere, ca aplicația să pornească fără pași în plus.
+ * Pe Neon migrațiile rulează deja la fiecare publicare (scripts/deploy-db.ts), așa că nu le mai verificăm la fiecare pornire
+ * a serverului: verificarea deschidea o conexiune nouă, directă, la bază și întârzia prima pagină după o pauză.
+ */
 export function ensureSchema() {
+  if (process.env.DATABASE_URL && process.env.VERCEL) return Promise.resolve();
   return (done ??= applySchema(db).catch((e) => {
     done = null;
     console.error("Nu am putut aplica schema bazei de date.", e);

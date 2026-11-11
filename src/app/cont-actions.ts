@@ -1,5 +1,5 @@
 "use server";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
@@ -24,6 +24,9 @@ export async function deleteMyAccount(input: { confirm: string; scrub: boolean }
   await deleteObjects(fileKeys);
   // Sesiunea a plecat odată cu contul; ștergem și cookie-ul din browser.
   try { await auth.api.signOut({ headers: await headers() }); } catch { /* sesiunea nu mai există */ }
+  // Și copia scurtă a sesiunii (ținută câteva minute în browser, ca paginile să se deschidă repede).
+  const jar = await cookies();
+  for (const c of jar.getAll()) if (c.name.includes("better-auth.session")) jar.delete(c.name);
   revalidatePath("/", "layout");
   redirect("/?cont=sters");
 }
