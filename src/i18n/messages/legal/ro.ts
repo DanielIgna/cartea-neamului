@@ -4,7 +4,7 @@
  *
  * Fiecare secțiune are `h` (titlul) și, în ordine: `p…` (paragrafe), `l…` (rânduri de listă, adunate într-o listă) și `beta`
  * (doar cât site-ul e în probă). Etichetele din texte: <b>, <mail> (adresa de contact), <terms>, <privacy>, <data>,
- * <dataPartners>, <partners>, <pm> (propmanage.ro), <anspdcp>, <code>. Valorile: {name} și {person} (yes/no) ale celui care
+ * <dataPartners>, <partners>, <pm> (propmanage.ro), <anspdcp>, <code>. Valorile: {name}, {address}, {cui}, {regCom} și {euid} ale firmei care
  * răspunde de date, {email}, {minAge}, {consent} (textul bifei pentru parteneri, din `Partners.checkbox`).
  * Când se schimbă ceva important, se schimbă și data din src/lib/legal.ts.
  */
@@ -14,7 +14,7 @@ export const roLegal = {
   Legal: {
     updated: "Ultima schimbare: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}{person, select, yes {, persoană fizică} other {}}. Email: <mail>{email}</mail>.",
+    contactLine: "{name}, cu sediul în {address} (CUI {cui}, Nr. Reg. Com. {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Politica de confidențialitate",
       metaDescription: "Ce date păstrăm, de ce, cine le vede și cum le descarci sau le ștergi.",
@@ -26,7 +26,7 @@ export const roLegal = {
         },
         controller: {
           h: "Cine răspunde de date",
-          p1: "De datele din Cartea Neamului răspunde, ca operator după Regulamentul general privind protecția datelor (Regulamentul UE 2016/679, „GDPR”), <b>{name}</b>{person, select, yes {, persoană fizică} other {}}. Pentru orice întrebare sau cerere despre datele tale ne scrii la <mail>{email}</mail>.",
+          p1: "De datele din Cartea Neamului răspunde, ca operator după Regulamentul general privind protecția datelor (Regulamentul UE 2016/679, „GDPR”), <b>{name}</b>, cu sediul în {address} (CUI {cui}, Nr. Reg. Com. {regCom}, EUID {euid}). Pentru orice întrebare sau cerere despre datele tale ne scrii la <mail>{email}</mail>.",
           beta: "Acum, Cartea Neamului e în probă: o folosesc doar familia și prietenii apropiați, ca să ne spună ce merge și ce nu. Și în probă, datele voastre sunt păstrate și păzite cum scrie aici.",
         },
         data: {

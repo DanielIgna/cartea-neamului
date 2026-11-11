@@ -33,7 +33,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
     pm: ext("https://propmanage.ro"),
     anspdcp: ext("https://www.dataprotection.ro"),
   };
-  const values = { name: op.name, person: op.person ? "yes" : "no", email: op.email, minAge: MIN_AGE, consent: tp("checkbox"), ...tags };
+  const values = { name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, minAge: MIN_AGE, consent: tp("checkbox"), ...tags };
   const rich = (key: string) => (t.rich as unknown as (k: string, v: typeof values) => ReactNode)(key, values);
   const sections = roLegal.Legal[page].sections as Record<string, Section>;
 

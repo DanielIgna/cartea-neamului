@@ -1,17 +1,18 @@
 /**
  * Cine ține site-ul și cum i se scrie, plus versiunile textelor la care oamenii își dau acordul.
  *
- * Cât timp site-ul e în probă, fără firmă, de el răspunde Daniel Igna, ca persoană fizică. Variabilele de mediu OPERATOR_NAME
- * și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune, de pildă când în locul omului vine o firmă.
+ * Din 12 noiembrie 2026 de site răspunde firma VINTAGE FURNITURE SRL (cerut de Daniel: firma apare, numele lui nu mai apare
+ * pe platformă). Variabilele de mediu OPERATOR_NAME și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune.
  */
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
-export const TERMS_DATE = new Date("2026-11-11T12:00:00Z");
+export const TERMS_DATE = new Date("2026-11-12T12:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (11 noiembrie: pozele propuse pentru prima pagină, pagina Contact și
- * WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin, lista întreagă a cookie-urilor și a ce ține browserul).
+ * Ultima schimbare a Politicii de confidențialitate (12 noiembrie: operatorul e firma VINTAGE FURNITURE SRL; 11 noiembrie:
+ * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
+ * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-11T12:00:00Z");
-export const TERMS_VERSION = "2026-11-11";
+export const PRIVACY_DATE = new Date("2026-11-12T12:00:00Z");
+export const TERMS_VERSION = "2026-11-12";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
 
@@ -35,19 +36,24 @@ export const FAITH_CONSENT_TEXT = "Sunt de acord ca ce scriu despre credința me
 
 /**
  * Site-ul e în probă (beta): îl folosesc doar familia și prietenii apropiați, ca să spună ce merge și ce nu. Înainte să se
- * deschidă tuturor (sau să coste ceva) vin firma, datele ANPC și textele citite de un avocat; atunci se pune `false`.
+ * deschidă tuturor (sau să coste ceva) vin datele ANPC și textele citite de un avocat; atunci se pune `false`.
  */
 export const BETA = true;
 
-// Puse aici la cererea lui Daniel (6 noiembrie 2026). Din 11 noiembrie, pentru cererile despre date se folosește adresa
-// site-ului, nu cea personală a lui Daniel (aceeași în care ajung și mesajele din pagina Contact).
-const OPERATOR_DEFAULT = "Daniel Igna";
+/** Firma care răspunde de site și de date (operator GDPR), cu datele din Registrul Comerțului. */
+const OPERATOR_DEFAULT = {
+  name: "VINTAGE FURNITURE SRL",
+  cui: "35250247",
+  regCom: "J2015003534120",
+  euid: "ROONRC.J2015003534120",
+  address: "Aleea Negoiu nr. 8D, 400676 Cluj-Napoca, jud. Cluj, România",
+};
+// Adresa site-ului pentru cererile despre date (aceeași în care ajung și mesajele din pagina Contact).
 const CONTACT_DEFAULT = "contact.carteaneamului@gmail.com";
 
-/** Cine răspunde de date: numele (`person`: omul însuși, nu o firmă) și adresa de contact. */
+/** Cine răspunde de date: firma, cu sediul și numerele ei, și adresa de contact. */
 export function operator() {
-  const name = process.env.OPERATOR_NAME?.trim();
-  return { name: name || OPERATOR_DEFAULT, person: !name, email: process.env.CONTACT_EMAIL?.trim() || CONTACT_DEFAULT };
+  return { ...OPERATOR_DEFAULT, name: process.env.OPERATOR_NAME?.trim() || OPERATOR_DEFAULT.name, email: process.env.CONTACT_EMAIL?.trim() || CONTACT_DEFAULT };
 }
 
 /** Vârsta de la care cineva își poate face cont. */

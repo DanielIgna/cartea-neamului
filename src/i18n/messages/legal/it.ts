@@ -4,7 +4,7 @@ export const itLegal: LegalCatalog = {
   Legal: {
     updated: "Ultima modifica: {date}",
     contactTitle: "Contatti",
-    contactLine: "{name}{person, select, yes {, persona fisica} other {}}. Email: <mail>{email}</mail>.",
+    contactLine: "{name}, con sede in {address} (CUI {cui}, n. Registro delle imprese {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Informativa sulla privacy",
       metaDescription: "Quali dati conserviamo, perché, chi li vede e come li scarichi o li cancelli.",
@@ -16,7 +16,7 @@ export const itLegal: LegalCatalog = {
         },
         controller: {
           h: "Chi è responsabile dei dati",
-          p1: "Il titolare del trattamento dei dati del Libro della Famiglia ai sensi del Regolamento generale sulla protezione dei dati (Regolamento UE 2016/679, «GDPR») è <b>{name}</b>{person, select, yes {, persona fisica} other {}}. Per qualsiasi domanda o richiesta sui tuoi dati scrivici a <mail>{email}</mail>.",
+          p1: "Il titolare del trattamento dei dati del Libro della Famiglia ai sensi del Regolamento generale sulla protezione dei dati (Regolamento UE 2016/679, «GDPR») è <b>{name}</b>, con sede in {address} (CUI {cui}, n. Registro delle imprese {regCom}, EUID {euid}). Per qualsiasi domanda o richiesta sui tuoi dati scrivici a <mail>{email}</mail>.",
           beta: "Ora il Libro della Famiglia è in prova: lo usano solo la famiglia e gli amici stretti, per dirci cosa funziona e cosa no. Anche durante la prova, i vostri dati sono conservati e protetti come scritto qui.",
         },
         data: {
