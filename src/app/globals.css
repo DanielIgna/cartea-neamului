@@ -1187,3 +1187,4 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .fv-chip.noi{border-color:var(--accent)}
 .fv-steps{padding-left:20px}
 .fv-steps li{margin:0 0 10px;max-width:72ch}
+.fv-win{margin:14px 0 0;flex-wrap:wrap}
