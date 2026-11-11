@@ -108,7 +108,7 @@ export const deCarte: CarteCatalog = {
     },
     index: "Namensregister",
     colophon: {
-      made: "Zusammengestellt von {author} auf Cartea Neamului im {when}, aus dem Stammbaum „{tree}“: {count, plural, one {ein Mensch} other {# Menschen}}.",
+      made: "Zusammengestellt von {author} im Familienbuch im {when}, aus dem Stammbaum „{tree}“: {count, plural, one {ein Mensch} other {# Menschen}}.",
       redo: "Das Buch lässt sich jederzeit auf der Website neu erstellen, mit allem, was die Familie inzwischen ergänzt hat.",
     },
     defaults: {

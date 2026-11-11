@@ -32,6 +32,11 @@ export async function getT<N extends Namespace>(namespace: N, locale?: Locale) {
   return createTranslator({ locale: l, messages: await getMessages(l), namespace, timeZone: TIME_ZONE });
 }
 
+/** Numele platformei în limba omului: „Cartea Neamului”, „The Family Book”, „Das Familienbuch”… (domeniul rămâne carteaneamului.ro). */
+export async function getAppName(locale?: Locale) {
+  return (await getT("Meta", locale))("appName");
+}
+
 /** Date și numere scrise ca în limba omului. */
 export async function getFormat(locale?: Locale) {
   return createFormatter({ locale: locale ?? (await getLocale()), timeZone: TIME_ZONE });

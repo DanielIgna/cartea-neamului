@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** British English. */
 export const enGBParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "I would like to receive occasional benefits for my home from PropManage, a partner of Cartea Neamului.",
+    checkbox: "I would like to receive occasional benefits for my home from PropManage, a partner of the Family Book.",
     checkboxHint: "Optional. The tree works exactly the same without it. We only share your email address, and you can opt out at any time with one click.",
     menu: "Partners",
     bookCard: {
@@ -14,10 +14,10 @@ export const enGBParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partners · Cartea Neamului",
-    metaDescription: "The partners of Cartea Neamului and what they offer families.",
+    metaTitle: "Partners · The Family Book",
+    metaDescription: "The partners of the Family Book and what they offer families.",
     label: "Partners",
-    title: "The partners of Cartea Neamului",
+    title: "The partners of the Family Book",
     lead: "The tree, the memories and the book belong to the family alone, with no adverts. Here, on a single page, are the partners we trust.",
     pmAlt: "PropManage logo",
     pmWhat: "For homeowners",
@@ -33,7 +33,7 @@ export const enGBParteneri: ParteneriCatalog = {
     unsubText: "Once you press the button, your email address is removed straight away from the list PropManage receives. Your tree and your account stay exactly as they are.",
     unsubButton: "Yes, no more benefits",
     unsubWorking: "Withdrawing…",
-    unsubDone: "Done. You will no longer receive benefits from PropManage through Cartea Neamului. You can change your mind at any time in “My data”.",
+    unsubDone: "Done. You will no longer receive benefits from PropManage through the Family Book. You can change your mind at any time in “My data”.",
     unsubBad: "This link is not valid or is incomplete. Copy the whole link from the email, or sign in and opt out in “My data”.",
   },
   OldHouse: {

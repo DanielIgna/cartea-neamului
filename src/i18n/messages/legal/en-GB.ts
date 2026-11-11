@@ -12,12 +12,12 @@ export const enGBLegal: LegalCatalog = {
       title: "How we look after your family’s data",
       sections: {
         intro: {
-          p1: "Cartea Neamului is a place where families build their family tree together, keep their memories and print their family book. Here we explain, briefly and in plain words, what data we keep, why, who sees it and how you download or delete it. In short: family trees are private, you choose who sees your memories, we sell nothing and we show no adverts. Our partner, PropManage, receives only your email address, and only if you tick the box for it.",
+          p1: "The Family Book is a place where families build their family tree together, keep their memories and print their family book. Here we explain, briefly and in plain words, what data we keep, why, who sees it and how you download or delete it. In short: family trees are private, you choose who sees your memories, we sell nothing and we show no adverts. Our partner, PropManage, receives only your email address, and only if you tick the box for it.",
         },
         controller: {
           h: "Who is responsible for the data",
-          p1: "The controller of the data in Cartea Neamului under the General Data Protection Regulation (EU Regulation 2016/679, “GDPR”) is <b>{name}</b>{person, select, yes {, private individual} other {}}. For any question or request about your data, write to us at <mail>{email}</mail>.",
-          beta: "Cartea Neamului is currently being tested: only family and close friends use it, to tell us what works and what does not. Even during testing, your data is kept and protected as described here.",
+          p1: "The controller of the data in the Family Book under the General Data Protection Regulation (EU Regulation 2016/679, “GDPR”) is <b>{name}</b>{person, select, yes {, private individual} other {}}. For any question or request about your data, write to us at <mail>{email}</mail>.",
+          beta: "The Family Book is currently being tested: only family and close friends use it, to tell us what works and what does not. Even during testing, your data is kept and protected as described here.",
         },
         data: {
           h: "What data we keep",
@@ -62,12 +62,12 @@ export const enGBLegal: LegalCatalog = {
         },
         partner: {
           h: "Our partner, PropManage",
-          p1: "PropManage (<pm>propmanage.ro</pm>) is a platform for home owners and a partner of Cartea Neamului. You find it only on the <partners>Partners</partners> page; there are no adverts in the family tree, memories, timeline, map or book.",
+          p1: "PropManage (<pm>propmanage.ro</pm>) is a platform for home owners and a partner of the Family Book. You find it only on the <partners>Partners</partners> page; there are no adverts in the family tree, memories, timeline, map or book.",
           l1: "<b>What it receives:</b> only your email address, and only if you ticked “{consent}”. The box is separate, it is not ticked by default and nothing on the site depends on it. PropManage never receives anything about your family tree, the people in it, the relatives you invited, villages, memories, photos or voice recordings. Invited relatives and people in the tree never receive messages from PropManage.",
           l2: "<b>Legal basis:</b> your consent (Art. 6(1)(a) GDPR). From the moment it receives your address, PropManage is responsible for it as a separate controller, under its own privacy policy, and uses it only to send you benefits for your home from time to time.",
           l3: "<b>For how long:</b> for as long as your consent stands. We build the list PropManage receives afresh each time from the current consents, so once you withdraw yours, your address no longer reaches it. We ask it to delete your address when it learns that you have withdrawn your consent.",
           l4: "<b>How to withdraw it:</b> with one click, in <dataPartners>My data</dataPartners> (the “Benefits from partners” switch), or from the unsubscribe link in any email you receive, without signing in. Withdrawing changes nothing in your account or your family tree.",
-          l5: "Links to PropManage on the site (on the Partners page, next to the old family home and after downloading the book) are simple links: they only show that you come from Cartea Neamului, with no data about you.",
+          l5: "Links to PropManage on the site (on the Partners page, next to the old family home and after downloading the book) are simple links: they only show that you come from the Family Book, with no data about you.",
         },
         keep: {
           h: "How long we keep data",
@@ -105,13 +105,13 @@ export const enGBLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Terms of use",
-      metaDescription: "What it means to have an account in Cartea Neamului: what you can add, whose it is and what we promise.",
+      metaDescription: "What it means to have an account in the Family Book: what you can add, whose it is and what we promise.",
       label: "Terms of use",
-      title: "What it means to have an account in Cartea Neamului",
+      title: "What it means to have an account in the Family Book",
       sections: {
         intro: {
-          p1: "Cartea Neamului is a place where families build their family tree together, keep their memories and print their family book. When you create an account, you agree to these terms and to the <privacy>Privacy policy</privacy>.",
-          beta: "Cartea Neamului is currently being tested: it is open only to family and close friends, so that they can tell us what works and what does not. It may change often and may sometimes go wrong, so keep your own copy of what matters: you can download it at any time from “My data”.",
+          p1: "The Family Book is a place where families build their family tree together, keep their memories and print their family book. When you create an account, you agree to these terms and to the <privacy>Privacy policy</privacy>.",
+          beta: "The Family Book is currently being tested: it is open only to family and close friends, so that they can tell us what works and what does not. It may change often and may sometimes go wrong, so keep your own copy of what matters: you can download it at any time from “My data”.",
         },
         account: {
           h: "1. Your account",

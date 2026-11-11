@@ -4,7 +4,7 @@ export const nlDatele: DateleCatalog = {
   MyData: {
     metaTitle: "Mijn gegevens",
     label: "Mijn gegevens",
-    title: "Wat je in Cartea Neamului zet, is van jou",
+    title: "Wat je in het Familieboek zet, is van jou",
     intro: "Je account: <b>{name}</b>, met het adres {email}, sinds {date}. Hier download je altijd je gegevens, zie je de toestemmingen die je hebt gegeven en verwijder je, als je wilt, je account. Hoe we ze bewaren en wie ze ziet, staat in het <privacy>Privacybeleid</privacy>.",
     download: {
       label: "Downloaden",

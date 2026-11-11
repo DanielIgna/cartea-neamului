@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Español de España (tú). */
 export const esParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Quiero recibir de vez en cuando ventajas para mi casa de PropManage, socio de Cartea Neamului.",
+    checkbox: "Quiero recibir de vez en cuando ventajas para mi casa de PropManage, socio del Libro de la Familia.",
     checkboxHint: "Opcional. El árbol funciona igual sin esto. Solo compartimos tu correo electrónico y puedes darte de baja cuando quieras, con un clic.",
     menu: "Socios",
     bookCard: {
@@ -14,10 +14,10 @@ export const esParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Socios · Cartea Neamului",
-    metaDescription: "Los socios de Cartea Neamului y lo que ofrecen a las familias.",
+    metaTitle: "Socios · El Libro de la Familia",
+    metaDescription: "Los socios del Libro de la Familia y lo que ofrecen a las familias.",
     label: "Socios",
-    title: "Los socios de Cartea Neamului",
+    title: "Los socios del Libro de la Familia",
     lead: "El árbol, los recuerdos y el libro son solo de la familia, sin publicidad. Aquí, en una sola página, están los socios en los que confiamos.",
     pmAlt: "Logotipo de PropManage",
     pmWhat: "Para propietarios de vivienda",
@@ -33,7 +33,7 @@ export const esParteneri: ParteneriCatalog = {
     unsubText: "En cuanto pulses el botón, tu correo electrónico sale al momento de la lista que recibe PropManage. Tu árbol y tu cuenta se quedan exactamente como están.",
     unsubButton: "Sí, no quiero más ventajas",
     unsubWorking: "Retirando…",
-    unsubDone: "Hecho. Ya no recibirás ventajas de PropManage a través de Cartea Neamului. Puedes cambiar de opinión cuando quieras, en «Mis datos».",
+    unsubDone: "Hecho. Ya no recibirás ventajas de PropManage a través del Libro de la Familia. Puedes cambiar de opinión cuando quieras, en «Mis datos».",
     unsubBad: "El enlace no es válido o está incompleto. Cópialo entero desde el correo, o entra en tu cuenta y date de baja en «Mis datos».",
   },
   OldHouse: {

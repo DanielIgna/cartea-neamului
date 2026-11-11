@@ -12,12 +12,12 @@ export const deLegal: LegalCatalog = {
       title: "Wie wir mit den Daten deiner Familie umgehen",
       sections: {
         intro: {
-          p1: "Cartea Neamului ist ein Ort, an dem Familien gemeinsam ihren Stammbaum aufbauen, ihre Erinnerungen bewahren und ihr Familienbuch drucken. Hier steht, kurz und ohne schwierige Worte, welche Daten wir speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst. Kurz gesagt: Stammbäume sind privat, du entscheidest, wer deine Erinnerungen sieht, wir verkaufen nichts und zeigen keine Werbung. Unser Partner PropManage erhält nur deine E-Mail-Adresse, und nur wenn du das ankreuzt.",
+          p1: "Das Familienbuch ist ein Ort, an dem Familien gemeinsam ihren Stammbaum aufbauen, ihre Erinnerungen bewahren und ihr Familienbuch drucken. Hier steht, kurz und ohne schwierige Worte, welche Daten wir speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst. Kurz gesagt: Stammbäume sind privat, du entscheidest, wer deine Erinnerungen sieht, wir verkaufen nichts und zeigen keine Werbung. Unser Partner PropManage erhält nur deine E-Mail-Adresse, und nur wenn du das ankreuzt.",
         },
         controller: {
           h: "Wer für die Daten verantwortlich ist",
-          p1: "Verantwortlicher für die Daten in Cartea Neamului im Sinne der Datenschutz-Grundverordnung (Verordnung (EU) 2016/679, „DSGVO“) ist <b>{name}</b>{person, select, yes {, Privatperson} other {}}. Bei jeder Frage oder Bitte zu deinen Daten schreibst du uns an <mail>{email}</mail>.",
-          beta: "Cartea Neamului wird gerade erprobt: Nur Familie und enge Freunde nutzen es, um uns zu sagen, was funktioniert und was nicht. Auch in dieser Zeit werden eure Daten so gespeichert und geschützt, wie es hier steht.",
+          p1: "Verantwortlicher für die Daten im Familienbuch im Sinne der Datenschutz-Grundverordnung (Verordnung (EU) 2016/679, „DSGVO“) ist <b>{name}</b>{person, select, yes {, Privatperson} other {}}. Bei jeder Frage oder Bitte zu deinen Daten schreibst du uns an <mail>{email}</mail>.",
+          beta: "Das Familienbuch wird gerade erprobt: Nur Familie und enge Freunde nutzen es, um uns zu sagen, was funktioniert und was nicht. Auch in dieser Zeit werden eure Daten so gespeichert und geschützt, wie es hier steht.",
         },
         data: {
           h: "Welche Daten wir speichern",
@@ -62,12 +62,12 @@ export const deLegal: LegalCatalog = {
         },
         partner: {
           h: "Unser Partner PropManage",
-          p1: "PropManage (<pm>propmanage.ro</pm>) ist eine Plattform für Wohnungs- und Hauseigentümer und ein Partner von Cartea Neamului. Du findest ihn nur auf der Seite <partners>Partner</partners>; im Stammbaum, in den Erinnerungen, in der Zeitleiste, auf der Karte und im Buch gibt es keine Werbung.",
+          p1: "PropManage (<pm>propmanage.ro</pm>) ist eine Plattform für Wohnungs- und Hauseigentümer und ein Partner des Familienbuchs. Du findest ihn nur auf der Seite <partners>Partner</partners>; im Stammbaum, in den Erinnerungen, in der Zeitleiste, auf der Karte und im Buch gibt es keine Werbung.",
           l1: "<b>Was er erhält:</b> nur deine E-Mail-Adresse, und nur, wenn du „{consent}“ angekreuzt hast. Das Kästchen ist getrennt, nicht von selbst angekreuzt, und nichts auf der Seite hängt davon ab. PropManage erhält nie etwas über deinen Stammbaum, die Menschen darin, die Verwandten, die du eingeladen hast, Dörfer, Erinnerungen, Fotos oder Stimme. Eingeladene Verwandte und die Menschen im Stammbaum erhalten nie Nachrichten von PropManage.",
           l2: "<b>Rechtsgrundlage:</b> deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Ab dem Moment, in dem PropManage die Adresse erhält, ist es als eigener Verantwortlicher nach seiner eigenen Datenschutzerklärung für sie verantwortlich und nutzt sie nur, um dir ab und zu Vorteile für dein Zuhause zu schicken.",
           l3: "<b>Wie lange:</b> solange deine Einwilligung besteht. Die Liste, die PropManage erhält, stellen wir jedes Mal neu aus den aktuellen Einwilligungen zusammen, sodass deine Adresse nach dem Widerruf nicht mehr dorthin gelangt. Wir bitten PropManage, deine Adresse zu löschen, sobald es erfährt, dass du deine Einwilligung widerrufen hast.",
           l4: "<b>Wie du sie widerrufst:</b> mit einem Klick unter <dataPartners>Meine Daten</dataPartners> (der Schalter „Vorteile von Partnern“) oder über den Abmeldelink in jeder erhaltenen E-Mail, ohne dich anzumelden. Der Widerruf ändert nichts an deinem Konto oder deinem Stammbaum.",
-          l5: "Die Links zu PropManage auf der Seite (auf der Partnerseite, neben dem alten Familienhaus und nach dem Herunterladen des Buches) sind einfache Links: Sie zeigen nur, dass du von Cartea Neamului kommst, ohne irgendwelche Daten über dich.",
+          l5: "Die Links zu PropManage auf der Seite (auf der Partnerseite, neben dem alten Familienhaus und nach dem Herunterladen des Buches) sind einfache Links: Sie zeigen nur, dass du vom Familienbuch kommst, ohne irgendwelche Daten über dich.",
         },
         keep: {
           h: "Wie lange wir die Daten speichern",
@@ -105,13 +105,13 @@ export const deLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Nutzungsbedingungen",
-      metaDescription: "Was es heißt, ein Konto bei Cartea Neamului zu haben: was du hinzufügen kannst, wem es gehört und was wir versprechen.",
+      metaDescription: "Was es heißt, ein Konto beim Familienbuch zu haben: was du hinzufügen kannst, wem es gehört und was wir versprechen.",
       label: "Nutzungsbedingungen",
-      title: "Was es heißt, ein Konto bei Cartea Neamului zu haben",
+      title: "Was es heißt, ein Konto beim Familienbuch zu haben",
       sections: {
         intro: {
-          p1: "Cartea Neamului ist ein Ort, an dem Familien gemeinsam ihren Stammbaum aufbauen, ihre Erinnerungen bewahren und ihr Familienbuch drucken. Wenn du ein Konto erstellst, stimmst du diesen Bedingungen und der <privacy>Datenschutzerklärung</privacy> zu.",
-          beta: "Cartea Neamului wird gerade erprobt: Es ist nur für Familie und enge Freunde offen, damit sie uns sagen, was funktioniert und was nicht. Es kann sich oft ändern und manchmal Fehler machen, darum bewahre dir auch selbst eine Kopie dessen auf, was dir wichtig ist: Du lädst sie jederzeit unter „Meine Daten“ herunter.",
+          p1: "Das Familienbuch ist ein Ort, an dem Familien gemeinsam ihren Stammbaum aufbauen, ihre Erinnerungen bewahren und ihr Familienbuch drucken. Wenn du ein Konto erstellst, stimmst du diesen Bedingungen und der <privacy>Datenschutzerklärung</privacy> zu.",
+          beta: "Das Familienbuch wird gerade erprobt: Es ist nur für Familie und enge Freunde offen, damit sie uns sagen, was funktioniert und was nicht. Es kann sich oft ändern und manchmal Fehler machen, darum bewahre dir auch selbst eine Kopie dessen auf, was dir wichtig ist: Du lädst sie jederzeit unter „Meine Daten“ herunter.",
         },
         account: {
           h: "1. Das Konto",

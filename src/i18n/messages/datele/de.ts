@@ -4,7 +4,7 @@ export const deDatele: DateleCatalog = {
   MyData: {
     metaTitle: "Meine Daten",
     label: "Meine Daten",
-    title: "Was du in Cartea Neamului einbringst, gehört dir",
+    title: "Was du im Familienbuch einbringst, gehört dir",
     intro: "Dein Konto: <b>{name}</b>, mit der Adresse {email}, seit {date}. Hier lädst du jederzeit deine Daten herunter, siehst die Einwilligungen, die du gegeben hast, und löschst, wenn du willst, dein Konto. Wie wir sie aufbewahren und wer sie sieht, steht in der <privacy>Datenschutzerklärung</privacy>.",
     download: {
       label: "Herunterladen",

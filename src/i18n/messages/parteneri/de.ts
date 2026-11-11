@@ -3,7 +3,7 @@ import type { ParteneriCatalog } from "./ro";
 /** Deutsch (du). */
 export const deParteneri: ParteneriCatalog = {
   Partners: {
-    checkbox: "Ich möchte ab und zu Vorteile für mein Zuhause von PropManage erhalten, einem Partner von Cartea Neamului.",
+    checkbox: "Ich möchte ab und zu Vorteile für mein Zuhause von PropManage erhalten, einem Partner des Familienbuchs.",
     checkboxHint: "Freiwillig. Der Stammbaum funktioniert ohne genauso. Wir geben nur deine E-Mail-Adresse weiter, und du kannst dich jederzeit mit einem Klick abmelden.",
     menu: "Partner",
     bookCard: {
@@ -14,10 +14,10 @@ export const deParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partner · Cartea Neamului",
-    metaDescription: "Die Partner von Cartea Neamului und was sie Familien bieten.",
+    metaTitle: "Partner · Das Familienbuch",
+    metaDescription: "Die Partner des Familienbuchs und was sie Familien bieten.",
     label: "Partner",
-    title: "Die Partner von Cartea Neamului",
+    title: "Die Partner des Familienbuchs",
     lead: "Der Stammbaum, die Erinnerungen und das Buch gehören nur der Familie, ohne Werbung. Hier, auf einer einzigen Seite, stehen die Partner, denen wir vertrauen.",
     pmAlt: "Logo von PropManage",
     pmWhat: "Für Hauseigentümer",
@@ -33,7 +33,7 @@ export const deParteneri: ParteneriCatalog = {
     unsubText: "Sobald du auf den Knopf drückst, wird deine E-Mail-Adresse sofort aus der Liste entfernt, die PropManage erhält. Dein Stammbaum und dein Konto bleiben genau so, wie sie sind.",
     unsubButton: "Ja, keine Vorteile mehr",
     unsubWorking: "Wird abgemeldet …",
-    unsubDone: "Erledigt. Du erhältst über Cartea Neamului keine Vorteile mehr von PropManage. Du kannst es dir jederzeit unter „Meine Daten“ anders überlegen.",
+    unsubDone: "Erledigt. Du erhältst über das Familienbuch keine Vorteile mehr von PropManage. Du kannst es dir jederzeit unter „Meine Daten“ anders überlegen.",
     unsubBad: "Der Link ist ungültig oder unvollständig. Kopiere ihn vollständig aus der E-Mail oder melde dich an und melde dich unter „Meine Daten“ ab.",
   },
   OldHouse: {

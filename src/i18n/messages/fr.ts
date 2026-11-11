@@ -12,6 +12,7 @@ import { frDatele } from "./datele/fr";
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
   Meta: {
+    appName: "Le Livre de la Famille",
     description: "L’arbre de la famille, construit ensemble, imprimé comme un livre.",
   },
   Layout: {
@@ -46,7 +47,7 @@ export const fr: Catalog = {
   UsageNotice: {
     label: "Votre utilisation du site",
     lead: "Une question, une seule fois.",
-    text: "Pour améliorer Cartea Neamului, nous aimerions savoir combien de temps vous passez sur le site et quelles parties vous utilisez (l’arbre, le coffre aux souvenirs, la carte…). Seulement le temps et le nom de la partie : ni ce que vous écrivez, ni ce sur quoi vous appuyez. Vous pouvez arrêter à tout moment, depuis « Mes données ».",
+    text: "Pour améliorer le Livre de la Famille, nous aimerions savoir combien de temps vous passez sur le site et quelles parties vous utilisez (l’arbre, le coffre aux souvenirs, la carte…). Seulement le temps et le nom de la partie : ni ce que vous écrivez, ni ce sur quoi vous appuyez. Vous pouvez arrêter à tout moment, depuis « Mes données ».",
     yes: "D’accord",
     no: "Non merci",
     more: "Ce que cela veut dire",
@@ -54,7 +55,7 @@ export const fr: Catalog = {
   Landing: {
     deleted: "Votre compte a été supprimé, avec tout ce qui vous appartenait. Merci d’avoir été avec nous.",
     heroTitle: "L’arbre de la famille, construit ensemble",
-    brandNote: "« Cartea Neamului » veut dire « le livre de la famille » en roumain.",
+    brandNote: "En roumain : Cartea Neamului.",
     heroText: "Vous partez de vous-même, vous invitez vos proches, et chacun complète sa branche avec des noms, des photos, des documents et des souvenirs. À la fin, la famille imprime son propre livre.",
     signUp: "Créer un compte gratuit",
     signIn: "Se connecter",
@@ -86,7 +87,7 @@ export const fr: Catalog = {
     featuresText: "Des arrière-arrière-grands-parents aux petits-enfants d’aujourd’hui : personnes, lieux, histoires et voix, rassemblés par toute la famille.",
     howText: "Inutile de tout savoir dès le début. Commencez par ce que vous savez, vos proches complètent le reste.",
     quote: "Ce que nous n’écrivons pas aujourd’hui, nos petits-enfants ne le sauront jamais.",
-    quoteText: "Cartea Neamului est faite pour que chaque famille garde ses visages, ses histoires et ses voix pour ceux qui viendront après.",
+    quoteText: "Le Livre de la Famille est fait pour que chaque famille garde ses visages, ses histoires et ses voix pour ceux qui viendront après.",
     ctaTitle: "Commencez l’arbre de votre famille aujourd’hui",
     ctaText: "Cela prend une minute. Le premier pas, c’est vous.",
     heroTitleRich: "L’arbre de la famille, construit <em>ensemble</em>",
@@ -95,7 +96,7 @@ export const fr: Catalog = {
     stat3: "lien WhatsApp pour inviter vos proches",
     stat4: "minute pour commencer",
     gensTitle: "Quatre générations, une seule histoire",
-    gensText: "Cartea Neamului est pour toute la famille : chaque génération a quelque chose à ajouter et à recevoir.",
+    gensText: "Le Livre de la Famille est pour toute la famille : chaque génération a quelque chose à ajouter et à recevoir.",
     gen1Title: "Les grands-parents",
     gen1Text: "Leur voix et leurs souvenirs, gardés pour ceux qui viendront après.",
     gen2Title: "Les parents",
@@ -146,7 +147,7 @@ export const fr: Catalog = {
   Invitation: {
     ogTitle: "{name} vous invite dans l’arbre de la famille « {tree} »",
     ogTitleNoName: "Vous êtes invité dans l’arbre de la famille « {tree} »",
-    ogDescription: "Rejoignez l’arbre sur Cartea Neamului : voyez vos proches, ajoutez votre branche et les souvenirs des vôtres.",
+    ogDescription: "Rejoignez l’arbre sur le Livre de la Famille : voyez vos proches, ajoutez votre branche et les souvenirs des vôtres.",
     invalid: "Cette invitation n’est plus valable",
     notFound: "Cette invitation n’existe pas",
     expired: "Cette invitation a expiré",
@@ -288,8 +289,8 @@ export const fr: Catalog = {
     bring: "Importer l’arbre",
   },
   InstallApp: {
-    titlePhone: "Mettez Cartea Neamului sur votre téléphone",
-    titleComputer: "Mettez Cartea Neamului sur votre ordinateur",
+    titlePhone: "Mettez le Livre de la Famille sur votre téléphone",
+    titleComputer: "Mettez le Livre de la Famille sur votre ordinateur",
     promptPhone: "Elle s’ouvre comme une application, directement depuis l’écran d’accueil, sans avoir à chercher le site.",
     promptComputer: "Elle s’ouvre comme une application, depuis sa propre icône, sans avoir à chercher le site.",
     ios: "Dans Safari, touchez le bouton <b>Partager</b> (le carré avec la flèche vers le haut), puis <b>Sur l’écran d’accueil</b>.",

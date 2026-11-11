@@ -20,6 +20,8 @@ import { roDatele } from "./datele/ro";
 
 export const ro = {
   Meta: {
+    /** Numele platformei în această limbă (în antet, în titlul paginilor și pe prima pagină). */
+    appName: "Cartea Neamului",
     description: "Arborele familiei, construit împreună, tipărit ca o carte.",
   },
   Layout: {

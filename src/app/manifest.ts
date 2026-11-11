@@ -1,12 +1,17 @@
 import type { MetadataRoute } from "next";
+import { getLocale, getT } from "@/i18n/server";
 
-/** Cartea Neamului ca aplicație pe telefon: se pune pe ecranul principal și se deschide fără bara browserului. */
-export default function manifest(): MetadataRoute.Manifest {
+/**
+ * Cartea Neamului ca aplicație pe telefon: se pune pe ecranul principal și se deschide fără bara browserului.
+ * Numele de sub iconiță e în limba aleasă pe telefon („The Family Book”, „Das Familienbuch”…).
+ */
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const [locale, t] = await Promise.all([getLocale(), getT("Meta")]);
   return {
-    name: "Cartea Neamului",
-    short_name: "Cartea Neamului",
-    description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
-    lang: "ro",
+    name: t("appName"),
+    short_name: t("appName"),
+    description: t("description"),
+    lang: locale,
     dir: "ltr",
     start_url: "/",
     scope: "/",
