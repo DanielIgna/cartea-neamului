@@ -27,6 +27,9 @@ import { closeFamily, closeKinIds, mayEdit, shareIds, type RelKind } from "@/lib
 import { editLimits, limitFor } from "@/lib/edit-limits";
 import { loadHouses } from "@/lib/old-house";
 import OldHouse from "@/components/OldHouse";
+import FamilyFilm from "@/components/FamilyFilm";
+import { buildFilm } from "@/lib/family-film";
+import { mySubmissions } from "@/lib/home-submissions";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -94,6 +97,11 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
   // Casa bătrânească: cele pe care le poate vedea, după aceleași reguli ca amintirile.
   const houses = await loadHouses(db, id, pid, { userId: me.id, personId: mine?.id ?? null }, g, data.tree.chatMaxDegree, p.claimedBy ?? null);
   const bornIn = where(p.birthPlace, p.birthCountry, locale);
+  // Filmul vieții: pozele lui și ale familiei apropiate, plus pozele din lada lui pe care cel care se uită le poate vedea.
+  const film = buildFilm(data.people, pid, cf, [...lada.own, ...lada.about], (x) => years(x, locale) || null);
+  const proposals = (await mySubmissions(db, me.id)).filter((s) => !!s.documentId && Object.values(data.people).some((x) => x.documents.some((d) => d.id === s.documentId)));
+  const tf = await getT("Film", locale);
+  const toc: [string, string][] = [["despre", tf("nav.about")], ["film", tf("nav.film")], ...(p.living || lada.own.length ? [["lada", tf("nav.lada")] as [string, string]] : []), ["album", tf("nav.album")], ["familia", tf("nav.family")]];
   const group = (title: string, ids: string[]) => ids.length > 0 && (
     <>
       <div className="section-label">{title}</div>
@@ -108,7 +116,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
-    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse"]}>
+    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse", "Film"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       <div className="card">
         <Link href={`/arbore/${id}?p=${pid}`} style={{ fontSize: 14 }}>{t("back", { name: p.givenName })}</Link>
@@ -118,7 +126,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
             {storageConfigured() && (canEdit || (can(role, "contributor") && !p.photoId)) && <span style={{ fontSize: 14 }}><PhotoPick treeId={id} p={{ id: p.id, name: p.name, photoId: p.photoId }} /></span>}
           </div>
           <div>
-            <h2>{p.name}</h2>
+            {kin && <div className="pf-eyebrow">{kinLabel(kin.term, kin.sex, locale)}{kin.degree ? ` · ${t("degree", { degree: degreeWord(kin.degree, locale) })}` : ""}</div>}
+            <h2 className="pf-name">{p.name}</h2>
             <div className="meta">{p.birthSurname ? `${tp("bornAs", { sex: p.sex, surname: p.birthSurname })} · ` : ""}{lifeDates(p, locale)}{bornIn ? ` · ${t("bornIn", { sex: p.sex, place: bornIn })}` : ""}
               {p.living && (p.residencePlace || p.residenceCountry) ? ` · ${t("livesIn", { place: where(p.residencePlace, p.residenceCountry, locale) || p.residenceCountry || "" })}` : ""}</div>
             <div className="chips">
@@ -136,22 +145,30 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
           </div>
         </div>
       </div>
-      <div className="card">
+      <nav className="pf-toc" aria-label={tf("nav.label")}>
+        {toc.map(([k, label]) => <a key={k} href={`#${k}`} className={k === "film" ? "pf-film" : undefined}>{label}</a>)}
+      </nav>
+      <div className="card pf-sec" id="despre">
         <div className="section-label" style={{ marginTop: 0 }}>{p.living ? t("about", { name: p.givenName }) : tp("whatWeKnow", { name: p.givenName })}</div>
         {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted">{canEdit ? t("nothingEdit") : tp("nothingYet")}</p>}
         {p.notes && <><div className="section-label">{tp("notes")}</div><p className="notes">{p.notes}</p></>}
+      </div>
+      <div className="pf-sec">
+        <FamilyFilm treeId={id} name={p.givenName} film={film} canPropose={can(role, "contributor") && storageConfigured()}
+          proposals={proposals.map((s) => ({ id: s.id, documentId: s.documentId, caption: s.caption, status: s.status }))} />
       </div>
       <MemoryBox treeId={id} owner={{ id: p.id, givenName: p.givenName, sex: p.sex, living: p.living, claimed: p.claimed }} isOwner={lada.isOwner}
         viewerPersonId={mine?.id ?? null} canAsk={p.living && !lada.isOwner} canHelp={p.living && !p.claimed && can(role, "contributor")} own={lada.own} about={lada.about} questions={lada.questions} upcoming={upcoming}
         people={options} storage={storageConfigured()} defaultDegree={data.tree.chatMaxDegree} startMention={scrie ?? null}
         faithConsent={lada.isOwner ? await hasConsent(db, me.id, "faith") : false} />
-      <div className="card">
+      <div className="card pf-sec" id="album">
         <div className="section-label" style={{ marginTop: 0 }}>{t("album")}</div>
         <ProfileAlbum p={p} treeId={id} canEdit={can(role, "contributor")} canUpload={can(role, "contributor") && storageConfigured()} />
       </div>
       <OldHouse treeId={id} personId={pid} name={p.givenName} houses={houses} canAdd={can(role, "contributor")} canEditOrphans={can(role, "editor")}
         storage={storageConfigured()} living={p.living} />
       {/* Soții discreți (de pildă o fostă soție) nu apar aici; se văd doar în profilurile copiilor lor, la „Părinți”. */}
+      <div id="familia" style={{ scrollMarginTop: 72 }} />
       <ProfileRelatives treeId={id} personId={pid} own={mine?.id === pid} people={relPeople}
         data={{ father: cf.father, mother: cf.mother, paternal: cf.paternal, maternal: cf.maternal, partners: shownPartners, siblings: cf.siblings,
           children: cf.children, nephews: cf.nephews, grandchildren: cf.grandchildren }}

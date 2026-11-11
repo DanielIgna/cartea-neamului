@@ -432,3 +432,23 @@ export const oldHouse = pgTable("old_house", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("old_house_person_idx").on(t.personId), index("old_house_tree_idx").on(t.treeId)]);
+
+/* ---------- Poze de familie propuse pentru prima pagină ---------- */
+// Omul alege o poză din albumul arborelui, bifează acordul și o trimite; adminul o aprobă sau nu. Aprobată, intră în
+// rotația bannerului (app_setting „home_images”, upload cu id „p-<id>”). Retrasă sau respinsă, fișierul se șterge.
+export const homeSubmission = pgTable("home_submission", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  treeId: uuid("tree_id").references(() => tree.id, { onDelete: "set null" }),
+  documentId: uuid("document_id").references(() => document.id, { onDelete: "set null" }),
+  fileKey: text("file_key").notNull(),
+  mimeType: text("mime_type").notNull(),
+  caption: text("caption"),
+  status: text("status").notNull().default("pending"), // pending / approved / rejected / withdrawn / removed
+  consentTextVersion: text("consent_text_version").notNull(),
+  consentAt: timestamp("consent_at").notNull(),
+  locale: text("locale"),
+  decidedBy: text("decided_by"),
+  decidedAt: timestamp("decided_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("home_submission_user_idx").on(t.userId), index("home_submission_status_idx").on(t.status, t.createdAt)]);
