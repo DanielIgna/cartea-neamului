@@ -23,6 +23,11 @@ export const enGB: Catalog = {
     myData: "My data",
     signIn: "Sign in",
     signInShort: "Sign in",
+    cookies: "Cookies",
+    cookieLead: "Only strictly necessary cookies.",
+    cookieText: "We use them to keep you signed in and to remember your language and theme. No ads and no visitor tracking, so we do not ask for your consent.",
+    cookieMore: "See the list",
+    cookieOk: "Got it",
   },
   ThemeSwitch: {
     label: "Colour theme",

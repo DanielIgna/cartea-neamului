@@ -41,7 +41,9 @@ export const roLegal = {
           l8: "<b>Cât folosești site-ul</b>, doar dacă spui „Bine” la întrebarea pe care ți-o punem o singură dată: pe zile, cât timp ai stat în fiecare parte a site-ului (de pildă „Arborele · Copac” sau „Harta neamului”), de câte ori ai deschis-o și cât din timp a fost pe telefon sau în aplicația de pe telefon. Numărăm doar timpul în care pagina e în față și faci ceva în ea. Nu păstrăm adresa paginii, ce scrii sau pe ce apeși.",
           l9: "<b>Beneficii de la parteneri</b>, doar dacă bifezi asta (la crearea contului sau în „Datele mele”): fiecare „da” și fiecare „nu”, cu data, versiunea textului bifat, limba și locul de unde ai ales.",
           l10: "<b>Casa bătrânească:</b> ce scrii despre casa familiei pe pagina unei persoane (adresa sau satul, cine a construit-o, anul, poze și povestea ei). O vede doar cine alegi tu, ca la amintiri.",
-          l11: "<b>În browserul tău:</b> tema aleasă (luminoasă sau întunecată), spițele pe care le-ai ales să le vezi și dacă ai văzut deja cardul partenerului de după descărcarea cărții. Dacă ai spus „Bine” la măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.",
+          l13: "<b>Pozele propuse pentru prima pagină</b>, doar dacă alegi tu să propui una din albumul familiei: o copie a pozei, rândul scris sub ea, cine a propus-o, când, în ce limbă și versiunea acordului bifat. Cât timp nu e aprobată, o vedem doar noi.",
+          l14: "<b>Când ne scrii</b> din pagina Contact: numele, adresa de email (ca să-ți putem răspunde) și mesajul. Nu le păstrăm în site: pleacă direct în căsuța noastră de email. Dacă ne scrii pe WhatsApp, vedem numărul tău de telefon, numele tău din WhatsApp și ce ne scrii.",
+          l11: "<b>În browserul tău</b>, pe lângă cookie-urile de la capătul paginii, câteva alegeri ținute doar pe telefonul sau calculatorul tău, ca să nu le faci de fiecare dată: spițele pe care ai ales să le vezi, ce ai ales ultima dată în „Firul vremii”, „De la Adam la Hristos” și „Istoria Bisericii”, fișele pe care le-ai marcat că nu sunt dubluri, dacă ai ascuns cardul de instalare a aplicației și dacă ai văzut deja cardul partenerului de după descărcarea cărții. Dacă ai spus „Bine” la măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.",
           l12: "<b>Jurnalele tehnice</b> ale serverului (adresa IP, pagina cerută, ora), păstrate pentru scurt timp, ca să putem repara erorile.",
         },
         why: {
@@ -50,7 +52,8 @@ export const roLegal = {
           l2: "Ca să păzim conturile și arborii: sesiunile, jurnalul schimbărilor și limitarea căutărilor. Temeiul e interesul nostru legitim de a ține site-ul în siguranță (art. 6 alin. 1 lit. f).",
           l3: "Ca să vedem ce folosesc oamenii și ce trebuie îmbunătățit: cifrele despre conturi și arbori din panoul de administrare, fără ce scrieți. Temeiul e interesul nostru legitim de a face site-ul mai bun (art. 6 alin. 1 lit. f).",
           l4: "Pentru rudele în viață pe care le treci în arbore, temeiul e interesul legitim al familiei de a-și păstra istoria, cu grijă: arborii sunt privați, iar cei în viață se văd doar în arborele lor, niciodată la alte familii. Oricine e trecut într-un arbore poate cere să-i îndreptăm sau să-i ștergem datele.",
-          l5: "Pe baza acordului tău, pe care îl poți retrage oricând: capitolul „Credința” (art. 9 alin. 2 lit. a), poveștile înregistrate „la bunici”, „Din aceleași locuri”, cât folosești site-ul și beneficiile de la parteneri (art. 6 alin. 1 lit. a). Retragerea nu schimbă ce s-a făcut înainte cu acordul dat.",
+          l5: "Pe baza acordului tău, pe care îl poți retrage oricând: capitolul „Credința” (art. 9 alin. 2 lit. a), poveștile înregistrate „la bunici”, „Din aceleași locuri”, cât folosești site-ul, beneficiile de la parteneri și pozele propuse pentru prima pagină (art. 6 alin. 1 lit. a). Retragerea nu schimbă ce s-a făcut înainte cu acordul dat.",
+          l6: "Ca să-ți răspundem când ne scrii (din pagina Contact, pe email sau pe WhatsApp). Temeiul e interesul nostru legitim de a răspunde celor care ne caută (art. 6 alin. 1 lit. f) sau, când ne scrii despre contul tău, contractul dintre noi (lit. b).",
         },
         who: {
           h: "Cine vede datele",
@@ -58,16 +61,18 @@ export const roLegal = {
           l2: "<b>Cei în viață</b> se văd doar în arborele lor. Nu apar la „Din aceleași locuri” și nici la alte familii. Singurul care își poate găsi fișa din afara arborelui e chiar omul, cu numele și data nașterii lui întreagă; atunci proprietarul arborelui hotărăște dacă îl primește, iar până atunci cel care caută nu află nici măcar ce arbore e.",
           l3: "<b>Amintirile</b> le vede doar cine alege cel care le scrie: doar el (ciornă), cel care a întrebat, familia apropiată până la un grad de rudenie sau tot arborele. În Cartea neamului intră doar cele bifate pentru carte.",
           l4: "<b>Mesajele</b> le văd doar cei doi care și le scriu.",
-          l5: "<b>Noi</b> vedem în panoul de administrare doar liste și cifre: conturile (nume, email, când și de pe ce fel de dispozitiv au intrat), arborii (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus „Bine”, cât timp stau în fiecare parte a site-ului. Tot acolo putem ține o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.",
+          l7: "<b>Pozele de pe prima pagină</b> le vede oricine deschide site-ul: sunt pozele alese de noi și cele propuse de voi, după ce le aprobăm. Pe cele propuse de tine le poți retrage oricând, din „Filmul vieții” de pe pagina ta din arbore; atunci ies de pe prima pagină și copia lor se șterge.",
+          l5: "<b>Noi</b> vedem în panoul de administrare doar ce ne trebuie ca să ținem site-ul în picioare: liste și cifre despre conturi (nume, email, când și de pe ce fel de dispozitiv au intrat), despre arbori (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus „Bine”, cât timp stau în fiecare parte a site-ului. Mai vedem istoricul schimbărilor din fișele arborilor (cine a schimbat, ce nume, date sau locuri și când), ca să putem anula o ștergere sau o greșeală și să oprim pe cineva care strică un arbore, și pozele propuse pentru prima pagină, ca să le aprobăm. Tot acolo putem ține o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.",
           l6: "Nu vindem date, nu facem reclame și nu le dăm nimănui altcuiva în afară de furnizorii de mai jos, de partenerul PropManage (doar emailul celor care au bifat, cum scrie mai jos) și de autorități, când legea ne obligă.",
         },
         vendors: {
           h: "Furnizorii care ne ajută",
           p1: "Lucrăm cu câțiva furnizori, care prelucrează datele doar ca să meargă site-ul, după contracte care îi obligă să le păzească:",
-          l1: "<b>Vercel Inc.</b> (SUA) găzduiește site-ul și rulează aplicația.",
+          l1: "<b>Vercel Inc.</b> (SUA) găzduiește site-ul. Aplicația rulează pe serverele lor din Frankfurt (Germania, UE), lângă baza de date; paginile ajung la tine prin rețeaua lor, care poate trece și prin alte țări, ca să se încarce repede.",
           l2: "<b>Neon</b> (Databricks Inc., SUA) păstrează baza de date, pozele, actele și înregistrările, într-un centru de date din Frankfurt (Germania, UE).",
           l3: "<b>Google</b>, doar dacă alegi „Continuă cu Google”, îți confirmă identitatea la intrare.",
           l4: "<b>OpenStreetMap</b> (Fundația OpenStreetMap, Marea Britanie) dă bucățile de hartă din „Harta neamului”. Browserul tău le cere direct de la ei, așa că ei văd adresa IP de la care le ceri.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, SUA) ne aduce pe email mesajele trimise din pagina Contact. <b>WhatsApp</b> (WhatsApp Ireland Ltd., din grupul Meta), doar dacă alegi să ne scrii acolo, după propriile lor reguli de confidențialitate.",
           p2: "Pentru transferurile în afara Uniunii Europene, acești furnizori folosesc clauzele contractuale standard aprobate de Comisia Europeană sau cadrul UE–SUA privind protecția datelor. Despre cei în viață nu trimitem nimic către servicii de inteligență artificială.",
         },
         partner: {
@@ -82,6 +87,7 @@ export const roLegal = {
         keep: {
           h: "Cât timp păstrăm datele",
           p1: "Cât timp ai cont. Ce ștergi tu dispare imediat din site, iar copiile de siguranță ale bazei de date se rescriu singure în cel mult 30 de zile. Când îți ștergi contul, pleacă tot ce e al tău: contul, amintirile din lada ta, mesajele, ce ai scris altora și acordurile. Arborii rămân ai familiei: un arbore cu alți membri trece la unul dintre ei, iar unul în care ești singur se șterge cu totul. Fișa ta din arbori rămâne, ca să nu se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale. Cât folosești site-ul păstrăm cel mult 13 luni; dacă spui „Nu mai vreau”, se șterge imediat.",
+          p2: "Pozele propuse pentru prima pagină le păstrăm până le retragi sau până îți ștergi contul; una pe care n-o alegem rămâne doar la noi și nu se vede public. Mesajele primite din pagina Contact sau pe WhatsApp le păstrăm cât e nevoie ca să lămurim ce ne-ai scris; dacă vrei să le ștergem mai devreme, spune-ne.",
         },
         rights: {
           h: "Drepturile tale",
@@ -97,11 +103,13 @@ export const roLegal = {
         cookies: {
           h: "Cookie-uri",
           p1: "Folosim doar cookie-urile fără de care site-ul n-ar merge, așa că nu-ți cerem acordul pentru ele:",
-          l1: "cel care te ține conectat în cont;",
+          l1: "<code>better-auth.session_token</code> (pe conexiunea criptată, cu <code>__Secure-</code> în față), care te ține conectat în cont, cel mult 7 zile de când ai folosit ultima dată site-ul, și <code>better-auth.session_data</code>, o copie semnată a lui, ținută 5 minute, ca paginile să se deschidă mai repede. Amândouă dispar când ieși din cont;",
           l2: "<code>limba</code>, cu limba în care ai ales să citești site-ul pe acest telefon sau calculator (de pildă „ro” sau „de”), păstrat un an;",
-          l3: "cel cu tema aleasă (luminoasă sau întunecată);",
+          l5: "<code>limba_intrebare</code>, doar dacă închizi cu ✕ întrebarea despre limba site-ului, ca să nu te mai întrebăm, păstrat un an;",
+          l3: "<code>tema</code>, cu tema aleasă (luminoasă, întunecată sau automată), păstrat un an;",
+          l6: "<code>cn-cookie-uri</code>, după ce apeși „Am înțeles” pe anunțul despre cookie-uri, ca să nu-l mai vezi, păstrat un an;",
           l4: "<code>cn-parteneri</code>, doar dacă bifezi beneficiile de la parteneri când îți faci contul: ține minte bifa cel mult 30 de minute, cât să ajungă alegerea ta la contul nou (și când îl faci cu Google), apoi dispare.",
-          p2: "Nu folosim cookie-uri de reclamă sau de numărat vizitele.",
+          p2: "Nu folosim cookie-uri de reclamă, de statistici sau de rețele sociale, iar site-ul nu încarcă scripturi de la alte firme. Singurele lucruri pe care browserul tău le cere direct de la alții sunt bucățile de hartă de la OpenStreetMap și, dacă ai intrat cu Google, poza contului tău Google.",
         },
         safety: {
           h: "Siguranța",
@@ -135,6 +143,7 @@ export const roLegal = {
           l2: "Despre rudele în viață scrii cu grijă și cu bun-simț. Dacă cineva îți cere să-i scoți datele din arbore, i le scoți sau ne scrii nouă.",
           l3: "Nu pui nimic ilegal, jignitor sau care îndeamnă la ură, nici datele altora fără drept.",
           l4: "Putem ascunde sau șterge ce încalcă acești termeni sau legea și îți spunem de ce.",
+          l5: "Când propui o poză pentru prima pagină, ne asiguri că ești în ea sau că ai acordul tuturor celor din ea (pentru copii, al părinților lor) și ne dai voie s-o arătăm public pe prima pagină cât timp nu o retragi. Putem alege să n-o punem sau s-o scoatem oricând.",
         },
         owner: {
           h: "3. Al cui e ce pui",

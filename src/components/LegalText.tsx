@@ -8,8 +8,8 @@ import { BETA, MIN_AGE, operator } from "@/lib/legal";
 type Page = "Privacy" | "Terms";
 type Section = Record<string, string>;
 
-/** Ancore cerute din alte pagini („Datele mele” trimite la #folosire și #parteneri). */
-const ANCHORS: Record<string, string> = { "Privacy.data.l8": "folosire", "Privacy.partner": "parteneri" };
+/** Ancore cerute din alte pagini („Datele mele” trimite la #folosire și #parteneri; anunțul și subsolul, la #cookie-uri). */
+const ANCHORS: Record<string, string> = { "Privacy.data.l8": "folosire", "Privacy.partner": "parteneri", "Privacy.cookies": "cookie-uri" };
 
 const ext = (href: string) => (c: ReactNode) => <a href={href} rel="noopener noreferrer" target="_blank">{c}</a>;
 

@@ -5,10 +5,13 @@
  * și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune, de pildă când în locul omului vine o firmă.
  */
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
-export const TERMS_DATE = new Date("2026-11-06T12:00:00Z");
-/** Ultima schimbare a Politicii de confidențialitate (partenerul PropManage și cookie-ul `limba`); Termenii au rămas din 6 noiembrie. */
-export const PRIVACY_DATE = new Date("2026-11-10T12:00:00Z");
-export const TERMS_VERSION = "2026-11-06";
+export const TERMS_DATE = new Date("2026-11-11T12:00:00Z");
+/**
+ * Ultima schimbare a Politicii de confidențialitate (11 noiembrie: pozele propuse pentru prima pagină, pagina Contact și
+ * WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin, lista întreagă a cookie-urilor și a ce ține browserul).
+ */
+export const PRIVACY_DATE = new Date("2026-11-11T12:00:00Z");
+export const TERMS_VERSION = "2026-11-11";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
 
@@ -36,9 +39,10 @@ export const FAITH_CONSENT_TEXT = "Sunt de acord ca ce scriu despre credința me
  */
 export const BETA = true;
 
-// Puse aici la cererea lui Daniel (6 noiembrie 2026), care a ales ca adresa să fie publică, pe site și în cod.
+// Puse aici la cererea lui Daniel (6 noiembrie 2026). Din 11 noiembrie, pentru cererile despre date se folosește adresa
+// site-ului, nu cea personală a lui Daniel (aceeași în care ajung și mesajele din pagina Contact).
 const OPERATOR_DEFAULT = "Daniel Igna";
-const CONTACT_DEFAULT = "danieligna1@gmail.com";
+const CONTACT_DEFAULT = "contact.carteaneamului@gmail.com";
 
 /** Cine răspunde de date: numele (`person`: omul însuși, nu o firmă) și adresa de contact. */
 export function operator() {
@@ -48,3 +52,6 @@ export function operator() {
 
 /** Vârsta de la care cineva își poate face cont. */
 export const MIN_AGE = 16;
+
+/** Cookie-ul pus de „Am înțeles” pe anunțul despre cookie-uri, ca anunțul să nu mai apară pe acel dispozitiv (un an). */
+export const COOKIE_NOTICE_COOKIE = "cn-cookie-uri";

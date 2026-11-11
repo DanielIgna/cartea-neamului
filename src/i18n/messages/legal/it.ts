@@ -31,7 +31,9 @@ export const itLegal: LegalCatalog = {
           l8: "<b>Quanto usi il sito</b>, solo se rispondi «Va bene» alla domanda che ti facciamo una sola volta: per giorno, quanto tempo sei stato in ogni parte del sito (per esempio «Albero · Albero» o «La mappa della famiglia»), quante volte l’hai aperta e quanta parte di quel tempo è stata sul telefono o nell’app del telefono. Contiamo solo il tempo in cui la pagina è in primo piano e ci fai qualcosa. Non conserviamo l’indirizzo della pagina, ciò che scrivi o su cosa clicchi.",
           l9: "<b>Vantaggi dai partner</b>, solo se metti la spunta (alla creazione dell’account o in «I miei dati»): ogni «sì» e ogni «no», con la data, la versione del testo spuntato, la lingua e il punto da cui hai scelto.",
           l10: "<b>La casa di famiglia:</b> ciò che scrivi sulla casa della famiglia nella pagina di una persona (l’indirizzo o il paese, chi l’ha costruita, l’anno, foto e la sua storia). La vede solo chi scegli tu, come per i ricordi.",
-          l11: "<b>Nel tuo browser:</b> il tema scelto (chiaro o scuro), i rami della famiglia che hai scelto di vedere e se hai già visto la scheda del partner dopo aver scaricato il libro. Se hai detto «Va bene» alla misurazione del tempo, anche l’ultimo minuto contato, al massimo un’ora, perché ci arrivi anche se chiudi la pagina di fretta.",
+          l13: "<b>Le foto proposte per la home page</b>, solo se scegli tu di proporne una dall’album di famiglia: una copia della foto, la riga scritta sotto, chi l’ha proposta, quando, in che lingua e la versione del consenso spuntato. Finché non è approvata, la vediamo solo noi.",
+          l14: "<b>Quando ci scrivi</b> dalla pagina Contatti: il tuo nome, il tuo indirizzo email (per poterti rispondere) e il messaggio. Non li conserviamo sul sito: vanno direttamente nella nostra casella email. Se ci scrivi su WhatsApp, vediamo il tuo numero di telefono, il tuo nome su WhatsApp e ciò che ci scrivi.",
+          l11: "<b>Nel tuo browser</b>, oltre ai cookie elencati in fondo alla pagina, alcune scelte conservate solo sul tuo telefono o computer, per non doverle rifare ogni volta: i rami della famiglia che hai scelto di vedere, cosa hai scelto per ultimo in «Il filo del tempo», «Da Adamo a Cristo» e «La storia della Chiesa», le schede che hai segnato come non doppie, se hai nascosto la scheda per installare l’app e se hai già visto la scheda del partner dopo aver scaricato il libro. Se hai detto «Va bene» alla misurazione del tempo, anche l’ultimo minuto contato, al massimo un’ora, perché ci arrivi anche se chiudi la pagina di fretta.",
           l12: "<b>I registri tecnici</b> del server (indirizzo IP, pagina richiesta, ora), conservati per poco tempo, per poter correggere gli errori.",
         },
         why: {
@@ -40,7 +42,8 @@ export const itLegal: LegalCatalog = {
           l2: "Per proteggere gli account e gli alberi: le sessioni, il registro delle modifiche e il limite alle ricerche. La base giuridica è il nostro legittimo interesse a mantenere il sito sicuro (art. 6, par. 1, lett. f).",
           l3: "Per vedere cosa usano le persone e cosa va migliorato: le cifre su account e alberi nel pannello di amministrazione, senza ciò che scrivete. La base giuridica è il nostro legittimo interesse a migliorare il sito (art. 6, par. 1, lett. f).",
           l4: "Per i parenti viventi che inserisci nell’albero, la base giuridica è il legittimo interesse della famiglia a conservare la propria storia, con cura: gli alberi sono privati e i viventi si vedono solo nel proprio albero, mai presso altre famiglie. Chiunque sia inserito in un albero può chiederci di correggere o cancellare i suoi dati.",
-          l5: "Sulla base del tuo consenso, che puoi revocare in qualsiasi momento: il capitolo «La fede» (art. 9, par. 2, lett. a), le storie registrate «dai nonni», «Dagli stessi luoghi», quanto usi il sito e i vantaggi dai partner (art. 6, par. 1, lett. a). La revoca non cambia ciò che è stato fatto prima con il consenso dato.",
+          l5: "Sulla base del tuo consenso, che puoi revocare in qualsiasi momento: il capitolo «La fede» (art. 9, par. 2, lett. a), le storie registrate «dai nonni», «Dagli stessi luoghi», quanto usi il sito, i vantaggi dai partner e le foto proposte per la home page (art. 6, par. 1, lett. a). La revoca non cambia ciò che è stato fatto prima con il consenso dato.",
+          l6: "Per risponderti quando ci scrivi (dalla pagina Contatti, via email o su WhatsApp). La base è il nostro legittimo interesse a rispondere a chi ci cerca (art. 6, par. 1, lett. f) o, quando ci scrivi del tuo account, il contratto tra noi (lett. b).",
         },
         who: {
           h: "Chi vede i dati",
@@ -48,16 +51,18 @@ export const itLegal: LegalCatalog = {
           l2: "<b>I viventi</b> si vedono solo nel proprio albero. Non compaiono in «Dagli stessi luoghi» né presso altre famiglie. L’unico che può trovare la propria scheda dall’esterno dell’albero è la persona stessa, con il suo nome e la data di nascita completa; allora il proprietario dell’albero decide se accoglierla, e fino ad allora chi cerca non sa nemmeno di quale albero si tratta.",
           l3: "<b>I ricordi</b> li vede solo chi sceglie chi li scrive: solo lui (bozza), chi ha fatto la domanda, la famiglia stretta fino a un certo grado di parentela o tutto l’albero. Nel libro della famiglia entrano solo quelli spuntati per il libro.",
           l4: "<b>I messaggi</b> li vedono solo le due persone che se li scrivono.",
-          l5: "<b>Noi</b> vediamo nel pannello di amministrazione solo elenchi e cifre: gli account (nome, email, quando e da che tipo di dispositivo sono entrati), gli alberi (nome, quante persone e file hanno), per ogni account quanto ha aggiunto (quante persone, ricordi, foto, inviti e messaggi) e, per chi ha detto «Va bene», quanto tempo passa in ogni parte del sito. Lì possiamo anche tenere una breve nota sull’account, per esempio che resta gratuito. Non leggiamo i ricordi e i messaggi, e dal capitolo «La fede» non contiamo nulla; li guardiamo solo se ci chiedi aiuto o se la legge ci obbliga.",
+          l7: "<b>Le foto della home page</b> le vede chiunque apra il sito: sono foto scelte da noi e foto proposte da voi, dopo che le abbiamo approvate. Quelle che hai proposto tu puoi ritirarle in qualsiasi momento da «Il film di una vita», sulla tua pagina nell’albero; allora escono dalla home page e la loro copia viene cancellata.",
+          l5: "<b>Noi</b> vediamo nel pannello di amministrazione solo ciò che ci serve per far funzionare il sito: elenchi e cifre sugli account (nome, email, quando e da che tipo di dispositivo sono entrati), sugli alberi (nome, quante persone e file hanno), per ogni account quanto ha aggiunto (quante persone, ricordi, foto, inviti e messaggi) e, per chi ha detto «Va bene», quanto tempo passa in ogni parte del sito. Vediamo anche la cronologia delle modifiche alle schede degli alberi (chi ha cambiato quali nomi, date o luoghi, e quando), per poter annullare una cancellazione o un errore e fermare chi danneggia un albero, e le foto proposte per la home page, per approvarle. Lì possiamo anche tenere una breve nota sull’account, per esempio che resta gratuito. Non leggiamo i ricordi e i messaggi, e dal capitolo «La fede» non contiamo nulla; li guardiamo solo se ci chiedi aiuto o se la legge ci obbliga.",
           l6: "Non vendiamo dati, non facciamo pubblicità e non li diamo a nessun altro, tranne ai fornitori qui sotto, al nostro partner PropManage (solo l’email di chi ha messo la spunta, come scritto più sotto) e alle autorità, quando la legge ci obbliga.",
         },
         vendors: {
           h: "I fornitori che ci aiutano",
           p1: "Lavoriamo con alcuni fornitori, che trattano i dati solo per far funzionare il sito, secondo contratti che li obbligano a proteggerli:",
-          l1: "<b>Vercel Inc.</b> (USA) ospita il sito ed esegue l’applicazione.",
+          l1: "<b>Vercel Inc.</b> (USA) ospita il sito. L’applicazione gira sui loro server di Francoforte (Germania, UE), accanto al database; le pagine ti arrivano attraverso la loro rete, che può passare anche per altri paesi, per caricarsi in fretta.",
           l2: "<b>Neon</b> (Databricks Inc., USA) conserva il database, le foto, i documenti e le registrazioni, in un centro dati a Francoforte (Germania, UE).",
           l3: "<b>Google</b>, solo se scegli «Continua con Google», conferma la tua identità all’accesso.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Regno Unito) fornisce i pezzi di mappa della «Mappa della famiglia». Il tuo browser li chiede direttamente a loro, quindi vedono l’indirizzo IP da cui li chiedi.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) ci consegna via email i messaggi inviati dalla pagina Contatti. <b>WhatsApp</b> (WhatsApp Ireland Ltd., del gruppo Meta), solo se scegli di scriverci lì, secondo le sue regole sulla privacy.",
           p2: "Per i trasferimenti fuori dall’Unione europea, questi fornitori usano le clausole contrattuali tipo approvate dalla Commissione europea o il quadro UE-USA per la protezione dei dati. Sui viventi non inviamo nulla a servizi di intelligenza artificiale.",
         },
         partner: {
@@ -72,6 +77,7 @@ export const itLegal: LegalCatalog = {
         keep: {
           h: "Per quanto tempo conserviamo i dati",
           p1: "Finché hai un account. Ciò che cancelli sparisce subito dal sito, e le copie di sicurezza del database si sovrascrivono da sole entro 30 giorni al massimo. Quando cancelli il tuo account, se ne va tutto ciò che è tuo: l’account, i ricordi del tuo baule, i messaggi, ciò che hai scritto ad altri e i consensi. Gli alberi restano della famiglia: un albero con altri membri passa a uno di loro, mentre uno in cui sei solo viene cancellato del tutto. La tua scheda negli alberi resta, perché l’albero non si spezzi, senza il collegamento all’account; se vuoi, viene anche svuotata dei tuoi dati. Quanto usi il sito lo conserviamo al massimo 13 mesi; se dici «Non voglio più», viene cancellato subito.",
+          p2: "Le foto proposte per la home page le conserviamo finché non le ritiri o cancelli il tuo account; una che non scegliamo resta solo da noi e non viene mostrata in pubblico. I messaggi ricevuti dalla pagina Contatti o su WhatsApp li conserviamo per il tempo necessario a chiarire ciò che ci hai scritto; se vuoi che li cancelliamo prima, dillo.",
         },
         rights: {
           h: "I tuoi diritti",
@@ -87,11 +93,13 @@ export const itLegal: LegalCatalog = {
         cookies: {
           h: "Cookie",
           p1: "Usiamo solo i cookie senza i quali il sito non funzionerebbe, quindi non ti chiediamo il consenso per essi:",
-          l1: "quello che ti tiene collegato all’account;",
+          l1: "<code>better-auth.session_token</code> (sulla connessione cifrata, preceduto da <code>__Secure-</code>), che ti mantiene connesso, al massimo per 7 giorni dall’ultima volta che hai usato il sito, e <code>better-auth.session_data</code>, una copia firmata conservata 5 minuti perché le pagine si aprano più in fretta. Spariscono entrambi quando esci dall’account;",
           l2: "<code>limba</code>, con la lingua in cui hai scelto di leggere il sito su questo telefono o computer (per esempio «ro» o «de»), conservato per un anno;",
-          l3: "quello con il tema scelto (chiaro o scuro);",
+          l5: "<code>limba_intrebare</code>, solo se chiudi con ✕ la domanda sulla lingua del sito, per non chiedertelo di nuovo, conservato un anno;",
+          l3: "<code>tema</code>, con il tema scelto (chiaro, scuro o automatico), conservato un anno;",
+          l6: "<code>cn-cookie-uri</code>, dopo che hai premuto «Ho capito» sull’avviso dei cookie, perché tu non lo veda più, conservato un anno;",
           l4: "<code>cn-parteneri</code>, solo se spunti i vantaggi dai partner quando crei l’account: ricorda la spunta al massimo 30 minuti, il tempo che la tua scelta arrivi al nuovo account (anche se lo crei con Google), poi sparisce.",
-          p2: "Non usiamo cookie pubblicitari né cookie per contare le visite.",
+          p2: "Non usiamo cookie pubblicitari, statistici o dei social network, e il sito non carica script di altre aziende. Le uniche cose che il tuo browser chiede direttamente ad altri sono i pezzi di mappa di OpenStreetMap e, se sei entrato con Google, la foto del tuo account Google.",
         },
         safety: {
           h: "La sicurezza",
@@ -125,6 +133,7 @@ export const itLegal: LegalCatalog = {
           l2: "Sui parenti viventi scrivi con cura e buon senso. Se qualcuno ti chiede di togliere i suoi dati dall’albero, li togli o ci scrivi.",
           l3: "Non metti nulla di illegale, offensivo o che inciti all’odio, né dati di altri senza averne il diritto.",
           l4: "Possiamo nascondere o cancellare ciò che viola queste condizioni o la legge, e ti diciamo perché.",
+          l5: "Quando proponi una foto per la home page, ci garantisci che ci sei tu o che hai il consenso di tutte le persone ritratte (per i bambini, dei loro genitori), e ci permetti di mostrarla pubblicamente sulla home page finché non la ritiri. Possiamo scegliere di non pubblicarla o di toglierla in qualsiasi momento.",
         },
         owner: {
           h: "3. Di chi è ciò che metti",

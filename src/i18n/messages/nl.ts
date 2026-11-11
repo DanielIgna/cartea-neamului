@@ -23,6 +23,11 @@ export const nl: Catalog = {
     myData: "Mijn gegevens",
     signIn: "Inloggen",
     signInShort: "Inloggen",
+    cookies: "Cookies",
+    cookieLead: "Alleen strikt noodzakelijke cookies.",
+    cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen bezoekersstatistieken, dus we vragen geen toestemming.",
+    cookieMore: "Bekijk de lijst",
+    cookieOk: "Begrepen",
   },
   ThemeSwitch: {
     label: "Kleurthema",

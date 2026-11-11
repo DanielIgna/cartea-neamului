@@ -31,7 +31,9 @@ export const deLegal: LegalCatalog = {
           l8: "<b>Wie viel du die Seite nutzt</b>, nur wenn du auf die Frage, die wir dir ein einziges Mal stellen, „Gut“ sagst: pro Tag, wie lange du in jedem Teil der Seite warst (zum Beispiel „Stammbaum · Baum“ oder „Familienkarte“), wie oft du ihn geöffnet hast und wie viel davon am Handy oder in der App auf dem Handy war. Wir zählen nur die Zeit, in der die Seite im Vordergrund ist und du darin etwas tust. Wir speichern nicht die Adresse der Seite, was du schreibst oder worauf du klickst.",
           l9: "<b>Vorteile von Partnern</b>, nur wenn du das ankreuzt (beim Erstellen des Kontos oder unter „Meine Daten“): jedes „Ja“ und jedes „Nein“, mit Datum, Version des angekreuzten Textes, Sprache und dem Ort, an dem du gewählt hast.",
           l10: "<b>Das alte Familienhaus:</b> was du auf der Seite einer Person über das Haus der Familie schreibst (Adresse oder Dorf, wer es gebaut hat, das Jahr, Fotos und seine Geschichte). Es sieht nur, wen du auswählst, wie bei den Erinnerungen.",
-          l11: "<b>In deinem Browser:</b> das gewählte Design (hell oder dunkel), die Familienlinien, die du sehen willst, und ob du die Partnerkarte nach dem Herunterladen des Buches schon gesehen hast. Wenn du der Zeitmessung zugestimmt hast, auch die zuletzt gezählte Minute, höchstens eine Stunde, damit sie uns auch erreicht, wenn du die Seite eilig schließt.",
+          l13: "<b>Für die Startseite vorgeschlagene Fotos</b>, nur wenn du selbst eines aus dem Familienalbum vorschlägst: eine Kopie des Fotos, die Zeile darunter, wer es vorgeschlagen hat, wann, in welcher Sprache und die Version der angekreuzten Einwilligung. Solange es nicht freigegeben ist, sehen nur wir es.",
+          l14: "<b>Wenn du uns schreibst</b> über die Seite Kontakt: dein Name, deine E-Mail-Adresse (damit wir antworten können) und deine Nachricht. Wir speichern sie nicht auf der Seite: Sie gehen direkt in unser E-Mail-Postfach. Wenn du uns über WhatsApp schreibst, sehen wir deine Telefonnummer, deinen WhatsApp-Namen und was du schreibst.",
+          l11: "<b>In deinem Browser</b>, neben den Cookies am Ende dieser Seite, ein paar Einstellungen, die nur auf deinem Handy oder Computer bleiben, damit du sie nicht jedes Mal neu wählen musst: die Familienlinien, die du sehen willst, was du zuletzt in „Der Faden der Zeit“, „Von Adam bis Christus“ und „Kirchengeschichte“ gewählt hast, die Personen, die du als keine Doppelten markiert hast, ob du die Karte zum Installieren der App ausgeblendet hast und ob du die Partnerkarte nach dem Herunterladen des Buches schon gesehen hast. Wenn du der Zeitmessung zugestimmt hast, auch die zuletzt gezählte Minute, höchstens eine Stunde, damit sie uns auch erreicht, wenn du die Seite eilig schließt.",
           l12: "<b>Die technischen Protokolle</b> des Servers (IP-Adresse, aufgerufene Seite, Uhrzeit), kurz aufbewahrt, damit wir Fehler beheben können.",
         },
         why: {
@@ -40,7 +42,8 @@ export const deLegal: LegalCatalog = {
           l2: "Um Konten und Stammbäume zu schützen: die Sitzungen, das Änderungsprotokoll und die Begrenzung der Suchen. Rechtsgrundlage ist unser berechtigtes Interesse, die Seite sicher zu halten (Art. 6 Abs. 1 lit. f).",
           l3: "Um zu sehen, was die Menschen nutzen und was besser werden muss: die Zahlen zu Konten und Stammbäumen im Verwaltungsbereich, ohne das, was ihr schreibt. Rechtsgrundlage ist unser berechtigtes Interesse, die Seite zu verbessern (Art. 6 Abs. 1 lit. f).",
           l4: "Für die lebenden Verwandten, die du in den Stammbaum einträgst, ist die Rechtsgrundlage das berechtigte Interesse der Familie, ihre Geschichte zu bewahren, mit Sorgfalt: Stammbäume sind privat, und Lebende sind nur in ihrem eigenen Stammbaum sichtbar, nie bei anderen Familien. Wer in einem Stammbaum eingetragen ist, kann verlangen, dass wir seine Daten berichtigen oder löschen.",
-          l5: "Auf Grundlage deiner Einwilligung, die du jederzeit widerrufen kannst: das Kapitel „Glaube“ (Art. 9 Abs. 2 lit. a), die „bei den Großeltern“ aufgenommenen Geschichten, „Aus denselben Orten“, wie viel du die Seite nutzt und die Vorteile von Partnern (Art. 6 Abs. 1 lit. a). Der Widerruf ändert nichts an dem, was vorher mit der erteilten Einwilligung geschehen ist.",
+          l5: "Auf Grundlage deiner Einwilligung, die du jederzeit widerrufen kannst: das Kapitel „Glaube“ (Art. 9 Abs. 2 lit. a), die „bei den Großeltern“ aufgenommenen Geschichten, „Aus denselben Orten“, wie viel du die Seite nutzt, die Vorteile von Partnern und die für die Startseite vorgeschlagenen Fotos (Art. 6 Abs. 1 lit. a). Der Widerruf ändert nichts an dem, was vorher mit der erteilten Einwilligung geschehen ist.",
+          l6: "Um dir zu antworten, wenn du uns schreibst (über die Seite Kontakt, per E-Mail oder WhatsApp). Grundlage ist unser berechtigtes Interesse, denen zu antworten, die sich an uns wenden (Art. 6 Abs. 1 lit. f), oder, wenn du uns zu deinem Konto schreibst, der Vertrag zwischen uns (lit. b).",
         },
         who: {
           h: "Wer die Daten sieht",
@@ -48,16 +51,18 @@ export const deLegal: LegalCatalog = {
           l2: "<b>Lebende</b> sind nur in ihrem eigenen Stammbaum sichtbar. Sie erscheinen nicht unter „Aus denselben Orten“ und auch nicht bei anderen Familien. Der Einzige, der seinen Eintrag von außerhalb des Stammbaums finden kann, ist der Mensch selbst, mit seinem Namen und seinem vollständigen Geburtsdatum; dann entscheidet der Eigentümer des Stammbaums, ob er ihn aufnimmt, und bis dahin erfährt der Suchende nicht einmal, um welchen Stammbaum es geht.",
           l3: "<b>Erinnerungen</b> sieht nur, wen der Schreibende auswählt: nur er selbst (Entwurf), der, der gefragt hat, die nahe Familie bis zu einem bestimmten Verwandtschaftsgrad oder der ganze Stammbaum. Ins Familienbuch kommen nur die, die für das Buch angekreuzt sind.",
           l4: "<b>Nachrichten</b> sehen nur die beiden, die sie einander schreiben.",
-          l5: "<b>Wir</b> sehen im Verwaltungsbereich nur Listen und Zahlen: die Konten (Name, E-Mail, wann und mit welcher Art von Gerät sie sich angemeldet haben), die Stammbäume (Name, wie viele Personen und Dateien sie haben), bei jedem Konto, wie viel es hinzugefügt hat (wie viele Personen, Erinnerungen, Fotos, Einladungen und Nachrichten), und bei denen, die „Gut“ gesagt haben, wie lange sie in jedem Teil der Seite sind. Dort können wir auch eine kurze Notiz zum Konto führen, zum Beispiel, dass es kostenlos bleibt. Erinnerungen und Nachrichten lesen wir nicht, und aus dem Kapitel „Glaube“ zählen wir nichts; wir sehen sie uns nur an, wenn du uns um Hilfe bittest oder das Gesetz uns dazu verpflichtet.",
+          l7: "<b>Die Fotos auf der Startseite</b> sieht jeder, der die Seite öffnet: Es sind von uns ausgewählte Fotos und von euch vorgeschlagene, nachdem wir sie freigegeben haben. Deine eigenen Vorschläge kannst du jederzeit zurückziehen, über „Ein Leben auf Film“ auf deiner Seite im Stammbaum; dann verschwinden sie von der Startseite und ihre Kopie wird gelöscht.",
+          l5: "<b>Wir</b> sehen im Verwaltungsbereich nur, was wir brauchen, um die Seite am Laufen zu halten: Listen und Zahlen zu den Konten (Name, E-Mail, wann und mit welcher Art von Gerät sie sich angemeldet haben), zu den Stammbäumen (Name, wie viele Personen und Dateien sie haben), bei jedem Konto, wie viel es hinzugefügt hat (wie viele Personen, Erinnerungen, Fotos, Einladungen und Nachrichten), und bei denen, die „Gut“ gesagt haben, wie lange sie in jedem Teil der Seite sind. Außerdem sehen wir den Verlauf der Änderungen an den Personen in den Stammbäumen (wer welche Namen, Daten oder Orte wann geändert hat), damit wir eine Löschung oder einen Fehler rückgängig machen und jemanden stoppen können, der einen Stammbaum beschädigt, sowie die für die Startseite vorgeschlagenen Fotos, um sie freizugeben. Dort können wir auch eine kurze Notiz zum Konto führen, zum Beispiel, dass es kostenlos bleibt. Erinnerungen und Nachrichten lesen wir nicht, und aus dem Kapitel „Glaube“ zählen wir nichts; wir sehen sie uns nur an, wenn du uns um Hilfe bittest oder das Gesetz uns dazu verpflichtet.",
           l6: "Wir verkaufen keine Daten, zeigen keine Werbung und geben sie niemandem sonst, außer den Dienstleistern unten, unserem Partner PropManage (nur die E-Mail-Adresse derer, die es angekreuzt haben, wie unten beschrieben) und Behörden, wenn das Gesetz uns dazu verpflichtet.",
         },
         vendors: {
           h: "Die Dienstleister, die uns helfen",
           p1: "Wir arbeiten mit einigen Dienstleistern, die die Daten nur verarbeiten, damit die Seite funktioniert, nach Verträgen, die sie verpflichten, sie zu schützen:",
-          l1: "<b>Vercel Inc.</b> (USA) hostet die Seite und betreibt die Anwendung.",
+          l1: "<b>Vercel Inc.</b> (USA) hostet die Seite. Die Anwendung läuft auf ihren Servern in Frankfurt (Deutschland, EU), neben der Datenbank; die Seiten erreichen dich über ihr Netzwerk, das auch durch andere Länder laufen kann, damit sie schnell laden.",
           l2: "<b>Neon</b> (Databricks Inc., USA) speichert die Datenbank, die Fotos, Dokumente und Aufnahmen, in einem Rechenzentrum in Frankfurt (Deutschland, EU).",
           l3: "<b>Google</b> bestätigt deine Identität bei der Anmeldung, nur wenn du „Mit Google fortfahren“ wählst.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Vereinigtes Königreich) liefert die Kartenteile der „Familienkarte“. Dein Browser fordert sie direkt bei ihnen an, darum sehen sie die IP-Adresse, von der aus du sie anforderst.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) stellt uns die über die Seite Kontakt gesendeten Nachrichten per E-Mail zu. <b>WhatsApp</b> (WhatsApp Ireland Ltd., Teil der Meta-Gruppe), nur wenn du uns dort schreibst, nach deren eigenen Datenschutzregeln.",
           p2: "Für Übermittlungen außerhalb der Europäischen Union nutzen diese Dienstleister die von der Europäischen Kommission genehmigten Standardvertragsklauseln oder den EU-US-Datenschutzrahmen. Über Lebende senden wir nichts an Dienste der künstlichen Intelligenz.",
         },
         partner: {
@@ -72,6 +77,7 @@ export const deLegal: LegalCatalog = {
         keep: {
           h: "Wie lange wir die Daten speichern",
           p1: "Solange du ein Konto hast. Was du löschst, verschwindet sofort von der Seite, und die Sicherungskopien der Datenbank überschreiben sich spätestens nach 30 Tagen von selbst. Wenn du dein Konto löschst, geht alles, was dir gehört: das Konto, die Erinnerungen aus deiner Truhe, die Nachrichten, was du anderen geschrieben hast, und die Einwilligungen. Die Stammbäume bleiben der Familie: Ein Stammbaum mit anderen Mitgliedern geht an einen von ihnen über, und einer, in dem du allein bist, wird ganz gelöscht. Dein Eintrag in den Stammbäumen bleibt, damit der Stammbaum nicht zerreißt, ohne Verbindung zum Konto; wenn du willst, wird er auch von deinen Daten geleert. Wie viel du die Seite nutzt, speichern wir höchstens 13 Monate; wenn du „Ich will nicht mehr“ sagst, wird es sofort gelöscht.",
+          p2: "Für die Startseite vorgeschlagene Fotos bewahren wir auf, bis du sie zurückziehst oder dein Konto löschst; ein Foto, das wir nicht auswählen, bleibt nur bei uns und wird nicht öffentlich gezeigt. Nachrichten über die Seite Kontakt oder WhatsApp bewahren wir so lange auf, wie wir brauchen, um dein Anliegen zu klären; wenn du möchtest, dass wir sie früher löschen, sag es uns.",
         },
         rights: {
           h: "Deine Rechte",
@@ -87,11 +93,13 @@ export const deLegal: LegalCatalog = {
         cookies: {
           h: "Cookies",
           p1: "Wir verwenden nur die Cookies, ohne die die Seite nicht funktionieren würde, darum bitten wir dafür nicht um deine Einwilligung:",
-          l1: "das, das dich im Konto angemeldet hält;",
+          l1: "<code>better-auth.session_token</code> (bei verschlüsselter Verbindung mit <code>__Secure-</code> davor), das dich angemeldet hält, höchstens 7 Tage nach deiner letzten Nutzung der Seite, und <code>better-auth.session_data</code>, eine signierte Kopie, die 5 Minuten gespeichert wird, damit Seiten schneller öffnen. Beide verschwinden, wenn du dich abmeldest;",
           l2: "<code>limba</code>, mit der Sprache, in der du die Seite auf diesem Handy oder Computer lesen willst (zum Beispiel „ro“ oder „de“), ein Jahr lang gespeichert;",
-          l3: "das mit dem gewählten Design (hell oder dunkel);",
+          l5: "<code>limba_intrebare</code>, nur wenn du die Frage nach der Sprache der Seite mit ✕ schließt, damit wir nicht noch einmal fragen, ein Jahr gespeichert;",
+          l3: "<code>tema</code>, mit dem gewählten Design (hell, dunkel oder automatisch), ein Jahr gespeichert;",
+          l6: "<code>cn-cookie-uri</code>, nachdem du beim Hinweis zu Cookies auf „Verstanden“ gedrückt hast, damit du ihn nicht wieder siehst, ein Jahr gespeichert;",
           l4: "<code>cn-parteneri</code>, nur wenn du beim Erstellen des Kontos die Vorteile von Partnern ankreuzt: Es merkt sich das Häkchen höchstens 30 Minuten, gerade so lange, bis deine Wahl beim neuen Konto ankommt (auch wenn du es mit Google erstellst), und verschwindet dann.",
-          p2: "Wir verwenden keine Werbe-Cookies und keine Cookies zum Zählen von Besuchen.",
+          p2: "Wir verwenden keine Werbe-, Statistik- oder Social-Media-Cookies, und die Seite lädt keine Skripte anderer Firmen. Das Einzige, was dein Browser direkt bei anderen abruft, sind die Kartenkacheln von OpenStreetMap und, wenn du dich mit Google angemeldet hast, das Bild deines Google-Kontos.",
         },
         safety: {
           h: "Sicherheit",
@@ -125,6 +133,7 @@ export const deLegal: LegalCatalog = {
           l2: "Über lebende Verwandte schreibst du mit Sorgfalt und Anstand. Wenn dich jemand bittet, seine Daten aus dem Stammbaum zu entfernen, entfernst du sie oder schreibst uns.",
           l3: "Du stellst nichts Rechtswidriges, Beleidigendes oder zu Hass Aufstachelndes ein, auch keine Daten anderer ohne Berechtigung.",
           l4: "Wir können verbergen oder löschen, was gegen diese Bedingungen oder das Gesetz verstößt, und sagen dir, warum.",
+          l5: "Wenn du ein Foto für die Startseite vorschlägst, versicherst du uns, dass du darauf zu sehen bist oder die Zustimmung aller Abgebildeten hast (bei Kindern die ihrer Eltern), und erlaubst uns, es öffentlich auf der Startseite zu zeigen, solange du es nicht zurückziehst. Wir können entscheiden, es nicht zu zeigen oder jederzeit zu entfernen.",
         },
         owner: {
           h: "3. Wem gehört, was du einstellst",

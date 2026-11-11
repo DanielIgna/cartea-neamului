@@ -31,7 +31,9 @@ export const nlLegal: LegalCatalog = {
           l8: "<b>Hoeveel je de site gebruikt</b>, alleen als je ‘Goed’ zegt op de vraag die we je één keer stellen: per dag hoe lang je in elk deel van de site was (bijvoorbeeld ‘Stamboom · Boom’ of ‘De familiekaart’), hoe vaak je het hebt geopend en hoeveel van die tijd op een telefoon of in de app op de telefoon was. We tellen alleen de tijd waarin de pagina vooraan staat en je er iets in doet. We bewaren niet het adres van de pagina, wat je schrijft of waarop je klikt.",
           l9: "<b>Voordelen van partners</b>, alleen als je dat aanvinkt (bij het maken van je account of in ‘Mijn gegevens’): elk ‘ja’ en elk ‘nee’, met de datum, de versie van de aangevinkte tekst, de taal en de plek waar je koos.",
           l10: "<b>Het ouderlijk huis:</b> wat je op de pagina van een persoon schrijft over het huis van de familie (het adres of het dorp, wie het heeft gebouwd, het jaar, foto’s en het verhaal ervan). Alleen wie jij kiest ziet het, net als bij herinneringen.",
-          l11: "<b>In je browser:</b> het gekozen thema (licht of donker), de familielijnen die je wilt zien en of je de kaart van de partner na het downloaden van het boek al hebt gezien. Als je ‘Goed’ hebt gezegd op het meten van de tijd, ook de laatst getelde minuut, hoogstens een uur, zodat die ons ook bereikt als je de pagina haastig sluit.",
+          l13: "<b>Foto’s voorgesteld voor de startpagina</b>, alleen als je er zelf een uit het familiealbum voorstelt: een kopie van de foto, de regel eronder, wie hem voorstelde, wanneer, in welke taal en de versie van de aangevinkte toestemming. Zolang hij niet is goedgekeurd, zien alleen wij hem.",
+          l14: "<b>Als je ons schrijft</b> via de pagina Contact: je naam, je e-mailadres (zodat we kunnen antwoorden) en je bericht. We bewaren ze niet op de site: ze gaan rechtstreeks naar onze mailbox. Als je ons via WhatsApp schrijft, zien we je telefoonnummer, je WhatsApp-naam en wat je schrijft.",
+          l11: "<b>In je browser</b>, naast de cookies onderaan deze pagina, een paar keuzes die alleen op je telefoon of computer blijven, zodat je ze niet telkens opnieuw hoeft te maken: de familielijnen die je wilt zien, wat je het laatst koos in ‘De draad van de tijd’, ‘Van Adam tot Christus’ en ‘Kerkgeschiedenis’, de personen die je als geen dubbel hebt gemarkeerd, of je de kaart voor het installeren van de app hebt verborgen en of je de kaart van de partner na het downloaden van het boek al hebt gezien. Als je ‘Goed’ hebt gezegd op het meten van de tijd, ook de laatst getelde minuut, hoogstens een uur, zodat die ons ook bereikt als je de pagina haastig sluit.",
           l12: "<b>De technische logbestanden</b> van de server (IP-adres, opgevraagde pagina, tijd), kort bewaard, zodat we fouten kunnen herstellen.",
         },
         why: {
@@ -40,7 +42,8 @@ export const nlLegal: LegalCatalog = {
           l2: "Om accounts en stambomen te beschermen: de sessies, het logboek van wijzigingen en de beperking van het zoeken. De grondslag is ons gerechtvaardigd belang om de site veilig te houden (art. 6 lid 1 sub f).",
           l3: "Om te zien wat mensen gebruiken en wat beter moet: de cijfers over accounts en stambomen in het beheerpaneel, zonder wat jullie schrijven. De grondslag is ons gerechtvaardigd belang om de site te verbeteren (art. 6 lid 1 sub f).",
           l4: "Voor de levende familieleden die je in de stamboom zet, is de grondslag het gerechtvaardigd belang van de familie om haar geschiedenis te bewaren, met zorg: stambomen zijn privé en levenden zijn alleen zichtbaar in hun eigen stamboom, nooit bij andere families. Iedereen die in een stamboom staat, kan ons vragen zijn gegevens te verbeteren of te verwijderen.",
-          l5: "Op basis van je toestemming, die je altijd kunt intrekken: het hoofdstuk ‘Geloof’ (art. 9 lid 2 sub a), de verhalen die ‘bij opa en oma’ zijn opgenomen, ‘Uit dezelfde plaatsen’, hoeveel je de site gebruikt en de voordelen van partners (art. 6 lid 1 sub a). Intrekken verandert niets aan wat eerder met de gegeven toestemming is gedaan.",
+          l5: "Op basis van je toestemming, die je altijd kunt intrekken: het hoofdstuk ‘Geloof’ (art. 9 lid 2 sub a), de verhalen die ‘bij opa en oma’ zijn opgenomen, ‘Uit dezelfde plaatsen’, hoeveel je de site gebruikt, de voordelen van partners en de foto’s voorgesteld voor de startpagina (art. 6 lid 1 sub a). Intrekken verandert niets aan wat eerder met de gegeven toestemming is gedaan.",
+          l6: "Om je te antwoorden als je ons schrijft (via de pagina Contact, per e-mail of via WhatsApp). De grondslag is ons gerechtvaardigd belang om te antwoorden aan wie ons zoekt (art. 6 lid 1 sub f) of, als je over je account schrijft, de overeenkomst tussen ons (sub b).",
         },
         who: {
           h: "Wie de gegevens ziet",
@@ -48,16 +51,18 @@ export const nlLegal: LegalCatalog = {
           l2: "<b>Levenden</b> zijn alleen zichtbaar in hun eigen stamboom. Ze verschijnen niet bij ‘Uit dezelfde plaatsen’ en ook niet bij andere families. De enige die zijn kaart van buiten de stamboom kan vinden, is de persoon zelf, met zijn naam en volledige geboortedatum; dan beslist de eigenaar van de stamboom of hij hem toelaat, en tot die tijd komt wie zoekt niet eens te weten om welke stamboom het gaat.",
           l3: "<b>Herinneringen</b> ziet alleen wie de schrijver kiest: alleen hijzelf (concept), wie de vraag stelde, de naaste familie tot een bepaalde graad van verwantschap of de hele stamboom. In het familieboek komen alleen de herinneringen die voor het boek zijn aangevinkt.",
           l4: "<b>Berichten</b> zien alleen de twee die ze elkaar sturen.",
-          l5: "<b>Wij</b> zien in het beheerpaneel alleen lijsten en cijfers: de accounts (naam, e-mail, wanneer en met wat voor apparaat ze inlogden), de stambomen (naam, hoeveel personen en bestanden ze hebben), per account hoeveel het heeft toegevoegd (hoeveel personen, herinneringen, foto’s, uitnodigingen en berichten) en, bij wie ‘Goed’ heeft gezegd, hoe lang ze in elk deel van de site zijn. Daar kunnen we ook een korte notitie over een account bijhouden, bijvoorbeeld dat het gratis blijft. Herinneringen en berichten lezen we niet, en uit het hoofdstuk ‘Geloof’ tellen we niets; we bekijken ze alleen als jij ons om hulp vraagt of als de wet ons verplicht.",
+          l7: "<b>De foto’s op de startpagina</b> ziet iedereen die de site opent: het zijn foto’s die wij hebben gekozen en foto’s die jullie hebben voorgesteld, nadat wij ze hebben goedgekeurd. Die van jou kun je altijd intrekken, via ‘Een leven op film’ op je pagina in de stamboom; dan verdwijnen ze van de startpagina en wordt hun kopie verwijderd.",
+          l5: "<b>Wij</b> zien in het beheerpaneel alleen wat we nodig hebben om de site draaiende te houden: lijsten en cijfers over de accounts (naam, e-mail, wanneer en met wat voor apparaat ze inlogden), over de stambomen (naam, hoeveel personen en bestanden ze hebben), per account hoeveel het heeft toegevoegd (hoeveel personen, herinneringen, foto’s, uitnodigingen en berichten) en, bij wie ‘Goed’ heeft gezegd, hoe lang ze in elk deel van de site zijn. We zien ook de geschiedenis van de wijzigingen in de personen van de stambomen (wie welke namen, data of plaatsen wijzigde, en wanneer), zodat we een verwijdering of een fout ongedaan kunnen maken en iemand kunnen tegenhouden die een stamboom beschadigt, en de foto’s die voor de startpagina zijn voorgesteld, om ze goed te keuren. Daar kunnen we ook een korte notitie over een account bijhouden, bijvoorbeeld dat het gratis blijft. Herinneringen en berichten lezen we niet, en uit het hoofdstuk ‘Geloof’ tellen we niets; we bekijken ze alleen als jij ons om hulp vraagt of als de wet ons verplicht.",
           l6: "We verkopen geen gegevens, tonen geen advertenties en geven ze aan niemand anders dan de leveranciers hieronder, onze partner PropManage (alleen het e-mailadres van wie het heeft aangevinkt, zoals hieronder staat) en de overheid, als de wet ons verplicht.",
         },
         vendors: {
           h: "De leveranciers die ons helpen",
           p1: "We werken met een paar leveranciers, die de gegevens alleen verwerken om de site te laten werken, volgens contracten die hen verplichten ze te beschermen:",
-          l1: "<b>Vercel Inc.</b> (VS) host de site en draait de toepassing.",
+          l1: "<b>Vercel Inc.</b> (VS) host de site. De toepassing draait op hun servers in Frankfurt (Duitsland, EU), naast de database; de pagina’s bereiken je via hun netwerk, dat ook door andere landen kan lopen, zodat ze snel laden.",
           l2: "<b>Neon</b> (Databricks Inc., VS) bewaart de database, de foto’s, documenten en opnamen, in een datacenter in Frankfurt (Duitsland, EU).",
           l3: "<b>Google</b> bevestigt bij het inloggen je identiteit, alleen als je kiest voor ‘Doorgaan met Google’.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Verenigd Koninkrijk) levert de kaartstukken van ‘De familiekaart’. Je browser vraagt ze rechtstreeks bij hen op, dus zij zien het IP-adres waarvandaan je ze opvraagt.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, VS) bezorgt ons per e-mail de berichten die via de pagina Contact worden verstuurd. <b>WhatsApp</b> (WhatsApp Ireland Ltd., onderdeel van Meta), alleen als je ervoor kiest ons daar te schrijven, volgens hun eigen privacyregels.",
           p2: "Voor doorgiften buiten de Europese Unie gebruiken deze leveranciers de door de Europese Commissie goedgekeurde modelcontractbepalingen of het EU-VS-kader voor gegevensbescherming. Over levenden sturen we niets naar diensten voor kunstmatige intelligentie.",
         },
         partner: {
@@ -72,6 +77,7 @@ export const nlLegal: LegalCatalog = {
         keep: {
           h: "Hoe lang we de gegevens bewaren",
           p1: "Zolang je een account hebt. Wat je verwijdert, verdwijnt meteen van de site, en de reservekopieën van de database worden binnen hoogstens 30 dagen vanzelf overschreven. Als je je account verwijdert, verdwijnt alles wat van jou is: het account, de herinneringen in je kist, de berichten, wat je anderen schreef en de toestemmingen. De stambomen blijven van de familie: een stamboom met andere leden gaat over naar een van hen, en een stamboom waarin je alleen bent, wordt helemaal verwijderd. Je kaart in de stambomen blijft, zodat de stamboom niet breekt, zonder de koppeling met het account; als je wilt, wordt ze ook leeggemaakt van je gegevens. Hoeveel je de site gebruikt, bewaren we hoogstens 13 maanden; als je zegt ‘Ik wil niet meer’, wordt het meteen verwijderd.",
+          p2: "Foto’s voorgesteld voor de startpagina bewaren we tot je ze intrekt of je account verwijdert; een foto die we niet kiezen blijft alleen bij ons en wordt niet openbaar getoond. Berichten via de pagina Contact of WhatsApp bewaren we zolang nodig is om af te handelen wat je schreef; wil je dat we ze eerder verwijderen, zeg het ons.",
         },
         rights: {
           h: "Je rechten",
@@ -87,11 +93,13 @@ export const nlLegal: LegalCatalog = {
         cookies: {
           h: "Cookies",
           p1: "We gebruiken alleen de cookies zonder welke de site niet zou werken, dus vragen we daarvoor niet je toestemming:",
-          l1: "de cookie die je ingelogd houdt;",
+          l1: "<code>better-auth.session_token</code> (op de versleutelde verbinding met <code>__Secure-</code> ervoor), die je ingelogd houdt, hoogstens 7 dagen nadat je de site voor het laatst gebruikte, en <code>better-auth.session_data</code>, een ondertekende kopie die 5 minuten bewaard wordt zodat pagina’s sneller openen. Beide verdwijnen als je uitlogt;",
           l2: "<code>limba</code>, met de taal waarin je de site op deze telefoon of computer wilt lezen (bijvoorbeeld ‘ro’ of ‘de’), een jaar bewaard;",
-          l3: "de cookie met het gekozen thema (licht of donker);",
+          l5: "<code>limba_intrebare</code>, alleen als je de vraag over de taal van de site met ✕ sluit, zodat we het niet opnieuw vragen, een jaar bewaard;",
+          l3: "<code>tema</code>, met het gekozen thema (licht, donker of automatisch), een jaar bewaard;",
+          l6: "<code>cn-cookie-uri</code>, nadat je op ‘Begrepen’ hebt gedrukt bij de melding over cookies, zodat je die niet meer ziet, een jaar bewaard;",
           l4: "<code>cn-parteneri</code>, alleen als je bij het maken van je account de voordelen van partners aanvinkt: hij onthoudt het vinkje hoogstens 30 minuten, net lang genoeg om je keuze bij het nieuwe account te krijgen (ook als je het met Google maakt), en verdwijnt dan.",
-          p2: "We gebruiken geen advertentiecookies en geen cookies om bezoeken te tellen.",
+          p2: "We gebruiken geen advertentie-, statistiek- of socialemediacookies, en de site laadt geen scripts van andere bedrijven. Het enige wat je browser rechtstreeks bij anderen opvraagt, zijn de kaarttegels van OpenStreetMap en, als je met Google bent ingelogd, de foto van je Google-account.",
         },
         safety: {
           h: "Veiligheid",
@@ -125,6 +133,7 @@ export const nlLegal: LegalCatalog = {
           l2: "Over levende familieleden schrijf je met zorg en gezond verstand. Als iemand je vraagt zijn gegevens uit de stamboom te halen, haal je ze eruit of schrijf je ons.",
           l3: "Je zet er niets op dat onwettig of beledigend is of tot haat aanzet, en ook geen gegevens van anderen zonder dat je daartoe het recht hebt.",
           l4: "We kunnen verbergen of verwijderen wat in strijd is met deze voorwaarden of met de wet, en we zeggen je waarom.",
+          l5: "Als je een foto voorstelt voor de startpagina, verzeker je ons dat je erop staat of dat je de toestemming hebt van iedereen die erop staat (voor kinderen die van hun ouders), en geef je ons toestemming om hem openbaar op de startpagina te tonen zolang je hem niet intrekt. We kunnen ervoor kiezen hem niet te plaatsen of op elk moment weg te halen.",
         },
         owner: {
           h: "3. Van wie is wat je erop zet",
