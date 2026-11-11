@@ -89,6 +89,11 @@ export const it: Catalog = {
     quoteText: "Cartea Neamului nasce perché ogni famiglia custodisca le sue persone, le sue storie e le sue voci per chi verrà dopo.",
     ctaTitle: "Inizia oggi l’albero della tua famiglia",
     ctaText: "Ci vuole un minuto. Il primo passo sei tu.",
+    heroTitleRich: "L’albero della famiglia, costruito <em>insieme</em>",
+    stat1: "generazioni nello stesso albero",
+    stat2: "lingue, per i parenti lontani",
+    stat3: "link su WhatsApp per invitare i parenti",
+    stat4: "minuto per iniziare",
   },
   Home: {
     yourTrees: "I tuoi alberi",

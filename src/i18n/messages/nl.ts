@@ -89,6 +89,11 @@ export const nl: Catalog = {
     quoteText: "Cartea Neamului is gemaakt zodat elke familie haar mensen, verhalen en stemmen bewaart voor wie na ons komt.",
     ctaTitle: "Begin vandaag de stamboom van je familie",
     ctaText: "Het duurt een minuut. De eerste stap ben jij.",
+    heroTitleRich: "De stamboom van je familie, <em>samen</em> opgebouwd",
+    stat1: "generaties in één stamboom",
+    stat2: "talen, voor familie ver weg",
+    stat3: "WhatsApp-link om je familie uit te nodigen",
+    stat4: "minuut om te beginnen",
   },
   Home: {
     yourTrees: "Je stambomen",

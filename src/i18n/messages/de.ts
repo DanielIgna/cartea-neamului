@@ -89,6 +89,11 @@ export const de: Catalog = {
     quoteText: "Cartea Neamului ist dafür gemacht, dass jede Familie ihre Menschen, Geschichten und Stimmen für die bewahrt, die nach uns kommen.",
     ctaTitle: "Beginne heute den Stammbaum deiner Familie",
     ctaText: "Es dauert eine Minute. Der erste Schritt bist du.",
+    heroTitleRich: "Der Stammbaum der Familie, <em>gemeinsam</em> aufgebaut",
+    stat1: "Generationen in einem Stammbaum",
+    stat2: "Sprachen, für Verwandte in der Ferne",
+    stat3: "WhatsApp-Link, um deine Verwandten einzuladen",
+    stat4: "Minute bis zum Start",
   },
   Home: {
     yourTrees: "Deine Stammbäume",
