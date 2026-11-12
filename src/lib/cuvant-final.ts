@@ -8,49 +8,49 @@
  * un rând gol = paragraf nou.
  */
 export const DEFAULT_WORD = `## Două spițe, două cărți
-Am coborât prin ani din om în om, până unde ne-au mai rămas numele. Dar orice spiță, oricât de lungă, duce mai departe, la începutul tuturor neamurilor. Biblia păstrează două spițe, și fiecare om e chemat să afle în care dintre ele e scris.
+Am coborât prin ani din om în om, până unde ne-au mai rămas numele. Dar orice spiță, oricât de lungă, duce mai departe, spre începutul tuturor neamurilor. Una dintre cele mai vechi cărți ale lumii păstrează două astfel de spițe: una chiar la începutul ei și alta la începutul Noului Testament.
 
 ## Spița lui Adam
 > Iată cartea neamurilor lui Adam. În ziua când a făcut Dumnezeu pe om, l-a făcut după asemănarea lui Dumnezeu. — Geneza 5:1
 
-Geneza 5 e prima spiță din Biblie: Adam, Set, Enos și mai departe, din tată în fiu, iar despre fiecare se spune că a trăit, a născut fii și fiice, „apoi a murit”. Este și spița noastră. Niciunul dintre noi nu și-a ales părinții, satul sau veacul în care a venit pe lume: ne-am născut fără voia noastră, urmași ai lui Adam, și purtăm toți aceeași moștenire, păcatul și moartea.
+Geneza 5 e una dintre cele mai vechi genealogii scrise: Adam, Set, Enos și mai departe, din tată în fiu, iar despre fiecare se spune că a trăit, a avut fii și fiice, „apoi a murit”. Seamănă cu spița fiecăruia dintre noi. Niciunul nu și-a ales părinții, satul sau veacul în care a venit pe lume, și fiecare poveste de aici se încheie la fel.
 
-## Spița lui Isus Hristos
+## Spița lui Isus
 > Cartea neamului lui Isus Hristos, fiul lui David, fiul lui Avraam. — Matei 1:1
 
-Noul Testament începe tot cu o spiță, dar cu alta: neamul lui Isus Hristos. Fiul lui Dumnezeu a luat chip de om și a locuit printre noi.
+Noul Testament începe tot cu o genealogie, dar alta: neamul lui Isus din Nazaret, omul de la nașterea căruia lumea își numără anii. Evanghelia după Ioan spune despre el așa:
 
 > Și Cuvântul S-a făcut trup și a locuit printre noi, plin de har și de adevăr. — Ioan 1:14
 
-El este Mielul lui Dumnezeu, care a fost pus pe cruce și a murit în locul meu și al tău, omule, oricine ai fi tu. În spița Lui intri prin credință:
+Ioan mai scrie despre un alt fel de înrudire, care nu vine din părinți:
 
 > Dar tuturor celor ce L-au primit, adică celor ce cred în Numele Lui, le-a dat dreptul să se facă copii ai lui Dumnezeu; născuți nu din sânge, nici din voia firii lor, nici din voia vreunui om, ci din Dumnezeu. — Ioan 1:12–13
 
-Toți ne naștem în Adam. Toți suntem chemați să credem în Hristos și să ne naștem din nou în El.
+Două spițe, așadar: una în care ne naștem toți și una despre care Isus îi vorbește lui Nicodim, un învățat al vremii:
 
 > Adevărat, adevărat îți spun că, dacă un om nu se naște din nou, nu poate vedea Împărăția lui Dumnezeu. — Ioan 3:3
 
-## Cartea vieții
-Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Dar există o carte care contează mai mult decât orice carte: Cartea vieții. În ea sunt scriși cei care L-au primit pe Domnul Isus Hristos ca Mântuitor al vieții lor. Ei au o chemare cerească: să trăiască în lume sfinți și fără prihană, adică puși deoparte pentru Dumnezeu, să facă voia Lui și, în cele din urmă, să moștenească nemurirea.
+## O altă carte
+Cartea neamului nostru păstrează numele celor dragi, ca să nu-i uităm. Textele vechi vorbesc și despre o altă carte și despre o viață care nu se măsoară în ani:
 
 > Și viața veșnică este aceasta: să Te cunoască pe Tine, singurul Dumnezeu adevărat, și pe Isus Hristos, pe care L-ai trimis Tu. — Ioan 17:3
 
 ## Adevărul care face liberi
-Călătoria prin istorie ne-a arătat sisteme care au stăpânit oamenii prin minciună, prin frică și prin manipulare: comunismul, care le-a luat bunicilor noștri pământul, credința și libertatea de a spune ce gândesc, iar după el ideologiile de tot felul, de la neomarxism până azi, care încearcă să rescrie ce este omul, familia și adevărul. În Cuvântul lui Dumnezeu există un Adevăr care nu se schimbă, iar acest Adevăr nu este o idee, ci o Persoană: Însuși Isus Hristos.
+Călătoria prin istorie ne-a arătat sisteme care au stăpânit oamenii prin minciună, prin frică și prin manipulare: comunismul, care le-a luat bunicilor noștri pământul, credința și libertatea de a spune ce gândesc, iar după el ideologiile de tot felul care încearcă să rescrie ce este omul, familia și adevărul. Pentru cine caută ce rămâne adevărat când se schimbă vremurile, iată două fraze rostite acum două mii de ani:
 
 > Eu sunt Calea, Adevărul și Viața. Nimeni nu vine la Tatăl decât prin Mine. — Ioan 14:6
 
 > Veți cunoaște adevărul, și adevărul vă va face slobozi. — Ioan 8:32
 
 ## Pentru neamul și țara noastră
-Ce am primit de la înaintași nu se oprește la noi. Așa cum o generație lasă urmașilor ei numele, pământul și amintirile, tot așa smerenia și rugăciunea unei generații ajung binecuvântare pentru neamul și pentru țara ei.
+Ce am primit de la înaintași nu se oprește la noi. Așa cum o generație lasă urmașilor ei numele, pământul și amintirile, tot așa felul în care trăiește ea ajunge moștenire pentru neamul și pentru țara ei.
 
 > Dacă poporul Meu, peste care este chemat Numele Meu, se va smeri, se va ruga și va căuta Fața Mea și se va abate de la căile lui rele, îl voi asculta din ceruri, îi voi ierta păcatul și-i voi tămădui țara. — 2 Cronici 7:14
 
 ## O întrebare pentru tine
 Ai văzut din ce neam te tragi. Dar în ce carte este scris numele tău?
 
-Dumnezeu ne-a lăsat o scrisoare de dragoste: Biblia, Cuvântul Lui. Te chemăm să o deschizi și să o citești. Poți începe cu Evanghelia după Ioan.
+Răspunsul nu ți-l poate da nimeni în locul tău. Îl cauți singur.
 
 > Fiindcă atât de mult a iubit Dumnezeu lumea, că a dat pe singurul Lui Fiu, pentru ca oricine crede în El să nu piară, ci să aibă viața veșnică. — Ioan 3:16`;
 
