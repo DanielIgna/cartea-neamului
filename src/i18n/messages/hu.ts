@@ -364,6 +364,8 @@ export const hu: Catalog = {
     pay: "Folytatni szeretném",
   },
   Plata: {
+    adminTest: "A fizetés mindenki más számára ki van kapcsolva: senkitől sem kérünk semmit. Adminként itt próbafizetést végezhetsz (például promóciós kóddal).",
+    adminPaid: "A próbafizetés megérkezett: az éved eddig van kifizetve: {date}.",
     title: "Fizetés",
     yearTitle: "Egy év A Család Könyvében",
     yearText: "A kifizetett évvel mától egy évig (vagy a már kifizetett év után) bővítheted és módosíthatod a családfát. A családfa, a fényképek és az emlékek így is, úgy is a tieid maradnak.",

@@ -364,6 +364,8 @@ export const nl: Catalog = {
     pay: "Ik wil verder",
   },
   Plata: {
+    adminTest: "Betalingen staan uit voor iedereen anders: niemand hoeft iets te betalen. Als beheerder kun je hier een testbetaling doen (bijvoorbeeld met een promotiecode).",
+    adminPaid: "De testbetaling is ontvangen: je jaar is betaald tot {date}.",
     title: "Betaling",
     yearTitle: "Een jaar in Het Familieboek",
     yearText: "Met een betaald jaar kun je een jaar lang vanaf vandaag (of aansluitend op het al betaalde jaar) toevoegen en wijzigen in de stamboom. De stamboom, foto’s en herinneringen blijven hoe dan ook van jou.",

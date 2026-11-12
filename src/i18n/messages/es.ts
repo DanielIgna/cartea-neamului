@@ -364,6 +364,8 @@ export const es: Catalog = {
     pay: "Quiero continuar",
   },
   Plata: {
+    adminTest: "Los pagos están desactivados para todos los demás: no se les pide nada. Como administrador, puedes hacer aquí un pago de prueba (por ejemplo, con un código promocional).",
+    adminPaid: "Se ha recibido el pago de prueba: tu año está pagado hasta el {date}.",
     title: "Pago",
     yearTitle: "Un año en El Libro de la Familia",
     yearText: "Con un año pagado puedes añadir y cambiar cosas en el árbol durante un año desde hoy (o a continuación del año ya pagado). El árbol, las fotos y los recuerdos siguen siendo tuyos en cualquier caso.",

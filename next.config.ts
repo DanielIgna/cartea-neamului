@@ -39,7 +39,8 @@ const csp = [
   "manifest-src 'self'",
   "frame-src 'self'",
   "frame-ancestors 'self'",
-  "form-action 'self' https://accounts.google.com",
+  // Plata: formularul de pe /plata trimite la server, care redirecționează spre pagina Stripe; fără Stripe aici, browserul oprește redirecționarea.
+  "form-action 'self' https://accounts.google.com https://checkout.stripe.com",
   "base-uri 'self'",
   "object-src 'none'",
 ].join("; ");
