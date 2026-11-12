@@ -28,6 +28,7 @@ import BookTree from "@/components/BookTree";
 import PageIntl from "@/i18n/PageIntl";
 import BookOptionsForm from "@/components/BookOptionsForm";
 import BookTextForm from "@/components/BookTextForm";
+import { Logo } from "@/components/Logo";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
@@ -141,7 +142,10 @@ function Person({ e, told, w }: { e: Entry; told?: number; w: Words }) {
   );
 }
 
-/** Ornamentul de pe copertă: un copac cu coroana rotundă, deasă, din frunze așezate ca semințele de floarea-soarelui, și rădăcini. */
+/** Prima literă a unui nume din index, mare, ca în dicționare („Ș” rămâne literă a ei); semnele de dinainte nu contează. */
+const initial = (label: string) => (label.match(/\p{L}/u)?.[0] ?? "").toLocaleUpperCase();
+
+/** Ornamentul de pe pagina de gardă: un copac cu coroana rotundă, deasă, din frunze așezate ca semințele de floarea-soarelui, și rădăcini. */
 function Ornament() {
   let seed = 11;
   const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -238,11 +242,20 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
   return (
     <div className={`bk bk-${options.format}`} lang={w.locale}>
       <section className="bk-cover">
+        <div className="bk-frame" aria-hidden><i /><i /><i /><i /></div>
         <div className="bk-kicker">{t("cover.kicker")}</div>
         <h1 className="bk-title">{title}</h1>
+        <div className="bk-rule" aria-hidden />
         {subtitle && <p className="bk-subtitle">{subtitle}</p>}
-        <Ornament />
+        <div className="bk-cover-mark"><Logo size={60} /></div>
         <div className="bk-cover-foot">{t("cover.by", { author })}<br />{when}</div>
+      </section>
+
+      <section className="bk-exlibris">
+        <Ornament />
+        <div className="bk-ex">Ex libris</div>
+        <div className="bk-ex-line" />
+        <div className="bk-ex-title">{title}</div>
       </section>
 
       <section className="bk-chapter bk-toc" data-anchor="c-cuprins">
@@ -351,17 +364,22 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
       <section className="bk-chapter" data-anchor="c-index">
         <h2>{t("index")}</h2>
         <ol className="bk-index">
-          {model.index.map((l, i) => (
-            <li key={`${l.id}-${i}`}><span className="name"><a href={`#p-${l.id}`}>{l.label}</a>{l.dates && <span className="bk-muted"> {l.dates}</span>}</span><Pg id={`p-${l.id}`} /></li>
-          ))}
+          {model.index.flatMap((l, i) => {
+            const letter = initial(l.label), prev = i ? initial(model.index[i - 1].label) : "";
+            const line = <li key={`${l.id}-${i}`}><span className="name"><a href={`#p-${l.id}`}>{l.label}</a>{l.dates && <span className="bk-muted"> {l.dates}</span>}</span><Pg id={`p-${l.id}`} /></li>;
+            return letter && letter !== prev ? [<li key={`l-${i}`} className="bk-letter" aria-hidden>{letter}</li>, line] : [line];
+          })}
         </ol>
       </section>
 
       <section className="bk-colophon">
-        <p><b>{title}</b></p>
+        <div className="bk-colophon-mark"><Logo size={40} /></div>
+        <p className="bk-colophon-title">{title}</p>
+        <div className="bk-rule" aria-hidden />
         <p>{t("colophon.made", { author, when, tree: treeName, count: stats.people })}</p>
         <p>{privacy}</p>
         <p>{t("colophon.redo")}</p>
+        <p className="bk-site">Cartea Neamului · carteaneamului.ro</p>
       </section>
     </div>
   );
