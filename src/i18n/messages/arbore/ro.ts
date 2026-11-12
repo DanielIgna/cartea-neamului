@@ -399,6 +399,7 @@ export const roArbore = {
     writeMessage: "Scrie un mesaj.",
     signIn: "Intră în cont.",
     noAddRight: "Nu ai drept să adaugi persoane în acest arbore.",
+    trialFull: "În zilele gratuite arborele poate avea până la {cap} de persoane, cât să încapă familia apropiată. Ca să adaugi mai multe, e nevoie ca tu sau cel care a pornit arborele să aveți anul plătit.",
     noEditRight: "Nu ai drept să modifici acest arbore.",
     noWriteRight: "Nu ai drept să scrii în acest arbore.",
     noLinkRight: "Nu ai drept să schimbi legăturile din acest arbore.",

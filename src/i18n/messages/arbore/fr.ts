@@ -395,6 +395,7 @@ export const frArbore: ArboreCatalog = {
     writeMessage: "Écrivez un message.",
     signIn: "Connectez-vous.",
     noAddRight: "Vous n’avez pas le droit d’ajouter des personnes à cet arbre.",
+    trialFull: "Pendant les jours gratuits, un arbre peut compter jusqu’à {cap} personnes, assez pour la famille proche. Pour en ajouter plus, vous ou la personne qui a créé l’arbre devez avoir l’année payée.",
     noEditRight: "Vous n’avez pas le droit de modifier cet arbre.",
     noWriteRight: "Vous n’avez pas le droit d’écrire dans cet arbre.",
     noLinkRight: "Vous n’avez pas le droit de modifier les liens de cet arbre.",

@@ -4,6 +4,8 @@ import type { Db } from "@/db";
 import { invitation, treeMember, person, tree } from "@/db/schema";
 import type { Role } from "./access";
 
+const RANK: Record<Role, number> = { viewer: 0, contributor: 1, editor: 2, owner: 3 };
+
 /** Cât ține un link de invitație. Tabela nu ține minte când s-a făcut linkul: e cu atâtea zile înainte de expirare. */
 export const INVITE_VALID_DAYS = 14;
 const VALID_DAYS = INVITE_VALID_DAYS;
@@ -32,7 +34,11 @@ export async function acceptInvitation(db: Db, token: string, userId: string, no
   const inv = found.inv;
   if (inv.acceptedBy && inv.acceptedBy !== userId) return { ok: false, reason: "used" };
   if (inv.expiresAt < now) return { ok: false, reason: "expired" };
-  await db.insert(treeMember).values({ treeId: inv.treeId, userId, role: inv.role, invitedBy: inv.createdBy }).onConflictDoNothing();
+  // Cine era deja în arbore cu un rol mai mic (de pildă primit doar să vadă cât proprietarul era în zilele gratuite) urcă la rolul din link.
+  const [had] = await db.select({ role: treeMember.role }).from(treeMember).where(and(eq(treeMember.treeId, inv.treeId), eq(treeMember.userId, userId)));
+  if (!had) await db.insert(treeMember).values({ treeId: inv.treeId, userId, role: inv.role, invitedBy: inv.createdBy }).onConflictDoNothing();
+  else if (RANK[had.role] < RANK[inv.role])
+    await db.update(treeMember).set({ role: inv.role }).where(and(eq(treeMember.treeId, inv.treeId), eq(treeMember.userId, userId)));
   await db.update(invitation).set({ acceptedBy: userId, acceptedAt: now }).where(eq(invitation.id, inv.id));
   let claimed = false;
   if (inv.personId) {

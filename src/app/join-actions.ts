@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
+import { canInviteWriters } from "@/lib/plata";
 import { currentUser } from "@/lib/access";
 import { answerJoin, askToJoin, type JoinResult } from "@/lib/join";
 import { getT } from "@/i18n/server";
@@ -39,7 +40,9 @@ export async function answerJoinRequest(id: string, accept: boolean): Promise<{ 
   const t = await getT("Errors");
   const me = await currentUser();
   if (!me || !z.string().uuid().safeParse(id).success) return { error: t("signIn") };
-  const res = await answerJoin(db, me.id, id, !!accept);
+  // În zilele gratuite, proprietarul primește rudele doar să vadă; cu anul plătit, să și adauge (src/lib/plans.ts).
+  const role = (await canInviteWriters(db, me.id)) ? "contributor" : "viewer";
+  const res = await answerJoin(db, me.id, id, !!accept, new Date(), role);
   revalidatePath("/mesaje");
   return res.error ? { error: t(`join.${res.error}`) } : { ok: true };
 }

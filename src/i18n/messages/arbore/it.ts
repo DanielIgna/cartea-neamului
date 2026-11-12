@@ -395,6 +395,7 @@ export const itArbore: ArboreCatalog = {
     writeMessage: "Scrivi un messaggio.",
     signIn: "Accedi.",
     noAddRight: "Non hai il permesso di aggiungere persone a questo albero.",
+    trialFull: "Nei giorni gratuiti un albero può avere fino a {cap} persone, abbastanza per la famiglia stretta. Per aggiungerne altre, tu o chi ha iniziato l’albero dovete avere l’anno pagato.",
     noEditRight: "Non hai il permesso di modificare questo albero.",
     noWriteRight: "Non hai il permesso di scrivere in questo albero.",
     noLinkRight: "Non hai il permesso di cambiare i legami di questo albero.",

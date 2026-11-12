@@ -26,7 +26,7 @@ async function admin() {
   return isAdminUser(me) ? me : null;
 }
 
-const SETTING_FIELDS = ["trialDays", "priceLei", "priceEur", "invitePriceLei", "invitePriceEur", "bookLei", "bookEur", "betaDays"] as const;
+const SETTING_FIELDS = ["trialDays", "priceLei", "priceEur", "invitePriceLei", "invitePriceEur", "bookLei", "bookEur", "betaDays", "trialPersons"] as const;
 
 /** „Manager control”: zilele gratuite, prețurile și comutatorul care pornește regulile în site. */
 export async function savePlanLimits(_: AdminFormState, form: FormData): Promise<AdminFormState> {

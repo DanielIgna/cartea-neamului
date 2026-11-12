@@ -395,6 +395,7 @@ export const enGBArbore: ArboreCatalog = {
     writeMessage: "Write a message.",
     signIn: "Sign in.",
     noAddRight: "You don’t have permission to add people to this tree.",
+    trialFull: "During the free days a tree can hold up to {cap} people, enough for close family. To add more, you or whoever started the tree needs a paid year.",
     noEditRight: "You don’t have permission to change this tree.",
     noWriteRight: "You don’t have permission to write in this tree.",
     noLinkRight: "You don’t have permission to change the links in this tree.",

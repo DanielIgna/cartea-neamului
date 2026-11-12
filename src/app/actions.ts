@@ -10,6 +10,7 @@ import { importGedcom } from "@/lib/gedcom-db";
 import { normalizeTypedDate, parseFuzzyDate } from "@/lib/dates";
 import { ensureSchema } from "@/lib/bootstrap";
 import { currentUser, roleIn, can } from "@/lib/access";
+import { canInviteWriters, personsLeft, treeStart } from "@/lib/plata";
 import { createInvitation, acceptInvitation } from "@/lib/invitations";
 import { headers } from "next/headers";
 import { toView } from "@/lib/tree-data";
@@ -98,8 +99,10 @@ export async function createTree(_: unknown, form: FormData) {
   const given = String(form.get("given") ?? "").trim(), surname = String(form.get("surname") ?? "").trim();
   if (!hasGedcom && !given && !surname) return { error: t("createNoName") };
   const gedcom = hasGedcom ? await file.text() : null;
+  const start = await treeStart(db, me.id);
+  if (!start.ok) return { error: t("trialOneTree") };
 
-  const NO_PEOPLE = "gedcom-fara-persoane";
+  const NO_PEOPLE = "gedcom-fara-persoane", TOO_MANY = "gedcom-prea-multe";
   const locale = await getLocale();
   const made = await db.transaction(async (tx) => {
     const [t] = await tx.insert(tree).values({ name, ownerId: me.id, region }).returning();
@@ -107,6 +110,7 @@ export async function createTree(_: unknown, form: FormData) {
     if (gedcom !== null) {
       const res = await importGedcom(tx as unknown as typeof db, t.id, gedcom, me.id);
       if (!res.persons) throw new Error(NO_PEOPLE);
+      if (start.cap !== null && res.persons > start.cap) throw new Error(TOO_MANY);
       const [first] = await tx.select().from(person).where(and(eq(person.treeId, t.id), eq(person.gedcomXref, "@I1@")));
       const [any] = first ? [first] : await tx.select().from(person).where(eq(person.treeId, t.id)).limit(1);
       await tx.update(tree).set({ rootPersonId: any.id }).where(eq(tree.id, t.id));
@@ -122,10 +126,11 @@ export async function createTree(_: unknown, form: FormData) {
     }
     return t;
   }).catch((e: unknown) => {
-    if (e instanceof Error && e.message === NO_PEOPLE) return null;
+    if (e instanceof Error && (e.message === NO_PEOPLE || e.message === TOO_MANY)) return e.message;
     throw e;
   });
-  if (!made) return { error: t("gedcomEmpty") };
+  if (made === NO_PEOPLE) return { error: t("gedcomEmpty") };
+  if (made === TOO_MANY) return { error: t("trialGedcom", { cap: String(start.cap ?? 0) }) };
   redirect(`/arbore/${made.id}`);
 }
 
@@ -178,6 +183,8 @@ export async function addRelative(_: unknown, form: FormData) {
   if (!me || !can(role, "contributor")) return { error: te("noAddRight") };
   const lim = await limited(v.treeId, me.id, role, "add");
   if (lim) return { error: lim };
+  const room = await personsLeft(db, v.treeId, me.id);
+  if (room && room.left < 1) return { error: te("trialFull", { cap: String(room.cap) }) };
   const [anchor] = await db.select().from(person).where(and(eq(person.id, v.anchorId), eq(person.treeId, v.treeId)));
   if (!anchor) return { error: te("personGone") };
   const parentsOf = async (id: string) => db.select({ id: person.id, sex: person.sex }).from(relationship)
@@ -291,6 +298,7 @@ export async function createInviteLink(_: unknown, form: FormData) {
   if (!parsed.success) return { error: tr("inviteInvalid") };
   const me = await currentUser();
   if (!me || !can(await roleIn(db, parsed.data.treeId, me.id), "editor")) return { error: tr("inviteNotAllowed") };
+  if (parsed.data.role !== "viewer" && !(await canInviteWriters(db, me.id))) return { error: tr("inviteNeedsYear") };
   const { token, expiresAt } = await createInvitation(db, { treeId: parsed.data.treeId, createdBy: me.id, role: parsed.data.role, personId: parsed.data.personId || null });
   const h = await headers();
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;

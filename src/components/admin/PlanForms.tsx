@@ -9,7 +9,7 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
   const [state, action, pending] = useActionState<AdminFormState, FormData>(savePlanLimits, null);
   const field = (name: keyof PlanSettings, label: string, hint: string, step = 1) => (
     <label>{label}
-      <input name={name} type="number" inputMode="decimal" min={name === "trialDays" ? 1 : 0} step={step} defaultValue={value[name] as number} required />
+      <input name={name} type="number" inputMode="decimal" min={name === "trialDays" ? 1 : name === "trialPersons" ? 5 : 0} step={step} defaultValue={value[name] as number} required />
       <small className="muted">{hint}</small>
     </label>
   );
@@ -17,6 +17,7 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
     <form action={action} className="form limits-form">
       <div className="limits-row">
         {field("trialDays", "Zile gratuite", "pentru fiecare om: cel care pornește arborele și fiecare rudă invitată")}
+        {field("trialPersons", "Persoane în zilele gratuite", "cât crește un arbore până îl plătește cineva (30 = familia apropiată)")}
         {field("priceLei", "Anul, în lei", "cel care are un arbore al lui", 0.5)}
         {field("priceEur", "Anul, în €", "pentru cei din alte limbi", 0.5)}
       </div>

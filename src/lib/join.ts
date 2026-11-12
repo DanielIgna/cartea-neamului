@@ -96,9 +96,10 @@ export async function pendingJoins(db: Db, ownerId: string) {
 
 /**
  * Proprietarul răspunde. „Acceptă”: omul devine membru al arborelui (poate adăuga rude) și fișa devine a lui;
- * celelalte cereri pentru aceeași fișă sunt refuzate.
+ * celelalte cereri pentru aceeași fișă sunt refuzate. Un proprietar în zilele gratuite primește rudele doar să vadă (`role`).
  */
-export async function answerJoin(db: Db, ownerId: string, id: string, accept: boolean, now = new Date()): Promise<{ ok?: true; error?: JoinError }> {
+export async function answerJoin(db: Db, ownerId: string, id: string, accept: boolean, now = new Date(),
+  role: "contributor" | "viewer" = "contributor"): Promise<{ ok?: true; error?: JoinError }> {
   const [row] = await db.select({ r: joinRequest, ownerId: tree.ownerId }).from(joinRequest).innerJoin(tree, eq(tree.id, joinRequest.treeId))
     .where(eq(joinRequest.id, id));
   if (!row || row.ownerId !== ownerId || row.r.status !== "pending") return { error: "notPending" };
@@ -111,7 +112,7 @@ export async function answerJoin(db: Db, ownerId: string, id: string, accept: bo
     const claimed = await tx.update(person).set({ claimedByUserId: r.userId, privacy: "claimed", updatedAt: now })
       .where(and(eq(person.id, r.personId), eq(person.treeId, r.treeId), isNull(person.claimedByUserId))).returning({ id: person.id });
     if (!claimed.length) return { error: "claimed" as const };
-    await tx.insert(treeMember).values({ treeId: r.treeId, userId: r.userId, role: "contributor", invitedBy: ownerId }).onConflictDoNothing();
+    await tx.insert(treeMember).values({ treeId: r.treeId, userId: r.userId, role, invitedBy: ownerId }).onConflictDoNothing();
     await tx.update(joinRequest).set({ status: "accepted", answeredAt: now }).where(eq(joinRequest.id, id));
     await tx.update(joinRequest).set({ status: "declined", answeredAt: now })
       .where(and(eq(joinRequest.status, "pending"), or(eq(joinRequest.personId, r.personId), and(eq(joinRequest.userId, r.userId), eq(joinRequest.treeId, r.treeId)))));
