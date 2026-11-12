@@ -32,8 +32,8 @@ export default async function AdminControl() {
         <h2 style={{ marginTop: 0 }}>Manager control</h2>
         <p style={{ marginTop: 0, maxWidth: "78ch" }}>
           {s.on
-            ? <><b>Plățile sunt pornite</b> din {day(s.startedAt)}: fiecare om are {count(s.trialDays, "zile")} gratuite, apoi arborii lui se pot doar vedea până plătește.</>
-            : <><b>Plățile nu sunt pornite:</b> nimeni nu e oprit și nimic din pagina asta nu apare în site. Cifrele de mai jos arată ce s-ar întâmpla dacă le-ai porni azi.</>}
+            ? <><b style={{ color: "var(--ok, green)" }}>● Vânzarea e PORNITĂ</b> din {day(s.startedAt)}: fiecare om are {count(s.trialDays, "zile")} gratuite, apoi arborii lui se pot doar vedea până plătește.</>
+            : <><b>○ Vânzarea e OPRITĂ:</b> nimeni nu e oprit și nimic din pagina asta nu apare în site. Cifrele de mai jos arată ce s-ar întâmpla dacă le-ai porni azi.</>}
         </p>
         <p className="muted" style={{ maxWidth: "78ch" }}>
           Regula aleasă: fiecare om, și cel care pornește arborele, și fiecare rudă invitată, are {count(s.trialDays, "zile")} cu totul deschis.
@@ -57,7 +57,7 @@ export default async function AdminControl() {
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Zile gratuite, prețuri și pornirea plăților</h3>
         <p className="muted" style={{ marginTop: 0 }}>
-          Plata cu cardul vine la pasul următor. Până atunci, comutatorul de mai jos pornește doar regula: după zilele gratuite, doar citire.
+          Comutatorul vânzării e bifa de jos, „Pornește plățile în site”: bifată = vânzarea merge; debifată și salvată = nimeni nu mai e oprit.
         </p>
         <LimitsForm value={s} />
       </div>

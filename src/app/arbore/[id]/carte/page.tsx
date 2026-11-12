@@ -454,7 +454,8 @@ export default async function BookPage({ params, searchParams }: { params: Promi
   const oldestSex: Sex = (stats.oldest?.id && data.people[stats.oldest.id]?.sex) || "U";
   // Cartea PDF se plătește separat (când plățile sunt pornite din Admin): fără plată, previzualizare cu semn pe pagini.
   const { access, settings, ownsTree } = await userAccess(db, me.id);
-  const locked = access.kind !== "deschis" && access.kind !== "mereu" && !(await bookPaid(db, me.id, id))
+  // Cei cu cont dinainte de pornirea plăților au și cartea gratuită în primul lor an (Daniel, 2026-11-13).
+  const locked = access.kind !== "deschis" && access.kind !== "mereu" && access.kind !== "beta" && !(await bookPaid(db, me.id, id))
     ? { buyHref: `/plata?carte=${id}`, price: priceFor("carte", uiLocale, ownsTree, settings).label } : null;
   const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin, locale }));
   return (

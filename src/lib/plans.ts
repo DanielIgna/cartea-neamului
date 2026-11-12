@@ -64,6 +64,21 @@ export async function savePlanSettings(db: Pick<Db, "insert" | "select">, v: Pla
   return value;
 }
 
+/**
+ * Pornirea vânzării cerută de Daniel pe 2026-11-13 („pornește-o tu”): o singură dată, la publicare (scripts/deploy-db.ts).
+ * Un semn în `app_setting` ține minte că s-a făcut, ca o oprire ulterioară din Admin să rămână oprire.
+ */
+export async function startSalesOnce(db: Pick<Db, "insert" | "select">, now = new Date()): Promise<"pornit" | "deja"> {
+  const MARK = "planuri_pornite_2026_11_13";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const before = await planSettings(db);
+  const value: PlanSettings = { ...before, on: true, startedAt: before.on && before.startedAt ? before.startedAt : now.toISOString() };
+  await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  return "pornit";
+}
+
 /** Planul ales pentru un cont; „gratuit” fără notă și fără plată șterge alegerea, ca omul să fie din nou ca toți. */
 export async function setAccountPlan(db: Pick<Db, "insert" | "delete">, userId: string, plan: Plan, note: string | null, by: string, now = new Date(),
   paidUntil: Date | null = null) {

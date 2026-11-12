@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { applySchema } from "../src/lib/bootstrap";
 import { tree } from "../src/db/schema";
+import { startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
@@ -22,4 +23,6 @@ if (demo) console.log(`deploy-db: arborele de exemplu, ${await syncDemo(db, demo
 try { console.log(`deploy-db: corectura Igna–Todea: ${await fixIgnaTodea(db)}`); } catch (e) { console.error("deploy-db: corectura Igna–Todea a eșuat", e); }
 try { console.log(`deploy-db: numele de fată Curtuli → Igna: ${await fixCurtuliMaiden(db)}`); } catch (e) { console.error("deploy-db: corectura Curtuli a eșuat", e); }
 try { console.log(`deploy-db: Anca și Simona la Iosif fiul: ${await fixAncaSimona(db)}`); } catch (e) { console.error("deploy-db: corectura Anca/Simona a eșuat", e); }
+// Pornirea vânzării (Daniel, 13.11.2026): o singură dată; după aceea comutatorul din Admin hotărăște.
+try { console.log(`deploy-db: pornirea vânzării: ${await startSalesOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea vânzării a eșuat", e); }
 process.exit(0);
