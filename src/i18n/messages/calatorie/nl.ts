@@ -74,8 +74,7 @@ export const nlCalatorie: CalatorieCatalog = {
     noWord: "Hier houdt op wat we van de familie weten. Elke voorouder die in de stamboom komt, brengt het schip verder het verleden in.",
     word: {
       pages: "Je hebt onderweg {got} van de {total} bladzijden geschiedenis verzameld.",
-      readJohn: "Lees het Evangelie naar Johannes",
-      church: "De geschiedenis van de vervolgde Kerk",
+      history: "De geschiedenis van de mensheid",
       bible: "De verzen komen uit de Statenvertaling.",
     },
     editor: {

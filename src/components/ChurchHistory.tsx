@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "use-intl";
-import { BIBLE_STEPS, CHURCH_ERAS, END_VERSES, HEROES, INFLUENCE, STEP_QUOTES, WITNESS_QUOTES } from "@/lib/istoria-bisericii";
-import { READ_JOHN } from "@/lib/calatorie-popas";
-import type { Locale } from "@/i18n/locales";
+import Link from "next/link";
+import { useTranslations } from "use-intl";
+import { BIBLE_STEPS, CHURCH_ERAS, END_VERSE, HEROES, INFLUENCE, STEP_QUOTES, WITNESS_QUOTES } from "@/lib/istoria-bisericii";
 
 const KEY = "istoria-bisericii:ro";
 
-/** Istoria Bisericii prigonite: epocile, eroii credinței și Biblia în limba română, cu un filtru „doar la noi”. */
+/**
+ * „Libertatea de a crede” (fosta „Istoria Bisericii prigonite”): epocile creștinismului cu oamenii lor, trei oameni din
+ * închisorile comuniste și primele cărți în românește, cu un filtru „doar la noi”. Spusă ca istorie, cu puține versete:
+ * unul la cărțile în românește și unul la final.
+ */
 export default function ChurchHistory() {
   const t = useTranslations("Church");
-  const locale = useLocale() as Locale;
   // Cheile se compun din id-urile din src/lib/istoria-bisericii.ts; testele verifică să existe în fiecare limbă.
   const tx = t as unknown as (key: string, values?: Record<string, string>) => string;
   const Quote = ({ k }: { k: string }) => (
@@ -33,7 +35,6 @@ export default function ChurchHistory() {
         <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
         <h2>{t("title")}</h2>
         <p className="ch-lead">{t("intro")}</p>
-        <Quote k="promise" />
       </header>
 
       <nav className="ch-nav" aria-label={t("toc")}>
@@ -55,7 +56,6 @@ export default function ChurchHistory() {
             <div className="ch-era-years">{e.from}–{e.id === "azi" ? t("today") : e.to}</div>
             <h3>{tx(`eras.${e.id}.name`)}</h3>
             <p>{tx(`eras.${e.id}.intro`)}</p>
-            <Quote k={`eras.${e.id}.verse`} />
             <div className="ch-witnesses">
               {e.witnesses.map((w) => {
                 const k = `eras.${e.id}.w.${w.key}`;
@@ -86,7 +86,6 @@ export default function ChurchHistory() {
               </summary>
               {Array.from({ length: h.paragraphs }, (_, i) => <p key={i}>{tx(`heroes.${h.id}.story.p${i + 1}`)}</p>)}
               <p className="ch-lesson">{tx(`heroes.${h.id}.lesson`)}</p>
-              <Quote k={`heroes.${h.id}.verse`} />
             </details>
           ))}
         </div>
@@ -117,8 +116,8 @@ export default function ChurchHistory() {
       <section className="ch-part ch-end">
         <h3 className="ch-part-title">{t("endTitle")}</h3>
         <p>{t("endText")}</p>
-        {END_VERSES.map((v) => <Quote key={v} k={`endVerses.${v}`} />)}
-        <p><a className="btn primary" href={READ_JOHN[locale] ?? READ_JOHN.ro} target="_blank" rel="noopener noreferrer">{t("readJohn")}</a> <a className="btn" href="/de-la-adam-la-hristos">{t("adamToChrist")}</a></p>
+        <Quote k={`endVerses.${END_VERSE}`} />
+        <p><Link className="btn primary" href="/istoria-umanitatii">{t("humanity")}</Link> <Link className="btn" href="/genealogii-vechi">{t("genealogies")}</Link></p>
         <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>{t("note")}</p>
       </section>
     </article>

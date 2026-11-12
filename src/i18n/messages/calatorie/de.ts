@@ -74,8 +74,7 @@ export const deCalatorie: CalatorieCatalog = {
     noWord: "Hier endet, was wir über die Familie wissen. Jeder Vorfahr, der in den Stammbaum kommt, bringt das Schiff weiter in die Vergangenheit.",
     word: {
       pages: "Unterwegs hast du {got} von {total} Geschichtsseiten gesammelt.",
-      readJohn: "Lies das Johannesevangelium",
-      church: "Die Geschichte der verfolgten Kirche",
+      history: "Die Geschichte der Menschheit",
       bible: "Die Verse stammen aus der Lutherbibel von 1912.",
     },
     editor: {

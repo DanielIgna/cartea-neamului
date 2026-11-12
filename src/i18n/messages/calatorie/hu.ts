@@ -74,8 +74,7 @@ export const huCalatorie: CalatorieCatalog = {
     noWord: "Itt ér véget, amit a családról tudunk. Minden ős, akit felveszel a családfába, tovább viszi a hajót a múltba.",
     word: {
       pages: "Útközben {total} történelemlapból {got} gyűlt össze.",
-      readJohn: "Olvasd el János evangéliumát",
-      church: "Az üldözött egyház története",
+      history: "Az emberiség története",
       bible: "Az igeversek a Károli-bibliából valók.",
     },
     editor: {

@@ -26,6 +26,9 @@ describe("partea din site a unei adrese", () => {
     expect(sectionOf("/istoria-bisericii")).toBe("istoria-bisericii");
     expect(sectionOf("/de-la-adam-la-hristos")).toBe("adam-hristos");
     expect(sectionOf("/firul-vremii")).toBe("firul-vremii");
+    expect(sectionOf("/libertatea-de-a-crede")).toBe("istoria-bisericii");
+    expect(sectionOf("/genealogii-vechi")).toBe("adam-hristos");
+    expect(sectionOf("/istoria-umanitatii")).toBe("firul-vremii");
     expect(sectionOf("/termeni")).toBe("altele");
   });
   it("panoul de admin nu se numără, iar un indiciu necunoscut nu schimbă nimic", () => {

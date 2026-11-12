@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const frBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "L’histoire de l’Église persécutée",
-      description: "L’Église du Christ des apôtres à aujourd’hui : martyrs, réformateurs, la Bible en roumain et héros de la foi des prisons communistes.",
+      title: "La liberté de croire",
+      description: "Deux mille ans d’histoire du christianisme : les martyrs de Rome, la Réforme, les premiers livres en roumain et les personnes emprisonnées pour leur foi dans les prisons communistes.",
     },
-    label: "Histoire de l’Église",
-    title: "L’Église du Christ, persécutée depuis le commencement jusqu’à aujourd’hui",
+    label: "La liberté de croire",
+    title: "Deux mille ans de christianisme et ceux qui ont payé pour leur foi",
     toc: "Sommaire",
-    heroesChip: "Héros de la foi",
-    bibleChip: "La Bible en roumain",
+    heroesChip: "Les prisons communistes",
+    bibleChip: "Les premiers livres en roumain",
     filterLabel: "Que montrer",
     all: "Le monde entier",
     onlyRo: "Seulement en Roumanie",
     today: "aujourd’hui",
     ourLand: "en Roumanie",
     quoted: "« {text} »",
-    heroesLabel: "Des histoires qui donnent de la force",
-    heroesTitle: "Héros de la foi des prisons communistes",
-    bibleLabel: "La Parole dans notre langue",
-    bibleTitle: "Comment la Bible est arrivée en langue roumaine",
-    influenceTitle: "Ce que la Bible a changé dans la vie des Roumains",
+    heroesLabel: "Histoires vraies",
+    heroesTitle: "Trois personnes des prisons communistes",
+    bibleLabel: "Le Livre et la langue roumaine",
+    bibleTitle: "Comment la Bible a aidé à faire naître le roumain écrit",
+    influenceTitle: "Ce que ces livres ont changé dans la vie des Roumains",
     endTitle: "Nous aussi, nous sommes une page de cette histoire",
-    endText: "L’Église n’est pas un bâtiment ni une institution, mais tous ceux qui ont reçu le Christ, depuis Étienne jusqu’aux grands-parents qui priaient en cachette, et jusqu’à nous. La lumière est passée de main en main pendant deux mille ans, souvent au prix de la vie. Maintenant elle est entre nos mains : la garder allumée, lire la Parole et prier pour ceux qui sont persécutés aujourd’hui.",
-    readJohn: "Lire l’Évangile selon Jean",
-    adamToChrist: "D’Adam au Christ",
-    note: "Les versets sont tirés de la Bible Louis Segond (1910). Là où il ne s’agit que d’une tradition, le texte le dit.",
-    intro: "Le Seigneur Jésus n’a pas promis à ses disciples une vie facile, mais que son Église ne serait pas vaincue. De Jérusalem jusqu’à aujourd’hui, chaque fois qu’on a voulu éteindre la lumière de l’Évangile, elle s’est rallumée ailleurs. Voici quelques-uns de ceux qui ont payé leur foi de leur liberté ou de leur vie, et quelques-uns des moments où la Parole est revenue entre les mains des gens simples.",
+    endText: "Les grands-parents de beaucoup d’entre nous priaient en cachette, cachaient des livres et se taisaient pour ne pas perdre leur travail. La liberté de croire, comme la liberté de ne pas croire, a été durement gagnée. Aujourd’hui, environ un chrétien sur sept dans le monde vit encore dans un pays où la foi peut lui coûter cher. Chacun est libre de chercher lui-même les réponses.",
+    note: "Écrit à la main, à partir de sources historiques. Les citations bibliques sont tirées de la Bible Louis Segond (1910). Là où il ne s’agit que d’une tradition, le texte le dit.",
+    humanity: "L’histoire de l’humanité",
+    genealogies: "Généalogies anciennes",
+    intro: "La liberté de croire ce que l’on veut, de se réunir avec d’autres et de lire ce que l’on veut semble aujourd’hui aller de soi. Il n’en a pas toujours été ainsi. De la Jérusalem du premier siècle aux prisons communistes, beaucoup ont payé leur foi de leur liberté ou de leur vie, et leur histoire est, pour une bonne part, celle de nos libertés d’aujourd’hui. Voici quelques-uns d’entre eux, époque après époque, et quelques-uns des moments où leurs livres sont arrivés dans la langue du peuple.",
     promise: {
       text: "Et moi, je te dis que tu es Pierre, et que sur cette pierre je bâtirai mon Église, et que les portes du séjour des morts ne prévaudront point contre elle.",
       ref: "Matthieu 16:18",
     },
     eras: {
       apostoli: {
-        name: "L’Église des apôtres",
-        intro: "Après la résurrection du Seigneur, quelques pêcheurs et gens simples de Galilée ont porté la bonne nouvelle à Jérusalem, puis dans tout le monde romain. La persécution a commencé presque aussitôt : d’abord de la part des chefs juifs, puis de Rome. Mais la persécution les a dispersés, et ceux qui étaient dispersés ont porté la Parole plus loin.",
+        name: "Les premiers chrétiens",
+        intro: "Après la crucifixion de Jésus, quelques pêcheurs et gens simples de Galilée commencèrent à annoncer à Jérusalem qu’il était ressuscité, puis portèrent son enseignement dans tout le monde romain. La persécution commença presque aussitôt : d’abord de la part des chefs juifs, puis de Rome. Mais la persécution les dispersa, et ceux qui furent dispersés portèrent la foi plus loin.",
         verse: {
           text: "Ceux qui avaient été dispersés allaient de lieu en lieu, annonçant la bonne nouvelle de la parole.",
           ref: "Actes 8:4",
@@ -129,8 +129,8 @@ export const frBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "Une Église libre, mais tentée",
-        intro: "En 313, par l’édit de Milan, les chrétiens obtinrent le droit de pratiquer librement leur foi. L’Église échappa à l’épée de Rome, mais rencontra une autre tentation : le pouvoir. Avec le temps, beaucoup devinrent chrétiens seulement de nom, et l’Écriture resta dans une langue que le peuple ne comprenait plus. Ceux qui appelaient à revenir à la Parole furent persécutés, cette fois par ceux qui se disaient l’Église.",
+        name: "Le christianisme au pouvoir",
+        intro: "En 313, par l’édit de Milan, les chrétiens reçurent le droit de pratiquer librement leur culte, et bientôt le christianisme devint la religion de l’empire. Il échappa à l’épée de Rome, mais rencontra une autre tentation : le pouvoir. Avec le temps, beaucoup ne furent plus chrétiens que de nom, et l’Écriture resta dans une langue que le peuple ne comprenait plus. Ceux qui demandèrent le retour à son texte furent persécutés, cette fois par ceux qui dirigeaient l’Église.",
         verse: {
           text: "Le ciel et la terre passeront, mais mes paroles ne passeront point.",
           ref: "Matthieu 24:35",
@@ -164,7 +164,7 @@ export const frBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "La Réforme : l’Écriture dans la langue du peuple",
-        intro: "Cent ans après Hus, un moine allemand redécouvrit dans l’épître aux Romains que nous sommes sauvés par la foi, comme un don de Dieu, et non par les œuvres ou par l’argent. L’imprimerie venait d’apparaître, si bien que l’Écriture pouvait enfin entrer dans les maisons. Suivirent cent ans de luttes et de persécutions, au cours desquels, hélas, les chrétiens se persécutèrent aussi entre eux.",
+        intro: "Cent ans après Hus, un moine allemand, Martin Luther, lut dans l’Épître aux Romains que l’homme est pardonné par la foi, comme un don, et non par les œuvres ou par l’argent. L’imprimerie venait d’apparaître, si bien que la Bible put enfin entrer dans les maisons, dans la langue des gens. Suivirent cent ans de guerres et de persécutions, où, hélas, les chrétiens se persécutèrent aussi les uns les autres.",
         verse: {
           text: "Le juste vivra par la foi.",
           ref: "Romains 1:17",
@@ -224,7 +224,7 @@ export const frBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Réveil et mission",
-        intro: "Ces siècles apportèrent des réveils spirituels dans de nombreux pays et les premiers missionnaires partis jusqu’aux extrémités de la terre, mais aussi de nouveaux martyrs, sous les Turcs, dans les colonies et dans les pays où l’Évangile arrivait pour la première fois.",
+        intro: "Ces siècles ont apporté des mouvements de renouveau dans de nombreux pays et les premiers missionnaires partis jusqu’aux extrémités de la terre, mais aussi de nouveaux martyrs, sous les Turcs, dans les colonies et dans les pays où le christianisme arrivait pour la première fois.",
         verse: {
           text: "Jésus-Christ est le même hier, aujourd’hui, et éternellement.",
           ref: "Hébreux 13:8",
@@ -309,7 +309,7 @@ export const frBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "L’Église persécutée aujourd’hui",
+        name: "La persécution aujourd’hui",
         intro: "La persécution ne s’est pas arrêtée. Selon Portes Ouvertes, qui suit la situation chaque année, plus de 380 millions de chrétiens, environ un sur sept, vivent aujourd’hui dans un pays où leur foi peut leur coûter leur travail, leur liberté ou leur vie : en Corée du Nord, dans certaines régions d’Afrique, au Moyen-Orient, en Asie. Et c’est justement là où c’est le plus dur que l’Église grandit aujourd’hui.",
         verse: {
           text: "Or, tous ceux qui veulent vivre pieusement en Jésus-Christ seront persécutés.",
@@ -343,19 +343,19 @@ export const frBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "L’histoire de l’Église n’est pas seulement une liste de souffrances. C’est aussi l’histoire de gens simples, de nos villages et de nos villes, qui ont découvert que le Christ était plus proche dans une cellule de prison qu’il ne l’avait jamais été en liberté. Leurs histoires ne sont pas là pour nous faire peur, mais pour nous donner de la force.",
+    heroesIntro: "Cette histoire n’est pas seulement une liste de souffrances. C’est aussi celle de gens ordinaires, de nos villages et de nos villes, qui sont restés entiers là où le régime voulait les briser. Ils sont sortis de prison sans haine et ont laissé des livres, des chants et des poèmes que l’on connaît encore aujourd’hui.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Pasteur luthérien de Bucarest, juif venu au Christ. Quatorze ans dans les prisons communistes.",
+        who: "Pasteur luthérien de Bucarest, né dans une famille juive. Quatorze ans dans les prisons communistes.",
         story: {
           p1: "En 1945, les communistes réunirent à Bucarest un « Congrès des cultes », où prêtres et pasteurs, l’un après l’autre, faisaient l’éloge du nouveau régime. Sabina, sa femme, lui dit : « Richard, lève-toi et lave cette honte du visage du Christ ! » Il répondit que s’il parlait, elle perdrait son mari. Sabina dit qu’elle ne voulait pas d’un lâche pour mari. Richard se leva et dit devant tous que le devoir de l’Église est d’annoncer le Christ, et non de louer ceux qui ont le pouvoir.",
           p2: "En 1948, il fut enlevé dans la rue et disparut pendant des années ; sa famille ne savait même pas s’il était encore en vie. Pendant trois ans, il fut seul dans une cellule souterraine, sans livre, sans lumière du jour, sans voir personne d’autre que les gardiens. Pour garder l’esprit clair, chaque nuit il composait un sermon et le prêchait dans sa tête, comme s’il parlait à toute une église. Il parlait avec les détenus des cellules voisines en frappant sur le mur, lettre par lettre ; c’est ainsi qu’il annonça l’Évangile à un homme dont il ne vit jamais le visage.",
           p3: "Plus tard, il raconta comment, en se répétant les paroles du Seigneur « Réjouissez-vous en ce jour-là et tressaillez d’allégresse », il se leva dans sa cellule et dansa de joie. Les gardiens crurent qu’il était devenu fou et lui apportèrent plus de nourriture.",
           p4: "Libéré en 1964 et racheté hors du pays par des chrétiens de Norvège, il ôta sa chemise devant le Sénat américain pour montrer les cicatrices de la torture. Il écrivit « Torturé pour le Christ » et fonda une mission qui aide encore aujourd’hui les chrétiens persécutés. Ce qu’il disait le plus souvent : qu’il aimait ceux qui l’avaient torturé et qu’il priait pour eux.",
         },
-        lesson: "La foi n’est pas une idée que l’on perd quand on vous prend tout. Quand Wurmbrand n’eut plus rien, il découvrit qu’il avait le Christ, et que cela lui suffisait.",
+        lesson: "Wurmbrand a presque tout perdu : sa liberté, sa santé, quatorze ans de sa vie. Il est sorti sans haine envers ceux qui l’avaient torturé et a passé le reste de sa vie à parler au monde de ceux qui restaient en prison.",
         verse: {
           text: "Réjouissez-vous en ce jour-là et tressaillez d’allégresse, parce que votre récompense sera grande dans le ciel",
           ref: "Luc 6:23",
@@ -394,7 +394,7 @@ export const frBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "Longtemps, les Roumains ont entendu les offices de l’Église en slavon, une langue que le prêtre comprenait à peine et le peuple pas du tout. La Parole de Dieu leur est parvenue dans leur langue maternelle lentement, livre après livre, en trois cents ans.",
+    bibleIntro: "Longtemps, les Roumains ont entendu l’office en slavon, une langue que le prêtre comprenait à peine et le peuple pas du tout. Le texte biblique leur est parvenu dans leur langue maternelle lentement, livre après livre, en trois cents ans, et le roumain écrit est né avec lui.",
     steps: {
       b1: {
         year: "XVe–XVIe s.",
@@ -455,8 +455,8 @@ export const frBiserica: BisericaCatalog = {
     influence: {
       i1: "Le roumain écrit est né, dans une large mesure, des livres de l’Église. Les Bibles et les livres liturgiques étaient les premières lectures dans chaque région ; ils ont ainsi aidé à créer une langue commune à tous les Roumains, bien avant l’Union de 1918. Eminescu disait que l’Église et ses livres ont donné aux Roumains l’unité de leur langue.",
       i2: "Celui qui voulait lire l’Écriture devait apprendre à lire. Des écoles furent ouvertes à côté des églises, et à Blaj, en 1754, les écoles furent appelées « les sources des dons ». Longtemps, les instituteurs des villages furent les chantres de l’église.",
-      i3: "Quand les gens simples purent lire eux-mêmes la Parole, des réveils naquirent : l’Armée du Seigneur, les Églises évangéliques, les cercles de prière dans les villages. La foi cessa d’appartenir seulement au prêtre et devint celle de chacun.",
-      i4: "C’est pourquoi les communistes craignaient la Bible plus que bien des armes : un peuple qui lit la Parole sait ce qu’est la vérité et ne se laisse plus facilement tromper.",
+      i3: "Quand les gens simples purent lire eux-mêmes, des mouvements nés du peuple apparurent : l’Armée du Seigneur, les Églises évangéliques, les cercles de lecture dans les villages. La foi cessa d’appartenir seulement au prêtre et devint celle de chacun.",
+      i4: "C’est pourquoi le régime communiste craignait ces livres : quelqu’un qui lit et pense par lui-même ne se laisse plus facilement tromper.",
     },
     bibleVerse: {
       text: "La révélation de tes paroles éclaire, elle donne de l’intelligence aux simples.",

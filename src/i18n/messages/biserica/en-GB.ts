@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const enGBBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "The history of the persecuted Church",
-      description: "The Church of Christ from the apostles to today: martyrs, reformers, the Bible in Romanian and heroes of faith from the communist prisons.",
+      title: "The freedom to believe",
+      description: "Two thousand years of Christian history: the martyrs of Rome, the Reformation, the first books in Romanian and the people imprisoned for their faith in the communist prisons.",
     },
-    label: "Church history",
-    title: "The Church of Christ, persecuted from the beginning until today",
+    label: "The freedom to believe",
+    title: "Two thousand years of Christianity and the people who paid for their faith",
     toc: "Contents",
-    heroesChip: "Heroes of faith",
-    bibleChip: "The Bible in Romanian",
+    heroesChip: "The communist prisons",
+    bibleChip: "The first books in Romanian",
     filterLabel: "What to show",
     all: "The whole world",
     onlyRo: "Only in Romania",
     today: "today",
     ourLand: "in Romania",
     quoted: "“{text}”",
-    heroesLabel: "Stories that give strength",
-    heroesTitle: "Heroes of faith from the communist prisons",
-    bibleLabel: "The Word in our language",
-    bibleTitle: "How the Bible came to the Romanian language",
-    influenceTitle: "What the Bible changed in the lives of Romanians",
-    endTitle: "We too are a page in this history",
-    endText: "The Church is not a building or an institution, but all those who have received Christ, from Stephen to the grandparents who prayed in secret, and on to us. The light has passed from hand to hand for two thousand years, often at the cost of life. Now it is in our hands: to keep it burning, to read the Word and to pray for those who are persecuted today.",
-    readJohn: "Read the Gospel of John",
-    adamToChrist: "From Adam to Christ",
-    note: "The verses are from the King James Version. Where something is only tradition, the text says so.",
-    intro: "The Lord Jesus did not promise His disciples an easy life, but that His Church would not be overcome. From Jerusalem to today, every time people tried to put out the light of the Gospel, it was lit again somewhere else. Here are some of those who paid for their faith with their freedom or their lives, and some of the moments when the Word came back into the hands of ordinary people.",
+    heroesLabel: "True stories",
+    heroesTitle: "Three people from the communist prisons",
+    bibleLabel: "The Book and the Romanian language",
+    bibleTitle: "How the Bible helped give birth to written Romanian",
+    influenceTitle: "What these books changed in the lives of Romanians",
+    endTitle: "We too are a page of this history",
+    endText: "The grandparents of many of us prayed in secret, hid books and kept silent so as not to lose their jobs. The freedom to believe, like the freedom not to believe, was hard won. Today about one in seven Christians in the world still lives in a country where faith can cost them dearly. Everyone is free to look for the answers themselves.",
+    note: "Written by hand, from historical sources. Biblical quotations are from the King James Version. Where something is only tradition, the text says so.",
+    humanity: "The history of humanity",
+    genealogies: "Ancient genealogies",
+    intro: "The freedom to believe what you choose, to gather with others and to read what you like seems obvious today. It was not always so. From first-century Jerusalem to the communist prisons, many people paid for their faith with their freedom or their lives, and their story is, to a large extent, the story of the freedoms we have today. Here are some of them, age by age, and some of the moments when their books reached the language of ordinary people.",
     promise: {
       text: "And I say also unto thee, That thou art Peter, and upon this rock I will build my church; and the gates of hell shall not prevail against it.",
       ref: "Matthew 16:18",
     },
     eras: {
       apostoli: {
-        name: "The Church of the apostles",
-        intro: "After the Lord’s resurrection, a few fishermen and ordinary people from Galilee carried the good news to Jerusalem and then to the whole Roman world. Persecution began almost at once: first from the Jewish leaders, then from Rome. But persecution scattered them, and those who were scattered carried the Word further.",
+        name: "The first Christians",
+        intro: "After the crucifixion of Jesus, a few fishermen and ordinary people from Galilee began to proclaim in Jerusalem that he had risen, then carried his teaching throughout the Roman world. Persecution began almost at once: first from the Jewish leaders, then from Rome. But persecution scattered them, and those who were scattered carried the faith further.",
         verse: {
           text: "Therefore they that were scattered abroad went every where preaching the word.",
           ref: "Acts 8:4",
@@ -129,8 +129,8 @@ export const enGBBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "A free Church, but tempted",
-        intro: "In 313, by the Edict of Milan, Christians were allowed to worship freely. The Church escaped the sword of Rome but met another temptation: power. Over time, many became Christians in name only, and Scripture remained in a language the people no longer understood. Those who called for a return to the Word were persecuted, this time by those who called themselves the Church.",
+        name: "Christianity in power",
+        intro: "In 313, by the Edict of Milan, Christians were allowed to worship freely, and soon Christianity became the religion of the empire. It escaped the sword of Rome but met another temptation: power. Over time many became Christians in name only, and Scripture stayed in a language the people no longer understood. Those who called for a return to its text were persecuted, this time by those who led the Church.",
         verse: {
           text: "Heaven and earth shall pass away, but my words shall not pass away.",
           ref: "Matthew 24:35",
@@ -164,7 +164,7 @@ export const enGBBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "The Reformation: Scripture in the language of the people",
-        intro: "A hundred years after Hus, a German monk rediscovered in the Epistle to the Romans that we are saved through faith, as a gift of God, not by works or by money. Printing had only just appeared, so Scripture could at last reach people’s homes. A hundred years of struggle and persecution followed, in which, sadly, Christians also persecuted one another.",
+        intro: "A hundred years after Hus, a German monk, Martin Luther, read in the Epistle to the Romans that a person is forgiven through faith, as a gift, not by works or by money. Printing had only just appeared, so the Bible could at last reach people’s homes, in their own language. A hundred years of wars and persecutions followed, in which, sadly, Christians also persecuted one another.",
         verse: {
           text: "The just shall live by faith.",
           ref: "Romans 1:17",
@@ -224,7 +224,7 @@ export const enGBBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Revival and mission",
-        intro: "These centuries brought spiritual revivals in many countries and the first missionaries who went to the ends of the earth, but also new martyrs, under the Turks, in the colonies and in the countries where the Gospel arrived for the first time.",
+        intro: "These centuries brought movements of renewal in many countries and the first missionaries who travelled to the ends of the earth, but also new martyrs, under the Turks, in the colonies and in the lands where Christianity was arriving for the first time.",
         verse: {
           text: "Jesus Christ the same yesterday, and to day, and for ever.",
           ref: "Hebrews 13:8",
@@ -309,7 +309,7 @@ export const enGBBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "The persecuted Church today",
+        name: "Persecution today",
         intro: "Persecution has not stopped. According to Open Doors, which follows the situation every year, more than 380 million Christians, about one in seven, live today in a country where their faith can cost them their job, their freedom or their life: in North Korea, in parts of Africa, in the Middle East, in Asia. And today the Church is growing precisely where things are hardest.",
         verse: {
           text: "Yea, and all that will live godly in Christ Jesus shall suffer persecution.",
@@ -343,19 +343,19 @@ export const enGBBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "The history of the Church is not just a list of sufferings. It is also the story of ordinary people, from our villages and towns, who discovered that Christ was closer in a prison cell than He had ever been in freedom. Their stories are not meant to frighten us, but to give us strength.",
+    heroesIntro: "This history is not just a list of sufferings. It is also the story of ordinary people, from our villages and towns, who stayed whole where the regime wanted to break them. They came out of prison without hatred and left behind books, songs and poems that people still know today.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "A Lutheran pastor from Bucharest, a Jew who had come to Christ. Fourteen years in the communist prisons.",
+        who: "A Lutheran pastor from Bucharest, born into a Jewish family. Fourteen years in the communist prisons.",
         story: {
           p1: "In 1945 the communists gathered a “Congress of Religions” in Bucharest, where priests and pastors, one after another, praised the new regime. Sabina, his wife, said to him: “Richard, stand up and wash this shame from the face of Christ!” He answered that if he spoke, she would lose her husband. Sabina said she did not want a coward for a husband. Richard stood up and said before everyone that the duty of the Church is to proclaim Christ, not to praise those in power.",
           p2: "In 1948 he was taken off the street and disappeared for years; his family did not even know whether he was still alive. For three years he was alone in an underground cell, without a book, without daylight, without seeing anyone except the guards. To keep his mind, every night he composed a sermon and preached it in his head, as if he were speaking to a whole church. He talked with the prisoners in the neighbouring cells by tapping on the wall, letter by letter; that is how he came to share the Gospel with a man whose face he never saw.",
           p3: "Later he told how, repeating in his mind the Lord’s words “Rejoice ye in that day, and leap for joy”, he stood up in his cell and danced for joy. The guards thought he had gone mad and brought him more food.",
           p4: "Released in 1964 and ransomed out of the country by Christians from Norway, he took off his shirt before the American Senate to show the scars of torture. He wrote “Tortured for Christ” and founded a mission that still helps persecuted Christians today. What he said most often: that he loved those who had tortured him and that he prayed for them.",
         },
-        lesson: "Faith is not an idea you lose when everything is taken from you. When Wurmbrand had nothing left, he discovered that he had Christ, and that was enough for him.",
+        lesson: "Wurmbrand lost almost everything: his freedom, his health, fourteen years of his life. He came out without hatred for those who had tortured him and spent the rest of his life telling the world about those still in prison.",
         verse: {
           text: "Rejoice ye in that day, and leap for joy: for, behold, your reward is great in heaven",
           ref: "Luke 6:23",
@@ -394,7 +394,7 @@ export const enGBBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "For a long time, Romanians heard the church services in Slavonic, a language the priest barely understood and the people not at all. The Word of God reached them in their mother tongue slowly, book by book, over three hundred years.",
+    bibleIntro: "For a long time, Romanians heard the services in Slavonic, a language the priest barely understood and the people not at all. The biblical text reached them in their mother tongue slowly, book by book, over three hundred years, and written Romanian was born along with it.",
     steps: {
       b1: {
         year: "15th–16th c.",
@@ -455,8 +455,8 @@ export const enGBBiserica: BisericaCatalog = {
     influence: {
       i1: "Written Romanian was born, to a large extent, from the books of the Church. Bibles and service books were the first things read in every region, so they helped create a common language for all Romanians, long before the Union of 1918. Eminescu said that the Church and its books gave Romanians the unity of their language.",
       i2: "Anyone who wanted to read the Scriptures had to learn to read. Schools were opened next to churches, and at Blaj, in 1754, the schools were called “the springs of gifts”. For a long time the village teachers were the church cantors.",
-      i3: "When ordinary people could read the Word for themselves, revivals were born: the Lord’s Army, the evangelical churches, the prayer circles in the villages. Faith stopped belonging only to the priest and became every person’s own.",
-      i4: "That is why the communists feared the Bible more than many weapons: a people that reads the Word knows what the truth is and can no longer be lied to easily.",
+      i3: "When ordinary people could read for themselves, movements rising from the people were born: the Lord’s Army, the evangelical churches, the reading circles in the villages. Faith stopped belonging only to the priest and became every person’s own.",
+      i4: "That is why the communist regime feared these books: a person who reads and thinks for himself can no longer be lied to easily.",
     },
     bibleVerse: {
       text: "The entrance of thy words giveth light; it giveth understanding unto the simple.",

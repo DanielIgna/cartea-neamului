@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("meta.title")} · ${await getAppName()}`, description: t("meta.description") };
 }
 
-/** Pagină deschisă tuturor, fără cont: istoria Bisericii prigonite, scrisă de mână, în limba cititorului. */
-export default function ChurchHistoryPage() {
+/** Pagină deschisă tuturor, fără cont: „Libertatea de a crede”, istoria creștinismului și a celor prigoniți pentru credință, scrisă de mână, în limba cititorului. */
+export default function LibertateaDeACredePage() {
   return <PageIntl ns={["Church"]}><ChurchHistory /></PageIntl>;
 }

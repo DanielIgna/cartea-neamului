@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const huBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "Az üldözött egyház története",
-      description: "Krisztus egyháza az apostoloktól napjainkig: vértanúk, reformátorok, a Biblia román nyelven és a kommunista börtönök hithősei.",
+      title: "A hit szabadsága",
+      description: "A kereszténység kétezer éves története: Róma vértanúi, a reformáció, az első román nyelvű könyvek és azok, akiket hitük miatt bebörtönöztek a kommunista börtönökben.",
     },
-    label: "Egyháztörténet",
-    title: "Krisztus egyháza, amelyet a kezdetektől napjainkig üldöznek",
+    label: "A hit szabadsága",
+    title: "Kétezer év kereszténység és azok, akik megfizettek a hitükért",
     toc: "Tartalom",
-    heroesChip: "Hithősök",
-    bibleChip: "A Biblia román nyelven",
+    heroesChip: "A kommunista börtönök",
+    bibleChip: "Az első román nyelvű könyvek",
     filterLabel: "Mit mutassunk",
     all: "Az egész világ",
     onlyRo: "Csak Romániában",
     today: "ma",
     ourLand: "Romániában",
     quoted: "„{text}”",
-    heroesLabel: "Erőt adó történetek",
-    heroesTitle: "A kommunista börtönök hithősei",
-    bibleLabel: "Az Ige a mi nyelvünkön",
-    bibleTitle: "Hogyan jutott el a Biblia a román nyelvre",
-    influenceTitle: "Mit változtatott a Biblia a románok életében",
+    heroesLabel: "Igaz történetek",
+    heroesTitle: "Három ember a kommunista börtönökből",
+    bibleLabel: "A Könyv és a román nyelv",
+    bibleTitle: "Hogyan segítette a Biblia az írott román nyelv születését",
+    influenceTitle: "Mit változtattak ezek a könyvek a románok életén",
     endTitle: "Mi is egy lap vagyunk ebben a történetben",
-    endText: "Az egyház nem épület és nem intézmény, hanem mindazok, akik befogadták Krisztust, Istvántól a titokban imádkozó nagyszülőkig, és egészen mihozzánk. A fény kétezer éven át kézről kézre járt, sokszor az élet árán. Most a mi kezünkben van: égve tartani, olvasni az Igét, és imádkozni azokért, akiket ma üldöznek.",
-    readJohn: "Olvasd el János evangéliumát",
-    adamToChrist: "Ádámtól Krisztusig",
-    note: "Az igeversek a Károli-bibliából valók, mai helyesírással. Ahol valami csak hagyomány, a szöveg ezt megmondja.",
-    intro: "Az Úr Jézus nem könnyű életet ígért tanítványainak, hanem azt, hogy egyházát nem győzik le. Jeruzsálemtől napjainkig, valahányszor ki akarták oltani az evangélium fényét, az máshol újra fellángolt. Íme néhányan azok közül, akik szabadságukkal vagy életükkel fizettek a hitükért, és néhány pillanat, amikor az Ige visszakerült az egyszerű emberek kezébe.",
+    endText: "Sokunk nagyszülei titokban imádkoztak, könyveket rejtegettek, és hallgattak, hogy el ne veszítsék a munkájukat. A hit szabadságát, akárcsak a nemhívés szabadságát, nehezen vívták ki. Ma a világ keresztényeinek nagyjából egyhetede még mindig olyan országban él, ahol a hite sokba kerülhet neki. Mindenki szabadon keresheti maga a válaszokat.",
+    note: "Kézzel írva, történeti források alapján. A bibliai idézetek a Károli-bibliából valók. Ahol valami csak hagyomány, a szöveg ezt megmondja.",
+    humanity: "Az emberiség története",
+    genealogies: "Ősi nemzetségtáblák",
+    intro: "Ma magától értetődőnek tűnik, hogy szabadon hihetünk abban, amiben akarunk, összegyűlhetünk másokkal, és azt olvashatunk, amit akarunk. Nem volt mindig így. Az első századi Jeruzsálemtől a kommunista börtönökig sokan fizettek a hitükért szabadságukkal vagy életükkel, és az ő történetük nagyrészt a mai szabadságaink története is. Íme néhányan közülük, korszakról korszakra, és néhány pillanat, amikor könyveik eljutottak a nép nyelvére.",
     promise: {
       text: "De én is mondom néked, hogy te Péter vagy, és ezen a kősziklán építem fel az én anyaszentegyházamat, és a pokol kapui sem vesznek rajta diadalmat.",
       ref: "Máté 16,18",
     },
     eras: {
       apostoli: {
-        name: "Az apostolok egyháza",
-        intro: "Az Úr feltámadása után néhány galileai halász és egyszerű ember elvitte az örömhírt Jeruzsálembe, majd az egész római világba. Az üldözés szinte azonnal elkezdődött: először a zsidó vezetők, aztán Róma részéről. Az üldözés azonban szétszórta őket, és a szétszórtak tovább vitték az Igét.",
+        name: "Az első keresztények",
+        intro: "Jézus keresztre feszítése után néhány galileai halász és egyszerű ember elkezdte hirdetni Jeruzsálemben, hogy feltámadt, majd tanítását az egész római világba elvitték. Az üldözés szinte azonnal elkezdődött: előbb a zsidó vezetők, majd Róma részéről. Az üldözés azonban szétszórta őket, és a szétszórtak tovább vitték a hitet.",
         verse: {
           text: "Amazok annakokáért eloszolván, széjjeljártak, hirdetve az igét.",
           ref: "Apostolok cselekedetei 8,4",
@@ -129,8 +129,8 @@ export const huBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "Szabad, de kísértésbe esett egyház",
-        intro: "313-ban a milánói rendelettel a keresztyének szabadon gyakorolhatták hitüket. Az egyház megmenekült Róma kardjától, de egy másik kísértéssel találkozott: a hatalommal. Idővel sokan csak névleg lettek keresztyének, és az Írás olyan nyelven maradt, amelyet a nép már nem értett. Akik az Igéhez való visszatérésre hívtak, azokat üldözték, ezúttal azok, akik egyháznak nevezték magukat.",
+        name: "A kereszténység hatalmon",
+        intro: "313-ban a milánói ediktum szabad vallásgyakorlást adott a keresztényeknek, és a kereszténység hamarosan a birodalom vallása lett. Megmenekült Róma kardjától, de egy másik kísértéssel találkozott: a hatalommal. Idővel sokan csak névleg lettek keresztények, és az Írás olyan nyelven maradt, amelyet a nép már nem értett. Akik a szövegéhez való visszatérést kérték, üldözést szenvedtek, ezúttal azoktól, akik az egyházat vezették.",
         verse: {
           text: "Az ég és a föld elmúlnak, de az én beszédeim semmiképpen el nem múlnak.",
           ref: "Máté 24,35",
@@ -164,7 +164,7 @@ export const huBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "A reformáció: az Írás a nép nyelvén",
-        intro: "Száz évvel Husz után egy német szerzetes a Rómabeliekhez írt levélben fedezte fel újra, hogy hit által üdvözülünk, Isten ajándékaként, nem cselekedetekből és nem pénzért. A könyvnyomtatás épp akkor jelent meg, így az Írás végre bejuthatott az otthonokba. Száz év küzdelem és üldözés következett, amelyben sajnos a keresztyének is üldözték egymást.",
+        intro: "Száz évvel Husz után egy német szerzetes, Luther Márton, a Rómaiakhoz írt levélben azt olvasta, hogy az ember hit által nyer bocsánatot, ajándékként, nem cselekedetek vagy pénz által. A könyvnyomtatás épp akkor jelent meg, így a Biblia végre bejuthatott az emberek otthonaiba, a saját nyelvükön. Száz év háború és üldözés következett, amelyben sajnos a keresztények is üldözték egymást.",
         verse: {
           text: "Az igaz ember pedig hitből él.",
           ref: "Róma 1,17",
@@ -224,7 +224,7 @@ export const huBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Ébredés és misszió",
-        intro: "Ezek az évszázadok sok országban hoztak lelki ébredést, és elindultak az első misszionáriusok a föld végső határáig, de új vértanúk is születtek, a törökök alatt, a gyarmatokon és azokban az országokban, ahová az evangélium először jutott el.",
+        intro: "Ezek az évszázadok megújulási mozgalmakat hoztak sok országban, és elindultak az első misszionáriusok a föld végső határáig, de új vértanúk is születtek, a törökök alatt, a gyarmatokon és azokban az országokban, ahová a kereszténység először érkezett.",
         verse: {
           text: "Jézus Krisztus tegnap és ma és örökké ugyanaz.",
           ref: "Zsidók 13,8",
@@ -309,7 +309,7 @@ export const huBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "Az üldözött egyház ma",
+        name: "Üldözés ma",
         intro: "Az üldözés nem szűnt meg. A helyzetet évről évre figyelő Open Doors szerint ma több mint 380 millió keresztyén, nagyjából minden hetedik, olyan országban él, ahol a hite a munkájába, szabadságába vagy életébe kerülhet: Észak-Koreában, Afrika egyes részein, a Közel-Keleten, Ázsiában. Az egyház pedig ma éppen ott növekszik, ahol a legnehezebb.",
         verse: {
           text: "De mindazok is, akik kegyesen akarnak élni Krisztus Jézusban, üldöztetni fognak.",
@@ -343,19 +343,19 @@ export const huBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "Az egyház története nem csupán a szenvedések listája. Egyszerű emberek története is, falvainkból és városainkból, akik felfedezték, hogy Krisztus közelebb volt hozzájuk a börtöncellában, mint valaha szabadságban. Történeteik nem azért vannak itt, hogy megijesszenek, hanem hogy erőt adjanak.",
+    heroesIntro: "Ez a történet nem csupán szenvedések listája. Hétköznapi emberek története is, falvainkból és városainkból, akik épek maradtak ott, ahol a rendszer meg akarta törni őket. Gyűlölet nélkül jöttek ki a börtönből, és könyveket, énekeket, verseket hagytak hátra, amelyeket ma is ismernek.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Bukaresti evangélikus lelkész, Krisztushoz tért zsidó. Tizennégy év a kommunista börtönökben.",
+        who: "Bukaresti evangélikus lelkész, zsidó családban született. Tizennégy év a kommunista börtönökben.",
         story: {
           p1: "1945-ben a kommunisták Bukarestben „Felekezetek Kongresszusát” hívták össze, ahol papok és lelkészek egymás után dicsérték az új rendszert. Sabina, a felesége, azt mondta neki: „Richard, állj fel, és mosd le ezt a gyalázatot Krisztus arcáról!” Ő azt felelte, hogy ha megszólal, Sabina elveszíti a férjét. Sabina azt mondta, nem akar gyáva férjet. Richard felállt, és mindenki előtt kimondta, hogy az egyház dolga Krisztust hirdetni, nem a hatalom birtokosait dicsérni.",
           p2: "1948-ban elhurcolták az utcáról, és évekre eltűnt; a családja azt sem tudta, él-e még. Három évig volt egyedül egy föld alatti cellában, könyv nélkül, napfény nélkül, senkit sem látva az őrökön kívül. Hogy megőrizze az eszét, minden éjjel megírt magában egy prédikációt, és elmondta gondolatban, mintha egy egész gyülekezethez beszélne. A szomszédos cellák foglyaival a falon kopogva beszélt, betűről betűre; így hirdette az evangéliumot egy embernek, akinek az arcát soha nem látta.",
           p3: "Később elmondta, hogy miközben az Úr szavait ismételgette: „Örüljetek azon a napon és örvendezzetek”, felállt a cellájában, és örömében táncolt. Az őrök azt hitték, megőrült, és több ennivalót hoztak neki.",
           p4: "1964-ben szabadult, norvég keresztyének kiváltották az országból, és az amerikai szenátus előtt levetette az ingét, hogy megmutassa a kínzások nyomait. Megírta a „Krisztusért megkínozva” című könyvet, és missziót alapított, amely ma is segíti az üldözött keresztyéneket. Amit a leggyakrabban mondott: hogy szereti azokat, akik megkínozták, és imádkozik értük.",
         },
-        lesson: "A hit nem olyan gondolat, amelyet elveszítesz, ha mindent elvesznek tőled. Amikor Wurmbrandnak már semmije sem maradt, felfedezte, hogy Krisztusa van, és ez elég volt neki.",
+        lesson: "Wurmbrand szinte mindent elveszített: a szabadságát, az egészségét, életéből tizennégy évet. Gyűlölet nélkül jött ki kínzóival szemben, és élete hátralévő részében arról beszélt a világnak, akik még börtönben voltak.",
         verse: {
           text: "Örüljetek azon a napon és örvendezzetek; mert íme a ti jutalmatok bőséges a mennyben",
           ref: "Lukács 6,23",
@@ -394,7 +394,7 @@ export const huBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "A románok sokáig egyházi szláv nyelven hallották az istentiszteleteket, amelyet a pap is alig, a nép pedig egyáltalán nem értett. Isten Igéje lassan, könyvről könyvre, háromszáz év alatt jutott el hozzájuk az anyanyelvükön.",
+    bibleIntro: "A románok sokáig egyházi szláv nyelven hallgatták az istentiszteletet, amelyet a pap is alig, a nép pedig egyáltalán nem értett. A bibliai szöveg lassan jutott el hozzájuk anyanyelvükön, könyvről könyvre, háromszáz év alatt, és vele együtt született meg az írott román nyelv.",
     steps: {
       b1: {
         year: "15–16. század",
@@ -455,8 +455,8 @@ export const huBiserica: BisericaCatalog = {
     influence: {
       i1: "Az írott román nyelv nagyrészt az egyház könyveiből született. Minden vidéken a Bibliák és a liturgikus könyvek voltak az első olvasmányok, így segítettek közös nyelvet teremteni minden román számára, jóval az 1918-as egyesülés előtt. Eminescu azt mondta, hogy az egyház és könyvei adták meg a románoknak nyelvük egységét.",
       i2: "Aki olvasni akarta az Írást, annak meg kellett tanulnia olvasni. A templomok mellett iskolák nyíltak, Balázsfalván 1754-ben az iskolákat „az ajándékok forrásainak” nevezték. Sokáig a falusi tanítók voltak a templom kántorai.",
-      i3: "Amikor az egyszerű emberek maguk olvashatták az Igét, ébredések születtek: az Úr Serege, az evangéliumi gyülekezetek, a falusi imakörök. A hit nem csak a papé maradt, hanem mindenkié lett.",
-      i4: "Ezért féltek a kommunisták a Bibliától jobban, mint sok fegyvertől: az a nép, amely olvassa az Igét, tudja, mi az igazság, és nem lehet többé könnyen becsapni.",
+      i3: "Amikor az egyszerű emberek maguk is olvashattak, a népből induló mozgalmak születtek: az Úr Serege, az evangéliumi gyülekezetek, a falusi olvasókörök. A hit nem csak a papé maradt, hanem mindenkié lett.",
+      i4: "Ezért félt a kommunista rendszer ezektől a könyvektől: aki maga olvas és gondolkodik, azt nem lehet többé könnyen becsapni.",
     },
     bibleVerse: {
       text: "A te beszéded megnyilatkozása világosságot ad, és oktatja az együgyűeket.",

@@ -74,8 +74,7 @@ export const enGBCalatorie: CalatorieCatalog = {
     noWord: "This is where what we know about the family ends. Every ancestor added to the tree takes the ship further into the past.",
     word: {
       pages: "You collected {got} of {total} pages of history along the way.",
-      readJohn: "Read the Gospel of John",
-      church: "The history of the persecuted Church",
+      history: "The history of humanity",
       bible: "The verses are from the King James Version.",
     },
     editor: {

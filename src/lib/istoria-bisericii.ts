@@ -36,6 +36,8 @@ export const BIBLE_STEPS = ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9"
 export const STEP_QUOTES = new Set(["b4"]);
 export const INFLUENCE = ["i1", "i2", "i3", "i4"] as const;
 export const END_VERSES = ["v1", "v2", "v3"] as const;
+/** Pe pagină se arată doar unul dintre versetele de la final (celelalte rămân în cataloage). */
+export const END_VERSE: (typeof END_VERSES)[number] = "v3";
 
 /** Epoca în care cade un an (pentru legături din arbore). */
 export function churchEraOf(year: number): ChurchEra | undefined {

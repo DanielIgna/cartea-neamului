@@ -79,8 +79,7 @@ export const roCalatorie = {
     noWord: "Aici se oprește ce știm despre neam. Fiecare strămoș trecut în arbore duce nava mai departe în trecut.",
     word: {
       pages: "Ai adunat {got} din {total} file de istorie pe drum.",
-      readJohn: "Citește Evanghelia după Ioan",
-      church: "Istoria Bisericii prigonite",
+      history: "Istoria umanității",
       bible: "Versetele sunt din Biblia tradusă de Dumitru Cornilescu.",
     },
     editor: {

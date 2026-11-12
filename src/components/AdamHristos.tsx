@@ -136,7 +136,7 @@ function Lifespans({ pick, onPick }: { pick: string | null; onPick: (id: string 
   );
 }
 
-/** „De la Adam la Hristos”: neamul lui Isus Hristos după Biblie, în șase arbori, cu anii și locurile unde socotelile diferă. */
+/** „Genealogii vechi” (fosta „De la Adam la Hristos”): genealogia lui Isus după textele biblice, în șase arbori, cu anii și locurile unde socotelile diferă. */
 export default function AdamHristos() {
   const index = useMemo(() => indexAll(), []);
   const years0 = useMemo(() => new Map(chainYears().map((r) => [r.id, r])), []);
@@ -221,9 +221,9 @@ export default function AdamHristos() {
   return (
     <article className="card ch ah">
       <header className="ch-head">
-        <div className="section-label" style={{ marginTop: 0 }}>Arborii Bibliei</div>
-        <h2>De la Adam la Hristos</h2>
-        <p className="ch-lead">Biblia păstrează cel mai vechi arbore genealogic al omenirii: de la Adam, primul om, până la Domnul Isus Hristos. Aici îl găsești în șase arbori, unul după altul, cu anii de viață pe care îi dă Biblia, cu ramurile laterale (Cain, fiii lui Noe, cele 12 seminții, Moise și Aaron) și cu cele două liste din Evanghelii: a lui Matei, prin Solomon, și a lui Luca, prin Natan.</p>
+        <div className="section-label" style={{ marginTop: 0 }}>Genealogii vechi</div>
+        <h2>O genealogie de patru mii de ani</h2>
+        <p className="ch-lead">Puține popoare și-au păstrat strămoșii în scris atât de departe în urmă ca evreii. Textele biblice dau o genealogie neîntreruptă, de la Adam, primul om din relatarea Genezei, prin Noe, Avraam și regele David, până la Isus din Nazaret. Aici o găsești în șase arbori, unul după altul, cu anii de viață pe care îi dau textele, cu ramurile laterale (Cain, fiii lui Noe, cele 12 seminții, Moise și Aaron) și cu cele două liste din Evanghelii: a lui Matei, prin Solomon, și a lui Luca, prin Natan.</p>
         <blockquote className="ch-verse"><p>„Cartea neamului lui Isus Hristos, fiul lui David, fiul lui Avraam.”</p><cite>Matei 1:1</cite></blockquote>
       </header>
 
@@ -253,9 +253,8 @@ export default function AdamHristos() {
         <div className="ch-era-years">{epoch.span}</div>
         <h3 className="ch-part-title">{at + 1}. {epoch.title}</h3>
         <p>{epoch.intro}</p>
-        <blockquote className="ch-verse"><p>„{epoch.verse.text}”</p><cite>{epoch.verse.ref}</cite></blockquote>
         <ul className="ah-legend" aria-label="Ce înseamnă culorile">
-          <li><i className="k main" />linia lui Hristos{epoch.roots.some((r) => JSON.stringify(r).includes("\"luke\":true")) ? " după Matei" : ""}</li>
+          <li><i className="k main" />linia lui Isus{epoch.roots.some((r) => JSON.stringify(r).includes("\"luke\":true")) ? " după Matei" : ""}</li>
           {JSON.stringify(epoch.roots).includes("\"luke\":true") && <li><i className="k luke" />linia după Luca</li>}
           {JSON.stringify(epoch.roots).includes("\"omitted\":true") && <li><i className="k omitted" />împărați pe care Matei nu-i numește</li>}
           <li><i className="k side" />ramuri laterale</li>
@@ -306,13 +305,13 @@ export default function AdamHristos() {
         <h3 className="ch-part-title">Cine cu cine a trăit în același timp</h3>
         <p>Dacă aduni anii din Geneza 5 și 11 (câți ani avea fiecare tată la nașterea fiului), afli în ce an „de la facerea lumii” s-a născut fiecare. Așezate una lângă alta, viețile lungi se suprapun în chip neașteptat: Adam a trăit până când Lameh, tatăl lui Noe, avea 56 de ani; Metusala a murit în anul potopului; iar Sem a trăit mai mult decât Avraam. Socoteala aceasta folosește textul ebraic; mai jos vezi cum diferă celelalte.</p>
         <Lifespans pick={lifePick} onPick={setLifePick} />
-        <p><Link className="btn" href="/firul-vremii">Firul vremii: Biblia și popoarele lumii pe aceeași axă, de la Avraam la Hristos</Link></p>
+        <p><Link className="btn" href="/istoria-umanitatii">Istoria umanității: toate civilizațiile pe aceeași axă</Link></p>
       </section>
 
       <section className="ch-part" id="socoteli">
         <div className="section-label">Cu băgare de seamă</div>
         <h3 className="ch-part-title">Unde socotelile diferă</h3>
-        <p>Biblia dă anii oamenilor, dar nu un calendar cu ani „înainte de Hristos”. Orice dată pentru Adam sau pentru potop vine dintr-o socoteală, iar textele vechi nu dau aceleași cifre. De aceea arătăm aici unde diferă, fără să spunem că una dintre ele e sigur cea bună.</p>
+        <p>Textele biblice dau anii oamenilor, dar nu un calendar cu ani „înainte de Hristos”. Orice dată pentru Adam sau pentru potop vine dintr-o socoteală, iar textele vechi nu dau aceleași cifre. De aceea arătăm aici unde diferă, fără să spunem că una dintre ele e sigur cea bună.</p>
         <h4 className="ch-sub">Trei texte vechi ale Genezei</h4>
         <p>Textul ebraic (masoretic), după care e tradusă Biblia Cornilescu, Septuaginta (traducerea greacă din secolele III–II î.Hr., citată des în Noul Testament și folosită de Bisericile ortodoxe) și Pentateuhul samaritean dau vârste diferite ale părinților la nașterea fiilor. Anii de viață, în total, sunt aproape aceiași; se schimbă doar când s-a născut fiul.</p>
         <div className="ah-table-wrap">
@@ -346,11 +345,10 @@ export default function AdamHristos() {
       </section>
 
       <section className="ch-part ch-end">
-        <h3 className="ch-part-title">Și neamul nostru are loc în cartea aceasta</h3>
-        <p>Neamul lui Hristos e plin de oameni obișnuiți, de greșeli și de har: Rahav din Ierihon, Rut moabita, un împărat ca Manase care s-a pocăit. Matei îi scrie pe toți, ca să arate că Dumnezeu Își împlinește promisiunea prin familii adevărate. Prin Hristos, oricine crede intră într-o familie nouă.</p>
-        <blockquote className="ch-verse"><p>„Dar tuturor celor ce L-au primit, adică celor ce cred în Numele Lui, le-a dat dreptul să se facă copii ai lui Dumnezeu”</p><cite>Ioan 1:12</cite></blockquote>
-        <p><Link className="btn primary" href="/istoria-bisericii">Istoria Bisericii, de la apostoli până azi</Link></p>
-        <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Scris de mână, din textul Bibliei. Numele și versetele sunt din traducerea Dumitru Cornilescu; unde Matei sau Luca scriu un nume altfel, forma lor e trecută lângă. Anii de viață sunt cei din Biblie; anii înainte de Hristos sunt aproximativi.</p>
+        <h3 className="ch-part-title">Oameni obișnuiți, într-o genealogie neobișnuită</h3>
+        <p>Lista aceasta nu e plină doar de regi și de eroi. În ea stau și o femeie din Ierihon, Rahav, o străină săracă, Rut moabita, și un rege ca Manase, care a greșit mult și s-a întors. Ca în orice familie adevărată. Fiecare arbore, și al tău, e făcut din oameni așa.</p>
+        <p><Link className="btn primary" href="/istoria-umanitatii">Istoria umanității</Link> <Link className="btn" href="/libertatea-de-a-crede">Libertatea de a crede</Link></p>
+        <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Scris de mână, după textele biblice, așa cum sunt scrise. Numele sunt din traducerea Dumitru Cornilescu; unde Matei sau Luca scriu un nume altfel, forma lor e trecută lângă. Anii de viață sunt cei din texte; anii î.Hr. sunt aproximativi.</p>
       </section>
     </article>
   );
