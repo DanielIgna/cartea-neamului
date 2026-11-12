@@ -82,3 +82,25 @@ export async function fixIgnaTodea(db: Db): Promise<string> {
   await db.insert(appSetting).values({ key: MARK, value: { at: new Date().toISOString(), report } }).onConflictDoNothing();
   return report.join("; ") || "niciun arbore potrivit";
 }
+
+/**
+ * Daniel, 12.11.2026, mai târziu: numele de fată al Floarei Curtuli e Igna (e sora lui Toader Igna). O singură dată,
+ * doar în arborele cu Avram și Floarea Igna, doar fișa „Floarea Curtuli”; se vede în Istoric și se poate anula.
+ */
+const MARK2 = "corectura:curtuli-igna:2026-11-12";
+export async function fixCurtuliMaiden(db: Db): Promise<string> {
+  const [done] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK2));
+  if (done) return "deja făcută";
+  const all = await db.select().from(person);
+  const trees = new Set(all.filter((p) => normName(p.givenName).startsWith("avram") && normName(p.surname) === "igna").map((p) => p.treeId));
+  let n = 0;
+  for (const p of all) {
+    if (!trees.has(p.treeId) || !normName(p.givenName).startsWith("floarea") || normName(p.surname) !== "curtuli" || normName(p.birthSurname) === "igna") continue;
+    await db.update(person).set({ birthSurname: "Igna", updatedAt: new Date() }).where(eq(person.id, p.id));
+    await logChange(db, { treeId: p.treeId, actorId: null, personId: p.id, action: "modificare",
+      diff: { name: personName(p), summary: `Corectat după spusele lui Daniel: numele de fată e Igna (era ${p.birthSurname || "gol"})` } });
+    n++;
+  }
+  await db.insert(appSetting).values({ key: MARK2, value: { at: new Date().toISOString(), changed: n } }).onConflictDoNothing();
+  return `${n} fișe`;
+}

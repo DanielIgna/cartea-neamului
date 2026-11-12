@@ -109,8 +109,20 @@ export function findChecks(g: Graph, people: Record<string, CheckPerson>, decide
     if (w.sex !== "F" || !real(who) || normName(w.birthSurname)) continue;
     const father = parents(who).find((p) => P(p)?.sex === "M" && real(p));
     if (!father) continue;
-    const maiden = (P(father).birthSurname?.trim() || P(father).surname || "").trim();
+    // Mai mulți martori pentru numele de fată: tatăl și frații ei (bărbații din neam păstrează numele); câștigă cel mai des întâlnit.
+    const brothers = kids(father).filter((k) => k !== who && P(k)?.sex === "M" && real(k));
+    const votes = new Map<string, { n: number; text: string }>();
+    for (const id of [father, father, ...brothers]) {
+      const text = (P(id).birthSurname?.trim() || P(id).surname || "").trim();
+      if (!text) continue;
+      const k = normName(text), v = votes.get(k);
+      votes.set(k, { n: (v?.n ?? 0) + 1, text: v?.text ?? text });
+    }
+    const maiden = [...votes.values()].sort((a, b) => b.n - a.n)[0]?.text ?? "";
     if (!maiden || !normName(w.surname) || normName(w.surname) === normName(maiden)) continue;
+    // Numele ei e al mamei (copil purtând numele mamei): nu e nume de măritată, nu întrebăm.
+    const mother = parents(who).find((p) => P(p)?.sex === "F");
+    if (mother && [P(mother).surname, P(mother).birthSurname].some((x) => normName(x) === normName(w.surname)) && !partners(who).length) continue;
     const key = `numeDeFata:${who}`;
     if (decided[key]) continue;
     out.push({ kind: "numeDeFata", key, who, father, maiden, options: [{ id: "da" }, { id: "corect" }] });
