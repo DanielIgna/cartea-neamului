@@ -72,5 +72,5 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
 /** Titlul și descrierea paginii, în limba cititorului. */
 export async function legalMetadata(page: Page) {
   const t = await getT("Legal");
-  return { title: `${t(`${page}.metaTitle`)} · ${await getAppName()}`, description: t(`${page}.metaDescription`) };
+  return { title: `${t(`${page}.metaTitle`)} · ${await getAppName()}`, description: t(`${page}.metaDescription`), alternates: { canonical: page === "Privacy" ? "/confidentialitate" : "/termeni" } };
 }

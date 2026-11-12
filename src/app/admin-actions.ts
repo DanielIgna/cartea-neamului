@@ -14,6 +14,8 @@ import { undoChange } from "@/lib/admin-istoric";
 import { homeImagesState, isHomeSlot, saveHomeImagesState, withActive, withoutUpload } from "@/lib/home-images";
 import { deleteObjects } from "@/lib/storage";
 import { markRemovedByUpload } from "@/lib/home-submissions";
+import { activeServiceAccount, listSites, parseServiceAccount, parseVerification, parseWatch, pickSite, saveSeoSettings, sealCredentials, seoSettings, submitSitemap, type SeoSettings } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site-url";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -143,4 +145,52 @@ export async function deleteHomeUpload(slot: string, id: string): Promise<AdminF
   revalidatePath("/");
   revalidatePath("/admin/poze");
   return { ok: "Am șters poza." };
+}
+
+/**
+ * Admin → SEO: codul de verificare Google, proprietatea din Search Console, cuvintele urmărite și cheia contului de serviciu.
+ * Cheia lăsată goală rămâne cea de dinainte; bifa „șterge cheia” o scoate.
+ */
+export async function saveSeoSetup(_: AdminFormState, form: FormData): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const patch: Partial<SeoSettings> = {};
+  const ver = String(form.get("verification") ?? "");
+  if (ver.trim()) {
+    const code = parseVerification(ver);
+    if (!code) return { error: "Codul de verificare nu arată bine. Lipește tot rândul <meta …> primit de la Google." };
+    patch.verification = code;
+  } else patch.verification = null;
+  const siteUrl = String(form.get("siteUrl") ?? "").trim();
+  patch.siteUrl = siteUrl || null;
+  patch.watch = parseWatch(String(form.get("watch") ?? ""));
+  const key = String(form.get("credentials") ?? "").trim();
+  if (form.get("removeKey") === "on") patch.credentials = null;
+  else if (key) {
+    const sa = parseServiceAccount(key);
+    if (!sa) return { error: "Cheia nu e bună: lipește tot conținutul fișierului .json descărcat din Google Cloud." };
+    patch.credentials = sealCredentials(JSON.stringify(sa));
+  }
+  await saveSeoSettings(db, patch, me.id);
+  revalidatePath("/admin/seo");
+  revalidatePath("/");
+  return { ok: "Am salvat." };
+}
+
+/** Admin → SEO: trimite sitemap.xml la Google Search Console (Google îl citește din nou în câteva ore sau zile). */
+export async function submitSitemapNow(): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const s = await seoSettings(db);
+  const sa = activeServiceAccount(s);
+  if (!sa) return { error: "Mai întâi pune cheia Search Console." };
+  try {
+    const site = pickSite(await listSites(sa.account), s.siteUrl, SITE_URL);
+    if (!site) return { error: "Contul de serviciu nu are acces la nicio proprietate din Search Console." };
+    await submitSitemap(sa.account, site, `${SITE_URL}/sitemap.xml`);
+  } catch (e) {
+    return { error: `Google a refuzat: ${e instanceof Error ? e.message : String(e)}. Verifică că adresa contului are permisiune „Complet” în Search Console.` };
+  }
+  revalidatePath("/admin/seo");
+  return { ok: "Trimis. Google îl citește în câteva ore sau zile." };
 }
