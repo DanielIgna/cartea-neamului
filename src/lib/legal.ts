@@ -1,13 +1,13 @@
 /**
  * Cine ține site-ul și cum i se scrie, plus versiunile textelor la care oamenii își dau acordul.
  *
- * Din 12 noiembrie 2026 de site răspunde firma VINTAGE FURNITURE SRL (cerut de Daniel: firma apare, numele lui nu mai apare
- * pe platformă). Variabilele de mediu OPERATOR_NAME și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune.
+ * Din 12 noiembrie 2026 seara de site răspunde PFA-ul lui Daniel, IGNA IOAN DANIEL PERSOANĂ FIZICĂ AUTORIZATĂ (cerut de el, cu
+ * certificatul de înregistrare; înainte, în aceeași zi, era VINTAGE FURNITURE SRL). Variabilele de mediu OPERATOR_NAME și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune.
  */
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
 export const TERMS_DATE = new Date("2026-11-12T12:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (12 noiembrie: operatorul e firma VINTAGE FURNITURE SRL; 11 noiembrie:
+ * Ultima schimbare a Politicii de confidențialitate (12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
@@ -42,13 +42,13 @@ export const FAITH_CONSENT_TEXT = "Sunt de acord ca ce scriu despre credința me
  */
 export const BETA = true;
 
-/** Firma care răspunde de site și de date (operator GDPR), cu datele din Registrul Comerțului. */
+/** PFA-ul care răspunde de site și de date (operator GDPR), cu datele din certificatul de înregistrare (ONRC Cluj, 13.02.2025). */
 const OPERATOR_DEFAULT = {
-  name: "VINTAGE FURNITURE SRL",
-  cui: "35250247",
-  regCom: "J2015003534120",
-  euid: "ROONRC.J2015003534120",
-  address: "Aleea Negoiu nr. 8D, 400676 Cluj-Napoca, jud. Cluj, România",
+  name: "IGNA IOAN DANIEL PERSOANĂ FIZICĂ AUTORIZATĂ",
+  cui: "51278711",
+  regCom: "F2025004245004",
+  euid: "ROONRC.F2025004245004",
+  address: "Aleea Negoiu nr. 8D, ap. 25, 400676 Cluj-Napoca, jud. Cluj, România",
 };
 // Adresa site-ului pentru cererile despre date (aceeași în care ajung și mesajele din pagina Contact).
 const CONTACT_DEFAULT = "contact.carteaneamului@gmail.com";
