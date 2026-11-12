@@ -158,7 +158,7 @@ export const roLegal = {
         // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Prețul",
-          p1: "Când îți faci cont ai {trialDays} zile gratuite, cu tot ce oferă site-ul. După ele, ca să adaugi și să schimbi în continuare, plătești un an: {priceLei} lei (în celelalte limbi ale site-ului, {priceEur} €). O rudă invitată în arborele altcuiva are aceleași zile gratuite, apoi plătește {invitePriceLei} lei ({invitePriceEur} €) pe an. Cine avea cont înainte să pornim plățile primește primul an gratuit.",
+          p1: "Când îți faci cont ai {trialDays} zile gratuite, cu tot ce oferă site-ul. După ele, ca să adaugi și să schimbi în continuare, plătești un an: {priceLei} lei (în celelalte limbi ale site-ului, {priceEur} €). O rudă invitată în arborele altcuiva are aceleași zile gratuite, apoi plătește {invitePriceLei} lei ({invitePriceEur} €) pe an. Cine avea cont înainte să pornim plățile primește primul an gratuit. În zilele gratuite, un arbore pe care nu l-a plătit nimeni poate avea până la {trialPersons} de persoane, ai un singur arbore al tău, iar rudele le poți invita doar să vadă arborele. Cu anul plătit, aceste limite dispar.",
           l1: "Dacă nu plătești, nu se șterge nimic: arborii tăi rămân, îi vezi și îi poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești.",
           l2: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
           l3: "<b>Cartea neamului în PDF</b> costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
