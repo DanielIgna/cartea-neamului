@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import LegalLangNote from "@/components/LegalLangNote";
@@ -47,7 +48,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
   return (
     <article className="card legal" lang={locale}>
       <LegalLangNote />
-      <div className="section-label" style={{ marginTop: 0 }}>{t(`${page}.label`)}</div>
+      <h1 className="section-label" style={{ marginTop: 0 }}>{t(`${page}.label`)}</h1>
       <h2>{t(`${page}.title`)}</h2>
       <p className="legal-date">{t("updated", { date: format.dateTime(date, { day: "numeric", month: "long", year: "numeric" }) })}</p>
       {Object.entries(sections).map(([id, s]) => {
@@ -79,5 +80,5 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
 /** Titlul și descrierea paginii, în limba cititorului. */
 export async function legalMetadata(page: Page) {
   const t = await getT("Legal");
-  return { title: `${t(`${page}.metaTitle`)} · ${await getAppName()}`, description: t(`${page}.metaDescription`), alternates: { canonical: page === "Privacy" ? "/confidentialitate" : "/termeni" } };
+  return publicPageMetadata({ path: page === "Privacy" ? "/confidentialitate" : "/termeni", title: `${t(`${page}.metaTitle`)} | ${await getAppName()}`, description: t(`${page}.metaDescription`) });
 }

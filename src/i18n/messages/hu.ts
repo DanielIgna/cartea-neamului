@@ -15,6 +15,7 @@ import { huDatele } from "./datele/hu";
 export const hu: Catalog = {
   Meta: {
     appName: "A Család Könyve",
+    homeTitle: "Online családfa | A Család Könyve",
     description: "A család fája, közösen építve, könyvként kinyomtatva.",
   },
   Layout: {
@@ -116,6 +117,22 @@ export const hu: Catalog = {
     gen3Text: "Megtudják, honnan jönnek, és továbbviszik a történetet.",
     gen4Title: "A gyerekek",
     gen4Text: "Úgy nőnek fel, hogy ismerik a gyökereiket.",
+    whatTitle: "Mi az a családfa?",
+    whatText: "A családfa megmutatja, ki kitől származik: te, a szüleid, a nagyszüleid és dédszüleid, mindegyikük testvéreivel és unokatestvéreivel. Itt online készíted el, a rokonaiddal együtt, és a fán mindenkinek vannak fotói, iratai és emlékei.",
+    ancestorsTitle: "Kik voltak az őseim?",
+    ancestorsText: "Kezdd azzal, amit tudsz, és kérdezd meg a rokonaidat. A nagyszülők olyan neveket és falvakat is ismernek, amelyek sehol sincsenek leírva, és a saját hangjukon felvett emlékeik a család könyvében maradnak az unokáknak.",
+    historyTitle: "A családod a világ történetében",
+    historyText: "Annak, aki a dédszülőknél is messzebbre akar visszatekinteni:",
+    alt: {
+      gen1: "A család nagyszülei",
+      gen2: "Szülők a gyerekeikkel",
+      gen3: "A család fiataljai",
+      gen4: "A család gyerekei",
+      memories: "Egy nagyapa az emlékeiről mesél az unokájának",
+      map: "A falu, ahonnan a család származik",
+      book: "Régi családi fotók albuma",
+      table: "Az asztal körül összegyűlt család",
+    },
   },
   Home: {
     welcomeEyebrow: "Üdv újra itt",

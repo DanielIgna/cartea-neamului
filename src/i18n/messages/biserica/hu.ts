@@ -4,7 +4,7 @@ import type { BisericaCatalog } from "./ro";
 export const huBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "A hit szabadsága",
+      title: "A hit szabadsága | A kereszténység története",
       description: "A kereszténység kétezer éves története: Róma vértanúi, a reformáció, az első román nyelvű könyvek és azok, akiket hitük miatt bebörtönöztek a kommunista börtönökben.",
     },
     label: "A hit szabadsága",

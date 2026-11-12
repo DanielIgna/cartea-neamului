@@ -17,7 +17,7 @@ export const roLegal = {
     contactLine: "{name}, cu sediul în {address} (CUI {cui}, Nr. Reg. Com. {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
     Privacy: {
       metaTitle: "Politica de confidențialitate",
-      metaDescription: "Ce date păstrăm, de ce, cine le vede și cum le descarci sau le ștergi.",
+      metaDescription: "Ce date păstrăm în arborele familiei, de ce, cine le vede și cum le descarci sau le ștergi.",
       label: "Politica de confidențialitate",
       title: "Cum avem grijă de datele familiei tale",
       sections: {
@@ -123,7 +123,7 @@ export const roLegal = {
     },
     Terms: {
       metaTitle: "Termeni de utilizare",
-      metaDescription: "Ce înseamnă să ai cont în Cartea Neamului: ce poți pune, al cui e și ce promitem.",
+      metaDescription: "Ce înseamnă un cont în Cartea Neamului: ce poți adăuga în arbore, al cui este și ce promitem.",
       label: "Termeni de utilizare",
       title: "Ce înseamnă să ai cont în Cartea Neamului",
       sections: {

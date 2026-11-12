@@ -4,7 +4,7 @@ import type { BisericaCatalog } from "./ro";
 export const esBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "La libertad de creer",
+      title: "La libertad de creer | Historia del cristianismo",
       description: "Dos mil años de historia del cristianismo: los mártires de Roma, la Reforma, los primeros libros en rumano y las personas encarceladas por su fe en las prisiones comunistas.",
     },
     label: "La libertad de creer",

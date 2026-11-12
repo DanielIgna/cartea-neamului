@@ -6,6 +6,7 @@
  * Cu cheia, panoul citește direct din Search Console: după ce cuvinte apare site-ul, pe ce loc, câte afișări și clicuri,
  * ce pagini sunt indexate și starea sitemap-ului. Doar citiri, plus „Trimite sitemap-ul”.
  */
+import { revalidateTag } from "next/cache";
 import { createCipheriv, createDecipheriv, createHash, createSign, randomBytes } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -13,6 +14,8 @@ import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
 
 const KEY = "seo";
+/** Eticheta cache-ului cu setările SEO citite de prima pagină. */
+export const SEO_TAG = "seo-settings";
 export const MAX_WATCH = 40;
 
 export type SeoSettings = { verification: string | null; siteUrl: string | null; credentials: string | null; watch: string[] };
@@ -33,6 +36,8 @@ export async function saveSeoSettings(db: Pick<Db, "select" | "insert">, patch: 
   const value = { ...(await seoSettings(db)), ...patch };
   await db.insert(appSetting).values({ key: KEY, value, updatedBy: by, updatedAt: now })
     .onConflictDoUpdate({ target: appSetting.key, set: { value, updatedBy: by, updatedAt: now } });
+  // Codul de verificare de pe prima pagină stă în cache (SEO_TAG); după o schimbare, se citește din nou.
+  try { revalidateTag(SEO_TAG); } catch { /* în afara unei cereri Next nu e cache de golit */ }
 }
 
 /** Codul din meta tag-ul Google: din `<meta name="google-site-verification" content="ABC…">` sau doar „ABC…”. */

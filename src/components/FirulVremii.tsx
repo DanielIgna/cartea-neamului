@@ -87,7 +87,7 @@ export default function FirulVremii() {
   return (
     <article className="card ch fv">
       <header className="ch-head">
-        <div className="section-label" style={{ marginTop: 0 }}>Istoria umanității</div>
+        <h1 className="section-label" style={{ marginTop: 0 }}>Istoria umanității pe o axă</h1>
         <h2>Cinci mii de ani de istorie, pe un singur fir</h2>
         <p className="ch-lead">De la primele orașe și primele scrieri, în Sumer și în Egipt, până la internet. Pe aceeași axă a anilor vezi, una sub alta, marile civilizații ale lumii, de la Mesopotamia și China până la Maya și incași, Israelul vechi și începuturile creștinismului, Europa modernă cu ideile și descoperirile ei și ce se petrecea, în tot acest timp, pe pământul nostru. Atinge orice bară și afli ce mai era în același timp.</p>
       </header>

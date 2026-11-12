@@ -14,6 +14,7 @@ export const deContact: ContactCatalog = {
     "waTitle": "Auf WhatsApp",
     "waText": "Am schnellsten: Öffne den Chat und schreib uns direkt.",
     "waCta": "Schreib uns auf WhatsApp",
+    "facebook": "Du findest uns auch auf <link>Facebook</link>, wo wir Neuigkeiten teilen.",
     "waGreeting": "Hallo! Ich schreibe dir über Das Familienbuch.",
     "waFloat": "Schreib uns auf WhatsApp",
     "mailTitle": "Per E-Mail",

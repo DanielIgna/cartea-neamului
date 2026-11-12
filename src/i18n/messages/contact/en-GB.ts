@@ -14,6 +14,7 @@ export const enGBContact: ContactCatalog = {
     "waTitle": "On WhatsApp",
     "waText": "The quickest way: open the chat and write to us directly.",
     "waCta": "Message us on WhatsApp",
+    "facebook": "You can also find us on <link>Facebook</link>, where we post the news.",
     "waGreeting": "Hello! I’m writing from the Family Book website.",
     "waFloat": "Message us on WhatsApp",
     "mailTitle": "By email",

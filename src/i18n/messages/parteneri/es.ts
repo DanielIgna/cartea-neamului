@@ -14,7 +14,7 @@ export const esParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Socios · El Libro de la Familia",
+    metaTitle: "Socios | El Libro de la Familia",
     metaDescription: "Los socios del Libro de la Familia y lo que ofrecen a las familias.",
     label: "Socios",
     title: "Los socios del Libro de la Familia",

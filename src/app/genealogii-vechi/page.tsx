@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import AdamHristos from "@/components/AdamHristos";
+import JsonLd from "@/components/JsonLd";
 import PageIntl from "@/i18n/PageIntl";
+import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
-  title: "Genealogii vechi · Cartea Neamului",
-  description: "Una dintre cele mai lungi genealogii păstrate în scris, așa cum o dau textele biblice: de la Adam la Noe, Avraam, David și Isus din Nazaret. Șase arbori interactivi, anii de viață și locurile unde vechile manuscrise dau cifre diferite.",
-  alternates: { canonical: "/genealogii-vechi" },
+const SEO = {
+  path: "/genealogii-vechi",
+  title: "Genealogii biblice, de la Adam la Isus | Cartea Neamului",
+  description: "Genealogia biblică de la Adam la Noe, Avraam, David și Isus. Șase arbori interactivi, cu anii de viață din vechile texte.",
 };
+export const metadata: Metadata = publicPageMetadata(SEO);
 
 /** Pagină deschisă tuturor, fără cont: genealogiile vechi după textele biblice (deocamdată doar în română, cu numele din Cornilescu). */
 export default function GenealogiiVechiPage() {
-  return <PageIntl ns={["Charts"]} locale="ro"><AdamHristos /></PageIntl>;
+  return <><JsonLd data={webPageJsonLd(SEO)} /><PageIntl ns={["Charts"]} locale="ro"><AdamHristos /></PageIntl></>;
 }
