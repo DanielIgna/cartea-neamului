@@ -44,6 +44,8 @@ export const ENV_KEYS: { key: string; what: string; needed: boolean }[] = [
   { key: "NEON_REALTIME_URL", what: "Arborele în timp real", needed: false },
   { key: "NEON_REALTIME_SECRET", what: "Arborele în timp real", needed: false },
   { key: "NEON_FUNCTION_HELLO_BASE_URL", what: "Funcția Neon de probă", needed: false },
+  { key: "GSC_SERVICE_ACCOUNT_JSON", what: "Admin → SEO: cheia Google Search Console (se poate pune și din panou)", needed: false },
+  { key: "GOOGLE_SITE_VERIFICATION", what: "Admin → SEO: codul de verificare Google (se poate pune și din panou)", needed: false },
   { key: "NEON_AI_GATEWAY_BASE_URL", what: "Sugestii de biografie (plan plătit)", needed: false },
   { key: "NEON_AI_GATEWAY_TOKEN", what: "Sugestii de biografie (plan plătit)", needed: false },
 ];

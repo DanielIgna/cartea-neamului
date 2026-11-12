@@ -13,10 +13,15 @@ import Landing from "@/components/Landing";
 import Image from "next/image";
 import { homeImages } from "@/lib/home-images";
 import { SITE_URL } from "@/lib/site-url";
+import { seoSettings } from "@/lib/seo";
 import type { Metadata } from "next";
 
 // Prima pagină are o singură adresă (fără ?cont=…), iar motoarele de căutare află numele site-ului din datele WebSite.
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+// Tot aici stă codul de verificare Google Search Console, pus din Admin → SEO (sau GOOGLE_SITE_VERIFICATION în Vercel).
+export async function generateMetadata(): Promise<Metadata> {
+  const code = process.env.GOOGLE_SITE_VERIFICATION?.trim() || (await seoSettings(db)).verification;
+  return { alternates: { canonical: "/" }, ...(code ? { verification: { google: code } } : {}) };
+}
 const WEBSITE = {
   "@context": "https://schema.org", "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL, inLanguage: "ro",
   description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
