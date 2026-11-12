@@ -108,6 +108,11 @@ const ADDITIVE = [
     "key" text PRIMARY KEY NOT NULL, "value" jsonb NOT NULL,
     "updated_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "paid_until" timestamp`,
+  sql`CREATE TABLE IF NOT EXISTS "payment" (
+    "id" text PRIMARY KEY NOT NULL, "user_id" text REFERENCES "user"("id") ON DELETE set null, "kind" text NOT NULL,
+    "tree_id" uuid REFERENCES "tree"("id") ON DELETE set null, "amount" integer NOT NULL, "currency" text NOT NULL,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE INDEX IF NOT EXISTS "payment_user_idx" ON "payment" USING btree ("user_id","kind")`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

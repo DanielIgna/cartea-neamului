@@ -233,6 +233,18 @@ export const accountPlan = pgTable("account_plan", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// Plățile primite prin Stripe: „an” (un an în Cartea Neamului) sau „carte” (cartea PDF a unui arbore, pentru cel care a plătit).
+// Cheia e id-ul sesiunii de plată din Stripe, ca o confirmare primită de două ori să nu se socotească de două ori. Vezi src/lib/plati.ts.
+export const payment = pgTable("payment", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  kind: text("kind").notNull(),
+  treeId: uuid("tree_id").references(() => tree.id, { onDelete: "set null" }),
+  amount: integer("amount").notNull(), // în bani (lei × 100) sau cenți
+  currency: text("currency").notNull(), // ron / eur
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("payment_user_idx").on(t.userId, t.kind)]);
+
 // Setări ale site-ului schimbate din panou (de pildă limitele planului gratuit și prețul), câte una pe cheie.
 export const appSetting = pgTable("app_setting", {
   key: text("key").primaryKey(),

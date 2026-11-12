@@ -20,10 +20,12 @@ export const USAGE_VERSION = "2026-11-06";
  * Acordurile păstrate în tabelul `consent`: termenii (la crearea contului), capitolul „Credința” (date ocrotite mai strict) și
  * măsurarea timpului petrecut în site („usage”, cerută o singură dată, cu „Bine” sau „Nu vreau”).
  */
-export type ConsentPurpose = "terms" | "faith" | "usage";
-export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION };
+export type ConsentPurpose = "terms" | "faith" | "usage" | "withdrawal";
+export const WITHDRAWAL_VERSION = "2026-11-12";
+export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION, withdrawal: WITHDRAWAL_VERSION };
 export const CONSENT_LABEL: Record<ConsentPurpose, string> = {
   terms: "Termenii și Politica de confidențialitate", faith: "Capitolul „Credința”", usage: "Cât timp folosesc site-ul și ce părți din el",
+  withdrawal: "La plată: accesul începe imediat, fără cele 14 zile de retragere (OUG 34/2014, art. 16 lit. m)",
 };
 
 /** Ce află cel care ține site-ul dacă omul spune „Bine”, cum îl citește omul în anunț. */

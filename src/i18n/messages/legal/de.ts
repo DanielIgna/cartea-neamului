@@ -62,7 +62,7 @@ export const deLegal: LegalCatalog = {
           l2: "<b>Neon</b> (Databricks Inc., USA) speichert die Datenbank, die Fotos, Dokumente und Aufnahmen, in einem Rechenzentrum in Frankfurt (Deutschland, EU).",
           l3: "<b>Google</b> bestätigt deine Identität bei der Anmeldung, nur wenn du „Mit Google fortfahren“ wählst.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Vereinigtes Königreich) liefert die Kartenteile der „Familienkarte“. Dein Browser fordert sie direkt bei ihnen an, darum sehen sie die IP-Adresse, von der aus du sie anforderst.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, USA) stellt uns die über die Seite Kontakt gesendeten Nachrichten per E-Mail zu. <b>WhatsApp</b> (WhatsApp Ireland Ltd., Teil der Meta-Gruppe), nur wenn du uns dort schreibst, nach deren eigenen Datenschutzregeln.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) stellt uns die über die Seite Kontakt gesendeten Nachrichten per E-Mail zu. <b>WhatsApp</b> (WhatsApp Ireland Ltd., Teil der Meta-Gruppe), nur wenn du uns dort schreibst, nach deren eigenen Datenschutzregeln. <b>Stripe</b> (Stripe Payments Europe Ltd., Irland), nur wenn du etwas bezahlst, nimmt die Kartenzahlung auf seiner eigenen Seite entgegen; wir sehen die Kartendaten nie, nur was, wie viel und wann bezahlt wurde (für die Buchhaltung so lange aufbewahrt, wie das Gesetz es verlangt).",
           p2: "Für Übermittlungen außerhalb der Europäischen Union nutzen diese Dienstleister die von der Europäischen Kommission genehmigten Standardvertragsklauseln oder den EU-US-Datenschutzrahmen. Über Lebende senden wir nichts an Dienste der künstlichen Intelligenz.",
         },
         partner: {

@@ -62,7 +62,7 @@ export const enGBLegal: LegalCatalog = {
           l2: "<b>Neon</b> (Databricks Inc., USA) stores the database, photos, documents and recordings, in a data centre in Frankfurt (Germany, EU).",
           l3: "<b>Google</b>, only if you choose “Continue with Google”, confirms your identity when you sign in.",
           l4: "<b>OpenStreetMap</b> (the OpenStreetMap Foundation, United Kingdom) provides the map tiles in “Family map”. Your browser requests them directly from them, so they see the IP address you request them from.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, USA) delivers to our email the messages sent from the Contact page. <b>WhatsApp</b> (WhatsApp Ireland Ltd., part of the Meta group), only if you choose to write to us there, under its own privacy rules.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) delivers to our email the messages sent from the Contact page. <b>WhatsApp</b> (WhatsApp Ireland Ltd., part of the Meta group), only if you choose to write to us there, under its own privacy rules. <b>Stripe</b> (Stripe Payments Europe Ltd., Ireland), only if you pay for something, takes the card payment on its own page; we never see the card details, only what was paid, how much and when (kept for accounting as long as the law requires).",
           p2: "For transfers outside the European Union, these providers use the standard contractual clauses approved by the European Commission or the EU–US Data Privacy Framework. We send nothing about living people to artificial intelligence services.",
         },
         partner: {

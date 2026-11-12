@@ -1,0 +1,18 @@
+import { db } from "@/db";
+import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
+
+/**
+ * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
+ * evenimentele „checkout.session.completed” și „checkout.session.async_payment_succeeded”). Fără semnătura bună, nu se ia în seamă.
+ */
+export async function POST(req: Request) {
+  const body = await req.text();
+  if (!verifyStripeSignature(body, req.headers.get("stripe-signature"), process.env.STRIPE_WEBHOOK_SECRET?.trim() ?? "")) {
+    return new Response("semnătură greșită", { status: 400 });
+  }
+  let event: unknown;
+  try { event = JSON.parse(body); } catch { return new Response("JSON greșit", { status: 400 }); }
+  const paid = paidSession(event);
+  if (paid) await applyPayment(db, paid);
+  return Response.json({ ok: true });
+}

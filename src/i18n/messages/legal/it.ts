@@ -62,7 +62,7 @@ export const itLegal: LegalCatalog = {
           l2: "<b>Neon</b> (Databricks Inc., USA) conserva il database, le foto, i documenti e le registrazioni, in un centro dati a Francoforte (Germania, UE).",
           l3: "<b>Google</b>, solo se scegli «Continua con Google», conferma la tua identità all’accesso.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Regno Unito) fornisce i pezzi di mappa della «Mappa della famiglia». Il tuo browser li chiede direttamente a loro, quindi vedono l’indirizzo IP da cui li chiedi.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, USA) ci consegna via email i messaggi inviati dalla pagina Contatti. <b>WhatsApp</b> (WhatsApp Ireland Ltd., del gruppo Meta), solo se scegli di scriverci lì, secondo le sue regole sulla privacy.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) ci consegna via email i messaggi inviati dalla pagina Contatti. <b>WhatsApp</b> (WhatsApp Ireland Ltd., del gruppo Meta), solo se scegli di scriverci lì, secondo le sue regole sulla privacy. <b>Stripe</b> (Stripe Payments Europe Ltd., Irlanda), solo se paghi qualcosa, riceve il pagamento con carta sulla propria pagina; non vediamo mai i dati della carta, solo cosa è stato pagato, quanto e quando (conservati per la contabilità per il tempo richiesto dalla legge).",
           p2: "Per i trasferimenti fuori dall’Unione europea, questi fornitori usano le clausole contrattuali tipo approvate dalla Commissione europea o il quadro UE-USA per la protezione dei dati. Sui viventi non inviamo nulla a servizi di intelligenza artificiale.",
         },
         partner: {

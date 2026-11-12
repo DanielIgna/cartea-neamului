@@ -1369,3 +1369,9 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .access-banner .btn{padding:6px 16px}
 @media print{.access-banner{display:none}}
 @media (max-width:600px){.access-banner{font-size:13px;line-height:1.4;padding:8px 12px;margin-bottom:12px}.access-banner .btn{padding:5px 12px;font-size:13px;min-height:0}}
+.pay-form label.check{display:flex;gap:8px;align-items:flex-start;font-size:14px;max-width:70ch}
+.pay-form label.check input{margin-top:3px}
+.plata .pay-ok{border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:8px 12px}
+/* Cartea neplătită: previzualizare cu un semn pe fiecare pagină, și pe ecran, și la tipărire. */
+.book-locked .pagedjs_page{position:relative}
+.book-locked .pagedjs_page::after{content:var(--wm);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 64px/1 Georgia,serif;letter-spacing:.12em;color:rgba(150,40,30,.16);transform:rotate(-35deg);pointer-events:none;z-index:9}

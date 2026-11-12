@@ -14,7 +14,7 @@ import { dropUserSubmissions } from "./home-submissions";
 import type { Db } from "@/db";
 import {
   account, accountPlan, consent, document, oldHouse, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
-  user, verification, homeSubmission,
+  user, verification, homeSubmission, payment,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
@@ -163,6 +163,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     .from(session).where(eq(session.userId, userId)).orderBy(asc(session.createdAt));
   const consents = await db.select().from(consent).where(eq(consent.userId, userId)).orderBy(asc(consent.createdAt));
   const [plan] = await db.select().from(accountPlan).where(eq(accountPlan.userId, userId));
+  const payments = await db.select().from(payment).where(eq(payment.userId, userId));
   const partners = await partnerHistory(db, userId);
   const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const proposals = await db.select().from(homeSubmission).where(eq(homeSubmission.userId, userId)).orderBy(asc(homeSubmission.createdAt));
@@ -208,7 +209,10 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     acorduriParteneri: partners.map((p) => ({ partener: p.partner === "propmanage" ? "PropManage" : p.partner, dat: p.granted, versiune: p.textVersion, limba: p.locale,
       deUnde: p.source, dinData: iso(p.grantedAt), retrasPe: iso(p.revokedAt), scris: iso(p.createdAt) })),
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
-    ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, schimbata: iso(plan.updatedAt) } } : {}),
+    ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, platitPanaLa: iso(plan.paidUntil), schimbata: iso(plan.updatedAt) } } : {}),
+    // Plățile făcute cu cardul (fără datele cardului, pe care nu le vedem): ce, cât și când. Se păstrează pentru contabilitate.
+    plati: payments.map((x) => ({ ce: x.kind === "carte" ? "Cartea neamului (PDF)" : "Un an în Cartea Neamului", arbore: x.treeId ? treeOf(x.treeId) : null,
+      suma: x.amount / 100, moneda: x.currency.toUpperCase(), cand: iso(x.createdAt) })),
     // Cât a folosit site-ul, pe zile, dacă a spus „Bine” la măsurare (doar timpul și partea din site).
     folosire: usage.map((x) => ({ zi: x.day, parte: sectionLabel(x.section), secunde: x.seconds, deschideri: x.views, peTelefon: x.phoneSeconds, inAplicatie: x.appSeconds })),
     arbori: trees.map((t) => ({ nume: t.name, regiune: t.region, rol: ROLE[t.role], intrat: iso(t.joinedAt), gedcom: `${origin}/api/arbore/${t.id}/gedcom?living=1` })),

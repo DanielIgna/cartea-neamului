@@ -62,7 +62,7 @@ export const nlLegal: LegalCatalog = {
           l2: "<b>Neon</b> (Databricks Inc., VS) bewaart de database, de foto’s, documenten en opnamen, in een datacenter in Frankfurt (Duitsland, EU).",
           l3: "<b>Google</b> bevestigt bij het inloggen je identiteit, alleen als je kiest voor ‘Doorgaan met Google’.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Verenigd Koninkrijk) levert de kaartstukken van ‘De familiekaart’. Je browser vraagt ze rechtstreeks bij hen op, dus zij zien het IP-adres waarvandaan je ze opvraagt.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, VS) bezorgt ons per e-mail de berichten die via de pagina Contact worden verstuurd. <b>WhatsApp</b> (WhatsApp Ireland Ltd., onderdeel van Meta), alleen als je ervoor kiest ons daar te schrijven, volgens hun eigen privacyregels.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, VS) bezorgt ons per e-mail de berichten die via de pagina Contact worden verstuurd. <b>WhatsApp</b> (WhatsApp Ireland Ltd., onderdeel van Meta), alleen als je ervoor kiest ons daar te schrijven, volgens hun eigen privacyregels. <b>Stripe</b> (Stripe Payments Europe Ltd., Ierland), alleen als je iets betaalt, ontvangt de kaartbetaling op zijn eigen pagina; wij zien de kaartgegevens nooit, alleen wat er is betaald, hoeveel en wanneer (bewaard voor de boekhouding zolang de wet dat vereist).",
           p2: "Voor doorgiften buiten de Europese Unie gebruiken deze leveranciers de door de Europese Commissie goedgekeurde modelcontractbepalingen of het EU-VS-kader voor gegevensbescherming. Over levenden sturen we niets naar diensten voor kunstmatige intelligentie.",
         },
         partner: {

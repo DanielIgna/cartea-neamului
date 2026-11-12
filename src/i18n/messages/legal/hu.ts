@@ -62,7 +62,7 @@ export const huLegal: LegalCatalog = {
           l2: "<b>Neon</b> (Databricks Inc., USA): az adatbázis, a fényképek, az iratok és a felvételek tárolása egy frankfurti adatközpontban (Németország, EU).",
           l3: "<b>Google</b>: csak ha a „Folytatás Google-fiókkal” lehetőséget választod, megerősíti a személyazonosságodat a belépéskor.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Alapítvány, Egyesült Királyság): „A család térképe” térképdarabjai. A böngésződ közvetlenül tőlük kéri le őket, így ők látják, milyen IP-címről kéred.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, USA) e-mailben juttatja el hozzánk a Kapcsolat oldalról küldött üzeneteket. <b>WhatsApp</b> (WhatsApp Ireland Ltd., a Meta-csoport tagja), csak ha úgy döntesz, hogy ott írsz nekünk, a saját adatvédelmi szabályai szerint.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, USA) e-mailben juttatja el hozzánk a Kapcsolat oldalról küldött üzeneteket. <b>WhatsApp</b> (WhatsApp Ireland Ltd., a Meta-csoport tagja), csak ha úgy döntesz, hogy ott írsz nekünk, a saját adatvédelmi szabályai szerint. <b>Stripe</b> (Stripe Payments Europe Ltd., Írország), csak ha fizetsz valamiért, a saját oldalán fogadja a kártyás fizetést; a kártyaadatokat sosem látjuk, csak azt, mit, mennyit és mikor fizettél (a könyveléshez, ameddig a törvény előírja).",
           p2: "Az Európai Unión kívüli adattovábbításhoz ezek a szolgáltatók az Európai Bizottság által jóváhagyott általános szerződési feltételeket vagy az EU–USA adatvédelmi keretrendszert használják. Az élőkről semmit sem küldünk mesterségesintelligencia-szolgáltatásoknak.",
         },
         partner: {
