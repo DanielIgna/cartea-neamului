@@ -145,28 +145,42 @@ export const nlLegal: LegalCatalog = {
           l2: "Een herinnering is van wie haar schrijft: alleen die kiest wie haar ziet, en alleen die verandert of verwijdert haar.",
           l3: "Het hoofdstuk ‘Geloof’ van de autobiografie is alleen voor levenden, die zelf antwoorden, met hun toestemming.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. De prijs",
-          p1: "Op dit moment is alles gratis. Als we ooit een abonnement vragen, voor grote stambomen of voor nieuwe dingen, laten we het je op tijd weten. Wat je erop hebt gezet, blijft van jou, en het bekijken van de stamboom, de uitnodigingen en het downloaden ervan (GEDCOM) blijven gratis.",
+          p1: "Als je een account maakt, krijg je {trialDays} gratis dagen met alles wat de site biedt. Daarna betaal je een jaar om verder toe te voegen en te wijzigen: {priceLei} lei (in de andere talen van de site {priceEur} €). Een familielid dat in de stamboom van iemand anders is uitgenodigd, krijgt dezelfde gratis dagen en betaalt daarna {invitePriceLei} lei ({invitePriceEur} €) per jaar. Wie al een account had voordat we met betalen begonnen, krijgt het eerste jaar gratis.",
+          l1: "Als je niet betaalt, wordt er niets verwijderd: je stambomen blijven, je ziet ze en kunt ze altijd downloaden (GEDCOM en <data>Mijn gegevens</data>); je kunt alleen niets meer toevoegen of wijzigen tot je betaalt.",
+          l2: "Het jaar verlengt niet vanzelf en we schrijven nooit automatisch geld van je kaart af.",
+          l3: "<b>Het familieboek als pdf</b> kost {bookLei} lei ({bookEur} €) per stamboom. Het voorbeeld is gratis; na betaling kun je het 12 maanden lang zo vaak opnieuw maken en downloaden als je wilt.",
+          l4: "<b>Het gedrukte boek</b> wordt op bestelling gemaakt: je vraagt ons een offerte via de boekpagina, en de prijs hangt af van het aantal pagina’s, het formaat, de kaft en het aantal exemplaren.",
+          p2: "De prijs bij het betalen is de eindprijs. Je betaalt met je kaart, via Stripe; wij zien je kaartgegevens nooit. De verkoper is {name}, CUI {cui}, handelsregisternr. {regCom}, gevestigd te {address}.",
+        },
+        withdrawal: {
+          h: "6. Herroepingsrecht",
+          p1: "Als consument heb je meestal 14 dagen om een aankoop zonder opgave van reden te herroepen (Roemeense noodverordening nr. 34/2014).",
+          l1: "<b>Een jaar in Het Familieboek en het pdf-boek</b> zijn digitale inhoud die je direct na betaling krijgt. Voor je betaalt, vink je aan dat je meteen wilt beginnen en dat je weet dat je daardoor je herroepingsrecht verliest (art. 16 onder m van noodverordening nr. 34/2014). Zonder vinkje kun je niet betalen. We bewaren je toestemming met de datum, en de betalingsbevestiging krijg je per e-mail.",
+          l2: "<b>Het gedrukte boek</b> wordt volgens jouw gegevens speciaal voor jou gemaakt, dus ook daarvoor is er geen herroepingsrecht (art. 16 onder c van noodverordening nr. 34/2014). Komt het door onze schuld beschadigd of met fouten aan, dan maken we het opnieuw of krijg je je geld terug.",
+          l3: "Werkt iets waarvoor je hebt betaald niet zoals beloofd, schrijf ons dan op <mail>{email}</mail>; we lossen het op of geven je geld terug. Je wettelijke rechten als consument blijven bestaan.",
+          p2: "Met een klacht kun je ons altijd schrijven. Komen we er samen niet uit, dan kun je terecht bij de Roemeense Nationale Autoriteit voor Consumentenbescherming (<anpc>ANPC</anpc>) of bij een instantie voor alternatieve geschillenbeslechting (<sal>SAL</sal>).",
         },
         reliability: {
-          h: "6. Hoe betrouwbaar de site werkt",
+          h: "7. Hoe betrouwbaar de site werkt",
           p1: "We doen ons best om de site goed te laten werken en niets te laten verloren gaan, maar we kunnen niet beloven dat er nooit onderbrekingen of fouten zullen zijn. Bewaar ook zelf een kopie: de stamboom als GEDCOM, het boek als pdf en je gegevens via <data>Mijn gegevens</data>.",
         },
         end: {
-          h: "7. Beëindiging",
+          h: "8. Beëindiging",
           p1: "Je kunt je account altijd verwijderen, via <data>Mijn gegevens</data>. We kunnen een account dat ernstig in strijd is met deze voorwaarden schorsen, nadat we de persoon hebben geschreven en hebben uitgelegd waarom.",
         },
         liability: {
-          h: "8. Aansprakelijkheid",
+          h: "9. Aansprakelijkheid",
           p1: "Binnen de grenzen van de wet zijn we niet aansprakelijk voor indirecte schade door het gebruik van de site. Niets in deze voorwaarden neemt je de rechten af die de wet je als consument geeft.",
         },
         law: {
-          h: "9. Toepasselijk recht",
+          h: "10. Toepasselijk recht",
           p1: "Op deze voorwaarden is het Roemeense recht van toepassing. Een meningsverschil proberen we eerst in goed overleg op te lossen; als dat niet lukt, beslissen de rechtbanken in Roemenië.",
         },
         changes: {
-          h: "10. Wijzigingen",
+          h: "11. Wijzigingen",
           p1: "Als we iets belangrijks veranderen in deze voorwaarden, laten we het je op de site weten voordat de wijziging ingaat.",
         },
       },

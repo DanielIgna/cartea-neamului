@@ -145,28 +145,42 @@ export const esLegal: LegalCatalog = {
           l2: "Un recuerdo es de quien lo escribe: solo él elige quién lo ve, y solo él lo cambia o lo borra.",
           l3: "El capítulo «La fe» de la autobiografía es solo para los vivos, que responden ellos mismos, con su consentimiento.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. El precio",
-          p1: "Ahora todo es gratis. Si algún día pedimos una suscripción, para los árboles grandes o para cosas nuevas, te avisaremos con tiempo. Lo que has puesto sigue siendo tuyo, y ver el árbol, las invitaciones y descargarlo (GEDCOM) seguirán siendo gratis.",
+          p1: "Al crear tu cuenta tienes {trialDays} días gratis con todo lo que ofrece el sitio. Después, para seguir añadiendo y cambiando cosas, pagas un año: {priceLei} lei (en los demás idiomas del sitio, {priceEur} €). Un familiar invitado al árbol de otra persona tiene los mismos días gratis y luego paga {invitePriceLei} lei ({invitePriceEur} €) al año. Quien ya tenía cuenta antes de que empezáramos a cobrar recibe gratis su primer año.",
+          l1: "Si no pagas, no se borra nada: tus árboles siguen ahí, los ves y puedes descargarlos cuando quieras (GEDCOM y <data>Mis datos</data>), solo que no puedes añadir ni cambiar nada hasta que pagues.",
+          l2: "El año no se renueva solo y nunca te cobramos automáticamente en la tarjeta.",
+          l3: "<b>El libro de la familia en PDF</b> cuesta {bookLei} lei ({bookEur} €) por árbol. La vista previa es gratis; después del pago puedes rehacerlo y descargarlo tantas veces como quieras durante 12 meses.",
+          l4: "<b>El libro impreso</b> se hace por encargo: nos pides un presupuesto desde la página del libro, y el precio depende del número de páginas, del formato, de la tapa y del número de ejemplares.",
+          p2: "El precio que ves al pagar es el precio final. Pagas con tarjeta, a través de Stripe; nunca vemos los datos de tu tarjeta. El vendedor es {name}, CUI {cui}, n.º de registro mercantil {regCom}, con domicilio en {address}.",
+        },
+        withdrawal: {
+          h: "6. El derecho de desistimiento",
+          p1: "Como consumidor, normalmente tienes 14 días para desistir de una compra sin dar explicaciones (Ordenanza de urgencia rumana n.º 34/2014).",
+          l1: "<b>El año en El Libro de la Familia y el libro en PDF</b> son contenido digital que recibes inmediatamente después de pagar. Antes de pagar, marcas que quieres empezar ya y que sabes que así pierdes el derecho de desistimiento (art. 16, letra m, de la OUG n.º 34/2014). Sin marcarlo no se puede pagar. Guardamos tu consentimiento, con su fecha, y recibes la confirmación del pago por correo.",
+          l2: "<b>El libro impreso</b> se hace con tus datos, especialmente para ti, así que tampoco tiene derecho de desistimiento (art. 16, letra c, de la OUG n.º 34/2014). Si llega dañado o con errores por nuestra culpa, lo rehacemos o te devolvemos el dinero.",
+          l3: "Si algo que has pagado no funciona como prometimos, escríbenos a <mail>{email}</mail> y lo arreglamos o te devolvemos el dinero. Tus derechos legales como consumidor se mantienen.",
+          p2: "Puedes escribirnos con una reclamación en cualquier momento. Si no llegamos a un acuerdo, puedes acudir a la Autoridad Nacional rumana de Protección del Consumidor (<anpc>ANPC</anpc>) o a una entidad de resolución alternativa de litigios (<sal>SAL</sal>).",
         },
         reliability: {
-          h: "6. Qué tan seguro funciona el sitio",
+          h: "7. Qué tan seguro funciona el sitio",
           p1: "Nos esforzamos para que el sitio funcione bien y no se pierda nada, pero no podemos prometer que nunca tenga interrupciones o errores. Guarda tú también una copia: el árbol en GEDCOM, el libro en PDF y tus datos desde <data>Mis datos</data>.",
         },
         end: {
-          h: "7. La terminación",
+          h: "8. La terminación",
           p1: "Puedes borrar tu cuenta cuando quieras, desde <data>Mis datos</data>. Podemos suspender una cuenta que incumpla gravemente estas condiciones, después de escribir a la persona y decirle por qué.",
         },
         liability: {
-          h: "8. La responsabilidad",
+          h: "9. La responsabilidad",
           p1: "Dentro de los límites de la ley, no respondemos de daños indirectos derivados del uso del sitio. Nada de estas condiciones te quita los derechos que te da la ley como consumidor.",
         },
         law: {
-          h: "9. La ley aplicable",
+          h: "10. La ley aplicable",
           p1: "Estas condiciones se rigen por la ley rumana. Primero intentamos resolver un desacuerdo de forma amistosa; si no es posible, lo deciden los tribunales de Rumanía.",
         },
         changes: {
-          h: "10. Cambios",
+          h: "11. Cambios",
           p1: "Si cambiamos algo importante en estas condiciones, te avisamos en el sitio antes de que el cambio entre en vigor.",
         },
       },

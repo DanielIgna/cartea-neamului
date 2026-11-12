@@ -76,6 +76,11 @@ describe("plata cu cardul", () => {
       expect(rows.find((x) => x.userId === "u2")?.plan).toBe("mereu");
     });
 
+    it("o plată pentru un cont sau un arbore șters se păstrează, fără să cadă confirmarea", async () => {
+      expect(await applyPayment(db, { id: "cs_x", kind: "carte", userId: "nimeni", treeId: "00000000-0000-0000-0000-000000000000", amount: 9900, currency: "ron" })).toBe(true);
+      expect(await applyPayment(db, { id: "cs_y", kind: "an", userId: "nimeni", treeId: null, amount: 5000, currency: "ron" })).toBe(true);
+    });
+
     it("cartea PDF e plătită 12 luni, doar pentru cel care a plătit-o", async () => {
       const now = new Date("2027-02-01T00:00:00Z");
       expect(await bookPaid(db, "u1", treeId, now)).toBe(false);

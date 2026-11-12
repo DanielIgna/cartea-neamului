@@ -145,28 +145,42 @@ export const frLegal: LegalCatalog = {
           l2: "Un souvenir appartient à celui qui l’écrit : lui seul choisit qui le voit, et lui seul le modifie ou le supprime.",
           l3: "Le chapitre « La foi » de l’autobiographie n’est que pour les vivants, qui répondent eux-mêmes, avec leur consentement.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Le prix",
-          p1: "Pour l’instant, tout est gratuit. Si nous demandons un jour un abonnement, pour les grands arbres ou pour de nouvelles fonctions, nous vous prévenons à l’avance. Ce que vous avez mis reste à vous, et la consultation de l’arbre, les invitations et son téléchargement (GEDCOM) restent gratuits.",
+          p1: "Quand vous créez votre compte, vous avez {trialDays} jours gratuits avec tout ce que propose le site. Ensuite, pour continuer à ajouter et à modifier, vous payez une année : {priceLei} lei (dans les autres langues du site, {priceEur} €). Un proche invité dans l’arbre de quelqu’un d’autre a les mêmes jours gratuits, puis paie {invitePriceLei} lei ({invitePriceEur} €) par an. Ceux qui avaient un compte avant le début des paiements ont leur première année gratuite.",
+          l1: "Si vous ne payez pas, rien n’est supprimé : vos arbres restent, vous les voyez et pouvez les télécharger à tout moment (GEDCOM et <data>Mes données</data>), simplement vous ne pouvez plus rien ajouter ni modifier jusqu’au paiement.",
+          l2: "L’année ne se renouvelle pas toute seule et nous ne prélevons jamais d’argent automatiquement sur votre carte.",
+          l3: "<b>Le livre de la famille en PDF</b> coûte {bookLei} lei ({bookEur} €) par arbre. L’aperçu est gratuit ; après le paiement, vous pouvez le refaire et le télécharger autant de fois que vous voulez pendant 12 mois.",
+          l4: "<b>Le livre imprimé</b> est fait sur commande : vous nous demandez un devis depuis la page du livre, et le prix dépend du nombre de pages, du format, de la couverture et du nombre d’exemplaires.",
+          p2: "Le prix affiché au paiement est le prix final. Vous payez par carte, via Stripe ; nous ne voyons jamais les données de votre carte. Le vendeur est {name}, CUI {cui}, n° au registre du commerce {regCom}, sis {address}.",
+        },
+        withdrawal: {
+          h: "6. Le droit de rétractation",
+          p1: "En tant que consommateur, vous avez en général 14 jours pour renoncer à un achat sans donner de raison (ordonnance d’urgence roumaine n° 34/2014).",
+          l1: "<b>L’année dans Le Livre de la Famille et le livre PDF</b> sont des contenus numériques que vous recevez immédiatement après le paiement. Avant de payer, vous cochez que vous voulez commencer tout de suite et que vous savez perdre ainsi le droit de rétractation (art. 16, lettre m, de l’OUG n° 34/2014). Sans cette case, le paiement est impossible. Nous gardons votre accord, avec sa date, et vous recevez la confirmation du paiement par e-mail.",
+          l2: "<b>Le livre imprimé</b> est fait d’après vos données, spécialement pour vous ; il n’y a donc pas non plus de droit de rétractation (art. 16, lettre c, de l’OUG n° 34/2014). S’il arrive abîmé ou erroné par notre faute, nous le refaisons ou nous vous remboursons.",
+          l3: "Si quelque chose que vous avez payé ne fonctionne pas comme promis, écrivez-nous à <mail>{email}</mail> et nous corrigeons ou nous vous remboursons. Vos droits légaux de consommateur restent entiers.",
+          p2: "Vous pouvez nous adresser une réclamation à tout moment. Si nous ne parvenons pas à un accord, vous pouvez vous adresser à l’Autorité nationale roumaine pour la protection des consommateurs (<anpc>ANPC</anpc>) ou à un organisme de règlement extrajudiciaire des litiges (<sal>SAL</sal>).",
         },
         reliability: {
-          h: "6. La fiabilité du site",
+          h: "7. La fiabilité du site",
           p1: "Nous faisons de notre mieux pour que le site fonctionne bien et que rien ne se perde, mais nous ne pouvons pas promettre qu’il n’y aura jamais d’interruptions ou d’erreurs. Gardez vous aussi une copie : l’arbre en GEDCOM, le livre en PDF et vos données depuis <data>Mes données</data>.",
         },
         end: {
-          h: "7. La fin",
+          h: "8. La fin",
           p1: "Vous pouvez supprimer votre compte à tout moment, dans <data>Mes données</data>. Nous pouvons suspendre un compte qui enfreint gravement ces conditions, après avoir écrit à la personne et lui avoir dit pourquoi.",
         },
         liability: {
-          h: "8. La responsabilité",
+          h: "9. La responsabilité",
           p1: "Dans les limites de la loi, nous ne sommes pas responsables des dommages indirects liés à l’utilisation du site. Rien dans ces conditions ne vous retire les droits que la loi vous donne en tant que consommateur.",
         },
         law: {
-          h: "9. Le droit applicable",
+          h: "10. Le droit applicable",
           p1: "Ces conditions sont régies par le droit roumain. Nous essayons d’abord de régler un désaccord à l’amiable ; si ce n’est pas possible, il est tranché par les tribunaux de Roumanie.",
         },
         changes: {
-          h: "10. Modifications",
+          h: "11. Modifications",
           p1: "Si nous changeons quelque chose d’important dans ces conditions, nous vous prévenons sur le site avant que la modification ne prenne effet.",
         },
       },

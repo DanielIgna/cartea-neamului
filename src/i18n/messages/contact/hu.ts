@@ -3,6 +3,7 @@ import type { ContactCatalog } from "./ro";
 /** Magyar (tegező). */
 export const huContact: ContactCatalog = {
   "ContactPage": {
+    "seller": "A Család Könyvét kínálja: {name}, CUI {cui}, cégjegyzékszám {regCom}, székhely: {address}.",
     "printRequest": "Jó napot! Árajánlatot szeretnék a nyomtatott családkönyvre: {pages} oldal, {format} formátum. Kemény vagy puha borító: … Hány példány: … Telefon: …",
     "metaTitle": "Kapcsolat",
     "metaDescription": "Írj nekünk WhatsAppon, vagy küldj üzenetet A Család Könyvéről.",

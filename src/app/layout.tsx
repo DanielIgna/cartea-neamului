@@ -20,7 +20,7 @@ import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
-import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
+import { COOKIE_NOTICE_COOKIE, operator } from "@/lib/legal";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
@@ -84,6 +84,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
   const tc = await getT("ContactPage");
+  const seller = operator();
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
@@ -119,6 +120,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
               <Link href="/parteneri">{tp("menu")}</Link>
               <Link href="/contact">{tc("menu")}</Link>
+              {/* Cine vinde (cerut de lege pentru comerțul online): datele PFA-ului din src/lib/legal.ts și legătura ANPC – SAL. */}
+              <span className="site-seller">{seller.name} · CUI {seller.cui} · {seller.regCom} · <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer">ANPC – SAL</a></span>
             </footer>
           </div>
         </IntlClient>

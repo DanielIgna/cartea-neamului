@@ -6,6 +6,7 @@ import type { Widen } from "../types";
 
 export const roContact = {
   ContactPage: {
+    seller: "Cartea Neamului e oferită de {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
     printRequest: "Bună ziua! Aș vrea o ofertă pentru Cartea neamului tipărită. Pagini: {pages}, format {format}. Copertă tare sau moale: … Câte exemplare: … Telefon: …",
     metaTitle: "Contact",
     metaDescription: "Scrie-ne pe WhatsApp sau trimite-ne un mesaj despre Cartea Neamului.",

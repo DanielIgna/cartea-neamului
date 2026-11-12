@@ -145,28 +145,42 @@ export const huLegal: LegalCatalog = {
           l2: "Az emlék azé, aki írja: csak ő választja ki, ki látja, és csak ő módosíthatja vagy törölheti.",
           l3: "Az önéletrajz „Hit” fejezete csak az élőké, akik maguk válaszolnak, a hozzájárulásukkal.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Az ár",
-          p1: "Most minden ingyenes. Ha valaha előfizetést kérünk, a nagy családfákért vagy új dolgokért, időben szólunk. Amit feltöltöttél, a tiéd marad, a családfa megtekintése, a meghívók és a családfa letöltése (GEDCOM) pedig ingyenes marad.",
+          p1: "Amikor fiókot nyitsz, {trialDays} ingyenes napod van mindazzal, amit az oldal kínál. Utána, hogy tovább bővíthess és módosíthass, egy évet fizetsz: {priceLei} lej (az oldal többi nyelvén {priceEur} €). Egy rokon, akit valaki más családfájába hívtak meg, ugyanennyi ingyenes napot kap, utána évi {invitePriceLei} lejt ({invitePriceEur} €) fizet. Aki már a fizetések indulása előtt fiókkal rendelkezett, az első évét ingyen kapja.",
+          l1: "Ha nem fizetsz, semmi sem törlődik: a családfáid megmaradnak, látod őket, és bármikor letöltheted (GEDCOM és <data>Az adataim</data>), csak hozzáadni vagy módosítani nem tudsz semmit, amíg nem fizetsz.",
+          l2: "Az év nem hosszabbodik meg magától, és soha nem vonunk le automatikusan pénzt a kártyádról.",
+          l3: "<b>A család könyve PDF-ben</b> családfánként {bookLei} lej ({bookEur} €). Az előnézet ingyenes; fizetés után 12 hónapig annyiszor készítheted újra és töltheted le, ahányszor akarod.",
+          l4: "<b>A nyomtatott könyv</b> rendelésre készül: a könyv oldaláról kérsz tőlünk árajánlatot, az ár pedig az oldalszámtól, a formátumtól, a borítótól és a példányszámtól függ.",
+          p2: "A fizetéskor mutatott ár a végső ár. Kártyával fizetsz, a Stripe-on keresztül; a kártyaadataidat sosem látjuk. Az eladó: {name}, CUI {cui}, cégjegyzékszám {regCom}, székhely: {address}.",
+        },
+        withdrawal: {
+          h: "6. Az elállási jog",
+          p1: "Fogyasztóként általában 14 napod van arra, hogy indoklás nélkül elállj egy vásárlástól (a 34/2014-es román sürgősségi kormányrendelet).",
+          l1: "<b>Az egy év A Család Könyvében és a PDF-könyv</b> digitális tartalom, amelyet közvetlenül a fizetés után megkapsz. Fizetés előtt bejelölöd, hogy azonnal kezdeni szeretnéd, és tudod, hogy ezzel elveszíted az elállási jogot (a 34/2014-es sürgősségi kormányrendelet 16. cikkének m) pontja). Jelölés nélkül nem lehet fizetni. A hozzájárulásodat dátummal együtt megőrizzük, a fizetés visszaigazolását pedig e-mailben kapod meg.",
+          l2: "<b>A nyomtatott könyv</b> a te adataid alapján, kifejezetten neked készül, ezért arra sincs elállási jog (a 34/2014-es sürgősségi kormányrendelet 16. cikkének c) pontja). Ha a mi hibánkból sérülten vagy hibásan érkezik, újra elkészítjük, vagy visszaadjuk az árát.",
+          l3: "Ha valami, amiért fizettél, nem úgy működik, ahogy ígértük, írj nekünk a(z) <mail>{email}</mail> címre, és rendbe tesszük, vagy visszaadjuk a pénzt. A fogyasztói jogaid megmaradnak.",
+          p2: "Panasszal bármikor írhatsz nekünk. Ha nem tudunk megegyezni, a román Nemzeti Fogyasztóvédelmi Hatósághoz (<anpc>ANPC</anpc>) vagy egy alternatív vitarendezési szervhez (<sal>SAL</sal>) fordulhatsz.",
         },
         reliability: {
-          h: "6. Mennyire megbízható az oldal",
+          h: "7. Mennyire megbízható az oldal",
           p1: "Igyekszünk, hogy az oldal jól működjön, és semmi ne vesszen el, de nem ígérhetjük, hogy soha nem lesznek kimaradások vagy hibák. Te is őrizz meg egy másolatot: a családfát GEDCOM-ként, a könyvet PDF-ként és az adataidat az <data>Adataim</data> oldalról.",
         },
         end: {
-          h: "7. A megszűnés",
+          h: "8. A megszűnés",
           p1: "A fiókodat bármikor törölheted az <data>Adataim</data> oldalon. Felfüggeszthetjük azt a fiókot, amely súlyosan megsérti ezeket a feltételeket, miután írtunk az illetőnek, és megmondtuk, miért.",
         },
         liability: {
-          h: "8. A felelősség",
+          h: "9. A felelősség",
           p1: "A törvény keretein belül nem felelünk az oldal használatából eredő közvetett károkért. Ezekben a feltételekben semmi sem veszi el azokat a jogokat, amelyeket a törvény fogyasztóként biztosít neked.",
         },
         law: {
-          h: "9. Az alkalmazandó jog",
+          h: "10. Az alkalmazandó jog",
           p1: "Ezekre a feltételekre a román jog vonatkozik. A nézeteltéréseket először békés úton próbáljuk rendezni; ha ez nem lehetséges, Románia bíróságai döntenek.",
         },
         changes: {
-          h: "10. Változások",
+          h: "11. Változások",
           p1: "Ha ezekben a feltételekben valami fontosat változtatunk, még a változás hatályba lépése előtt értesítünk az oldalon.",
         },
       },

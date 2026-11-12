@@ -4,6 +4,7 @@ import WhatsAppIcon from "@/components/WhatsAppIcon";
 import PageIntl from "@/i18n/PageIntl";
 import { getT } from "@/i18n/server";
 import { whatsappUrl } from "@/lib/contact";
+import { operator } from "@/lib/legal";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("ContactPage");
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const t = await getT("ContactPage");
+  const op = operator();
   // Din pagina cărții, „Vreau cartea tipărită”: mesajul vine scris cu numărul de pagini și formatul, ca oferta să se poată cere tipografiei.
   const q = await searchParams;
   const pages = typeof q.tipar === "string" && /^\d{1,4}$/.test(q.tipar) ? Number(q.tipar) : 0;
@@ -44,6 +46,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
           <PageIntl ns={["Contact"]}><ContactForm from={prefill ? "carte-tiparita" : undefined} message={prefill} /></PageIntl>
         </div>
       </div>
+      <p className="muted" style={{ fontSize: 14, margin: 0 }}>{t("seller", { name: op.name, cui: op.cui, regCom: op.regCom, address: op.address })}</p>
     </section>
   );
 }

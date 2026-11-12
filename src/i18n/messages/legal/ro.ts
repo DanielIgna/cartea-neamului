@@ -155,28 +155,42 @@ export const roLegal = {
           l2: "O amintire e a celui care o scrie: doar el alege cine o vede și doar el o schimbă sau o șterge.",
           l3: "Capitolul „Credința” al autobiografiei e doar pentru cei în viață, care răspund ei înșiși, cu acordul lor.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Prețul",
-          p1: "Acum totul e gratuit. Dacă vom cere vreodată un abonament, pentru arborii mari sau pentru lucruri noi, te anunțăm din timp. Ce ai pus rămâne al tău, iar vederea arborelui, invitațiile și descărcarea lui (GEDCOM) rămân gratuite.",
+          p1: "Când îți faci cont ai {trialDays} zile gratuite, cu tot ce oferă site-ul. După ele, ca să adaugi și să schimbi în continuare, plătești un an: {priceLei} lei (în celelalte limbi ale site-ului, {priceEur} €). O rudă invitată în arborele altcuiva are aceleași zile gratuite, apoi plătește {invitePriceLei} lei ({invitePriceEur} €) pe an. Cine avea cont înainte să pornim plățile primește primul an gratuit.",
+          l1: "Dacă nu plătești, nu se șterge nimic: arborii tăi rămân, îi vezi și îi poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești.",
+          l2: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
+          l3: "<b>Cartea neamului în PDF</b> costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
+          l4: "<b>Cartea tipărită</b> se face la comandă: ne ceri o ofertă din pagina cărții, iar prețul depinde de numărul de pagini, de format, de copertă și de numărul de exemplare.",
+          p2: "Prețul arătat la plată e prețul final. Plătești cu cardul, prin Stripe; noi nu vedem datele cardului. Vânzătorul e {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
+        },
+        withdrawal: {
+          h: "6. Dreptul de retragere",
+          p1: "Ca și consumator, ai de obicei 14 zile în care poți renunța la o cumpărare fără să spui de ce (OUG nr. 34/2014).",
+          l1: "<b>Anul în Cartea Neamului și cartea PDF</b> sunt conținut digital pe care îl primești imediat după plată. Înainte să plătești, bifezi că vrei să începi imediat și că știi că astfel pierzi dreptul de retragere (art. 16 lit. m din OUG nr. 34/2014). Fără bifă nu se poate plăti. Păstrăm acordul tău, cu data, iar confirmarea plății o primești pe email.",
+          l2: "<b>Cartea tipărită</b> se face după datele tale, special pentru tine, așa că nici la ea nu există drept de retragere (art. 16 lit. c din OUG nr. 34/2014). Dacă ajunge stricată sau greșită din vina noastră, o refacem sau îți dăm banii înapoi.",
+          l3: "Dacă ceva plătit nu merge cum am promis, ne scrii la <mail>{email}</mail> și îndreptăm lucrurile sau îți dăm banii înapoi. Drepturile pe care ți le dă legea ca și consumator rămân.",
+          p2: "Cu o reclamație ne poți scrie oricând. Dacă nu ne înțelegem, te poți adresa Autorității Naționale pentru Protecția Consumatorilor (<anpc>ANPC</anpc>) sau unei entități de soluționare alternativă a litigiilor (<sal>SAL</sal>).",
         },
         reliability: {
-          h: "6. Cât de sigur merge site-ul",
+          h: "7. Cât de sigur merge site-ul",
           p1: "Ne străduim ca site-ul să meargă bine și să nu se piardă nimic, dar nu putem promite că nu va avea niciodată întreruperi sau greșeli. Păstrează și tu o copie: arborele ca GEDCOM, cartea ca PDF și datele tale din <data>Datele mele</data>.",
         },
         end: {
-          h: "7. Încheierea",
+          h: "8. Încheierea",
           p1: "Îți poți șterge contul oricând, din <data>Datele mele</data>. Putem suspenda un cont care încalcă grav acești termeni, după ce îi scriem omului și îi spunem de ce.",
         },
         liability: {
-          h: "8. Răspunderea",
+          h: "9. Răspunderea",
           p1: "În limitele legii, nu răspundem pentru pagube indirecte din folosirea site-ului. Nimic din acești termeni nu-ți ia drepturile pe care ți le dă legea ca consumator.",
         },
         law: {
-          h: "9. Legea",
+          h: "10. Legea",
           p1: "Acestor termeni li se aplică legea română. O neînțelegere încercăm întâi s-o lămurim prin bună înțelegere; dacă nu se poate, o judecă instanțele din România.",
         },
         changes: {
-          h: "10. Schimbări",
+          h: "11. Schimbări",
           p1: "Dacă schimbăm ceva important în acești termeni, te anunțăm în site înainte ca schimbarea să intre în vigoare.",
         },
       },

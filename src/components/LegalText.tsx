@@ -4,6 +4,8 @@ import LegalLangNote from "@/components/LegalLangNote";
 import { getFormat, getLocale, getAppName, getT } from "@/i18n/server";
 import { roLegal } from "@/i18n/messages/legal/ro";
 import { BETA, MIN_AGE, operator } from "@/lib/legal";
+import { db } from "@/db";
+import { DEFAULT_SETTINGS, planSettings } from "@/lib/plans";
 
 type Page = "Privacy" | "Terms";
 type Section = Record<string, string>;
@@ -32,8 +34,13 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
     partners: (c: ReactNode) => <Link href="/parteneri">{c}</Link>,
     pm: ext("https://propmanage.ro"),
     anspdcp: ext("https://www.dataprotection.ro"),
+    anpc: ext("https://anpc.ro"),
+    sal: ext("https://anpc.ro/ce-este-sal/"),
   };
-  const values = { name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, minAge: MIN_AGE, consent: tp("checkbox"), ...tags };
+  // Prețurile din Termeni vin din Admin → Manager control, ca textul să spună mereu ce se cere la plată.
+  const ps = await planSettings(db).catch(() => DEFAULT_SETTINGS);
+  const prices = { trialDays: ps.trialDays, priceLei: ps.priceLei, priceEur: ps.priceEur, invitePriceLei: ps.invitePriceLei, invitePriceEur: ps.invitePriceEur, bookLei: ps.bookLei, bookEur: ps.bookEur };
+  const values = { name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, minAge: MIN_AGE, consent: tp("checkbox"), ...prices, ...tags };
   const rich = (key: string) => (t.rich as unknown as (k: string, v: typeof values) => ReactNode)(key, values);
   const sections = roLegal.Legal[page].sections as Record<string, Section>;
 

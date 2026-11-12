@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const url = await createCheckout({
       kind, userId: me.id, email: me.email, treeId: kind === "carte" ? treeId : null, name: t(kind === "carte" ? "bookName" : "yearName"),
       amount: price.amount, currency: price.currency, locale,
-      successUrl: `${origin}/plata?gata=${kind}${tq}`, cancelUrl: `${origin}/plata?${tq.slice(1) || "renuntat=1"}`,
+      successUrl: `${origin}/plata?gata=${kind}${tq}`, cancelUrl: `${origin}/plata?renuntat=1${tq}`,
     });
     return Response.redirect(url, 303);
   } catch (e) {

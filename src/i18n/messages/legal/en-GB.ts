@@ -145,28 +145,42 @@ export const enGBLegal: LegalCatalog = {
           l2: "A memory belongs to the person who writes it: only they choose who sees it, and only they change or delete it.",
           l3: "The “Faith” chapter of the autobiography is only for living people, who answer themselves, with their consent.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Price",
-          p1: "Everything is free for now. If we ever ask for a subscription, for large family trees or for new features, we will let you know in good time. What you added remains yours, and viewing the family tree, invitations and downloading it (GEDCOM) remain free.",
+          p1: "When you create an account you get {trialDays} free days with everything the site offers. After that, to keep adding and changing things, you pay for a year: {priceLei} lei (in the site’s other languages, €{priceEur}). A relative invited to someone else’s tree gets the same free days, then pays {invitePriceLei} lei (€{invitePriceEur}) a year. Anyone who had an account before we started charging gets their first year free.",
+          l1: "If you don’t pay, nothing is deleted: your trees stay, you can see them and download them at any time (GEDCOM and <data>My data</data>), you just can’t add or change anything until you pay.",
+          l2: "The year does not renew by itself and we never take money from your card automatically.",
+          l3: "<b>The family book as a PDF</b> costs {bookLei} lei (€{bookEur}) per tree. The preview is free; after payment you can rebuild and download it as often as you like for 12 months.",
+          l4: "<b>The printed book</b> is made to order: you ask us for a quote from the book page, and the price depends on the number of pages, the format, the cover and the number of copies.",
+          p2: "The price shown at checkout is the final price. You pay by card, through Stripe; we never see your card details. The seller is {name}, tax ID (CUI) {cui}, Trade Register no. {regCom}, registered office {address}.",
+        },
+        withdrawal: {
+          h: "6. Right of withdrawal",
+          p1: "As a consumer, you usually have 14 days to cancel a purchase without giving a reason (Romanian Government Emergency Ordinance no. 34/2014).",
+          l1: "<b>A year in the Family Book and the PDF book</b> are digital content that you receive immediately after payment. Before paying, you tick that you want to start immediately and that you know you thereby lose the right of withdrawal (art. 16(m) of GEO no. 34/2014). You cannot pay without ticking it. We keep your consent, with its date, and you receive the payment confirmation by email.",
+          l2: "<b>The printed book</b> is made from your data, specially for you, so there is no right of withdrawal for it either (art. 16(c) of GEO no. 34/2014). If it arrives damaged or wrong through our fault, we remake it or refund you.",
+          l3: "If something you paid for doesn’t work as promised, write to us at <mail>{email}</mail> and we will put it right or refund you. Your statutory rights as a consumer remain.",
+          p2: "You can write to us with a complaint at any time. If we cannot agree, you can turn to the Romanian National Authority for Consumer Protection (<anpc>ANPC</anpc>) or to an alternative dispute resolution body (<sal>SAL</sal>).",
         },
         reliability: {
-          h: "6. How reliably the site works",
+          h: "7. How reliably the site works",
           p1: "We do our best to keep the site working well and to make sure nothing is lost, but we cannot promise that it will never have interruptions or errors. Keep your own copy too: the family tree as GEDCOM, the book as PDF and your data from <data>My data</data>.",
         },
         end: {
-          h: "7. Ending",
+          h: "8. Ending",
           p1: "You can delete your account at any time, from <data>My data</data>. We may suspend an account that seriously breaks these terms, after writing to the person and telling them why.",
         },
         liability: {
-          h: "8. Liability",
+          h: "9. Liability",
           p1: "To the extent permitted by law, we are not liable for indirect damage arising from use of the site. Nothing in these terms takes away the rights the law gives you as a consumer.",
         },
         law: {
-          h: "9. Governing law",
+          h: "10. Governing law",
           p1: "These terms are governed by Romanian law. We will first try to settle any disagreement amicably; if that is not possible, it will be decided by the courts of Romania.",
         },
         changes: {
-          h: "10. Changes",
+          h: "11. Changes",
           p1: "If we change anything important in these terms, we will let you know on the site before the change takes effect.",
         },
       },

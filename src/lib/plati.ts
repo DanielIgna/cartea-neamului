@@ -6,12 +6,14 @@
  * - „an”: un an în Cartea Neamului (după zilele gratuite poate adăuga și schimba din nou). Se adaugă la anul deja plătit.
  * - „carte”: cartea PDF a unui arbore, pentru cel care a plătit, 12 luni (o poate reface și descărca de câte ori vrea).
  *
- * Cheile se pun în Vercel: STRIPE_SECRET_KEY (sk_live_… sau sk_test_…) și STRIPE_WEBHOOK_SECRET (whsec_…).
+ * Cheile se pun în Vercel: STRIPE_SECRET_KEY și STRIPE_WEBHOOK_SECRET (whsec_…). Cheia secretă poate fi una întreagă
+ * (sk_live_… / sk_test_…) sau, mai sigur, una restricționată (rk_live_… / rk_test_…) cu drept de scriere pe Checkout Sessions:
+ * site-ul doar deschide pagini de plată, restul vine prin webhook. Cheile nu se scriu niciodată în cod.
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { and, eq, gt, sql } from "drizzle-orm";
 import type { Db } from "@/db";
-import { accountPlan, payment } from "@/db/schema";
+import { accountPlan, payment, tree, user } from "@/db/schema";
 import { yearPrice, type PlanSettings } from "./plans";
 
 export type PayKind = "an" | "carte";
@@ -90,12 +92,17 @@ export function paidSession(event: unknown): PaidSession | null {
  * Trece plata în baza de date, o singură dată pentru fiecare sesiune. Anul se adaugă după anul deja plătit (sau de azi);
  * planul „gratuit mereu” rămâne cum e. Întoarce false dacă plata era deja trecută.
  */
-export async function applyPayment(db: Db, p: PaidSession, now = new Date()): Promise<boolean> {
+export async function applyPayment(db: Db, paid: PaidSession, now = new Date()): Promise<boolean> {
+  let p = paid;
   return db.transaction(async (tx) => {
-    const inserted = await tx.insert(payment).values({ id: p.id, userId: p.userId, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, createdAt: now })
+    // Contul poate fi șters între plată și confirmare: plata se păstrează (pentru contabilitate), fără cont și fără an.
+    const [owner] = await tx.select({ id: user.id }).from(user).where(eq(user.id, p.userId));
+    if (!owner) p = { ...p, userId: "" };
+    if (p.treeId && !(await tx.select({ id: tree.id }).from(tree).where(eq(tree.id, p.treeId))).length) p = { ...p, treeId: null };
+    const inserted = await tx.insert(payment).values({ id: p.id, userId: p.userId || null, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, createdAt: now })
       .onConflictDoNothing().returning({ id: payment.id });
     if (!inserted.length) return false;
-    if (p.kind === "an") {
+    if (p.kind === "an" && p.userId) {
       const [cur] = await tx.select({ plan: accountPlan.plan, paidUntil: accountPlan.paidUntil }).from(accountPlan).where(eq(accountPlan.userId, p.userId));
       const from = cur?.paidUntil && cur.paidUntil > now ? cur.paidUntil : now;
       const until = new Date(from.getTime() + YEAR_DAYS * DAY);

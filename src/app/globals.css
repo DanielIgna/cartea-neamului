@@ -1375,3 +1375,4 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 /* Cartea neplătită: previzualizare cu un semn pe fiecare pagină, și pe ecran, și la tipărire. */
 .book-locked .pagedjs_page{position:relative}
 .book-locked .pagedjs_page::after{content:var(--wm);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 64px/1 Georgia,serif;letter-spacing:.12em;color:rgba(150,40,30,.16);transform:rotate(-35deg);pointer-events:none;z-index:9}
+.site-foot .site-seller{flex-basis:100%;font-size:12px;color:var(--muted)}

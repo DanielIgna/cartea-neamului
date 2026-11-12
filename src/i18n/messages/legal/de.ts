@@ -145,28 +145,42 @@ export const deLegal: LegalCatalog = {
           l2: "Eine Erinnerung gehört dem, der sie schreibt: Nur er wählt, wer sie sieht, und nur er ändert oder löscht sie.",
           l3: "Das Kapitel „Glaube“ der Autobiografie ist nur für Lebende, die selbst antworten, mit ihrer Einwilligung.",
         },
+        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
           h: "5. Der Preis",
-          p1: "Im Moment ist alles kostenlos. Falls wir je ein Abonnement verlangen, für große Stammbäume oder für neue Funktionen, sagen wir es dir rechtzeitig. Was du eingestellt hast, bleibt deins, und das Ansehen des Stammbaums, die Einladungen und sein Herunterladen (GEDCOM) bleiben kostenlos.",
+          p1: "Wenn du ein Konto anlegst, hast du {trialDays} kostenlose Tage mit allem, was die Seite bietet. Danach bezahlst du ein Jahr, um weiter hinzuzufügen und zu ändern: {priceLei} Lei (in den anderen Sprachen der Seite {priceEur} €). Ein Verwandter, der in den Stammbaum eines anderen eingeladen ist, hat dieselben kostenlosen Tage und zahlt danach {invitePriceLei} Lei ({invitePriceEur} €) pro Jahr. Wer schon vor dem Start der Zahlungen ein Konto hatte, bekommt das erste Jahr kostenlos.",
+          l1: "Wenn du nicht bezahlst, wird nichts gelöscht: Deine Stammbäume bleiben, du siehst sie und kannst sie jederzeit herunterladen (GEDCOM und <data>Meine Daten</data>), nur hinzufügen oder ändern kannst du nichts mehr, bis du bezahlst.",
+          l2: "Das Jahr verlängert sich nicht von selbst, und wir buchen nie automatisch Geld von deiner Karte ab.",
+          l3: "<b>Das Familienbuch als PDF</b> kostet {bookLei} Lei ({bookEur} €) pro Stammbaum. Die Vorschau ist kostenlos; nach der Zahlung kannst du es 12 Monate lang so oft neu erstellen und herunterladen, wie du willst.",
+          l4: "<b>Das gedruckte Buch</b> wird auf Bestellung gemacht: Du fragst auf der Buchseite ein Angebot an, und der Preis hängt von der Seitenzahl, dem Format, dem Einband und der Anzahl der Exemplare ab.",
+          p2: "Der beim Bezahlen angezeigte Preis ist der Endpreis. Du bezahlst mit Karte über Stripe; deine Kartendaten sehen wir nie. Verkäufer ist {name}, CUI {cui}, Handelsregisternr. {regCom}, mit Sitz in {address}.",
+        },
+        withdrawal: {
+          h: "6. Widerrufsrecht",
+          p1: "Als Verbraucher hast du in der Regel 14 Tage, um einen Kauf ohne Angabe von Gründen zu widerrufen (rumänische Dringlichkeitsverordnung Nr. 34/2014).",
+          l1: "<b>Ein Jahr im Familienbuch und das PDF-Buch</b> sind digitale Inhalte, die du sofort nach der Zahlung erhältst. Vor dem Bezahlen bestätigst du per Häkchen, dass du sofort beginnen möchtest und weißt, dass du dadurch dein Widerrufsrecht verlierst (Art. 16 Buchst. m der Dringlichkeitsverordnung Nr. 34/2014). Ohne Häkchen ist keine Zahlung möglich. Wir speichern deine Zustimmung mit Datum, und die Zahlungsbestätigung erhältst du per E-Mail.",
+          l2: "<b>Das gedruckte Buch</b> wird nach deinen Angaben eigens für dich angefertigt, daher gibt es auch dafür kein Widerrufsrecht (Art. 16 Buchst. c der Dringlichkeitsverordnung Nr. 34/2014). Kommt es durch unser Verschulden beschädigt oder fehlerhaft an, machen wir es neu oder erstatten dir das Geld.",
+          l3: "Wenn etwas, wofür du bezahlt hast, nicht wie versprochen funktioniert, schreib uns an <mail>{email}</mail>; wir bringen es in Ordnung oder erstatten dir das Geld. Deine gesetzlichen Verbraucherrechte bleiben bestehen.",
+          p2: "Mit einer Beschwerde kannst du uns jederzeit schreiben. Wenn wir uns nicht einigen, kannst du dich an die rumänische Nationale Verbraucherschutzbehörde (<anpc>ANPC</anpc>) oder an eine Stelle zur alternativen Streitbeilegung (<sal>SAL</sal>) wenden.",
         },
         reliability: {
-          h: "6. Wie zuverlässig die Seite läuft",
+          h: "7. Wie zuverlässig die Seite läuft",
           p1: "Wir bemühen uns, dass die Seite gut läuft und nichts verloren geht, aber wir können nicht versprechen, dass es nie Unterbrechungen oder Fehler gibt. Bewahre auch selbst eine Kopie auf: den Stammbaum als GEDCOM, das Buch als PDF und deine Daten aus <data>Meine Daten</data>.",
         },
         end: {
-          h: "7. Beendigung",
+          h: "8. Beendigung",
           p1: "Du kannst dein Konto jederzeit unter <data>Meine Daten</data> löschen. Wir können ein Konto sperren, das schwer gegen diese Bedingungen verstößt, nachdem wir dem Menschen geschrieben und ihm gesagt haben, warum.",
         },
         liability: {
-          h: "8. Haftung",
+          h: "9. Haftung",
           p1: "Im gesetzlich zulässigen Rahmen haften wir nicht für mittelbare Schäden aus der Nutzung der Seite. Nichts in diesen Bedingungen nimmt dir die Rechte, die dir das Gesetz als Verbraucher gibt.",
         },
         law: {
-          h: "9. Anwendbares Recht",
+          h: "10. Anwendbares Recht",
           p1: "Für diese Bedingungen gilt rumänisches Recht. Eine Meinungsverschiedenheit versuchen wir zuerst gütlich zu klären; wenn das nicht geht, entscheiden die Gerichte in Rumänien.",
         },
         changes: {
-          h: "10. Änderungen",
+          h: "11. Änderungen",
           p1: "Wenn wir an diesen Bedingungen etwas Wichtiges ändern, sagen wir es dir auf der Seite, bevor die Änderung gilt.",
         },
       },
