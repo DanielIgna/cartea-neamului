@@ -74,8 +74,7 @@ export const itCalatorie: CalatorieCatalog = {
     noWord: "Qui finisce ciò che sappiamo della famiglia. Ogni antenato aggiunto all’albero porta la nave più indietro nel passato.",
     word: {
       pages: "Lungo la strada hai raccolto {got} pagine di storia su {total}.",
-      readJohn: "Leggi il Vangelo di Giovanni",
-      church: "La storia della Chiesa perseguitata",
+      history: "La storia dell’umanità",
       bible: "I versetti sono tratti dalla Bibbia Riveduta (1927).",
     },
     editor: {

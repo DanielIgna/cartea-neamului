@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const deBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "Die Geschichte der verfolgten Kirche",
-      description: "Die Kirche Christi von den Aposteln bis heute: Märtyrer, Reformatoren, die Bibel auf Rumänisch und Glaubenshelden aus den kommunistischen Gefängnissen.",
+      title: "Die Freiheit zu glauben",
+      description: "Zweitausend Jahre Geschichte des Christentums: die Märtyrer Roms, die Reformation, die ersten Bücher auf Rumänisch und die Menschen, die für ihren Glauben in kommunistischen Gefängnissen saßen.",
     },
-    label: "Kirchengeschichte",
-    title: "Die Kirche Christi, verfolgt vom Anfang bis heute",
+    label: "Die Freiheit zu glauben",
+    title: "Zweitausend Jahre Christentum und die Menschen, die für ihren Glauben bezahlten",
     toc: "Inhalt",
-    heroesChip: "Glaubenshelden",
-    bibleChip: "Die Bibel auf Rumänisch",
+    heroesChip: "Die kommunistischen Gefängnisse",
+    bibleChip: "Die ersten Bücher auf Rumänisch",
     filterLabel: "Was zeigen",
     all: "Die ganze Welt",
     onlyRo: "Nur in Rumänien",
     today: "heute",
     ourLand: "in Rumänien",
     quoted: "„{text}“",
-    heroesLabel: "Geschichten, die Kraft geben",
-    heroesTitle: "Glaubenshelden aus den kommunistischen Gefängnissen",
-    bibleLabel: "Das Wort in unserer Sprache",
-    bibleTitle: "Wie die Bibel in die rumänische Sprache kam",
-    influenceTitle: "Was die Bibel im Leben der Rumänen verändert hat",
+    heroesLabel: "Wahre Geschichten",
+    heroesTitle: "Drei Menschen aus den kommunistischen Gefängnissen",
+    bibleLabel: "Das Buch und die rumänische Sprache",
+    bibleTitle: "Wie die Bibel half, das geschriebene Rumänisch entstehen zu lassen",
+    influenceTitle: "Was diese Bücher im Leben der Rumänen verändert haben",
     endTitle: "Auch wir sind eine Seite dieser Geschichte",
-    endText: "Die Kirche ist kein Gebäude und keine Institution, sondern alle, die Christus angenommen haben, von Stephanus bis zu den Großeltern, die im Verborgenen beteten, und bis zu uns. Das Licht ist zweitausend Jahre lang von Hand zu Hand gegangen, oft um den Preis des Lebens. Jetzt ist es in unseren Händen: es brennend zu halten, das Wort zu lesen und für die zu beten, die heute verfolgt werden.",
-    readJohn: "Das Johannesevangelium lesen",
-    adamToChrist: "Von Adam bis Christus",
-    note: "Die Verse stammen aus der Lutherbibel von 1912. Wo etwas nur Überlieferung ist, sagt es der Text.",
-    intro: "Der Herr Jesus hat seinen Jüngern kein leichtes Leben versprochen, sondern dass seine Gemeinde nicht überwunden wird. Von Jerusalem bis heute wurde das Licht des Evangeliums jedes Mal, wenn man es auslöschen wollte, an einem anderen Ort wieder entzündet. Hier sind einige von denen, die ihren Glauben mit ihrer Freiheit oder ihrem Leben bezahlt haben, und einige der Momente, in denen das Wort wieder in die Hände einfacher Menschen kam.",
+    endText: "Die Großeltern vieler von uns beteten im Verborgenen, versteckten Bücher und schwiegen, um ihre Arbeit nicht zu verlieren. Die Freiheit zu glauben ist, wie die Freiheit, nicht zu glauben, hart erkämpft worden. Heute lebt noch immer etwa jeder siebte Christ der Welt in einem Land, in dem ihn sein Glaube teuer zu stehen kommen kann. Jeder ist frei, selbst nach den Antworten zu suchen.",
+    note: "Von Hand geschrieben, nach historischen Quellen. Die Bibelzitate stammen aus der Lutherbibel von 1912. Wo etwas nur Überlieferung ist, sagt es der Text.",
+    humanity: "Die Geschichte der Menschheit",
+    genealogies: "Alte Genealogien",
+    intro: "Die Freiheit, zu glauben, was man will, sich mit anderen zu versammeln und zu lesen, was man will, scheint heute selbstverständlich. Das war nicht immer so. Vom Jerusalem des ersten Jahrhunderts bis zu den kommunistischen Gefängnissen haben viele Menschen ihren Glauben mit ihrer Freiheit oder ihrem Leben bezahlt, und ihre Geschichte ist zu einem guten Teil auch die Geschichte unserer heutigen Freiheiten. Hier sind einige von ihnen, Epoche für Epoche, und einige der Augenblicke, in denen ihre Bücher die Sprache des Volkes erreichten.",
     promise: {
       text: "Und ich sage dir auch: Du bist Petrus, und auf diesen Felsen will ich bauen meine Gemeinde, und die Pforten der Hölle sollen sie nicht überwältigen.",
       ref: "Matthäus 16,18",
     },
     eras: {
       apostoli: {
-        name: "Die Kirche der Apostel",
-        intro: "Nach der Auferstehung des Herrn trugen einige Fischer und einfache Leute aus Galiläa die gute Nachricht nach Jerusalem und dann in die ganze römische Welt. Die Verfolgung begann fast sofort: zuerst durch die jüdischen Führer, dann durch Rom. Aber die Verfolgung zerstreute sie, und die Zerstreuten trugen das Wort weiter.",
+        name: "Die ersten Christen",
+        intro: "Nach der Kreuzigung Jesu begannen einige Fischer und einfache Leute aus Galiläa, in Jerusalem zu verkünden, dass er auferstanden sei, und trugen dann seine Lehre in die ganze römische Welt. Die Verfolgung begann fast sofort: zuerst durch die jüdischen Anführer, dann durch Rom. Doch die Verfolgung zerstreute sie, und die Zerstreuten trugen den Glauben weiter.",
         verse: {
           text: "Die nun zerstreut waren, gingen um und predigten das Wort.",
           ref: "Apostelgeschichte 8,4",
@@ -129,8 +129,8 @@ export const deBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "Eine freie, aber versuchte Kirche",
-        intro: "Im Jahr 313 erhielten die Christen durch das Edikt von Mailand das Recht, ihren Glauben frei zu leben. Die Kirche entkam dem Schwert Roms, aber sie traf auf eine andere Versuchung: die Macht. Mit der Zeit wurden viele nur dem Namen nach Christen, und die Schrift blieb in einer Sprache, die das Volk nicht mehr verstand. Wer zur Rückkehr zum Wort aufrief, wurde verfolgt, diesmal von denen, die sich Kirche nannten.",
+        name: "Das Christentum an der Macht",
+        intro: "313 erhielten die Christen mit dem Edikt von Mailand die Erlaubnis, ihren Glauben frei auszuüben, und bald wurde das Christentum zur Religion des Reiches. Es entkam dem Schwert Roms, begegnete aber einer anderen Versuchung: der Macht. Mit der Zeit wurden viele nur noch dem Namen nach Christen, und die Schrift blieb in einer Sprache, die das Volk nicht mehr verstand. Wer die Rückkehr zu ihrem Text forderte, wurde verfolgt, diesmal von denen, die die Kirche leiteten.",
         verse: {
           text: "Himmel und Erde werden vergehen; aber meine Worte werden nicht vergehen.",
           ref: "Matthäus 24,35",
@@ -164,7 +164,7 @@ export const deBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "Die Reformation: die Schrift in der Sprache des Volkes",
-        intro: "Hundert Jahre nach Hus entdeckte ein deutscher Mönch im Römerbrief neu, dass wir durch den Glauben gerettet werden, als Geschenk Gottes, nicht durch Werke oder Geld. Der Buchdruck war gerade erst erfunden, so dass die Schrift endlich in die Häuser kommen konnte. Es folgten hundert Jahre voller Kämpfe und Verfolgungen, in denen leider auch Christen einander verfolgten.",
+        intro: "Hundert Jahre nach Hus las ein deutscher Mönch, Martin Luther, im Römerbrief, dass der Mensch durch den Glauben vergeben bekommt, als Geschenk, nicht durch Werke oder Geld. Der Buchdruck war gerade erst aufgekommen, so dass die Bibel endlich in die Häuser der Menschen gelangen konnte, in ihrer eigenen Sprache. Es folgten hundert Jahre Kriege und Verfolgungen, in denen leider auch Christen einander verfolgten.",
         verse: {
           text: "Der Gerechte wird seines Glaubens leben.",
           ref: "Römer 1,17",
@@ -224,7 +224,7 @@ export const deBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Erweckung und Mission",
-        intro: "Diese Jahrhunderte brachten geistliche Erweckungen in vielen Ländern und die ersten Missionare, die bis an die Enden der Erde gingen, aber auch neue Märtyrer, unter den Türken, in den Kolonien und in den Ländern, in die das Evangelium zum ersten Mal kam.",
+        intro: "Diese Jahrhunderte brachten Erneuerungsbewegungen in vielen Ländern und die ersten Missionare, die bis an die Enden der Erde zogen, aber auch neue Märtyrer, unter den Türken, in den Kolonien und in den Ländern, in die das Christentum zum ersten Mal kam.",
         verse: {
           text: "Jesus Christus gestern und heute und derselbe auch in Ewigkeit.",
           ref: "Hebräer 13,8",
@@ -309,7 +309,7 @@ export const deBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "Die verfolgte Kirche heute",
+        name: "Verfolgung heute",
         intro: "Die Verfolgung hat nicht aufgehört. Nach Open Doors, das die Lage jedes Jahr beobachtet, leben heute mehr als 380 Millionen Christen, etwa jeder siebte, in einem Land, in dem ihr Glaube sie die Arbeit, die Freiheit oder das Leben kosten kann: in Nordkorea, in Teilen Afrikas, im Nahen Osten, in Asien. Und gerade dort, wo es am schwersten ist, wächst die Kirche heute.",
         verse: {
           text: "Und alle, die gottselig leben wollen in Christo Jesu, müssen Verfolgung leiden.",
@@ -343,19 +343,19 @@ export const deBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "Die Geschichte der Kirche ist nicht nur eine Liste von Leiden. Sie ist auch die Geschichte einfacher Menschen aus unseren Dörfern und Städten, die entdeckt haben, dass Christus in einer Gefängniszelle näher war, als er ihnen in der Freiheit je gewesen war. Ihre Geschichten sollen uns nicht Angst machen, sondern Kraft geben.",
+    heroesIntro: "Diese Geschichte ist nicht nur eine Liste von Leiden. Sie ist auch die Geschichte gewöhnlicher Menschen aus unseren Dörfern und Städten, die heil blieben, wo das Regime sie brechen wollte. Sie kamen ohne Hass aus dem Gefängnis und hinterließen Bücher, Lieder und Gedichte, die man bis heute kennt.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Lutherischer Pfarrer aus Bukarest, ein Jude, der zu Christus gefunden hatte. Vierzehn Jahre in den kommunistischen Gefängnissen.",
+        who: "Lutherischer Pfarrer aus Bukarest, in eine jüdische Familie geboren. Vierzehn Jahre in den kommunistischen Gefängnissen.",
         story: {
           p1: "1945 versammelten die Kommunisten in Bukarest einen „Kongress der Kulte“, auf dem Priester und Pastoren einer nach dem anderen das neue Regime lobten. Sabina, seine Frau, sagte zu ihm: „Richard, steh auf und wasch diese Schande vom Angesicht Christi ab!“ Er antwortete, wenn er spreche, werde sie ihren Mann verlieren. Sabina sagte, sie wolle keinen Feigling zum Mann. Richard stand auf und sagte vor allen, die Aufgabe der Kirche sei es, Christus zu verkündigen, nicht die Mächtigen zu loben.",
           p2: "1948 wurde er auf der Straße verschleppt und verschwand für Jahre; seine Familie wusste nicht einmal, ob er noch lebte. Drei Jahre lang war er allein in einer unterirdischen Zelle, ohne Buch, ohne Tageslicht, ohne jemanden außer den Wärtern zu sehen. Um bei klarem Verstand zu bleiben, verfasste er jede Nacht eine Predigt und hielt sie in Gedanken, als spräche er zu einer ganzen Gemeinde. Mit den Gefangenen in den Nachbarzellen sprach er durch Klopfen an die Wand, Buchstabe für Buchstabe; so verkündigte er einem Mann das Evangelium, dessen Gesicht er nie gesehen hat.",
           p3: "Später erzählte er, wie er, während er sich die Worte des Herrn „Freuet euch alsdann und hüpfet“ wiederholte, in seiner Zelle aufstand und vor Freude tanzte. Die Wärter dachten, er sei verrückt geworden, und brachten ihm mehr zu essen.",
           p4: "1964 freigelassen und von Christen aus Norwegen aus dem Land freigekauft, zog er vor dem amerikanischen Senat sein Hemd aus, um die Narben der Folter zu zeigen. Er schrieb „Gefoltert für Christus“ und gründete ein Missionswerk, das verfolgten Christen bis heute hilft. Was er am häufigsten sagte: dass er die liebte, die ihn gefoltert hatten, und für sie betete.",
         },
-        lesson: "Der Glaube ist keine Idee, die man verliert, wenn einem alles genommen wird. Als Wurmbrand nichts mehr hatte, entdeckte er, dass er Christus hatte, und das genügte ihm.",
+        lesson: "Wurmbrand verlor fast alles: seine Freiheit, seine Gesundheit, vierzehn Jahre seines Lebens. Er kam ohne Hass auf seine Peiniger heraus und verbrachte den Rest seines Lebens damit, der Welt von denen zu erzählen, die noch im Gefängnis saßen.",
         verse: {
           text: "Freuet euch alsdann und hüpfet; denn siehe, euer Lohn ist groß im Himmel.",
           ref: "Lukas 6,23",
@@ -394,7 +394,7 @@ export const deBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "Lange Zeit hörten die Rumänen die Gottesdienste auf Kirchenslawisch, einer Sprache, die der Priester kaum und das Volk gar nicht verstand. Das Wort Gottes kam langsam zu ihnen in ihre Muttersprache, Buch für Buch, über dreihundert Jahre.",
+    bibleIntro: "Lange Zeit hörten die Rumänen den Gottesdienst auf Kirchenslawisch, einer Sprache, die der Priester kaum und das Volk gar nicht verstand. Der Bibeltext erreichte sie langsam in ihrer Muttersprache, Buch für Buch, über dreihundert Jahre, und mit ihm entstand das geschriebene Rumänisch.",
     steps: {
       b1: {
         year: "15.–16. Jh.",
@@ -455,8 +455,8 @@ export const deBiserica: BisericaCatalog = {
     influence: {
       i1: "Das geschriebene Rumänisch ist zu einem großen Teil aus den Büchern der Kirche entstanden. Bibeln und gottesdienstliche Bücher waren in jeder Gegend das Erste, was gelesen wurde, und halfen so, eine gemeinsame Sprache für alle Rumänen zu schaffen, lange vor der Vereinigung von 1918. Eminescu sagte, die Kirche und ihre Bücher hätten den Rumänen die Einheit ihrer Sprache gegeben.",
       i2: "Wer die Schrift lesen wollte, musste lesen lernen. Neben den Kirchen wurden Schulen eröffnet, und in Blasendorf nannte man die Schulen 1754 „die Quellen der Gaben“. Lange Zeit waren die Dorflehrer die Kantoren der Kirche.",
-      i3: "Als einfache Menschen das Wort selbst lesen konnten, entstanden Erweckungen: die Armee des Herrn, die evangelischen Gemeinden, die Gebetskreise in den Dörfern. Der Glaube gehörte nicht mehr nur dem Priester, sondern wurde zum Glauben jedes Einzelnen.",
-      i4: "Darum fürchteten die Kommunisten die Bibel mehr als viele Waffen: Ein Volk, das das Wort liest, weiß, was Wahrheit ist, und lässt sich nicht mehr so leicht belügen.",
+      i3: "Als einfache Menschen selbst lesen konnten, entstanden Bewegungen aus dem Volk: die Armee des Herrn, die evangelischen Gemeinden, die Lesekreise in den Dörfern. Der Glaube gehörte nicht mehr nur dem Priester, sondern wurde zum Glauben jedes Einzelnen.",
+      i4: "Darum fürchtete das kommunistische Regime diese Bücher: Wer selbst liest und denkt, lässt sich nicht mehr so leicht belügen.",
     },
     bibleVerse: {
       text: "Wenn dein Wort offenbar wird, so erfreut es und macht klug die Einfältigen.",

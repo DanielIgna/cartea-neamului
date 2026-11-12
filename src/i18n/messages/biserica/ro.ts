@@ -1,5 +1,5 @@
 /**
- * Istoria Bisericii prigonite (/istoria-bisericii): epocile cu martorii lor, eroii credinței din închisorile comuniste și
+ * „Libertatea de a crede” (/libertatea-de-a-crede, fosta „Istoria Bisericii prigonite”): epocile cu martorii lor, oamenii din închisorile comuniste și
  * drumul Bibliei în limba română. Scrisă de mână, fără inteligență artificială; în română versetele sunt din Cornilescu, în
  * celelalte limbi din Biblia clasică a limbii (memoria „biblii-clasice”). Unde un lucru e doar tradiție, textul o spune.
  * Martorii fiecărei epoci sunt w1, w2… în ordinea din src/lib/istoria-bisericii.ts, unde stau anii și semnul „la noi”.
@@ -9,39 +9,39 @@ import type { Widen } from "../types";
 export const roBiserica = {
   Church: {
     meta: {
-      title: "Istoria Bisericii prigonite",
-      description: "Biserica lui Hristos de la apostoli până azi: martiri, reformatori, Biblia în limba română și eroi ai credinței din închisorile comuniste.",
+      title: "Libertatea de a crede",
+      description: "Două mii de ani de istorie a creștinismului: martirii Romei, Reforma, primele cărți în limba română și oamenii închiși pentru credința lor în închisorile comuniste.",
     },
-    label: "Istoria Bisericii",
-    title: "Biserica lui Hristos, prigonită de la început până azi",
+    label: "Libertatea de a crede",
+    title: "Două mii de ani de creștinism și oamenii care au plătit pentru credința lor",
     toc: "Cuprins",
-    heroesChip: "Eroi ai credinței",
-    bibleChip: "Biblia în limba română",
+    heroesChip: "Închisorile comuniste",
+    bibleChip: "Primele cărți în românește",
     filterLabel: "Ce arată",
     all: "Toată lumea",
     onlyRo: "Doar la noi, pe pământ românesc",
     today: "azi",
     ourLand: "la noi",
     quoted: "„{text}”",
-    heroesLabel: "Povești care întăresc",
-    heroesTitle: "Eroi ai credinței din închisorile comuniste",
-    bibleLabel: "Cuvântul în limba noastră",
-    bibleTitle: "Cum a ajuns Biblia în limba română",
-    influenceTitle: "Ce a schimbat Biblia în viața românilor",
+    heroesLabel: "Povești adevărate",
+    heroesTitle: "Trei oameni din închisorile comuniste",
+    bibleLabel: "Cartea și limba română",
+    bibleTitle: "Cum a ajutat Biblia la nașterea limbii române scrise",
+    influenceTitle: "Ce au schimbat aceste cărți în viața românilor",
     endTitle: "Și noi suntem o filă din istoria aceasta",
-    endText: "Biserica nu e o clădire și nici o instituție, ci toți cei care L-au primit pe Hristos, de la Ștefan până la bunicii care se rugau în ascuns și până la noi. Lumina a trecut din mână în mână două mii de ani, adesea cu prețul vieții. Acum e în mâinile noastre: s-o ținem aprinsă, să citim Cuvântul și să ne rugăm pentru cei care sunt prigoniți azi.",
-    readJohn: "Citește Evanghelia după Ioan",
-    adamToChrist: "De la Adam la Hristos",
-    note: "Versetele sunt din Biblia tradusă de Dumitru Cornilescu. Unde un lucru e doar tradiție, textul o spune.",
-    intro: "Domnul Isus nu le-a promis ucenicilor Lui o viață ușoară, ci că Biserica Lui nu va fi biruită. De la Ierusalim până azi, de fiecare dată când oamenii au vrut să stingă lumina Evangheliei, ea s-a aprins în alte locuri. Aici sunt câțiva dintre cei care au plătit pentru credința lor cu libertatea sau cu viața, și câteva dintre clipele în care Cuvântul a ajuns din nou în mâna oamenilor simpli.",
+    endText: "Bunicii multora dintre noi s-au rugat în ascuns, au ascuns cărți și au tăcut ca să nu-și piardă slujba. Libertatea de a crede, ca și libertatea de a nu crede, a fost câștigată greu. Azi, cam unul din șapte creștini din lume trăiește încă într-o țară unde credința îl poate costa. Fiecare om e liber să caute singur răspunsurile.",
+    note: "Scris de mână, din izvoare istorice. Citatele biblice sunt din traducerea Dumitru Cornilescu. Unde un lucru e doar tradiție, textul o spune.",
+    humanity: "Istoria umanității",
+    genealogies: "Genealogii vechi",
+    intro: "Libertatea de a crede ce vrei, de a te aduna cu alții și de a citi ce vrei pare azi un lucru de la sine înțeles. N-a fost așa. De la Ierusalimul primului secol până la închisorile comuniste, mulți oameni au plătit pentru credința lor cu libertatea sau cu viața, iar istoria lor e, în bună parte, și istoria libertăților noastre de azi. Aici sunt câțiva dintre ei, epocă după epocă, și câteva dintre clipele în care cărțile lor au ajuns în limba poporului.",
     promise: {
       text: "Și Eu îți spun: tu ești Petru, și pe această piatră voi zidi Biserica Mea, și porțile Locuinței morților nu o vor birui.",
       ref: "Matei 16:18",
     },
     eras: {
       apostoli: {
-        name: "Biserica apostolilor",
-        intro: "După învierea Domnului, câțiva pescari și oameni simpli din Galileea au dus vestea bună la Ierusalim, apoi în toată lumea romană. Prigoana a început aproape imediat: întâi din partea conducătorilor iudei, apoi din partea Romei. Dar prigoana i-a risipit, iar risipiții au dus Cuvântul mai departe.",
+        name: "Primii creștini",
+        intro: "După răstignirea lui Isus, câțiva pescari și oameni simpli din Galileea au început să vestească la Ierusalim că a înviat, apoi au dus învățătura lui în toată lumea romană. Prigoana a început aproape imediat: întâi din partea conducătorilor iudei, apoi din partea Romei. Dar prigoana i-a risipit, iar cei risipiți au dus credința mai departe.",
         verse: {
           text: "Cei ce se împrăștiaseră mergeau din loc în loc și propovăduiau Cuvântul.",
           ref: "Faptele Apostolilor 8:4",
@@ -134,8 +134,8 @@ export const roBiserica = {
         },
       },
       "evul-mediu": {
-        name: "Biserica liberă, dar ispitită",
-        intro: "În 313, prin Edictul de la Milano, creștinii au primit voie să se închine liber. Biserica a scăpat de sabia Romei, dar a dat de o altă ispită: puterea. Cu vremea, mulți au ajuns creștini doar cu numele, iar Scriptura a rămas într-o limbă pe care poporul n-o mai înțelegea. Cei care au cerut întoarcerea la Cuvânt au fost prigoniți, de data aceasta chiar de cei care se numeau Biserică.",
+        name: "Creștinismul la putere",
+        intro: "În 313, prin Edictul de la Milano, creștinii au primit voie să se închine liber, iar curând creștinismul a devenit religia imperiului. A scăpat de sabia Romei, dar a dat de o altă ispită: puterea. Cu vremea, mulți au ajuns creștini doar cu numele, iar Scriptura a rămas într-o limbă pe care poporul n-o mai înțelegea. Cei care au cerut întoarcerea la textul ei au fost prigoniți, de data aceasta chiar de cei care conduceau Biserica.",
         verse: {
           text: "Cerul și pământul vor trece, dar cuvintele Mele nu vor trece.",
           ref: "Matei 24:35",
@@ -169,7 +169,7 @@ export const roBiserica = {
       },
       reforma: {
         name: "Reforma: Scriptura în limba poporului",
-        intro: "La o sută de ani după Hus, un călugăr german a redescoperit în Epistola către Romani că omul e mântuit prin credință, ca dar al lui Dumnezeu, nu prin fapte sau prin bani. Tiparul abia apăruse, așa că Scriptura a putut ajunge, în sfârșit, în casele oamenilor. A urmat o sută de ani de lupte și de prigoane, în care, din păcate, și creștinii s-au prigonit unii pe alții.",
+        intro: "La o sută de ani după Hus, un călugăr german, Martin Luther, a citit în Epistola către Romani că omul e iertat prin credință, ca un dar, nu prin fapte sau prin bani. Tiparul abia apăruse, așa că Biblia a putut ajunge, în sfârșit, în casele oamenilor, în limba lor. A urmat o sută de ani de lupte și de prigoane, în care, din păcate, și creștinii s-au prigonit unii pe alții.",
         verse: {
           text: "Cel neprihănit va trăi prin credință.",
           ref: "Romani 1:17",
@@ -229,7 +229,7 @@ export const roBiserica = {
       },
       trezire: {
         name: "Trezire și misiune",
-        intro: "Veacurile acestea au adus treziri spirituale în multe țări și pe primii misionari plecați până la capătul pământului, dar și noi martiri, sub turci, în colonii și în țările unde Evanghelia ajungea pentru prima dată.",
+        intro: "Veacurile acestea au adus mișcări de înnoire în multe țări și pe primii misionari plecați până la capătul pământului, dar și noi martiri, sub turci, în colonii și în țările unde creștinismul ajungea pentru prima dată.",
         verse: {
           text: "Isus Hristos este același ieri și azi și în veci!",
           ref: "Evrei 13:8",
@@ -314,7 +314,7 @@ export const roBiserica = {
         },
       },
       azi: {
-        name: "Biserica prigonită azi",
+        name: "Prigoana de azi",
         intro: "Prigoana nu s-a oprit. După Open Doors, care urmărește în fiecare an situația, peste 380 de milioane de creștini, cam unul din șapte, trăiesc azi într-o țară unde credința îi poate costa slujba, libertatea sau viața: în Coreea de Nord, în părți din Africa, în Orientul Mijlociu, în Asia. Și azi, Biserica crește tocmai acolo unde e cel mai greu.",
         verse: {
           text: "De altfel, toți cei ce voiesc să trăiască cu evlavie în Hristos Isus vor fi prigoniți.",
@@ -348,19 +348,19 @@ export const roBiserica = {
         },
       },
     },
-    heroesIntro: "Istoria Bisericii nu e doar o listă de suferințe. E și istoria unor oameni obișnuiți, din satele și orașele noastre, care au descoperit că Hristos e mai aproape în celula de închisoare decât fusese vreodată în libertate. Poveștile lor nu sunt ca să ne sperie, ci ca să ne întărească.",
+    heroesIntro: "Istoria aceasta nu e doar o listă de suferințe. E și istoria unor oameni obișnuiți, din satele și orașele noastre, care au rămas întregi acolo unde regimul voia să-i frângă. Au ieșit din închisoare fără ură și au lăsat în urmă cărți, cântece și poezii pe care oamenii le știu și azi.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Pastor luteran din București, evreu întors la Hristos. Paisprezece ani în închisorile comuniste.",
+        who: "Pastor luteran din București, născut într-o familie de evrei. Paisprezece ani în închisorile comuniste.",
         story: {
           p1: "În 1945, comuniștii au strâns la București un „Congres al cultelor”, unde preoți și pastori, unul după altul, lăudau noua stăpânire. Sabina, soția lui, i-a spus: „Richard, ridică-te și spală rușinea aceasta de pe fața lui Hristos!” El i-a răspuns că, dacă vorbește, ea își pierde soțul. Sabina a zis că nu vrea un laș de bărbat. Richard s-a ridicat și a spus în fața tuturor că datoria Bisericii e să-L vestească pe Hristos, nu să laude puterea.",
           p2: "În 1948 a fost luat de pe stradă și a dispărut ani de zile; familia nici nu știa dacă mai trăiește. Trei ani a stat singur într-o celulă sub pământ, fără carte, fără lumină de zi, fără să vadă om în afară de paznici. Ca să nu-și piardă mințile, în fiecare noapte își alcătuia o predică și o rostea în gând, ca și cum ar fi vorbit unei biserici întregi. Cu deținuții din celulele vecine vorbea bătând în perete, literă cu literă; așa a ajuns să-i vestească Evanghelia unui om pe care nu l-a văzut niciodată la față.",
           p3: "Mai târziu povestea că, citindu-și în minte cuvintele Domnului „Bucurați-vă în ziua aceea și săltați de veselie”, s-a ridicat în celulă și a dansat de bucurie. Paznicii au crezut că a înnebunit și i-au adus mâncare mai multă.",
           p4: "Eliberat în 1964 și răscumpărat din țară de creștini din Norvegia, s-a dezbrăcat în fața Senatului american ca să arate urmele torturii. A scris „Torturat pentru Hristos” și a întemeiat o misiune care ajută și azi creștinii prigoniți. Ce spunea cel mai des: că i-a iubit pe cei care l-au chinuit și că s-a rugat pentru ei.",
         },
-        lesson: "Credința nu e o idee pe care o pierzi când ți se ia tot. Când Wurmbrand n-a mai avut nimic, a descoperit că Îl are pe Hristos, și asta i-a ajuns.",
+        lesson: "Wurmbrand a pierdut aproape tot: libertatea, sănătatea, paisprezece ani din viață. A ieșit fără ură față de cei care l-au chinuit și și-a petrecut restul vieții vorbind lumii despre cei rămași în închisori.",
         verse: {
           text: "Bucurați-vă în ziua aceea și săltați de veselie, pentru că răsplata voastră este mare în cer",
           ref: "Luca 6:23",
@@ -399,7 +399,7 @@ export const roBiserica = {
         },
       },
     },
-    bibleIntro: "Multă vreme, românii au ascultat slujba în slavonă, o limbă pe care preotul abia o înțelegea, iar poporul deloc. Cuvântul lui Dumnezeu a ajuns la ei în limba mamei încet, carte cu carte, în trei sute de ani.",
+    bibleIntro: "Multă vreme, românii au ascultat slujba în slavonă, o limbă pe care preotul abia o înțelegea, iar poporul deloc. Textul biblic a ajuns la ei în limba mamei încet, carte cu carte, în trei sute de ani, iar odată cu el s-a născut româna scrisă.",
     steps: {
       b1: {
         year: "sec. XV–XVI",
@@ -460,8 +460,8 @@ export const roBiserica = {
     influence: {
       i1: "Limba română scrisă s-a născut, în mare parte, din cărțile bisericii. Bibliile și cărțile de slujbă au fost primele lucruri citite în toate ținuturile, așa că au ajutat la o limbă comună pentru toți românii, cu mult înainte de Unirea din 1918. Eminescu spunea că Biserica și cărțile ei au dat românilor unitatea limbii.",
       i2: "Cine voia să citească Scriptura trebuia să învețe carte. Pe lângă biserici s-au deschis școli, iar la Blaj, în 1754, școlile au fost numite „izvoarele darurilor”. Dascălii satelor au fost multă vreme cântăreții de la strană.",
-      i3: "Când oamenii simpli au putut citi singuri Cuvântul, s-au născut treziri: Oastea Domnului, bisericile după Evanghelie, cercurile de rugăciune de prin sate. Credința a încetat să fie doar a preotului și a devenit a fiecărui om.",
-      i4: "De aceea comuniștii s-au temut de Biblie mai mult decât de multe arme: un popor care citește Cuvântul știe ce e adevărul și nu mai poate fi mințit ușor.",
+      i3: "Când oamenii simpli au putut citi singuri, s-au născut mișcări pornite din popor: Oastea Domnului, bisericile neoprotestante, cercurile de citire din sate. Credința a încetat să fie doar a preotului și a devenit a fiecărui om.",
+      i4: "De aceea regimul comunist s-a temut de cărțile acestea: un om care citește și gândește singur nu mai poate fi mințit ușor.",
     },
     bibleVerse: {
       text: "Descoperirea cuvintelor Tale dă lumină, dă pricepere celor fără răutate.",

@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [{
       userAgent: "*",
-      allow: ["/", "/confidentialitate", "/termeni", "/parteneri", "/istoria-bisericii", "/de-la-adam-la-hristos", "/firul-vremii"],
+      allow: ["/", "/confidentialitate", "/termeni", "/parteneri", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede"],
       disallow: ["/admin", "/api/", "/invitatie/", "/arbore/", "/datele-mele"],
     }],
     sitemap: `${SITE_URL}/sitemap.xml`,

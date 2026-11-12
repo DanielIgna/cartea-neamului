@@ -36,7 +36,7 @@ describe("Firul vremii", () => {
     expect(SPANS.filter((s) => s.lane === "biserica").map((s) => s.id)).toEqual(CHURCH_ERAS.map((e) => `b-${e.id}`));
     for (const s of SPANS.filter((s) => s.lane === "biserica")) expect(s.label.length, s.id).toBeGreaterThan(3);
     for (const m of MOMENTS.filter((m) => m.id.startsWith("v-"))) expect(m.note?.length ?? 0, m.id).toBeGreaterThan(10);
-    for (const x of [...SPANS, ...MOMENTS]) if (x.href) expect(x.href, x.id).toMatch(/^\/istoria-bisericii#(apostoli|roma|evul-mediu|reforma|trezire|secolul-xx|azi|biblia|eroi)$/);
+    for (const x of [...SPANS, ...MOMENTS]) if (x.href) expect(x.href, x.id).toMatch(/^\/libertatea-de-a-crede#(apostoli|roma|evul-mediu|reforma|trezire|secolul-xx|azi|biblia|eroi)$/);
   });
 
   it("fiecare bucată a axei are în ea ce promit butoanele „Sari la”", () => {

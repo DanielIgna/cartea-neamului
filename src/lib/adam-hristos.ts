@@ -132,7 +132,7 @@ export const EPOCHS: Epoch[] = [
     id: "adam-noe",
     title: "De la Adam la Noe",
     span: "Geneza 4–5 · cele zece generații dinainte de potop",
-    intro: "Biblia începe neamul omenesc cu un singur om, Adam. Din fiii lui, Geneza urmărește două ramuri: a lui Cain, care se depărtează de Dumnezeu, și a lui Set, din care vine Noe. Anii de viață sunt foarte mari, iar Biblia îi notează cu grijă: câți ani avea tatăl când i s-a născut fiul și câți a trăit în total.",
+    intro: "Relatarea biblică începe neamul omenesc cu un singur om, Adam. Din fiii lui, Geneza urmărește două ramuri: a lui Cain, cu primii păstori, muzicanți și fierari, și a lui Set, din care vine Noe. Anii de viață sunt foarte mari, iar Biblia îi notează cu grijă: câți ani avea tatăl când i s-a născut fiul și câți a trăit în total.",
     verse: { text: "Iată cartea neamurilor lui Adam. În ziua când a făcut Dumnezeu pe om, l-a făcut după asemănarea lui Dumnezeu.", ref: "Geneza 5:1" },
     roots: [
       {
@@ -274,7 +274,7 @@ export const EPOCHS: Epoch[] = [
                 }],
               },
               { id: "lud", name: "Lud", refs: "Geneza 10:22" },
-              { id: "aram", name: "Aram", sub: "arameii", refs: "Geneza 10:22–23", note: "Strămoșul arameilor. Limba aramaică, pe care o vorbea Domnul Isus, poartă numele lor." },
+              { id: "aram", name: "Aram", sub: "arameii", refs: "Geneza 10:22–23", note: "Strămoșul arameilor. Limba aramaică, pe care o vorbea Isus, poartă numele lor." },
             ],
           },
         ],
@@ -285,7 +285,7 @@ export const EPOCHS: Epoch[] = [
     id: "avraam-iacov",
     title: "Avraam, Isaac și Iacov",
     span: "Geneza 11–50 · părinții poporului Israel",
-    intro: "Cu Avraam, Biblia trece de la istoria tuturor popoarelor la istoria unei familii. Dumnezeu îl cheamă să-și lase țara și îi promite că prin urmașul lui vor fi binecuvântate toate familiile pământului. Din Avraam vin Isaac, apoi Iacov, numit și Israel, și cei 12 fii ai lui Iacov, părinții celor 12 seminții.",
+    intro: "Cu Avraam, Geneza trece de la istoria tuturor popoarelor la istoria unei familii. După relatare, Avraam își lasă țara pentru o promisiune: că prin urmașul lui vor fi binecuvântate toate familiile pământului. Din Avraam vin Isaac, apoi Iacov, numit și Israel, și cei 12 fii ai lui Iacov, părinții celor 12 seminții.",
     verse: { text: "și toate familiile pământului vor fi binecuvântate în tine.", ref: "Geneza 12:3" },
     roots: [
       {
@@ -294,7 +294,7 @@ export const EPOCHS: Epoch[] = [
         kids: [
           {
             id: "avraam", name: "Avraam", alt: "Avram, până la Geneza 17:5", wife: "Sara", life: 175, main: true, when: "c. 2166–1991 î.Hr.*", refs: "Geneza 11:26–25:10; Romani 4; Evrei 11:8–19",
-            note: "Chemat de Dumnezeu să plece din țara lui spre o țară pe care nu o cunoștea. „Avram a crezut pe Domnul, și Domnul i-a socotit lucrul acesta ca neprihănire” (Geneza 15:6). Numele i-a fost schimbat din Avram în Avraam, „tatăl multor neamuri”. *Anii î.Hr. vin din socoteala care ia literal cifrele din 1 Împărați 6:1 și Exodul 12:40; mulți istorici îl pun mai târziu.",
+            note: "După Geneza, chemat de Dumnezeu să plece din țara lui spre o țară pe care nu o cunoștea. „Avram a crezut pe Domnul, și Domnul i-a socotit lucrul acesta ca neprihănire” (Geneza 15:6). Numele i-a fost schimbat din Avram în Avraam, „tatăl multor neamuri”. *Anii î.Hr. vin din socoteala care ia literal cifrele din 1 Împărați 6:1 și Exodul 12:40; mulți istorici îl pun mai târziu.",
             kids: [
               { id: "ismael", name: "Ismael", sub: "din Agar · 137 de ani", life: 137, refs: "Geneza 16; 21:9–21; 25:12–18", note: "Fiul lui Avraam cu Agar, roaba egipteancă a Sarei. Dumnezeu a promis că va face și din el un neam mare; a avut 12 fii, căpetenii de seminții." },
               {
@@ -309,7 +309,7 @@ export const EPOCHS: Epoch[] = [
                       { id: "ruben", name: "Ruben", sub: "din Lea", refs: "Geneza 29:32; 49:3–4", note: "Întâiul născut al lui Iacov." },
                       { id: "simeon", name: "Simeon", sub: "din Lea", refs: "Geneza 29:33" },
                       { id: "levi-3", name: "Levi", sub: "din Lea · 137 de ani", life: 137, refs: "Geneza 29:34; Exodul 6:16", note: "Seminția preoților și a slujitorilor Cortului. Urmașii lui sunt în arborele următor." },
-                      { id: "iuda-3", name: "Iuda", sub: "din Lea", main: true, refs: "Geneza 29:35; 49:8–12", note: "Iacov a spus că toiagul de domnie nu se va depărta din Iuda (Geneza 49:10). Din seminția lui au venit David și Domnul Isus. Linia continuă în arborele următor." },
+                      { id: "iuda-3", name: "Iuda", sub: "din Lea", main: true, refs: "Geneza 29:35; 49:8–12", note: "Iacov a spus că toiagul de domnie nu se va depărta din Iuda (Geneza 49:10). Din seminția lui au venit David și Isus. Linia continuă în arborele următor." },
                       { id: "dan", name: "Dan", sub: "din Bilha", refs: "Geneza 30:6" },
                       { id: "neftali", name: "Neftali", sub: "din Bilha", refs: "Geneza 30:8" },
                       { id: "gad", name: "Gad", sub: "din Zilpa", refs: "Geneza 30:11" },
@@ -449,12 +449,12 @@ export const EPOCHS: Epoch[] = [
     id: "david-robie",
     title: "De la David la robia Babilonului",
     span: "Samuel · Împărați · Cronici · Matei 1:6–11 · Luca 3:27–31",
-    intro: "Dumnezeu îi promite lui David că din casa lui va veni un împărat a cărui împărăție nu se va sfârși. De aici, Matei și Luca merg pe drumuri diferite: Matei urmează pe împărații lui Iuda, prin Solomon; Luca urmează un alt fiu al lui David, Natan. Împărații pe care Matei nu îi numește sunt desenați punctat.",
+    intro: "Cărțile Samuel povestesc promisiunea făcută lui David: că din casa lui va veni un împărat a cărui împărăție nu se va sfârși. De aici, Matei și Luca merg pe drumuri diferite: Matei urmează pe împărații lui Iuda, prin Solomon; Luca urmează un alt fiu al lui David, Natan. Împărații pe care Matei nu îi numește sunt desenați punctat.",
     verse: { text: "Apoi, o Odraslă va ieși din tulpina lui Isai și un Vlăstar va da din rădăcinile lui.", ref: "Isaia 11:1" },
     roots: [
       {
         id: "david", name: "David", wife: "Bat-Șeba și altele", life: 70, reign: "40 de ani", when: "c. 1010–970 î.Hr.", main: true, refs: "1 Samuel 16–1 Împărați 2; 1 Cronici 3; Matei 1:6",
-        note: "Păstor la Betleem, uns împărat de Samuel, biruitorul lui Goliat, poetul Psalmilor. A domnit 7 ani la Hebron și 33 la Ierusalim (2 Samuel 5:4–5). Dumnezeu i-a făgăduit că scaunul lui de domnie va fi întărit pe vecie (2 Samuel 7:16). De aceea Domnul Isus e numit „Fiul lui David”.",
+        note: "Păstor la Betleem, uns împărat de Samuel, biruitorul lui Goliat, poetul Psalmilor. A domnit 7 ani la Hebron și 33 la Ierusalim (2 Samuel 5:4–5). Dumnezeu i-a făgăduit că scaunul lui de domnie va fi întărit pe vecie (2 Samuel 7:16). De aceea Isus e numit „Fiul lui David”.",
         kids: [
           { id: "amnon", name: "Amnon", refs: "2 Samuel 3:2; 13", note: "Întâiul născut al lui David, ucis de oamenii lui Absalom." },
           { id: "absalom", name: "Absalom", refs: "2 Samuel 13–18", note: "S-a răsculat împotriva tatălui său și a murit în luptă. David a plâns: „Fiul meu Absalom! … Cum n-am murit eu în locul tău!”" },
@@ -491,7 +491,7 @@ export const EPOCHS: Epoch[] = [
                               kids: [{
                                 id: "iotam", name: "Iotam", alt: "Ioatam (Matei 1:9)", reign: "16 ani", when: "c. 750–732 î.Hr.", main: true, refs: "2 Împărați 15:32–38",
                                 kids: [{
-                                  id: "ahaz", name: "Ahaz", reign: "16 ani", when: "c. 735–715 î.Hr.", main: true, refs: "2 Împărați 16; Isaia 7", note: "Lui i-a spus Isaia: „Iată, fecioara va rămâne însărcinată, va naște un fiu și-i va pune numele Emanuel” (Isaia 7:14), cuvânt pe care Matei îl leagă de nașterea Domnului Isus.",
+                                  id: "ahaz", name: "Ahaz", reign: "16 ani", when: "c. 735–715 î.Hr.", main: true, refs: "2 Împărați 16; Isaia 7", note: "Lui i-a spus Isaia: „Iată, fecioara va rămâne însărcinată, va naște un fiu și-i va pune numele Emanuel” (Isaia 7:14), cuvânt pe care Matei îl leagă de nașterea lui Isus.",
                                   kids: [{
                                     id: "ezechia", name: "Ezechia", reign: "29 de ani", when: "c. 715–686 î.Hr.", main: true, refs: "2 Împărați 18–20; Isaia 36–39",
                                     note: "Unul dintre cei mai credincioși împărați. Când asirienii lui Sanherib au împresurat Ierusalimul, s-a rugat, iar cetatea a fost scăpată. Bolnav de moarte, s-a rugat iar, și Dumnezeu i-a mai adăugat 15 ani de viață.",
@@ -537,9 +537,9 @@ export const EPOCHS: Epoch[] = [
   },
   {
     id: "robie-hristos",
-    title: "De la robie la Hristos",
+    title: "De la robie la Isus",
     span: "Ezra · Hagai · Matei 1:12–16 · Luca 3:23–27",
-    intro: "După 70 de ani de robie, iudeii se întorc din Babilon și rezidesc Templul, conduși de Zorobabel. Apoi Vechiul Testament tace aproape patru sute de ani. Cele două liste, din Matei și din Luca, coboară separat până la Iosif, bărbatul Mariei, și ajung la Domnul Isus.",
+    intro: "După 70 de ani de robie, iudeii se întorc din Babilon și rezidesc Templul, conduși de Zorobabel. Apoi Vechiul Testament tace aproape patru sute de ani. Cele două liste, din Matei și din Luca, coboară separat până la Iosif, bărbatul Mariei, și ajung la Isus din Nazaret.",
     verse: { text: "Dar când a venit împlinirea vremii, Dumnezeu a trimis pe Fiul Său, născut din femeie, născut sub Lege,", ref: "Galateni 4:4" },
     roots: [
       {
@@ -570,7 +570,7 @@ export const EPOCHS: Epoch[] = [
                 id: "iacov-m", name: "Iacov", main: true, refs: "Matei 1:15–16",
                 kids: [{
                   id: "iosif", name: "Iosif", wife: "Maria", main: true, refs: "Matei 1:16–25; Luca 1–2",
-                  note: "„Iacov a născut pe Iosif, bărbatul Mariei, din care S-a născut Isus, care Se cheamă Hristos” (Matei 1:16). Om neprihănit, din casa lui David, tâmplar în Nazaret. Prin el, Domnul Isus era moștenitorul legal al lui David.",
+                  note: "„Iacov a născut pe Iosif, bărbatul Mariei, din care S-a născut Isus, care Se cheamă Hristos” (Matei 1:16). Om neprihănit, din casa lui David, tâmplar în Nazaret. Prin el, Isus era moștenitorul legal al lui David.",
                   kids: [{
                     id: "isus", name: "Isus Hristos", main: true, when: "născut c. 6–4 î.Hr.", refs: "Matei 1:18–2:23; Luca 1–3",
                     note: "Născut la Betleem din fecioara Maria. Luca scrie: „Isus avea aproape treizeci de ani când a început să învețe pe norod; și era, cum se credea, fiul lui Iosif, fiul lui Eli” (Luca 3:23). Irod cel Mare, sub care s-a născut, a murit cel mai probabil în anul 4 î.Hr.; numărătoarea anilor de după Hristos, făcută în secolul al VI-lea de călugărul Dionisie cel Mic, a ieșit cu câțiva ani mai târziu decât nașterea.",

@@ -6,7 +6,6 @@ import { buildGraph, type Rel } from "@/lib/kinship";
 import { isPlaceholder } from "@/lib/family";
 import { lineRoot } from "@/lib/tree-layout";
 import { journeyStops, journeyLegs, quizFor, REGIME, type Stop, type Quiz } from "@/lib/calatorie";
-import { READ_JOHN } from "@/lib/calatorie-popas";
 import { wordFor } from "@/lib/cuvant-final";
 import WordBlocks, { quoted } from "@/components/WordBlocks";
 import type { Locale } from "@/i18n/locales";
@@ -310,7 +309,7 @@ function WordCard({ text, base, pages, total }: { text: string; base: boolean; p
     <article className="card journey-card word">
       {total > 0 && <p className="muted" style={{ marginTop: 0 }}>{t("word.pages", { got: pages, total })}</p>}
       <WordBlocks text={text} locale={locale} />
-      <p><a className="btn primary" href={READ_JOHN[locale] ?? READ_JOHN.ro} target="_blank" rel="noopener noreferrer">{t("word.readJohn")}</a> <Link className="btn" href="/istoria-bisericii">{t("word.church")}</Link></p>
+      <p><Link className="btn" href="/istoria-umanitatii">{t("word.history")}</Link></p>
       {base && <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>{t("word.bible")}</p>}
     </article>
   );

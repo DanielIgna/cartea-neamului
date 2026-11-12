@@ -60,7 +60,13 @@ const config: NextConfig = {
   htmlLimitedBots: /.*/,
   // Pagina de eroare a bibliotecii de conectare (în engleză) e înlocuită de a noastră, cu același cod de eroare.
   async redirects() {
-    return [{ source: "/api/auth/error", destination: "/intrare/eroare", permanent: false }];
+    return [
+      { source: "/api/auth/error", destination: "/intrare/eroare", permanent: false },
+      // Paginile de istorie au primit nume noi (11 noiembrie 2026); linkurile vechi duc tot acolo, cu ?p= și #epoca păstrate.
+      { source: "/firul-vremii", destination: "/istoria-umanitatii", permanent: true },
+      { source: "/de-la-adam-la-hristos", destination: "/genealogii-vechi", permanent: true },
+      { source: "/istoria-bisericii", destination: "/libertatea-de-a-crede", permanent: true },
+    ];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

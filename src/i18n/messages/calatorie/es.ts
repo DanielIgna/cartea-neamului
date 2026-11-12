@@ -74,8 +74,7 @@ export const esCalatorie: CalatorieCatalog = {
     noWord: "Aquí termina lo que sabemos de la familia. Cada antepasado añadido al árbol lleva la nave más lejos en el pasado.",
     word: {
       pages: "Has reunido {got} de {total} páginas de historia por el camino.",
-      readJohn: "Lee el Evangelio de Juan",
-      church: "La historia de la Iglesia perseguida",
+      history: "La historia de la humanidad",
       bible: "Los versículos son de la Biblia Reina-Valera 1909.",
     },
     editor: {

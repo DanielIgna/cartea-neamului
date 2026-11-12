@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const nlBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "De geschiedenis van de vervolgde Kerk",
-      description: "De Kerk van Christus van de apostelen tot vandaag: martelaren, hervormers, de Bijbel in het Roemeens en geloofshelden uit de communistische gevangenissen.",
+      title: "De vrijheid om te geloven",
+      description: "Tweeduizend jaar geschiedenis van het christendom: de martelaren van Rome, de Reformatie, de eerste boeken in het Roemeens en de mensen die om hun geloof in de communistische gevangenissen zaten.",
     },
-    label: "Kerkgeschiedenis",
-    title: "De Kerk van Christus, vervolgd vanaf het begin tot vandaag",
+    label: "De vrijheid om te geloven",
+    title: "Tweeduizend jaar christendom en de mensen die voor hun geloof betaalden",
     toc: "Inhoud",
-    heroesChip: "Geloofshelden",
-    bibleChip: "De Bijbel in het Roemeens",
+    heroesChip: "De communistische gevangenissen",
+    bibleChip: "De eerste boeken in het Roemeens",
     filterLabel: "Wat tonen",
     all: "De hele wereld",
     onlyRo: "Alleen in Roemenië",
     today: "vandaag",
     ourLand: "in Roemenië",
     quoted: "‘{text}’",
-    heroesLabel: "Verhalen die kracht geven",
-    heroesTitle: "Geloofshelden uit de communistische gevangenissen",
-    bibleLabel: "Het Woord in onze taal",
-    bibleTitle: "Hoe de Bijbel in de Roemeense taal kwam",
-    influenceTitle: "Wat de Bijbel veranderde in het leven van de Roemenen",
+    heroesLabel: "Ware verhalen",
+    heroesTitle: "Drie mensen uit de communistische gevangenissen",
+    bibleLabel: "Het Boek en de Roemeense taal",
+    bibleTitle: "Hoe de Bijbel hielp het geschreven Roemeens te laten ontstaan",
+    influenceTitle: "Wat deze boeken veranderden in het leven van de Roemenen",
     endTitle: "Ook wij zijn een bladzijde van deze geschiedenis",
-    endText: "De Kerk is geen gebouw en geen instelling, maar allen die Christus hebben aangenomen, van Stefanus tot de grootouders die in het verborgen baden, en tot ons. Het licht is tweeduizend jaar van hand tot hand gegaan, vaak ten koste van het leven. Nu is het in onze handen: het brandend houden, het Woord lezen en bidden voor wie vandaag vervolgd worden.",
-    readJohn: "Lees het Evangelie van Johannes",
-    adamToChrist: "Van Adam tot Christus",
-    note: "De verzen komen uit de Statenvertaling. Waar iets alleen overlevering is, zegt de tekst dat.",
-    intro: "De Heere Jezus heeft Zijn discipelen geen gemakkelijk leven beloofd, maar wel dat Zijn Kerk niet overwonnen zou worden. Van Jeruzalem tot vandaag werd het licht van het Evangelie, telkens als men het wilde doven, ergens anders opnieuw aangestoken. Hier zijn enkelen van hen die hun geloof met hun vrijheid of hun leven hebben betaald, en enkele van de momenten waarop het Woord weer in de handen van gewone mensen kwam.",
+    endText: "De grootouders van velen van ons baden in het geheim, verstopten boeken en zwegen om hun baan niet te verliezen. De vrijheid om te geloven, net als de vrijheid om niet te geloven, is zwaar bevochten. Vandaag leeft ongeveer een op de zeven christenen in de wereld nog in een land waar het geloof hen duur kan komen te staan. Ieder mens is vrij om zelf naar de antwoorden te zoeken.",
+    note: "Met de hand geschreven, op basis van historische bronnen. De bijbelcitaten komen uit de Statenvertaling. Waar iets alleen traditie is, zegt de tekst dat.",
+    humanity: "De geschiedenis van de mensheid",
+    genealogies: "Oude genealogieën",
+    intro: "De vrijheid om te geloven wat je wilt, met anderen samen te komen en te lezen wat je wilt, lijkt vandaag vanzelfsprekend. Dat was niet altijd zo. Van het Jeruzalem van de eerste eeuw tot de communistische gevangenissen betaalden veel mensen voor hun geloof met hun vrijheid of hun leven, en hun geschiedenis is voor een groot deel ook de geschiedenis van onze vrijheden van vandaag. Hier zijn enkelen van hen, tijdperk na tijdperk, en enkele van de momenten waarop hun boeken de taal van het volk bereikten.",
     promise: {
       text: "En Ik zeg u ook, dat gij zijt Petrus, en op deze petra zal Ik Mijn gemeente bouwen, en de poorten der hel zullen dezelve niet overweldigen.",
       ref: "Mattheüs 16:18",
     },
     eras: {
       apostoli: {
-        name: "De Kerk van de apostelen",
-        intro: "Na de opstanding van de Heere brachten een paar vissers en eenvoudige mensen uit Galilea het goede nieuws naar Jeruzalem en daarna naar de hele Romeinse wereld. De vervolging begon bijna meteen: eerst door de Joodse leiders, daarna door Rome. Maar de vervolging verstrooide hen, en wie verstrooid was, droeg het Woord verder.",
+        name: "De eerste christenen",
+        intro: "Na de kruisiging van Jezus begonnen een paar vissers en eenvoudige mensen uit Galilea in Jeruzalem te verkondigen dat hij was opgestaan, en daarna droegen ze zijn leer uit over de hele Romeinse wereld. De vervolging begon bijna meteen: eerst door de Joodse leiders, daarna door Rome. Maar de vervolging verstrooide hen, en wie verstrooid werd, droeg het geloof verder.",
         verse: {
           text: "Zij dan nu, die verstrooid waren, gingen het land door, en verkondigden het Woord.",
           ref: "Handelingen 8:4",
@@ -129,8 +129,8 @@ export const nlBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "Een vrije, maar verzochte Kerk",
-        intro: "In 313 kregen de christenen door het Edict van Milaan het recht hun geloof vrij te belijden. De Kerk ontkwam aan het zwaard van Rome, maar kwam een andere verzoeking tegen: de macht. Na verloop van tijd werden velen alleen in naam christen, en de Schrift bleef in een taal die het volk niet meer begreep. Wie opriep tot terugkeer naar het Woord, werd vervolgd, dit keer door hen die zich Kerk noemden.",
+        name: "Het christendom aan de macht",
+        intro: "In 313 kregen de christenen met het Edict van Milaan toestemming om vrij hun geloof te belijden, en al snel werd het christendom de godsdienst van het rijk. Het ontsnapte aan het zwaard van Rome, maar stuitte op een andere verleiding: macht. Na verloop van tijd werden velen alleen in naam christen, en de Schrift bleef in een taal die het volk niet meer begreep. Wie terug wilde naar de tekst ervan, werd vervolgd, dit keer door wie de Kerk leidden.",
         verse: {
           text: "De hemel en de aarde zullen voorbijgaan, maar Mijn woorden zullen geenszins voorbijgaan.",
           ref: "Mattheüs 24:35",
@@ -164,7 +164,7 @@ export const nlBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "De Reformatie: de Schrift in de taal van het volk",
-        intro: "Honderd jaar na Hus ontdekte een Duitse monnik in de brief aan de Romeinen opnieuw dat wij door het geloof gered worden, als een gave van God, niet door werken of geld. De boekdrukkunst was net uitgevonden, zodat de Schrift eindelijk in de huizen kon komen. Er volgden honderd jaar van strijd en vervolging, waarin helaas ook christenen elkaar vervolgden.",
+        intro: "Honderd jaar na Hus las een Duitse monnik, Maarten Luther, in de Brief aan de Romeinen dat een mens vergeven wordt door geloof, als een geschenk, niet door werken of geld. De boekdrukkunst was net uitgevonden, zodat de Bijbel eindelijk de huizen van de mensen kon bereiken, in hun eigen taal. Er volgden honderd jaar van oorlogen en vervolgingen, waarin helaas ook christenen elkaar vervolgden.",
         verse: {
           text: "Doch de rechtvaardige zal uit het geloof leven.",
           ref: "Romeinen 1:17",
@@ -224,7 +224,7 @@ export const nlBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Opwekking en zending",
-        intro: "Deze eeuwen brachten geestelijke opwekkingen in veel landen en de eerste zendelingen die tot aan de einden der aarde gingen, maar ook nieuwe martelaren, onder de Turken, in de koloniën en in de landen waar het Evangelie voor het eerst kwam.",
+        intro: "Deze eeuwen brachten vernieuwingsbewegingen in veel landen en de eerste zendelingen die tot aan de einden der aarde trokken, maar ook nieuwe martelaren, onder de Turken, in de koloniën en in de landen waar het christendom voor het eerst kwam.",
         verse: {
           text: "Jezus Christus is gisteren en heden Dezelfde, en tot in eeuwigheid.",
           ref: "Hebreeën 13:8",
@@ -309,7 +309,7 @@ export const nlBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "De vervolgde Kerk vandaag",
+        name: "Vervolging vandaag",
         intro: "De vervolging is niet opgehouden. Volgens Open Doors, dat de situatie elk jaar volgt, leven vandaag meer dan 380 miljoen christenen, ongeveer een op de zeven, in een land waar hun geloof hun werk, hun vrijheid of hun leven kan kosten: in Noord-Korea, in delen van Afrika, in het Midden-Oosten, in Azië. En juist waar het het moeilijkst is, groeit de Kerk vandaag.",
         verse: {
           text: "En ook allen, die godzaliglijk willen leven in Christus Jezus, die zullen vervolgd worden.",
@@ -343,19 +343,19 @@ export const nlBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "De geschiedenis van de Kerk is niet alleen een lijst van lijden. Het is ook het verhaal van gewone mensen, uit onze dorpen en steden, die ontdekten dat Christus in een gevangeniscel dichterbij was dan Hij in vrijheid ooit was geweest. Hun verhalen zijn er niet om ons bang te maken, maar om ons kracht te geven.",
+    heroesIntro: "Deze geschiedenis is niet alleen een lijst van lijden. Het is ook het verhaal van gewone mensen, uit onze dorpen en steden, die heel bleven waar het regime hen wilde breken. Ze kwamen zonder haat uit de gevangenis en lieten boeken, liederen en gedichten na die mensen vandaag nog kennen.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Lutherse predikant uit Boekarest, een Jood die tot Christus was gekomen. Veertien jaar in de communistische gevangenissen.",
+        who: "Lutherse predikant uit Boekarest, geboren in een Joodse familie. Veertien jaar in de communistische gevangenissen.",
         story: {
           p1: "In 1945 brachten de communisten in Boekarest een ‘Congres van de Erediensten’ bijeen, waar priesters en predikanten de een na de ander het nieuwe regime prezen. Sabina, zijn vrouw, zei tegen hem: ‘Richard, sta op en was deze schande van het aangezicht van Christus!’ Hij antwoordde dat zij haar man zou verliezen als hij sprak. Sabina zei dat ze geen lafaard als man wilde. Richard stond op en zei voor iedereen dat het de taak van de Kerk is Christus te verkondigen, niet de machthebbers te prijzen.",
           p2: "In 1948 werd hij van straat geplukt en verdween hij jarenlang; zijn familie wist niet eens of hij nog leefde. Drie jaar zat hij alleen in een ondergrondse cel, zonder boek, zonder daglicht, zonder iemand anders te zien dan de bewakers. Om bij zijn verstand te blijven, maakte hij elke nacht een preek en hield die in gedachten, alsof hij tot een hele gemeente sprak. Met de gevangenen in de cellen naast hem sprak hij door op de muur te kloppen, letter voor letter; zo verkondigde hij het Evangelie aan een man wiens gezicht hij nooit heeft gezien.",
           p3: "Later vertelde hij hoe hij, terwijl hij de woorden van de Heere ‘Verblijdt u in dien dag, en zijt vrolijk’ herhaalde, in zijn cel opstond en danste van vreugde. De bewakers dachten dat hij gek was geworden en brachten hem meer eten.",
           p4: "In 1964 vrijgelaten en door christenen uit Noorwegen het land uit vrijgekocht, trok hij voor de Amerikaanse Senaat zijn hemd uit om de littekens van de marteling te laten zien. Hij schreef ‘Gefolterd voor Christus’ en richtte een zendingsorganisatie op die vervolgde christenen tot vandaag helpt. Wat hij het vaakst zei: dat hij hen liefhad die hem hadden gemarteld, en dat hij voor hen bad.",
         },
-        lesson: "Geloof is geen idee dat je kwijtraakt als je alles wordt afgenomen. Toen Wurmbrand niets meer had, ontdekte hij dat hij Christus had, en dat was hem genoeg.",
+        lesson: "Wurmbrand verloor bijna alles: zijn vrijheid, zijn gezondheid, veertien jaar van zijn leven. Hij kwam vrij zonder haat jegens wie hem hadden gemarteld en bracht de rest van zijn leven door met de wereld te vertellen over wie nog in de gevangenis zaten.",
         verse: {
           text: "Verblijdt u in dien dag, en zijt vrolijk; want, ziet, uw loon is groot in den hemel",
           ref: "Lukas 6:23",
@@ -394,7 +394,7 @@ export const nlBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "Lange tijd hoorden de Roemenen de kerkdiensten in het Kerkslavisch, een taal die de priester nauwelijks en het volk helemaal niet begreep. Het Woord van God kwam langzaam in hun moedertaal tot hen, boek na boek, in de loop van driehonderd jaar.",
+    bibleIntro: "Lange tijd hoorden de Roemenen de dienst in het Kerkslavisch, een taal die de priester nauwelijks en het volk helemaal niet begreep. De bijbeltekst bereikte hen langzaam in hun moedertaal, boek na boek, in driehonderd jaar, en samen met hem ontstond het geschreven Roemeens.",
     steps: {
       b1: {
         year: "15e–16e eeuw",
@@ -455,8 +455,8 @@ export const nlBiserica: BisericaCatalog = {
     influence: {
       i1: "Het geschreven Roemeens is voor een groot deel ontstaan uit de boeken van de Kerk. Bijbels en liturgische boeken waren in elke streek het eerste wat gelezen werd, en zo hielpen ze een gemeenschappelijke taal voor alle Roemenen te scheppen, lang voor de Vereniging van 1918. Eminescu zei dat de Kerk en haar boeken de Roemenen de eenheid van hun taal hebben gegeven.",
       i2: "Wie de Schrift wilde lezen, moest leren lezen. Naast de kerken werden scholen geopend, en in Blaj noemde men de scholen in 1754 ‘de bronnen van de gaven’. Lange tijd waren de dorpsonderwijzers de voorzangers van de kerk.",
-      i3: "Toen gewone mensen het Woord zelf konden lezen, ontstonden er opwekkingen: het Leger van de Heer, de evangelische gemeenten, de gebedskringen in de dorpen. Het geloof hoorde niet meer alleen bij de priester, maar werd van ieder mens zelf.",
-      i4: "Daarom vreesden de communisten de Bijbel meer dan veel wapens: een volk dat het Woord leest, weet wat waarheid is en laat zich niet meer zo gemakkelijk voorliegen.",
+      i3: "Toen gewone mensen zelf konden lezen, ontstonden er bewegingen vanuit het volk: het Leger van de Heer, de evangelische gemeenten, de leeskringen in de dorpen. Het geloof hoorde niet meer alleen bij de priester, maar werd van ieder mens zelf.",
+      i4: "Daarom vreesde het communistische regime deze boeken: iemand die zelf leest en denkt, laat zich niet meer zo gemakkelijk voorliegen.",
     },
     bibleVerse: {
       text: "De opening Uwer woorden geeft licht, de slechten verstandig makende.",

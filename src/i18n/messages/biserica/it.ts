@@ -4,39 +4,39 @@ import type { BisericaCatalog } from "./ro";
 export const itBiserica: BisericaCatalog = {
   Church: {
     meta: {
-      title: "La storia della Chiesa perseguitata",
-      description: "La Chiesa di Cristo dagli apostoli a oggi: martiri, riformatori, la Bibbia in romeno ed eroi della fede delle carceri comuniste.",
+      title: "La libertà di credere",
+      description: "Duemila anni di storia del cristianesimo: i martiri di Roma, la Riforma, i primi libri in romeno e le persone incarcerate per la loro fede nelle prigioni comuniste.",
     },
-    label: "Storia della Chiesa",
-    title: "La Chiesa di Cristo, perseguitata dal principio fino a oggi",
+    label: "La libertà di credere",
+    title: "Duemila anni di cristianesimo e le persone che hanno pagato per la loro fede",
     toc: "Indice",
-    heroesChip: "Eroi della fede",
-    bibleChip: "La Bibbia in romeno",
+    heroesChip: "Le prigioni comuniste",
+    bibleChip: "I primi libri in romeno",
     filterLabel: "Cosa mostrare",
     all: "Tutto il mondo",
     onlyRo: "Solo in Romania",
     today: "oggi",
     ourLand: "in Romania",
     quoted: "«{text}»",
-    heroesLabel: "Storie che danno forza",
-    heroesTitle: "Eroi della fede delle carceri comuniste",
-    bibleLabel: "La Parola nella nostra lingua",
-    bibleTitle: "Come la Bibbia è arrivata nella lingua romena",
-    influenceTitle: "Che cosa ha cambiato la Bibbia nella vita dei romeni",
+    heroesLabel: "Storie vere",
+    heroesTitle: "Tre persone delle prigioni comuniste",
+    bibleLabel: "Il Libro e la lingua romena",
+    bibleTitle: "Come la Bibbia ha aiutato a far nascere il romeno scritto",
+    influenceTitle: "Che cosa hanno cambiato questi libri nella vita dei romeni",
     endTitle: "Anche noi siamo una pagina di questa storia",
-    endText: "La Chiesa non è un edificio né un’istituzione, ma tutti coloro che hanno ricevuto Cristo, da Stefano fino ai nonni che pregavano di nascosto, e fino a noi. La luce è passata di mano in mano per duemila anni, spesso a prezzo della vita. Ora è nelle nostre mani: tenerla accesa, leggere la Parola e pregare per chi oggi è perseguitato.",
-    readJohn: "Leggi il Vangelo di Giovanni",
-    adamToChrist: "Da Adamo a Cristo",
-    note: "I versetti sono tratti dalla Bibbia Riveduta di Giovanni Luzzi (1927). Dove si tratta solo di una tradizione, il testo lo dice.",
-    intro: "Il Signore Gesù non ha promesso ai suoi discepoli una vita facile, ma che la sua Chiesa non sarebbe stata vinta. Da Gerusalemme fino a oggi, ogni volta che si è voluto spegnere la luce del Vangelo, essa si è riaccesa altrove. Ecco alcuni di coloro che hanno pagato la loro fede con la libertà o con la vita, e alcuni dei momenti in cui la Parola è tornata nelle mani della gente semplice.",
+    endText: "I nonni di molti di noi pregavano di nascosto, nascondevano libri e tacevano per non perdere il lavoro. La libertà di credere, come la libertà di non credere, è stata conquistata a fatica. Oggi circa un cristiano su sette nel mondo vive ancora in un paese dove la fede può costargli cara. Ognuno è libero di cercare da sé le risposte.",
+    note: "Scritto a mano, da fonti storiche. Le citazioni bibliche sono tratte dalla Bibbia Riveduta (1927). Dove qualcosa è solo tradizione, il testo lo dice.",
+    humanity: "La storia dell’umanità",
+    genealogies: "Genealogie antiche",
+    intro: "La libertà di credere ciò che si vuole, di riunirsi con altri e di leggere ciò che si vuole oggi sembra scontata. Non è sempre stato così. Dalla Gerusalemme del primo secolo alle prigioni comuniste, molti hanno pagato la loro fede con la libertà o con la vita, e la loro storia è, in buona parte, anche la storia delle nostre libertà di oggi. Eccone alcuni, epoca dopo epoca, e alcuni dei momenti in cui i loro libri sono arrivati nella lingua del popolo.",
     promise: {
       text: "E io altresì ti dico: Tu sei Pietro, e su questa pietra edificherò la mia Chiesa, e le porte dell’Ades non la potranno vincere.",
       ref: "Matteo 16:18",
     },
     eras: {
       apostoli: {
-        name: "La Chiesa degli apostoli",
-        intro: "Dopo la risurrezione del Signore, alcuni pescatori e gente semplice della Galilea portarono la buona notizia a Gerusalemme e poi in tutto il mondo romano. La persecuzione cominciò quasi subito: prima da parte dei capi giudei, poi da parte di Roma. Ma la persecuzione li disperse, e quelli che erano dispersi portarono la Parola più lontano.",
+        name: "I primi cristiani",
+        intro: "Dopo la crocifissione di Gesù, alcuni pescatori e gente semplice della Galilea cominciarono ad annunciare a Gerusalemme che era risorto, poi portarono il suo insegnamento in tutto il mondo romano. La persecuzione cominciò quasi subito: prima da parte dei capi giudei, poi di Roma. Ma la persecuzione li disperse, e i dispersi portarono la fede più lontano.",
         verse: {
           text: "Coloro dunque che erano stati dispersi se ne andarono di luogo in luogo, annunziando la Parola.",
           ref: "Atti 8:4",
@@ -129,8 +129,8 @@ export const itBiserica: BisericaCatalog = {
         },
       },
       "evul-mediu": {
-        name: "Una Chiesa libera, ma tentata",
-        intro: "Nel 313, con l’editto di Milano, i cristiani ottennero il permesso di vivere liberamente la loro fede. La Chiesa sfuggì alla spada di Roma, ma incontrò un’altra tentazione: il potere. Col tempo, molti divennero cristiani solo di nome, e la Scrittura rimase in una lingua che il popolo non capiva più. Chi chiamava a tornare alla Parola fu perseguitato, questa volta da chi si diceva Chiesa.",
+        name: "Il cristianesimo al potere",
+        intro: "Nel 313, con l’Editto di Milano, i cristiani ottennero il permesso di praticare liberamente il loro culto, e presto il cristianesimo divenne la religione dell’impero. Sfuggì alla spada di Roma, ma incontrò un’altra tentazione: il potere. Col tempo molti divennero cristiani solo di nome, e la Scrittura rimase in una lingua che il popolo non capiva più. Chi chiese di tornare al suo testo fu perseguitato, questa volta da chi guidava la Chiesa.",
         verse: {
           text: "Il cielo e la terra passeranno, ma le mie parole non passeranno.",
           ref: "Matteo 24:35",
@@ -164,7 +164,7 @@ export const itBiserica: BisericaCatalog = {
       },
       reforma: {
         name: "La Riforma: la Scrittura nella lingua del popolo",
-        intro: "Cento anni dopo Hus, un monaco tedesco riscoprì nella lettera ai Romani che siamo salvati per fede, come dono di Dio, non per le opere né per denaro. La stampa era appena nata, così la Scrittura poteva finalmente entrare nelle case. Seguirono cento anni di lotte e persecuzioni, nei quali, purtroppo, anche i cristiani si perseguitarono a vicenda.",
+        intro: "Cento anni dopo Hus, un monaco tedesco, Martin Lutero, lesse nell’Epistola ai Romani che l’uomo è perdonato per fede, come un dono, e non per le opere o per il denaro. La stampa era appena nata, così la Bibbia poté finalmente entrare nelle case, nella lingua della gente. Seguirono cento anni di guerre e di persecuzioni in cui, purtroppo, anche i cristiani si perseguitarono a vicenda.",
         verse: {
           text: "Ma il giusto vivrà per fede.",
           ref: "Romani 1:17",
@@ -224,7 +224,7 @@ export const itBiserica: BisericaCatalog = {
       },
       trezire: {
         name: "Risveglio e missione",
-        intro: "Questi secoli portarono risvegli spirituali in molti paesi e i primi missionari partiti fino agli estremi confini della terra, ma anche nuovi martiri, sotto i turchi, nelle colonie e nei paesi dove il Vangelo arrivava per la prima volta.",
+        intro: "Questi secoli portarono movimenti di rinnovamento in molti paesi e i primi missionari partiti fino ai confini della terra, ma anche nuovi martiri, sotto i turchi, nelle colonie e nei paesi dove il cristianesimo arrivava per la prima volta.",
         verse: {
           text: "Gesù Cristo è lo stesso ieri, oggi, e in eterno.",
           ref: "Ebrei 13:8",
@@ -309,7 +309,7 @@ export const itBiserica: BisericaCatalog = {
         },
       },
       azi: {
-        name: "La Chiesa perseguitata oggi",
+        name: "La persecuzione oggi",
         intro: "La persecuzione non si è fermata. Secondo Porte Aperte, che segue la situazione ogni anno, più di 380 milioni di cristiani, circa uno su sette, vivono oggi in un paese dove la fede può costare loro il lavoro, la libertà o la vita: in Corea del Nord, in parti dell’Africa, in Medio Oriente, in Asia. Ed è proprio dove è più difficile che oggi la Chiesa cresce.",
         verse: {
           text: "E d’altronde tutti quelli che voglion vivere piamente in Cristo Gesù saranno perseguitati.",
@@ -343,19 +343,19 @@ export const itBiserica: BisericaCatalog = {
         },
       },
     },
-    heroesIntro: "La storia della Chiesa non è solo un elenco di sofferenze. È anche la storia di gente semplice, dei nostri villaggi e delle nostre città, che ha scoperto che Cristo era più vicino in una cella di prigione di quanto lo fosse mai stato in libertà. Le loro storie non servono a spaventarci, ma a darci forza.",
+    heroesIntro: "Questa storia non è solo un elenco di sofferenze. È anche la storia di persone comuni, dei nostri villaggi e delle nostre città, che sono rimaste integre là dove il regime voleva spezzarle. Sono uscite di prigione senza odio e hanno lasciato libri, canti e poesie che la gente conosce ancora oggi.",
     heroes: {
       wurmbrand: {
         name: "Richard Wurmbrand",
         years: "1909–2001",
-        who: "Pastore luterano di Bucarest, ebreo giunto a Cristo. Quattordici anni nelle carceri comuniste.",
+        who: "Pastore luterano di Bucarest, nato in una famiglia ebrea. Quattordici anni nelle carceri comuniste.",
         story: {
           p1: "Nel 1945 i comunisti riunirono a Bucarest un «Congresso dei culti», dove sacerdoti e pastori, uno dopo l’altro, lodavano il nuovo regime. Sabina, sua moglie, gli disse: «Richard, alzati e lava questa vergogna dal volto di Cristo!». Lui rispose che, se avesse parlato, lei avrebbe perso il marito. Sabina disse che non voleva un vigliacco per marito. Richard si alzò e disse davanti a tutti che il dovere della Chiesa è annunciare Cristo, non lodare chi ha il potere.",
           p2: "Nel 1948 fu prelevato per strada e scomparve per anni; la famiglia non sapeva nemmeno se fosse ancora vivo. Per tre anni rimase da solo in una cella sotterranea, senza libri, senza luce del giorno, senza vedere nessuno tranne le guardie. Per non perdere la mente, ogni notte componeva una predica e la predicava nella sua testa, come se parlasse a tutta una chiesa. Parlava con i detenuti delle celle vicine battendo sul muro, lettera per lettera; così annunciò il Vangelo a un uomo di cui non vide mai il volto.",
           p3: "Più tardi raccontò come, ripetendosi le parole del Signore «Rallegratevi in quel giorno e saltate di letizia», si alzò nella cella e ballò di gioia. Le guardie pensarono che fosse impazzito e gli portarono più cibo.",
           p4: "Liberato nel 1964 e riscattato fuori dal paese da cristiani della Norvegia, si tolse la camicia davanti al Senato americano per mostrare le cicatrici della tortura. Scrisse «Torturato per Cristo» e fondò una missione che ancora oggi aiuta i cristiani perseguitati. Ciò che diceva più spesso: che amava quelli che lo avevano torturato e pregava per loro.",
         },
-        lesson: "La fede non è un’idea che si perde quando ti tolgono tutto. Quando Wurmbrand non ebbe più niente, scoprì di avere Cristo, e questo gli bastava.",
+        lesson: "Wurmbrand perse quasi tutto: la libertà, la salute, quattordici anni di vita. Uscì senza odio verso chi lo aveva torturato e passò il resto della vita a raccontare al mondo di chi era ancora in prigione.",
         verse: {
           text: "Rallegratevi in quel giorno e saltate di letizia, perché, ecco, il vostro premio è grande ne’ cieli",
           ref: "Luca 6:23",
@@ -394,7 +394,7 @@ export const itBiserica: BisericaCatalog = {
         },
       },
     },
-    bibleIntro: "Per molto tempo i romeni hanno ascoltato le funzioni della chiesa in slavo, una lingua che il sacerdote capiva appena e il popolo per niente. La Parola di Dio è arrivata a loro nella lingua materna lentamente, libro dopo libro, nel corso di trecento anni.",
+    bibleIntro: "Per molto tempo i romeni hanno ascoltato la liturgia in slavone, una lingua che il sacerdote capiva appena e il popolo per nulla. Il testo biblico è arrivato loro nella lingua materna lentamente, libro dopo libro, nell’arco di trecento anni, e con esso è nato il romeno scritto.",
     steps: {
       b1: {
         year: "secoli XV–XVI",
@@ -455,8 +455,8 @@ export const itBiserica: BisericaCatalog = {
     influence: {
       i1: "Il romeno scritto è nato, in gran parte, dai libri della Chiesa. Bibbie e libri liturgici erano la prima cosa che si leggeva in ogni regione, e così aiutarono a creare una lingua comune per tutti i romeni, molto prima dell’Unione del 1918. Eminescu diceva che la Chiesa e i suoi libri hanno dato ai romeni l’unità della lingua.",
       i2: "Chi voleva leggere la Scrittura doveva imparare a leggere. Accanto alle chiese si aprirono scuole, e a Blaj, nel 1754, le scuole furono chiamate «le fonti dei doni». Per molto tempo i maestri dei villaggi furono i cantori della chiesa.",
-      i3: "Quando la gente semplice poté leggere da sé la Parola, nacquero i risvegli: l’Esercito del Signore, le chiese evangeliche, i circoli di preghiera nei villaggi. La fede smise di appartenere solo al sacerdote e divenne di ciascuno.",
-      i4: "Per questo i comunisti temevano la Bibbia più di molte armi: un popolo che legge la Parola sa che cos’è la verità e non si lascia più ingannare facilmente.",
+      i3: "Quando la gente semplice poté leggere da sé, nacquero movimenti dal basso: l’Esercito del Signore, le chiese evangeliche, i circoli di lettura nei villaggi. La fede smise di appartenere solo al sacerdote e divenne di ciascuno.",
+      i4: "Per questo il regime comunista temeva questi libri: chi legge e pensa con la propria testa non si lascia più ingannare facilmente.",
     },
     bibleVerse: {
       text: "La dichiarazione delle tue parole illumina; dà intelletto ai semplici.",

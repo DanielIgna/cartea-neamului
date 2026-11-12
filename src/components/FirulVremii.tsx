@@ -66,7 +66,7 @@ export default function FirulVremii() {
     const scale = svg.getBoundingClientRect().width / L.width;
     el.scrollTo({ left: Math.max(0, x(year) * scale - 40), behavior: "smooth" });
   };
-  // La început desenul pornește din stânga (de la Avraam), nu de la mijloc.
+  // La început desenul pornește din stânga (de la primele orașe), nu de la mijloc.
   useEffect(() => {
     const t = setTimeout(() => { if (box.current) box.current.scrollLeft = 0; }, 150);
     return () => clearTimeout(t);
@@ -87,10 +87,9 @@ export default function FirulVremii() {
   return (
     <article className="card ch fv">
       <header className="ch-head">
-        <div className="section-label" style={{ marginTop: 0 }}>Firul vremii</div>
-        <h2>Istoria Bibliei, a lumii și a neamului nostru, pe aceeași axă</h2>
-        <p className="ch-lead">Neamul lui Hristos n-a trăit într-o lume goală. Pe aceeași axă a anilor vezi, una sub alta, viața patriarhilor, împărații lui Iuda și ai lui Israel, proorocii, marile imperii (Egipt, Asiria, Babilon, Persia, Grecia, Roma) și ce se petrecea pe pământul nostru. După Hristos, axa merge mai departe cu Biserica, cu daco-romanii și cu românii, până azi. Atinge orice bară și afli ce mai era în același timp.</p>
-        <blockquote className="ch-verse"><p>„El schimbă vremurile și împrejurările; El răstoarnă și pune pe împărați”</p><cite>Daniel 2:21</cite></blockquote>
+        <div className="section-label" style={{ marginTop: 0 }}>Istoria umanității</div>
+        <h2>Cinci mii de ani de istorie, pe un singur fir</h2>
+        <p className="ch-lead">De la primele orașe și primele scrieri, în Sumer și în Egipt, până la internet. Pe aceeași axă a anilor vezi, una sub alta, marile civilizații ale lumii, de la Mesopotamia și China până la Maya și incași, Israelul vechi și începuturile creștinismului, Europa modernă cu ideile și descoperirile ei și ce se petrecea, în tot acest timp, pe pământul nostru. Atinge orice bară și afli ce mai era în același timp.</p>
       </header>
 
       <div className="seg fv-win" role="group" aria-label="Ce bucată din axă">
@@ -114,7 +113,7 @@ export default function FirulVremii() {
             {ticks.map((t) => (
               <g key={t}>
                 <line x1={x(t)} x2={x(t)} y1={22} y2={L.height - 6} className={t % 500 === 0 ? "fv-grid strong" : "fv-grid"} />
-                <text x={x(t)} y={16} textAnchor="middle" className={t % 500 === 0 ? "fv-tick strong" : "fv-tick"}>{t === 0 ? "1 d.Hr." : t < 0 ? `${-t} î.Hr.` : `${t} d.Hr.`}</text>
+                <text x={x(t)} y={16} textAnchor="middle" className={t % 500 === 0 ? "fv-tick strong" : "fv-tick"}>{t === 0 ? "anul 1" : t < 0 ? `${-t} î.Hr.` : `${t} d.Hr.`}</text>
               </g>
             ))}
             {range && <rect x={x(range[0]) - 1} y={22} width={Math.max(3, (range[1] - range[0]) * PX) + 2} height={L.height - 28} className="fv-band" />}
@@ -159,8 +158,8 @@ export default function FirulVremii() {
       </div>
 
       <ul className="ah-legend fv-legend">
-        <li><i className="k fv-k biblia" />Biblia</li>
-        <li><i className="k fv-k lumea" />popoarele din jur</li>
+        <li><i className="k fv-k lumea" />lumea</li>
+        <li><i className="k fv-k biblia" />Israelul vechi și creștinismul</li>
         <li><i className="k fv-k noi" />pe pământul nostru</li>
         <li><i className="k fv-k approx" />ani nesiguri</li>
       </ul>
@@ -196,10 +195,10 @@ export default function FirulVremii() {
               </>
             )}
             {(pick.kind === "span" ? pick.s.href : pick.m.href) && (
-              <p><Link className="btn" href={(pick.kind === "span" ? pick.s.href : pick.m.href)!}>Citește mai mult în Istoria Bisericii</Link></p>
+              <p><Link className="btn" href={(pick.kind === "span" ? pick.s.href : pick.m.href)!}>Citește mai mult în „Libertatea de a crede”</Link></p>
             )}
             {pick.kind === "span" && pick.s.person && (
-              <p><Link className="btn" href={`/de-la-adam-la-hristos?p=${pick.s.person}`}>Vezi în arborele „De la Adam la Hristos”</Link></p>
+              <p><Link className="btn" href={`/genealogii-vechi?p=${pick.s.person}`}>Vezi în „Genealogii vechi”</Link></p>
             )}
           </section>
         ) : <p className="muted fv-hint">Atinge o bară sau un eveniment de pe axă ca să vezi ce se petrecea în același timp.</p>}
@@ -208,12 +207,13 @@ export default function FirulVremii() {
       <section className="ch-part">
         <div className="section-label">Cum se citește</div>
         <h3 className="ch-part-title">O axă, mai multe rânduri</h3>
-        <p>Anii merg de la stânga la dreapta. Alege mai sus bucata de axă: înainte de Hristos (de la Avraam, în jurul anului 2000 î.Hr.), după Hristos (până azi) sau toată axa. Fiecare rând e o poveste: sus, neamul lui Hristos și poporul lui Israel; la mijloc, popoarele din jur; jos, pământul nostru. Ce stă unul sub altul s-a petrecut în același timp: Daniel slujea la Babilon când în Grecia trăia Solon; Neemia rezidea zidurile Ierusalimului cam pe când la Atena se zidea Partenonul; iar Burebista domnea peste geto-daci pe când Roma se pregătea să devină imperiu, cu puțin înainte de nașterea Domnului.</p>
-        <p>Pentru vremea dinainte de Avraam, de la Adam la potop și de la potop la Avraam, Biblia dă doar anii oamenilor, iar textele vechi nu dau aceleași cifre. Le găsești pe pagina <Link href="/de-la-adam-la-hristos">De la Adam la Hristos</Link>, la „Cine cu cine a trăit în același timp”.</p>
+        <p>Anii merg de la stânga la dreapta. Alege mai sus bucata de axă: lumea veche (de la primele orașe, pe la 3500 î.Hr., până la anul 1), de la anul 1 până azi sau toată istoria. Fiecare rând e o poveste: sus, marile civilizații ale lumii; la mijloc, Israelul vechi și creștinismul; jos, pământul nostru. Ce stă unul sub altul s-a petrecut în același timp: piramidele Egiptului erau deja vechi când Hamurabi își scria legile; Buddha, Confucius și primii filozofi greci au trăit în același veac; Burebista îi unea pe geto-daci pe când Iulius Cezar cucerea Galia; iar Ștefan cel Mare domnea în Moldova când Columb ajungea în America.</p>
+        <p>Pentru vremea dinainte de Avraam, cronologia biblică dă doar anii oamenilor, iar textele vechi nu dau aceleași cifre. Îi găsești pe pagina <Link href="/genealogii-vechi">Genealogii vechi</Link>, la „Cine cu cine a trăit în același timp”.</p>
         <h4 className="ch-sub">De unde vin anii</h4>
         <ul className="ch-influence">
-          <li>Pentru împărații lui Iuda și ai lui Israel folosim cronologia lui Edwin Thiele, pe care o urmează mulți istorici. Ea potrivește anii din Biblie cu listele asiriene, unde o eclipsă din 763 î.Hr. dă un an sigur. Unele domnii se suprapun, pentru că fiul domnea uneori alături de tatăl său.</li>
-          <li>Pentru patriarhi și pentru ieșirea din Egipt, luăm literal cifrele din 1 Împărați 6:1 și Exodul 12:40. Mulți istorici pun ieșirea mai târziu, pe la 1260 î.Hr.</li>
+          <li>Pentru civilizațiile foarte vechi, anii vin din arheologie (straturi, datări cu carbon radioactiv, liste de regi) și sunt aproximativi; pe măsură ce ne apropiem de noi, devin siguri.</li>
+          <li>Pentru regii lui Iuda și ai lui Israel folosim cronologia lui Edwin Thiele, pe care o urmează mulți istorici. Ea potrivește anii din Biblie cu listele asiriene, unde o eclipsă din 763 î.Hr. dă un an sigur. Unele domnii se suprapun, pentru că fiul domnea uneori alături de tatăl său.</li>
+          <li>Pentru Avraam, Moise și ieșirea din Egipt, singurul izvor e relatarea biblică. Rândul lor arată anii care ies dacă iei literal cifrele din 1 Împărați 6:1 și Exodul 12:40; mulți istorici pun ieșirea mai târziu, pe la 1260 î.Hr., iar alții cred că aceste vremuri nu se pot data.</li>
           <li>Barele cu margini estompate au anii nesiguri: arată doar vremea, nu anul exact.</li>
         </ul>
       </section>
@@ -223,34 +223,36 @@ export default function FirulVremii() {
         <h3 className="ch-part-title">Cine a trăit aici înainte de daci</h3>
         <p>Pentru vremurile foarte vechi nu avem nume scrise, ci doar ce găsesc arheologii în pământ. Ei numesc fiecare lume după satul unde au dat prima dată de urmele ei. Rândul de jos al axei urmează firul acesta, de la ce e doar săpat în pământ până la oamenii pomeniți în cărți.</p>
         <ol className="fv-steps">
-          <li><strong>Primii agricultori: Starčevo-Criș, Hamangia, Cucuteni.</strong> Arheologii găsesc pe pământul nostru sate foarte vechi, cu ceramică pictată (Cucuteni, în Moldova) și statuete ca „Gânditorul de la Hamangia” (Dobrogea). Datările lor, făcute cu carbon radioactiv, merg până înainte de anii pe care îi dă textul ebraic pentru potop. Credincioșii împacă lucrul acesta în feluri diferite, de aceea nu le punem pe aceeași axă cu anii Bibliei.</li>
-          <li><strong>Epoca bronzului (c. 2000–1150 î.Hr.).</strong> Cetăți pe dealuri, aur din Munții Apuseni, arme de bronz. E vremea în care Avraam, Isaac și Iacov trăiau în Canaan și Israel era în Egipt.</li>
-          <li><strong>Tracii (din c. 1150 î.Hr.).</strong> Odată cu fierul, de la Balcani până la Carpați trăiește un singur mare neam, tracii. E vremea judecătorilor și a lui David.</li>
-          <li><strong>Geții și dacii (din c. 650 î.Hr.).</strong> Ramura de la nord de Dunăre a tracilor. Herodot îi pomenește pe geți în 514 î.Hr., cam pe când iudeii terminau al doilea Templu. Grecii își fac colonii pe țărmul Dobrogei: Histria, Tomis, Callatis.</li>
-          <li><strong>Statul dac (din 82 î.Hr.).</strong> Burebista îi unește pe geto-daci, cu marele preot Deceneu, cu câteva zeci de ani înainte de nașterea Domnului Isus.</li>
+          <li><strong>Primii agricultori: Starčevo-Criș, Hamangia, Cucuteni (c. 6000–3000 î.Hr.).</strong> Arheologii găsesc pe pământul nostru sate foarte vechi, cu ceramică pictată (Cucuteni, în Moldova) și statuete ca „Gânditorul de la Hamangia” (Dobrogea). Sfârșitul culturii Cucuteni e chiar la începutul axei.</li>
+          <li><strong>Epoca bronzului (c. 2000–1150 î.Hr.).</strong> Cetăți pe dealuri, aur din Munții Apuseni, arme de bronz. E vremea Babilonului lui Hamurabi și a Cretei minoice.</li>
+          <li><strong>Tracii (din c. 1150 î.Hr.).</strong> Odată cu fierul, de la Balcani până la Carpați trăiește un singur mare neam, tracii. E vremea în care cade Troia și se naște alfabetul fenician.</li>
+          <li><strong>Geții și dacii (din c. 650 î.Hr.).</strong> Ramura de la nord de Dunăre a tracilor. Herodot îi pomenește pe geți în 514 î.Hr., cam pe când la Atena se năștea democrația. Grecii își fac colonii pe țărmul Dobrogei: Histria, Tomis, Callatis.</li>
+          <li><strong>Statul dac (din 82 î.Hr.).</strong> Burebista îi unește pe geto-daci, cu marele preot Deceneu, în aceeași vreme cu Iulius Cezar.</li>
         </ol>
-        <p>Poporul român se naște mai târziu, după Hristos, din amestecul dacilor cu romanii, după cucerirea lui Traian din 106. Partea aceasta e pe axă la „După Hristos” și mai jos, la „Cum a apărut creștinismul și cum a ajuns la noi”.</p>
+        <p>Poporul român se naște mai târziu, din amestecul dacilor cu romanii, după cucerirea lui Traian din 106. Partea aceasta e pe axă la „De la anul 1 până azi”.</p>
       </section>
 
       <section className="ch-part" id="credinta">
-        <div className="section-label">După Hristos</div>
-        <h3 className="ch-part-title">Cum a apărut creștinismul și cum a ajuns la noi</h3>
+        <div className="section-label">De la anul 1</div>
+        <h3 className="ch-part-title">Cum a ajuns creștinismul pe pământul nostru</h3>
+        <p>Dintre toate firele axei, unul a schimbat felul în care numără lumea anii: viața lui Isus din Nazaret. Iată, pe scurt, cum a ajuns creștinismul până la noi, după izvoarele istorice și după tradiție, acolo unde textul o spune.</p>
         <ol className="fv-steps">
-          <li><strong>Ierusalim, anul 30.</strong> După învierea Domnului, la Rusalii, Duhul Sfânt Se coboară peste ucenici, iar Biserica se naște în aceeași zi, cu aproape trei mii de oameni botezați (Faptele 2). Prigoana îi risipește pe credincioși, iar ei duc Evanghelia mai departe: Pavel în Asia Mică, Grecia și Roma, iar ceilalți apostoli în alte părți.</li>
-          <li><strong>La gurile Dunării, în secolul I.</strong> Tradiția păstrată de Eusebiu spune că apostolului Andrei i-a revenit Sciția; mulți o leagă de Dobrogea. Nu putem dovedi lucrul acesta, dar Dobrogea era deja romană și legată de tot imperiul, iar Evanghelia a ajuns aici foarte devreme.</li>
-          <li><strong>Daco-romanii (secolele II–IV).</strong> După cucerirea lui Traian (106), soldații, negustorii și coloniștii aduc credința și la nord de Dunăre. Românii n-au avut un „botez” la o anumită dată, ca alte popoare; s-au făcut creștini odată cu nașterea lor ca popor. Mărturie stau cuvintele de bază ale credinței, care sunt latinești: Dumnezeu, cruce, biserică, creștin, a boteza, Paște, rugăciune, sfânt.</li>
-          <li><strong>Martiri și episcopi (secolele III–VI).</strong> În Dobrogea au murit pentru Hristos Epictet și Astion la Halmyris și martirii de la Niculițel. La Tomis apar episcopi, iar din Sciția Mică vine Dionisie cel Mic, cel care ne-a dat numărătoarea anilor „de la Hristos”. În Ardeal, donariul de la Biertan arată creștini și după plecarea romanilor.</li>
-          <li><strong>Slavona, apoi limba română (secolele X–XVII).</strong> Multă vreme slujba s-a ținut într-o limbă pe care poporul n-o înțelegea. Coresi, Noul Testament de la Bălgrad (1648) și Biblia de la București (1688) au adus Cuvântul în românește, iar mai târziu Cornilescu (1921) l-a făcut ușor de citit pentru toți.</li>
+          <li><strong>Ierusalim, pe la anul 30.</strong> Isus este răstignit sub Ponțiu Pilat, iar ucenicii lui vestesc curând că a înviat. Prima comunitate creștină se formează la Ierusalim. Prigonirile îi risipesc pe credincioși, iar ei duc învățătura mai departe: Pavel în Asia Mică, Grecia și Roma, ceilalți apostoli în alte părți.</li>
+          <li><strong>La gurile Dunării, în secolul I.</strong> Tradiția păstrată de Eusebiu spune că apostolului Andrei i-a revenit Sciția; mulți o leagă de Dobrogea. Nu putem dovedi lucrul acesta, dar Dobrogea era deja romană și legată de tot imperiul, iar creștinismul a ajuns aici foarte devreme.</li>
+          <li><strong>Daco-romanii (secolele II–IV).</strong> După cucerirea lui Traian (106), soldații, negustorii și coloniștii aduc noua credință și la nord de Dunăre. Românii n-au avut un „botez” la o anumită dată, ca alte popoare; s-au făcut creștini odată cu nașterea lor ca popor. Mărturie stau cuvintele de bază, care sunt latinești: Dumnezeu, cruce, biserică, creștin, a boteza, Paște, rugăciune, sfânt.</li>
+          <li><strong>Martiri și episcopi (secolele III–VI).</strong> În Dobrogea au fost uciși pentru credința lor Epictet și Astion la Halmyris și cei patru ale căror nume s-au găsit în cripta de la Niculițel. La Tomis apar episcopi, iar din Sciția Mică vine Dionisie cel Mic, cel care a dat lumii numărătoarea anilor folosită azi. În Ardeal, donariul de la Biertan arată creștini și după plecarea romanilor.</li>
+          <li><strong>Slavona, apoi limba română (secolele X–XVII).</strong> Multă vreme slujba s-a ținut într-o limbă pe care poporul n-o înțelegea. Coresi, Noul Testament de la Bălgrad (1648) și Biblia de la București (1688) au fost printre primele cărți mari în românește și au ajutat la nașterea limbii române literare.</li>
           <li><strong>Prigoană și libertate (secolul XX).</strong> Sub comuniști, credincioșii de toate confesiunile au plătit cu închisoarea, iar după 1989 a venit libertatea.</li>
         </ol>
-        <p>Istoria fiecărei epoci, cu martorii ei, o găsești pe larg în Istoria Bisericii; aici e doar firul care le leagă de anii lumii.</p>
+        <p>Povestea lor, cu oamenii fiecărei epoci, o găsești pe larg în <Link href="/libertatea-de-a-crede">Libertatea de a crede</Link>.</p>
       </section>
 
       <section className="ch-part ch-end">
         <h3 className="ch-part-title">Și familia ta e pe firul acesta</h3>
-        <p>Fiecare bunic și străbunic din arborele tău a trăit undeva pe axa aceasta, sub unele dintre stăpânirile de aici, și a auzit, într-o limbă sau alta, aceeași Evanghelie.</p>
-        <p><Link className="btn primary" href="/istoria-bisericii">Istoria Bisericii, de la apostoli până azi</Link> <Link className="btn" href="/de-la-adam-la-hristos">Arborii de la Adam la Hristos</Link></p>
-        <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Scris de mână, din Biblie și din istorie. Versetele sunt din traducerea Dumitru Cornilescu. Anii foarte vechi sunt aproximativi; unde un lucru e doar tradiție, textul o spune.</p>
+        <p>Fiecare bunic și străbunic din arborele tău a trăit undeva pe axa aceasta, sub unele dintre stăpânirile de aici, cu războaiele, foametea, descoperirile și speranțele vremii lui. Istoria mare e făcută din milioane de istorii mici, ca a lor.</p>
+        <blockquote className="ch-verse"><p>„Învață-ne să ne numărăm bine zilele, ca să căpătăm o inimă înțeleaptă!”</p><cite>Psalmul 90:12</cite></blockquote>
+        <p><Link className="btn primary" href="/genealogii-vechi">Genealogii vechi</Link> <Link className="btn" href="/libertatea-de-a-crede">Libertatea de a crede</Link></p>
+        <p className="muted" style={{ fontSize: 13, marginBottom: 0 }}>Scris de mână, din izvoare istorice și arheologice, iar pentru Israelul vechi și din relatarea biblică, spusă ca atare. Anii foarte vechi sunt aproximativi; unde un lucru e doar tradiție, textul o spune.</p>
       </section>
     </article>
   );
