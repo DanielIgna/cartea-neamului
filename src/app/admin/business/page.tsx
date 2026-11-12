@@ -52,16 +52,15 @@ export default async function AdminBusiness() {
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Bani</h2>
         <p className="muted" style={{ marginTop: 0 }}>
-          Planul de acum, din <Link href="/admin/control">Manager control</Link>: gratuit până la {count(lim.freePersons, "persoane")} și{" "}
-          {count(lim.freeFiles, "fișiere")} pe arbore, apoi „Familie” {eur(lim.priceEurYear)} pe an pentru cel care a pornit arborele. Plățile nu sunt
-          încă pornite, așa că cifrele arată ce ar aduce planul dacă ar fi pornit azi.
+          Din <Link href="/admin/control">Manager control</Link>: {count(lim.trialDays, "zile")} gratuite pentru fiecare om, apoi {lei(lim.priceLei)} pe an
+          ({lei(lim.invitePriceLei)} pentru o rudă invitată); cartea PDF {lei(lim.bookLei)}. {lim.on ? "Plățile sunt pornite." : "Plățile nu sunt încă pornite, așa că cifrele arată ce ar aduce dacă ar fi pornite azi."}
         </p>
         <div className="stats">
-          <Stat label="Marcați „Familie”" value={num(b.revenue.subscriptionsActive)} hint={`≈ ${eur(b.revenue.markedEurYear)}/an · plățile nu sunt pornite`} />
+          <Stat label="Plătit" value={num(b.revenue.paying)} hint={`≈ ${lei(b.revenue.paidLeiYear)}/an`} />
           <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} hint="familia, prietenii" />
-          <Stat label="Arbori peste limită" value={num(b.trees.overLimit)} hint={`${b.plans.counts.overFree} la conturi cu planul gratuit`} tone={b.trees.overLimit ? "ok" : undefined} />
-          <Stat label="Aproape de limită" value={num(b.trees.nearLimit)} hint="peste trei sferturi din limite" />
-          <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} hint={`„Familie” și ${b.plans.wouldPay} conturi peste limită`} />
+          <Stat label="În zilele gratuite" value={num(b.plans.counts.proba)} />
+          <Stat label="Doar citire" value={num(b.plans.counts.expirat)} hint="ar trebui să plătească" tone={b.plans.counts.expirat ? "warn" : undefined} />
+          <Stat label="Venit posibil pe an" value={lei(b.revenue.potentialLeiYear)} hint={`dacă plătesc și cei ${b.plans.wouldPay} în probă sau doar citire`} />
           <Stat label="Cărți plătite" value={lei(b.revenue.booksLei)} />
         </div>
         {b.books.length > 0 && (
@@ -83,7 +82,7 @@ export default async function AdminBusiness() {
                   <td className="n">{num(t.members)}</td>
                   <td className="n">{num(t.documents)}</td>
                   <td>{ago(t.lastEdit)}</td>
-                  <td><PlanPill plan={t.plan} limit={t.limit} /></td>
+                  <td><PlanPill plan={t.plan} access={t.access} /></td>
                 </tr>
               ))}
             </tbody>

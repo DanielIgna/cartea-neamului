@@ -127,6 +127,13 @@
       "when": 1794420000000,
       "tag": "0017_propuneri_acasa",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794500000000,
+      "tag": "0018_plata_acces",
+      "breakpoints": true
     }
   ]
 }

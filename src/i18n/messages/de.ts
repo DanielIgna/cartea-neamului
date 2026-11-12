@@ -358,6 +358,11 @@ export const de: Catalog = {
   ...deFilm,
   ...deLegal,
   ...deDatele,
+  Access: {
+    trial: "{days, plural, one {Du hast noch einen kostenlosen Tag} other {Du hast noch # kostenlose Tage}}. Danach kostet ein Jahr {price}, um weiter hinzuzufügen und zu bearbeiten.",
+    ended: "<b>Deine kostenlosen Tage sind vorbei.</b> Der Stammbaum bleibt sichtbar und nichts geht verloren, aber um etwas hinzuzufügen oder zu ändern, kostet ein Jahr {price}.",
+    pay: "Ich möchte weitermachen",
+  },
   NotFound: {
     title: "Diese Seite gibt es nicht",
     text: "Vielleicht ist der Link falsch oder die Seite wurde verschoben. Auf der Startseite findest du alles.",

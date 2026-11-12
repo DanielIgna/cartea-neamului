@@ -6,8 +6,10 @@ import { isAdminUser } from "@/lib/admin";
 import { adoptionOf, deviceOf, funnelOf, observations, peopleList, personDetail, stageOf } from "@/lib/admin-people";
 import { businessStats } from "@/lib/admin-stats";
 import { exportMyData } from "@/lib/account";
+import { roleIn, roleInTree } from "@/lib/access";
+import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, accountPlans, isPlan, limitState, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan,
+  DEFAULT_SETTINGS, PlanSettings, accessFor, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -29,22 +31,54 @@ describe("cine intră în panou", () => {
 
 describe("planurile", () => {
   const s = DEFAULT_SETTINGS;
-  it("un arbore e aproape de limită de la trei sferturi din oricare limită și peste de la limită", () => {
-    expect(limitState(10, 10, s)).toBe("sub");
-    expect(limitState(150, 0, s)).toBe("aproape");
-    expect(limitState(0, 400, s)).toBe("aproape");
-    expect(limitState(200, 0, s)).toBe("peste");
-    expect(limitState(20, 600, s)).toBe("peste");
+  const on = { ...s, on: true, startedAt: "2026-12-01T00:00:00.000Z", betaDays: 0 };
+  const d = (iso: string) => new Date(iso);
+  it("cât timp plățile sunt oprite, toți pot tot", () => {
+    expect(accessFor({ createdAt: d("2020-01-01"), plan: null, paidUntil: null }, s)).toEqual({ kind: "deschis" });
   });
-  it("banii: plătesc cei „Familie” și ar plăti cei gratuiți peste limită, niciodată cei „Gratuit mereu”", () => {
-    const r = revenue([{ plan: "familie", overLimitTrees: 0 }, { plan: "gratuit", overLimitTrees: 2 }, { plan: "mereu", overLimitTrees: 3 }, { plan: "gratuit", overLimitTrees: 0 }], s);
-    expect(r).toEqual({ paying: 1, wouldPay: 1, eurYearNow: 12, eurYearPossible: 24 });
+  it("fiecare om are zilele lui gratuite, numărate de la pornire pentru cei vechi și de la cont pentru cei noi", () => {
+    const old = { createdAt: d("2026-11-01"), plan: null, paidUntil: null };
+    expect(accessFor(old, on, d("2026-12-03T00:00:00Z"))).toMatchObject({ kind: "proba", daysLeft: 5 });
+    expect(accessFor(old, on, d("2026-12-08T00:00:00Z"))).toMatchObject({ kind: "expirat", since: d("2026-12-08T00:00:00Z") });
+    const nou = { createdAt: d("2026-12-20T12:00:00Z"), plan: null, paidUntil: null };
+    expect(accessFor(nou, on, d("2026-12-27T11:00:00Z"))).toMatchObject({ kind: "proba", daysLeft: 1 });
+    expect(mayWrite(accessFor(nou, on, d("2026-12-27T13:00:00Z")))).toBe(false);
   });
-  it("limitele se scriu ca numere întregi, cu mesaje în română", () => {
-    expect(PlanSettings.safeParse({ freePersons: "300", freeFiles: "800", priceEurYear: "15.5" }).data).toEqual({ freePersons: 300, freeFiles: 800, priceEurYear: 15.5 });
-    expect(PlanSettings.safeParse({ freePersons: "5", freeFiles: "800", priceEurYear: "12" }).error?.issues[0].message).toBe("Cel puțin 10 persoane.");
-    expect(PlanSettings.safeParse({ freePersons: "abc", freeFiles: "800", priceEurYear: "12" }).error?.issues[0].message).toBe("Scrie un număr.");
-    expect(PlanSettings.safeParse({ freePersons: "100", freeFiles: "800", priceEurYear: "-1" }).error?.issues[0].message).toBe("Prețul nu poate fi negativ.");
+  it("cei din beta (cont dinainte de pornire) au primul an gratuit, apoi doar citire", () => {
+    const beta = { ...on, betaDays: 365 };
+    const old = { createdAt: d("2026-11-01"), plan: null, paidUntil: null };
+    expect(accessFor(old, beta, d("2027-06-01"))).toEqual({ kind: "beta", until: d("2027-12-01T00:00:00Z") });
+    expect(accessFor(old, beta, d("2027-12-02"))).toEqual({ kind: "expirat", since: d("2027-12-01T00:00:00Z") });
+    expect(accessFor({ createdAt: d("2026-12-05"), plan: null, paidUntil: null }, beta, d("2026-12-06"))).toMatchObject({ kind: "proba" });
+  });
+  it("„gratuit mereu”, contul demo și anul plătit trec peste zilele gratuite; după anul plătit, doar citire", () => {
+    const now = d("2027-03-01");
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "mereu", paidUntil: null }, on, now)).toEqual({ kind: "mereu" });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: null, paidUntil: null, exempt: true }, on, now)).toEqual({ kind: "mereu" });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "gratuit", paidUntil: d("2027-12-01") }, on, now)).toMatchObject({ kind: "platit" });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: null }, on, now)).toEqual({ kind: "platit", until: null });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: d("2027-02-01") }, on, now)).toEqual({ kind: "expirat", since: d("2027-02-01") });
+  });
+  it("banii: cel cu arbore plătește prețul întreg, ruda invitată prețul ei; „gratuit mereu” niciodată", () => {
+    const t = { ...on, invitePriceLei: 30 };
+    expect(yearPrice(true, t)).toEqual({ lei: 50, eur: 10 });
+    expect(yearPrice(false, t)).toEqual({ lei: 30, eur: 10 });
+    const r = revenue([
+      { access: { kind: "platit", until: null }, ownsTree: true },
+      { access: { kind: "expirat", since: d("2027-01-01") }, ownsTree: false },
+      { access: { kind: "proba", until: d("2027-01-01"), daysLeft: 2 }, ownsTree: true },
+      { access: { kind: "mereu" }, ownsTree: true },
+    ], t);
+    expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 50, leiYearPossible: 130 });
+  });
+  it("setările se scriu ca numere, cu mesaje în română, iar comutatorul vine din bifă", () => {
+    const form = { on: "on", trialDays: "14", priceLei: "50", priceEur: "10", invitePriceLei: "25", invitePriceEur: "5", bookLei: "99", bookEur: "20", betaDays: "365" };
+    expect(PlanSettings.safeParse(form).data).toEqual({ ...form, on: true, startedAt: null, trialDays: 14, priceLei: 50, priceEur: 10, invitePriceLei: 25, invitePriceEur: 5, bookLei: 99, bookEur: 20, betaDays: 365 });
+    expect(PlanSettings.safeParse({ ...form, on: null }).data?.on).toBe(false);
+    expect(PlanSettings.safeParse({ ...form, trialDays: "0" }).error?.issues[0].message).toBe("Cel puțin 1 zile.");
+    expect(PlanSettings.safeParse({ ...form, trialDays: "2.5" }).error?.issues[0].message).toBe("Scrie un număr întreg.");
+    expect(PlanSettings.safeParse({ ...form, priceLei: "abc" }).error?.issues[0].message).toBe("Scrie un număr.");
+    expect(PlanSettings.safeParse({ ...form, bookLei: "-1" }).error?.issues[0].message).toBe("Prețul nu poate fi negativ.");
   });
   it("numai cele trei planuri sunt planuri", () => {
     expect(isPlan("mereu")).toBe(true);
@@ -153,23 +187,24 @@ describe("Oamenii și Manager control", () => {
     expect(deviceOf(null).label).toBe("alt dispozitiv · alt browser");
   });
 
-  it("Manager control: limitele se schimbă și se văd peste tot, planul „gratuit” fără notă șterge alegerea", async () => {
+  it("Manager control: setările se schimbă și se văd peste tot, planul „gratuit” fără notă șterge alegerea", async () => {
     expect(await planSettings(db)).toEqual(DEFAULT_SETTINGS);
+    // Oprite: se arată ce s-ar întâmpla dacă le-ai porni azi: cei de acum au primul an gratuit, demo e scutit.
     let ov = await planOverview(db);
-    expect(ov.counts).toMatchObject({ over: 0, near: 1 });
-    await savePlanSettings(db, { freePersons: 150, freeFiles: 500, priceEurYear: 10 }, "ana");
-    expect(await planSettings(db)).toEqual({ freePersons: 150, freeFiles: 500, priceEurYear: 10 });
-    ov = await planOverview(db);
-    expect(ov.counts).toMatchObject({ over: 1, overFree: 1, mereu: 0 });
-    expect(ov.revenue).toMatchObject({ paying: 0, wouldPay: 1, eurYearPossible: 10 });
-    expect((await businessStats(db)).revenue).toMatchObject({ potentialEurYear: 10, subscriptionsActive: 0 });
+    expect(ov.counts).toMatchObject({ mereu: 1, platit: 0, beta: 3, proba: 0, expirat: 0 });
+    expect(ov.revenue).toMatchObject({ paying: 0, wouldPay: 0, leiYearPossible: 0 });
+    expect((await businessStats(db)).revenue).toMatchObject({ potentialLeiYear: 0, paying: 0 });
 
+    await savePlanSettings(db, { ...DEFAULT_SETTINGS, priceLei: 60, invitePriceLei: 40, betaDays: 0 }, "ana");
+    expect(await planSettings(db)).toMatchObject({ on: false, startedAt: null, priceLei: 60, invitePriceLei: 40 });
+    // „gol” n-are arbore al lui, deci plătește ca rudă invitată.
+    expect((await planOverview(db)).revenue.leiYearPossible).toBe(60 + 60 + 40);
     await setAccountPlan(db, "ana", "mereu", "  sora mea  ", "ana");
     await setAccountPlan(db, "ion", "familie", null, "ana");
     expect((await accountPlans(db)).get("ana")).toMatchObject({ plan: "mereu", note: "sora mea" });
     ov = await planOverview(db);
-    expect(ov.counts).toMatchObject({ mereu: 1, familie: 1, over: 1, overFree: 0 });
-    expect(ov.revenue).toMatchObject({ paying: 1, wouldPay: 0, eurYearNow: 10 });
+    expect(ov.counts).toMatchObject({ mereu: 2, platit: 1, proba: 1 });
+    expect(ov.revenue).toMatchObject({ paying: 1, wouldPay: 1, leiYearNow: 60 });
     expect((await peopleList(db)).find((p) => p.id === "ana")).toMatchObject({ plan: "mereu", planNote: "sora mea" });
 
     const data = (await exportMyData(db, "ana", "https://exemplu.ro"))!;
@@ -178,5 +213,32 @@ describe("Oamenii și Manager control", () => {
 
     await setAccountPlan(db, "ion", "gratuit", " ", "ana");
     expect((await db.select().from(accountPlan)).map((r) => r.userId)).toEqual(["ana"]);
+    await savePlanSettings(db, { ...DEFAULT_SETTINGS, betaDays: 0 }, "ana");
+  });
+
+  it("pornite: după zilele gratuite, omul e vizitator în toți arborii lui până plătește", async () => {
+    await setAccountPlan(db, "ana", "gratuit", null, "ana");
+    expect(await roleIn(db, T.mare, "ion")).toBe("contributor");
+    // Pornite acum 8 zile: Ana și Ion au conturi mai vechi, deci zilele lor s-au terminat ieri; Gol e nou.
+    const saved = await savePlanSettings(db, { ...DEFAULT_SETTINGS, on: true, betaDays: 0 }, "ana", ago(8));
+    expect(saved.startedAt).toBe(ago(8).toISOString());
+    expect((await savePlanSettings(db, { ...DEFAULT_SETTINGS, on: true, betaDays: 0 }, "ana")).startedAt).toBe(ago(8).toISOString());
+    expect(await roleIn(db, T.mare, "ana")).toBe("viewer");
+    expect(await roleIn(db, T.mare, "ion")).toBe("viewer");
+    expect(await roleInTree(db, T.mare, "ana")).toBe("owner");
+    expect((await userAccess(db, "gol")).access).toMatchObject({ kind: "proba", daysLeft: 6 });
+    expect((await userAccess(db, "demo")).access).toEqual({ kind: "mereu" });
+
+    await setAccountPlan(db, "ana", "gratuit", null, "ana", new Date(), new Date(now + 365 * 86_400_000));
+    expect(await roleIn(db, T.mare, "ana")).toBe("owner");
+    expect(await roleIn(db, T.mare, "ion")).toBe("viewer");
+    expect((await userAccess(db, "ana")).ownsTree).toBe(true);
+    // Cu primul an gratuit pentru cei din beta, Ion (cont dinainte de pornire) poate scrie din nou.
+    await savePlanSettings(db, { ...DEFAULT_SETTINGS, on: true }, "ana");
+    expect(await roleIn(db, T.mare, "ion")).toBe("contributor");
+
+    await savePlanSettings(db, DEFAULT_SETTINGS, "ana");
+    expect(await planSettings(db)).toMatchObject({ on: false, startedAt: null });
+    expect(await roleIn(db, T.mare, "ion")).toBe("contributor");
   });
 });

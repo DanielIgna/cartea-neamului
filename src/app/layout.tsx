@@ -19,6 +19,7 @@ import { PwaSetup } from "@/components/InstallApp";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import CookieNotice from "@/components/CookieNotice";
+import AccessBanner from "@/components/AccessBanner";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
@@ -107,6 +108,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Anunțul despre cookie-uri vine o singură dată, dar nu peste celelalte două întrebări: așteaptă pagina următoare. */}
             {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
               && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
+            {me && <AccessBanner userId={me.id} locale={locale} />}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <footer className="site-foot">

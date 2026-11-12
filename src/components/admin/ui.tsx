@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cereDe } from "@/lib/ro-words";
-import type { LimitState, Plan } from "@/lib/plans";
+import type { Access, Plan } from "@/lib/plans";
 import { STAGES, type Stage } from "@/lib/admin-people";
 
 export const num = (v: number) => v.toLocaleString("ro-RO");
@@ -52,12 +52,14 @@ export function AdminNav({ active }: { active: "home" | "oameni" | "business" | 
   );
 }
 
-/** Planul unui cont sau al proprietarului unui arbore, cu locul arborelui față de limitele gratuite. */
-export function PlanPill({ plan, limit }: { plan: Plan; limit?: LimitState }) {
-  if (plan === "mereu") return <span className="pill ok">gratuit mereu</span>;
-  if (plan === "familie") return <span className="pill ok">Familie</span>;
-  if (limit === "peste") return <span className="pill warn">peste limită</span>;
-  if (limit === "aproape") return <span className="pill warn">aproape de limită</span>;
+/** Planul unui cont și ce poate face acum (sau ce ar putea, dacă plățile ar fi pornite azi). */
+export function PlanPill({ plan, access }: { plan: Plan; access?: Access | null }) {
+  if (plan === "mereu" || access?.kind === "mereu") return <span className="pill ok">gratuit mereu</span>;
+  if (access?.kind === "platit") return <span className="pill ok">plătit{access.until ? ` până la ${day(access.until.toISOString())}` : ""}</span>;
+  if (plan === "familie" && !access) return <span className="pill ok">plătit</span>;
+  if (access?.kind === "beta") return <span className="pill ok">primul an gratuit, până la {day(access.until.toISOString())}</span>;
+  if (access?.kind === "proba") return <span className="pill">{access.daysLeft === 1 ? "o zi gratuită" : `${access.daysLeft} zile gratuite`}</span>;
+  if (access?.kind === "expirat") return <span className="pill warn">doar citire</span>;
   return <span className="muted">gratuit</span>;
 }
 

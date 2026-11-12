@@ -358,6 +358,11 @@ export const es: Catalog = {
   ...esFilm,
   ...esLegal,
   ...esDatele,
+  Access: {
+    trial: "{days, plural, one {Te queda un día gratis} other {Te quedan # días gratis}}. Después, para seguir añadiendo y editando, el año cuesta {price}.",
+    ended: "<b>Tus días gratis han terminado.</b> El árbol se sigue viendo y no se pierde nada, pero para añadir o cambiar algo, el año cuesta {price}.",
+    pay: "Quiero continuar",
+  },
   NotFound: {
     title: "Esta página no existe",
     text: "Puede que el enlace esté mal o que la página se haya movido. Desde la portada encuentras todo.",
