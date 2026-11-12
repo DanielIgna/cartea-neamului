@@ -755,6 +755,19 @@ export async function decideCheck(treeId: string, key: string, choice: string): 
     if (s.op === "setParent") {
       const r = await setParent(treeId, s.child, s.role, s.parent);
       if (r.error) return r;
+      // O mamă dintr-o altă relație (fosta soție) rămâne discretă: nu apare în desene, doar în profilul copiilor ei.
+      // Așa e când celălalt părinte are deja un soț/o soție în desen, cu care are copii.
+      const other = check.kind === "parinteLipsa" ? check.parent : null;
+      const chosen = views[s.parent];
+      if (other && chosen && !chosen.discreet) {
+        const g0 = buildGraph(Object.values(views), rels);
+        const drawnSpouse = (g0.partners.get(other) ?? []).some((sp) => sp !== s.parent && views[sp] && !views[sp].discreet
+          && (g0.children.get(sp) ?? []).some((c) => (g0.parents.get(c) ?? []).includes(other)));
+        if (drawnSpouse) {
+          await db.update(person).set({ discreet: true, updatedAt: new Date() }).where(and(eq(person.id, s.parent), eq(person.treeId, treeId)));
+          notes.push({ id: s.parent, summary: "Trecută discretă: e dintr-o altă relație, apare doar în profilul copiilor ei" });
+        }
+      }
     } else if (s.op === "unknownParent") {
       const r = await otherRelation(treeId, s.child, s.role);
       if (r.error) return r;
