@@ -358,6 +358,11 @@ export const fr: Catalog = {
   ...frFilm,
   ...frLegal,
   ...frDatele,
+  Access: {
+    trial: "{days, plural, one {Il vous reste un jour gratuit} other {Il vous reste # jours gratuits}}. Ensuite, pour continuer à ajouter et à modifier, l’année coûte {price}.",
+    ended: "<b>Vos jours gratuits sont terminés.</b> L’arbre reste visible et rien n’est perdu, mais pour ajouter ou modifier quelque chose, l’année coûte {price}.",
+    pay: "Je veux continuer",
+  },
   NotFound: {
     title: "Cette page n’existe pas",
     text: "Le lien est peut-être erroné ou la page a été déplacée. Vous trouverez tout depuis la page d’accueil.",

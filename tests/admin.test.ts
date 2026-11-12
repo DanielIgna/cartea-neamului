@@ -40,11 +40,11 @@ describe("cifrele din panou", () => {
     await db.insert(auditLog).values({ entity: "eroare", entityId: "/arbore/x", action: "render", diff: { message: "boom" } });
   });
 
-  it("Business: oameni, arbori, arbori peste limita gratuită", async () => {
+  it("Business: oameni, arbori și ce ar aduce plățile pornite azi", async () => {
     const b = await businessStats(db);
     expect(b.users).toMatchObject({ total: 2, new7: 2, active7: 1 });
-    expect(b.trees).toMatchObject({ total: 2, shared: 1, overLimit: 1, maxPersons: 200 });
-    expect(b.revenue.potentialEurYear).toBe(12);
+    expect(b.trees).toMatchObject({ total: 2, shared: 1, maxPersons: 200 });
+    expect(b.revenue.potentialLeiYear).toBe(0); // cei de acum au primul an gratuit
     expect(b.content.persons).toBe(201);
     expect(b.content.living).toBe(1);
     expect(b.topTrees[0]).toMatchObject({ name: "Mare", owner: "Ana", persons: 200, members: 2 });

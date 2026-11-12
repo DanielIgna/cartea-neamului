@@ -74,20 +74,19 @@ export async function businessStats(db: Db) {
       (select max(s.updated_at) from session s where s.user_id = u.id) as last_seen
     from "user" u order by u.created_at desc limit 15`);
 
-  const overLimit = plans.counts.over;
   const state = new Map(plans.trees.map((x) => [x.id, x]));
   const paidBani = books.filter((b) => b.status === "paid" || b.status === "ready").reduce((s, b) => s + n(b.bani), 0);
   return {
     users: { total: n(u.total), new7: n(u.new7), new30: n(u.new30), verified: n(u.verified), google: n(google?.c), active1: n(act.d1), active7: n(act.d7), active30: n(act.d30) },
     signupsByWeek: fillWeeks(weeks.map((w) => ({ week: iso(w.week)!, c: n(w.c) })), 12),
-    trees: { total: n(t.total), discoverable: n(t.discoverable), shared: n(t.shared), overLimit, nearLimit: plans.counts.near, avgPersons: n(t.avg_persons), maxPersons: n(t.max_persons) },
+    trees: { total: n(t.total), discoverable: n(t.discoverable), shared: n(t.shared), avgPersons: n(t.avg_persons), maxPersons: n(t.max_persons) },
     content: Object.fromEntries(Object.entries(c).map(([k, v]) => [k, n(v)])) as Record<string, number>,
     books: books.map((b) => ({ status: b.status, count: n(b.c), lei: n(b.bani) / 100 })),
-    // „Familie” e doar o alegere din panou cât timp plățile nu sunt pornite: nimeni nu plătește încă.
-    revenue: { booksLei: paidBani / 100, potentialEurYear: plans.revenue.eurYearPossible, markedEurYear: plans.revenue.eurYearNow, subscriptionsActive: plans.revenue.paying },
+    // Cât timp plățile nu sunt pornite, cifrele arată ce s-ar întâmpla dacă ar fi pornite azi.
+    revenue: { booksLei: paidBani / 100, potentialLeiYear: plans.revenue.leiYearPossible, paidLeiYear: plans.revenue.leiYearNow, paying: plans.revenue.paying },
     plans: { settings: plans.settings, counts: plans.counts, wouldPay: plans.revenue.wouldPay },
     topTrees: topTrees.map((r) => ({ id: String(r.id), name: String(r.name), owner: (r.owner as string) ?? "—", ownerEmail: (r.owner_email as string) ?? "", ownerId: (r.owner_id as string) ?? null, persons: n(r.persons), members: n(r.members), documents: n(r.documents), discoverable: !!r.discoverable, createdAt: iso(r.created_at), lastEdit: iso(r.last_edit),
-      plan: state.get(String(r.id))?.plan ?? "gratuit", limit: state.get(String(r.id))?.state ?? "sub" })),
+      plan: state.get(String(r.id))?.plan ?? "gratuit", access: state.get(String(r.id))?.access ?? null })),
     recentUsers: recentUsers.map((r) => ({ id: String(r.id), name: String(r.name), email: String(r.email), providers: (r.providers as string) ?? "", trees: n(r.trees), createdAt: iso(r.created_at), lastSeen: iso(r.last_seen) })),
   };
 }

@@ -495,6 +495,9 @@ body:has(.story){overflow:hidden}
 .plan-form{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .plan-form select,.plan-form input{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 8px;font:inherit;font-size:14px;min-width:0}
 .plan-form input{flex:1 1 11em}
+.plan-form .plan-until{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--muted)}
+.plan-form .plan-until input{flex:0 0 auto}
+.limits-form label.check{display:block;margin:6px 0 12px;max-width:78ch}
 .plan-saved{font-size:13px}
 .limits-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px;align-items:start}
 .limits-form small{font-size:13px}
@@ -1358,3 +1361,11 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 :root[data-theme="dark"] .pf-toc a.pf-film{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:var(--gold-ink)}
 .pf-frame .avatar-empty{background:linear-gradient(160deg,#efe2cc,#d9c3a0);color:#5a4636}
 @media (max-width:640px){.pf-frame .avatar{width:112px!important;height:136px!important}}
+
+/* Banda cu zilele gratuite / „doar citire” (plățile pornite din Admin → Manager control). */
+.access-banner{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px;color:var(--muted)}
+.access-banner p{margin:0;flex:1 1 280px;max-width:90ch}
+.access-banner.ended{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.access-banner .btn{padding:6px 16px}
+@media print{.access-banner{display:none}}
+@media (max-width:600px){.access-banner{font-size:13px;line-height:1.4;padding:8px 12px;margin-bottom:12px}.access-banner .btn{padding:5px 12px;font-size:13px;min-height:0}}

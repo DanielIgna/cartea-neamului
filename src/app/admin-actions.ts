@@ -26,28 +26,35 @@ async function admin() {
   return isAdminUser(me) ? me : null;
 }
 
-/** „Manager control”: limitele planului gratuit și prețul abonamentului „Familie”. Nu se văd în site cât timp plățile nu sunt pornite. */
+const SETTING_FIELDS = ["trialDays", "priceLei", "priceEur", "invitePriceLei", "invitePriceEur", "bookLei", "bookEur", "betaDays"] as const;
+
+/** „Manager control”: zilele gratuite, prețurile și comutatorul care pornește regulile în site. */
 export async function savePlanLimits(_: AdminFormState, form: FormData): Promise<AdminFormState> {
   const me = await admin();
   if (!me) return { error: "Nu ai voie aici." };
-  const parsed = PlanSettings.safeParse({ freePersons: form.get("freePersons"), freeFiles: form.get("freeFiles"), priceEurYear: form.get("priceEurYear") });
+  const raw: Record<string, unknown> = { on: form.get("on"), startedAt: null };
+  for (const k of SETTING_FIELDS) raw[k] = form.get(k);
+  const parsed = PlanSettings.safeParse(raw);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Verifică cifrele." };
-  await savePlanSettings(db, parsed.data, me.id);
-  revalidatePath("/admin", "layout");
-  return { ok: "Am salvat limitele." };
+  const saved = await savePlanSettings(db, parsed.data, me.id);
+  revalidatePath("/", "layout");
+  return { ok: saved.on ? "Am salvat. Plățile sunt pornite în site." : "Am salvat. Plățile rămân oprite: nu e oprit nimeni." };
 }
 
-/** „Manager control”: planul unui cont (gratuit, gratuit mereu, Familie) și o notă pentru cel care ține site-ul. */
+/** „Manager control”: planul unui cont (gratuit, gratuit mereu, Familie), până când a plătit și o notă pentru cel care ține site-ul. */
 export async function saveAccountPlan(_: AdminFormState, form: FormData): Promise<AdminFormState> {
   const me = await admin();
   if (!me) return { error: "Nu ai voie aici." };
   const userId = String(form.get("userId") ?? "");
   const plan = form.get("plan");
   if (!userId || !isPlan(plan)) return { error: "Alege un plan." };
+  const until = String(form.get("paidUntil") ?? "").trim();
+  if (until && !/^\d{4}-\d{2}-\d{2}$/.test(until)) return { error: "Alege o dată." };
+  const paidUntil = until ? new Date(`${until}T23:59:59Z`) : null;
   const [u] = await db.select({ id: user.id }).from(user).where(eq(user.id, userId));
   if (!u) return { error: "Contul nu mai există." };
-  await setAccountPlan(db, userId, plan, String(form.get("note") ?? ""), me.id);
-  revalidatePath("/admin", "layout");
+  await setAccountPlan(db, userId, plan, String(form.get("note") ?? ""), me.id, new Date(), paidUntil);
+  revalidatePath("/", "layout");
   return { ok: "Salvat." };
 }
 

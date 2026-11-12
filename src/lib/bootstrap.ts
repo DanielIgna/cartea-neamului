@@ -107,6 +107,7 @@ const ADDITIVE = [
   sql`CREATE TABLE IF NOT EXISTS "app_setting" (
     "key" text PRIMARY KEY NOT NULL, "value" jsonb NOT NULL,
     "updated_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "paid_until" timestamp`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

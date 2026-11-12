@@ -7,7 +7,7 @@ import { ENV_KEYS, NEON_FREE_BYTES, envSet } from "@/lib/admin";
 import { baseWordInfo } from "@/lib/texte";
 import { changeStats } from "@/lib/admin-istoric";
 import { editLimits } from "@/lib/edit-limits";
-import { AdminNav, Stat, Status, bytes, day, eur, num } from "@/components/admin/ui";
+import { AdminNav, Stat, Status, bytes, day, eur, lei, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Cartea Neamului" };
@@ -52,12 +52,12 @@ export default async function AdminHome() {
         <Link href="/admin/control" className="zone-link">
           <div className="card">
             <h2 style={{ marginTop: 0 }}>Manager control</h2>
-            <p className="muted" style={{ marginTop: 0 }}>Cine e gratuit mereu, cine ar plăti, limitele planului gratuit. Nu se vede în site.</p>
+            <p className="muted" style={{ marginTop: 0 }}>Zilele gratuite, prețurile, pornirea plăților și cine e gratuit mereu sau a plătit.</p>
             <div className="stats">
               <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} />
-              <Stat label="Marcați „Familie”" value={num(b.revenue.subscriptionsActive)} hint="plățile nu sunt pornite" />
-              <Stat label="Peste limite" value={num(b.trees.overLimit)} hint={`${b.plans.counts.overFree} cu planul gratuit`} />
-              <Stat label="Venit posibil pe an" value={eur(b.revenue.potentialEurYear)} />
+              <Stat label="Plătit" value={num(b.revenue.paying)} hint={b.plans.settings.on ? "plățile sunt pornite" : "plățile nu sunt pornite"} />
+              <Stat label="Doar citire" value={num(b.plans.counts.expirat)} hint={b.plans.settings.on ? "zilele gratuite s-au terminat" : "dacă porneai azi"} />
+              <Stat label="Venit posibil pe an" value={lei(b.revenue.potentialLeiYear)} />
             </div>
           </div>
         </Link>

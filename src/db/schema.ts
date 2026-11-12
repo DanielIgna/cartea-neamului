@@ -228,6 +228,7 @@ export const accountPlan = pgTable("account_plan", {
   userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
   plan: text("plan").notNull(), // gratuit / mereu (gratuit pentru totdeauna) / familie (plătește); vezi src/lib/plans.ts
   note: text("note"),
+  paidUntil: timestamp("paid_until"), // până când are plătit (50 lei pe an); după, arborii lui sunt doar de citit. Vezi src/lib/plata.ts
   setBy: text("set_by").references(() => user.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

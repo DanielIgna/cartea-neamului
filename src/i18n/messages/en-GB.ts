@@ -358,6 +358,11 @@ export const enGB: Catalog = {
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,
+  Access: {
+    trial: "{days, plural, one {You have one free day left} other {You have # free days left}}. After that, to keep adding and editing, a year costs {price}.",
+    ended: "<b>Your free days are over.</b> You can still see the tree and nothing is lost, but to add or change anything, a year costs {price}.",
+    pay: "I want to continue",
+  },
   NotFound: {
     title: "This page doesn’t exist",
     text: "The link may be wrong or the page may have moved. You’ll find everything from the home page.",
