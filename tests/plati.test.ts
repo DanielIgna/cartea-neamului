@@ -35,6 +35,7 @@ describe("plata cu cardul", () => {
     expect(sent!.get("line_items[0][price_data][unit_amount]")).toBe("9900");
     expect(sent!.get("locale")).toBe("en");
     expect(sent!.get("metadata[treeId]")).toBe("t1");
+    expect(sent!.get("allow_promotion_codes")).toBe("true");
     const bad = (async () => new Response(JSON.stringify({ error: { message: "nu" } }), { status: 400 })) as unknown as typeof fetch;
     await expect(createCheckout({ kind: "an", userId: "u1", email: "a@b.ro", name: "An", amount: 1, currency: "ron", locale: "ro", successUrl: "x", cancelUrl: "y" }, bad)).rejects.toThrow("Stripe: nu");
   });
@@ -43,6 +44,10 @@ describe("plata cu cardul", () => {
     const ev = (o: object, type = "checkout.session.completed") => ({ type, data: { object: { id: "cs_1", payment_status: "paid", amount_total: 5000, currency: "ron", metadata: { kind: "an", userId: "u1" }, ...o } } });
     expect(paidSession(ev({}))).toEqual({ id: "cs_1", kind: "an", userId: "u1", treeId: null, amount: 5000, currency: "ron" });
     expect(paidSession(ev({ payment_status: "unpaid" }))).toBeNull();
+    // Cu un cod promoțional: suma e mai mică (sau zero), accesul e același.
+    expect(paidSession(ev({ amount_total: 200 }))).toMatchObject({ kind: "an", userId: "u1", amount: 200 });
+    expect(paidSession(ev({ amount_total: 0, payment_status: "no_payment_required" }))).toMatchObject({ kind: "an", amount: 0 });
+    expect(paidSession(ev({ amount_total: 200 }, "checkout.session.async_payment_succeeded"))).toMatchObject({ amount: 200 });
     expect(paidSession(ev({ metadata: { kind: "altceva", userId: "u1" } }))).toBeNull();
     expect(paidSession(ev({}, "payment_intent.created"))).toBeNull();
   });
@@ -67,6 +72,14 @@ describe("plata cu cardul", () => {
       await applyPayment(db, { ...p, id: "cs_b" }, new Date("2027-06-01T00:00:00Z"));
       [r] = await db.select().from(accountPlan);
       expect(r.paidUntil).toEqual(new Date("2028-12-31T00:00:00Z"));
+    });
+
+    it("o plată redusă cu un cod promoțional dă același an", async () => {
+      const now = new Date("2027-01-01T00:00:00Z");
+      await db.insert(user).values({ id: "u3", name: "Test", email: "test@test.ro" });
+      expect(await applyPayment(db, { id: "cs_promo", kind: "an", userId: "u3", treeId: null, amount: 200, currency: "ron" }, now)).toBe(true);
+      const r = (await db.select().from(accountPlan)).find((x) => x.userId === "u3");
+      expect(r).toMatchObject({ plan: "familie", paidUntil: new Date("2028-01-01T00:00:00Z") });
     });
 
     it("„gratuit mereu” rămâne așa și după o plată", async () => {

@@ -52,6 +52,9 @@ export async function createCheckout(o: {
     "metadata[kind]": o.kind,
     "metadata[userId]": o.userId,
     "invoice_creation[enabled]": "true",
+    // Câmpul „Cod promoțional” pe pagina Stripe: codurile se fac în Stripe (Products → Coupons), de pildă pentru plăți de
+    // probă cu sume mici, fără să se schimbe prețurile din Admin. Suma plătită nu se verifică la confirmare.
+    allow_promotion_codes: "true",
   });
   if (o.treeId) body.set("metadata[treeId]", o.treeId);
   const r = await fetcher("https://api.stripe.com/v1/checkout/sessions", {
@@ -77,12 +80,16 @@ export function verifyStripeSignature(payload: string, header: string | null, se
 
 export type PaidSession = { id: string; kind: PayKind; userId: string; treeId: string | null; amount: number; currency: string };
 
-/** Din evenimentul Stripe, plata încheiată (doar „checkout.session.completed” cu banii primiți). */
+/**
+ * Din evenimentul Stripe, plata încheiată: doar cele două evenimente, cu banii primiți („paid”) sau fără nimic de plătit
+ * („no_payment_required”, când un cod promoțional acoperă tot prețul). Suma nu se compară cu prețul, ca un cod de reducere
+ * să dea același acces; în `payment` se trece suma plătită de fapt.
+ */
 export function paidSession(event: unknown): PaidSession | null {
   const e = event as { type?: string; data?: { object?: Record<string, unknown> } };
   if (e?.type !== "checkout.session.completed" && e?.type !== "checkout.session.async_payment_succeeded") return null;
   const o = e.data?.object ?? {};
-  if (o.payment_status !== "paid") return null;
+  if (o.payment_status !== "paid" && o.payment_status !== "no_payment_required") return null;
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
   return { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
