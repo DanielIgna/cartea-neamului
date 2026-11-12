@@ -39,6 +39,9 @@ export default async function AdminControl() {
           Regula aleasă: fiecare om, și cel care pornește arborele, și fiecare rudă invitată, are {count(s.trialDays, "zile")} cu totul deschis.
           După ele vede tot, dar nu mai poate adăuga sau schimba nimic până nu plătește anul ({lei(s.priceLei)} / {eur(s.priceEur)}; rudele invitate{" "}
           {lei(s.invitePriceLei)} / {eur(s.invitePriceEur)}). Cei care aveau cont înainte de pornire au primul an gratuit ({count(s.betaDays, "zile")}). Nu se șterge nimic, iar descărcarea datelor rămâne gratuită. Pe cei apropiați îi pui „Gratuit mereu”.
+          {" "}Ca plata să nu se ocolească invitându-se unii pe alții: în zilele gratuite, un arbore pe care nu l-a plătit nimeni crește până la {count(s.trialPersons, "persoane")};
+          în zilele gratuite ai un singur arbore și poți invita rude doar să vadă; rudele se invită să scrie doar de cine are anul plătit, iar invitații în probă
+          nu mai scriu într-un arbore al cărui proprietar a rămas doar cu citirea.
           Până merg plățile cu cardul, cine plătește altfel (de pildă prin transfer) primește aici „plătit până la”.
         </p>
         <div className="stats">

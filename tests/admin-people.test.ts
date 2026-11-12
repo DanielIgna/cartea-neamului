@@ -9,7 +9,7 @@ import { exportMyData } from "@/lib/account";
 import { roleIn, roleInTree } from "@/lib/access";
 import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, accessFor, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
+  DEFAULT_SETTINGS, PlanSettings, accessFor, holdsYear, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -72,8 +72,8 @@ describe("planurile", () => {
     expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 50, leiYearPossible: 130 });
   });
   it("setările se scriu ca numere, cu mesaje în română, iar comutatorul vine din bifă", () => {
-    const form = { on: "on", trialDays: "14", priceLei: "50", priceEur: "10", invitePriceLei: "25", invitePriceEur: "5", bookLei: "99", bookEur: "20", betaDays: "365" };
-    expect(PlanSettings.safeParse(form).data).toEqual({ ...form, on: true, startedAt: null, trialDays: 14, priceLei: 50, priceEur: 10, invitePriceLei: 25, invitePriceEur: 5, bookLei: 99, bookEur: 20, betaDays: 365 });
+    const form = { on: "on", trialDays: "14", priceLei: "50", priceEur: "10", invitePriceLei: "25", invitePriceEur: "5", bookLei: "99", bookEur: "20", betaDays: "365", trialPersons: "30" };
+    expect(PlanSettings.safeParse(form).data).toEqual({ ...form, on: true, startedAt: null, trialDays: 14, priceLei: 50, priceEur: 10, invitePriceLei: 25, invitePriceEur: 5, bookLei: 99, bookEur: 20, betaDays: 365, trialPersons: 30 });
     expect(PlanSettings.safeParse({ ...form, on: null }).data?.on).toBe(false);
     expect(PlanSettings.safeParse({ ...form, trialDays: "0" }).error?.issues[0].message).toBe("Cel puțin 1 zile.");
     expect(PlanSettings.safeParse({ ...form, trialDays: "2.5" }).error?.issues[0].message).toBe("Scrie un număr întreg.");
@@ -240,5 +240,44 @@ describe("Oamenii și Manager control", () => {
     await savePlanSettings(db, DEFAULT_SETTINGS, "ana");
     expect(await planSettings(db)).toMatchObject({ on: false, startedAt: null });
     expect(await roleIn(db, T.mare, "ion")).toBe("contributor");
+  });
+});
+
+describe("plata nu se ocolește invitându-se unii pe alții", () => {
+  const s = DEFAULT_SETTINGS;
+  const proba = { kind: "proba", until: new Date(), daysLeft: 3 } as const;
+  const platit = { kind: "platit", until: null } as const;
+  const expirat = { kind: "expirat", since: new Date() } as const;
+  const beta = { kind: "beta", until: new Date() } as const;
+
+  it("în zilele gratuite, un arbore neplătit crește doar până la familia apropiată", () => {
+    expect(s.trialPersons).toBe(30);
+    expect(personRoom(proba, proba, 12, s)).toBe(18);
+    expect(personRoom(proba, expirat, 40, s)).toBe(0);
+    expect(personRoom(proba, platit, 500, s)).toBeNull();
+    expect(personRoom(proba, beta, 500, s)).toBeNull();
+    expect(personRoom(platit, proba, 500, s)).toBeNull();
+  });
+
+  it("rudele se invită să scrie doar cu anul plătit; în probă, doar să vadă", () => {
+    expect(mayInviteWriters(proba)).toBe(false);
+    expect(mayInviteWriters(platit)).toBe(true);
+    expect(mayInviteWriters({ kind: "deschis" })).toBe(true);
+    expect(holdsYear(expirat)).toBe(false);
+  });
+
+  it("invitatul în probă nu mai scrie în arborele unui proprietar rămas doar cu citirea", () => {
+    expect(writesInTree(proba, expirat, false)).toBe(false);
+    expect(writesInTree(proba, platit, false)).toBe(true);
+    expect(writesInTree(proba, proba, false)).toBe(true);
+    expect(writesInTree(proba, expirat, true)).toBe(true);
+    expect(writesInTree(platit, expirat, false)).toBe(true);
+    expect(writesInTree(expirat, platit, false)).toBe(false);
+  });
+
+  it("în zilele gratuite, un singur arbore", () => {
+    expect(mayStartTree(proba, 0)).toBe(true);
+    expect(mayStartTree(proba, 1)).toBe(false);
+    expect(mayStartTree(platit, 3)).toBe(true);
   });
 });

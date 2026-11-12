@@ -398,6 +398,7 @@ export const huArbore: ArboreCatalog = {
     writeMessage: "Írj egy üzenetet.",
     signIn: "Jelentkezz be.",
     noAddRight: "Nincs jogod személyeket hozzáadni ehhez a családfához.",
+    trialFull: "Az ingyenes napokban egy fában legfeljebb {cap} személy lehet, ez elég a közeli családnak. Többhöz neked vagy a fa indítójának kifizetett év kell.",
     noEditRight: "Nincs jogod módosítani ezt a családfát.",
     noWriteRight: "Nincs jogod írni ebbe a családfába.",
     noLinkRight: "Nincs jogod módosítani a kapcsolatokat ebben a családfában.",

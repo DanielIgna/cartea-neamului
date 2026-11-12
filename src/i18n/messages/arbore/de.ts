@@ -395,6 +395,7 @@ export const deArbore: ArboreCatalog = {
     writeMessage: "Schreib eine Nachricht.",
     signIn: "Melde dich an.",
     noAddRight: "Du darfst diesem Stammbaum keine Personen hinzufügen.",
+    trialFull: "In den kostenlosen Tagen kann ein Stammbaum bis zu {cap} Personen haben, genug für die engere Familie. Um mehr hinzuzufügen, brauchst du oder wer den Stammbaum begonnen hat ein bezahltes Jahr.",
     noEditRight: "Du darfst diesen Stammbaum nicht ändern.",
     noWriteRight: "Du darfst in diesem Stammbaum nicht schreiben.",
     noLinkRight: "Du darfst die Verbindungen in diesem Stammbaum nicht ändern.",

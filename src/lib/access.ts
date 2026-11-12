@@ -6,7 +6,7 @@ import type { Db } from "@/db";
 import { treeMember } from "@/db/schema";
 import { auth } from "./auth";
 import { ensureSchema } from "./bootstrap";
-import { canWriteNow } from "./plata";
+import { canWriteInTree } from "./plata";
 
 export type Role = "owner" | "editor" | "contributor" | "viewer";
 const RANK: Record<Role, number> = { viewer: 0, contributor: 1, editor: 2, owner: 3 };
@@ -26,12 +26,13 @@ export async function requireUser(next = "/") {
 
 /**
  * Rolul omului în arbore. Când plățile sunt pornite și zilele lui gratuite (sau anul plătit) s-au terminat, e vizitator
- * oriunde, până plătește: vede tot, nu mai schimbă nimic. `roleInTree` dă rolul scris, fără plată.
+ * oriunde, până plătește: vede tot, nu mai schimbă nimic. Tot vizitator e și ruda invitată, în zilele ei gratuite, într-un arbore
+ * al cărui proprietar a rămas doar cu citirea. `roleInTree` dă rolul scris, fără plată.
  */
 export async function roleIn(db: Db, treeId: string, userId: string): Promise<Role | null> {
   const role = await roleInTree(db, treeId, userId);
   if (role === null || role === "viewer") return role;
-  return (await canWriteNow(db, userId)) ? role : "viewer";
+  return (await canWriteInTree(db, treeId, userId)) ? role : "viewer";
 }
 
 export async function roleInTree(db: Db, treeId: string, userId: string): Promise<Role | null> {

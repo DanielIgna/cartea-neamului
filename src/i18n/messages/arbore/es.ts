@@ -395,6 +395,7 @@ export const esArbore: ArboreCatalog = {
     writeMessage: "Escribe un mensaje.",
     signIn: "Inicia sesión.",
     noAddRight: "No tienes permiso para añadir personas a este árbol.",
+    trialFull: "Durante los días gratuitos un árbol puede tener hasta {cap} personas, suficiente para la familia cercana. Para añadir más, tú o quien empezó el árbol necesitáis el año pagado.",
     noEditRight: "No tienes permiso para modificar este árbol.",
     noWriteRight: "No tienes permiso para escribir en este árbol.",
     noLinkRight: "No tienes permiso para cambiar los vínculos de este árbol.",

@@ -49,6 +49,18 @@ describe("invitații", () => {
     expect(await acceptInvitation(db, token, "ion", new Date("2026-01-16T00:00:00Z"))).toEqual({ ok: false, reason: "expired" });
   });
 
+  it("un link cu rol mai mare urcă rolul celui care era deja în arbore, unul mai mic nu-l coboară", async () => {
+    const roleOf = async (u: string) => (await db.select().from(treeMember).where(eq(treeMember.userId, u)))[0].role;
+    await db.insert(user).values({ id: "vlad", name: "vlad", email: "vlad@ex.ro" });
+    await db.insert(treeMember).values({ treeId, userId: "vlad", role: "viewer" });
+    const up = await createInvitation(db, { treeId, createdBy: "andrei", role: "contributor" });
+    expect((await acceptInvitation(db, up.token, "vlad")).ok).toBe(true);
+    expect(await roleOf("vlad")).toBe("contributor");
+    const down = await createInvitation(db, { treeId, createdBy: "andrei", role: "viewer" });
+    expect((await acceptInvitation(db, down.token, "vlad")).ok).toBe(true);
+    expect(await roleOf("vlad")).toBe("contributor");
+  });
+
   it("respinge tokenuri inventate", async () => {
     expect(await acceptInvitation(db, "token-inventat-de-cineva-1234", "ion")).toEqual({ ok: false, reason: "invalid" });
   });

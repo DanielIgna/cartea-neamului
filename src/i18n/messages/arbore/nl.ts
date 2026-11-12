@@ -395,6 +395,7 @@ export const nlArbore: ArboreCatalog = {
     writeMessage: "Schrijf een bericht.",
     signIn: "Log in.",
     noAddRight: "Je mag geen personen aan deze stamboom toevoegen.",
+    trialFull: "Tijdens de gratis dagen kan een stamboom tot {cap} personen bevatten, genoeg voor de naaste familie. Om meer toe te voegen moet jij of wie de stamboom begon een betaald jaar hebben.",
     noEditRight: "Je mag deze stamboom niet wijzigen.",
     noWriteRight: "Je mag niet schrijven in deze stamboom.",
     noLinkRight: "Je mag de koppelingen in deze stamboom niet wijzigen.",

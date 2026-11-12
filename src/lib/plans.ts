@@ -35,12 +35,16 @@ export const PlanSettings = z.object({
   bookLei: num(0, 5000, ""),
   bookEur: num(0, 1000, ""),
   betaDays: num(0, 3650, "zile").int("Scrie un număr întreg."),
+  trialPersons: num(5, 100000, "persoane").int("Scrie un număr întreg."),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
   on: false, startedAt: null, trialDays: 7, priceLei: 50, priceEur: 10, invitePriceLei: 50, invitePriceEur: 10, bookLei: 99, bookEur: 20,
   // Cei care au testat site-ul înainte de pornirea plăților au primul an gratuit (alegerea lui Daniel, 2026-11-12).
   betaDays: 365,
+  // Cât încape familia apropiată (părinți, bunici, soț/soție, copii, frați, nepoți): în zilele gratuite, un arbore al cuiva
+  // care n-a plătit nu crește peste atât (alegerea lui Daniel, 2026-11-13), ca să nu se facă tot neamul fără plată.
+  trialPersons: 30,
 };
 const KEY = "planuri";
 
@@ -116,6 +120,36 @@ export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Da
   return { kind: "expirat", since: a.paidUntil && a.paidUntil > trialEnd ? a.paidUntil : trialEnd };
 }
 export const mayWrite = (a: Access) => a.kind !== "expirat";
+
+/**
+ * Reguli ca plata să nu se poată ocoli invitându-se unul pe altul (Daniel, 2026-11-13). Lucrul împreună rămâne deschis,
+ * dar arborele crește peste familia apropiată doar dacă cineva l-a plătit:
+ * - „ține arborele”: proprietarul are anul (plătit, primul an din beta, gratuit mereu sau plățile oprite);
+ * - în zilele gratuite, într-un arbore pe care nu-l ține nimeni, se pot trece cel mult `trialPersons` persoane;
+ * - în zilele gratuite ai un singur arbore al tău;
+ * - rudele se invită să scrie doar de cine are anul; în zilele gratuite le poți invita doar să vadă;
+ * - o rudă invitată în zilele ei gratuite nu mai scrie într-un arbore al cărui proprietar a rămas doar cu citirea.
+ */
+export const holdsYear = (a: Access) => a.kind === "deschis" || a.kind === "mereu" || a.kind === "platit" || a.kind === "beta";
+
+/** Câte persoane mai încap: `null` = fără limită. */
+export function personRoom(me: Access, owner: Access, count: number, s: PlanSettings): number | null {
+  if (me.kind !== "proba" || holdsYear(owner)) return null;
+  return Math.max(0, s.trialPersons - count);
+}
+
+/** Poate scrie în arbore omul ăsta, ținând seama de proprietar? (Pe al lui arbore, dacă e în probă, da.) */
+export function writesInTree(me: Access, owner: Access | null, isOwner: boolean) {
+  if (me.kind === "expirat") return false;
+  if (me.kind !== "proba" || isOwner || !owner) return true;
+  return owner.kind !== "expirat";
+}
+
+/** Poate invita rude cu drept de scriere (nu doar să vadă)? */
+export const mayInviteWriters = (me: Access) => holdsYear(me);
+
+/** Poate porni încă un arbore? În zilele gratuite, doar unul. */
+export const mayStartTree = (me: Access, ownedTrees: number) => me.kind !== "proba" || ownedTrees < 1;
 
 /** Prețul anului pentru un om: cel care are un arbore al lui plătește prețul întreg, ruda invitată prețul pentru invitați. */
 export const yearPrice = (ownsTree: boolean, s: PlanSettings) =>
