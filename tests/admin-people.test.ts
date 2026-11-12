@@ -9,7 +9,7 @@ import { exportMyData } from "@/lib/account";
 import { roleIn, roleInTree } from "@/lib/access";
 import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, accessFor, holdsYear, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
+  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, accessFor, holdsYear, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -279,5 +279,16 @@ describe("plata nu se ocolește invitându-se unii pe alții", () => {
     expect(mayStartTree(proba, 0)).toBe(true);
     expect(mayStartTree(proba, 1)).toBe(false);
     expect(mayStartTree(platit, 3)).toBe(true);
+  });
+});
+
+describe("pornirea vânzării, o singură dată", () => {
+  it("pornește plățile la prima rulare și nu le repornește după o oprire din Admin", async () => {
+    const d = createDb(); await runMigrations(d);
+    expect(await startSalesOnce(d, new Date("2026-11-13T00:00:00Z"))).toBe("pornit");
+    expect(await planSettings(d)).toMatchObject({ on: true, startedAt: "2026-11-13T00:00:00.000Z", priceLei: 50, trialDays: 7 });
+    await savePlanSettings(d, { ...DEFAULT_SETTINGS, on: false }, null as unknown as string);
+    expect(await startSalesOnce(d)).toBe("deja");
+    expect((await planSettings(d)).on).toBe(false);
   });
 });
