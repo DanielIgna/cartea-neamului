@@ -117,6 +117,20 @@ export type KinTerm =
 /** `label` e numele în română; în celelalte limbi se scrie din `term` și `sex` cu kinLabel (src/lib/kin-words.ts). */
 export type Kinship = { label: string; term: KinTerm; sex: Sex; degree: number | null; up: number; down: number; ancestor?: string };
 
+/**
+ * Frați doar după un părinte: sexul părintelui comun („după tată” = M), sau null dacă sunt frați buni ori nu se știe.
+ * Au un singur părinte comun, iar fiecare are trecut și un alt părinte (de celălalt sex), diferit de al celuilalt.
+ * Un „Tată necunoscut” rămas în plus lângă tatăl adevărat nu strică socoteala.
+ */
+export function halfBy(g: Graph, a: string, b: string): Sex | null {
+  const mine = g.parents.get(a) ?? [], theirs = g.parents.get(b) ?? [];
+  const shared = mine.filter((x) => theirs.includes(x));
+  if (shared.length !== 1) return null;
+  const sx = g.sex.get(shared[0]) ?? "U";
+  const others = (xs: string[]) => xs.filter((x) => x !== shared[0] && (sx === "U" || g.sex.get(x) !== sx));
+  return others(mine).length && others(theirs).length ? sx : null;
+}
+
 /** Cum îi este `other` lui `ego`: „bunic”, „văr primar”, „soție”… și gradul de rudenie. */
 export function kinship(g: Graph, ego: string, other: string): Kinship | null {
   return relate(g, ego, other, true);
@@ -138,9 +152,8 @@ function relate(g: Graph, ego: string, other: string, affinity: boolean): Kinshi
     const term: KinTerm = { t: "blood", up: best.up, down: best.down };
     // Frați doar după un părinte (din altă căsătorie): „frate după tată”, „soră după mamă”.
     if (best.up === 1 && best.down === 1) {
-      const mine = g.parents.get(ego) ?? [], theirs = g.parents.get(other) ?? [];
-      const shared = mine.filter((x) => theirs.includes(x));
-      if (shared.length === 1 && mine.length === 2 && theirs.length === 2) term.half = g.sex.get(shared[0]) ?? "U";
+      const h = halfBy(g, ego, other);
+      if (h) term.half = h;
     }
     return made(term, sex, { degree: best.up + best.down, ...best });
   }

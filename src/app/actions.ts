@@ -26,6 +26,8 @@ import { closeKinIds, mayEdit } from "@/lib/relatives";
 import { editLimits, limitFor, type EditOp } from "@/lib/edit-limits";
 import { fieldChanges, logChange, personName, snapshotPerson, type LogAction, type LogDiff } from "@/lib/edit-log";
 import type { Role } from "@/lib/access";
+import { findChecks, stepsFor, duplicateKey } from "@/lib/verificari";
+import { loadDecisions, saveDecision } from "@/lib/verificari-db";
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
 function placesChanged(treeId: string) {
@@ -722,5 +724,73 @@ export async function replacePlaceholder(treeId: string, placeholderId: string, 
   await logged(treeId, me.id, personId, "legaturi", { name: personName(real), summary: `A luat locul lui „${personName(ph)}” la copiii acestuia` });
   revalidatePath(`/arbore/${treeId}`);
   placesChanged(treeId);
+  return { ok: true };
+}
+
+/* ---------- „De verificat în arbore”: un răspuns bifat rămâne adevărul arborelui și se aplică singur ---------- */
+
+/**
+ * Răspunsul la o întrebare din „De verificat”: recalculăm întrebările din baza de date (nu credem ce vine din pagină),
+ * aplicăm schimbarea aleasă și ținem minte răspunsul, ca să nu se mai întrebe. Doar proprietarul și editorii.
+ */
+export async function decideCheck(treeId: string, key: string, choice: string): Promise<{ ok?: boolean; error?: string }> {
+  const te = await getT("TreeErrors");
+  if (!z.object({ treeId: z.string().uuid(), key: z.string().min(3).max(200), choice: z.string().min(1).max(80) }).safeParse({ treeId, key, choice }).success) return { error: te("badData") };
+  const me = await currentUser();
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "editor")) return { error: te("mergeEditors") };
+  const lim = await limited(treeId, me.id, role, "edit");
+  if (lim) return { error: lim };
+  const rows = await db.select().from(person).where(eq(person.treeId, treeId));
+  const rels = await db.select({ type: relationship.type, a: relationship.personA, b: relationship.personB }).from(relationship).where(eq(relationship.treeId, treeId));
+  const views = Object.fromEntries(rows.map((p) => [p.id, toView(p, [], null)]));
+  const decided = await loadDecisions(db, treeId);
+  const check = findChecks(buildGraph(Object.values(views), rels), views, decided).find((c) => c.key === key);
+  if (!check) return { error: te("checkGone") };
+  const steps = stepsFor(check, choice);
+  if (!steps) return { error: te("badData") };
+  const name = (id: string) => (views[id] ? personName(views[id]) : "?");
+  const notes: { id: string; summary: string }[] = [];
+  for (const s of steps) {
+    if (s.op === "setParent") {
+      const r = await setParent(treeId, s.child, s.role, s.parent);
+      if (r.error) return r;
+    } else if (s.op === "unknownParent") {
+      const r = await otherRelation(treeId, s.child, s.role);
+      if (r.error) return r;
+    } else if (s.op === "birthSurname") {
+      await db.update(person).set({ birthSurname: s.value, updatedAt: new Date() }).where(and(eq(person.id, s.who), eq(person.treeId, treeId)));
+      notes.push({ id: s.who, summary: `Numele de fată confirmat din „De verificat”: ${s.value}` });
+    } else if (s.op === "moveSpouse") {
+      await db.transaction(async (tx) => {
+        await tx.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "partnership"),
+          or(and(eq(relationship.personA, s.from), eq(relationship.personB, s.spouse)), and(eq(relationship.personA, s.spouse), eq(relationship.personB, s.from)))));
+        await linkPartners(tx, treeId, s.to, s.spouse);
+      });
+      notes.push({ id: s.spouse, summary: `Confirmat din „De verificat”: e soția/soțul lui ${name(s.to)}${views[s.to]?.birthYear ? ` (n. ${views[s.to].birthYear})` : ""}, nu a lui ${name(s.from)}${views[s.from]?.birthYear ? ` (n. ${views[s.from].birthYear})` : ""}` });
+    } else if (s.op === "moveChild") {
+      await db.transaction(async (tx) => {
+        await tx.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personA, s.from), eq(relationship.personB, s.child)));
+        await tx.insert(relationship).values({ treeId, type: "parent_child", personA: s.to, personB: s.child, subtype: "biologic" }).onConflictDoNothing();
+      });
+      notes.push({ id: s.child, summary: `Confirmat din „De verificat”: copilul lui ${name(s.to)}, nu al lui ${name(s.from)}` });
+    }
+  }
+  for (const n of notes) await logged(treeId, me.id, n.id, "legaturi", { name: name(n.id), summary: n.summary });
+  await saveDecision(db, treeId, key, choice, me.id);
+  revalidatePath(`/arbore/${treeId}`);
+  if (steps.length) placesChanged(treeId);
+  return { ok: true };
+}
+
+/** „Nu sunt aceeași persoană” la două fișe care seamănă: rămâne ținut minte pentru toți, nu doar în acest browser. */
+export async function markNotSame(treeId: string, a: string, b: string): Promise<{ ok?: boolean; error?: string }> {
+  const te = await getT("TreeErrors");
+  if (!z.object({ treeId: z.string().uuid(), a: z.string().uuid(), b: z.string().uuid() }).safeParse({ treeId, a, b }).success || a === b) return { error: te("badData") };
+  const me = await currentUser();
+  const role = me ? await roleIn(db, treeId, me.id) : null;
+  if (!me || !can(role, "editor")) return { error: te("mergeEditors") };
+  await saveDecision(db, treeId, duplicateKey(a, b), "diferite", me.id);
+  revalidatePath(`/arbore/${treeId}`);
   return { ok: true };
 }

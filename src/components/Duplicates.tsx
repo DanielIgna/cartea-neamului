@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslations } from "use-intl";
-import { mergePeople } from "@/app/actions";
+import { mergePeople, markNotSame } from "@/app/actions";
 import type { PersonView } from "@/lib/tree-data";
 import type { Duplicate } from "@/lib/family";
 
@@ -27,7 +27,9 @@ export default function Duplicates({ treeId, pairs, people, kids, onDone, inline
   const notSame = (d: Duplicate) => {
     const next = [...dismissed, pairKey(d)];
     setDismissed(next);
-    try { localStorage.setItem(KEY(treeId), JSON.stringify(next)); } catch { /* fără memorie locală: apare din nou data viitoare */ }
+    try { localStorage.setItem(KEY(treeId), JSON.stringify(next)); } catch { /* fără memorie locală */ }
+    // Răspunsul se ține și pe server: nu mai apare pentru nimeni din arbore, pe niciun telefon sau calculator.
+    start(async () => { const r = await markNotSame(treeId, d.keep, d.drop); if (r.error) setErr(r.error); });
   };
   const body = (
     <>
