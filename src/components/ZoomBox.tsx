@@ -64,9 +64,11 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull, star
     const whole = Math.min((el.clientWidth - 4) / n.w, (h - 4) / n.h);
     // Pe telefon, pe tot ecranul, „tot desenul” ar face numele prea mici: pornim de la o mărime la care se citesc
     // și așezăm mijlocul desenului pe ecran; de acolo te miști cu un deget. Butonul „Tot” arată tot desenul oricum.
-    flushSync(() => setZoom(clamp(auto && full && touchy() ? Math.max(whole, READABLE) : whole)));
+    // La fel la desenele care cer o mărime de pornire (urmașii unui neam mare): pe tot ecranul nu se micșorează sub ea.
+    const floor = auto && full ? (startZoom ? Math.min(startZoom, 0.9) : touchy() ? READABLE : 0) : 0;
+    flushSync(() => setZoom(clamp(Math.max(whole, floor))));
     el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
-    el.scrollTop = auto && full && touchy() ? Math.max(0, (el.scrollHeight - el.clientHeight) / 2) : 0;
+    el.scrollTop = floor > whole ? Math.max(0, (el.scrollHeight - el.clientHeight) / 2) : 0;
   };
   const fns = useRef({ zoomTo, current, fit });
   fns.current = { zoomTo, current, fit };

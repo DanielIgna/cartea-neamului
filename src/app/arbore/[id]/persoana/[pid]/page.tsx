@@ -5,7 +5,7 @@ import { db } from "@/db";
 import { person } from "@/db/schema";
 import { loadTreeView, where } from "@/lib/tree-data";
 import { requireUser, roleIn, can } from "@/lib/access";
-import { buildGraph, family, kinship } from "@/lib/kinship";
+import { buildGraph, family, kinship, halfBy } from "@/lib/kinship";
 import { canMessage } from "@/lib/chat";
 import { storageConfigured } from "@/lib/storage";
 import { lifeDates, years } from "@/lib/person-text";
@@ -176,7 +176,8 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         data={{ father: cf.father, mother: cf.mother, paternal: cf.paternal, maternal: cf.maternal, partners: shownPartners, siblings: cf.siblings,
           children: cf.children, nephews: cf.nephews, grandchildren: cf.grandchildren }}
         editable={[...relIds].filter((x) => fixable(data.people[x]))} canAdd={can(role, "contributor") && !addLimit} lockedNote={lockedNote}
-        share={share} lookalikes={lookalikes} partners={partnersOf} />
+        share={share} lookalikes={lookalikes} partners={partnersOf}
+        half={Object.fromEntries(cf.siblings.map((x) => [x, halfBy(g, pid, x)]).filter(([, h]) => h))} />
       {(rl.carers.length > 0 || rl.raised.length > 0) && (
         <div className="card">
           {group(tp("raisedBy", { sex: p.sex }), rl.carers)}

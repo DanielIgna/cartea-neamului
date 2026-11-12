@@ -3,6 +3,18 @@ import type { Db } from "@/db";
 import { person, relationship, tree } from "@/db/schema";
 import { parseGedcom, writeGedcom, type GedcomData, type GFamily } from "./gedcom";
 import { parseFuzzyDate } from "./dates";
+import { isPlaceholder } from "./family";
+
+/**
+ * Cine e HUSB și cine e WIFE într-o familie GEDCOM. Mama singură (copil fără tată trecut) stă la WIFE, nu la HUSB:
+ * altfel celelalte programe de genealogie o citesc drept tată. Cu doi părinți, femeia e WIFE; doi de același sex rămân în ordine.
+ */
+export function familyRoles(a: string | undefined, b: string | undefined, sex: (id: string) => string | undefined): [string | undefined, string | undefined] {
+  const one = a ?? b, other = a ? b : undefined;
+  if (!one) return [undefined, undefined];
+  if (!other) return sex(one) === "F" ? [undefined, one] : [one, undefined];
+  return sex(one) === "F" && sex(other) !== "F" ? [other, one] : [one, other];
+}
 
 const LIVING_IF_BORN_AFTER = new Date().getFullYear() - 100;
 
@@ -70,7 +82,7 @@ export async function exportGedcom(db: Db, treeId: string, opts: { includeLiving
   // O familie = un set de părinți (și/sau un parteneriat)
   const fams = new Map<string, GFamily>();
   const famFor = (a?: string, b?: string) => {
-    const [x, y] = [a, b].sort((p, q) => (sexOf.get(p ?? "") === "F" ? 1 : 0) - (sexOf.get(q ?? "") === "F" ? 1 : 0));
+    const [x, y] = familyRoles(a, b, (id) => sexOf.get(id));
     const key = `${x ?? ""}|${y ?? ""}`;
     if (!fams.has(key)) fams.set(key, { xref: `@F${fams.size + 1}@`, husb: x && xref.get(x), wife: y && xref.get(y), children: [] });
     return fams.get(key)!;
@@ -81,7 +93,15 @@ export async function exportGedcom(db: Db, treeId: string, opts: { includeLiving
   }
   const parentsOf = new Map<string, string[]>();
   for (const r of rels.filter((r) => r.type === "parent_child")) parentsOf.set(r.personB, [...(parentsOf.get(r.personB) ?? []), r.personA]);
-  for (const [childId, ps] of parentsOf) famFor(ps[0], ps[1]).children.push(xref.get(childId)!);
+  // Cu trei părinți trecuți (de pildă un „Tată necunoscut” rămas lângă tatăl adevărat), familia e a tatălui și a mamei adevărați.
+  const nameOf = new Map(people.map((p) => [p.id, p.givenName]));
+  const pick = (ps: string[], sx: string) => ps.find((p) => sexOf.get(p) === sx && !isPlaceholder(nameOf.get(p) ?? "")) ?? ps.find((p) => sexOf.get(p) === sx);
+  for (const [childId, ps] of parentsOf) {
+    const dad = pick(ps, "M"), mom = pick(ps, "F");
+    const rest = ps.filter((p) => p !== dad && p !== mom);
+    const [a, b] = dad || mom ? [dad ?? rest[0], mom ?? (dad ? rest[0] : undefined)] : [rest[0], rest[1]];
+    famFor(a, b).children.push(xref.get(childId)!);
+  }
   data.families = [...fams.values()];
   return writeGedcom(data, { source: t?.name });
 }

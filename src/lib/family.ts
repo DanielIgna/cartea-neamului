@@ -103,6 +103,16 @@ function near(g: Graph, id: string) {
   return out;
 }
 
+/** Una e părintele cuiva, cealaltă e soțul/soția aceluiași om (sau ale copiilor lor): generații diferite, nu dubluri. */
+export function inLaws(g: Graph, a: string, b: string) {
+  const kids = (x: string) => new Set(g.children.get(x) ?? []);
+  const spouses = (x: string) => new Set(g.partners.get(x) ?? []);
+  const ka = kids(a), kb = kids(b), sa = spouses(a), sb = spouses(b);
+  for (const x of ka) if (sb.has(x)) return true;
+  for (const x of kb) if (sa.has(x)) return true;
+  return false;
+}
+
 /**
  * Perechi de fișe care par aceeași persoană trecută de două ori (de pildă bunica trecută o dată ca mama a 8 copii și încă o dată ca mama altor 3):
  * arată la fel și au o rudă apropiată comună (`via`: același soț, aceiași părinți), fără să fie ele însele părinte–copil sau soți.
@@ -123,6 +133,9 @@ export function likelyDuplicates(g: Graph, people: Record<string, Lookalike>): D
       const na = near(g, a.id), nb = near(g, b.id);
       // Bunicul și nepotul cu același nume (des întâlnit) nu sunt dubluri: unul e strămoșul celuilalt.
       if (na.has(b.id) || nb.has(a.id) || isAncestor(g, a.id, b.id) || isAncestor(g, b.id, a.id)) continue;
+      // Soacra și nora cu același nume (mama lui Mihai și soția lui Mihai, amândouă „Ana Todea”) nu sunt aceeași persoană:
+      // una e părintele omului comun, cealaltă îi e soție. La fel socrul și ginerele.
+      if (inLaws(g, a.id, b.id)) continue;
       const via = [...na].find((x) => nb.has(x));
       if (via) out.push(links(b.id) > links(a.id) ? { keep: b.id, drop: a.id, via } : { keep: a.id, drop: b.id, via });
       else {

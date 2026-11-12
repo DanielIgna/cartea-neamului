@@ -134,8 +134,10 @@ export function ClassicTree({ slots, selected, onSelect, onCenter, generations =
  * Descendenții persoanei din centru, de sus în jos: fiecare cu soții desenați alături (în ordinea căsătoriilor) și copiii dedesubt.
  * Copiii unei căsătorii coboară din linia dintre cei doi soți; copiii dintr-o altă relație (cu o persoană discretă) coboară, discret, doar din părinte.
  */
-export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter }: {
+export function DescendantsChart({ root, people, selectedId, onSelectPerson, onCenter, focusId }: {
   root: DescNode; people: Record<string, PersonView>; selectedId: string | null; onSelectPerson: (id: string) => void; onCenter: (id: string) => void;
+  /** Persoana adusă la vedere când se deschide desenul (de obicei cea din centru). */
+  focusId?: string;
 }) {
   const t = useTranslations("Charts"), locale = useLocale();
   const bw = 150, bh = 40, gapX = 16, rowH = 96, partnerW = 150;
@@ -177,7 +179,7 @@ export function DescendantsChart({ root, people, selectedId, onSelectPerson, onC
           <g key={`${b.id}${b.x}`} className={`sector${selectedId === b.id ? " sel" : ""}`} tabIndex={0} role="button" aria-label={p.name}
             onClick={() => onSelectPerson(b.id)} onDoubleClick={() => onCenter(b.id)} onKeyDown={keyAct(() => onSelectPerson(b.id))}>
             {b.partnerOf && <text x={b.x - 3} y={b.y + bh / 2 + 4} textAnchor="end" fill="var(--muted)" fontSize={12}>⚭{b.nth ?? ""}</text>}
-            <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6}
+            <rect x={b.x} y={b.y} width={b.partnerOf ? partnerW : bw} height={bh} rx={6} data-focus={b.id === focusId && !b.partnerOf ? "1" : undefined}
               fill={isRoot ? "var(--accent-soft)" : b.partnerOf ? "var(--surface)" : "var(--desc)"} stroke={isRoot ? "var(--accent)" : "var(--line)"} strokeDasharray={b.partnerOf ? "4 3" : undefined} />
             <text x={b.x + 9} y={b.y + 17} fill="var(--ink)" fontSize={12.5} fontWeight={700}>{clip(p.name, 20)}</text>
             <text x={b.x + 9} y={b.y + 32} fill="var(--muted)" fontSize={11}>{lifeDates(p, locale)}</text>

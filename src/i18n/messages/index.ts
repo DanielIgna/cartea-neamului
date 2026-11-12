@@ -42,7 +42,7 @@ export const CLIENT_NAMESPACES = [
  * care le cer, cu <PageIntl ns={[…]}> (src/i18n/PageIntl.tsx), nu pe fiecare pagină.
  */
 export const PAGE_NAMESPACES = [
-  "Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "PersonForm", "Media", "Relations", "Chat", "Map", "Nearby",
+  "Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations", "Chat", "Map", "Nearby",
   "Lada", "MemoryForm", "Voice", "Story", "Grand", "Auto", "Relatives", "BookUi", "Journey", "Church", "OldHouse", "MyData", "Film", "Contact",
 ] as const satisfies readonly (keyof Messages)[];
 export type PageNamespace = (typeof PAGE_NAMESPACES)[number];

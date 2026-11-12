@@ -11,7 +11,7 @@ import { twinForest, type Seed } from "@/lib/tree360";
 import { where, type PersonView } from "@/lib/tree-data";
 import { placeKey } from "@/lib/place-key";
 import type { TreeLive } from "@/lib/realtime";
-import { buildGraph, family, kinship, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, CLOSE_KIN_DEGREE, type Graph, type Kinship, type Rel } from "@/lib/kinship";
+import { buildGraph, family, kinship, halfBy, relativesByDegree, oldestAncestor, ancestorsOf, unionsOf, CLOSE_KIN_DEGREE, type Graph, type Kinship, type Rel } from "@/lib/kinship";
 import InvitePanel from "./InvitePanel";
 import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
@@ -20,6 +20,8 @@ import { Album } from "./Album";
 import { Avatar } from "./Avatar";
 import { descendants, childrenByUnion, likelyDuplicates, sameLooking, normName, isPlaceholder, isAncestor, parentsFromSiblings, type Duplicate } from "@/lib/family";
 import Duplicates, { MergeWith } from "./Duplicates";
+import Checks from "./Checks";
+import { findChecks, duplicateKey, type Check, type Decisions } from "@/lib/verificari";
 import { setDiscreet, setParent } from "@/app/actions";
 import ParentChange from "./ParentChange";
 import DeletePerson from "./DeletePerson";
@@ -39,6 +41,8 @@ type Live = TreeLive & { url: string; userId: string };
 type Props = {
   treeId: string; treeName: string; slots: Record<number, string>; people: Record<string, PersonView>; rels: Rel[]; raised: Raised[]; centerId: string; generations: number;
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
+  /** Răspunsurile date în „De verificat” (și „nu sunt aceeași persoană”): adevărul arborelui, ținut pentru toți. */
+  decisions?: Decisions;
 };
 type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
@@ -198,7 +202,14 @@ export default function TreeScreen(props: Props) {
     (["father", "mother"] as const).find((who) => { const x = lineOf(who); return !!x && (id === x || isAncestor(graph, id, x)); }) ?? null;
   const line = shownSide ?? "both";
   // Fișe care par aceeași persoană trecută de două ori (doar proprietarul și editorii le pot uni).
-  const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people) : []), [graph, people, props.isEditor]);
+  const decisions = props.decisions ?? {};
+  const pairs = useMemo(() => (props.isEditor ? likelyDuplicates(graph, people).filter((d) => !decisions[duplicateKey(d.keep, d.drop)]) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [graph, people, props.isEditor, props.decisions]);
+  const checks = useMemo(() => (props.isEditor ? findChecks(graph, people, decisions) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [graph, people, props.isEditor, props.decisions]);
+  const checked = (msg: string) => { setNotice(msg); router.refresh(); };
   // Unde se rupe o spiță: părintele fără părinți (spița se oprește la el), ori fără tată când tatăl lui pare să fie deja în arbore.
   const cut = useMemo(() => {
     const discreetOf = (id: string) => !!people[id]?.discreet;
@@ -315,7 +326,7 @@ export default function TreeScreen(props: Props) {
           </div>
           {view === "360" ? (
             <Tree360 seeds={seeds360.seeds} links={seeds360.links} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
-          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}|${allBranches}`} full={full} onFull={setFull}>
+          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}|${allBranches}`} full={full} onFull={setFull} startZoom={view === "desc" ? 1 : undefined}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} side={shownSide} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
             {view === "classic" && <ClassicTree {...chartProps} side={shownSide} />}
@@ -324,7 +335,7 @@ export default function TreeScreen(props: Props) {
               : <LineageTree {...lineageProps} allBranches={allBranches} />)}
             {view === "hour" && <Hourglass slots={slots} generations={generations} down={mine} people={people} selectedId={selectedId}
               onSelectPerson={(id) => setSel({ id })} onSelectSlot={(n) => setSel({ n })} onCenter={center} side={shownSide} />}
-            {view === "desc" && <DescendantsChart root={lineage} people={people} selectedId={selectedId} onSelectPerson={(id) => setSel({ id })} onCenter={center} />}
+            {view === "desc" && <DescendantsChart root={lineage} people={people} selectedId={selectedId} onSelectPerson={(id) => setSel({ id })} onCenter={center} focusId={centerId} />}
           </ZoomBox>}
           {full && selectedId && people[selectedId] && (
             <div className="full-sel">
@@ -418,6 +429,7 @@ export default function TreeScreen(props: Props) {
           </div>
         </div>
         {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}
+        {checks.length > 0 && <Checks treeId={treeId} checks={checks} people={people} onDone={checked} />}
         {pairs.length > 0 && <Duplicates treeId={treeId} pairs={pairs} people={people} kids={kidsCount} onDone={merged} />}
         {ego && <KinByDegree graph={graph} people={people} ego={ego} onSelect={(id) => setSel({ id })} />}
         {canInvite && (
@@ -429,7 +441,7 @@ export default function TreeScreen(props: Props) {
       </div>
       <aside className="card panel" aria-live="polite">
         {selectedId && people[selectedId]
-          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} origin={originOf(selectedId)} originsLoading={origins === null} graph={graph} ego={ego} pairs={pairs} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
+          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} origin={originOf(selectedId)} originsLoading={origins === null} graph={graph} ego={ego} pairs={pairs} checks={checks} onChecked={checked} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
             ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
                 shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
@@ -440,7 +452,7 @@ export default function TreeScreen(props: Props) {
 }
 
 type PanelProps = Props & {
-  p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[]; origin: Origin | null; originsLoading: boolean;
+  p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[]; checks: Check[]; onChecked: (msg: string) => void; origin: Origin | null; originsLoading: boolean;
   onSelect: (id: string) => void; onCenter: (id: string) => void; onChanged: () => void; onMerged: (msg: string, keptId: string) => void;
 };
 
@@ -459,7 +471,7 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
     .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }
 
-function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, origin, originsLoading, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
+function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, checks, onChecked, origin, originsLoading, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
   const t = useTranslations("Person");
   const locale = useLocale();
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
@@ -498,9 +510,8 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
     return !!op && (graph.partners.get(op.id) ?? []).some((sp) => drawn(sp) && sp !== p.id);
   };
   const half = (x: PersonView) => {
-    const mine = graph.parents.get(p.id) ?? [], theirs = graph.parents.get(x.id) ?? [], shared = mine.filter((y) => theirs.includes(y));
-    if (mine.length !== 2 || theirs.length !== 2 || shared.length !== 1) return "";
-    return t("halfVia", { via: people[shared[0]]?.sex ?? "U" });
+    const via = halfBy(graph, p.id, x.id);
+    return via ? t("halfVia", { via }) : "";
   };
   // Cine ar putea fi deja în arbore când adaugi o rudă: soțiile tatălui (mamele fraților) la „+ Mamă”, soții la „+ Soț”, copiii la „+ Copil”, frații la „+ Frate”.
   const lookalikesFor = (k: RelKind): PersonView[] => {
@@ -631,6 +642,8 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         return kids.length > 0 && <SpouseChildren key={`sc${sp.id}`} treeId={treeId} p={p} spouse={sp} kids={kids} onDone={finished} />;
       })}
       {!fam.parents.length && !fam.partners.length && !fam.children.length && <p className="muted" style={{ margin: 0, fontSize: 14 }}>{t("noRelatives")}</p>}
+      {isEditor && <Checks inline treeId={treeId} people={people} onDone={onChecked}
+        checks={checks.filter((c) => Object.values(c).some((v) => v === p.id || (Array.isArray(v) && v.some((x) => x === p.id || (typeof x === "object" && x?.person === p.id)))))} />}
       {isEditor && <Duplicates inline treeId={treeId} pairs={pairs.filter((d) => d.keep === p.id || d.drop === p.id)} people={people}
         kids={(id) => graph.children.get(id)?.length ?? 0} onDone={onMerged} />}
       {canAdd && (

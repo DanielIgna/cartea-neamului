@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "use-intl";
 import type { PersonView } from "@/lib/tree-data";
 import { years } from "@/lib/person-text";
+import { kinLabel } from "@/lib/kin-words";
 import type { RelKind } from "@/lib/relatives";
 import { Avatar } from "./Avatar";
 import PersonForm from "./PersonForm";
@@ -30,6 +31,8 @@ type Props = {
   share: Record<string, string[]>; lookalikes: Record<string, string[]>;
   /** Pentru „+ Copil”: soții celui lângă care adaugi, ca al doilea părinte. */
   partners: Record<string, string[]>;
+  /** Frații doar după un părinte: sexul părintelui comun („după tată” / „după mamă”). */
+  half?: Record<string, "M" | "F" | "U">;
 };
 
 /** Familia apropiată din profil: părinți, bunici din ambele părți, soți, frați, copii și nepoți. Ce lipsește se adaugă de aici. */
@@ -104,8 +107,12 @@ export default function ProfileRelatives(props: Props) {
       !parent && canAdd && t("needParent", { side: side === "paternal" ? "father" : "mother" }));
   };
 
-  const list = (title: string, ids: string[], slot: Slot, label: string) =>
-    group(title, [...by(ids).map((r) => card(r)), addBtn(slot, label)], [`${slot.anchor}:${slot.kind}`, ...editKeys(ids)]);
+  const halfRole = (r: PersonView) => {
+    const via = props.half?.[r.id];
+    return via ? kinLabel({ t: "blood", up: 1, down: 1, half: via }, r.sex, locale) : undefined;
+  };
+  const list = (title: string, ids: string[], slot: Slot, label: string, roles?: (r: PersonView) => string | undefined) =>
+    group(title, [...by(ids).map((r) => card(r, roles?.(r))), addBtn(slot, label)], [`${slot.anchor}:${slot.kind}`, ...editKeys(ids)]);
 
   /** Nepoții: toți într-un singur șir, copiii fiecărui frate (sau copil) urmați de locul pentru încă unul. */
   const nested = (title: string, rows: { via: string; ids: string[] }[], hint: string) => (
@@ -134,7 +141,7 @@ export default function ProfileRelatives(props: Props) {
       {grand("paternal")}
       {grand("maternal")}
       {list(t("spouses"), data.partners, { anchor: me, kind: "spouse" }, t("addSpouse"))}
-      {list(t("siblings"), data.siblings, { anchor: me, kind: "sibling" }, t("addSibling"))}
+      {list(t("siblings"), data.siblings, { anchor: me, kind: "sibling" }, t("addSibling"), halfRole)}
       {list(t("children"), data.children, { anchor: me, kind: "child" }, t("addChild"))}
       {nested(t("nephews"), data.nephews, t("needSibling"))}
       {nested(t("grandchildren"), data.grandchildren, t("needChild"))}

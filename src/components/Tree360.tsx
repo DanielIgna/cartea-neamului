@@ -200,14 +200,42 @@ export default function Tree360({ seeds, links = [], people, selectedId, egoPath
     const a = P(na), b = P(nb);
     items.push({ z: (a.z + b.z) / 2 + 1, el: <line key={`m${a1}${b1}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="var(--ochre)" strokeWidth={2.4 * zoomLine} strokeDasharray="6 4" opacity={fade((a.z + b.z) / 2, span)} /> });
   }
+  // Numele nu se calcă unele pe altele: întâi cel ales, apoi cei mai din față; un nume care ar cădea peste altul deja scris
+  // (sau peste o frunză din față) nu se mai scrie, iar omul se vede tot după inițiale și apare cu numele când rotești sau mărești.
+  const labelled = new Set<string>();
+  {
+    type Box = { x0: number; x1: number; y0: number; y1: number };
+    const placed: Box[] = [];
+    const hit = (b: Box) => placed.some((o) => b.x0 < o.x1 && b.x1 > o.x0 && b.y0 < o.y1 && b.y1 > o.y0);
+    const cand = lay.nodes.map((n) => ({ n, q: P(n) })).filter(({ n }) => people[n.id]);
+    // Frunzele din față ocupă și ele loc: numele nu se scrie peste ele.
+    for (const { n, q } of cand) {
+      const r = (n.spouse ? 11 : 15) * q.s * zoomLine;
+      if (q.z < span * 0.15) placed.push({ x0: q.x - r, x1: q.x + r, y0: q.y - r, y1: q.y + r });
+    }
+    const leaves = placed.length;
+    cand.sort((a, b) => (a.n.id === selectedId ? -1 : b.n.id === selectedId ? 1 : a.q.z - b.q.z));
+    for (const { n, q } of cand) {
+      const sel = n.id === selectedId;
+      if (!sel && !(q.z < span * 0.15 && q.s * zoomLine > 0.62)) continue;
+      const p = people[n.id], r = (n.spouse ? 11 : 15) * q.s * zoomLine, fs = clamp(12.5 * q.s * zoomLine, 8, 17);
+      const w = Math.max(clip(p.givenName || p.name, 16).length, p.birthYear !== null ? 10 : 0) * fs * 0.56;
+      const b = { x0: q.x - w / 2, x1: q.x + w / 2, y0: q.y + r + 1, y1: q.y + r + fs * (p.birthYear !== null ? 2.25 : 1.25) };
+      // Frunza proprie nu contează: numele stă chiar sub ea.
+      const own = placed.findIndex((o, i) => i < leaves && Math.abs((o.x0 + o.x1) / 2 - q.x) < 0.01 && Math.abs((o.y0 + o.y1) / 2 - q.y) < 0.01);
+      const saved = own >= 0 ? placed.splice(own, 1)[0] : null;
+      const free = sel || !hit(b);
+      if (saved) placed.splice(own, 0, saved);
+      if (free) { placed.push(b); labelled.add(n.id); }
+    }
+  }
   const nodeEl = (n: Node3) => {
     const p = people[n.id];
     if (!p) return null;
     const q = P(n);
     const r = (n.spouse ? 11 : 15) * q.s * zoomLine;
     const sel = n.id === selectedId, path = egoPath.has(n.id);
-    const front = q.z < span * 0.15;
-    const label = sel || (front && q.s * zoomLine > 0.62);
+    const label = labelled.has(n.id);
     const op = sel ? 1 : fade(q.z, span);
     const fill = path ? "var(--accent-soft)" : n.spouse ? "var(--leaf-spouse)" : p.sex === "F" ? "var(--leaf-mat)" : "var(--leaf-pat)";
     const fs = clamp(12.5 * q.s * zoomLine, 8, 17);
