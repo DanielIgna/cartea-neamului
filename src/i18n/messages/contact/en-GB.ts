@@ -3,6 +3,7 @@ import type { ContactCatalog } from "./ro";
 /** British English. */
 export const enGBContact: ContactCatalog = {
   "ContactPage": {
+    "printRequest": "Hello! I would like a quote for the printed family book: {pages} pages, {format} format. Hardcover or paperback: … How many copies: … Phone: …",
     "metaTitle": "Contact",
     "metaDescription": "Message us on WhatsApp or send us a note about the Family Book.",
     "menu": "Contact",

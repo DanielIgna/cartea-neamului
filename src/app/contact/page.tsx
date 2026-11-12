@@ -14,8 +14,13 @@ export async function generateMetadata(): Promise<Metadata> {
  * Pagina de contact, deschisă tuturor: butonul de WhatsApp și formularul care trimite pe email. Nici numărul, nici adresa de
  * email nu sunt scrise ca text pe pagină (cererea lui Daniel); numărul e doar în legătura de WhatsApp.
  */
-export default async function ContactPage() {
+export default async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const t = await getT("ContactPage");
+  // Din pagina cărții, „Vreau cartea tipărită”: mesajul vine scris cu numărul de pagini și formatul, ca oferta să se poată cere tipografiei.
+  const q = await searchParams;
+  const pages = typeof q.tipar === "string" && /^\d{1,4}$/.test(q.tipar) ? Number(q.tipar) : 0;
+  const format = q.format === "A5" ? "A5" : "A4";
+  const prefill = pages ? t("printRequest", { pages: String(pages), format }) : undefined;
   return (
     <section className="stack contact" style={{ maxWidth: 760, margin: "0 auto" }}>
       <div className="card">
@@ -36,7 +41,7 @@ export default async function ContactPage() {
         <div className="card stack">
           <h3 style={{ margin: 0 }}>{t("mailTitle")}</h3>
           <p className="muted" style={{ margin: 0 }}>{t("mailText")}</p>
-          <PageIntl ns={["Contact"]}><ContactForm /></PageIntl>
+          <PageIntl ns={["Contact"]}><ContactForm from={prefill ? "carte-tiparita" : undefined} message={prefill} /></PageIntl>
         </div>
       </div>
     </section>

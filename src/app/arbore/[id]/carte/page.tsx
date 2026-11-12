@@ -21,6 +21,8 @@ import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
 import { isLocale, type Locale } from "@/i18n/locales";
 import BookView from "@/components/BookView";
+import { userAccess } from "@/lib/plata";
+import { bookPaid, priceFor } from "@/lib/plati";
 import BookFan from "@/components/BookFan";
 import BookTree from "@/components/BookTree";
 import PageIntl from "@/i18n/PageIntl";
@@ -432,6 +434,10 @@ export default async function BookPage({ params, searchParams }: { params: Promi
     .sort((a, b) => a.name.localeCompare(b.name, uiLocale))
     .map((p) => ({ id: p.id, label: `${p.name}${p.birthYear ? ` (${p.birthYear})` : ""}` }));
   const oldestSex: Sex = (stats.oldest?.id && data.people[stats.oldest.id]?.sex) || "U";
+  // Cartea PDF se plătește separat (când plățile sunt pornite din Admin): fără plată, previzualizare cu semn pe pagini.
+  const { access, settings, ownsTree } = await userAccess(db, me.id);
+  const locked = access.kind !== "deschis" && access.kind !== "mereu" && !(await bookPaid(db, me.id, id))
+    ? { buyHref: `/plata?carte=${id}`, price: priceFor("carte", uiLocale, ownsTree, settings).label } : null;
   const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin, locale }));
   return (
     <section className="stack book-root">
@@ -457,7 +463,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
         {stats.people === 0 ? (
           <div className="card"><p style={{ margin: 0 }}>{t("page.empty")}</p></div>
         ) : (
-          <BookView format={options.format} renderKey={renderKey} fileName={title}>
+          <BookView format={options.format} renderKey={renderKey} fileName={title} locked={locked}>
             <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when}
               voices={voices} oldestSex={oldestSex} census={census} w={w} />
           </BookView>

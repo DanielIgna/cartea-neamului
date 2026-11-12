@@ -3,6 +3,7 @@ import type { ContactCatalog } from "./ro";
 /** Français (vous). Espace insécable avant : ; ! ? et à l’intérieur des « ». */
 export const frContact: ContactCatalog = {
   "ContactPage": {
+    "printRequest": "Bonjour ! Je voudrais un devis pour le livre de la famille imprimé : {pages} pages, format {format}. Couverture rigide ou souple : … Nombre d’exemplaires : … Téléphone : …",
     "metaTitle": "Contact",
     "metaDescription": "Écrivez-nous sur WhatsApp ou envoyez-nous un message à propos du Livre de la Famille.",
     "menu": "Contact",

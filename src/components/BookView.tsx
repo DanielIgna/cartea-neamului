@@ -74,7 +74,13 @@ function fillPageNumbers(area: HTMLElement) {
   });
 }
 
-export default function BookView({ format, renderKey, fileName, children }: { format: BookFormat; renderKey: string; fileName: string; children: React.ReactNode }) {
+/**
+ * `locked`: plățile sunt pornite și omul n-a plătit cartea: o vede toată, cu „Previzualizare” pe fiecare pagină (și la tipărire),
+ * iar în locul lui „Descarcă PDF” e butonul de plată.
+ */
+export default function BookView({ format, renderKey, fileName, locked, children }: {
+  format: BookFormat; renderKey: string; fileName: string; locked?: { buyHref: string; price: string } | null; children: React.ReactNode;
+}) {
   const src = useRef<HTMLDivElement>(null), out = useRef<HTMLDivElement>(null), stage = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<"work" | "done" | "error">("work");
   const tp = useTranslations("Partners.bookCard");
@@ -157,8 +163,11 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
         {phase === "error" && <span>{t("error")}</span>}
         {phase === "done" && (
           <>
-            <button type="button" className="btn primary" onClick={print}>{t("download")}</button>
-            <span className="muted">{t("ready", { count: pages })}</span>
+            {locked
+              ? <a className="btn primary" href={locked.buyHref}>{t("buy", { price: locked.price })}</a>
+              : <button type="button" className="btn primary" onClick={print}>{t("download")}</button>}
+            <a className="btn" href={`/contact?tipar=${pages}&format=${format}`}>{t("printed")}</a>
+            <span className="muted">{t(locked ? "previewNote" : "ready", { count: pages })}</span>
           </>
         )}
       </div>
@@ -174,7 +183,7 @@ export default function BookView({ format, renderKey, fileName, children }: { fo
         </aside>
       )}
       <div ref={src} className="book-source" hidden>{children}</div>
-      <div ref={stage} className="book-stage">
+      <div ref={stage} className={`book-stage${locked ? " book-locked" : ""}`} style={locked ? ({ "--wm": JSON.stringify(t("preview")) } as React.CSSProperties) : undefined}>
         <div ref={out} className={`book-pages${phase === "done" ? "" : " busy"}`} data-phase={phase} data-key={renderKey} style={phase === "done" && zoom < 1 ? { zoom } : undefined} />
       </div>
     </>

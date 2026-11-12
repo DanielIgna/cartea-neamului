@@ -5,13 +5,13 @@ import { sendContactMessage, type ContactResult } from "@/app/contact-actions";
 import { CONTACT_LIMITS } from "@/lib/contact";
 
 /** Formularul de pe /contact: nume, email (ca să-i putem răspunde) și mesajul. Trimiterea se face pe server. */
-export default function ContactForm({ from }: { from?: string }) {
+export default function ContactForm({ from, message }: { from?: string; message?: string }) {
   const t = useTranslations("Contact");
   const [key, setKey] = useState(0);
-  return <Inner key={key} t={t} from={from} again={() => setKey((k) => k + 1)} />;
+  return <Inner key={key} t={t} from={from} message={key ? undefined : message} again={() => setKey((k) => k + 1)} />;
 }
 
-function Inner({ t, from, again }: { t: ReturnType<typeof useTranslations<"Contact">>; from?: string; again: () => void }) {
+function Inner({ t, from, message, again }: { t: ReturnType<typeof useTranslations<"Contact">>; from?: string; message?: string; again: () => void }) {
   const [state, action, pending] = useActionState<ContactResult | null, FormData>(sendContactMessage, null);
   if (state?.ok) {
     return (
@@ -25,7 +25,7 @@ function Inner({ t, from, again }: { t: ReturnType<typeof useTranslations<"Conta
     <form action={action} className="form contact-form">
       <label>{t("name")}<input name="name" required maxLength={CONTACT_LIMITS.name} autoComplete="name" /></label>
       <label>{t("email")}<input name="email" type="email" required maxLength={CONTACT_LIMITS.email} autoComplete="email" inputMode="email" /></label>
-      <label>{t("message")}<textarea name="message" required rows={6} minLength={CONTACT_LIMITS.minMessage} maxLength={CONTACT_LIMITS.message} placeholder={t("messagePlaceholder")} /></label>
+      <label>{t("message")}<textarea name="message" defaultValue={message} required rows={6} minLength={CONTACT_LIMITS.minMessage} maxLength={CONTACT_LIMITS.message} placeholder={t("messagePlaceholder")} /></label>
       <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="contact-trap" />
       {from && <input type="hidden" name="from" value={from} />}
       {state?.error && <p className="err" role="alert">{t(`errors.${state.error}`)}</p>}

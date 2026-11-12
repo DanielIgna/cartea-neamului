@@ -134,6 +134,13 @@
       "when": 1794500000000,
       "tag": "0018_plata_acces",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794510000000,
+      "tag": "0019_plati",
+      "breakpoints": true
     }
   ]
 }

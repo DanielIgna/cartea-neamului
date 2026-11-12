@@ -72,7 +72,7 @@ export const roLegal = {
           l2: "<b>Neon</b> (Databricks Inc., SUA) păstrează baza de date, pozele, actele și înregistrările, într-un centru de date din Frankfurt (Germania, UE).",
           l3: "<b>Google</b>, doar dacă alegi „Continuă cu Google”, îți confirmă identitatea la intrare.",
           l4: "<b>OpenStreetMap</b> (Fundația OpenStreetMap, Marea Britanie) dă bucățile de hartă din „Harta neamului”. Browserul tău le cere direct de la ei, așa că ei văd adresa IP de la care le ceri.",
-          l5: "<b>FormSubmit</b> (formsubmit.co, SUA) ne aduce pe email mesajele trimise din pagina Contact. <b>WhatsApp</b> (WhatsApp Ireland Ltd., din grupul Meta), doar dacă alegi să ne scrii acolo, după propriile lor reguli de confidențialitate.",
+          l5: "<b>FormSubmit</b> (formsubmit.co, SUA) ne aduce pe email mesajele trimise din pagina Contact. <b>WhatsApp</b> (WhatsApp Ireland Ltd., din grupul Meta), doar dacă alegi să ne scrii acolo, după propriile lor reguli de confidențialitate. <b>Stripe</b> (Stripe Payments Europe Ltd., Irlanda), doar dacă plătești ceva, primește plata cu cardul pe pagina lui; noi nu vedem datele cardului, ci doar ce s-a plătit, cât și când (păstrate pentru contabilitate cât cere legea).",
           p2: "Pentru transferurile în afara Uniunii Europene, acești furnizori folosesc clauzele contractuale standard aprobate de Comisia Europeană sau cadrul UE–SUA privind protecția datelor. Despre cei în viață nu trimitem nimic către servicii de inteligență artificială.",
         },
         partner: {
