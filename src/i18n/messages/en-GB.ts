@@ -364,6 +364,8 @@ export const enGB: Catalog = {
     pay: "I want to continue",
   },
   Plata: {
+    adminTest: "Payments are switched off for everyone else: nobody is asked to pay. As an admin, you can make a test payment here (for example with a promotion code).",
+    adminPaid: "The test payment was received: your year is paid until {date}.",
     title: "Payment",
     yearTitle: "One year in The Family Book",
     yearText: "With a paid year you can add and change things in the tree for one year from today (or straight after the year you have already paid). The tree, photos and memories stay yours either way.",

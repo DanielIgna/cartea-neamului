@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { tree } from "@/db/schema";
+import { accountPlan, tree } from "@/db/schema";
 import { requireUser, roleInTree } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { operator } from "@/lib/legal";
@@ -31,6 +31,9 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const open = settings.on || admin;
   const date = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(d);
   const op = operator();
+  // Cât timp plățile sunt oprite, adminul poate face o plată de probă: îi arătăm până când a plătit, nu „totul e gratuit”.
+  const adminPaidUntil = admin && !settings.on
+    ? (await db.select({ until: accountPlan.paidUntil }).from(accountPlan).where(eq(accountPlan.userId, me.id)))[0]?.until ?? null : null;
 
   const treeId = UUID.test(str("carte")) ? str("carte") : null;
   const book = treeId && (await roleInTree(db, treeId, me.id))
@@ -46,6 +49,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     : access.kind === "beta" ? t("beta", { date: date(access.until) })
     : access.kind === "proba" ? t("trial", { days: access.daysLeft })
     : access.kind === "expirat" ? t("ended")
+    : admin ? (adminPaidUntil && adminPaidUntil > new Date() ? t("adminPaid", { date: date(adminPaidUntil) }) : t("adminTest"))
     : t("notNeeded");
 
   const payForm = (kind: "an" | "carte") => {

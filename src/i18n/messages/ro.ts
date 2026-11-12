@@ -377,6 +377,8 @@ export const ro = {
     pay: "Vreau să continui",
   },
   Plata: {
+    adminTest: "Plățile sunt oprite pentru toți ceilalți: lor nu li se cere nimic. Tu, ca admin, poți face aici o plată de probă (de pildă cu un cod promoțional).",
+    adminPaid: "Plata de probă a fost primită: ai anul plătit până la {date}.",
     title: "Plată",
     yearTitle: "Un an în Cartea Neamului",
     yearText: "Cu anul plătit adaugi și schimbi în arbore, de azi pentru un an (sau în continuarea anului deja plătit). Arborele, pozele și amintirile rămân ale tale oricum.",

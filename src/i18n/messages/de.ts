@@ -364,6 +364,8 @@ export const de: Catalog = {
     pay: "Ich möchte weitermachen",
   },
   Plata: {
+    adminTest: "Zahlungen sind für alle anderen ausgeschaltet: Niemand muss etwas bezahlen. Als Admin kannst du hier eine Testzahlung machen (zum Beispiel mit einem Aktionscode).",
+    adminPaid: "Die Testzahlung ist eingegangen: Dein Jahr ist bis zum {date} bezahlt.",
     title: "Zahlung",
     yearTitle: "Ein Jahr im Familienbuch",
     yearText: "Mit einem bezahlten Jahr kannst du ab heute ein Jahr lang (oder im Anschluss an das bereits bezahlte Jahr) im Stammbaum hinzufügen und ändern. Stammbaum, Fotos und Erinnerungen bleiben in jedem Fall deine.",
