@@ -104,3 +104,65 @@ export async function fixCurtuliMaiden(db: Db): Promise<string> {
   await db.insert(appSetting).values({ key: MARK2, value: { at: new Date().toISOString(), changed: n } }).onConflictDoNothing();
   return `${n} fișe`;
 }
+
+/**
+ * Daniel, 12.11.2026: Anca și Simona încă apăreau surorile Floarei (fiicele bunicului Iosif Todea și ale Anei).
+ * Sunt fiicele lui Iosif Todea fiul, fratele Floarei, cu Jenica. Dacă fiul nu e trecut separat, îl trecem (fiul bunicului și al Anei).
+ * O singură dată, doar în arborele cu Avram și Floarea Igna; fiecare pas intră în Istoric și se poate anula.
+ */
+const MARK3 = "corectura:anca-simona:2026-11-12";
+export async function fixAncaSimona(db: Db): Promise<string> {
+  const [done] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK3));
+  if (done) return "deja făcută";
+  const all = await db.select().from(person);
+  const first = (p: { givenName: string }) => normName(p.givenName).split(/[\s-]+/)[0] ?? "";
+  const trees = [...new Set(all.filter((p) => first(p) === "avram" && normName(p.surname) === "igna").map((p) => p.treeId))];
+  const report: string[] = [];
+  for (const treeId of trees) {
+    const [t] = await db.select().from(tree).where(eq(tree.id, treeId));
+    if (!t || t.name === "Neamul Pop din Ieud") continue;
+    const people = all.filter((p) => p.treeId === treeId);
+    const byId = new Map(people.map((p) => [p.id, p]));
+    const floarea = people.find((p) => first(p) === "floarea" && normName(p.surname) === "igna");
+    if (!floarea) continue;
+    const rels = await db.select().from(relationship).where(eq(relationship.treeId, treeId));
+    const parentsOf = (id: string) => rels.filter((r) => r.type === "parent_child" && r.personB === id).map((r) => byId.get(r.personA)).filter((p): p is typeof floarea => !!p);
+    const grandpa = parentsOf(floarea.id).find((p) => p.sex === "M" && first(p) === "iosif");
+    if (!grandpa) { report.push(`${t.name}: tatăl Floarei nu e Iosif`); continue; }
+    const grandma = parentsOf(floarea.id).find((p) => p.sex === "F");
+    const girls = people.filter((p) => ["anca", "simona"].includes(first(p)) && normName(p.surname) === "todea");
+    if (!girls.length) { report.push(`${t.name}: fără Anca/Simona`); continue; }
+    const log = (id: string, name: string, summary: string) => logChange(db, { treeId, actorId: null, personId: id, action: "legaturi", diff: { name, summary } });
+    let n = 0;
+    // Fiul: copilul bunicului cu același nume, altul decât bunicul; altfel îl trecem acum.
+    const kidsOfGrandpa = rels.filter((r) => r.type === "parent_child" && r.personA === grandpa.id).map((r) => byId.get(r.personB)).filter((p): p is typeof floarea => !!p);
+    let son = kidsOfGrandpa.find((p) => p.id !== grandpa.id && p.sex === "M" && first(p) === "iosif");
+    if (!son) {
+      [son] = await db.insert(person).values({ treeId, givenName: "Iosif", surname: "Todea", sex: "M", createdBy: t.ownerId,
+        notes: "Trecut la corectura din 12.11.2026: fiul lui Iosif Todea, fratele Floarei Igna, tatăl Ancăi și al Simonei." }).returning();
+      for (const p of [grandpa, grandma]) if (p) await db.insert(relationship).values({ treeId, type: "parent_child", personA: p.id, personB: son.id, subtype: "biologic" }).onConflictDoNothing();
+      await log(son.id, "Iosif Todea", "Trecut ca fiul lui Iosif Todea, fratele Floarei Igna (corectură după spusele lui Daniel)");
+      n++;
+    }
+    const jenica = people.find((p) => first(p) === "jenica");
+    if (jenica) {
+      await db.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "partnership"),
+        or(and(eq(relationship.personA, grandpa.id), eq(relationship.personB, jenica.id)), and(eq(relationship.personA, jenica.id), eq(relationship.personB, grandpa.id)))));
+      const linked = rels.some((r) => r.type === "partnership" && ((r.personA === son!.id && r.personB === jenica.id) || (r.personA === jenica.id && r.personB === son!.id)));
+      if (!linked) await db.insert(relationship).values({ treeId, type: "partnership", personA: son.id, personB: jenica.id, subtype: "casatorie" });
+      await log(jenica.id, personName(jenica), "Soția lui Iosif Todea fiul, nu a bunicului Iosif Todea (corectură după spusele lui Daniel)");
+      n++;
+    }
+    for (const g of girls) {
+      // Scoatem bunicii ca părinți (și orice alt părinte în afară de fiu și Jenica), apoi îi punem pe Iosif fiul și pe Jenica.
+      for (const p of parentsOf(g.id)) if (p.id !== son.id && p.id !== jenica?.id)
+        await db.delete(relationship).where(and(eq(relationship.treeId, treeId), eq(relationship.type, "parent_child"), eq(relationship.personA, p.id), eq(relationship.personB, g.id)));
+      for (const p of [son, jenica]) if (p) await db.insert(relationship).values({ treeId, type: "parent_child", personA: p.id, personB: g.id, subtype: "biologic" }).onConflictDoNothing();
+      await log(g.id, personName(g), `Fiica lui Iosif Todea fiul${jenica ? " și a Jenicăi" : ""}, nepoata Floarei Igna (corectură după spusele lui Daniel)`);
+      n++;
+    }
+    report.push(`${t.name}: ${n} schimbări`);
+  }
+  await db.insert(appSetting).values({ key: MARK3, value: { at: new Date().toISOString(), report } }).onConflictDoNothing();
+  return report.join("; ") || "niciun arbore potrivit";
+}
