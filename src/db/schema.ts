@@ -520,3 +520,26 @@ export const referralBonus = pgTable("referral_bonus", {
   appliedAt: timestamp("applied_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// „Raportează o problemă” (Daniel, 2026-11-13): ce nu merge, spus de om din cont, cu până la 3 poze ale ecranului și pagina
+// în care era. Pozele (cheile din bucket) le vede doar el și adminul. Vezi src/lib/probleme.ts și migrația 0024.
+export type ProblemImage = { key: string; type: string };
+export const problemReport = pgTable("problem_report", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  treeId: uuid("tree_id").references(() => tree.id, { onDelete: "set null" }),
+  personId: uuid("person_id"),
+  kind: text("kind").notNull().default("eroare"), // eroare / arbore / idee / altceva
+  message: text("message").notNull(),
+  page: text("page"),
+  images: jsonb("images").$type<ProblemImage[]>().notNull().default([]),
+  browser: text("browser"),
+  screen: text("screen"),
+  locale: text("locale"),
+  status: text("status").notNull().default("nou"), // nou / vazut / rezolvat
+  reply: text("reply"),
+  repliedAt: timestamp("replied_at"),
+  replySeenAt: timestamp("reply_seen_at"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("problem_report_user_idx").on(t.userId, t.createdAt), index("problem_report_status_idx").on(t.status, t.createdAt)]);

@@ -7,6 +7,7 @@ import { esCalatorie } from "./calatorie/es";
 import { esBiserica } from "./biserica/es";
 import { esParteneri } from "./parteneri/es";
 import { esContact } from "./contact/es";
+import { esProbleme } from "./probleme/es";
 import { esResurse } from "./resurse/es";
 import { esFilm } from "./film/es";
 import { esLegal } from "./legal/es";
@@ -52,6 +53,7 @@ export const es: Catalog = {
   },
   UserMenu: {
     plan: "Mi plan",
+    report: "Informar de un problema",
     admin: "Admin",
     messages: "Mensajes",
     account: "Tu cuenta y tus datos",
@@ -410,6 +412,7 @@ export const es: Catalog = {
   ...esBiserica,
   ...esParteneri,
   ...esContact,
+  ...esProbleme,
   ...esResurse,
   ...esFilm,
   ...esLegal,

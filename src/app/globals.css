@@ -1442,3 +1442,25 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .lp-plans-note a{color:var(--l-gold)}
 .lp-plans-actions{justify-content:center}
 @media (max-width:900px){.lp-plans{grid-template-columns:minmax(0,1fr);max-width:460px}.lp-plan-rec{order:-1}}
+
+/* „Raportează o problemă” (/problema) și Admin → Probleme */
+.problem-form textarea{font:inherit;min-height:130px;resize:vertical}
+.form label.problem-message{font-size:16px;font-weight:600}
+.problem-message textarea{font-weight:400}
+.problem-kinds{border:0;padding:0;margin:0;display:grid;gap:8px}
+.problem-kinds legend{font-weight:600;margin-bottom:6px}
+.form label.problem-kind{display:flex;flex-direction:row;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-size:16px;background:var(--surface)}
+.form label.problem-kind.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent)}
+.form .problem-kind input{width:20px;height:20px;min-height:0;margin:0;flex:none;accent-color:var(--accent)}
+.problem-images-label{font-weight:600}
+.problem-pics{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:10px}
+.problem-pics li{display:grid;gap:6px;width:120px}
+.problem-pics img{width:120px;height:120px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.problem-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.problem-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:8px}
+.problem-item p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.problem-thumbs{display:flex;flex-wrap:wrap;gap:8px}
+.problem-thumbs img{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+.problem-reply{border-left:3px solid var(--accent);padding:6px 0 6px 12px}
+.problem-reply b{display:block;margin-bottom:2px}
+@media (max-width:520px){.problem-pics li,.problem-pics img{width:96px}.problem-pics img{height:96px}}

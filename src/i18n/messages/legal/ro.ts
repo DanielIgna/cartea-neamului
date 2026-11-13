@@ -95,6 +95,12 @@ export const roLegal = {
           p1: "Pe pagina <res>Resurse gratuite pentru genealogie</res> ne poți cere informații despre testele ADN. Păstrăm doar ce scrii în formular (nume, email, telefonul dacă îl dai, orașul și mesajul) și data la care ți-ai dat acordul, doar ca să-ți răspundem; temeiul e acordul tău. Nu sunt date genetice: nu primim, nu păstrăm și nu transmitem fișiere, rezultate sau potriviri ADN. Nu trimitem cererea la laboratoare și nu primim comision. Cererea o vede doar cel care ține site-ul; o ștergem când ne ceri, la <mail>{email}</mail>, sau după ce nu mai e nevoie de ea.",
           p2: "Cererea o păstrăm cel mult 12 luni după ce ți-am răspuns, apoi o ștergem.",
         },
+        problems: {
+          h: "Când ne spui de o problemă",
+          p1: "Din meniul contului, „Raportează o problemă”, ne poți scrie ce nu merge, cu până la 3 poze ale ecranului. Păstrăm ce scrii, pozele, pagina din site din care ai venit (și, dacă e cazul, arborele și fișa de acolo), felul telefonului sau al calculatorului și mărimea ecranului, ca să putem vedea și repara problema. Temeiul e contractul dintre noi (art. 6 alin. 1 lit. b GDPR).",
+          p2: "Pozele ecranului pot arăta date ale familiei tale. Le vedem doar tu și noi, nu le arătăm nimănui și le folosim doar ca să reparăm problema. Când primim o problemă nouă și când îți răspundem, emailul de anunț pleacă prin Resend (dacă e pornit).",
+          p3: "Păstrăm problema până la un an după ce am rezolvat-o, apoi o ștergem, cu pozele ei. Se șterge și odată cu contul tău, iar o găsești în descărcarea din <data>Datele mele</data>.",
+        },
         keep: {
           h: "Cât timp păstrăm datele",
           p1: "Cât timp ai cont. Ce ștergi tu dispare imediat din site, iar copiile de siguranță ale bazei de date se rescriu singure în cel mult 30 de zile. Când îți ștergi contul, pleacă tot ce e al tău: contul, amintirile din lada ta, mesajele, ce ai scris altora și acordurile. Arborii rămân ai familiei: un arbore cu alți membri trece la unul dintre ei, iar unul în care ești singur se șterge cu totul. Fișa ta din arbori rămâne, ca să nu se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale. Cât folosești site-ul păstrăm cel mult 13 luni; dacă spui „Nu mai vreau”, se șterge imediat.",

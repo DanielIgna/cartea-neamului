@@ -7,6 +7,7 @@ import { deCalatorie } from "./calatorie/de";
 import { deBiserica } from "./biserica/de";
 import { deParteneri } from "./parteneri/de";
 import { deContact } from "./contact/de";
+import { deProbleme } from "./probleme/de";
 import { deResurse } from "./resurse/de";
 import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
@@ -52,6 +53,7 @@ export const de: Catalog = {
   },
   UserMenu: {
     plan: "Mein Tarif",
+    report: "Problem melden",
     admin: "Admin",
     messages: "Nachrichten",
     account: "Dein Konto und deine Daten",
@@ -410,6 +412,7 @@ export const de: Catalog = {
   ...deBiserica,
   ...deParteneri,
   ...deContact,
+  ...deProbleme,
   ...deResurse,
   ...deFilm,
   ...deLegal,

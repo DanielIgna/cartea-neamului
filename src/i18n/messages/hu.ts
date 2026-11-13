@@ -7,6 +7,7 @@ import { huCalatorie } from "./calatorie/hu";
 import { huBiserica } from "./biserica/hu";
 import { huParteneri } from "./parteneri/hu";
 import { huContact } from "./contact/hu";
+import { huProbleme } from "./probleme/hu";
 import { huResurse } from "./resurse/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
@@ -52,6 +53,7 @@ export const hu: Catalog = {
   },
   UserMenu: {
     plan: "A csomagom",
+    report: "Hiba bejelentése",
     admin: "Admin",
     messages: "Üzenetek",
     account: "A fiókod és az adataid",
@@ -410,6 +412,7 @@ export const hu: Catalog = {
   ...huBiserica,
   ...huParteneri,
   ...huContact,
+  ...huProbleme,
   ...huResurse,
   ...huFilm,
   ...huLegal,
