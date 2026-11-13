@@ -115,6 +115,15 @@ const ADDITIVE = [
     "tree_id" uuid REFERENCES "tree"("id") ON DELETE set null, "amount" integer NOT NULL, "currency" text NOT NULL,
     "created_at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE INDEX IF NOT EXISTS "payment_user_idx" ON "payment" USING btree ("user_id","kind")`,
+  sql`ALTER TABLE "payment" ADD COLUMN IF NOT EXISTS "extra" text`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "reminded_for" timestamp`,
+  sql`CREATE TABLE IF NOT EXISTS "gift" (
+    "id" text PRIMARY KEY NOT NULL, "payment_id" text NOT NULL, "buyer_id" text REFERENCES "user"("id") ON DELETE set null, "tier" text NOT NULL,
+    "note" text, "for_name" text, "redeemed_by" text REFERENCES "user"("id") ON DELETE set null, "redeemed_at" timestamp,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "referral_bonus" (
+    "referred_id" text PRIMARY KEY NOT NULL, "referrer_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "days" integer NOT NULL,
+    "applied_at" timestamp, "created_at" timestamp DEFAULT now() NOT NULL)`,
   // „Vreau un test ADN” (fără date genetice) și laboratoarele din lista informativă.
   sql`CREATE TABLE IF NOT EXISTS "dna_request" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "email" text NOT NULL, "phone" text, "city" text NOT NULL,

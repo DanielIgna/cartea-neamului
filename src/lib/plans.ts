@@ -69,6 +69,14 @@ export const PlanSettings = z.object({
   premiumLei: num(0, 5000, ""),
   premiumEur: num(0, 1000, ""),
   ...tierFields("premium"),
+  // Îmbunătățirile din 2026-11-13: pachetul Basic + cartea PDF, „de la X lei” la cartea tipărită (0 = nu se arată),
+  // zilele în plus pentru cine aduce o rudă care își deschide arborele și plătește, aducerea aminte înainte de expirare.
+  bundleLei: num(0, 5000, ""),
+  bundleEur: num(0, 1000, ""),
+  printFromLei: num(0, 100000, ""),
+  printFromEur: num(0, 20000, ""),
+  referralDays: num(0, 365, "zile").int("Scrie un număr întreg."),
+  reminderDays: num(0, 60, "zile").int("Scrie un număr întreg."),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
@@ -83,6 +91,7 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   familiePersons: 400, familiePhotos: 800, familieAudio: 80, familieDocs: 150, familieWriters: 8, familieTrees: 2, familieBook: "una", familiePrint: 0,
   premiumLei: 249, premiumEur: 50,
   premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "toti", premiumPrint: 20,
+  bundleLei: 129, bundleEur: 25, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
 const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;

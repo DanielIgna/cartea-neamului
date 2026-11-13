@@ -12,14 +12,15 @@
  * (sk_live_… / sk_test_…) sau, mai sigur, una restricționată (rk_live_… / rk_test_…) cu drept de scriere pe Checkout Sessions:
  * site-ul doar deschide pagini de plată, restul vine prin webhook. Cheile nu se scriu niciodată în cod.
  */
-import { createHmac, timingSafeEqual } from "node:crypto";
-import { and, eq, gt, sql } from "drizzle-orm";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { and, asc, eq, gt, gte, isNotNull, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "@/db";
-import { accountPlan, payment, tree, user } from "@/db/schema";
-import { isTier, tierBook, tierOf, tierPrice, tierRank, type Access, type PlanSettings, type Tier } from "./plans";
+import { accountPlan, gift, payment, referralBonus, tree, treeMember, user } from "@/db/schema";
+import { isTier, planSettings, tierBook, tierOf, tierPrice, tierRank, type Access, type PlanSettings, type Tier } from "./plans";
 
-export type PayKind = "an" | "carte";
-export const isPayKind = (v: unknown): v is PayKind => v === "an" || v === "carte";
+/** „an” (un an pe un plan), „carte” (cartea PDF a unui arbore) și „cadou” (un an dăruit altcuiva, vezi src/lib/extra.ts). */
+export type PayKind = "an" | "carte" | "cadou";
+export const isPayKind = (v: unknown): v is PayKind => v === "an" || v === "carte" || v === "cadou";
 const DAY = 86_400_000;
 export const YEAR_DAYS = 365;
 
@@ -74,6 +75,8 @@ export async function createCheckout(o: {
   amount: number; currency: string; locale: string; successUrl: string; cancelUrl: string;
   /** Pentru „an”: planul plătit și, la trecerea pe un plan mai scump, de pe ce plan și până când rămâne anul. */
   tier?: Tier; upgradeFrom?: Tier | null; paidUntil?: Date | null;
+  /** Pachetul Basic + cartea PDF („carte”) sau, la „cadou”, pentru cine e și biletul. */
+  extra?: "carte" | null; forName?: string | null; note?: string | null;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
     mode: "payment",
@@ -97,6 +100,9 @@ export async function createCheckout(o: {
   if (o.tier) body.set("metadata[tier]", o.tier);
   if (o.upgradeFrom) body.set("metadata[upgradeFrom]", o.upgradeFrom);
   if (o.upgradeFrom && o.paidUntil) body.set("metadata[paidUntil]", o.paidUntil.toISOString());
+  if (o.extra) body.set("metadata[extra]", o.extra);
+  if (o.forName) body.set("metadata[forName]", o.forName.slice(0, 120));
+  if (o.note) body.set("metadata[note]", o.note.slice(0, 400));
   const r = await fetcher("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: { authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`, "content-type": "application/x-www-form-urlencoded" },
@@ -122,6 +128,7 @@ export type PaidSession = {
   id: string; kind: PayKind; userId: string; treeId: string | null; amount: number; currency: string;
   /** Planul anului plătit (plățile de dinainte de planuri: Basic) și, la o trecere pe un plan mai scump, planul de dinainte. */
   tier?: Tier; upgradeFrom?: Tier | null;
+  extra?: "carte" | null; forName?: string | null; note?: string | null;
 };
 
 /**
@@ -137,8 +144,10 @@ export function paidSession(event: unknown): PaidSession | null {
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
   const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  if (md.kind === "cadou") return { ...base, tier: isTier(md.tier) ? md.tier : "familie", forName: md.forName || null, note: md.note || null };
   if (md.kind !== "an") return base;
-  return { ...base, tier: isTier(md.tier) ? md.tier : "basic", upgradeFrom: isTier(md.upgradeFrom) ? md.upgradeFrom : null };
+  const year = { ...base, tier: isTier(md.tier) ? md.tier : "basic", upgradeFrom: isTier(md.upgradeFrom) ? md.upgradeFrom : null };
+  return md.extra === "carte" ? { ...year, extra: "carte" as const } : year;
 }
 
 /**
@@ -152,8 +161,9 @@ export async function applyPayment(db: Db, paid: PaidSession, now = new Date()):
     const [owner] = await tx.select({ id: user.id }).from(user).where(eq(user.id, p.userId));
     if (!owner) p = { ...p, userId: "" };
     if (p.treeId && !(await tx.select({ id: tree.id }).from(tree).where(eq(tree.id, p.treeId))).length) p = { ...p, treeId: null };
-    const inserted = await tx.insert(payment).values({ id: p.id, userId: p.userId || null, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, createdAt: now })
-      .onConflictDoNothing().returning({ id: payment.id });
+    const inserted = await tx.insert(payment).values({
+      id: p.id, userId: p.userId || null, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, extra: p.extra ?? null, createdAt: now,
+    }).onConflictDoNothing().returning({ id: payment.id });
     if (!inserted.length) return false;
     if (p.kind === "an" && p.userId) {
       const tier = p.tier ?? "basic";
@@ -162,11 +172,54 @@ export async function applyPayment(db: Db, paid: PaidSession, now = new Date()):
       // Trecerea pe un plan mai scump în timpul anului: s-a plătit doar diferența, deci data de sfârșit nu se mută.
       // Altfel, un an întreg: după anul în curs (același plan) sau de azi.
       const until = p.upgradeFrom && running ? running : new Date((running ?? now).getTime() + YEAR_DAYS * DAY);
-      await tx.insert(accountPlan).values({ userId: p.userId, plan: "familie", paidUntil: until, tier, note: null, updatedAt: now })
-        .onConflictDoUpdate({ target: accountPlan.userId, set: { paidUntil: until, tier, updatedAt: now, plan: sql`case when ${accountPlan.plan} = 'mereu' then 'mereu' else 'familie' end` } });
+      await setYear(tx as unknown as Db, p.userId, tier, until, now);
+      await referralOnPayment(tx as unknown as Db, p.userId, now);
     }
+    if (p.kind === "cadou") await createGift(tx as unknown as Db, p, now);
     return true;
   });
+}
+
+/** Pune anul plătit pe cont, cu planul lui, și adaugă zilele în plus câștigate între timp (rude aduse), care încă așteptau. */
+export async function setYear(db: Db, userId: string, tier: Tier, until: Date, now: Date) {
+  const pending = await db.select({ id: referralBonus.referredId, days: referralBonus.days }).from(referralBonus)
+    .where(and(eq(referralBonus.referrerId, userId), isNull(referralBonus.appliedAt)));
+  const extra = pending.reduce((n, b) => n + b.days, 0);
+  const end = new Date(until.getTime() + extra * DAY);
+  await db.insert(accountPlan).values({ userId, plan: "familie", paidUntil: end, tier, note: null, updatedAt: now })
+    .onConflictDoUpdate({ target: accountPlan.userId, set: { paidUntil: end, tier, updatedAt: now, plan: sql`case when ${accountPlan.plan} = 'mereu' then 'mereu' else 'familie' end` } });
+  for (const b of pending) await db.update(referralBonus).set({ appliedAt: now }).where(eq(referralBonus.referredId, b.id));
+}
+
+/**
+ * Zilele în plus pentru cine aduce o rudă (Daniel, 2026-11-13): când cineva plătește primul lui an și are un arbore al lui,
+ * cel care l-a invitat (prima invitație primită) câștigă `referralDays`, o singură dată pentru fiecare rudă adusă. Dacă are anul
+ * plătit, i se adaugă pe loc; altfel așteaptă până își plătește anul.
+ */
+export async function referralOnPayment(db: Db, userId: string, now: Date) {
+  const s = await planSettings(db);
+  if (s.referralDays <= 0) return;
+  const years = await db.select({ id: payment.id }).from(payment).where(and(eq(payment.userId, userId), eq(payment.kind, "an")));
+  if (years.length !== 1) return;
+  const [owns] = await db.select({ id: tree.id }).from(tree).where(eq(tree.ownerId, userId)).limit(1);
+  if (!owns) return;
+  const [m] = await db.select({ by: treeMember.invitedBy }).from(treeMember)
+    .where(and(eq(treeMember.userId, userId), isNotNull(treeMember.invitedBy), ne(treeMember.invitedBy, userId))).orderBy(asc(treeMember.joinedAt)).limit(1);
+  if (!m?.by) return;
+  const made = await db.insert(referralBonus).values({ referredId: userId, referrerId: m.by, days: s.referralDays, createdAt: now })
+    .onConflictDoNothing().returning({ id: referralBonus.referredId });
+  if (!made.length) return;
+  const [cur] = await db.select({ paidUntil: accountPlan.paidUntil }).from(accountPlan).where(eq(accountPlan.userId, m.by));
+  if (cur?.paidUntil && cur.paidUntil > now) {
+    await db.update(accountPlan).set({ paidUntil: new Date(cur.paidUntil.getTime() + s.referralDays * DAY), updatedAt: now }).where(eq(accountPlan.userId, m.by));
+    await db.update(referralBonus).set({ appliedAt: now }).where(eq(referralBonus.referredId, userId));
+  }
+}
+
+/** Anul dăruit, plătit: se face codul din legătura pe care cel care a plătit o trimite celui care îl primește. */
+async function createGift(db: Db, p: PaidSession, now: Date) {
+  const code = randomBytes(12).toString("base64url");
+  await db.insert(gift).values({ id: code, paymentId: p.id, buyerId: p.userId || null, tier: p.tier ?? "familie", note: p.note ?? null, forName: p.forName ?? null, createdAt: now });
 }
 
 /** Are omul cartea PDF a arborelui plătită (sau aleasă din plan) în ultimele 12 luni? */
@@ -192,12 +245,17 @@ export async function includedBooksLeft(db: Pick<Db, "select">, userId: string, 
   const t = tierOf(access);
   if (access.kind !== "platit" || !t) return 0;
   const mode = tierBook(t, s);
-  if (mode === "separat") return 0;
   if (mode === "toti") return null;
   // Anul plătit acum a început cu 365 de zile înainte de sfârșitul lui (sau acum un an, la „Plătit” fără termen).
   const since = new Date((access.until ?? now).getTime() - YEAR_DAYS * DAY);
+  if (mode === "separat") {
+    // Pachetul Basic + cartea PDF: anul plătit așa aduce și o carte, aleasă la fel.
+    const [b] = await db.select({ n: sql<number>`count(*)::int` }).from(payment)
+      .where(and(eq(payment.userId, userId), eq(payment.kind, "an"), eq(payment.extra, "carte"), gte(payment.createdAt, since)));
+    if (!Number(b?.n ?? 0)) return 0;
+  }
   const [r] = await db.select({ n: sql<number>`count(*)::int` }).from(payment)
-    .where(and(eq(payment.userId, userId), eq(payment.kind, "carte"), eq(payment.currency, INCLUDED), gt(payment.createdAt, since)));
+    .where(and(eq(payment.userId, userId), eq(payment.kind, "carte"), eq(payment.currency, INCLUDED), gte(payment.createdAt, since)));
   return Number(r?.n ?? 0) >= 1 ? 0 : 1;
 }
 

@@ -9,6 +9,8 @@ import { bookIncluded, bookPaid, includedBooksLeft, money, priceFor, quoteYear }
 import { testAccess, userAccess } from "@/lib/plata";
 import { LIMIT_KEYS, TIERS, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
+import { giftsBy } from "@/lib/extra";
+import { siteOrigin } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
@@ -50,7 +52,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   } : null;
 
   const err = str("eroare");
-  const notice = str("gata") === "inclus" ? t("thanksIncluded") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
+  const notice = str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
     : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err ? t("err") : null;
 
   const status = payAccess.kind === "mereu" ? t("freeForever")
@@ -61,6 +63,9 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     : t("notNeeded");
   const currentTier = payAccess.kind === "platit" && payAccess.until && payAccess.until > new Date() ? payAccess.tier : null;
   const tl = trialLimits(s);
+  const bundle = lei ? s.bundleLei : s.bundleEur;
+  const gifts = await giftsBy(db, me.id);
+  const origin = await siteOrigin();
 
   const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
   const limitValue = (n: number | null) => (n === null ? t("unlimited") : nf.format(n));
@@ -98,6 +103,16 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
             <div className="actions"><button className={`btn${x === "familie" ? " primary" : ""}`}>{t("pay", { price: money(quote.value, locale).label })}</button></div>
           </form>
         )}
+        {paying && quote.ok && x === "basic" && !quote.upgradeFrom && bundle > 0 && (
+          <form action="/api/plata/start" method="post" className="form pay-form plan-bundle">
+            <input type="hidden" name="kind" value="an" />
+            <input type="hidden" name="tier" value="basic" />
+            <input type="hidden" name="pachet" value="1" />
+            <p><b>{t("bundleTitle")}</b> {t("bundleText", { price: money(bundle, locale).label, separate: money(quote.value + (lei ? s.bookLei : s.bookEur), locale).label })}</p>
+            {consent}
+            <div className="actions"><button className="btn">{t("pay", { price: money(bundle, locale).label })}</button></div>
+          </form>
+        )}
       </div>
     );
   };
@@ -120,6 +135,39 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
           {" "}{t("visitors")} {t("afterEnd")} {t("noAuto")}
         </p>
       </div>
+
+      {open && (
+        <div className="card" id="cadou">
+          <h2 style={{ marginTop: 0 }}>{t("giftTitle")}</h2>
+          <p className="muted">{t("giftText")}</p>
+          <form action="/api/plata/start" method="post" className="form pay-form">
+            <input type="hidden" name="kind" value="cadou" />
+            <label>{t("giftPlan")}
+              <select name="tier" defaultValue="familie">
+                {TIERS.map((x) => <option key={x} value={x}>{tierName(x)} · {t("perYear", { price: money(lei ? tierPrice(x, true, s).lei : tierPrice(x, true, s).eur, locale).label })}</option>)}
+              </select>
+            </label>
+            <label>{t("giftFor")}<input name="forName" maxLength={120} placeholder={t("giftForHint")} /></label>
+            <label>{t("giftNote")}<textarea name="note" maxLength={400} rows={3} placeholder={t("giftNoteHint")} /></label>
+            {consent}
+            <div className="actions"><button className="btn">{t("giftPay")}</button></div>
+          </form>
+          {gifts.length > 0 && (
+            <>
+              <h3>{t("giftsTitle")}</h3>
+              <ul className="gift-list">
+                {gifts.map((g) => (
+                  <li key={g.id}>
+                    {tierName(g.tier as Tier)}{g.forName ? ` · ${g.forName}` : ""}: {g.redeemedAt
+                      ? <span className="muted">{t("giftRedeemed", { date: date(g.redeemedAt) })}</span>
+                      : <><code>{`${origin}/cadou/${g.id}`}</code> <span className="muted">{t("giftSend")}</span></>}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
 
       {book && (
         <div className="card">

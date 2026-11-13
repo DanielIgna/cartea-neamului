@@ -4,7 +4,7 @@ import { recordConsent } from "@/lib/consent";
 import { isAdminUser } from "@/lib/admin";
 import { claimIncludedBook, createCheckout, isPayKind, money, priceFor, quoteYear, stripeReady } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { isTier, type Tier } from "@/lib/plans";
+import { isTier, tierPrice, type Tier } from "@/lib/plans";
 import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
 
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   const locale = await getLocale();
   const t = await getT("Plata");
   let price = priceFor(kind, locale, ownsTree, settings);
-  let year: { tier: Tier; upgradeFrom: Tier | null; paidUntil: Date | null } | null = null;
+  let year: { tier: Tier; upgradeFrom: Tier | null; paidUntil: Date | null; extra?: "carte" | null; forName?: string | null; note?: string | null } | null = null;
   if (kind === "an") {
     const tier = form.get("tier");
     if (!isTier(tier)) return back("eroare=1");
@@ -46,14 +46,25 @@ export async function POST(req: Request) {
     const a = settings.on ? access : await testAccess(db, me.id);
     const quote = quoteYear(tier, a, ownsTree, locale, settings);
     if (!quote.ok) return back(`eroare=${quote.reason === "downgrade" ? "jos" : "1"}`);
-    price = money(quote.value, locale);
-    year = { tier, upgradeFrom: quote.upgradeFrom, paidUntil: quote.until };
+    // Pachetul Basic + cartea PDF: doar pentru un an Basic întreg (nu la o trecere pe alt plan), cu prețul din Admin.
+    const bundle = form.get("pachet") === "1" && tier === "basic" && !quote.upgradeFrom && (locale === "ro" ? settings.bundleLei : settings.bundleEur) > 0;
+    price = money(bundle ? (locale === "ro" ? settings.bundleLei : settings.bundleEur) : quote.value, locale);
+    year = { tier, upgradeFrom: quote.upgradeFrom, paidUntil: quote.until, extra: bundle ? "carte" : null };
+  }
+  if (kind === "cadou") {
+    // Un an dăruit: prețul întreg al planului ales; biletul și numele celui care îl primește ajung pe pagina darului.
+    const tier = form.get("tier");
+    if (!isTier(tier)) return back("eroare=1");
+    const p = tierPrice(tier, true, settings);
+    price = money(locale === "ro" ? p.lei : p.eur, locale);
+    year = { tier, upgradeFrom: null, paidUntil: null, forName: String(form.get("forName") ?? "").trim().slice(0, 120) || null, note: String(form.get("note") ?? "").trim().slice(0, 400) || null };
   }
   await recordConsent(db, me.id, "withdrawal", true);
   try {
     const url = await createCheckout({
       kind, userId: me.id, email: me.email, treeId: kind === "carte" ? treeId : null,
-      name: kind === "carte" ? t("bookName") : t("yearName", { plan: t(`tiers.${year!.tier}.name`) }),
+      name: kind === "carte" ? t("bookName") : kind === "cadou" ? t("giftName", { plan: t(`tiers.${year!.tier}.name`) })
+        : year?.extra ? t("bundleName") : t("yearName", { plan: t(`tiers.${year!.tier}.name`) }),
       amount: price.amount, currency: price.currency, locale,
       successUrl: `${origin}/plata?gata=${kind}${tq}`, cancelUrl: `${origin}/plata?renuntat=1${tq}`,
       ...(year ?? {}),

@@ -1402,3 +1402,9 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .source-ext{font-size:13px}
 .dna-note{border-left:3px solid var(--accent);padding-left:10px}
 .dna-form label.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.plan-bundle{border-top:1px dashed var(--line, #ddd);padding-top:8px;margin-top:6px}
+.gift-list{padding-left:18px;font-size:14px}
+.gift-list code{word-break:break-all}
+.gift-note{margin:10px 0;padding:8px 12px;border-left:3px solid var(--accent);font-style:italic}
+.voice-nudge{font-size:14px;margin:0 0 8px;padding:8px 12px;border-radius:10px;border:1px dashed var(--accent);display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.book-print-from{font-size:13px}

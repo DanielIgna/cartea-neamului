@@ -147,6 +147,7 @@ export const itCarte: CarteCatalog = {
       preview: "ANTEPRIMA",
       previewNote: "{count, plural, one {Una pagina} other {# pagine}}. Questa è l’anteprima: puoi sfogliarla tutta; dopo il pagamento la scarichi senza la scritta sulle pagine.",
       printed: "Voglio il libro stampato",
+      printFrom: "da {price}, secondo pagine e copie",
       ready: "{count, plural, one {# pagina} other {# pagine}}. Si apre la finestra di stampa: scegli «Salva come PDF» (su iPhone: Condividi, poi Salva su File).",
     },
   },

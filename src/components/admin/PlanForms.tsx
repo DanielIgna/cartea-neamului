@@ -67,6 +67,16 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
         {field("bookEur", "Cartea PDF, €", "", 0.5)}
         {field("betaDays", "Zile gratuite pentru cei din beta", "cei cu cont dinainte de pornire (365 = primul an; au plafoanele Familie); 0 = fără")}
       </div>
+      <div className="limits-row">
+        {field("bundleLei", "Pachet Basic + cartea PDF, lei", "un an Basic cu o carte PDF inclusă (0 = fără pachet)", 0.5)}
+        {field("bundleEur", "Pachet Basic + cartea PDF, €", "", 0.5)}
+        {field("printFromLei", "Cartea tipărită „de la”, lei", "după ofertele tipografiilor; 0 = nu se arată", 1)}
+        {field("printFromEur", "Cartea tipărită „de la”, €", "", 1)}
+      </div>
+      <div className="limits-row">
+        {field("referralDays", "Zile în plus pentru o rudă adusă", "când o rudă invitată își deschide arborele și plătește primul an (0 = fără)")}
+        {field("reminderDays", "Aducerea aminte înainte de expirare, zile", "o dată pe an, pe email (0 = fără)")}
+      </div>
       <label className="check">
         <input type="checkbox" name="on" defaultChecked={value.on} />{" "}
         <b>Pornește plățile în site.</b> Fiecare om primește zilele gratuite de azi (sau de când își face contul); după ele, arborii se pot doar vedea,

@@ -6,6 +6,8 @@ import { planOverview } from "@/lib/plans";
 import { AdminNav, PlanPill, Stat, count, day, eur, lei, num } from "@/components/admin/ui";
 import { AccountPlanForm, LimitsForm } from "@/components/admin/PlanForms";
 import { partnerExport } from "@/lib/partners";
+import { dueReminders, reminderMailReady } from "@/lib/extra";
+import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Manager control · Admin" };
@@ -18,6 +20,7 @@ export default async function AdminControl() {
   await requireAdmin("/admin/control");
   const [ov, people, pm] = await Promise.all([planOverview(db), peopleList(db), partnerExport(db, "")]);
   const s = ov.settings;
+  const [due, mailReady] = [await dueReminders(db, s.reminderDays), reminderMailReady()];
   const biggest = new Map<string, (typeof ov.trees)[number]>();
   for (const t of ov.trees) if (t.ownerId && (biggest.get(t.ownerId)?.persons ?? -1) < t.persons) biggest.set(t.ownerId, t);
   const rows = people
@@ -63,6 +66,26 @@ export default async function AdminControl() {
           Comutatorul vânzării e bifa de jos, „Pornește plățile în site”: bifată = vânzarea merge; debifată și salvată = nimeni nu mai e oprit.
         </p>
         <LimitsForm value={s} />
+      </div>
+
+      <div className="card" id="expira">
+        <h3 style={{ marginTop: 0 }}>Expiră în curând</h3>
+        <p className="muted" style={{ marginTop: 0, maxWidth: "78ch" }}>
+          Anul nu se reînnoiește singur. Cei al căror an plătit se termină în următoarele {count(s.reminderDays, "zile")} și n-au primit încă aducerea
+          aminte. {mailReady
+            ? "Emailul pleacă singur, o dată pe zi, prin serviciul de email pus în Vercel."
+            : "Emailul nu pleacă singur până nu pui un serviciu de email (RESEND_API_KEY, REMINDER_FROM și CRON_SECRET în Vercel, plus o rulare zilnică a adresei /api/cron/aminteste-plata). Până atunci, scrie-le tu cu butonul de lângă nume."}
+        </p>
+        {due.length ? (
+          <ul>
+            {due.map((r) => (
+              <li key={r.userId}>
+                {r.name} ({r.email}), până la {day(r.paidUntil?.toISOString() ?? null)}{" "}
+                <a className="btn" href={`mailto:${r.email}?subject=${encodeURIComponent(`Cartea Neamului: anul tău se termină pe ${day(r.paidUntil?.toISOString() ?? null)}`)}&body=${encodeURIComponent(`Bună, ${r.name}!\n\nAnul tău în Cartea Neamului se termină pe ${day(r.paidUntil?.toISOString() ?? null)}. Nu se reînnoiește singur și nu se șterge nimic: după aceea arborele rămâne de citit. Dacă vrei să adaugi în continuare, poți plăti anul aici: ${SITE_URL}/plata\n\nMulțumim!`)}`}>Scrie-i</a>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="muted">Nimeni deocamdată.</p>}
       </div>
 
       <div className="card" id="parteneri">

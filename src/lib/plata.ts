@@ -39,7 +39,7 @@ export async function canWriteNow(db: Db, userId: string) {
 export async function accessBanner(db: Db, userId: string) {
   const { access, settings, ownsTree } = await accessOnce(db, userId);
   if (access.kind !== "proba" && access.kind !== "expirat") return null;
-  return { access, price: yearPrice(ownsTree, settings) };
+  return { access, price: yearPrice(ownsTree, settings), familie: { lei: settings.familieLei, eur: settings.familieEur } };
 }
 
 /** Proprietarul arborelui și accesul lui (o dată pe cerere). */

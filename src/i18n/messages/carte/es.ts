@@ -147,6 +147,7 @@ export const esCarte: CarteCatalog = {
       preview: "VISTA PREVIA",
       previewNote: "{count, plural, one {Una página} other {# páginas}}. Esta es la vista previa: puedes hojearla entera; después del pago la descargas sin la marca en las páginas.",
       printed: "Quiero el libro impreso",
+      printFrom: "desde {price}, según las páginas y los ejemplares",
       ready: "{count, plural, one {# página} other {# páginas}}. Se abrirá la ventana de impresión: elige «Guardar como PDF» (en iPhone: Compartir y luego Guardar en Archivos).",
     },
   },

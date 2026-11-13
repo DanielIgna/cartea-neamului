@@ -150,6 +150,7 @@ export const huCarte: CarteCatalog = {
       preview: "ELŐNÉZET",
       previewNote: "{count, plural, one {Egy oldal} other {# oldal}}. Ez az előnézet: végiglapozhatod; fizetés után a jelzés nélkül töltheted le.",
       printed: "Nyomtatott könyvet szeretnék",
+      printFrom: "{price} összegtől, az oldalak és példányok számától függően",
       ready: "{count, plural, one {# oldal} other {# oldal}}. Megnyílik a nyomtatási ablak: válaszd a „Mentés PDF-ként” lehetőséget (iPhone-on: Megosztás, majd Mentés a Fájlokba).",
     },
   },

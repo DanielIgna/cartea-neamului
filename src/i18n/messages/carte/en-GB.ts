@@ -147,6 +147,7 @@ export const enGBCarte: CarteCatalog = {
       preview: "PREVIEW",
       previewNote: "{count, plural, one {One page} other {# pages}}. This is the preview: you can leaf through all of it; after payment you download it without the mark on the pages.",
       printed: "I want the printed book",
+      printFrom: "from {price}, depending on pages and copies",
       ready: "{count, plural, one {One page} other {# pages}}. The print window will open: choose “Save as PDF” (on iPhone: Share, then Save to Files).",
     },
   },

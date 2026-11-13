@@ -230,6 +230,7 @@ export const accountPlan = pgTable("account_plan", {
   note: text("note"),
   paidUntil: timestamp("paid_until"), // până când are plătit (50 lei pe an); după, arborii lui sunt doar de citit. Vezi src/lib/plata.ts
   tier: text("tier"), // planul anului plătit: basic / familie / premium (src/lib/plans.ts); gol = fără an plătit
+  remindedFor: timestamp("reminded_for"), // sfârșitul anului pentru care s-a trimis deja aducerea aminte (o dată pe an)
   setBy: text("set_by").references(() => user.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -243,6 +244,7 @@ export const payment = pgTable("payment", {
   treeId: uuid("tree_id").references(() => tree.id, { onDelete: "set null" }),
   amount: integer("amount").notNull(), // în bani (lei × 100) sau cenți
   currency: text("currency").notNull(), // ron / eur
+  extra: text("extra"), // „carte” = pachetul Basic + cartea PDF (cartea se alege apoi din /plata)
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("payment_user_idx").on(t.userId, t.kind)]);
 
@@ -493,4 +495,27 @@ export const dnaLab = pgTable("dna_lab", {
   position: integer("position").notNull().default(0),
   visible: boolean("visible").notNull().default(true),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+// Un an dăruit (Daniel, 2026-11-13): cineva plătește planul pentru altcineva (de pildă părinții), cu un bilet scurt. Cine îl
+// primește deschide legătura /cadou/<cod> și anul trece pe contul lui. Vezi src/lib/extra.ts.
+export const gift = pgTable("gift", {
+  id: text("id").primaryKey(), // codul din legătură
+  paymentId: text("payment_id").notNull(),
+  buyerId: text("buyer_id").references(() => user.id, { onDelete: "set null" }),
+  tier: text("tier").notNull(),
+  note: text("note"),
+  forName: text("for_name"),
+  redeemedBy: text("redeemed_by").references(() => user.id, { onDelete: "set null" }),
+  redeemedAt: timestamp("redeemed_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Zilele în plus pentru cine aduce o rudă care își deschide arborele ei și plătește (o singură dată pentru fiecare rudă adusă).
+export const referralBonus = pgTable("referral_bonus", {
+  referredId: text("referred_id").primaryKey(),
+  referrerId: text("referrer_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  days: integer("days").notNull(),
+  appliedAt: timestamp("applied_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
