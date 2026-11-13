@@ -28,17 +28,20 @@ export async function findInvitation(db: Db, token: string) {
 export type AcceptResult = { ok: true; treeId: string; claimed: boolean } | { ok: false; reason: "invalid" | "expired" | "used" };
 
 /** Acceptă invitația: utilizatorul devine membru și, dacă invitația e pentru o persoană din arbore, își revendică fișa. */
-export async function acceptInvitation(db: Db, token: string, userId: string, now = new Date()): Promise<AcceptResult> {
+export async function acceptInvitation(db: Db, token: string, userId: string, now = new Date(),
+  writerRoom?: (treeId: string) => Promise<boolean>): Promise<AcceptResult> {
   const found = await findInvitation(db, token);
   if (!found) return { ok: false, reason: "invalid" };
   const inv = found.inv;
   if (inv.acceptedBy && inv.acceptedBy !== userId) return { ok: false, reason: "used" };
   if (inv.expiresAt < now) return { ok: false, reason: "expired" };
+  // Plafonul de scriitori al planului titularului: dacă s-a umplut între timp, ruda intră doar să vadă.
+  const role: Role = inv.role !== "viewer" && writerRoom && !(await writerRoom(inv.treeId)) ? "viewer" : inv.role;
   // Cine era deja în arbore cu un rol mai mic (de pildă primit doar să vadă cât proprietarul era în zilele gratuite) urcă la rolul din link.
   const [had] = await db.select({ role: treeMember.role }).from(treeMember).where(and(eq(treeMember.treeId, inv.treeId), eq(treeMember.userId, userId)));
-  if (!had) await db.insert(treeMember).values({ treeId: inv.treeId, userId, role: inv.role, invitedBy: inv.createdBy }).onConflictDoNothing();
-  else if (RANK[had.role] < RANK[inv.role])
-    await db.update(treeMember).set({ role: inv.role }).where(and(eq(treeMember.treeId, inv.treeId), eq(treeMember.userId, userId)));
+  if (!had) await db.insert(treeMember).values({ treeId: inv.treeId, userId, role, invitedBy: inv.createdBy }).onConflictDoNothing();
+  else if (RANK[had.role] < RANK[role])
+    await db.update(treeMember).set({ role }).where(and(eq(treeMember.treeId, inv.treeId), eq(treeMember.userId, userId)));
   await db.update(invitation).set({ acceptedBy: userId, acceptedAt: now }).where(eq(invitation.id, inv.id));
   let claimed = false;
   if (inv.personId) {

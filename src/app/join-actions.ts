@@ -1,7 +1,9 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { eq } from "drizzle-orm";
 import { db } from "@/db";
+import { joinRequest } from "@/db/schema";
 import { canInviteWriters } from "@/lib/plata";
 import { currentUser } from "@/lib/access";
 import { answerJoin, askToJoin, type JoinResult } from "@/lib/join";
@@ -41,7 +43,9 @@ export async function answerJoinRequest(id: string, accept: boolean): Promise<{ 
   const me = await currentUser();
   if (!me || !z.string().uuid().safeParse(id).success) return { error: t("signIn") };
   // În zilele gratuite, proprietarul primește rudele doar să vadă; cu anul plătit, să și adauge (src/lib/plans.ts).
-  const role = (await canInviteWriters(db, me.id)) ? "contributor" : "viewer";
+  // Peste plafonul de scriitori al planului, la fel: rudele intră doar să vadă.
+  const [jr] = await db.select({ treeId: joinRequest.treeId }).from(joinRequest).where(eq(joinRequest.id, id));
+  const role = jr && (await canInviteWriters(db, me.id, jr.treeId)) ? "contributor" : "viewer";
   const res = await answerJoin(db, me.id, id, !!accept, new Date(), role);
   revalidatePath("/mesaje");
   return res.error ? { error: t(`join.${res.error}`) } : { ok: true };

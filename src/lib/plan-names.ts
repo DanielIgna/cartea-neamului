@@ -6,3 +6,6 @@ export const PLANS = {
 } as const;
 export type Plan = keyof typeof PLANS;
 export const isPlan = (v: unknown): v is Plan => typeof v === "string" && Object.prototype.hasOwnProperty.call(PLANS, v);
+
+/** Planurile anului plătit, cu numele din panou (aceleași chei ca `TIERS` din src/lib/plans.ts). */
+export const TIER_LABELS = { basic: "Basic", familie: "Familie", premium: "Premium" } as const;

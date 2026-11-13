@@ -18,11 +18,34 @@ const num = (min: number, max: number, what: string) => z.coerce.number({ invali
   .min(min, min === 0 ? "Prețul nu poate fi negativ." : `Cel puțin ${min} ${what}.`).max(max, "E prea mult.");
 const flag = z.preprocess((v) => v === true || v === "on" || v === "true" || v === "1", z.boolean());
 
+/** Planurile anuale (Daniel, 2026-11-13): Basic, Familie (recomandat) și Premium. Prețurile și plafoanele se schimbă din Admin. */
+export const TIERS = ["basic", "familie", "premium"] as const;
+export type Tier = (typeof TIERS)[number];
+export const isTier = (v: unknown): v is Tier => typeof v === "string" && (TIERS as readonly string[]).includes(v);
+export const tierRank = (t: Tier) => TIERS.indexOf(t);
+/** Cartea PDF la un plan: plătită separat, una inclusă pe an (un arbore la alegere) sau inclusă la toți arborii titularului. */
+export const BOOK_MODES = ["separat", "una", "toti"] as const;
+export type BookMode = (typeof BOOK_MODES)[number];
+/** Ce se numără într-un arbore: persoane, poze, înregistrări cu glasul, acte și documente, cine scrie și câți arbori are titularul. */
+export const LIMIT_KEYS = ["persons", "photos", "audio", "docs", "writers", "trees"] as const;
+export type LimitKey = (typeof LIMIT_KEYS)[number];
+/** Plafoanele: `null` = fără limită. */
+export type Limits = Record<LimitKey, number | null>;
+
+const cap = (what: string) => num(0, 1_000_000, what).int("Scrie un număr întreg.");
+const bookMode = z.enum(BOOK_MODES).catch("separat");
+const tierFields = <P extends string>(p: P) => ({
+  [`${p}Persons`]: cap(""), [`${p}Photos`]: cap(""), [`${p}Audio`]: cap(""), [`${p}Docs`]: cap(""),
+  [`${p}Writers`]: cap(""), [`${p}Trees`]: cap(""), [`${p}Book`]: bookMode, [`${p}Print`]: num(0, 90, "").int("Scrie un număr întreg."),
+}) as Record<`${P}${"Persons" | "Photos" | "Audio" | "Docs" | "Writers" | "Trees" | "Print"}`, ReturnType<typeof cap>> & Record<`${P}Book`, typeof bookMode>;
+
 /**
  * Modelul de plată ales de Daniel pe 2026-11-12: fiecare om (cel care pornește arborele și fiecare rudă invitată) are câteva
- * zile gratuite cu totul deschis; după ele poate doar să vadă, până plătește anul (50 lei / 10 €). Cartea PDF se plătește separat.
- * `on` pornește regulile în site; până atunci nu e oprit nimeni. `startedAt` e ziua pornirii: cine avea cont dinainte primește
- * zilele gratuite de atunci, nu de la facerea contului.
+ * zile gratuite cu totul deschis; după ele poate doar să vadă, până plătește anul. Din 2026-11-13 anul are trei planuri:
+ * Basic (`priceLei` / `priceEur`, ca înainte), Familie și Premium, fiecare cu plafoanele lui. Cartea PDF se plătește separat
+ * la Basic. `on` pornește regulile în site; până atunci nu e oprit nimeni. `startedAt` e ziua pornirii: cine avea cont dinainte
+ * primește zilele gratuite de atunci, nu de la facerea contului.
+ * Plafoanele: 0 = fără limită.
  */
 export const PlanSettings = z.object({
   on: flag,
@@ -36,6 +59,16 @@ export const PlanSettings = z.object({
   bookEur: num(0, 1000, ""),
   betaDays: num(0, 3650, "zile").int("Scrie un număr întreg."),
   trialPersons: num(5, 100000, "persoane").int("Scrie un număr întreg."),
+  trialPhotos: cap(""),
+  trialAudio: cap(""),
+  trialDocs: cap(""),
+  ...tierFields("basic"),
+  familieLei: num(0, 5000, ""),
+  familieEur: num(0, 1000, ""),
+  ...tierFields("familie"),
+  premiumLei: num(0, 5000, ""),
+  premiumEur: num(0, 1000, ""),
+  ...tierFields("premium"),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
@@ -44,8 +77,26 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   betaDays: 365,
   // Cât încape familia apropiată (părinți, bunici, soț/soție, copii, frați, nepoți): în zilele gratuite, un arbore al cuiva
   // care n-a plătit nu crește peste atât (alegerea lui Daniel, 2026-11-13), ca să nu se facă tot neamul fără plată.
-  trialPersons: 30,
+  trialPersons: 30, trialPhotos: 40, trialAudio: 10, trialDocs: 10,
+  basicPersons: 100, basicPhotos: 200, basicAudio: 20, basicDocs: 40, basicWriters: 2, basicTrees: 1, basicBook: "separat", basicPrint: 0,
+  familieLei: 149, familieEur: 30,
+  familiePersons: 400, familiePhotos: 800, familieAudio: 80, familieDocs: 150, familieWriters: 8, familieTrees: 2, familieBook: "una", familiePrint: 0,
+  premiumLei: 249, premiumEur: 50,
+  premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "toti", premiumPrint: 20,
 };
+const capOf = (n: number) => (n > 0 ? n : null);
+const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;
+
+/** Plafoanele unui plan plătit. */
+export function tierLimits(t: Tier, s: PlanSettings): Limits {
+  return Object.fromEntries(LIMIT_KEYS.map((k) => [k, capOf(s[`${t}${K[k]}`])])) as Limits;
+}
+/** Plafoanele din zilele gratuite (și după ele, când arborele e doar de citit): un arbore, doar titularul scrie. */
+export const trialLimits = (s: PlanSettings): Limits =>
+  ({ persons: s.trialPersons, photos: capOf(s.trialPhotos), audio: capOf(s.trialAudio), docs: capOf(s.trialDocs), writers: 1, trees: 1 });
+/** Cartea PDF și reducerea la tipar pe un plan. */
+export const tierBook = (t: Tier, s: PlanSettings): BookMode => s[`${t}Book`];
+export const tierPrint = (t: Tier, s: PlanSettings): number => s[`${t}Print`];
 const KEY = "planuri";
 
 /** Setările plăților, cum le-a lăsat cel care ține site-ul (sau cele propuse, dacă nu le-a schimbat). */
@@ -81,21 +132,23 @@ export async function startSalesOnce(db: Pick<Db, "insert" | "select">, now = ne
 
 /** Planul ales pentru un cont; „gratuit” fără notă și fără plată șterge alegerea, ca omul să fie din nou ca toți. */
 export async function setAccountPlan(db: Pick<Db, "insert" | "delete">, userId: string, plan: Plan, note: string | null, by: string, now = new Date(),
-  paidUntil: Date | null = null) {
+  paidUntil: Date | null = null, tier: Tier | null = null) {
   const clean = note?.trim().slice(0, 200) || null;
   if (plan === "gratuit" && !clean && !paidUntil) {
     await db.delete(accountPlan).where(eq(accountPlan.userId, userId));
     return;
   }
-  await db.insert(accountPlan).values({ userId, plan, note: clean, paidUntil, setBy: by, updatedAt: now })
-    .onConflictDoUpdate({ target: accountPlan.userId, set: { plan, note: clean, paidUntil, setBy: by, updatedAt: now } });
+  // Cine are an plătit (sau „Plătit” pus de mână) are și un plan: Basic, dacă nu s-a ales altul.
+  const t = tier ?? (plan === "familie" || paidUntil ? "basic" : null);
+  await db.insert(accountPlan).values({ userId, plan, note: clean, paidUntil, tier: t, setBy: by, updatedAt: now })
+    .onConflictDoUpdate({ target: accountPlan.userId, set: { plan, note: clean, paidUntil, tier: t, setBy: by, updatedAt: now } });
 }
 
-export type AccountPlanRow = { plan: Plan; note: string | null; paidUntil: string | null; updatedAt: string | null };
+export type AccountPlanRow = { plan: Plan; tier: Tier | null; note: string | null; paidUntil: string | null; updatedAt: string | null };
 export async function accountPlans(db: Pick<Db, "select">): Promise<Map<string, AccountPlanRow>> {
   const rows = await db.select().from(accountPlan);
   return new Map(rows.map((r) => [r.userId, {
-    plan: isPlan(r.plan) ? r.plan : "gratuit", note: r.note, paidUntil: r.paidUntil?.toISOString() ?? null, updatedAt: r.updatedAt?.toISOString() ?? null,
+    plan: isPlan(r.plan) ? r.plan : "gratuit", tier: isTier(r.tier) ? r.tier : null, note: r.note, paidUntil: r.paidUntil?.toISOString() ?? null, updatedAt: r.updatedAt?.toISOString() ?? null,
   }]));
 }
 
@@ -104,7 +157,7 @@ const DAY = 86_400_000;
  * Ce poate face un om acum:
  * - „deschis”: plățile nu sunt pornite, toți pot tot (ca până acum);
  * - „mereu”: gratuit pentru totdeauna (familia, prietenii, contul demo, cel care ține site-ul);
- * - „platit”: are anul plătit (fără dată = pus „Familie” de mână, fără termen);
+ * - „platit”: are anul plătit pe un plan (Basic, Familie, Premium; fără dată = pus „Plătit” de mână, fără termen);
  * - „beta”: avea cont înainte de pornirea plăților, deci are primul an gratuit (`betaDays` de la pornire);
  * - „proba”: e în zilele gratuite;
  * - „expirat”: zilele gratuite (sau anul plătit) s-au terminat: arborii lui sunt doar de citit până plătește.
@@ -113,16 +166,18 @@ const DAY = 86_400_000;
 export type Access =
   | { kind: "deschis" }
   | { kind: "mereu" }
-  | { kind: "platit"; until: Date | null }
+  | { kind: "platit"; until: Date | null; tier: Tier }
   | { kind: "beta"; until: Date }
   | { kind: "proba"; until: Date; daysLeft: number }
   | { kind: "expirat"; since: Date };
 
-export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; exempt?: boolean }, s: PlanSettings, now = new Date()): Access {
+export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; tier?: Tier | null; exempt?: boolean }, s: PlanSettings, now = new Date()): Access {
   if (!s.on) return { kind: "deschis" };
   if (a.exempt || a.plan === "mereu") return { kind: "mereu" };
-  if (a.paidUntil && a.paidUntil > now) return { kind: "platit", until: a.paidUntil };
-  if (a.plan === "familie" && !a.paidUntil) return { kind: "platit", until: null };
+  // „familie” în `account_plan.plan` înseamnă „a plătit anul”; planul ales (Basic / Familie / Premium) e în `tier`.
+  const tier = a.tier ?? "basic";
+  if (a.paidUntil && a.paidUntil > now) return { kind: "platit", until: a.paidUntil, tier };
+  if (a.plan === "familie" && !a.paidUntil) return { kind: "platit", until: null, tier };
   const started = s.startedAt ? new Date(s.startedAt) : now;
   if (s.betaDays > 0 && a.createdAt < started) {
     const betaEnd = new Date(started.getTime() + s.betaDays * DAY);
@@ -138,45 +193,81 @@ export const mayWrite = (a: Access) => a.kind !== "expirat";
 
 /**
  * Reguli ca plata să nu se poată ocoli invitându-se unul pe altul (Daniel, 2026-11-13). Lucrul împreună rămâne deschis,
- * dar arborele crește peste familia apropiată doar dacă cineva l-a plătit:
+ * dar arborele crește doar cât îi dă planul titularului:
  * - „ține arborele”: proprietarul are anul (plătit, primul an din beta, gratuit mereu sau plățile oprite);
- * - în zilele gratuite, într-un arbore pe care nu-l ține nimeni, se pot trece cel mult `trialPersons` persoane;
- * - în zilele gratuite ai un singur arbore al tău;
- * - rudele se invită să scrie doar de cine are anul; în zilele gratuite le poți invita doar să vadă;
+ * - plafoanele unui arbore (persoane, poze, glasuri, acte, cine scrie) vin din planul titularului; în zilele gratuite
+ *   (și după ele) sunt cele de probă;
+ * - câți arbori are un om vine din planul lui;
+ * - rudele se invită să scrie doar într-un arbore pe care îl ține titularul, cât încap în plafonul de scriitori;
+ * - la Familie și Premium (și în primul an din beta, care are plafoanele Familie) cei care scriu nu plătesc separat;
+ *   la Basic, ruda invitată are zilele ei gratuite și apoi își plătește anul, ca înainte;
  * - o rudă invitată în zilele ei gratuite nu mai scrie într-un arbore al cărui proprietar a rămas doar cu citirea.
+ * Peste plafon nu se șterge nimic: se opresc doar adăugările noi.
  */
 export const holdsYear = (a: Access) => a.kind === "deschis" || a.kind === "mereu" || a.kind === "platit" || a.kind === "beta";
 
-/** Câte persoane mai încap: `null` = fără limită. */
-export function personRoom(me: Access, owner: Access, count: number, s: PlanSettings): number | null {
-  if (me.kind !== "proba" || holdsYear(owner)) return null;
-  return Math.max(0, s.trialPersons - count);
+/** Planul cu care se socotește un om: cel plătit; primul an din beta are plafoanele planului Familie. */
+export const tierOf = (a: Access): Tier | null => (a.kind === "platit" ? a.tier : a.kind === "beta" ? "familie" : null);
+
+/** Plafoanele unui om (pentru arborii lui): `null` = fără nicio limită. */
+export function limitsFor(a: Access, s: PlanSettings): Limits | null {
+  if (a.kind === "deschis" || a.kind === "mereu") return null;
+  const t = tierOf(a);
+  return t ? tierLimits(t, s) : trialLimits(s);
 }
 
-/** Poate scrie în arbore omul ăsta, ținând seama de proprietar? (Pe al lui arbore, dacă e în probă, da.) */
+/** Cât mai încape dintr-un lucru într-un arbore, după planul titularului: `null` = fără limită. */
+export function room(owner: Access, what: LimitKey, used: number, s: PlanSettings): { cap: number; used: number; left: number } | null {
+  const c = limitsFor(owner, s)?.[what] ?? null;
+  return c === null ? null : { cap: c, used, left: Math.max(0, c - used) };
+}
+
+/** Câte persoane mai încap: `null` = fără limită. Plafonul vine din planul titularului. */
+export function personRoom(owner: Access, count: number, s: PlanSettings): number | null {
+  return room(owner, "persons", count, s)?.left ?? null;
+}
+
+/** Cei care scriu în arborele titularului nu plătesc separat (Familie, Premium, beta, gratuit mereu, plăți oprite)? */
+export const coversWriters = (owner: Access) =>
+  owner.kind === "deschis" || owner.kind === "mereu" || owner.kind === "beta" || (owner.kind === "platit" && owner.tier !== "basic");
+
+/** Poate scrie în arbore omul ăsta, ținând seama de proprietar? (Pe al lui arbore, cât nu i-a expirat anul, da.) */
 export function writesInTree(me: Access, owner: Access | null, isOwner: boolean) {
+  if (isOwner) return me.kind !== "expirat";
+  if (owner && coversWriters(owner)) return true;
   if (me.kind === "expirat") return false;
-  if (me.kind !== "proba" || isOwner || !owner) return true;
+  if (me.kind !== "proba" || !owner) return true;
   return owner.kind !== "expirat";
 }
 
-/** Poate invita rude cu drept de scriere (nu doar să vadă)? */
-export const mayInviteWriters = (me: Access) => holdsYear(me);
+/** Se poate invita încă o rudă care să scrie în arbore? Doar dacă titularul ține arborele și mai e loc în plafonul de scriitori. */
+export function mayInviteWriters(owner: Access, writers: number, s: PlanSettings) {
+  if (!holdsYear(owner)) return false;
+  const r = room(owner, "writers", writers, s);
+  return r === null || r.left > 0;
+}
 
-/** Poate porni încă un arbore? În zilele gratuite, doar unul. */
-export const mayStartTree = (me: Access, ownedTrees: number) => me.kind !== "proba" || ownedTrees < 1;
+/** Poate porni încă un arbore? Câți arbori are fiecare plan (în zilele gratuite, unul). */
+export function mayStartTree(me: Access, ownedTrees: number, s: PlanSettings) {
+  const c = limitsFor(me, s)?.trees ?? null;
+  return c === null || ownedTrees < c;
+}
 
-/** Prețul anului pentru un om: cel care are un arbore al lui plătește prețul întreg, ruda invitată prețul pentru invitați. */
-export const yearPrice = (ownsTree: boolean, s: PlanSettings) =>
-  ownsTree ? { lei: s.priceLei, eur: s.priceEur } : { lei: s.invitePriceLei, eur: s.invitePriceEur };
+/** Prețul anului pe un plan. La Basic, ruda invitată (fără arbore al ei) plătește prețul pentru invitați. */
+export function tierPrice(t: Tier, ownsTree: boolean, s: PlanSettings): { lei: number; eur: number } {
+  if (t === "familie") return { lei: s.familieLei, eur: s.familieEur };
+  if (t === "premium") return { lei: s.premiumLei, eur: s.premiumEur };
+  return ownsTree ? { lei: s.priceLei, eur: s.priceEur } : { lei: s.invitePriceLei, eur: s.invitePriceEur };
+}
+/** Prețul anului Basic pentru un om (cel mai mic: cel arătat în bandă). */
+export const yearPrice = (ownsTree: boolean, s: PlanSettings) => tierPrice("basic", ownsTree, s);
 
-/** Câți plătesc acum și cât ar aduce anul dacă toți cei în probă sau cu timpul expirat ar plăti. */
+/** Câți plătesc acum și cât ar aduce anul dacă toți cei în probă sau cu timpul expirat ar plăti (măcar Basic). */
 export function revenue(people: { access: Access; ownsTree: boolean }[], s: PlanSettings) {
   let paying = 0, leiNow = 0, wouldPay = 0, leiPossible = 0;
   for (const p of people) {
-    const { lei } = yearPrice(p.ownsTree, s);
-    if (p.access.kind === "platit") { paying++; leiNow += lei; leiPossible += lei; }
-    if (p.access.kind === "proba" || p.access.kind === "expirat") { wouldPay++; leiPossible += lei; }
+    if (p.access.kind === "platit") { const { lei } = tierPrice(p.access.tier, p.ownsTree, s); paying++; leiNow += lei; leiPossible += lei; }
+    if (p.access.kind === "proba" || p.access.kind === "expirat") { wouldPay++; leiPossible += yearPrice(p.ownsTree, s).lei; }
   }
   return { paying, wouldPay, leiYearNow: leiNow, leiYearPossible: leiPossible };
 }
@@ -220,7 +311,7 @@ export async function planOverview(db: Db, now = new Date()) {
   const access = new Map<string, Access>();
   for (const p of people) {
     const ap = plans.get(p.id);
-    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, exempt: p.exempt }, sim, now));
+    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt }, sim, now));
   }
   const planOf = (uid: string | null): Plan => (uid ? plans.get(uid)?.plan ?? "gratuit" : "gratuit");
   const trees = (await treeSizes(db)).map((t) => ({ ...t, plan: planOf(t.ownerId), access: t.ownerId ? access.get(t.ownerId) ?? null : null }));
@@ -234,6 +325,9 @@ export async function planOverview(db: Db, now = new Date()) {
       proba: kinds.filter((k) => k === "proba").length,
       expirat: kinds.filter((k) => k === "expirat").length,
       beta: kinds.filter((k) => k === "beta").length,
+      basic: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "basic").length,
+      familie: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "familie").length,
+      premium: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "premium").length,
     },
   };
 }

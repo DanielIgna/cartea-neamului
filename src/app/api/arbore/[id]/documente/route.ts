@@ -6,6 +6,7 @@ import { currentUser, roleIn, can } from "@/lib/access";
 import { documentKey, putObject, storageConfigured } from "@/lib/storage";
 import { fileType } from "@/lib/file-type";
 import { getT } from "@/i18n/server";
+import { quotaOf, treeRoom } from "@/lib/plata";
 
 // Sub limita de 4,5 MB a corpului unei cereri pe Vercel.
 const MAX_DOCUMENT_BYTES = 4 * 1024 * 1024;
@@ -45,6 +46,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!ALLOWED.test(type)) return Response.json({ error: te("fileType") }, { status: 415 });
 
   const v = parsed.data;
+  // Cota planului titularului (poze, înregistrări cu glasul, acte): ce e deja salvat rămâne; se opresc doar încărcările noi.
+  const quota = quotaOf(v.kind);
+  const left = await treeRoom(db, treeId, quota);
+  if (left && left.left < 1) {
+    return Response.json({ error: te(quota === "photos" ? "quotaPhotos" : quota === "audio" ? "quotaAudio" : "quotaDocs", { cap: String(left.cap) }) }, { status: 403 });
+  }
   const [p] = await db.select({ id: person.id }).from(person).where(and(eq(person.id, v.personId), eq(person.treeId, treeId)));
   if (!p) return Response.json({ error: te("personGone") }, { status: 404 });
 

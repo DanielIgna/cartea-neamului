@@ -108,6 +108,8 @@ const ADDITIVE = [
     "key" text PRIMARY KEY NOT NULL, "value" jsonb NOT NULL,
     "updated_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "paid_until" timestamp`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "tier" text`,
+  sql`UPDATE "account_plan" SET "tier" = 'basic' WHERE "tier" IS NULL AND ("plan" = 'familie' OR "paid_until" > now())`,
   sql`CREATE TABLE IF NOT EXISTS "payment" (
     "id" text PRIMARY KEY NOT NULL, "user_id" text REFERENCES "user"("id") ON DELETE set null, "kind" text NOT NULL,
     "tree_id" uuid REFERENCES "tree"("id") ON DELETE set null, "amount" integer NOT NULL, "currency" text NOT NULL,

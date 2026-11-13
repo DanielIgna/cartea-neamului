@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { accountPlan, tree } from "@/db/schema";
+import { tree } from "@/db/schema";
 import { requireUser, roleInTree } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { operator } from "@/lib/legal";
-import { bookPaid, priceFor, stripeReady } from "@/lib/plati";
-import { userAccess } from "@/lib/plata";
+import { bookIncluded, bookPaid, includedBooksLeft, money, priceFor, quoteYear } from "@/lib/plati";
+import { testAccess, userAccess } from "@/lib/plata";
+import { LIMIT_KEYS, TIERS, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
@@ -17,50 +18,87 @@ export async function generateMetadata() {
 const UUID = /^[0-9a-f-]{36}$/i;
 
 /**
- * Plata: anul în Cartea Neamului și, cu `?carte=<arbore>`, cartea PDF a acelui arbore. Omul bifează că accesul începe imediat
- * (fără cele 14 zile de retragere), apoi plătește pe pagina Stripe. Cât timp plățile sunt oprite din Admin, doar adminul vede
- * butoanele (ca să încerce plata); ceilalți află că nu trebuie să plătească nimic.
+ * Plata: cele trei planuri pe un an (Basic, Familie, Premium) și, cu `?carte=<arbore>`, cartea PDF a acelui arbore.
+ * Omul bifează că accesul începe imediat (fără cele 14 zile de retragere), apoi plătește pe pagina Stripe. Cât timp vânzarea
+ * e oprită din Admin, doar adminul vede butoanele (ca să încerce plata); ceilalți află că nu trebuie să plătească nimic.
+ * Prețurile și plafoanele vin din Admin → Manager control.
  */
 export default async function PlataPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const me = await requireUser("/plata");
   const q = await searchParams;
   const str = (k: string) => (typeof q[k] === "string" ? (q[k] as string) : "");
   const [t, locale] = await Promise.all([getT("Plata"), getLocale()]);
-  const { access, settings, ownsTree } = await userAccess(db, me.id);
+  const { access, settings: s, ownsTree } = await userAccess(db, me.id);
   const admin = isAdminUser(me);
-  const open = settings.on || admin;
+  const open = s.on || admin;
+  // Cât timp vânzarea e oprită, adminul face plăți de probă ca un om obișnuit: îi arătăm anul lui de probă, dacă l-a plătit.
+  const payAccess: Access = s.on ? access : admin ? await testAccess(db, me.id) : access;
   const date = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(d);
+  const nf = new Intl.NumberFormat(locale);
   const op = operator();
-  // Cât timp plățile sunt oprite, adminul poate face o plată de probă: îi arătăm până când a plătit, nu „totul e gratuit”.
-  const adminPaidUntil = admin && !settings.on
-    ? (await db.select({ until: accountPlan.paidUntil }).from(accountPlan).where(eq(accountPlan.userId, me.id)))[0]?.until ?? null : null;
+  const lei = locale === "ro";
+  const tierName = (x: Tier) => t(`tiers.${x}.name`);
 
   const treeId = UUID.test(str("carte")) ? str("carte") : null;
-  const book = treeId && (await roleInTree(db, treeId, me.id))
-    ? { id: treeId, name: (await db.select({ name: tree.name }).from(tree).where(eq(tree.id, treeId)))[0]?.name ?? "", paid: await bookPaid(db, me.id, treeId) }
-    : null;
+  const bookTree = treeId && (await roleInTree(db, treeId, me.id))
+    ? (await db.select({ id: tree.id, name: tree.name, ownerId: tree.ownerId }).from(tree).where(eq(tree.id, treeId)))[0] ?? null : null;
+  const book = bookTree ? {
+    ...bookTree,
+    paid: await bookPaid(db, me.id, bookTree.id),
+    included: bookIncluded(payAccess, s, bookTree.ownerId === me.id),
+    canClaim: (await includedBooksLeft(db, me.id, payAccess, s)) === 1,
+  } : null;
 
   const err = str("eroare");
-  const notice = str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
-    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err ? t("err") : null;
+  const notice = str("gata") === "inclus" ? t("thanksIncluded") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
+    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err ? t("err") : null;
 
-  const status = access.kind === "mereu" ? t("freeForever")
-    : access.kind === "platit" ? (access.until ? t("paidUntil", { date: date(access.until) }) : t("freeForever"))
-    : access.kind === "beta" ? t("beta", { date: date(access.until) })
-    : access.kind === "proba" ? t("trial", { days: access.daysLeft })
-    : access.kind === "expirat" ? t("ended")
-    : admin ? (adminPaidUntil && adminPaidUntil > new Date() ? t("adminPaid", { date: date(adminPaidUntil) }) : t("adminTest"))
+  const status = payAccess.kind === "mereu" ? t("freeForever")
+    : payAccess.kind === "platit" ? (payAccess.until ? t("tierUntil", { plan: tierName(payAccess.tier), date: date(payAccess.until) }) : t("freeForever"))
+    : payAccess.kind === "beta" ? `${t("beta", { date: date(payAccess.until) })} ${t("betaLimits")}`
+    : payAccess.kind === "proba" ? (s.on ? t("trial", { days: payAccess.daysLeft }) : t("adminTest"))
+    : payAccess.kind === "expirat" ? t("ended")
     : t("notNeeded");
+  const currentTier = payAccess.kind === "platit" && payAccess.until && payAccess.until > new Date() ? payAccess.tier : null;
+  const tl = trialLimits(s);
 
-  const payForm = (kind: "an" | "carte") => {
-    const price = priceFor(kind, locale, ownsTree, settings);
+  const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
+  const limitValue = (n: number | null) => (n === null ? t("unlimited") : nf.format(n));
+
+  const card = (x: Tier) => {
+    const lim = tierLimits(x, s);
+    const p = tierPrice(x, ownsTree, s);
+    const full = money(lei ? p.lei : p.eur, locale).label;
+    const quote = quoteYear(x, payAccess, ownsTree, locale, s);
+    const mode = tierBook(x, s), pct = tierPrint(x, s);
+    const paying = open && quote.ok;
     return (
-      <form action="/api/plata/start" method="post" className="form pay-form">
-        <input type="hidden" name="kind" value={kind} />
-        {kind === "carte" && book && <input type="hidden" name="treeId" value={book.id} />}
-        <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>
-        <div className="actions"><button className="btn primary">{t("pay", { price: price.label })}</button></div>
-      </form>
+      <div key={x} className={`plan-card${x === "familie" ? " recommended" : ""}${currentTier === x ? " current" : ""}`}>
+        {x === "familie" && <span className="plan-badge">{t("recommended")}</span>}
+        <h3>{tierName(x)}</h3>
+        <p className="plan-price">{t("perYear", { price: full })}</p>
+        <p className="muted plan-lead">{t(`tiers.${x}.lead`)}</p>
+        <ul className="plan-limits">
+          {LIMIT_KEYS.map((k) => <li key={k}><span>{t(`lim.${k}`)}</span><b>{limitValue(lim[k])}</b></li>)}
+          <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s).label })}</b></li>
+          <li><span>{t("lim.print")}</span><b>{pct > 0 ? t("printOff", { pct }) : t("printFull")}</b></li>
+        </ul>
+        <p className="muted plan-writers">{x === "basic" ? t("writersPay") : t("writersFree")}</p>
+        {currentTier === x && <p className="plan-now">{t("yourPlan")}</p>}
+        {open && !quote.ok && quote.reason === "downgrade" && payAccess.kind === "platit" && payAccess.until &&
+          <p className="muted">{t("noDowngrade", { date: date(payAccess.until) })}</p>}
+        {paying && quote.ok && quote.upgradeFrom && quote.until &&
+          <p>{t("upgrade", { plan: tierName(x), price: money(quote.value, locale).label, days: quote.daysLeft, date: date(quote.until) })}</p>}
+        {paying && quote.ok && !quote.upgradeFrom && quote.until && <p className="muted">{t("extend", { date: date(quote.until) })}</p>}
+        {paying && (
+          <form action="/api/plata/start" method="post" className="form pay-form">
+            <input type="hidden" name="kind" value="an" />
+            <input type="hidden" name="tier" value={x} />
+            {consent}
+            <div className="actions"><button className={`btn${x === "familie" ? " primary" : ""}`}>{t("pay", { price: money(quote.value, locale).label })}</button></div>
+          </form>
+        )}
+      </div>
     );
   };
 
@@ -71,19 +109,39 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         {notice && <p role="status" className={err ? "err" : "pay-ok"}>{notice}{err === "curand" && <> <Link href="/contact">{t("contact")}</Link></>}</p>}
         <h2>{t("yearTitle")}</h2>
         <p>{status}</p>
-        {open && access.kind !== "mereu" && !(access.kind === "platit" && !access.until) && (
-          <>
-            <p className="muted">{t("yearText")}</p>
-            {payForm("an")}
-          </>
-        )}
+        <p className="muted">{t("yearText")}</p>
+      </div>
+
+      <div className="plan-cards">{TIERS.map(card)}</div>
+
+      <div className="card">
+        <p className="muted" style={{ margin: 0 }}>
+          {t("trialLimits", { days: s.trialDays, persons: tl.persons ?? 0, photos: tl.photos ?? 0, audio: tl.audio ?? 0, docs: tl.docs ?? 0 })}
+          {" "}{t("visitors")} {t("afterEnd")} {t("noAuto")}
+        </p>
       </div>
 
       {book && (
         <div className="card">
           <h2 style={{ marginTop: 0 }}>{t("bookTitle")}</h2>
-          {book.paid ? <p>{t("bookPaid")}</p> : <p className="muted">{t("bookText", { tree: book.name })}</p>}
-          {!book.paid && open && payForm("carte")}
+          {book.paid ? <p>{t("bookPaid")}</p> : book.included ? <p>{t("bookIncludedAll")}</p> : <p className="muted">{t("bookText", { tree: book.name })}</p>}
+          {!book.paid && !book.included && book.canClaim && (
+            <form action="/api/plata/start" method="post" className="form pay-form">
+              <input type="hidden" name="kind" value="carte" />
+              <input type="hidden" name="inclus" value="1" />
+              <input type="hidden" name="treeId" value={book.id} />
+              <p>{t("bookIncludedText", { tree: book.name })}</p>
+              <div className="actions"><button className="btn primary">{t("bookIncludedBtn")}</button></div>
+            </form>
+          )}
+          {!book.paid && !book.included && !book.canClaim && open && (
+            <form action="/api/plata/start" method="post" className="form pay-form">
+              <input type="hidden" name="kind" value="carte" />
+              <input type="hidden" name="treeId" value={book.id} />
+              {consent}
+              <div className="actions"><button className="btn primary">{t("pay", { price: priceFor("carte", locale, ownsTree, s).label })}</button></div>
+            </form>
+          )}
           <div className="actions"><Link className="btn" href={`/arbore/${book.id}/carte`}>{t("backToBook")}</Link></div>
         </div>
       )}

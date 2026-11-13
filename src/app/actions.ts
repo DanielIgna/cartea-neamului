@@ -298,7 +298,7 @@ export async function createInviteLink(_: unknown, form: FormData) {
   if (!parsed.success) return { error: tr("inviteInvalid") };
   const me = await currentUser();
   if (!me || !can(await roleIn(db, parsed.data.treeId, me.id), "editor")) return { error: tr("inviteNotAllowed") };
-  if (parsed.data.role !== "viewer" && !(await canInviteWriters(db, me.id))) return { error: tr("inviteNeedsYear") };
+  if (parsed.data.role !== "viewer" && !(await canInviteWriters(db, me.id, parsed.data.treeId))) return { error: tr("inviteNeedsYear") };
   const { token, expiresAt } = await createInvitation(db, { treeId: parsed.data.treeId, createdBy: me.id, role: parsed.data.role, personId: parsed.data.personId || null });
   const h = await headers();
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
@@ -308,7 +308,8 @@ export async function createInviteLink(_: unknown, form: FormData) {
 export async function acceptInvite(token: string) {
   const me = await currentUser();
   if (!me) redirect(`/intrare?next=${encodeURIComponent(`/invitatie/${token}`)}`);
-  const res = await acceptInvitation(db, token, me.id);
+  // Un link de scriere primit după ce s-a umplut plafonul de scriitori al planului: ruda intră doar să vadă.
+  const res = await acceptInvitation(db, token, me.id, new Date(), (treeId) => canInviteWriters(db, me.id, treeId));
   if (!res.ok) return res;
   redirect(`/arbore/${res.treeId}`);
 }

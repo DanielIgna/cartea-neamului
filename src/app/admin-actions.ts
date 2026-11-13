@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { tree, user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
-import { PlanSettings, isPlan, savePlanSettings, setAccountPlan } from "@/lib/plans";
+import { PlanSettings, isPlan, isTier, savePlanSettings, setAccountPlan } from "@/lib/plans";
 import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
 import { isLocale } from "@/i18n/locales";
@@ -26,7 +26,8 @@ async function admin() {
   return isAdminUser(me) ? me : null;
 }
 
-const SETTING_FIELDS = ["trialDays", "priceLei", "priceEur", "invitePriceLei", "invitePriceEur", "bookLei", "bookEur", "betaDays", "trialPersons"] as const;
+/** Toate câmpurile setărilor din formular (zilele, prețurile și plafoanele fiecărui plan), în afară de comutator și ziua pornirii. */
+const SETTING_FIELDS = Object.keys(PlanSettings.shape).filter((k) => k !== "on" && k !== "startedAt");
 
 /** „Manager control”: zilele gratuite, prețurile și comutatorul care pornește regulile în site. */
 export async function savePlanLimits(_: AdminFormState, form: FormData): Promise<AdminFormState> {
@@ -41,7 +42,7 @@ export async function savePlanLimits(_: AdminFormState, form: FormData): Promise
   return { ok: saved.on ? "Am salvat. Plățile sunt pornite în site." : "Am salvat. Plățile rămân oprite: nu e oprit nimeni." };
 }
 
-/** „Manager control”: planul unui cont (gratuit, gratuit mereu, Familie), până când a plătit și o notă pentru cel care ține site-ul. */
+/** „Manager control”: planul unui cont (gratuit, gratuit mereu, plătit), planul anului (Basic, Familie, Premium), până când a plătit și o notă. */
 export async function saveAccountPlan(_: AdminFormState, form: FormData): Promise<AdminFormState> {
   const me = await admin();
   if (!me) return { error: "Nu ai voie aici." };
@@ -53,7 +54,8 @@ export async function saveAccountPlan(_: AdminFormState, form: FormData): Promis
   const paidUntil = until ? new Date(`${until}T23:59:59Z`) : null;
   const [u] = await db.select({ id: user.id }).from(user).where(eq(user.id, userId));
   if (!u) return { error: "Contul nu mai există." };
-  await setAccountPlan(db, userId, plan, String(form.get("note") ?? ""), me.id, new Date(), paidUntil);
+  const tier = form.get("tier");
+  await setAccountPlan(db, userId, plan, String(form.get("note") ?? ""), me.id, new Date(), paidUntil, isTier(tier) ? tier : null);
   revalidatePath("/", "layout");
   return { ok: "Salvat." };
 }
