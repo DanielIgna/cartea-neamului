@@ -25,6 +25,7 @@ export const nlContact: ContactCatalog = {
     "email": "Je e-mailadres",
     "message": "Bericht",
     "messagePlaceholder": "Schrijf hier wat je ons wilt laten weten…",
+    "privacyNote": "Je bericht bereikt ons per e-mail via FormSubmit (VS). Wil je dat niet, schrijf ons dan via WhatsApp of op het adres in het <privacy>Privacybeleid</privacy>.",
     "send": "Bericht versturen",
     "sending": "Bezig met versturen…",
     "sent": "Bedankt! Je bericht is verstuurd en we antwoorden je per e-mail.",

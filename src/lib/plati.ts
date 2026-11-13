@@ -81,6 +81,8 @@ export async function createCheckout(o: {
   tier?: Tier; upgradeFrom?: Tier | null; paidUntil?: Date | null;
   /** Pachetul Basic + cartea PDF („carte”) sau, la „cadou”, pentru cine e și biletul. */
   extra?: "carte" | null; forName?: string | null; note?: string | null;
+  /** Textul acordului pentru începerea imediată (fără retragere) și datele vânzătorului, scrise pe pagina Stripe și pe factură. */
+  waiver?: string; seller?: string;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
     mode: "payment",
@@ -100,6 +102,13 @@ export async function createCheckout(o: {
     // probă cu sume mici, fără să se schimbe prețurile din Admin. Suma plătită nu se verifică la confirmare.
     allow_promotion_codes: "true",
   });
+  // Confirmarea pe suport durabil a renunțării la retragere (OUG 34/2014, art. 12 alin. 7 și art. 16 lit. m): sub butonul de plată
+  // din Stripe și în descrierea facturii care pleacă pe email; în subsolul facturii, cine vinde.
+  if (o.waiver) {
+    body.set("custom_text[submit][message]", o.waiver.slice(0, 1200));
+    body.set("invoice_creation[invoice_data][description]", o.waiver.slice(0, 1500));
+  }
+  if (o.seller) body.set("invoice_creation[invoice_data][footer]", o.seller.slice(0, 5000));
   if (o.treeId) body.set("metadata[treeId]", o.treeId);
   if (o.tier) body.set("metadata[tier]", o.tier);
   if (o.upgradeFrom) body.set("metadata[upgradeFrom]", o.upgradeFrom);

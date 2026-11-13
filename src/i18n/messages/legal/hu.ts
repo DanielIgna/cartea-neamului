@@ -4,7 +4,7 @@ export const huLegal: LegalCatalog = {
   Legal: {
     updated: "Utolsó módosítás: {date}",
     contactTitle: "Kapcsolat",
-    contactLine: "{name} (székhely: {address}; CUI {cui}, cégjegyzékszám {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>.",
+    contactLine: "{name} (székhely: {address}; CUI {cui}, cégjegyzékszám {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>. Telefon és WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Adatvédelmi tájékoztató",
       metaDescription: "Milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket.",
@@ -33,6 +33,7 @@ export const huLegal: LegalCatalog = {
           l10: "<b>A régi családi ház:</b> amit egy személy oldalán a család házáról írsz (a cím vagy a falu, ki építette, az év, fényképek és a története). Csak az látja, akit te kiválasztasz, ahogy az emlékeknél.",
           l13: "<b>A kezdőlapra javasolt fényképek</b>, csak ha te magad javasolsz egyet a családi albumból: a fénykép másolata, az alá írt sor, ki javasolta, mikor, milyen nyelven, és a bejelölt hozzájárulás szövegének változata. Amíg nincs jóváhagyva, csak mi látjuk.",
           l14: "<b>Ha írsz nekünk</b> a Kapcsolat oldalról: a neved, az e-mail-címed (hogy válaszolhassunk) és az üzeneted. Nem tároljuk őket az oldalon: egyenesen az e-mail-fiókunkba kerülnek. Ha WhatsAppon írsz nekünk, látjuk a telefonszámodat, a WhatsApp-nevedet és amit írsz.",
+          l15: "<b>Fizetések és ajándékok:</b> mit fizettél, mennyit, mikor és melyik csomagot választottad (a kártyaadataid nélkül, ezeket sosem látjuk), a hozzájárulásod az azonnali kezdéshez, az ajándékba adott év (a megajándékozott neve és az üzeneted, ha megírod), a plusz napok, amelyeket akkor kapsz, ha hozol egy rokont, aki fizet, és az e-mailek, amelyekkel emlékeztetünk, hogy lejár az éved. Azt is feljegyezzük, meddig van Megőrzésed a családfádra.",
           l11: "<b>A böngésződben</b>, az oldal végén felsorolt sütiken kívül néhány választás, amely csak a telefonodon vagy a számítógépeden marad, hogy ne kelljen minden alkalommal újra megadnod: a családágak, amelyeket látni szeretnél, mit választottál legutóbb „Az emberiség története”, az „Ősi nemzetségtáblák” és „A hit szabadsága” oldalon, a személyek, amelyeket nem duplikátumként jelöltél meg, hogy elrejtetted-e az alkalmazás telepítésére hívó kártyát, és hogy láttad-e már a partner kártyáját a könyv letöltése után. Ha „Rendben”-t mondtál az időmérésre, az utoljára számolt perc is, legfeljebb egy óra, hogy akkor is eljusson hozzánk, ha sietve bezárod az oldalt.",
           l12: "<b>A szerver technikai naplói</b> (IP-cím, kért oldal, időpont), rövid ideig megőrizve, hogy kijavíthassuk a hibákat.",
         },
@@ -44,6 +45,7 @@ export const huLegal: LegalCatalog = {
           l4: "Az élő rokonok esetében, akiket a családfába beírsz, a jogalap a család jogos érdeke, hogy megőrizze a történetét, gondosan: a családfák magánjellegűek, az élők pedig csak a saját családfájukban láthatók, soha más családoknál. Aki egy családfában szerepel, kérheti, hogy javítsuk vagy töröljük az adatait.",
           l5: "A hozzájárulásod alapján, amelyet bármikor visszavonhatsz: a „Hit” fejezet (9. cikk (2) bekezdés a) pont), a „nagyszülőknél” rögzített történetek, az „Ugyanonnan”, az oldal használatának mérése, a partnerek kedvezményei és a kezdőlapra javasolt fényképek (6. cikk (1) bekezdés a) pont). A visszavonás nem változtat azon, ami előtte a megadott hozzájárulással történt.",
           l6: "Hogy válaszoljunk, amikor írsz nekünk (a Kapcsolat oldalról, e-mailben vagy WhatsAppon). A jogalap a jogos érdekünk, hogy válaszoljunk annak, aki keres minket (6. cikk (1) bekezdés f) pont), vagy ha a fiókodról írsz, a köztünk lévő szerződés (b) pont).",
+          l7: "A jogszabályok betartása érdekében: a számlák, a könyvelés és annak igazolása, hogy hozzájárultál a digitális tartalom azonnali megkapásához. A jogalap jogi kötelezettség (GDPR 6. cikk (1) bekezdés c) pont).",
         },
         who: {
           h: "Ki látja az adatokat",
@@ -54,6 +56,7 @@ export const huLegal: LegalCatalog = {
           l7: "<b>A kezdőlap fényképeit</b> bárki látja, aki megnyitja az oldalt: ezeket mi választottuk, vagy ti javasoltátok, és mi jóváhagytuk. Az általad javasoltakat bármikor visszavonhatod az „Egy élet filmen” részből, a családfában lévő oldaladon; ekkor lekerülnek a kezdőlapról, és a másolatuk törlődik.",
           l5: "<b>Mi</b> az adminisztrációs felületen csak azt látjuk, ami az oldal működtetéséhez kell: listákat és számokat a fiókokról (név, e-mail, mikor és milyen eszközről léptek be), a családfákról (név, hány személy és fájl van bennük), minden fióknál, mennyit adott hozzá (hány személyt, emléket, fényképet, meghívót és üzenetet), és azoknál, akik „Rendben”-t mondtak, mennyi időt töltenek az oldal egyes részein. Látjuk a családfák személyeinél végzett változtatások előzményeit is (ki, milyen nevet, dátumot vagy helyet, mikor változtatott meg), hogy visszavonhassunk egy törlést vagy hibát, és megállíthassuk azt, aki tönkretesz egy családfát, valamint a kezdőlapra javasolt fényképeket, hogy jóváhagyjuk őket. Ott egy rövid megjegyzést is vezethetünk a fiókról, például hogy ingyenes marad. Az emlékeket és az üzeneteket nem olvassuk, a „Hit” fejezetből pedig semmit sem számolunk; csak akkor nézzük meg őket, ha te kérsz segítséget, vagy ha a törvény kötelez rá.",
           l6: "Nem adunk el adatokat, nem jelenítünk meg reklámot, és senki másnak nem adjuk át őket, csak az alábbi szolgáltatóknak, partnerünknek, a PropManage-nek (csak azok e-mail-címét, akik bejelölték, ahogy lejjebb áll), valamint a hatóságoknak, ha a törvény kötelez rá.",
+          l8: "<b>A könyvelőnk</b> és az <b>ANAF</b> (a román adóhatóság) csak a számlák adatait látja: a nevedet, az e-mail-címedet, mit fizettél, mennyit és mikor, ahogy az adótörvény előírja.",
         },
         vendors: {
           h: "A szolgáltatók, akik segítenek nekünk",
@@ -63,7 +66,8 @@ export const huLegal: LegalCatalog = {
           l3: "<b>Google</b>: csak ha a „Folytatás Google-fiókkal” lehetőséget választod, megerősíti a személyazonosságodat a belépéskor.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Alapítvány, Egyesült Királyság): „A család térképe” térképdarabjai. A böngésződ közvetlenül tőlük kéri le őket, így ők látják, milyen IP-címről kéred.",
           l5: "<b>FormSubmit</b> (formsubmit.co, USA) e-mailben juttatja el hozzánk a Kapcsolat oldalról küldött üzeneteket. <b>WhatsApp</b> (WhatsApp Ireland Ltd., a Meta-csoport tagja), csak ha úgy döntesz, hogy ott írsz nekünk, a saját adatvédelmi szabályai szerint. <b>Stripe</b> (Stripe Payments Europe Ltd., Írország), csak ha fizetsz valamiért, a saját oldalán fogadja a kártyás fizetést; a kártyaadatokat sosem látjuk, csak azt, mit, mennyit és mikor fizettél (a könyveléshez, ameddig a törvény előírja).",
-          p2: "Az Európai Unión kívüli adattovábbításhoz ezek a szolgáltatók az Európai Bizottság által jóváhagyott általános szerződési feltételeket vagy az EU–USA adatvédelmi keretrendszert használják. Az élőkről semmit sem küldünk mesterségesintelligencia-szolgáltatásoknak.",
+          l6: "<b>Resend</b> (Resend Inc., USA) küldi az e-mailt, amellyel 14 nappal előtte emlékeztetünk, hogy lejár a kifizetett éved; csak az e-mail-címedet és az üzenet szövegét kapja meg.",
+          p2: "A Vercel, a Neon, a Google, a Stripe és a Resend adatfeldolgozási szerződések alapján dolgozik; az Európai Unión kívüli továbbításnál az EU–USA adatvédelmi keretre támaszkodnak, ahol tanúsítottak, valamint az Európai Bizottság által jóváhagyott általános szerződési feltételekre. A FormSubmit-tal nincs ilyen szerződésünk: az üzeneted csak azért halad át az USA-beli szerverein, hogy eljusson hozzánk, mert te kérted az elküldését; ha ezt nem szeretnéd, írj közvetlenül a <mail>{email}</mail> címre.",
         },
         partner: {
           h: "Partnerünk, a PropManage",
@@ -77,22 +81,27 @@ export const huLegal: LegalCatalog = {
         dna: {
           h: "A „DNS-tesztet szeretnék” kérés",
           p1: "Az <res>Ingyenes családfakutatási források</res> oldalon tájékoztatást kérhetsz tőlünk a DNS-tesztekről. Csak azt őrizzük meg, amit az űrlapba írsz (név, e-mail-cím, telefon, ha megadod, település és üzenet), és a hozzájárulásod dátumát, kizárólag azért, hogy válaszoljunk; a jogalap a hozzájárulásod. Ezek nem genetikai adatok: nem fogadunk, nem tárolunk és nem továbbítunk DNS-fájlokat, -eredményeket vagy -egyezéseket. A kérést nem küldjük el laboratóriumoknak, és nem kapunk jutalékot. A kérést csak az oldal üzemeltetője látja; töröljük, ha kéred, a(z) <mail>{email}</mail> címen, vagy ha már nincs rá szükség.",
+          p2: "A kérést legfeljebb 12 hónapig őrizzük a válaszunk után, aztán töröljük.",
         },
         keep: {
           h: "Meddig őrizzük az adatokat",
           p1: "Amíg fiókod van. Amit törölsz, azonnal eltűnik az oldalról, az adatbázis biztonsági másolatai pedig legfeljebb 30 napon belül maguktól felülíródnak. Ha törlöd a fiókodat, minden eltűnik, ami a tiéd: a fiók, a ládád emlékei, az üzenetek, amit másoknak írtál, és a hozzájárulások. A családfák a családé maradnak: a több taggal rendelkező családfa átszáll valamelyikükre, az pedig, amelyben egyedül vagy, teljesen törlődik. Az adatlapod a családfákban megmarad, hogy a családfa ne szakadjon meg, de a fiókoddal való kapcsolat nélkül; ha szeretnéd, az adataidtól is kiürítjük. Az oldal használatának mérését legfeljebb 13 hónapig őrizzük; ha azt mondod, „Már nem kérem”, azonnal töröljük.",
           p2: "A kezdőlapra javasolt fényképeket addig őrizzük, amíg vissza nem vonod őket, vagy nem törlöd a fiókodat; amelyiket nem választjuk ki, csak nálunk marad, és nem jelenik meg nyilvánosan. A Kapcsolat oldalról vagy WhatsAppon kapott üzeneteket addig őrizzük, amíg az ügyedet elintézzük; ha szeretnéd, hogy hamarabb töröljük őket, szólj.",
+          p3: "A fizetéseket, a számlákat és az azonnali kezdéshez adott hozzájárulást addig őrizzük, ameddig a számviteli törvény előírja (82/1991. sz. román törvény), általában legfeljebb 10 évig, akkor is, ha törlöd a fiókodat; ekkor már nem kapcsolódnak a fiókhoz. A szerver technikai naplói legfeljebb 30 nap alatt maguktól törlődnek.",
         },
         rights: {
           h: "A jogaid",
           p1: "Megtudhatod, milyen adataink vannak rólad, kijavíthatod, törölheted, magaddal viheted őket, kérheted, hogy egy bizonyos módon ne használjuk őket többé, és bármikor visszavonhatod a megadott hozzájárulásodat. Sok mindent magad is elintézhetsz az <data>Adataim</data> oldalon: letöltheted mindazt, ami a fiókodhoz tartozik, visszavonhatod a hozzájárulásodat a „Hit” fejezethez vagy a partnerek kedvezményeihez, leállíthatod az oldalon töltött idő mérését, vagy törölheted a fiókodat. Minden másért írj nekünk ide: <mail>{email}</mail>; legfeljebb egy hónapon belül válaszolunk.",
           p2: "Ha úgy érzed, hogy nem tartottuk tiszteletben a jogaidat, panaszt tehetsz az Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP) hatóságnál: B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+          p3: "Nem hozunk rólad joghatással járó automatizált döntést, és nem végzünk profilalkotást. Bármikor tiltakozhatsz a jogos érdeken alapuló adatkezelés ellen (GDPR 21. cikk); ilyenkor leállunk, kivéve, ha kényszerítő erejű jogos okunk van, vagy az adatok jogi igény védelméhez kellenek.",
         },
         kids: {
           h: "A gyerekek, az élők és azok, akik már nincsenek",
           l1: "A fiók legalább {minAge} éveseknek szól. A gyerekeket a szüleik beírhatják a családfába.",
           l2: "Aki élőként szerepel egy családfában, kérheti a családfa tulajdonosától vagy tőlünk, hogy javítsuk, rejtsük el vagy töröljük az adatait.",
           l3: "Az adatvédelmi törvény nem vonatkozik azokra, akik már nincsenek, de az emléküket ugyanazzal a tisztelettel őrizzük.",
+          l4: "Nem írunk külön mindenkinek, akit a rokonai felvettek egy családfába (ez aránytalan erőfeszítést igényelne, GDPR 14. cikk (5) bekezdés b) pont); ezért privátok a családfák, és ezek az emberek bármikor megtudhatják, mi áll róluk, kérhetik a helyesbítést vagy a törlést, és tiltakozhatnak.",
+          l5: "Az élő gyerekeknél csak a szükséges adatok kerülnek be (általában a név és a születési év). A szülők bármikor kérhetik a családfa tulajdonosától vagy tőlünk, hogy eltávolítsuk a gyerek fényképeit vagy adatait.",
         },
         cookies: {
           h: "Sütik",
@@ -102,8 +111,10 @@ export const huLegal: LegalCatalog = {
           l5: "<code>limba_intrebare</code>, csak ha ✕-szel bezárod az oldal nyelvére vonatkozó kérdést, hogy ne kérdezzük újra, egy évig őrizzük;",
           l3: "<code>tema</code>, a választott témával (világos, sötét vagy automatikus), egy évig őrizzük;",
           l6: "<code>cn-cookie-uri</code>, miután a sütikről szóló tájékoztatón megnyomtad az „Értem” gombot, hogy többé ne lásd, egy évig őrizzük;",
+          l7: "<code>cn-pastrare-anunt</code>, miután a Megőrzésről szóló tájékoztatón megnyomtad az „Értem” gombot, hogy ne lásd újra, egy évig tároljuk;",
           l4: "a <code>cn-parteneri</code>, csak ha a fiók létrehozásakor bejelölöd a partnerek kedvezményeit: legfeljebb 30 percig emlékszik a jelölésre, épp addig, amíg a választásod eljut az új fiókhoz (akkor is, ha Google-lal hozod létre), aztán eltűnik.",
           p2: "Nem használunk reklám-, statisztikai vagy közösségimédia-sütiket, és az oldal nem tölt be más cégek szkriptjeit. A böngésződ közvetlenül másoktól csak az OpenStreetMap térképdarabjait kéri le, és ha Google-lal léptél be, a Google-fiókod képét.",
+          p3: "Amikor fizetsz, a fizetési oldal a Stripe saját címén van; ott a Stripe a saját sütijeit használja, például csalás ellen, a saját adatvédelmi szabályai szerint.",
         },
         safety: {
           h: "Biztonság",
@@ -130,6 +141,7 @@ export const huLegal: LegalCatalog = {
           l1: "A fiók legalább {minAge} éveseknek szól. A gyerekeket a szüleik beírhatják a családfába.",
           l2: "Egy fiók egyetlen emberé. A jelszavadat csak te ismerd; amit a fiókodból tesznek, azért te felelsz.",
           l3: "A próbafióknak nyilvános jelszava van, tehát mindenkié: ne tegyél bele semmit a családodból.",
+          l4: "Fizetni csak az tud, aki betöltötte a 18. életévét.",
         },
         content: {
           h: "2. Mit teszel fel az oldalra",
@@ -138,6 +150,7 @@ export const huLegal: LegalCatalog = {
           l3: "Nem teszel fel semmi törvénytelent, sértőt vagy gyűlöletre uszítót, és mások adatait sem, ha nincs hozzá jogod.",
           l4: "Elrejthetjük vagy törölhetjük azt, ami sérti ezeket a feltételeket vagy a törvényt, és megmondjuk, miért.",
           l5: "Ha fényképet javasolsz a kezdőlapra, biztosítasz minket arról, hogy rajta vagy, vagy hogy mindenki hozzájárult, aki rajta van (gyermekeknél a szüleik), és megengeded, hogy nyilvánosan megmutassuk a kezdőlapon, amíg vissza nem vonod. Dönthetünk úgy, hogy nem tesszük ki, vagy bármikor levesszük.",
+          l6: "Ha az éved lejár és nem fizetsz, semmi sem törlődik: a családfáid megmaradnak, a nevek, dátumok, kapcsolatok és szövegek láthatók maradnak, a teljes családfát pedig bármikor letöltheted (GEDCOM és <data>Adataim</data>); csak nem adhatsz hozzá és nem változtathatsz semmit, amíg nem fizetsz. A más rokonok által feltöltött fotók ilyenkor csak kicsiben látszanak, hangjaik és irataik pedig nem nyílnak meg online, amíg te (a tulajdonos) nem fizetsz egy évet vagy Megőrzést. Amit te töltöttél fel, mindig teljes egészében és ingyen megnyithatod és letöltheted. Ugyanígy egy kisebb csomagnál ami a korlátai fölött van, megmarad és látható; csak az új hozzáadások állnak le.",
         },
         owner: {
           h: "3. Kié, amit feltöltesz",
@@ -162,7 +175,9 @@ export const huLegal: LegalCatalog = {
           l7: "Az év nem újul meg magától, és soha nem vonunk le automatikusan pénzt a kártyádról.",
           l8: "<b>A család könyve PDF-ben</b>, ha nincs benne a csomagodban, családfánként {bookLei} lej ({bookEur} €). Az előnézet ingyenes; fizetés után 12 hónapig annyiszor készítheted újra és töltheted le, ahányszor akarod.",
           l9: "<b>A nyomtatott könyv</b> megrendelésre készül: a könyv oldaláról kérsz tőlünk árajánlatot, az ár pedig az oldalak számától, a formátumtól, a borítótól és a példányszámtól függ. A Prémium csomaggal {premiumPrint}% kedvezményt kapsz az ajánlati árból.",
+          l10: "<b>A Megőrzés</b>, évi {keepLei} lej ({keepEur} €), minden csomagnál ugyanannyi, annak, akinek már volt egy éve (fizetett vagy az első ingyenes év): a kifizetett év után az egész család mindent lát és hallgat online (nagy fotók, hangok, iratok), új hozzáadások nélkül. Minden fizetéskor e-mailben megkapod a teljes archívum linkjét (az „Az archívumom” oldal). Egy családfa PDF-könyvével a csomag {keepBookLei} lej ({keepBookEur} €). A Megőrzés sem újul meg magától.",
           p2: "A fizetéskor mutatott ár a végső ár. Kártyával fizetsz, a Stripe-on keresztül; a kártyaadataidat sosem látjuk. Az eladó: {name}, CUI {cui}, cégjegyzékszám {regCom}, székhely: {address}.",
+          p3: "<b>Hogyan jön létre a szerződés:</b> a Fizetés oldalon kiválasztod a csomagot vagy a könyvet, látod a végső árat, bejelölöd a hozzájárulást az azonnali kezdéshez, és megnyomod a fizetés gombot; a Stripe oldalán fizetsz, és a szerződés a fizetés beérkezésekor jön létre. Fizetés előtt bármikor visszaléphetsz és javíthatod a választásodat. A visszaigazolás a számlával és a hozzájárulásoddal e-mailben érkezik. A szerződés román nyelven jön létre (a többi nyelv fordítás); ezek a Feltételek az oldalon maradnak, és bármikor elmentheted vagy kinyomtathatod őket.",
         },
         withdrawal: {
           h: "6. Az elállási jog",
@@ -170,6 +185,7 @@ export const huLegal: LegalCatalog = {
           l1: "<b>Az egy év A Család Könyvében és a PDF-könyv</b> digitális tartalom, amelyet közvetlenül a fizetés után megkapsz. Fizetés előtt bejelölöd, hogy azonnal kezdeni szeretnéd, és tudod, hogy ezzel elveszíted az elállási jogot (a 34/2014-es sürgősségi kormányrendelet 16. cikkének m) pontja). Jelölés nélkül nem lehet fizetni. A hozzájárulásodat dátummal együtt megőrizzük, a fizetés visszaigazolását pedig e-mailben kapod meg.",
           l2: "<b>A nyomtatott könyv</b> a te adataid alapján, kifejezetten neked készül, ezért arra sincs elállási jog (a 34/2014-es sürgősségi kormányrendelet 16. cikkének c) pontja). Ha a mi hibánkból sérülten vagy hibásan érkezik, újra elkészítjük, vagy visszaadjuk az árát.",
           l3: "Ha valami, amiért fizettél, nem úgy működik, ahogy ígértük, írj nekünk a(z) <mail>{email}</mail> címre, és rendbe tesszük, vagy visszaadjuk a pénzt. A fogyasztói jogaid megmaradnak.",
+          l4: "<b>Jogszabályi szavatosság:</b> amiért fizetsz, annak az ígért módon kell működnie a kifizetett éved alatt (a PDF-könyvnek 12 hónapig). Ha nem így van, jogod van az ingyenes kijavításhoz, és ha ez nem sikerül, árleszállításhoz vagy a szerződés megszüntetéséhez visszatérítéssel (141/2021. sz. román sürgősségi kormányrendelet, (EU) 2019/770 irányelv).",
           p2: "Panasszal bármikor írhatsz nekünk. Ha nem tudunk megegyezni, a román Nemzeti Fogyasztóvédelmi Hatósághoz (<anpc>ANPC</anpc>) vagy egy alternatív vitarendezési szervhez (<sal>SAL</sal>) fordulhatsz.",
         },
         reliability: {
@@ -187,10 +203,19 @@ export const huLegal: LegalCatalog = {
         law: {
           h: "10. Az alkalmazandó jog",
           p1: "Ezekre a feltételekre a román jog vonatkozik. A nézeteltéréseket először békés úton próbáljuk rendezni; ha ez nem lehetséges, Románia bíróságai döntenek.",
+          p2: "Ha fogyasztó vagy és másik országban élsz, a román jog választása nem fosztja meg a védelmedet, amelyet hazád kötelező szabályai adnak, és a lakóhelyed szerinti bíróság előtt is perelhetsz minket.",
         },
         changes: {
           h: "11. Változások",
           p1: "Ha ezekben a feltételekben valami fontosat változtatunk, még a változás hatályba lépése előtt értesítünk az oldalon.",
+          p2: "A már kifizetett év megtartja azt az árat és azokat a kereteket, amelyekért fizettél. Ha nem értesz egyet egy változással, a hatálybalépése előtt letöltheted az adataidat és megszüntetheted a fiókodat.",
+        },
+        dsa: {
+          h: "12. Jogellenes tartalom és kapcsolattartási pont",
+          p1: "A <mail>{email}</mail> cím az egyetlen kapcsolattartási pontunk az emberek, az uniós tagállamok hatóságai és az Európai Bizottság számára ((EU) 2022/2065 rendelet a digitális szolgáltatásokról). Írhatsz nekünk románul vagy angolul.",
+          l1: "Ha az oldalon olyasmit látsz, amit jogellenesnek tartasz (például jogosulatlanul feltöltött fényképet vagy rólad a hozzájárulásod nélkül írt adatokat), írj erre a címre, és add meg: hol van (a link, vagy a családfa és az adatlap neve), miért tartod jogellenesnek, a nevedet és az e-mail-címedet (kivéve, ha a törvény megengedi, hogy névtelen maradj), valamint hogy jóhiszeműen írsz.",
+          l2: "Visszaigazoljuk a beérkezést, gondosan és késedelem nélkül megvizsgáljuk, és megírjuk, mit döntöttünk.",
+          l3: "Ha elrejtünk vagy törlünk valamit, amit feltöltöttél, megírjuk, miért és milyen alapon. A döntést ugyanerre a címre írva megtámadhatod, és egy ember újra megvizsgálja; bírósághoz is fordulhatsz, vagy panaszt tehetsz az ANCOM-nál, Románia digitális szolgáltatási koordinátoránál.",
         },
       },
     },

@@ -30,6 +30,8 @@ function Inner({ t, from, message, again }: { t: ReturnType<typeof useTranslatio
       {from && <input type="hidden" name="from" value={from} />}
       {state?.error && <p className="err" role="alert">{t(`errors.${state.error}`)}</p>}
       <div className="actions"><button className="btn primary" disabled={pending}>{pending ? t("sending") : t("send")}</button></div>
+      {/* Informarea de la colectare (GDPR art. 13): pe unde trece mesajul și cum se poate ocoli. */}
+      <p className="muted" style={{ fontSize: 14, margin: 0 }}>{t.rich("privacyNote", { privacy: (c) => <a href="/confidentialitate">{c}</a> })}</p>
     </form>
   );
 }

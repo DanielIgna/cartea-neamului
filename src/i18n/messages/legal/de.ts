@@ -4,7 +4,7 @@ export const deLegal: LegalCatalog = {
   Legal: {
     updated: "Zuletzt geändert: {date}",
     contactTitle: "Kontakt",
-    contactLine: "{name} mit Sitz in {address} (CUI {cui}, Handelsregisternr. {regCom}, EUID {euid}). E-Mail: <mail>{email}</mail>.",
+    contactLine: "{name} mit Sitz in {address} (CUI {cui}, Handelsregisternr. {regCom}, EUID {euid}). E-Mail: <mail>{email}</mail>. Telefon und WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Datenschutzerklärung",
       metaDescription: "Welche Daten wir speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst.",
@@ -33,6 +33,7 @@ export const deLegal: LegalCatalog = {
           l10: "<b>Das alte Familienhaus:</b> was du auf der Seite einer Person über das Haus der Familie schreibst (Adresse oder Dorf, wer es gebaut hat, das Jahr, Fotos und seine Geschichte). Es sieht nur, wen du auswählst, wie bei den Erinnerungen.",
           l13: "<b>Für die Startseite vorgeschlagene Fotos</b>, nur wenn du selbst eines aus dem Familienalbum vorschlägst: eine Kopie des Fotos, die Zeile darunter, wer es vorgeschlagen hat, wann, in welcher Sprache und die Version der angekreuzten Einwilligung. Solange es nicht freigegeben ist, sehen nur wir es.",
           l14: "<b>Wenn du uns schreibst</b> über die Seite Kontakt: dein Name, deine E-Mail-Adresse (damit wir antworten können) und deine Nachricht. Wir speichern sie nicht auf der Seite: Sie gehen direkt in unser E-Mail-Postfach. Wenn du uns über WhatsApp schreibst, sehen wir deine Telefonnummer, deinen WhatsApp-Namen und was du schreibst.",
+          l15: "<b>Zahlungen und Geschenke:</b> was du bezahlt hast, wie viel, wann und welchen Plan du gewählt hast (ohne deine Kartendaten, die wir nie sehen), deine Zustimmung zum sofortigen Beginn, ein verschenktes Jahr (der Name der beschenkten Person und deine Notiz, falls du sie schreibst), die zusätzlichen Tage, wenn du einen Verwandten mitbringst, der bezahlt, und die E-Mails, mit denen wir dich an das Ende deines Jahres erinnern. Wir vermerken auch, bis wann du Aufbewahren für deinen Stammbaum hast.",
           l11: "<b>In deinem Browser</b>, neben den Cookies am Ende dieser Seite, ein paar Einstellungen, die nur auf deinem Handy oder Computer bleiben, damit du sie nicht jedes Mal neu wählen musst: die Familienlinien, die du sehen willst, was du zuletzt in „Die Geschichte der Menschheit“, „Alte Genealogien“ und „Die Freiheit zu glauben“ gewählt hast, die Personen, die du als keine Doppelten markiert hast, ob du die Karte zum Installieren der App ausgeblendet hast und ob du die Partnerkarte nach dem Herunterladen des Buches schon gesehen hast. Wenn du der Zeitmessung zugestimmt hast, auch die zuletzt gezählte Minute, höchstens eine Stunde, damit sie uns auch erreicht, wenn du die Seite eilig schließt.",
           l12: "<b>Die technischen Protokolle</b> des Servers (IP-Adresse, aufgerufene Seite, Uhrzeit), kurz aufbewahrt, damit wir Fehler beheben können.",
         },
@@ -44,6 +45,7 @@ export const deLegal: LegalCatalog = {
           l4: "Für die lebenden Verwandten, die du in den Stammbaum einträgst, ist die Rechtsgrundlage das berechtigte Interesse der Familie, ihre Geschichte zu bewahren, mit Sorgfalt: Stammbäume sind privat, und Lebende sind nur in ihrem eigenen Stammbaum sichtbar, nie bei anderen Familien. Wer in einem Stammbaum eingetragen ist, kann verlangen, dass wir seine Daten berichtigen oder löschen.",
           l5: "Auf Grundlage deiner Einwilligung, die du jederzeit widerrufen kannst: das Kapitel „Glaube“ (Art. 9 Abs. 2 lit. a), die „bei den Großeltern“ aufgenommenen Geschichten, „Aus denselben Orten“, wie viel du die Seite nutzt, die Vorteile von Partnern und die für die Startseite vorgeschlagenen Fotos (Art. 6 Abs. 1 lit. a). Der Widerruf ändert nichts an dem, was vorher mit der erteilten Einwilligung geschehen ist.",
           l6: "Um dir zu antworten, wenn du uns schreibst (über die Seite Kontakt, per E-Mail oder WhatsApp). Grundlage ist unser berechtigtes Interesse, denen zu antworten, die sich an uns wenden (Art. 6 Abs. 1 lit. f), oder, wenn du uns zu deinem Konto schreibst, der Vertrag zwischen uns (lit. b).",
+          l7: "Um das Gesetz einzuhalten: Rechnungen, Buchhaltung und der Nachweis deiner Zustimmung, die digitalen Inhalte sofort zu erhalten. Rechtsgrundlage ist eine rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c DSGVO).",
         },
         who: {
           h: "Wer die Daten sieht",
@@ -54,6 +56,7 @@ export const deLegal: LegalCatalog = {
           l7: "<b>Die Fotos auf der Startseite</b> sieht jeder, der die Seite öffnet: Es sind von uns ausgewählte Fotos und von euch vorgeschlagene, nachdem wir sie freigegeben haben. Deine eigenen Vorschläge kannst du jederzeit zurückziehen, über „Ein Leben auf Film“ auf deiner Seite im Stammbaum; dann verschwinden sie von der Startseite und ihre Kopie wird gelöscht.",
           l5: "<b>Wir</b> sehen im Verwaltungsbereich nur, was wir brauchen, um die Seite am Laufen zu halten: Listen und Zahlen zu den Konten (Name, E-Mail, wann und mit welcher Art von Gerät sie sich angemeldet haben), zu den Stammbäumen (Name, wie viele Personen und Dateien sie haben), bei jedem Konto, wie viel es hinzugefügt hat (wie viele Personen, Erinnerungen, Fotos, Einladungen und Nachrichten), und bei denen, die „Gut“ gesagt haben, wie lange sie in jedem Teil der Seite sind. Außerdem sehen wir den Verlauf der Änderungen an den Personen in den Stammbäumen (wer welche Namen, Daten oder Orte wann geändert hat), damit wir eine Löschung oder einen Fehler rückgängig machen und jemanden stoppen können, der einen Stammbaum beschädigt, sowie die für die Startseite vorgeschlagenen Fotos, um sie freizugeben. Dort können wir auch eine kurze Notiz zum Konto führen, zum Beispiel, dass es kostenlos bleibt. Erinnerungen und Nachrichten lesen wir nicht, und aus dem Kapitel „Glaube“ zählen wir nichts; wir sehen sie uns nur an, wenn du uns um Hilfe bittest oder das Gesetz uns dazu verpflichtet.",
           l6: "Wir verkaufen keine Daten, zeigen keine Werbung und geben sie niemandem sonst, außer den Dienstleistern unten, unserem Partner PropManage (nur die E-Mail-Adresse derer, die es angekreuzt haben, wie unten beschrieben) und Behörden, wenn das Gesetz uns dazu verpflichtet.",
+          l8: "<b>Unser Steuerberater</b> und die <b>ANAF</b> (die rumänische Steuerbehörde) sehen nur die Angaben auf Rechnungen: deinen Namen, deine E-Mail, was du bezahlt hast, wie viel und wann, wie es das Steuerrecht verlangt.",
         },
         vendors: {
           h: "Die Dienstleister, die uns helfen",
@@ -63,7 +66,8 @@ export const deLegal: LegalCatalog = {
           l3: "<b>Google</b> bestätigt deine Identität bei der Anmeldung, nur wenn du „Mit Google fortfahren“ wählst.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Vereinigtes Königreich) liefert die Kartenteile der „Familienkarte“. Dein Browser fordert sie direkt bei ihnen an, darum sehen sie die IP-Adresse, von der aus du sie anforderst.",
           l5: "<b>FormSubmit</b> (formsubmit.co, USA) stellt uns die über die Seite Kontakt gesendeten Nachrichten per E-Mail zu. <b>WhatsApp</b> (WhatsApp Ireland Ltd., Teil der Meta-Gruppe), nur wenn du uns dort schreibst, nach deren eigenen Datenschutzregeln. <b>Stripe</b> (Stripe Payments Europe Ltd., Irland), nur wenn du etwas bezahlst, nimmt die Kartenzahlung auf seiner eigenen Seite entgegen; wir sehen die Kartendaten nie, nur was, wie viel und wann bezahlt wurde (für die Buchhaltung so lange aufbewahrt, wie das Gesetz es verlangt).",
-          p2: "Für Übermittlungen außerhalb der Europäischen Union nutzen diese Dienstleister die von der Europäischen Kommission genehmigten Standardvertragsklauseln oder den EU-US-Datenschutzrahmen. Über Lebende senden wir nichts an Dienste der künstlichen Intelligenz.",
+          l6: "<b>Resend</b> (Resend Inc., USA) versendet die E-Mail, mit der wir dich 14 Tage vorher an das Ende deines bezahlten Jahres erinnern; es erhält nur deine E-Mail-Adresse und den Text der Nachricht.",
+          p2: "Vercel, Neon, Google, Stripe und Resend arbeiten auf Grundlage von Auftragsverarbeitungsverträgen; für Übermittlungen außerhalb der Europäischen Union stützen sie sich, soweit zertifiziert, auf den EU-US-Datenschutzrahmen und auf die von der Europäischen Kommission genehmigten Standardvertragsklauseln. FormSubmit hat keinen solchen Vertrag mit uns: Deine Nachricht läuft nur über seine Server in den USA, um uns zu erreichen, weil du uns gebeten hast, sie zu senden; wenn du das nicht willst, schreib uns direkt an <mail>{email}</mail>.",
         },
         partner: {
           h: "Unser Partner PropManage",
@@ -77,22 +81,27 @@ export const deLegal: LegalCatalog = {
         dna: {
           h: "Die Anfrage „Ich möchte einen DNA-Test“",
           p1: "Auf der Seite <res>Kostenlose Quellen für die Ahnenforschung</res> kannst du uns nach DNA-Tests fragen. Wir speichern nur, was du ins Formular schreibst (Name, E-Mail, Telefon, falls angegeben, Ort und Nachricht), und das Datum deiner Einwilligung, nur um dir zu antworten; Rechtsgrundlage ist deine Einwilligung. Das sind keine genetischen Daten: wir empfangen, speichern und übermitteln keine DNA-Dateien, -Ergebnisse oder -Treffer. Wir schicken die Anfrage nicht an Labore und erhalten keine Provision. Nur wer die Seite betreibt, sieht die Anfrage; wir löschen sie, wenn du uns darum bittest, unter <mail>{email}</mail>, oder sobald sie nicht mehr gebraucht wird.",
+          p2: "Wir bewahren die Anfrage höchstens 12 Monate nach unserer Antwort auf und löschen sie dann.",
         },
         keep: {
           h: "Wie lange wir die Daten speichern",
           p1: "Solange du ein Konto hast. Was du löschst, verschwindet sofort von der Seite, und die Sicherungskopien der Datenbank überschreiben sich spätestens nach 30 Tagen von selbst. Wenn du dein Konto löschst, geht alles, was dir gehört: das Konto, die Erinnerungen aus deiner Truhe, die Nachrichten, was du anderen geschrieben hast, und die Einwilligungen. Die Stammbäume bleiben der Familie: Ein Stammbaum mit anderen Mitgliedern geht an einen von ihnen über, und einer, in dem du allein bist, wird ganz gelöscht. Dein Eintrag in den Stammbäumen bleibt, damit der Stammbaum nicht zerreißt, ohne Verbindung zum Konto; wenn du willst, wird er auch von deinen Daten geleert. Wie viel du die Seite nutzt, speichern wir höchstens 13 Monate; wenn du „Ich will nicht mehr“ sagst, wird es sofort gelöscht.",
           p2: "Für die Startseite vorgeschlagene Fotos bewahren wir auf, bis du sie zurückziehst oder dein Konto löschst; ein Foto, das wir nicht auswählen, bleibt nur bei uns und wird nicht öffentlich gezeigt. Nachrichten über die Seite Kontakt oder WhatsApp bewahren wir so lange auf, wie wir brauchen, um dein Anliegen zu klären; wenn du möchtest, dass wir sie früher löschen, sag es uns.",
+          p3: "Zahlungen, Rechnungen und die Zustimmung zum sofortigen Beginn bewahren wir so lange auf, wie es das Buchhaltungsrecht verlangt (rumänisches Gesetz Nr. 82/1991), in der Regel bis zu 10 Jahre, auch wenn du dein Konto löschst; sie sind dann nicht mehr mit dem Konto verknüpft. Technische Server-Protokolle werden spätestens nach 30 Tagen automatisch gelöscht.",
         },
         rights: {
           h: "Deine Rechte",
           p1: "Du kannst erfahren, welche Daten wir über dich haben, sie berichtigen, löschen, mitnehmen, verlangen, dass wir sie nicht mehr auf eine bestimmte Weise nutzen, und deine Einwilligung jederzeit widerrufen. Vieles erledigst du selbst auf der Seite <data>Meine Daten</data>: Du lädst alles herunter, was zu deinem Konto gehört, widerrufst deine Einwilligung für den „Glauben“ oder für die Vorteile von Partnern, stoppst die Messung der Zeit auf der Seite oder löschst dein Konto. Für alles andere schreibst du uns an <mail>{email}</mail>; wir antworten innerhalb von höchstens einem Monat.",
           p2: "Wenn du meinst, dass wir deine Rechte nicht beachtet haben, kannst du dich bei der Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>, beschweren.",
+          p3: "Wir treffen keine automatisierten Entscheidungen mit rechtlicher Wirkung über dich und betreiben kein Profiling. Du kannst Verarbeitungen auf Grundlage berechtigter Interessen jederzeit widersprechen (Art. 21 DSGVO); dann hören wir auf, es sei denn, wir haben zwingende schutzwürdige Gründe oder brauchen die Daten zur Verteidigung von Rechtsansprüchen.",
         },
         kids: {
           h: "Kinder, die Lebenden und die, die nicht mehr sind",
           l1: "Das Konto ist für Menschen ab {minAge} Jahren. Kinder können von ihren Eltern in den Stammbaum eingetragen werden.",
           l2: "Wer als lebend in einem Stammbaum eingetragen ist, kann den Eigentümer des Stammbaums oder uns bitten, seine Daten zu berichtigen, zu verbergen oder zu löschen.",
           l3: "Das Datenschutzrecht gilt nicht für die, die nicht mehr leben, aber ihr Andenken bewahren wir mit demselben Respekt.",
+          l4: "Wir schreiben nicht jeder Person einzeln, die von Verwandten in einen Stammbaum eingetragen wurde (das wäre ein unverhältnismäßiger Aufwand, Art. 14 Abs. 5 lit. b DSGVO); deshalb sind Stammbäume privat, und diese Personen können jederzeit erfahren, was über sie steht, Berichtigung oder Löschung verlangen und widersprechen.",
+          l5: "Bei lebenden Kindern wird nur das Nötige eingetragen (meist der Name und das Geburtsjahr). Eltern können den Eigentümer des Stammbaums oder uns jederzeit bitten, Fotos oder Angaben des Kindes zu entfernen.",
         },
         cookies: {
           h: "Cookies",
@@ -102,8 +111,10 @@ export const deLegal: LegalCatalog = {
           l5: "<code>limba_intrebare</code>, nur wenn du die Frage nach der Sprache der Seite mit ✕ schließt, damit wir nicht noch einmal fragen, ein Jahr gespeichert;",
           l3: "<code>tema</code>, mit dem gewählten Design (hell, dunkel oder automatisch), ein Jahr gespeichert;",
           l6: "<code>cn-cookie-uri</code>, nachdem du beim Hinweis zu Cookies auf „Verstanden“ gedrückt hast, damit du ihn nicht wieder siehst, ein Jahr gespeichert;",
+          l7: "<code>cn-pastrare-anunt</code>, nachdem du beim Hinweis zu Aufbewahren auf „Verstanden“ gedrückt hast, damit du ihn nicht mehr siehst, ein Jahr gespeichert;",
           l4: "<code>cn-parteneri</code>, nur wenn du beim Erstellen des Kontos die Vorteile von Partnern ankreuzt: Es merkt sich das Häkchen höchstens 30 Minuten, gerade so lange, bis deine Wahl beim neuen Konto ankommt (auch wenn du es mit Google erstellst), und verschwindet dann.",
           p2: "Wir verwenden keine Werbe-, Statistik- oder Social-Media-Cookies, und die Seite lädt keine Skripte anderer Firmen. Das Einzige, was dein Browser direkt bei anderen abruft, sind die Kartenkacheln von OpenStreetMap und, wenn du dich mit Google angemeldet hast, das Bild deines Google-Kontos.",
+          p3: "Wenn du bezahlst, liegt die Zahlungsseite bei Stripe unter deren eigener Adresse; dort setzt Stripe eigene Cookies, etwa gegen Betrug, nach seiner eigenen Datenschutzerklärung.",
         },
         safety: {
           h: "Sicherheit",
@@ -130,6 +141,7 @@ export const deLegal: LegalCatalog = {
           l1: "Das Konto ist für Menschen ab {minAge} Jahren. Kinder können von ihren Eltern in den Stammbaum eingetragen werden.",
           l2: "Ein Konto gehört einem einzigen Menschen. Dein Passwort behältst du für dich; was von deinem Konto aus geschieht, liegt in deiner Verantwortung.",
           l3: "Das Probekonto hat ein öffentliches Passwort, gehört also allen: Trage darin nichts aus deiner Familie ein.",
+          l4: "Zahlungen dürfen nur Personen ab 18 Jahren leisten.",
         },
         content: {
           h: "2. Was du auf die Seite stellst",
@@ -138,6 +150,7 @@ export const deLegal: LegalCatalog = {
           l3: "Du stellst nichts Rechtswidriges, Beleidigendes oder zu Hass Aufstachelndes ein, auch keine Daten anderer ohne Berechtigung.",
           l4: "Wir können verbergen oder löschen, was gegen diese Bedingungen oder das Gesetz verstößt, und sagen dir, warum.",
           l5: "Wenn du ein Foto für die Startseite vorschlägst, versicherst du uns, dass du darauf zu sehen bist oder die Zustimmung aller Abgebildeten hast (bei Kindern die ihrer Eltern), und erlaubst uns, es öffentlich auf der Startseite zu zeigen, solange du es nicht zurückziehst. Wir können entscheiden, es nicht zu zeigen oder jederzeit zu entfernen.",
+          l6: "Wenn dein Jahr endet und du nicht zahlst, wird nichts gelöscht: Deine Stammbäume bleiben, Namen, Daten, Verbindungen und Texte bleiben sichtbar, und du kannst den ganzen Stammbaum jederzeit herunterladen (GEDCOM und <data>Meine Daten</data>); du kannst nur nichts mehr hinzufügen oder ändern, bis du zahlst. Fotos, die andere Verwandte hochgeladen haben, erscheinen dann nur klein, und ihre Stimmen und Dokumente öffnen sich nicht mehr online, bis du (der Inhaber) ein Jahr oder Aufbewahren bezahlst. Was du selbst hochgeladen hast, öffnest und lädst du immer vollständig und kostenlos herunter. Ebenso bleibt bei einem kleineren Tarif alles über seinen Grenzen erhalten und sichtbar; nur neue Einträge sind nicht mehr möglich.",
         },
         owner: {
           h: "3. Wem gehört, was du einstellst",
@@ -162,7 +175,9 @@ export const deLegal: LegalCatalog = {
           l7: "Das Jahr verlängert sich nicht von selbst, und wir buchen nie automatisch Geld von deiner Karte ab.",
           l8: "<b>Das Familienbuch als PDF</b> kostet, wenn es nicht in deinem Tarif enthalten ist, {bookLei} Lei ({bookEur} €) pro Stammbaum. Die Vorschau ist kostenlos; nach der Zahlung kannst du es 12 Monate lang so oft neu erstellen und herunterladen, wie du willst.",
           l9: "<b>Das gedruckte Buch</b> wird auf Bestellung gemacht: du fragst auf der Buchseite ein Angebot an, und der Preis hängt von der Seitenzahl, dem Format, dem Einband und der Anzahl der Exemplare ab. Mit dem Tarif Premium bekommst du {premiumPrint} % Rabatt auf den Angebotspreis.",
+          l10: "<b>Aufbewahren</b>, {keepLei} lei ({keepEur} €) pro Jahr, gleich bei jedem Tarif, für alle, die ein Jahr hatten (bezahlt oder das erste kostenlose Jahr): Nach dem bezahlten Jahr sieht und hört die ganze Familie alles online (große Fotos, Stimmen, Dokumente), ohne neue Einträge. Mit jeder Zahlung bekommst du per E-Mail den Link zum vollständigen Archiv (die Seite „Mein Archiv“). Mit dem PDF-Buch eines Stammbaums kostet das Paket {keepBookLei} lei ({keepBookEur} €). Auch Aufbewahren verlängert sich nicht automatisch.",
           p2: "Der beim Bezahlen angezeigte Preis ist der Endpreis. Du bezahlst mit Karte über Stripe; deine Kartendaten sehen wir nie. Verkäufer ist {name}, CUI {cui}, Handelsregisternr. {regCom}, mit Sitz in {address}.",
+          p3: "<b>Wie der Vertrag zustande kommt:</b> Du wählst den Plan oder das Buch auf der Seite Zahlung, siehst den Endpreis, setzt das Häkchen für den sofortigen Beginn und klickst auf den Zahlungsknopf; du bezahlst auf der Seite von Stripe, und der Vertrag kommt zustande, sobald die Zahlung eingegangen ist. Bis zur Zahlung kannst du jederzeit zurückgehen und deine Auswahl korrigieren. Die Bestätigung mit der Rechnung und deiner Zustimmung kommt per E-Mail. Der Vertrag wird auf Rumänisch geschlossen (die anderen Sprachen sind Übersetzungen); diese Bedingungen bleiben auf der Seite, und du kannst sie jederzeit speichern oder ausdrucken.",
         },
         withdrawal: {
           h: "6. Widerrufsrecht",
@@ -170,6 +185,7 @@ export const deLegal: LegalCatalog = {
           l1: "<b>Ein Jahr im Familienbuch und das PDF-Buch</b> sind digitale Inhalte, die du sofort nach der Zahlung erhältst. Vor dem Bezahlen bestätigst du per Häkchen, dass du sofort beginnen möchtest und weißt, dass du dadurch dein Widerrufsrecht verlierst (Art. 16 Buchst. m der Dringlichkeitsverordnung Nr. 34/2014). Ohne Häkchen ist keine Zahlung möglich. Wir speichern deine Zustimmung mit Datum, und die Zahlungsbestätigung erhältst du per E-Mail.",
           l2: "<b>Das gedruckte Buch</b> wird nach deinen Angaben eigens für dich angefertigt, daher gibt es auch dafür kein Widerrufsrecht (Art. 16 Buchst. c der Dringlichkeitsverordnung Nr. 34/2014). Kommt es durch unser Verschulden beschädigt oder fehlerhaft an, machen wir es neu oder erstatten dir das Geld.",
           l3: "Wenn etwas, wofür du bezahlt hast, nicht wie versprochen funktioniert, schreib uns an <mail>{email}</mail>; wir bringen es in Ordnung oder erstatten dir das Geld. Deine gesetzlichen Verbraucherrechte bleiben bestehen.",
+          l4: "<b>Gesetzliche Gewährleistung:</b> Was du bezahlst, muss während deines bezahlten Jahres wie versprochen funktionieren (das PDF-Buch 12 Monate lang). Wenn nicht, hast du Anspruch auf kostenlose Herstellung des vertragsgemäßen Zustands und, falls uns das nicht gelingt, auf Preisminderung oder Vertragsbeendigung mit Erstattung (rumänische Dringlichkeitsverordnung Nr. 141/2021, Richtlinie (EU) 2019/770).",
           p2: "Mit einer Beschwerde kannst du uns jederzeit schreiben. Wenn wir uns nicht einigen, kannst du dich an die rumänische Nationale Verbraucherschutzbehörde (<anpc>ANPC</anpc>) oder an eine Stelle zur alternativen Streitbeilegung (<sal>SAL</sal>) wenden.",
         },
         reliability: {
@@ -187,10 +203,19 @@ export const deLegal: LegalCatalog = {
         law: {
           h: "10. Anwendbares Recht",
           p1: "Für diese Bedingungen gilt rumänisches Recht. Eine Meinungsverschiedenheit versuchen wir zuerst gütlich zu klären; wenn das nicht geht, entscheiden die Gerichte in Rumänien.",
+          p2: "Wenn du Verbraucher bist und in einem anderen Staat wohnst, nimmt dir die Wahl des rumänischen Rechts nicht den Schutz der zwingenden Vorschriften deines Landes, und du kannst uns auch vor dem Gericht deines Wohnorts verklagen.",
         },
         changes: {
           h: "11. Änderungen",
           p1: "Wenn wir an diesen Bedingungen etwas Wichtiges ändern, sagen wir es dir auf der Seite, bevor die Änderung gilt.",
+          p2: "Ein bereits bezahltes Jahr behält den Preis und die Grenzen, für die du bezahlt hast. Wenn du mit einer Änderung nicht einverstanden bist, kannst du deine Daten herunterladen und dein Konto schließen, bevor sie wirksam wird.",
+        },
+        dsa: {
+          h: "12. Rechtswidrige Inhalte und Kontaktstelle",
+          p1: "Die Adresse <mail>{email}</mail> ist unsere zentrale Kontaktstelle für Menschen, für die Behörden der EU-Mitgliedstaaten und für die Europäische Kommission (Verordnung (EU) 2022/2065, Gesetz über digitale Dienste). Du kannst uns auf Rumänisch oder Englisch schreiben.",
+          l1: "Wenn du auf der Seite etwas siehst, das du für rechtswidrig hältst (zum Beispiel ein ohne Recht hochgeladenes Foto oder Angaben über dich ohne deine Zustimmung), schreib uns an diese Adresse: wo es steht (der Link oder der Name des Stammbaums und der Person), warum du es für rechtswidrig hältst, deinen Namen und deine E-Mail (außer wenn das Gesetz dir erlaubt, anonym zu bleiben) und dass du in gutem Glauben schreibst.",
+          l2: "Wir bestätigen den Eingang, prüfen sorgfältig und ohne Verzögerung und teilen dir unsere Entscheidung mit.",
+          l3: "Wenn wir etwas, das du eingestellt hast, ausblenden oder löschen, sagen wir dir, warum und auf welcher Grundlage. Du kannst die Entscheidung anfechten, indem du an dieselbe Adresse schreibst; ein Mensch prüft sie dann erneut. Dir bleiben auch der Rechtsweg und die Beschwerde bei ANCOM, dem rumänischen Koordinator für digitale Dienste.",
         },
       },
     },

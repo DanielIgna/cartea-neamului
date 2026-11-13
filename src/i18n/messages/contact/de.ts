@@ -25,6 +25,7 @@ export const deContact: ContactCatalog = {
     "email": "Deine E-Mail-Adresse",
     "message": "Nachricht",
     "messagePlaceholder": "Schreib hier, was du uns sagen möchtest…",
+    "privacyNote": "Deine Nachricht erreicht uns per E-Mail über FormSubmit (USA). Wenn du das nicht willst, schreib uns über WhatsApp oder an die Adresse in der <privacy>Datenschutzerklärung</privacy>.",
     "send": "Nachricht senden",
     "sending": "Wird gesendet…",
     "sent": "Danke! Deine Nachricht ist unterwegs, wir antworten dir per E-Mail.",

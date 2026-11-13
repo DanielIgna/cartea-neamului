@@ -5,7 +5,7 @@
  * Fiecare secțiune are `h` (titlul) și, în ordine: `p…` (paragrafe), `l…` (rânduri de listă, adunate într-o listă) și `beta`
  * (doar cât site-ul e în probă). Etichetele din texte: <b>, <mail> (adresa de contact), <terms>, <privacy>, <data>,
  * <dataPartners>, <partners>, <pm> (propmanage.ro), <anspdcp>, <code>. Valorile: {name}, {address}, {cui}, {regCom} și {euid} ale firmei care
- * răspunde de date, {email}, {minAge}, {consent} (textul bifei pentru parteneri, din `Partners.checkbox`).
+ * răspunde de date, {email}, {phone} (telefonul și WhatsApp-ul, din src/lib/contact.ts), {minAge}, {consent} (textul bifei pentru parteneri, din `Partners.checkbox`).
  * Când se schimbă ceva important, se schimbă și data din src/lib/legal.ts.
  */
 import type { Widen } from "../types";
@@ -14,7 +14,7 @@ export const roLegal = {
   Legal: {
     updated: "Ultima schimbare: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}, cu sediul în {address} (CUI {cui}, Nr. Reg. Com. {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
+    contactLine: "{name}, cu sediul în {address} (CUI {cui}, Nr. Reg. Com. {regCom}, EUID {euid}). Email: <mail>{email}</mail>. Telefon și WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Politica de confidențialitate",
       metaDescription: "Ce date păstrăm în arborele familiei, de ce, cine le vede și cum le descarci sau le ștergi.",
@@ -43,6 +43,7 @@ export const roLegal = {
           l10: "<b>Casa bătrânească:</b> ce scrii despre casa familiei pe pagina unei persoane (adresa sau satul, cine a construit-o, anul, poze și povestea ei). O vede doar cine alegi tu, ca la amintiri.",
           l13: "<b>Pozele propuse pentru prima pagină</b>, doar dacă alegi tu să propui una din albumul familiei: o copie a pozei, rândul scris sub ea, cine a propus-o, când, în ce limbă și versiunea acordului bifat. Cât timp nu e aprobată, o vedem doar noi.",
           l14: "<b>Când ne scrii</b> din pagina Contact: numele, adresa de email (ca să-ți putem răspunde) și mesajul. Nu le păstrăm în site: pleacă direct în căsuța noastră de email. Dacă ne scrii pe WhatsApp, vedem numărul tău de telefon, numele tău din WhatsApp și ce ne scrii.",
+          l15: "<b>Plățile și darurile:</b> ce ai plătit, cât, când și ce plan ai ales (fără datele cardului, pe care nu le vedem), acordul tău pentru începerea imediată, anul dăruit (numele celui care îl primește și biletul tău, dacă le scrii), zilele în plus primite când aduci o rudă care plătește și emailurile prin care îți amintim că se termină anul. Ținem minte și până când ai Păstrarea arborelui.",
           l11: "<b>În browserul tău</b>, pe lângă cookie-urile de la capătul paginii, câteva alegeri ținute doar pe telefonul sau calculatorul tău, ca să nu le faci de fiecare dată: spițele pe care ai ales să le vezi, ce ai ales ultima dată în „Istoria umanității”, „Genealogii vechi” și „Libertatea de a crede”, fișele pe care le-ai marcat că nu sunt dubluri, dacă ai ascuns cardul de instalare a aplicației și dacă ai văzut deja cardul partenerului de după descărcarea cărții. Dacă ai spus „Bine” la măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.",
           l12: "<b>Jurnalele tehnice</b> ale serverului (adresa IP, pagina cerută, ora), păstrate pentru scurt timp, ca să putem repara erorile.",
         },
@@ -54,6 +55,7 @@ export const roLegal = {
           l4: "Pentru rudele în viață pe care le treci în arbore, temeiul e interesul legitim al familiei de a-și păstra istoria, cu grijă: arborii sunt privați, iar cei în viață se văd doar în arborele lor, niciodată la alte familii. Oricine e trecut într-un arbore poate cere să-i îndreptăm sau să-i ștergem datele.",
           l5: "Pe baza acordului tău, pe care îl poți retrage oricând: capitolul „Credința” (art. 9 alin. 2 lit. a), poveștile înregistrate „la bunici”, „Din aceleași locuri”, cât folosești site-ul, beneficiile de la parteneri și pozele propuse pentru prima pagină (art. 6 alin. 1 lit. a). Retragerea nu schimbă ce s-a făcut înainte cu acordul dat.",
           l6: "Ca să-ți răspundem când ne scrii (din pagina Contact, pe email sau pe WhatsApp). Temeiul e interesul nostru legitim de a răspunde celor care ne caută (art. 6 alin. 1 lit. f) sau, când ne scrii despre contul tău, contractul dintre noi (lit. b).",
+          l7: "Ca să respectăm legea: facturile, evidența contabilă și dovada acordului tău pentru începerea imediată a conținutului digital. Temeiul e obligația legală (art. 6 alin. 1 lit. c GDPR).",
         },
         who: {
           h: "Cine vede datele",
@@ -64,6 +66,7 @@ export const roLegal = {
           l7: "<b>Pozele de pe prima pagină</b> le vede oricine deschide site-ul: sunt pozele alese de noi și cele propuse de voi, după ce le aprobăm. Pe cele propuse de tine le poți retrage oricând, din „Filmul vieții” de pe pagina ta din arbore; atunci ies de pe prima pagină și copia lor se șterge.",
           l5: "<b>Noi</b> vedem în panoul de administrare doar ce ne trebuie ca să ținem site-ul în picioare: liste și cifre despre conturi (nume, email, când și de pe ce fel de dispozitiv au intrat), despre arbori (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus „Bine”, cât timp stau în fiecare parte a site-ului. Mai vedem istoricul schimbărilor din fișele arborilor (cine a schimbat, ce nume, date sau locuri și când), ca să putem anula o ștergere sau o greșeală și să oprim pe cineva care strică un arbore, și pozele propuse pentru prima pagină, ca să le aprobăm. Tot acolo putem ține o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.",
           l6: "Nu vindem date, nu facem reclame și nu le dăm nimănui altcuiva în afară de furnizorii de mai jos, de partenerul PropManage (doar emailul celor care au bifat, cum scrie mai jos) și de autorități, când legea ne obligă.",
+          l8: "<b>Contabilul nostru</b> și <b>ANAF</b> (autoritatea fiscală din România) văd doar datele de pe facturi: numele, emailul, ce ai plătit, cât și când, cum cere legea fiscală.",
         },
         vendors: {
           h: "Furnizorii care ne ajută",
@@ -73,7 +76,8 @@ export const roLegal = {
           l3: "<b>Google</b>, doar dacă alegi „Continuă cu Google”, îți confirmă identitatea la intrare.",
           l4: "<b>OpenStreetMap</b> (Fundația OpenStreetMap, Marea Britanie) dă bucățile de hartă din „Harta neamului”. Browserul tău le cere direct de la ei, așa că ei văd adresa IP de la care le ceri.",
           l5: "<b>FormSubmit</b> (formsubmit.co, SUA) ne aduce pe email mesajele trimise din pagina Contact. <b>WhatsApp</b> (WhatsApp Ireland Ltd., din grupul Meta), doar dacă alegi să ne scrii acolo, după propriile lor reguli de confidențialitate. <b>Stripe</b> (Stripe Payments Europe Ltd., Irlanda), doar dacă plătești ceva, primește plata cu cardul pe pagina lui; noi nu vedem datele cardului, ci doar ce s-a plătit, cât și când (păstrate pentru contabilitate cât cere legea).",
-          p2: "Pentru transferurile în afara Uniunii Europene, acești furnizori folosesc clauzele contractuale standard aprobate de Comisia Europeană sau cadrul UE–SUA privind protecția datelor. Despre cei în viață nu trimitem nimic către servicii de inteligență artificială.",
+          l6: "<b>Resend</b> (Resend Inc., SUA) trimite emailul prin care îți amintim, cu 14 zile înainte, că se termină anul plătit; primește doar adresa ta de email și textul mesajului.",
+          p2: "Vercel, Neon, Google, Stripe și Resend lucrează după contracte de prelucrare a datelor; pentru transferurile în afara Uniunii Europene se sprijină pe cadrul UE–SUA privind protecția datelor, acolo unde sunt certificați, și pe clauzele contractuale standard aprobate de Comisia Europeană. FormSubmit nu are un astfel de contract cu noi: mesajul tău trece prin serverele lui din SUA doar ca să ajungă la noi, pentru că ne-ai cerut să ți-l trimitem; dacă nu vrei asta, scrie-ne direct la <mail>{email}</mail>.",
         },
         partner: {
           h: "Partenerul nostru, PropManage",
@@ -88,22 +92,27 @@ export const roLegal = {
         dna: {
           h: "Cererea „Vreau un test ADN”",
           p1: "Pe pagina <res>Resurse gratuite pentru genealogie</res> ne poți cere informații despre testele ADN. Păstrăm doar ce scrii în formular (nume, email, telefonul dacă îl dai, orașul și mesajul) și data la care ți-ai dat acordul, doar ca să-ți răspundem; temeiul e acordul tău. Nu sunt date genetice: nu primim, nu păstrăm și nu transmitem fișiere, rezultate sau potriviri ADN. Nu trimitem cererea la laboratoare și nu primim comision. Cererea o vede doar cel care ține site-ul; o ștergem când ne ceri, la <mail>{email}</mail>, sau după ce nu mai e nevoie de ea.",
+          p2: "Cererea o păstrăm cel mult 12 luni după ce ți-am răspuns, apoi o ștergem.",
         },
         keep: {
           h: "Cât timp păstrăm datele",
           p1: "Cât timp ai cont. Ce ștergi tu dispare imediat din site, iar copiile de siguranță ale bazei de date se rescriu singure în cel mult 30 de zile. Când îți ștergi contul, pleacă tot ce e al tău: contul, amintirile din lada ta, mesajele, ce ai scris altora și acordurile. Arborii rămân ai familiei: un arbore cu alți membri trece la unul dintre ei, iar unul în care ești singur se șterge cu totul. Fișa ta din arbori rămâne, ca să nu se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale. Cât folosești site-ul păstrăm cel mult 13 luni; dacă spui „Nu mai vreau”, se șterge imediat.",
           p2: "Pozele propuse pentru prima pagină le păstrăm până le retragi sau până îți ștergi contul; una pe care n-o alegem rămâne doar la noi și nu se vede public. Mesajele primite din pagina Contact sau pe WhatsApp le păstrăm cât e nevoie ca să lămurim ce ne-ai scris; dacă vrei să le ștergem mai devreme, spune-ne.",
+          p3: "Plățile, facturile și acordul pentru începerea imediată le păstrăm cât cere legea contabilității (Legea nr. 82/1991), de regulă până la 10 ani, chiar dacă îți ștergi contul; rămân fără legătura cu contul. Jurnalele tehnice ale serverului se șterg singure în cel mult 30 de zile.",
         },
         rights: {
           h: "Drepturile tale",
           p1: "Poți afla ce date avem despre tine, le poți îndrepta, le poți șterge, le poți lua cu tine, poți cere să nu le mai folosim într-un anume fel și îți poți retrage oricând acordul dat. Multe le faci singur, din pagina <data>Datele mele</data>: descarci tot ce ține de contul tău, îți retragi acordul pentru „Credința” sau pentru beneficiile de la parteneri, oprești măsurarea timpului petrecut în site sau îți ștergi contul. Pentru restul ne scrii la <mail>{email}</mail>; îți răspundem în cel mult o lună.",
           p2: "Dacă socotești că nu ți-am respectat drepturile, poți face plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+          p3: "Nu luăm despre tine decizii automate cu efecte juridice și nu facem profilare. Te poți opune oricând prelucrărilor făcute pe temeiul interesului legitim (art. 21 GDPR); atunci ne oprim, în afară de cazul în care avem motive legitime mai puternice sau ne trebuie datele ca să apărăm un drept în justiție.",
         },
         kids: {
           h: "Copiii, cei în viață și cei care nu mai sunt",
           l1: "Contul e pentru cei care au cel puțin {minAge} ani. Copiii pot fi trecuți în arbore de părinții lor.",
           l2: "Oricine e trecut în viață într-un arbore poate cere proprietarului arborelui sau nouă să-i îndreptăm, să-i ascundem sau să-i ștergem datele.",
           l3: "Legea datelor personale nu se aplică celor care nu mai sunt, dar amintirea lor o păstrăm cu același respect.",
+          l4: "Celor trecuți în arbore de alte rude nu le scriem fiecăruia în parte (ar fi un efort peste măsură, art. 14 alin. 5 lit. b GDPR); de aceea arborii sunt privați, iar ei pot oricând să afle ce scrie despre ei, să ceară îndreptarea sau ștergerea și să se opună.",
+          l5: "Pentru copiii în viață se trece doar ce e nevoie (de obicei numele și anul nașterii). Părinții pot cere oricând proprietarului arborelui sau nouă să scoatem pozele sau datele copilului.",
         },
         cookies: {
           h: "Cookie-uri",
@@ -113,8 +122,10 @@ export const roLegal = {
           l5: "<code>limba_intrebare</code>, doar dacă închizi cu ✕ întrebarea despre limba site-ului, ca să nu te mai întrebăm, păstrat un an;",
           l3: "<code>tema</code>, cu tema aleasă (luminoasă, întunecată sau automată), păstrat un an;",
           l6: "<code>cn-cookie-uri</code>, după ce apeși „Am înțeles” pe anunțul despre cookie-uri, ca să nu-l mai vezi, păstrat un an;",
+          l7: "<code>cn-pastrare-anunt</code>, după ce apeși „Am înțeles” pe anunțul despre Păstrare, ca să nu-l mai vezi, păstrat un an;",
           l4: "<code>cn-parteneri</code>, doar dacă bifezi beneficiile de la parteneri când îți faci contul: ține minte bifa cel mult 30 de minute, cât să ajungă alegerea ta la contul nou (și când îl faci cu Google), apoi dispare.",
           p2: "Nu folosim cookie-uri de reclamă, de statistici sau de rețele sociale, iar site-ul nu încarcă scripturi de la alte firme. Singurele lucruri pe care browserul tău le cere direct de la alții sunt bucățile de hartă de la OpenStreetMap și, dacă ai intrat cu Google, poza contului tău Google.",
+          p3: "Când plătești, pagina de plată e la Stripe, pe adresa lor; acolo Stripe pune propriile cookie-uri, de pildă împotriva fraudei, după politica lui de confidențialitate.",
         },
         safety: {
           h: "Siguranța",
@@ -141,6 +152,7 @@ export const roLegal = {
           l1: "Contul e pentru cei care au cel puțin {minAge} ani. Copiii pot fi trecuți în arbore de părinții lor.",
           l2: "Un cont e al unui singur om. Parola o păstrezi doar pentru tine; ce se face din contul tău e în grija ta.",
           l3: "Contul de probă are o parolă publică, deci e al tuturor: nu pune în el nimic din familia ta.",
+          l4: "Plățile le face doar cine are cel puțin 18 ani.",
         },
         content: {
           h: "2. Ce pui în site",
@@ -149,6 +161,7 @@ export const roLegal = {
           l3: "Nu pui nimic ilegal, jignitor sau care îndeamnă la ură, nici datele altora fără drept.",
           l4: "Putem ascunde sau șterge ce încalcă acești termeni sau legea și îți spunem de ce.",
           l5: "Când propui o poză pentru prima pagină, ne asiguri că ești în ea sau că ai acordul tuturor celor din ea (pentru copii, al părinților lor) și ne dai voie s-o arătăm public pe prima pagină cât timp nu o retragi. Putem alege să n-o punem sau s-o scoatem oricând.",
+          l6: "Dacă anul se termină și nu plătești, nu se șterge nimic: arborii tăi rămân, numele, datele, legăturile și textele se văd în continuare, iar arborele întreg îl poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești. Pozele încărcate de alte rude se văd atunci doar în mic, iar glasurile și actele lor nu se mai deschid online, până când tu (titularul) plătești un an sau Păstrarea. Ce ai încărcat tu se deschide și se descarcă mereu întreg și gratuit. La fel, pe un plan mai mic, ce e peste plafoanele lui rămâne și se vede; se opresc doar adăugările noi.",
         },
         owner: {
           h: "3. Al cui e ce pui",
@@ -160,7 +173,7 @@ export const roLegal = {
           l2: "O amintire e a celui care o scrie: doar el alege cine o vede și doar el o schimbă sau o șterge.",
           l3: "Capitolul „Credința” al autobiografiei e doar pentru cei în viață, care răspund ei înșiși, cu acordul lor.",
         },
-        // DE VERIFICAT DE AVOCAT (actualizat 13.11.2026): cele trei planuri (Basic, Familie, Premium) și plafoanele lor, cartea PDF inclusă/separat,
+        // DE VERIFICAT DE AVOCAT (actualizat 13.11.2026; l6 și l10 = Păstrarea, adăugată în aceeași zi): cele trei planuri (Basic, Familie, Premium) și plafoanele lor, cartea PDF inclusă/separat,
         // reducerea la tipar, trecerea pro rata pe un plan mai scump, ce se întâmplă la expirare, renunțarea la dreptul de retragere
         // (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
@@ -175,7 +188,9 @@ export const roLegal = {
           l7: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
           l8: "<b>Cartea neamului în PDF</b>, când nu e inclusă în plan, costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
           l9: "<b>Cartea tipărită</b> se face la comandă: ne ceri o ofertă din pagina cărții, iar prețul depinde de numărul de pagini, de format, de copertă și de numărul de exemplare. Cu planul Premium ai {premiumPrint}% reducere la prețul din ofertă.",
+          l10: "<b>Păstrarea</b>, {keepLei} lei ({keepEur} €) pe an, aceeași la orice plan, pentru cine a avut un an (plătit sau primul an gratuit): după anul plătit, toată familia vede și ascultă tot online (poze mari, glasuri, acte), fără adăugări noi. La fiecare plată primești pe email legătura spre arhiva completă (pagina „Arhiva mea”). Cu cartea PDF a unui arbore, pachetul costă {keepBookLei} lei ({keepBookEur} €). Nici Păstrarea nu se reînnoiește singură.",
           p2: "Prețul arătat la plată e prețul final. Plătești cu cardul, prin Stripe; noi nu vedem datele cardului. Vânzătorul e {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
+          p3: "<b>Cum se încheie contractul:</b> alegi planul sau cartea pe pagina Plată, vezi prețul final, bifezi acordul pentru începerea imediată și apeși butonul de plată; plătești pe pagina Stripe, iar contractul e încheiat când plata e primită. Până la plată poți reveni oricând și îndrepta alegerea. Confirmarea, cu factura și acordul tău, vine pe email. Contractul se încheie în limba română (celelalte limbi sunt traduceri); acești Termeni rămân pe site și îi poți salva sau tipări oricând.",
         },
         withdrawal: {
           h: "6. Dreptul de retragere",
@@ -183,6 +198,7 @@ export const roLegal = {
           l1: "<b>Anul în Cartea Neamului și cartea PDF</b> sunt conținut digital pe care îl primești imediat după plată. Înainte să plătești, bifezi că vrei să începi imediat și că știi că astfel pierzi dreptul de retragere (art. 16 lit. m din OUG nr. 34/2014). Fără bifă nu se poate plăti. Păstrăm acordul tău, cu data, iar confirmarea plății o primești pe email.",
           l2: "<b>Cartea tipărită</b> se face după datele tale, special pentru tine, așa că nici la ea nu există drept de retragere (art. 16 lit. c din OUG nr. 34/2014). Dacă ajunge stricată sau greșită din vina noastră, o refacem sau îți dăm banii înapoi.",
           l3: "Dacă ceva plătit nu merge cum am promis, ne scrii la <mail>{email}</mail> și îndreptăm lucrurile sau îți dăm banii înapoi. Drepturile pe care ți le dă legea ca și consumator rămân.",
+          l4: "<b>Garanția legală de conformitate:</b> ce plătești trebuie să meargă cum am promis cât ai anul plătit (cartea PDF, timp de 12 luni). Dacă nu merge, ai dreptul să îl aducem la conformitate fără cost și, dacă nu putem, la o reducere de preț sau la încetarea contractului, cu banii înapoi (OUG nr. 141/2021).",
           p2: "Cu o reclamație ne poți scrie oricând. Dacă nu ne înțelegem, te poți adresa Autorității Naționale pentru Protecția Consumatorilor (<anpc>ANPC</anpc>) sau unei entități de soluționare alternativă a litigiilor (<sal>SAL</sal>).",
         },
         reliability: {
@@ -200,10 +216,19 @@ export const roLegal = {
         law: {
           h: "10. Legea",
           p1: "Acestor termeni li se aplică legea română. O neînțelegere încercăm întâi s-o lămurim prin bună înțelegere; dacă nu se poate, o judecă instanțele din România.",
+          p2: "Dacă ești consumator și locuiești în alt stat, alegerea legii române nu îți ia protecția pe care ți-o dau regulile obligatorii din țara ta, iar ne poți chema în judecată și la instanța de la domiciliul tău.",
         },
         changes: {
           h: "11. Schimbări",
           p1: "Dacă schimbăm ceva important în acești termeni, te anunțăm în site înainte ca schimbarea să intre în vigoare.",
+          p2: "Anul deja plătit rămâne la prețul și cu plafoanele pe care le-ai plătit. Dacă nu ești de acord cu o schimbare, îți poți descărca datele și închide contul înainte să intre în vigoare.",
+        },
+        dsa: {
+          h: "12. Conținut ilegal și punct de contact",
+          p1: "Adresa <mail>{email}</mail> e punctul nostru unic de contact, pentru oameni, pentru autoritățile statelor UE și pentru Comisia Europeană (Regulamentul UE 2022/2065 privind serviciile digitale). Ne poți scrie în română sau în engleză.",
+          l1: "Dacă vezi în site ceva ce crezi că e ilegal (de pildă o poză pusă fără drept sau date despre tine scrise fără acordul tău), ne scrii la această adresă: unde e (legătura sau numele arborelui și al fișei), de ce crezi că e ilegal, numele și emailul tău (afară de cazurile în care legea îți dă voie să rămâi anonim) și că scrii cu bună-credință.",
+          l2: "Îți confirmăm primirea, ne uităm cu atenție, fără întârziere, și îți spunem ce am hotărât.",
+          l3: "Dacă ascundem sau ștergem ce ai pus, îți spunem de ce și pe ce temei. Poți contesta hotărârea scriindu-ne la aceeași adresă, iar un om o va revedea; îți rămân și calea instanței și plângerea la ANCOM, coordonatorul serviciilor digitale din România.",
         },
       },
     },

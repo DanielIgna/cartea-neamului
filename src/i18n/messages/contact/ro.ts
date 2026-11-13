@@ -28,6 +28,7 @@ export const roContact = {
     email: "Adresa ta de email",
     message: "Mesajul",
     messagePlaceholder: "Scrie aici ce vrei să ne spui…",
+    privacyNote: "Mesajul ajunge la noi pe email prin FormSubmit (SUA). Dacă nu vrei asta, scrie-ne pe WhatsApp sau la adresa din <privacy>Politica de confidențialitate</privacy>.",
     send: "Trimite mesajul",
     sending: "Se trimite…",
     sent: "Mulțumim! Mesajul a plecat și îți răspundem pe email.",
