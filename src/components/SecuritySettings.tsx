@@ -36,6 +36,34 @@ function BackupCodes({ codes, onDone }: { codes: string[]; onDone: () => void })
   );
 }
 
+/** Confirmarea adresei de email, la cerere: o legătură trimisă pe email (pentru proprietari e cerută). */
+export function VerifyEmail({ email, verified, owner }: { email: string; verified: boolean; owner: boolean }) {
+  const t = useTranslations("Security");
+  const [state, setState] = useState<"" | "sent" | "error">("");
+  const [pending, setPending] = useState(false);
+  async function send() {
+    setPending(true);
+    const res = await authClient.sendVerificationEmail({ email, callbackURL: "/securitate" });
+    setPending(false);
+    setState(res.error ? "error" : "sent");
+  }
+  return (
+    <div className="card">
+      {owner && <><h3 style={{ marginTop: 0 }}>{t("ownerTitle")}</h3><p>{t("ownerText")}</p></>}
+      <h3 style={{ marginTop: owner ? undefined : 0 }}>{t("verifyTitle")}</h3>
+      {verified ? <p style={{ marginBottom: 0 }}>{t("verifyOk", { email })}</p> : (
+        <>
+          <p>{t("verifyText", { email })}</p>
+          {state === "sent" ? <p style={{ marginBottom: 0 }}><b>{t("verifySent")}</b></p> : (
+            <button type="button" className="btn primary" disabled={pending} onClick={send}>{pending ? "…" : t("verifySend")}</button>
+          )}
+          {state === "error" && <p className="err">{t("failed")}</p>}
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function SecuritySettings({ enabled, hasPassword, sessions }: { enabled: boolean; hasPassword: boolean; sessions: Sess[] }) {
   const t = useTranslations("Security");
   const router = useRouter();

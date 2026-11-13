@@ -63,7 +63,14 @@ export const esSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Listo, has cerrado la sesión en los demás teléfonos y ordenadores.",
     "alertsTitle": "Te avisamos por correo",
     "alertsText": "Cuando alguien entra en tu cuenta desde un teléfono u ordenador nuevo, te escribimos. Tras 5 contraseñas incorrectas seguidas, el acceso se detiene 15 minutos para que nadie pueda adivinar tu contraseña.",
-    "myDataLink": "Seguridad de la cuenta: verificación en dos pasos y dónde has iniciado sesión"
+    "myDataLink": "Seguridad de la cuenta: verificación en dos pasos y dónde has iniciado sesión",
+    "verifyTitle": "Dirección de correo",
+    "verifyOk": "La dirección {email} está confirmada.",
+    "verifyText": "La dirección {email} aún no está confirmada. Pulsa el botón y te enviaremos un enlace por correo; al abrirlo, la dirección queda confirmada. Ayuda a recuperar la cuenta.",
+    "verifySend": "Enviarme el enlace de confirmación",
+    "verifySent": "Listo. Abre el correo y pulsa el enlace (mira también en Spam o Promociones). Es válido durante una hora.",
+    "ownerTitle": "Eres el propietario del sitio",
+    "ownerText": "Para tener derechos de propietario en el panel de administración, confirma primero tu dirección de correo y después activa la verificación en dos pasos.",
   },
   "SecurityMail": {
     "hello": "Hola, {name}:",
@@ -74,6 +81,10 @@ export const esSecuritate: SecuritateCatalog = {
     "offSubject": "Se ha desactivado la verificación en dos pasos en {app}",
     "offIntro": "Se ha desactivado la verificación en dos pasos de tu cuenta de {app}.",
     "changePassword": "Cambiar la contraseña",
-    "securityPage": "Seguridad de la cuenta"
+    "securityPage": "Seguridad de la cuenta",
+    "verifySubject": "Confirma tu dirección de correo para {app}",
+    "verifyIntro": "Pulsa el botón de abajo para confirmar que esta dirección de correo es tuya, para tu cuenta de {app}:",
+    "verifyButton": "Confirmar la dirección",
+    "verifyIgnore": "El enlace es válido durante una hora. Si no lo has pedido tú, no hagas nada.",
   }
 };

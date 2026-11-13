@@ -63,7 +63,14 @@ export const enGBSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Done, you’ve been signed out of the other phones and computers.",
     "alertsTitle": "We let you know by email",
     "alertsText": "When someone signs in to your account from a new phone or computer, we email you. After 5 wrong passwords in a row, signing in pauses for 15 minutes, so nobody can guess your password.",
-    "myDataLink": "Account security: two-step verification and where you’re signed in"
+    "myDataLink": "Account security: two-step verification and where you’re signed in",
+    "verifyTitle": "Email address",
+    "verifyOk": "The address {email} is confirmed.",
+    "verifyText": "The address {email} isn’t confirmed yet. Tap the button and we’ll email you a link; once you open it, the address is confirmed. It helps with account recovery.",
+    "verifySend": "Send me the confirmation link",
+    "verifySent": "Done. Open the email and tap the link (check Spam or Promotions too). It’s valid for one hour.",
+    "ownerTitle": "You are the site owner",
+    "ownerText": "To have owner rights in the admin panel, first confirm your email address, then turn on two-step verification.",
   },
   "SecurityMail": {
     "hello": "Hello {name},",
@@ -74,6 +81,10 @@ export const enGBSecuritate: SecuritateCatalog = {
     "offSubject": "Two-step verification was turned off on {app}",
     "offIntro": "Two-step verification was turned off for your {app} account.",
     "changePassword": "Change your password",
-    "securityPage": "Account security"
+    "securityPage": "Account security",
+    "verifySubject": "Confirm your email address for {app}",
+    "verifyIntro": "Tap the button below to confirm this email address is yours, for your {app} account:",
+    "verifyButton": "Confirm the address",
+    "verifyIgnore": "The link is valid for one hour. If you didn’t ask for this, do nothing.",
   }
 };

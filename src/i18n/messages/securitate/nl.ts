@@ -63,7 +63,14 @@ export const nlSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Klaar, je bent uitgelogd op de andere telefoons en computers.",
     "alertsTitle": "We laten het je per e-mail weten",
     "alertsText": "Als iemand vanaf een nieuwe telefoon of computer in je account inlogt, sturen we je een e-mail. Na 5 foute wachtwoorden achter elkaar wordt inloggen 15 minuten gepauzeerd, zodat niemand je wachtwoord kan raden.",
-    "myDataLink": "Beveiliging van je account: verificatie in twee stappen en waar je bent ingelogd"
+    "myDataLink": "Beveiliging van je account: verificatie in twee stappen en waar je bent ingelogd",
+    "verifyTitle": "E-mailadres",
+    "verifyOk": "Het adres {email} is bevestigd.",
+    "verifyText": "Het adres {email} is nog niet bevestigd. Tik op de knop en we mailen je een link; zodra je die opent, is het adres bevestigd. Dat helpt bij het herstellen van je account.",
+    "verifySend": "Stuur me de bevestigingslink",
+    "verifySent": "Klaar. Open de e-mail en tik op de link (kijk ook bij spam of reclame). Hij is een uur geldig.",
+    "ownerTitle": "Je bent eigenaar van de site",
+    "ownerText": "Om eigenaarsrechten in het beheerpaneel te krijgen, bevestig je eerst je e-mailadres en schakel je daarna verificatie in twee stappen in.",
   },
   "SecurityMail": {
     "hello": "Hallo {name},",
@@ -74,6 +81,10 @@ export const nlSecuritate: SecuritateCatalog = {
     "offSubject": "Verificatie in twee stappen is uitgeschakeld bij {app}",
     "offIntro": "Verificatie in twee stappen is uitgeschakeld voor je account bij {app}.",
     "changePassword": "Wachtwoord wijzigen",
-    "securityPage": "Beveiliging van je account"
+    "securityPage": "Beveiliging van je account",
+    "verifySubject": "Bevestig je e-mailadres voor {app}",
+    "verifyIntro": "Tik op de knop hieronder om te bevestigen dat dit e-mailadres van jou is, voor je account bij {app}:",
+    "verifyButton": "Adres bevestigen",
+    "verifyIgnore": "De link is een uur geldig. Heb je dit niet gevraagd? Doe dan niets.",
   }
 };

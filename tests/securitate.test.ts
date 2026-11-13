@@ -51,3 +51,19 @@ describe("evenimentele Stripe", () => {
     expect(stripeAlert({ type: "checkout.session.completed", data: { object: {} } })).toBeNull();
   });
 });
+
+import { isAdminUser, isOwnerUser } from "@/lib/admin";
+describe("proprietarii: Daniel și Cristina", () => {
+  it("Cristina e proprietar doar cu adresa confirmată", () => {
+    expect(isOwnerUser({ email: "dr.cristina.igna@gmail.com", emailVerified: false, createdAt: "2026-11-01T00:00:00Z" })).toBe(false);
+    expect(isOwnerUser({ email: "Dr.Cristina.Igna@gmail.com ", emailVerified: true })).toBe(true);
+    expect(isAdminUser({ email: "dr.cristina.igna@gmail.com", emailVerified: true }, "")).toBe(true);
+  });
+  it("Daniel: confirmat sau cu contul vechi", () => {
+    expect(isOwnerUser({ email: "danieligna1@gmail.com", emailVerified: false, createdAt: "2026-11-01T00:00:00Z" })).toBe(true);
+    expect(isOwnerUser({ email: "danieligna1@gmail.com", emailVerified: false, createdAt: "2026-11-10T00:00:00Z" })).toBe(false);
+  });
+  it("altcineva nu", () => {
+    expect(isOwnerUser({ email: "cineva@ex.ro", emailVerified: true })).toBe(false);
+  });
+});

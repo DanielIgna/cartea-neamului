@@ -63,7 +63,14 @@ export const frSecuritate: SecuritateCatalog = {
     "signedOutOthers": "C’est fait, vous êtes déconnecté des autres téléphones et ordinateurs.",
     "alertsTitle": "Nous vous prévenons par e-mail",
     "alertsText": "Quand quelqu’un se connecte à votre compte depuis un nouveau téléphone ou ordinateur, nous vous écrivons. Après 5 mots de passe erronés d’affilée, la connexion est suspendue 15 minutes, pour que personne ne puisse deviner votre mot de passe.",
-    "myDataLink": "Sécurité du compte : validation en deux étapes et appareils connectés"
+    "myDataLink": "Sécurité du compte : validation en deux étapes et appareils connectés",
+    "verifyTitle": "Adresse e-mail",
+    "verifyOk": "L’adresse {email} est confirmée.",
+    "verifyText": "L’adresse {email} n’est pas encore confirmée. Appuyez sur le bouton et nous vous enverrons un lien par e-mail ; une fois ouvert, l’adresse est confirmée. Cela aide à récupérer le compte.",
+    "verifySend": "M’envoyer le lien de confirmation",
+    "verifySent": "C’est fait. Ouvrez l’e-mail et appuyez sur le lien (regardez aussi dans les spams ou les promotions). Il est valable une heure.",
+    "ownerTitle": "Vous êtes propriétaire du site",
+    "ownerText": "Pour avoir les droits de propriétaire dans l’administration, confirmez d’abord votre adresse e-mail, puis activez la validation en deux étapes.",
   },
   "SecurityMail": {
     "hello": "Bonjour {name},",
@@ -74,6 +81,10 @@ export const frSecuritate: SecuritateCatalog = {
     "offSubject": "La validation en deux étapes a été désactivée sur {app}",
     "offIntro": "La validation en deux étapes a été désactivée pour votre compte {app}.",
     "changePassword": "Changer le mot de passe",
-    "securityPage": "Sécurité du compte"
+    "securityPage": "Sécurité du compte",
+    "verifySubject": "Confirmez votre adresse e-mail pour {app}",
+    "verifyIntro": "Appuyez sur le bouton ci-dessous pour confirmer que cette adresse e-mail est bien la vôtre, pour votre compte {app} :",
+    "verifyButton": "Confirmer l’adresse",
+    "verifyIgnore": "Le lien est valable une heure. Si vous n’avez rien demandé, ne faites rien.",
   }
 };

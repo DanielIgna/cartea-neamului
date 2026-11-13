@@ -22,7 +22,8 @@ export type SecurityKind =
   | "2pasi_oprit"
   | "plata_semnatura" // cineva a trimis la adresa plăților un mesaj fără semnătura Stripe
   | "plata_disputa" // Stripe: clientul a contestat plata la bancă
-  | "plata_frauda"; // Stripe Radar: avertisment de fraudă de la bancă
+  | "plata_frauda" // Stripe Radar: avertisment de fraudă de la bancă
+  | "recuperare_proprietar"; // un proprietar a resetat verificarea în 2 pași a celuilalt
 
 /** Ce scrie în panou pentru fiecare fel (panoul rămâne în română). */
 export const KIND_LABEL: Record<SecurityKind, string> = {
@@ -37,6 +38,7 @@ export const KIND_LABEL: Record<SecurityKind, string> = {
   plata_semnatura: "Mesaj fals la adresa plăților",
   plata_disputa: "Plată contestată la bancă",
   plata_frauda: "Avertisment de fraudă (Stripe)",
+  recuperare_proprietar: "Recuperare între proprietari (2 pași resetați)",
 };
 
 /** Câte greșeli și în cât timp. Pe email: 5 parole greșite în 15 minute. Pe adresa IP: 20. Codurile din pasul 2: 6. */

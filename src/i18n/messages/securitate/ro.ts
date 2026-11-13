@@ -68,6 +68,13 @@ export const roSecuritate = {
     alertsTitle: "Te anunțăm pe email",
     alertsText: "Când cineva intră în contul tău de pe un telefon sau calculator nou, îți scriem pe email. După 5 parole greșite la rând, intrarea se oprește 15 minute, ca nimeni să nu poată ghici parola.",
     myDataLink: "Siguranța contului: verificarea în 2 pași și unde ești intrat",
+    verifyTitle: "Adresa de email",
+    verifyOk: "Adresa {email} e confirmată.",
+    verifyText: "Adresa {email} nu e încă confirmată. Apasă butonul și îți trimitem pe email o legătură; după ce o deschizi, adresa e confirmată. Ajută la recuperarea contului.",
+    verifySend: "Trimite-mi legătura de confirmare",
+    verifySent: "Gata. Deschide emailul și apasă pe legătură (uită-te și în Spam sau Promoții). E valabilă o oră.",
+    ownerTitle: "Ești proprietarul site-ului",
+    ownerText: "Ca să ai drepturile de proprietar în panoul de admin, confirmă mai întâi adresa de email, apoi pornește verificarea în 2 pași.",
   },
   SecurityMail: {
     hello: "Bună, {name},",
@@ -79,6 +86,10 @@ export const roSecuritate = {
     offIntro: "Verificarea în 2 pași a fost oprită pentru contul tău de pe {app}.",
     changePassword: "Schimbă parola",
     securityPage: "Siguranța contului",
+    verifySubject: "Confirmă adresa de email pentru {app}",
+    verifyIntro: "Apasă butonul de mai jos ca să confirmi că această adresă de email e a ta, pentru contul tău de pe {app}:",
+    verifyButton: "Confirmă adresa",
+    verifyIgnore: "Legătura e valabilă o oră. Dacă nu ai cerut tu asta, nu face nimic.",
   },
 };
 

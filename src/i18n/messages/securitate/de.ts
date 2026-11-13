@@ -63,7 +63,14 @@ export const deSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Fertig, Sie wurden auf den anderen Handys und Computern abgemeldet.",
     "alertsTitle": "Wir benachrichtigen Sie per E-Mail",
     "alertsText": "Wenn sich jemand von einem neuen Handy oder Computer in Ihr Konto einloggt, schreiben wir Ihnen. Nach 5 falschen Passwörtern hintereinander wird die Anmeldung 15 Minuten gesperrt, damit niemand Ihr Passwort erraten kann.",
-    "myDataLink": "Kontosicherheit: Bestätigung in zwei Schritten und wo Sie angemeldet sind"
+    "myDataLink": "Kontosicherheit: Bestätigung in zwei Schritten und wo Sie angemeldet sind",
+    "verifyTitle": "E-Mail-Adresse",
+    "verifyOk": "Die Adresse {email} ist bestätigt.",
+    "verifyText": "Die Adresse {email} ist noch nicht bestätigt. Tippen Sie auf die Schaltfläche, dann senden wir Ihnen einen Link; sobald Sie ihn öffnen, ist die Adresse bestätigt. Das hilft bei der Kontowiederherstellung.",
+    "verifySend": "Bestätigungslink senden",
+    "verifySent": "Fertig. Öffnen Sie die E-Mail und tippen Sie auf den Link (schauen Sie auch im Spam- oder Werbeordner nach). Er ist eine Stunde gültig.",
+    "ownerTitle": "Sie sind Eigentümer der Seite",
+    "ownerText": "Um Eigentümerrechte im Admin-Panel zu erhalten, bestätigen Sie zuerst Ihre E-Mail-Adresse und schalten Sie dann die Bestätigung in zwei Schritten ein.",
   },
   "SecurityMail": {
     "hello": "Hallo {name},",
@@ -74,6 +81,10 @@ export const deSecuritate: SecuritateCatalog = {
     "offSubject": "Die Bestätigung in zwei Schritten wurde bei {app} ausgeschaltet",
     "offIntro": "Die Bestätigung in zwei Schritten wurde für Ihr Konto bei {app} ausgeschaltet.",
     "changePassword": "Passwort ändern",
-    "securityPage": "Kontosicherheit"
+    "securityPage": "Kontosicherheit",
+    "verifySubject": "Bestätigen Sie Ihre E-Mail-Adresse für {app}",
+    "verifyIntro": "Tippen Sie auf die Schaltfläche unten, um zu bestätigen, dass diese E-Mail-Adresse Ihnen gehört, für Ihr Konto bei {app}:",
+    "verifyButton": "Adresse bestätigen",
+    "verifyIgnore": "Der Link ist eine Stunde gültig. Wenn Sie das nicht angefordert haben, tun Sie nichts.",
   }
 };

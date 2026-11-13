@@ -6,7 +6,8 @@ import { requireUser } from "@/lib/access";
 import { auth } from "@/lib/auth";
 import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { deviceLabel } from "@/lib/securitate";
-import SecuritySettings from "@/components/SecuritySettings";
+import SecuritySettings, { VerifyEmail } from "@/components/SecuritySettings";
+import { isOwnerEmail } from "@/lib/admin";
 import PageIntl from "@/i18n/PageIntl";
 import { getAppName, getFormat, getLocale, getT } from "@/i18n/server";
 
@@ -25,7 +26,8 @@ export default async function SecurityPage({ searchParams }: { searchParams: Pro
   const { admin } = await searchParams;
   const locale = await getLocale();
   const [t, format] = await Promise.all([getT("Security", locale), getFormat(locale)]);
-  const [u] = await db.select({ on: user.twoFactorEnabled }).from(user).where(eq(user.id, me.id));
+  const [u] = await db.select({ on: user.twoFactorEnabled, verified: user.emailVerified }).from(user).where(eq(user.id, me.id));
+  const owner = isOwnerEmail(me.email);
   const hasPassword = (await db.select({ id: account.id }).from(account).where(and(eq(account.userId, me.id), eq(account.providerId, "credential")))).length > 0;
   const current = await auth.api.getSession({ headers: await headers() });
   const rows = await db.select({ id: session.id, token: session.token, createdAt: session.createdAt, updatedAt: session.updatedAt, ua: session.userAgent })
@@ -41,6 +43,7 @@ export default async function SecurityPage({ searchParams }: { searchParams: Pro
           <p style={{ marginBottom: 0 }}>{t("intro")}</p>
           {admin && !u?.on && <p className="err" style={{ marginBottom: 0 }}>{t("adminNeeded")}</p>}
         </div>
+        {(owner || !u?.verified) && <VerifyEmail email={me.email} verified={!!u?.verified} owner={owner} />}
         <SecuritySettings enabled={!!u?.on} hasPassword={hasPassword} sessions={sessions} />
         <div className="card">
           <h3 style={{ marginTop: 0 }}>{t("alertsTitle")}</h3>
