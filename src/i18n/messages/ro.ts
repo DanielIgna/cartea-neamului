@@ -562,6 +562,8 @@ export const ro = {
   ReminderMail: {
     subject: "{app}: anul tău se termină pe {date}",
     body: "Bună, {name}!\n\nAnul tău în {app}, pe planul {plan}, se termină pe {date}. Nu se reînnoiește singur și nu îți luăm bani automat. Nu se șterge nimic: după aceea arborele rămâne de citit și îl poți descărca oricând.\n\nDacă vrei să adaugi în continuare, poți plăti încă un an aici: {link}\n\nMulțumim că păstrezi povestea familiei!",
+    trialSubject: "{app}: zilele tale gratuite se termină pe {date}",
+    trialBody: "Bună, {name}!\n\nZilele tale gratuite în {app} se termină pe {date}. Nu îți luăm bani automat și nu se șterge nimic: după aceea arborele rămâne de citit și îl poți descărca oricând.\n\nDacă vrei să adaugi în continuare, alegi un an aici: {link}\n\nMulțumim că păstrezi povestea familiei!",
   },
   NotFound: {
     title: "Pagina nu există",

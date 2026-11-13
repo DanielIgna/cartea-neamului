@@ -548,6 +548,8 @@ export const nl: Catalog = {
   ReminderMail: {
     subject: "{app}: je jaar eindigt op {date}",
     body: "Hallo {name},\n\nJe jaar in {app}, met het abonnement {plan}, eindigt op {date}. Het wordt niet vanzelf verlengd en we schrijven nooit automatisch af. Er wordt niets verwijderd: daarna blijft de stamboom leesbaar en kun je hem altijd downloaden.\n\nWil je blijven toevoegen, dan kun je hier nog een jaar betalen: {link}\n\nDank je dat je het verhaal van je familie bewaart!",
+    trialSubject: "{app}: je gratis dagen eindigen op {date}",
+    trialBody: "Hallo {name},\n\nJe gratis dagen in {app} eindigen op {date}. We schrijven nooit automatisch iets af en er wordt niets verwijderd: daarna blijft de stamboom leesbaar en kun je hem altijd downloaden.\n\nWil je blijven toevoegen, dan kies je hier een jaar: {link}\n\nBedankt dat je het verhaal van je familie bewaart!",
   },
   NotFound: {
     title: "Deze pagina bestaat niet",

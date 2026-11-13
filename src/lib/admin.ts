@@ -62,6 +62,8 @@ export const ENV_KEYS: { key: string; what: string; needed: boolean }[] = [
   { key: "NEON_FUNCTION_HELLO_BASE_URL", what: "Funcția Neon de probă", needed: false },
   { key: "GSC_SERVICE_ACCOUNT_JSON", what: "Admin → SEO: cheia Google Search Console (se poate pune și din panou)", needed: false },
   { key: "GOOGLE_SITE_VERIFICATION", what: "Admin → SEO: codul de verificare Google (se poate pune și din panou)", needed: false },
+  { key: "CRON_SECRET", what: "Admin → Autonomie: ceasul zilnic al automatizărilor (orice parolă lungă)", needed: false },
+  { key: "RESEND_API_KEY", what: "Emailurile site-ului (aduceri aminte, alerte, răspunsuri)", needed: false },
   { key: "NEON_AI_GATEWAY_BASE_URL", what: "Sugestii de biografie (plan plătit)", needed: false },
   { key: "NEON_AI_GATEWAY_TOKEN", what: "Sugestii de biografie (plan plătit)", needed: false },
 ];

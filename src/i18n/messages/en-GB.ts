@@ -548,6 +548,8 @@ export const enGB: Catalog = {
   ReminderMail: {
     subject: "{app}: your year ends on {date}",
     body: "Hello {name},\n\nYour year in {app}, on the {plan} plan, ends on {date}. It does not renew by itself and we never charge you automatically. Nothing is deleted: afterwards the tree stays readable and you can download it at any time.\n\nIf you want to keep adding, you can pay for another year here: {link}\n\nThank you for keeping your family’s story!",
+    trialSubject: "{app}: your free days end on {date}",
+    trialBody: "Hello {name},\n\nYour free days in {app} end on {date}. We never charge you automatically and nothing is deleted: afterwards the tree stays readable and you can download it at any time.\n\nIf you want to keep adding, you can choose a year here: {link}\n\nThank you for keeping your family’s story!",
   },
   NotFound: {
     title: "This page doesn’t exist",
