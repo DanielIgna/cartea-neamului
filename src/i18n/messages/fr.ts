@@ -34,7 +34,7 @@ export const fr: Catalog = {
     guides: "Guides de généalogie",
     glossary: "Glossaire",
     cookieLead: "Uniquement des cookies strictement nécessaires.",
-    cookieText: "Nous les utilisons pour que vous restiez connecté et pour retenir la langue et le thème choisis. Pas de publicité ni de mesure d’audience, donc nous ne vous demandons pas votre consentement.",
+    cookieText: "Nous les utilisons pour que vous restiez connecté et pour retenir la langue et le thème choisis. Pas de publicité ni de pistage : nous comptons les visites de façon anonyme, sans cookies, donc nous ne vous demandons pas votre consentement.",
     cookieMore: "Voir la liste",
     cookieOk: "J’ai compris",
   },

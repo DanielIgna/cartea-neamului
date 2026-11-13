@@ -31,7 +31,7 @@ export function ago(isoDate: string | null | undefined) {
   return d === 1 ? "ieri" : `acum ${d} zile`;
 }
 
-export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "istoric" | "texte" | "poze" | "propuneri" | "seo" | "adn" | "email" | "probleme" | "securitate" | "infra" }) {
+export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "istoric" | "texte" | "poze" | "propuneri" | "seo" | "adn" | "email" | "probleme" | "securitate" | "analiza" | "infra" }) {
   const tab = (key: typeof active, href: string, label: string) => (
     <Link href={href} className="btn" aria-current={active === key ? "page" : undefined}>{label}</Link>
   );
@@ -41,6 +41,7 @@ export function AdminNav({ active }: { active: "home" | "oameni" | "business" | 
       {tab("home", "/admin", "Prezentare")}
       {tab("oameni", "/admin/oameni", "Oamenii")}
       {tab("business", "/admin/business", "Business")}
+      {tab("analiza", "/admin/analiza", "Analiză")}
       {tab("control", "/admin/control", "Manager control")}
       {tab("istoric", "/admin/istoric", "Istoric și limite")}
       {tab("texte", "/admin/texte", "Texte")}
@@ -69,7 +70,7 @@ export function PlanPill({ plan, access }: { plan: Plan; access?: Access | null 
 }
 
 /** Bare orizontale cu eticheta în stânga și „număr · procent” în dreapta (drumul oamenilor, ce folosesc, timpul pe părți). */
-export function HBars({ data, total, label, format = num }: { data: { label: string; count: number }[]; total: number; label: string; format?: (v: number) => string }) {
+export function HBars({ data, total, label, format = num, noPct = false }: { data: { label: string; count: number }[]; total: number; label: string; format?: (v: number) => string; noPct?: boolean }) {
   return (
     <ul className="hbars" aria-label={label}>
       {data.map((d) => {
@@ -78,7 +79,7 @@ export function HBars({ data, total, label, format = num }: { data: { label: str
           <li key={d.label}>
             <span className="hbars-label">{d.label}</span>
             <span className="hbars-track" aria-hidden="true"><span className="hbars-fill" style={{ width: `${d.count ? Math.max(pct, 1.5) : 0}%` }} /></span>
-            <span className="hbars-value">{format(d.count)} <small>· {pct}%</small></span>
+            <span className="hbars-value">{format(d.count)}{!noPct && <> <small>· {pct}%</small></>}</span>
           </li>
         );
       })}

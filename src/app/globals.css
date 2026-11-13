@@ -1515,3 +1515,46 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
 .facts div{background:var(--surface-2);border-radius:12px;padding:10px 14px}
 .facts b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ochre-ink)}
+
+/* Admin → Analiză: culorile graficelor (paleta verificată pentru daltonism, separat pentru tema închisă) */
+:root{--viz-1:#2a78d6;--viz-2:#eb6834;--viz-3:#1baf7a;--viz-4:#eda100;--viz-5:#e87ba4;--viz-6:#6250d6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--viz-1:#3987e5;--viz-2:#d95926;--viz-3:#199e70;--viz-4:#c98500;--viz-5:#d55181;--viz-6:#9085e9}}
+:root[data-theme="dark"]{--viz-1:#3987e5;--viz-2:#d95926;--viz-3:#199e70;--viz-4:#c98500;--viz-5:#d55181;--viz-6:#9085e9}
+.an-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;justify-content:space-between}
+.an-head h1{margin:0}
+.an-tabs,.an-periods{display:flex;flex-wrap:wrap;gap:6px}
+.an-tabs .btn[aria-current="page"],.an-periods .btn[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.an-periods .btn{padding:4px 10px;min-height:34px;font-size:14px}
+.an-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.an-grid>.card{min-width:0}
+.trend{font-size:13px;font-weight:700}
+.trend.up{color:var(--good)}.trend.down{color:var(--red)}
+.an-notes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.an-notes li{padding-left:22px;position:relative}
+.an-notes li::before{content:"•";position:absolute;left:6px;color:var(--muted)}
+.an-notes li.warn::before{content:"!";color:var(--ochre-ink);font-weight:800}
+.an-notes li.ok::before{content:"✓";color:var(--good);font-weight:800}
+.an-table{width:100%;border-collapse:collapse;font-size:14px}
+.an-table th,.an-table td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.an-table th:first-child,.an-table td:first-child{text-align:left;white-space:normal;word-break:break-word}
+.an-table th{color:var(--muted);font-weight:600}
+.an-scroll{overflow-x:auto}
+.viz{position:relative}
+.viz-legend{display:flex;gap:14px;font-size:13px;color:var(--muted);margin-bottom:6px}
+.viz-legend i,.viz-keys i,.viz-tip i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.viz-tip{position:absolute;top:6px;transform:translateX(-50%);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:8px;padding:6px 10px;font-size:13px;display:grid;gap:2px;pointer-events:none;white-space:nowrap}
+.donut{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.viz-keys{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px;flex:1;min-width:180px}
+.viz-keys b{font-variant-numeric:tabular-nums;margin-left:4px}.viz-keys small{color:var(--muted);margin-left:4px}
+.heat{display:grid;gap:3px;overflow-x:auto}
+.heat-row{display:grid;grid-template-columns:34px repeat(24,minmax(10px,1fr));gap:3px;align-items:center;font-size:11px;color:var(--muted)}
+.heat-cell{height:18px;border-radius:3px;background:var(--surface-2);border:1px solid var(--line)}
+.heat-scale{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);margin-top:4px}
+.heat-scale i{display:inline-block;width:90px;height:10px;border-radius:3px;background:linear-gradient(90deg,var(--surface-2),var(--viz-1))}
+.funnel-step{display:grid;grid-template-columns:minmax(0,14em) 1fr auto;gap:10px;align-items:center;font-size:14px}
+.funnel-step+.funnel-step{margin-top:8px}
+.funnel-bar{height:22px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.funnel-bar span{display:block;height:100%;background:var(--viz-1);border-radius:4px}
+.funnel-drop{grid-column:2/4;font-size:12px;color:var(--muted);margin-top:-4px}
+@media (max-width:560px){.funnel-step{grid-template-columns:1fr auto}.funnel-bar{grid-column:1/3;grid-row:2}.funnel-drop{grid-column:1/3}.hbars li{grid-template-columns:minmax(0,1fr) auto}.hbars-track{grid-column:1/3;grid-row:2}}
+@media print{.admin-nav,.an-tabs,.an-periods,.an-actions,header.top,.site-foot{display:none!important}.card{break-inside:avoid;box-shadow:none}}
