@@ -11,6 +11,7 @@ import BannerSlides from "@/components/BannerSlides";
 import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
+import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -91,7 +92,7 @@ const cachedHomeImages = unstable_cache(() => homeImages(db), ["home-images"], {
 const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, tc, th, tp, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), cachedHomeImages(),
+  const [t, tc, th, tp, tg, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), cachedHomeImages(),
     // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
   // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
@@ -110,6 +111,13 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
   return (
     <div className="lp">
       <JsonLd data={jsonLd} />
+      {/* Banda discretă pentru darul de Crăciun (Daniel, 2026-11-13): doar cât vânzarea e pornită, până pe 6 ianuarie. */}
+      {sales && giftSeason() && (
+        <p className="lp-gift-band">
+          <span>{tg("band", { price: money(lei ? tierPrice("basic", true, s).lei : tierPrice("basic", true, s).eur, locale).label })}</span>{" "}
+          <Link href={GIFT_PATH}>{tg("bandLink")}<span aria-hidden="true"> →</span></Link>
+        </p>
+      )}
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
       {/* Butonul rotund de WhatsApp, în colț, pentru cine vrea să ne scrie (Daniel, 11 noiembrie 2026). */}
       <a className="wa-float" href={whatsappUrl(tc("waGreeting"))} target="_blank" rel="noopener noreferrer" aria-label={tc("waFloat")} title={tc("waFloat")}>

@@ -27,10 +27,12 @@ const UUID = /^[0-9a-f-]{36}$/i;
  * Prețurile și plafoanele vin din Admin → Manager control.
  */
 export default async function PlataPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const me = await requireUser("/plata");
   const q = await searchParams;
   const str = (k: string) => (typeof q[k] === "string" ? (q[k] as string) : "");
-  const [t, tk, locale] = await Promise.all([getT("Plata"), getT("Keep"), getLocale()]);
+  // „Dăruiește acum” de pe /cadou-de-sarbatori: planul ales rămâne și după intrarea în cont, iar darul vine primul pe pagină.
+  const dar = (TIERS as readonly string[]).includes(str("dar")) ? (str("dar") as Tier) : null;
+  const me = await requireUser(dar ? `/plata?dar=${dar}` : "/plata");
+  const [t, tk, tg, locale] = await Promise.all([getT("Plata"), getT("Keep"), getT("GiftPage"), getLocale()]);
   const { access, settings: s, ownsTree } = await userAccess(db, me.id);
   const admin = isAdminUser(me);
   const open = s.on || admin;
@@ -126,6 +128,39 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     );
   };
 
+  const giftCard = open && (
+    <div className="card" id="cadou">
+      <h2 style={{ marginTop: 0 }}>{t("giftTitle")}</h2>
+      <p className="muted">{t("giftText")}</p>
+      <form action="/api/plata/start" method="post" className="form pay-form">
+        <input type="hidden" name="kind" value="cadou" />
+        <label>{t("giftPlan")}
+          <select name="tier" defaultValue={dar ?? "familie"}>
+            {TIERS.map((x) => <option key={x} value={x}>{tierName(x)} · {t("perYear", { price: money(lei ? tierPrice(x, true, s).lei : tierPrice(x, true, s).eur, locale).label })}</option>)}
+          </select>
+        </label>
+        <label>{t("giftFor")}<input name="forName" maxLength={120} placeholder={t("giftForHint")} /></label>
+        <label>{t("giftNote")}<textarea name="note" maxLength={400} rows={3} placeholder={t("giftNoteHint")} /></label>
+        {consent}
+        <div className="actions"><button className="btn">{t("giftPay")}</button></div>
+      </form>
+      {gifts.length > 0 && (
+        <>
+          <h3>{t("giftsTitle")}</h3>
+          <ul className="gift-list">
+            {gifts.map((g) => (
+              <li key={g.id}>
+                {tierName(g.tier as Tier)}{g.forName ? ` · ${g.forName}` : ""}: {g.redeemedAt
+                  ? <span className="muted">{t("giftRedeemed", { date: date(g.redeemedAt) })}</span>
+                  : <><code>{`${origin}/cadou/${g.id}`}</code> <span className="muted">{t("giftSend")}</span> <Link href={`/cadou/${g.id}/card`}>{tg("printCard")}</Link></>}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+
   return (
     <section className="stack plata">
       <div className="card">
@@ -135,6 +170,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         <p>{isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil ? tk("keptUntil", { date: date(payAccess.keptUntil) }) : status}</p>
         <p className="muted">{t("yearText")}</p>
       </div>
+
+      {dar && giftCard}
 
       <div className="plan-cards">{TIERS.map(card)}</div>
 
@@ -176,38 +213,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         </p>
       </div>
 
-      {open && (
-        <div className="card" id="cadou">
-          <h2 style={{ marginTop: 0 }}>{t("giftTitle")}</h2>
-          <p className="muted">{t("giftText")}</p>
-          <form action="/api/plata/start" method="post" className="form pay-form">
-            <input type="hidden" name="kind" value="cadou" />
-            <label>{t("giftPlan")}
-              <select name="tier" defaultValue="familie">
-                {TIERS.map((x) => <option key={x} value={x}>{tierName(x)} · {t("perYear", { price: money(lei ? tierPrice(x, true, s).lei : tierPrice(x, true, s).eur, locale).label })}</option>)}
-              </select>
-            </label>
-            <label>{t("giftFor")}<input name="forName" maxLength={120} placeholder={t("giftForHint")} /></label>
-            <label>{t("giftNote")}<textarea name="note" maxLength={400} rows={3} placeholder={t("giftNoteHint")} /></label>
-            {consent}
-            <div className="actions"><button className="btn">{t("giftPay")}</button></div>
-          </form>
-          {gifts.length > 0 && (
-            <>
-              <h3>{t("giftsTitle")}</h3>
-              <ul className="gift-list">
-                {gifts.map((g) => (
-                  <li key={g.id}>
-                    {tierName(g.tier as Tier)}{g.forName ? ` · ${g.forName}` : ""}: {g.redeemedAt
-                      ? <span className="muted">{t("giftRedeemed", { date: date(g.redeemedAt) })}</span>
-                      : <><code>{`${origin}/cadou/${g.id}`}</code> <span className="muted">{t("giftSend")}</span></>}
-                  </li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
-      )}
+      {!dar && giftCard}
 
       {book && (
         <div className="card">
