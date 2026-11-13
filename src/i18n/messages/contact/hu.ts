@@ -25,6 +25,7 @@ export const huContact: ContactCatalog = {
     "email": "Az e-mail-címed",
     "message": "Üzenet",
     "messagePlaceholder": "Írd ide, amit üzenni szeretnél…",
+    "privacyNote": "Az üzeneted a FormSubmit (USA) révén érkezik az e-mail-fiókunkba. Ha ezt nem szeretnéd, írj nekünk WhatsAppon vagy az <privacy>Adatvédelmi tájékoztatóban</privacy> szereplő címre.",
     "send": "Üzenet küldése",
     "sending": "Küldés…",
     "sent": "Köszönjük! Az üzeneted elment, e-mailben válaszolunk.",

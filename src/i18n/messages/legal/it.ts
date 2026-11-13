@@ -4,7 +4,7 @@ export const itLegal: LegalCatalog = {
   Legal: {
     updated: "Ultima modifica: {date}",
     contactTitle: "Contatti",
-    contactLine: "{name}, con sede in {address} (CUI {cui}, n. Registro delle imprese {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
+    contactLine: "{name}, con sede in {address} (CUI {cui}, n. Registro delle imprese {regCom}, EUID {euid}). Email: <mail>{email}</mail>. Telefono e WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Informativa sulla privacy",
       metaDescription: "Quali dati conserviamo, perché, chi li vede e come li scarichi o li cancelli.",
@@ -33,6 +33,7 @@ export const itLegal: LegalCatalog = {
           l10: "<b>La casa di famiglia:</b> ciò che scrivi sulla casa della famiglia nella pagina di una persona (l’indirizzo o il paese, chi l’ha costruita, l’anno, foto e la sua storia). La vede solo chi scegli tu, come per i ricordi.",
           l13: "<b>Le foto proposte per la home page</b>, solo se scegli tu di proporne una dall’album di famiglia: una copia della foto, la riga scritta sotto, chi l’ha proposta, quando, in che lingua e la versione del consenso spuntato. Finché non è approvata, la vediamo solo noi.",
           l14: "<b>Quando ci scrivi</b> dalla pagina Contatti: il tuo nome, il tuo indirizzo email (per poterti rispondere) e il messaggio. Non li conserviamo sul sito: vanno direttamente nella nostra casella email. Se ci scrivi su WhatsApp, vediamo il tuo numero di telefono, il tuo nome su WhatsApp e ciò che ci scrivi.",
+          l15: "<b>Pagamenti e regali:</b> cosa hai pagato, quanto, quando e quale piano hai scelto (senza i dati della carta, che non vediamo mai), il tuo consenso a iniziare subito, l’anno regalato (il nome di chi lo riceve e il tuo biglietto, se li scrivi), i giorni in più che ricevi quando porti un parente che paga e le email con cui ti ricordiamo che il tuo anno sta per finire.",
           l11: "<b>Nel tuo browser</b>, oltre ai cookie elencati in fondo alla pagina, alcune scelte conservate solo sul tuo telefono o computer, per non doverle rifare ogni volta: i rami della famiglia che hai scelto di vedere, cosa hai scelto per ultimo in «La storia dell’umanità», «Genealogie antiche» e «La libertà di credere», le schede che hai segnato come non doppie, se hai nascosto la scheda per installare l’app e se hai già visto la scheda del partner dopo aver scaricato il libro. Se hai detto «Va bene» alla misurazione del tempo, anche l’ultimo minuto contato, al massimo un’ora, perché ci arrivi anche se chiudi la pagina di fretta.",
           l12: "<b>I registri tecnici</b> del server (indirizzo IP, pagina richiesta, ora), conservati per poco tempo, per poter correggere gli errori.",
         },
@@ -44,6 +45,7 @@ export const itLegal: LegalCatalog = {
           l4: "Per i parenti viventi che inserisci nell’albero, la base giuridica è il legittimo interesse della famiglia a conservare la propria storia, con cura: gli alberi sono privati e i viventi si vedono solo nel proprio albero, mai presso altre famiglie. Chiunque sia inserito in un albero può chiederci di correggere o cancellare i suoi dati.",
           l5: "Sulla base del tuo consenso, che puoi revocare in qualsiasi momento: il capitolo «La fede» (art. 9, par. 2, lett. a), le storie registrate «dai nonni», «Dagli stessi luoghi», quanto usi il sito, i vantaggi dai partner e le foto proposte per la home page (art. 6, par. 1, lett. a). La revoca non cambia ciò che è stato fatto prima con il consenso dato.",
           l6: "Per risponderti quando ci scrivi (dalla pagina Contatti, via email o su WhatsApp). La base è il nostro legittimo interesse a rispondere a chi ci cerca (art. 6, par. 1, lett. f) o, quando ci scrivi del tuo account, il contratto tra noi (lett. b).",
+          l7: "Per rispettare la legge: le fatture, la contabilità e la prova del tuo consenso a ricevere subito il contenuto digitale. La base è un obbligo di legge (art. 6, par. 1, lett. c del GDPR).",
         },
         who: {
           h: "Chi vede i dati",
@@ -54,6 +56,7 @@ export const itLegal: LegalCatalog = {
           l7: "<b>Le foto della home page</b> le vede chiunque apra il sito: sono foto scelte da noi e foto proposte da voi, dopo che le abbiamo approvate. Quelle che hai proposto tu puoi ritirarle in qualsiasi momento da «Il film di una vita», sulla tua pagina nell’albero; allora escono dalla home page e la loro copia viene cancellata.",
           l5: "<b>Noi</b> vediamo nel pannello di amministrazione solo ciò che ci serve per far funzionare il sito: elenchi e cifre sugli account (nome, email, quando e da che tipo di dispositivo sono entrati), sugli alberi (nome, quante persone e file hanno), per ogni account quanto ha aggiunto (quante persone, ricordi, foto, inviti e messaggi) e, per chi ha detto «Va bene», quanto tempo passa in ogni parte del sito. Vediamo anche la cronologia delle modifiche alle schede degli alberi (chi ha cambiato quali nomi, date o luoghi, e quando), per poter annullare una cancellazione o un errore e fermare chi danneggia un albero, e le foto proposte per la home page, per approvarle. Lì possiamo anche tenere una breve nota sull’account, per esempio che resta gratuito. Non leggiamo i ricordi e i messaggi, e dal capitolo «La fede» non contiamo nulla; li guardiamo solo se ci chiedi aiuto o se la legge ci obbliga.",
           l6: "Non vendiamo dati, non facciamo pubblicità e non li diamo a nessun altro, tranne ai fornitori qui sotto, al nostro partner PropManage (solo l’email di chi ha messo la spunta, come scritto più sotto) e alle autorità, quando la legge ci obbliga.",
+          l8: "<b>Il nostro commercialista</b> e l’<b>ANAF</b> (l’amministrazione fiscale romena) vedono solo i dati delle fatture: nome, email, cosa hai pagato, quanto e quando, come richiede la legge fiscale.",
         },
         vendors: {
           h: "I fornitori che ci aiutano",
@@ -63,7 +66,8 @@ export const itLegal: LegalCatalog = {
           l3: "<b>Google</b>, solo se scegli «Continua con Google», conferma la tua identità all’accesso.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Regno Unito) fornisce i pezzi di mappa della «Mappa della famiglia». Il tuo browser li chiede direttamente a loro, quindi vedono l’indirizzo IP da cui li chiedi.",
           l5: "<b>FormSubmit</b> (formsubmit.co, USA) ci consegna via email i messaggi inviati dalla pagina Contatti. <b>WhatsApp</b> (WhatsApp Ireland Ltd., del gruppo Meta), solo se scegli di scriverci lì, secondo le sue regole sulla privacy. <b>Stripe</b> (Stripe Payments Europe Ltd., Irlanda), solo se paghi qualcosa, riceve il pagamento con carta sulla propria pagina; non vediamo mai i dati della carta, solo cosa è stato pagato, quanto e quando (conservati per la contabilità per il tempo richiesto dalla legge).",
-          p2: "Per i trasferimenti fuori dall’Unione europea, questi fornitori usano le clausole contrattuali tipo approvate dalla Commissione europea o il quadro UE-USA per la protezione dei dati. Sui viventi non inviamo nulla a servizi di intelligenza artificiale.",
+          l6: "<b>Resend</b> (Resend Inc., USA) invia l’email con cui ti ricordiamo, 14 giorni prima, che il tuo anno pagato sta per finire; riceve solo il tuo indirizzo email e il testo del messaggio.",
+          p2: "Vercel, Neon, Google, Stripe e Resend lavorano con accordi sul trattamento dei dati; per i trasferimenti fuori dall’Unione europea si basano sul quadro UE–USA per la protezione dei dati, dove sono certificati, e sulle clausole contrattuali tipo approvate dalla Commissione europea. FormSubmit non ha un accordo del genere con noi: il tuo messaggio passa per i suoi server negli USA solo per arrivare a noi, perché ci hai chiesto di inviarlo; se non lo vuoi, scrivici direttamente a <mail>{email}</mail>.",
         },
         partner: {
           h: "Il nostro partner, PropManage",
@@ -77,22 +81,27 @@ export const itLegal: LegalCatalog = {
         dna: {
           h: "La richiesta «Voglio un test del DNA»",
           p1: "Nella pagina <res>Risorse gratuite per la genealogia</res> puoi chiederci informazioni sui test del DNA. Conserviamo solo ciò che scrivi nel modulo (nome, email, telefono se lo dai, città e messaggio) e la data del tuo consenso, solo per risponderti; la base giuridica è il tuo consenso. Non sono dati genetici: non riceviamo, non conserviamo e non trasmettiamo file, risultati o corrispondenze del DNA. Non inviamo la richiesta ai laboratori e non riceviamo commissioni. Solo chi gestisce il sito vede la richiesta; la cancelliamo quando ce lo chiedi, a <mail>{email}</mail>, o quando non serve più.",
+          p2: "Conserviamo la richiesta al massimo 12 mesi dopo averti risposto, poi la cancelliamo.",
         },
         keep: {
           h: "Per quanto tempo conserviamo i dati",
           p1: "Finché hai un account. Ciò che cancelli sparisce subito dal sito, e le copie di sicurezza del database si sovrascrivono da sole entro 30 giorni al massimo. Quando cancelli il tuo account, se ne va tutto ciò che è tuo: l’account, i ricordi del tuo baule, i messaggi, ciò che hai scritto ad altri e i consensi. Gli alberi restano della famiglia: un albero con altri membri passa a uno di loro, mentre uno in cui sei solo viene cancellato del tutto. La tua scheda negli alberi resta, perché l’albero non si spezzi, senza il collegamento all’account; se vuoi, viene anche svuotata dei tuoi dati. Quanto usi il sito lo conserviamo al massimo 13 mesi; se dici «Non voglio più», viene cancellato subito.",
           p2: "Le foto proposte per la home page le conserviamo finché non le ritiri o cancelli il tuo account; una che non scegliamo resta solo da noi e non viene mostrata in pubblico. I messaggi ricevuti dalla pagina Contatti o su WhatsApp li conserviamo per il tempo necessario a chiarire ciò che ci hai scritto; se vuoi che li cancelliamo prima, dillo.",
+          p3: "Conserviamo pagamenti, fatture e il consenso a iniziare subito per il tempo richiesto dalla legge contabile (legge romena n. 82/1991), di solito fino a 10 anni, anche se cancelli il tuo account; restano allora senza collegamento con l’account. I registri tecnici del server si cancellano da soli entro 30 giorni al massimo.",
         },
         rights: {
           h: "I tuoi diritti",
           p1: "Puoi sapere quali dati abbiamo su di te, correggerli, cancellarli, portarli con te, chiedere che non li usiamo più in un certo modo e revocare in qualsiasi momento il consenso dato. Molte cose le fai da solo, nella pagina <data>I miei dati</data>: scarichi tutto ciò che riguarda il tuo account, revochi il consenso per «La fede» o per i vantaggi dai partner, fermi la misurazione del tempo passato nel sito o cancelli l’account. Per il resto scrivici a <mail>{email}</mail>; ti rispondiamo entro un mese al massimo.",
           p2: "Se ritieni che non abbiamo rispettato i tuoi diritti, puoi presentare reclamo all’Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+          p3: "Non prendiamo su di te decisioni automatizzate con effetti giuridici e non facciamo profilazione. Puoi opporti in qualsiasi momento ai trattamenti basati sul legittimo interesse (art. 21 del GDPR); allora ci fermiamo, salvo motivi legittimi cogenti o la necessità di difendere un diritto in giudizio.",
         },
         kids: {
           h: "I bambini, i viventi e chi non c’è più",
           l1: "L’account è per chi ha almeno {minAge} anni. I bambini possono essere inseriti nell’albero dai genitori.",
           l2: "Chiunque sia inserito come vivente in un albero può chiedere al proprietario dell’albero o a noi di correggere, nascondere o cancellare i suoi dati.",
           l3: "La legge sui dati personali non si applica a chi non c’è più, ma ne custodiamo il ricordo con lo stesso rispetto.",
+          l4: "Non scriviamo una per una alle persone aggiunte a un albero dai loro parenti (richiederebbe uno sforzo sproporzionato, art. 14, par. 5, lett. b del GDPR); per questo gli alberi sono privati, e queste persone possono sempre sapere cosa è scritto su di loro, chiedere la rettifica o la cancellazione e opporsi.",
+          l5: "Per i bambini viventi si inserisce solo il necessario (di solito il nome e l’anno di nascita). I genitori possono chiedere in qualsiasi momento al proprietario dell’albero o a noi di togliere le foto o i dati del bambino.",
         },
         cookies: {
           h: "Cookie",
@@ -104,6 +113,7 @@ export const itLegal: LegalCatalog = {
           l6: "<code>cn-cookie-uri</code>, dopo che hai premuto «Ho capito» sull’avviso dei cookie, perché tu non lo veda più, conservato un anno;",
           l4: "<code>cn-parteneri</code>, solo se spunti i vantaggi dai partner quando crei l’account: ricorda la spunta al massimo 30 minuti, il tempo che la tua scelta arrivi al nuovo account (anche se lo crei con Google), poi sparisce.",
           p2: "Non usiamo cookie pubblicitari, statistici o dei social network, e il sito non carica script di altre aziende. Le uniche cose che il tuo browser chiede direttamente ad altri sono i pezzi di mappa di OpenStreetMap e, se sei entrato con Google, la foto del tuo account Google.",
+          p3: "Quando paghi, la pagina di pagamento è su Stripe, al suo indirizzo; lì Stripe usa i propri cookie, ad esempio contro le frodi, secondo la propria informativa sulla privacy.",
         },
         safety: {
           h: "La sicurezza",
@@ -130,6 +140,7 @@ export const itLegal: LegalCatalog = {
           l1: "L’account è per chi ha almeno {minAge} anni. I bambini possono essere inseriti nell’albero dai genitori.",
           l2: "Un account è di una sola persona. La password la tieni per te; ciò che si fa dal tuo account è sotto la tua responsabilità.",
           l3: "L’account di prova ha una password pubblica, quindi è di tutti: non metterci nulla della tua famiglia.",
+          l4: "Solo chi ha almeno 18 anni può effettuare pagamenti.",
         },
         content: {
           h: "2. Cosa metti nel sito",
@@ -138,6 +149,7 @@ export const itLegal: LegalCatalog = {
           l3: "Non metti nulla di illegale, offensivo o che inciti all’odio, né dati di altri senza averne il diritto.",
           l4: "Possiamo nascondere o cancellare ciò che viola queste condizioni o la legge, e ti diciamo perché.",
           l5: "Quando proponi una foto per la home page, ci garantisci che ci sei tu o che hai il consenso di tutte le persone ritratte (per i bambini, dei loro genitori), e ci permetti di mostrarla pubblicamente sulla home page finché non la ritiri. Possiamo scegliere di non pubblicarla o di toglierla in qualsiasi momento.",
+          l6: "Per i bambini viventi inserisci solo il necessario (di solito il nome e l’anno di nascita). Se un genitore ti chiede di togliere le foto o i dati di suo figlio, li togli.",
         },
         owner: {
           h: "3. Di chi è ciò che metti",
@@ -163,6 +175,7 @@ export const itLegal: LegalCatalog = {
           l8: "<b>Il libro della famiglia in PDF</b>, quando non è incluso nel tuo piano, costa {bookLei} lei ({bookEur} €) per albero. L’anteprima è gratuita; dopo il pagamento puoi rifarlo e scaricarlo tutte le volte che vuoi per 12 mesi.",
           l9: "<b>Il libro stampato</b> si fa su ordinazione: ci chiedi un preventivo dalla pagina del libro, e il prezzo dipende dal numero di pagine, dal formato, dalla copertina e dal numero di copie. Con il piano Premium hai il {premiumPrint}% di sconto sul prezzo del preventivo.",
           p2: "Il prezzo mostrato al pagamento è il prezzo finale. Paghi con la carta, tramite Stripe; non vediamo mai i dati della tua carta. Il venditore è {name}, CUI {cui}, n. Registro delle imprese {regCom}, con sede in {address}.",
+          p3: "<b>Come si conclude il contratto:</b> scegli il piano o il libro nella pagina Pagamento, vedi il prezzo finale, spunti il consenso a iniziare subito e premi il pulsante di pagamento; paghi sulla pagina di Stripe e il contratto è concluso quando il pagamento è ricevuto. Fino al pagamento puoi tornare indietro e correggere la scelta in qualsiasi momento. La conferma, con la fattura e il tuo consenso, arriva via email. Il contratto è concluso in lingua romena (le altre lingue sono traduzioni); questi Termini restano sul sito e puoi salvarli o stamparli quando vuoi.",
         },
         withdrawal: {
           h: "6. Il diritto di recesso",
@@ -170,6 +183,7 @@ export const itLegal: LegalCatalog = {
           l1: "<b>L’anno nel Libro della Famiglia e il libro in PDF</b> sono contenuti digitali che ricevi subito dopo il pagamento. Prima di pagare spunti che vuoi iniziare subito e che sai di perdere così il diritto di recesso (art. 16, lett. m, dell’OUG n. 34/2014). Senza la spunta non si può pagare. Conserviamo il tuo consenso, con la data, e ricevi la conferma del pagamento per email.",
           l2: "<b>Il libro stampato</b> è fatto con i tuoi dati, apposta per te, quindi neanche per esso esiste il diritto di recesso (art. 16, lett. c, dell’OUG n. 34/2014). Se arriva danneggiato o sbagliato per colpa nostra, lo rifacciamo o ti rimborsiamo.",
           l3: "Se qualcosa che hai pagato non funziona come promesso, scrivici a <mail>{email}</mail> e rimediamo o ti rimborsiamo. I tuoi diritti di legge come consumatore restano.",
+          l4: "<b>Garanzia legale di conformità:</b> ciò che paghi deve funzionare come promesso per tutto l’anno pagato (il libro PDF, per 12 mesi). Se non funziona, hai diritto al ripristino della conformità senza costi e, se non ci riusciamo, a una riduzione del prezzo o alla risoluzione del contratto con rimborso (ordinanza d’urgenza romena n. 141/2021, direttiva (UE) 2019/770).",
           p2: "Puoi scriverci un reclamo in qualsiasi momento. Se non troviamo un accordo, puoi rivolgerti all’Autorità nazionale rumena per la tutela dei consumatori (<anpc>ANPC</anpc>) o a un organismo di risoluzione alternativa delle controversie (<sal>SAL</sal>).",
         },
         reliability: {
@@ -187,10 +201,19 @@ export const itLegal: LegalCatalog = {
         law: {
           h: "10. La legge applicabile",
           p1: "A queste condizioni si applica la legge romena. Un disaccordo cerchiamo prima di risolverlo in via amichevole; se non è possibile, decidono i tribunali della Romania.",
+          p2: "Se sei un consumatore e vivi in un altro paese, la scelta della legge romena non ti toglie la tutela delle norme imperative del tuo paese, e puoi anche citarci davanti al giudice del luogo in cui vivi.",
         },
         changes: {
           h: "11. Modifiche",
           p1: "Se cambiamo qualcosa di importante in queste condizioni, te lo diciamo nel sito prima che la modifica entri in vigore.",
+          p2: "Un anno già pagato mantiene il prezzo e i limiti che hai pagato. Se non sei d’accordo con una modifica, puoi scaricare i tuoi dati e chiudere l’account prima che entri in vigore.",
+        },
+        dsa: {
+          h: "12. Contenuti illegali e punto di contatto",
+          p1: "L’indirizzo <mail>{email}</mail> è il nostro punto di contatto unico per le persone, per le autorità degli Stati membri dell’UE e per la Commissione europea (regolamento (UE) 2022/2065 sui servizi digitali). Puoi scriverci in romeno o in inglese.",
+          l1: "Se vedi sul sito qualcosa che ritieni illegale (per esempio una foto pubblicata senza diritto o dati su di te scritti senza il tuo consenso), scrivici a quell’indirizzo indicando: dove si trova (il link, o il nome dell’albero e della scheda), perché lo ritieni illegale, il tuo nome e la tua email (salvo i casi in cui la legge ti consente di restare anonimo) e che scrivi in buona fede.",
+          l2: "Ti confermiamo la ricezione, esaminiamo con attenzione e senza ritardo e ti diciamo cosa abbiamo deciso.",
+          l3: "Se nascondiamo o cancelliamo ciò che hai pubblicato, ti diciamo perché e su quale base. Puoi contestare la decisione scrivendo allo stesso indirizzo e una persona la riesaminerà; ti restano anche la via giudiziaria e il reclamo all’ANCOM, il coordinatore dei servizi digitali della Romania.",
         },
       },
     },

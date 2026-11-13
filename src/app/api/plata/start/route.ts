@@ -7,6 +7,8 @@ import { testAccess, userAccess } from "@/lib/plata";
 import { isTier, tierPrice, type Tier } from "@/lib/plans";
 import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
+import { operator } from "@/lib/legal";
+import { contactPhone } from "@/lib/contact";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
@@ -68,6 +70,9 @@ export async function POST(req: Request) {
       amount: price.amount, currency: price.currency, locale,
       successUrl: `${origin}/plata?gata=${kind}${tq}`, cancelUrl: `${origin}/plata?renuntat=1${tq}`,
       ...(year ?? {}),
+      // Confirmarea acordului de retragere pe suport durabil (OUG 34/2014, art. 12 alin. 7): pe pagina Stripe și pe factura trimisă pe email.
+      waiver: t("waiverRecord", { url: `${origin}/termeni` }),
+      seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
     });
     return Response.redirect(url, 303);
   } catch (e) {

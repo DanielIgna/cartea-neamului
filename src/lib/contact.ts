@@ -23,6 +23,13 @@ export function whatsappUrl(text?: string): string {
   return `https://wa.me/${nr}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
 }
 
+/** Numărul de telefon (același cu WhatsApp), scris pentru oameni: „+40 790 541 342”. Cerut de lege la vânzarea online (OUG 34/2014, art. 6). */
+export function contactPhone(): string {
+  const nr = (process.env.CONTACT_WHATSAPP?.trim() || WHATSAPP_DEFAULT).replace(/\D/g, "").replace(/^00/, "");
+  const m = /^(\d{2})(\d{3})(\d{3})(\d{3})$/.exec(nr);
+  return m ? `+${m[1]} ${m[2]} ${m[3]} ${m[4]}` : `+${nr}`;
+}
+
 export const CONTACT_LIMITS = { name: 120, email: 200, message: 5000, minMessage: 5 } as const;
 
 export type ContactInput = { name: string; email: string; message: string };

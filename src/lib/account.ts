@@ -14,7 +14,7 @@ import { dropUserSubmissions } from "./home-submissions";
 import type { Db } from "@/db";
 import {
   account, accountPlan, consent, document, oldHouse, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
-  user, verification, homeSubmission, payment,
+  user, verification, homeSubmission, payment, gift, dnaRequest, referralBonus,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
@@ -164,6 +164,10 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
   const consents = await db.select().from(consent).where(eq(consent.userId, userId)).orderBy(asc(consent.createdAt));
   const [plan] = await db.select().from(accountPlan).where(eq(accountPlan.userId, userId));
   const payments = await db.select().from(payment).where(eq(payment.userId, userId));
+  // Anii dăruiți (cumpărați sau primiți), cererile „Vreau un test ADN” trimise cu adresa contului și zilele în plus pentru rude aduse.
+  const gifts = await db.select().from(gift).where(or(eq(gift.buyerId, userId), eq(gift.redeemedBy, userId))).orderBy(asc(gift.createdAt));
+  const dna = await db.select().from(dnaRequest).where(eq(dnaRequest.email, u.email)).orderBy(asc(dnaRequest.createdAt));
+  const referrals = await db.select().from(referralBonus).where(or(eq(referralBonus.referrerId, userId), eq(referralBonus.referredId, userId)));
   const partners = await partnerHistory(db, userId);
   const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const proposals = await db.select().from(homeSubmission).where(eq(homeSubmission.userId, userId)).orderBy(asc(homeSubmission.createdAt));
@@ -211,8 +215,13 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
     ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, platitPanaLa: iso(plan.paidUntil), schimbata: iso(plan.updatedAt) } } : {}),
     // Plățile făcute cu cardul (fără datele cardului, pe care nu le vedem): ce, cât și când. Se păstrează pentru contabilitate.
-    plati: payments.map((x) => ({ ce: x.kind === "carte" ? "Cartea neamului (PDF)" : "Un an în Cartea Neamului", arbore: x.treeId ? treeOf(x.treeId) : null,
+    plati: payments.map((x) => ({ ce: x.kind === "carte" ? "Cartea neamului (PDF)" : x.kind === "cadou" ? "Un an dăruit" : "Un an în Cartea Neamului", arbore: x.treeId ? treeOf(x.treeId) : null,
       suma: x.amount / 100, moneda: x.currency.toUpperCase(), cand: iso(x.createdAt) })),
+    aniDaruiti: gifts.map((g) => ({ eu: g.buyerId === userId ? "l-am cumpărat" : "l-am primit", plan: g.tier, pentru: g.forName, bilet: g.note,
+      cumparat: iso(g.createdAt), folosit: iso(g.redeemedAt) })),
+    cereriTestAdn: dna.map((d) => ({ nume: d.name, email: d.email, telefon: d.phone, oras: d.city, mesaj: d.message, acordDat: iso(d.consentAt),
+      versiuneaAcordului: d.consentVersion, trimisa: iso(d.createdAt), rezolvata: iso(d.resolvedAt) })),
+    zileInPlusPentruRude: referrals.map((r) => ({ eu: r.referrerId === userId ? "am adus o rudă" : "am fost adus de o rudă", zile: r.days, date: iso(r.appliedAt), scris: iso(r.createdAt) })),
     // Cât a folosit site-ul, pe zile, dacă a spus „Bine” la măsurare (doar timpul și partea din site).
     folosire: usage.map((x) => ({ zi: x.day, parte: sectionLabel(x.section), secunde: x.seconds, deschideri: x.views, peTelefon: x.phoneSeconds, inAplicatie: x.appSeconds })),
     arbori: trees.map((t) => ({ nume: t.name, regiune: t.region, rol: ROLE[t.role], intrat: iso(t.joinedAt), gedcom: `${origin}/api/arbore/${t.id}/gedcom?living=1` })),

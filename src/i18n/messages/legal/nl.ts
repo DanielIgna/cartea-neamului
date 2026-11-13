@@ -4,7 +4,7 @@ export const nlLegal: LegalCatalog = {
   Legal: {
     updated: "Laatst gewijzigd: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}, gevestigd te {address} (CUI {cui}, handelsregisternr. {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>.",
+    contactLine: "{name}, gevestigd te {address} (CUI {cui}, handelsregisternr. {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>. Telefoon en WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Privacybeleid",
       metaDescription: "Welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert.",
@@ -33,6 +33,7 @@ export const nlLegal: LegalCatalog = {
           l10: "<b>Het ouderlijk huis:</b> wat je op de pagina van een persoon schrijft over het huis van de familie (het adres of het dorp, wie het heeft gebouwd, het jaar, foto’s en het verhaal ervan). Alleen wie jij kiest ziet het, net als bij herinneringen.",
           l13: "<b>Foto’s voorgesteld voor de startpagina</b>, alleen als je er zelf een uit het familiealbum voorstelt: een kopie van de foto, de regel eronder, wie hem voorstelde, wanneer, in welke taal en de versie van de aangevinkte toestemming. Zolang hij niet is goedgekeurd, zien alleen wij hem.",
           l14: "<b>Als je ons schrijft</b> via de pagina Contact: je naam, je e-mailadres (zodat we kunnen antwoorden) en je bericht. We bewaren ze niet op de site: ze gaan rechtstreeks naar onze mailbox. Als je ons via WhatsApp schrijft, zien we je telefoonnummer, je WhatsApp-naam en wat je schrijft.",
+          l15: "<b>Betalingen en cadeaus:</b> wat je betaald hebt, hoeveel, wanneer en welk plan je koos (zonder je kaartgegevens, die we nooit zien), je toestemming om meteen te beginnen, een cadeaujaar (de naam van wie het krijgt en je briefje, als je die invult), de extra dagen die je krijgt als je een familielid meebrengt dat betaalt, en de e-mails waarmee we je eraan herinneren dat je jaar afloopt.",
           l11: "<b>In je browser</b>, naast de cookies onderaan deze pagina, een paar keuzes die alleen op je telefoon of computer blijven, zodat je ze niet telkens opnieuw hoeft te maken: de familielijnen die je wilt zien, wat je het laatst koos in ‘De geschiedenis van de mensheid’, ‘Oude genealogieën’ en ‘De vrijheid om te geloven’, de personen die je als geen dubbel hebt gemarkeerd, of je de kaart voor het installeren van de app hebt verborgen en of je de kaart van de partner na het downloaden van het boek al hebt gezien. Als je ‘Goed’ hebt gezegd op het meten van de tijd, ook de laatst getelde minuut, hoogstens een uur, zodat die ons ook bereikt als je de pagina haastig sluit.",
           l12: "<b>De technische logbestanden</b> van de server (IP-adres, opgevraagde pagina, tijd), kort bewaard, zodat we fouten kunnen herstellen.",
         },
@@ -44,6 +45,7 @@ export const nlLegal: LegalCatalog = {
           l4: "Voor de levende familieleden die je in de stamboom zet, is de grondslag het gerechtvaardigd belang van de familie om haar geschiedenis te bewaren, met zorg: stambomen zijn privé en levenden zijn alleen zichtbaar in hun eigen stamboom, nooit bij andere families. Iedereen die in een stamboom staat, kan ons vragen zijn gegevens te verbeteren of te verwijderen.",
           l5: "Op basis van je toestemming, die je altijd kunt intrekken: het hoofdstuk ‘Geloof’ (art. 9 lid 2 sub a), de verhalen die ‘bij opa en oma’ zijn opgenomen, ‘Uit dezelfde plaatsen’, hoeveel je de site gebruikt, de voordelen van partners en de foto’s voorgesteld voor de startpagina (art. 6 lid 1 sub a). Intrekken verandert niets aan wat eerder met de gegeven toestemming is gedaan.",
           l6: "Om je te antwoorden als je ons schrijft (via de pagina Contact, per e-mail of via WhatsApp). De grondslag is ons gerechtvaardigd belang om te antwoorden aan wie ons zoekt (art. 6 lid 1 sub f) of, als je over je account schrijft, de overeenkomst tussen ons (sub b).",
+          l7: "Om de wet na te leven: facturen, de boekhouding en het bewijs van je toestemming om de digitale inhoud meteen te krijgen. De grondslag is een wettelijke verplichting (art. 6, lid 1, onder c AVG).",
         },
         who: {
           h: "Wie de gegevens ziet",
@@ -54,6 +56,7 @@ export const nlLegal: LegalCatalog = {
           l7: "<b>De foto’s op de startpagina</b> ziet iedereen die de site opent: het zijn foto’s die wij hebben gekozen en foto’s die jullie hebben voorgesteld, nadat wij ze hebben goedgekeurd. Die van jou kun je altijd intrekken, via ‘Een leven op film’ op je pagina in de stamboom; dan verdwijnen ze van de startpagina en wordt hun kopie verwijderd.",
           l5: "<b>Wij</b> zien in het beheerpaneel alleen wat we nodig hebben om de site draaiende te houden: lijsten en cijfers over de accounts (naam, e-mail, wanneer en met wat voor apparaat ze inlogden), over de stambomen (naam, hoeveel personen en bestanden ze hebben), per account hoeveel het heeft toegevoegd (hoeveel personen, herinneringen, foto’s, uitnodigingen en berichten) en, bij wie ‘Goed’ heeft gezegd, hoe lang ze in elk deel van de site zijn. We zien ook de geschiedenis van de wijzigingen in de personen van de stambomen (wie welke namen, data of plaatsen wijzigde, en wanneer), zodat we een verwijdering of een fout ongedaan kunnen maken en iemand kunnen tegenhouden die een stamboom beschadigt, en de foto’s die voor de startpagina zijn voorgesteld, om ze goed te keuren. Daar kunnen we ook een korte notitie over een account bijhouden, bijvoorbeeld dat het gratis blijft. Herinneringen en berichten lezen we niet, en uit het hoofdstuk ‘Geloof’ tellen we niets; we bekijken ze alleen als jij ons om hulp vraagt of als de wet ons verplicht.",
           l6: "We verkopen geen gegevens, tonen geen advertenties en geven ze aan niemand anders dan de leveranciers hieronder, onze partner PropManage (alleen het e-mailadres van wie het heeft aangevinkt, zoals hieronder staat) en de overheid, als de wet ons verplicht.",
+          l8: "<b>Onze boekhouder</b> en <b>ANAF</b> (de Roemeense belastingdienst) zien alleen de gegevens op facturen: je naam, e-mailadres, wat je betaald hebt, hoeveel en wanneer, zoals de belastingwet vereist.",
         },
         vendors: {
           h: "De leveranciers die ons helpen",
@@ -63,7 +66,8 @@ export const nlLegal: LegalCatalog = {
           l3: "<b>Google</b> bevestigt bij het inloggen je identiteit, alleen als je kiest voor ‘Doorgaan met Google’.",
           l4: "<b>OpenStreetMap</b> (OpenStreetMap Foundation, Verenigd Koninkrijk) levert de kaartstukken van ‘De familiekaart’. Je browser vraagt ze rechtstreeks bij hen op, dus zij zien het IP-adres waarvandaan je ze opvraagt.",
           l5: "<b>FormSubmit</b> (formsubmit.co, VS) bezorgt ons per e-mail de berichten die via de pagina Contact worden verstuurd. <b>WhatsApp</b> (WhatsApp Ireland Ltd., onderdeel van Meta), alleen als je ervoor kiest ons daar te schrijven, volgens hun eigen privacyregels. <b>Stripe</b> (Stripe Payments Europe Ltd., Ierland), alleen als je iets betaalt, ontvangt de kaartbetaling op zijn eigen pagina; wij zien de kaartgegevens nooit, alleen wat er is betaald, hoeveel en wanneer (bewaard voor de boekhouding zolang de wet dat vereist).",
-          p2: "Voor doorgiften buiten de Europese Unie gebruiken deze leveranciers de door de Europese Commissie goedgekeurde modelcontractbepalingen of het EU-VS-kader voor gegevensbescherming. Over levenden sturen we niets naar diensten voor kunstmatige intelligentie.",
+          l6: "<b>Resend</b> (Resend Inc., VS) verstuurt de e-mail waarmee we je 14 dagen vooraf laten weten dat je betaalde jaar afloopt; het krijgt alleen je e-mailadres en de tekst van het bericht.",
+          p2: "Vercel, Neon, Google, Stripe en Resend werken met verwerkersovereenkomsten; voor doorgiften buiten de Europese Unie steunen ze op het EU-VS-gegevensbeschermingskader waar ze gecertificeerd zijn en op de door de Europese Commissie goedgekeurde modelcontractbepalingen. FormSubmit heeft zo’n overeenkomst niet met ons: je bericht gaat alleen via zijn servers in de VS om ons te bereiken, omdat je ons vroeg het te versturen; wil je dat niet, schrijf ons dan rechtstreeks op <mail>{email}</mail>.",
         },
         partner: {
           h: "Onze partner, PropManage",
@@ -77,22 +81,27 @@ export const nlLegal: LegalCatalog = {
         dna: {
           h: "De vraag ‘Ik wil een DNA-test’",
           p1: "Op de pagina <res>Gratis bronnen voor genealogie</res> kun je ons om informatie over DNA-tests vragen. We bewaren alleen wat je in het formulier schrijft (naam, e-mail, telefoon als je die geeft, woonplaats en bericht) en de datum van je toestemming, alleen om je te antwoorden; de rechtsgrond is je toestemming. Het zijn geen genetische gegevens: we ontvangen, bewaren en versturen geen DNA-bestanden, -uitslagen of -matches. We sturen de vraag niet naar laboratoria en krijgen geen commissie. Alleen wie de site beheert ziet de vraag; we wissen hem als je het ons vraagt, via <mail>{email}</mail>, of als hij niet meer nodig is.",
+          p2: "We bewaren het verzoek hoogstens 12 maanden nadat we je geantwoord hebben en wissen het daarna.",
         },
         keep: {
           h: "Hoe lang we de gegevens bewaren",
           p1: "Zolang je een account hebt. Wat je verwijdert, verdwijnt meteen van de site, en de reservekopieën van de database worden binnen hoogstens 30 dagen vanzelf overschreven. Als je je account verwijdert, verdwijnt alles wat van jou is: het account, de herinneringen in je kist, de berichten, wat je anderen schreef en de toestemmingen. De stambomen blijven van de familie: een stamboom met andere leden gaat over naar een van hen, en een stamboom waarin je alleen bent, wordt helemaal verwijderd. Je kaart in de stambomen blijft, zodat de stamboom niet breekt, zonder de koppeling met het account; als je wilt, wordt ze ook leeggemaakt van je gegevens. Hoeveel je de site gebruikt, bewaren we hoogstens 13 maanden; als je zegt ‘Ik wil niet meer’, wordt het meteen verwijderd.",
           p2: "Foto’s voorgesteld voor de startpagina bewaren we tot je ze intrekt of je account verwijdert; een foto die we niet kiezen blijft alleen bij ons en wordt niet openbaar getoond. Berichten via de pagina Contact of WhatsApp bewaren we zolang nodig is om af te handelen wat je schreef; wil je dat we ze eerder verwijderen, zeg het ons.",
+          p3: "Betalingen, facturen en de toestemming om meteen te beginnen bewaren we zolang de boekhoudwet het vereist (Roemeense wet nr. 82/1991), meestal tot 10 jaar, ook als je je account verwijdert; ze zijn dan niet meer aan het account gekoppeld. Technische serverlogs worden binnen hoogstens 30 dagen vanzelf gewist.",
         },
         rights: {
           h: "Je rechten",
           p1: "Je kunt te weten komen welke gegevens we over je hebben, ze verbeteren, verwijderen, meenemen, vragen dat we ze niet meer op een bepaalde manier gebruiken en je toestemming altijd intrekken. Veel doe je zelf, op de pagina <data>Mijn gegevens</data>: je downloadt alles wat bij je account hoort, trekt je toestemming in voor ‘Geloof’ of voor de voordelen van partners, stopt het meten van de tijd op de site of verwijdert je account. Voor de rest schrijf je ons op <mail>{email}</mail>; we antwoorden binnen hoogstens een maand.",
           p2: "Als je vindt dat we je rechten niet hebben gerespecteerd, kun je een klacht indienen bij de Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+          p3: "We nemen over jou geen geautomatiseerde besluiten met rechtsgevolgen en doen niet aan profilering. Je kunt altijd bezwaar maken tegen verwerkingen op grond van gerechtvaardigd belang (art. 21 AVG); dan stoppen we, tenzij we zwaarwegende gerechtvaardigde gronden hebben of de gegevens nodig hebben voor een rechtsvordering.",
         },
         kids: {
           h: "Kinderen, de levenden en wie er niet meer is",
           l1: "Een account is voor mensen van minstens {minAge} jaar. Kinderen kunnen door hun ouders in de stamboom worden gezet.",
           l2: "Wie als levend in een stamboom staat, kan de eigenaar van de stamboom of ons vragen zijn gegevens te verbeteren, te verbergen of te verwijderen.",
           l3: "De wet op persoonsgegevens geldt niet voor wie er niet meer is, maar hun nagedachtenis bewaren we met hetzelfde respect.",
+          l4: "We schrijven niet iedereen afzonderlijk aan die door familie aan een stamboom is toegevoegd (dat zou een onevenredige inspanning vergen, art. 14, lid 5, onder b AVG); daarom zijn stambomen privé, en die mensen kunnen altijd te weten komen wat er over hen staat, om verbetering of wissing vragen en bezwaar maken.",
+          l5: "Van levende kinderen wordt alleen het nodige vermeld (meestal de naam en het geboortejaar). Ouders kunnen de eigenaar van de stamboom of ons altijd vragen de foto’s of gegevens van het kind te verwijderen.",
         },
         cookies: {
           h: "Cookies",
@@ -104,6 +113,7 @@ export const nlLegal: LegalCatalog = {
           l6: "<code>cn-cookie-uri</code>, nadat je op ‘Begrepen’ hebt gedrukt bij de melding over cookies, zodat je die niet meer ziet, een jaar bewaard;",
           l4: "<code>cn-parteneri</code>, alleen als je bij het maken van je account de voordelen van partners aanvinkt: hij onthoudt het vinkje hoogstens 30 minuten, net lang genoeg om je keuze bij het nieuwe account te krijgen (ook als je het met Google maakt), en verdwijnt dan.",
           p2: "We gebruiken geen advertentie-, statistiek- of socialemediacookies, en de site laadt geen scripts van andere bedrijven. Het enige wat je browser rechtstreeks bij anderen opvraagt, zijn de kaarttegels van OpenStreetMap en, als je met Google bent ingelogd, de foto van je Google-account.",
+          p3: "Als je betaalt, staat de betaalpagina bij Stripe, op hun eigen adres; daar plaatst Stripe zijn eigen cookies, bijvoorbeeld tegen fraude, volgens zijn eigen privacybeleid.",
         },
         safety: {
           h: "Veiligheid",
@@ -130,6 +140,7 @@ export const nlLegal: LegalCatalog = {
           l1: "Een account is voor mensen van minstens {minAge} jaar. Kinderen kunnen door hun ouders in de stamboom worden gezet.",
           l2: "Een account is van één persoon. Je wachtwoord houd je voor jezelf; wat er vanuit je account gebeurt, is jouw verantwoordelijkheid.",
           l3: "Het proefaccount heeft een openbaar wachtwoord en is dus van iedereen: zet er niets van je familie in.",
+          l4: "Alleen wie 18 jaar of ouder is, mag betalen.",
         },
         content: {
           h: "2. Wat je op de site zet",
@@ -138,6 +149,7 @@ export const nlLegal: LegalCatalog = {
           l3: "Je zet er niets op dat onwettig of beledigend is of tot haat aanzet, en ook geen gegevens van anderen zonder dat je daartoe het recht hebt.",
           l4: "We kunnen verbergen of verwijderen wat in strijd is met deze voorwaarden of met de wet, en we zeggen je waarom.",
           l5: "Als je een foto voorstelt voor de startpagina, verzeker je ons dat je erop staat of dat je de toestemming hebt van iedereen die erop staat (voor kinderen die van hun ouders), en geef je ons toestemming om hem openbaar op de startpagina te tonen zolang je hem niet intrekt. We kunnen ervoor kiezen hem niet te plaatsen of op elk moment weg te halen.",
+          l6: "Vermeld van levende kinderen alleen het nodige (meestal de naam en het geboortejaar). Vraagt een ouder je de foto’s of gegevens van zijn of haar kind te verwijderen, dan verwijder je ze.",
         },
         owner: {
           h: "3. Van wie is wat je erop zet",
@@ -163,6 +175,7 @@ export const nlLegal: LegalCatalog = {
           l8: "<b>Het familieboek als pdf</b> kost, als het niet in je abonnement zit, {bookLei} lei (€ {bookEur}) per stamboom. De voorvertoning is gratis; na betaling kun je het 12 maanden lang zo vaak opnieuw maken en downloaden als je wilt.",
           l9: "<b>Het gedrukte boek</b> wordt op bestelling gemaakt: je vraagt ons een offerte via de boekpagina, en de prijs hangt af van het aantal pagina’s, het formaat, de omslag en het aantal exemplaren. Met het abonnement Premium krijg je {premiumPrint}% korting op de prijs van de offerte.",
           p2: "De prijs bij het betalen is de eindprijs. Je betaalt met je kaart, via Stripe; wij zien je kaartgegevens nooit. De verkoper is {name}, CUI {cui}, handelsregisternr. {regCom}, gevestigd te {address}.",
+          p3: "<b>Hoe de overeenkomst tot stand komt:</b> je kiest het plan of het boek op de pagina Betaling, ziet de eindprijs, vinkt de toestemming aan om meteen te beginnen en drukt op de betaalknop; je betaalt op de pagina van Stripe en de overeenkomst is gesloten zodra de betaling ontvangen is. Tot je betaalt, kun je altijd terug en je keuze verbeteren. De bevestiging, met de factuur en je toestemming, komt per e-mail. De overeenkomst wordt in het Roemeens gesloten (de andere talen zijn vertalingen); deze Voorwaarden blijven op de site en je kunt ze altijd opslaan of afdrukken.",
         },
         withdrawal: {
           h: "6. Herroepingsrecht",
@@ -170,6 +183,7 @@ export const nlLegal: LegalCatalog = {
           l1: "<b>Een jaar in Het Familieboek en het pdf-boek</b> zijn digitale inhoud die je direct na betaling krijgt. Voor je betaalt, vink je aan dat je meteen wilt beginnen en dat je weet dat je daardoor je herroepingsrecht verliest (art. 16 onder m van noodverordening nr. 34/2014). Zonder vinkje kun je niet betalen. We bewaren je toestemming met de datum, en de betalingsbevestiging krijg je per e-mail.",
           l2: "<b>Het gedrukte boek</b> wordt volgens jouw gegevens speciaal voor jou gemaakt, dus ook daarvoor is er geen herroepingsrecht (art. 16 onder c van noodverordening nr. 34/2014). Komt het door onze schuld beschadigd of met fouten aan, dan maken we het opnieuw of krijg je je geld terug.",
           l3: "Werkt iets waarvoor je hebt betaald niet zoals beloofd, schrijf ons dan op <mail>{email}</mail>; we lossen het op of geven je geld terug. Je wettelijke rechten als consument blijven bestaan.",
+          l4: "<b>Wettelijke conformiteitsgarantie:</b> waarvoor je betaalt, moet werken zoals beloofd zolang je betaalde jaar loopt (het pdf-boek: 12 maanden). Werkt het niet, dan heb je recht op kosteloos herstel en, als dat niet lukt, op prijsvermindering of ontbinding van de overeenkomst met terugbetaling (Roemeense noodverordening nr. 141/2021, Richtlijn (EU) 2019/770).",
           p2: "Met een klacht kun je ons altijd schrijven. Komen we er samen niet uit, dan kun je terecht bij de Roemeense Nationale Autoriteit voor Consumentenbescherming (<anpc>ANPC</anpc>) of bij een instantie voor alternatieve geschillenbeslechting (<sal>SAL</sal>).",
         },
         reliability: {
@@ -187,10 +201,19 @@ export const nlLegal: LegalCatalog = {
         law: {
           h: "10. Toepasselijk recht",
           p1: "Op deze voorwaarden is het Roemeense recht van toepassing. Een meningsverschil proberen we eerst in goed overleg op te lossen; als dat niet lukt, beslissen de rechtbanken in Roemenië.",
+          p2: "Ben je consument en woon je in een ander land, dan ontneemt de keuze voor het Roemeense recht je niet de bescherming van de dwingende regels van je eigen land, en kun je ons ook dagen voor de rechter van je woonplaats.",
         },
         changes: {
           h: "11. Wijzigingen",
           p1: "Als we iets belangrijks veranderen in deze voorwaarden, laten we het je op de site weten voordat de wijziging ingaat.",
+          p2: "Een al betaald jaar houdt de prijs en de limieten waarvoor je betaald hebt. Ben je het niet eens met een wijziging, dan kun je je gegevens downloaden en je account sluiten voordat ze ingaat.",
+        },
+        dsa: {
+          h: "12. Illegale inhoud en contactpunt",
+          p1: "Het adres <mail>{email}</mail> is ons centrale contactpunt voor mensen, voor de autoriteiten van de EU-lidstaten en voor de Europese Commissie (Verordening (EU) 2022/2065, de digitaledienstenverordening). Je kunt ons schrijven in het Roemeens of het Engels.",
+          l1: "Zie je op de site iets waarvan je denkt dat het illegaal is (bijvoorbeeld een foto zonder toestemming geplaatst, of gegevens over jou zonder je toestemming), schrijf dan naar dat adres: waar het staat (de link, of de naam van de stamboom en van de persoon), waarom je denkt dat het illegaal is, je naam en e-mailadres (behalve als de wet je toestaat anoniem te blijven) en dat je te goeder trouw schrijft.",
+          l2: "We bevestigen de ontvangst, bekijken het zorgvuldig en zonder uitstel, en laten je weten wat we besloten hebben.",
+          l3: "Als we iets wat jij plaatste verbergen of verwijderen, vertellen we je waarom en op welke grond. Je kunt het besluit aanvechten door naar hetzelfde adres te schrijven, en een mens bekijkt het opnieuw; je kunt ook naar de rechter stappen of een klacht indienen bij ANCOM, de Roemeense coördinator digitale diensten.",
         },
       },
     },

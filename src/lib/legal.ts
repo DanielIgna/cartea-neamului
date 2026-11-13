@@ -5,14 +5,15 @@
  * certificatul de înregistrare; înainte, în aceeași zi, era VINTAGE FURNITURE SRL). Variabilele de mediu OPERATOR_NAME și CONTACT_EMAIL (puse pe Vercel) le înlocuiesc fără o nouă versiune.
  */
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
-export const TERMS_DATE = new Date("2026-11-12T12:00:00Z");
+export const TERMS_DATE = new Date("2026-11-13T12:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
+ * Ultima schimbare a Politicii de confidențialitate (13 noiembrie, după auditul juridic: plățile și darurile, temeiul obligației legale,
+ * contabilul și ANAF, Resend, transferurile spuse exact (FormSubmit fără contract), păstrarea plăților, opoziția, copiii, cookie-urile Stripe; 12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-12T12:00:00Z");
-export const TERMS_VERSION = "2026-11-12";
+export const PRIVACY_DATE = new Date("2026-11-13T12:00:00Z");
+export const TERMS_VERSION = "2026-11-13";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
 
@@ -40,7 +41,8 @@ export const FAITH_CONSENT_TEXT = "Sunt de acord ca ce scriu despre credința me
  * Site-ul e în probă (beta): îl folosesc doar familia și prietenii apropiați, ca să spună ce merge și ce nu. Înainte să se
  * deschidă tuturor (sau să coste ceva) vin datele ANPC și textele citite de un avocat; atunci se pune `false`.
  */
-export const BETA = true;
+// 13 noiembrie 2026: vânzarea e pornită, deci textele „doar familia și prietenii” nu mai sunt adevărate (auditul juridic).
+export const BETA = false;
 
 /** PFA-ul care răspunde de site și de date (operator GDPR), cu datele din certificatul de înregistrare (ONRC Cluj, 13.02.2025). */
 const OPERATOR_DEFAULT = {

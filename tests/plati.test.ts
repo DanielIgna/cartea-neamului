@@ -39,6 +39,12 @@ describe("plata cu cardul", () => {
     expect(sent!.get("locale")).toBe("en");
     expect(sent!.get("metadata[treeId]")).toBe("t1");
     expect(sent!.get("allow_promotion_codes")).toBe("true");
+    // Fără texte de confirmare nu se trimite nimic în plus; cu ele, acordul ajunge sub buton și pe factură, iar vânzătorul în subsolul facturii.
+    expect(sent!.get("invoice_creation[invoice_data][description]")).toBeNull();
+    await createCheckout({ kind: "an", userId: "u1", email: "a@b.ro", name: "An", amount: 5000, currency: "ron", locale: "ro", successUrl: "x", cancelUrl: "y", waiver: "Confirmare: fără retragere", seller: "PFA, CUI 1" }, fake);
+    expect(sent!.get("custom_text[submit][message]")).toBe("Confirmare: fără retragere");
+    expect(sent!.get("invoice_creation[invoice_data][description]")).toBe("Confirmare: fără retragere");
+    expect(sent!.get("invoice_creation[invoice_data][footer]")).toBe("PFA, CUI 1");
     const bad = (async () => new Response(JSON.stringify({ error: { message: "nu" } }), { status: 400 })) as unknown as typeof fetch;
     await expect(createCheckout({ kind: "an", userId: "u1", email: "a@b.ro", name: "An", amount: 1, currency: "ron", locale: "ro", successUrl: "x", cancelUrl: "y" }, bad)).rejects.toThrow("Stripe: nu");
   });
