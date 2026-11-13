@@ -84,6 +84,12 @@ export const huLegal: LegalCatalog = {
           p1: "Az <res>Ingyenes családfakutatási források</res> oldalon tájékoztatást kérhetsz tőlünk a DNS-tesztekről. Csak azt őrizzük meg, amit az űrlapba írsz (név, e-mail-cím, telefon, ha megadod, település és üzenet), és a hozzájárulásod dátumát, kizárólag azért, hogy válaszoljunk; a jogalap a hozzájárulásod. Ezek nem genetikai adatok: nem fogadunk, nem tárolunk és nem továbbítunk DNS-fájlokat, -eredményeket vagy -egyezéseket. A kérést nem küldjük el laboratóriumoknak, és nem kapunk jutalékot. A kérést csak az oldal üzemeltetője látja; töröljük, ha kéred, a(z) <mail>{email}</mail> címen, vagy ha már nincs rá szükség.",
           p2: "A kérést legfeljebb 12 hónapig őrizzük a válaszunk után, aztán töröljük.",
         },
+        problems: {
+          h: "Ha hibát jelentesz be nekünk",
+          p1: "A fiók menüjéből, a „Hiba bejelentése” ponton megírhatod, mi nem működik, legfeljebb 3 képpel a képernyődről. Megőrizzük, amit írsz, a képeket, az oldal címét, ahonnan jöttél (és ha van, az ottani családfát és adatlapot), a telefon vagy számítógép fajtáját és a képernyő méretét, hogy lássuk és kijavítsuk a hibát. A jogalap a köztünk lévő szerződés (GDPR 6. cikk (1) bekezdés b) pont).",
+          p2: "A képernyőképeken a családod adatai is látszhatnak. Csak te és mi látjuk őket, senkinek sem mutatjuk meg, és csak a hiba kijavítására használjuk. Amikor új hiba érkezik hozzánk, és amikor válaszolunk, az értesítő e-mail a Resenden keresztül megy (ha be van kapcsolva).",
+          p3: "A bejelentést a megoldás után legfeljebb egy évig őrizzük, aztán a képekkel együtt töröljük. A fiókoddal együtt is törlődik, és megtalálod az <data>Adataim</data> letöltésében.",
+        },
         keep: {
           h: "Meddig őrizzük az adatokat",
           p1: "Amíg fiókod van. Amit törölsz, azonnal eltűnik az oldalról, az adatbázis biztonsági másolatai pedig legfeljebb 30 napon belül maguktól felülíródnak. Ha törlöd a fiókodat, minden eltűnik, ami a tiéd: a fiók, a ládád emlékei, az üzenetek, amit másoknak írtál, és a hozzájárulások. A családfák a családé maradnak: a több taggal rendelkező családfa átszáll valamelyikükre, az pedig, amelyben egyedül vagy, teljesen törlődik. Az adatlapod a családfákban megmarad, hogy a családfa ne szakadjon meg, de a fiókoddal való kapcsolat nélkül; ha szeretnéd, az adataidtól is kiürítjük. Az oldal használatának mérését legfeljebb 13 hónapig őrizzük; ha azt mondod, „Már nem kérem”, azonnal töröljük.",

@@ -11,10 +11,11 @@
  */
 import { and, asc, eq, inArray, isNull, ne, notInArray, or, sql } from "drizzle-orm";
 import { dropUserSubmissions } from "./home-submissions";
+import { userProblemKeys } from "./probleme";
 import type { Db } from "@/db";
 import {
   account, accountPlan, consent, document, oldHouse, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
-  user, verification, homeSubmission, payment, gift, dnaRequest, referralBonus,
+  user, verification, homeSubmission, payment, gift, dnaRequest, referralBonus, problemReport,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
@@ -128,6 +129,8 @@ export async function deleteAccount(db: Db, userId: string, opts: { scrub: boole
     }
     // Pozele de familie propuse pentru prima pagină ies din banner, iar fișierele lor se șterg.
     fileKeys.push(...(await dropUserSubmissions(tx, userId)));
+    // Problemele raportate pleacă odată cu contul; pozele ecranului se șterg și ele.
+    fileKeys.push(...(await userProblemKeys(tx, userId)));
     await tx.delete(verification).where(eq(verification.identifier, u.email));
     // Contul: odată cu el pleacă sesiunile, intrările (parola, Google), apartenența la arbori, mesajele, acordurile și cererile.
     await tx.delete(user).where(eq(user.id, userId));
@@ -171,6 +174,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
   const partners = await partnerHistory(db, userId);
   const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const proposals = await db.select().from(homeSubmission).where(eq(homeSubmission.userId, userId)).orderBy(asc(homeSubmission.createdAt));
+  const problems = await db.select().from(problemReport).where(eq(problemReport.userId, userId)).orderBy(asc(problemReport.createdAt));
   const usage = await db.select().from(usageDay).where(eq(usageDay.userId, userId)).orderBy(asc(usageDay.day), asc(usageDay.section));
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, joinedAt: treeMember.joinedAt })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, userId)).orderBy(asc(treeMember.joinedAt));
@@ -242,6 +246,8 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
       povestea: h.story, poze: (h.photoIds ?? []).map((id) => file(id)), cineOVede: VIS[h.visibility] ?? h.visibility, scrisa: iso(h.createdAt), schimbata: iso(h.updatedAt) })),
     pozePropusePentruPrimaPagina: proposals.map((p) => ({ textul: p.caption, stare: p.status, acordDat: iso(p.consentAt), versiuneaAcordului: p.consentTextVersion,
       trimisa: iso(p.createdAt), hotarata: iso(p.decidedAt) })),
+    problemeRaportate: problems.map((p) => ({ fel: p.kind, mesaj: p.message, pagina: p.page, poze: p.images.map((_, i) => `${origin}/api/problema/${p.id}/${i}`),
+      stare: p.status, raspunsulNostru: p.reply, trimisa: iso(p.createdAt), raspunsPe: iso(p.repliedAt), rezolvata: iso(p.resolvedAt) })),
     siEuImiAmintesc: replies.map((r) => ({ arbore: treeOf(r.treeId), subAmintireaDin: people.get(r.personId) ?? null, text: r.body, cand: iso(r.createdAt) })),
     intrebariPuse: asked.map((q) => ({ arbore: treeOf(q.treeId), pentru: people.get(q.personId) ?? null, text: q.text, raspuns: !!q.memoryId, cand: iso(q.createdAt) })),
     mesaje: msgs.map((m) => ({ arbore: treeOf(m.treeId), de: who(m.fromUserId), catre: who(m.toUserId), text: m.body, trimis: iso(m.createdAt), citit: iso(m.readAt) })),

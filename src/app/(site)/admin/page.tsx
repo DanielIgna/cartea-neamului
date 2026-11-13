@@ -8,6 +8,7 @@ import { ENV_KEYS, NEON_FREE_BYTES, envSet } from "@/lib/admin";
 import { baseWordInfo } from "@/lib/texte";
 import { changeStats } from "@/lib/admin-istoric";
 import { editLimits } from "@/lib/edit-limits";
+import { newReportsCount } from "@/lib/probleme";
 import { AdminNav, Stat, Status, bytes, day, eur, lei, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +17,8 @@ export const metadata = { title: "Admin · Cartea Neamului" };
 /** Panoul de admin: Oamenii, Business, Manager control, Texte și Infra & Dev, cu cifrele cele mai importante din fiecare. */
 export default async function AdminHome() {
   await requireAdmin("/admin");
-  const [b, i, people, word, changes, limits] = await Promise.all([businessStats(db), infraStats(db), peopleList(db), baseWordInfo(db), changeStats(db), editLimits(db)]);
+  const [b, i, people, word, changes, limits, problems] = await Promise.all([businessStats(db), infraStats(db), peopleList(db), baseWordInfo(db), changeStats(db), editLimits(db),
+    newReportsCount(db).catch(() => 0)]);
   const funnel = funnelOf(people);
   const step = (k: number) => funnel[k]?.count ?? 0;
   const missing = ENV_KEYS.filter((k) => k.needed && !envSet(k.key));
@@ -24,6 +26,12 @@ export default async function AdminHome() {
   return (
     <section className="stack">
       <AdminNav active="home" />
+      {problems > 0 && (
+        <div className="card" style={{ borderColor: "var(--accent)" }}>
+          <b>{problems === 1 ? "O problemă nouă raportată" : `${num(problems)} probleme noi raportate`}</b>.{" "}
+          <Link href="/admin/probleme">Vezi și răspunde</Link>
+        </div>
+      )}
       <div className="admin-zones">
         <Link href="/admin/oameni" className="zone-link">
           <div className="card">

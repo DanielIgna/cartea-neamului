@@ -16,6 +16,7 @@ import { roCalatorie } from "./calatorie/ro";
 import { roBiserica } from "./biserica/ro";
 import { roParteneri } from "./parteneri/ro";
 import { roContact } from "./contact/ro";
+import { roProbleme } from "./probleme/ro";
 import { roResurse } from "./resurse/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
@@ -62,6 +63,7 @@ export const ro = {
   },
   UserMenu: {
     plan: "Planul meu",
+    report: "Raportează o problemă",
     admin: "Admin",
     messages: "Mesaje",
     account: "Contul tău și datele tale",
@@ -424,6 +426,7 @@ export const ro = {
   // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
   ...roParteneri,
   ...roContact,
+  ...roProbleme,
   ...roResurse,
   ...roFilm,
   ...roLegal,

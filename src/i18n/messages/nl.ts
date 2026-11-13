@@ -7,6 +7,7 @@ import { nlCalatorie } from "./calatorie/nl";
 import { nlBiserica } from "./biserica/nl";
 import { nlParteneri } from "./parteneri/nl";
 import { nlContact } from "./contact/nl";
+import { nlProbleme } from "./probleme/nl";
 import { nlResurse } from "./resurse/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
@@ -52,6 +53,7 @@ export const nl: Catalog = {
   },
   UserMenu: {
     plan: "Mijn pakket",
+    report: "Een probleem melden",
     admin: "Admin",
     messages: "Berichten",
     account: "Je account en je gegevens",
@@ -410,6 +412,7 @@ export const nl: Catalog = {
   ...nlBiserica,
   ...nlParteneri,
   ...nlContact,
+  ...nlProbleme,
   ...nlResurse,
   ...nlFilm,
   ...nlLegal,

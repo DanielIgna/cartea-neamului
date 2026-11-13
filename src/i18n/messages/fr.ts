@@ -7,6 +7,7 @@ import { frCalatorie } from "./calatorie/fr";
 import { frBiserica } from "./biserica/fr";
 import { frParteneri } from "./parteneri/fr";
 import { frContact } from "./contact/fr";
+import { frProbleme } from "./probleme/fr";
 import { frResurse } from "./resurse/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
@@ -52,6 +53,7 @@ export const fr: Catalog = {
   },
   UserMenu: {
     plan: "Ma formule",
+    report: "Signaler un problème",
     admin: "Admin",
     messages: "Messages",
     account: "Votre compte et vos données",
@@ -410,6 +412,7 @@ export const fr: Catalog = {
   ...frBiserica,
   ...frParteneri,
   ...frContact,
+  ...frProbleme,
   ...frResurse,
   ...frFilm,
   ...frLegal,

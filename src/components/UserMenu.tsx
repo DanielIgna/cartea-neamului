@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
  * Meniul contului din antet. Pe calculator: butoanele pe un rând. Pe telefon: doar poza (cu numărul de mesaje noi)
  * și un buton „Meniu” care deschide o listă cu rânduri mari, ușor de atins; tema și limba (`prefs`) stau tot acolo.
  */
-export default function UserMenu({ name, unread = 0, image, admin = false, prefs }: { name: string; unread?: number; image?: string | null; admin?: boolean; prefs?: ReactNode }) {
+export default function UserMenu({ name, unread = 0, replies = 0, image, admin = false, prefs }: { name: string; unread?: number; replies?: number; image?: string | null; admin?: boolean; prefs?: ReactNode }) {
   const t = useTranslations("UserMenu");
   const tp = useTranslations("Partners");
   const router = useRouter();
@@ -18,6 +18,9 @@ export default function UserMenu({ name, unread = 0, image, admin = false, prefs
   // Dacă poza nu se încarcă (link expirat, poză ștearsă, rețea), rămân inițialele în loc de un cerc gol.
   const [broken, setBroken] = useState<string | null>(null);
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+  // „Raportează o problemă” ține minte pagina de pe care s-a apăsat, ca omul să n-o mai explice.
+  const report = path?.startsWith("/problema") ? "/problema" : `/problema?de=${encodeURIComponent(path || "/")}`;
+  const replyBadge = replies ? <span className="badge">{replies}</span> : null;
   const signOut = async () => { await authClient.signOut(); router.push("/"); router.refresh(); };
   const avatar = (size: number) => image && broken !== image
     ? <img src={image} alt="" className="avatar" style={{ width: size, height: size }} referrerPolicy="no-referrer" onError={() => setBroken(image)} />
@@ -45,11 +48,12 @@ export default function UserMenu({ name, unread = 0, image, admin = false, prefs
         </Link>
         <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
         <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
+        <Link className="menu-quiet" href={report}>{t("report")}{replyBadge}</Link>
         <button className="btn" onClick={signOut}>{t("signOut")}</button>
       </div>
       <details className="um-mobile" ref={menu}>
         <summary aria-label={t("menu")}>
-          <span className="um-face">{avatar(34)}{unread ? <span className="badge um-badge">{unread}</span> : null}</span>
+          <span className="um-face">{avatar(34)}{unread + replies ? <span className="badge um-badge">{unread + replies}</span> : null}</span>
           <span className="um-burger" aria-hidden><i /><i /><i /></span>
         </summary>
         <div className="um-panel">
@@ -61,6 +65,7 @@ export default function UserMenu({ name, unread = 0, image, admin = false, prefs
             <Link href="/plata">{t("plan")}</Link>
             {admin && <Link href="/admin">{t("admin")}</Link>}
             <Link href="/parteneri">{tp("menu")}</Link>
+            <Link href={report}>{t("report")}{replyBadge}</Link>
           </nav>
           {prefs && <div className="um-prefs">{prefs}</div>}
           <button className="btn um-out" onClick={signOut}>{t("signOut")}</button>

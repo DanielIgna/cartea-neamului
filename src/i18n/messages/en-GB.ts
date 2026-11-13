@@ -7,6 +7,7 @@ import { enGBCalatorie } from "./calatorie/en-GB";
 import { enGBBiserica } from "./biserica/en-GB";
 import { enGBParteneri } from "./parteneri/en-GB";
 import { enGBContact } from "./contact/en-GB";
+import { enGBProbleme } from "./probleme/en-GB";
 import { enGBResurse } from "./resurse/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
@@ -52,6 +53,7 @@ export const enGB: Catalog = {
   },
   UserMenu: {
     plan: "My plan",
+    report: "Report a problem",
     admin: "Admin",
     messages: "Messages",
     account: "Your account and your data",
@@ -410,6 +412,7 @@ export const enGB: Catalog = {
   ...enGBBiserica,
   ...enGBParteneri,
   ...enGBContact,
+  ...enGBProbleme,
   ...enGBResurse,
   ...enGBFilm,
   ...enGBLegal,

@@ -7,6 +7,7 @@ import { itCalatorie } from "./calatorie/it";
 import { itBiserica } from "./biserica/it";
 import { itParteneri } from "./parteneri/it";
 import { itContact } from "./contact/it";
+import { itProbleme } from "./probleme/it";
 import { itResurse } from "./resurse/it";
 import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
@@ -52,6 +53,7 @@ export const it: Catalog = {
   },
   UserMenu: {
     plan: "Il mio piano",
+    report: "Segnala un problema",
     admin: "Admin",
     messages: "Messaggi",
     account: "Il tuo account e i tuoi dati",
@@ -410,6 +412,7 @@ export const it: Catalog = {
   ...itBiserica,
   ...itParteneri,
   ...itContact,
+  ...itProbleme,
   ...itResurse,
   ...itFilm,
   ...itLegal,
