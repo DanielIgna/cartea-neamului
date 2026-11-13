@@ -46,7 +46,7 @@ export const ro = {
     surnames: "Nume de familie",
     places: "Arhive pe județe",
     cookieLead: "Doar cookie-uri strict necesare.",
-    cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără numărarea vizitelor, așa că nu-ți cerem acordul.",
+    cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără urmărire: vizitele le numărăm anonim, fără cookie-uri, așa că nu-ți cerem acordul.",
     cookieMore: "Vezi lista",
     cookieOk: "Am înțeles",
   },

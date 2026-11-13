@@ -36,6 +36,7 @@ import SignInLink from "@/components/SignInLink";
 import LanguageSuggest from "@/components/LanguageSuggest";
 import IntlClient from "@/i18n/IntlClient";
 import SiteFooter from "@/components/SiteFooter";
+import VisitBeacon from "@/components/VisitBeacon";
 import { clientMessages } from "@/i18n/messages";
 import { getLocaleInfo, getMessages, getT, suggestedLocale } from "@/i18n/server";
 
@@ -92,6 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
+            <VisitBeacon />
             <SiteFooter signedIn={!!me} />
           </div>
         </IntlClient>

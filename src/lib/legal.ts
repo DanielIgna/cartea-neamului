@@ -7,12 +7,12 @@
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
 export const TERMS_DATE = new Date("2026-11-13T12:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (13 noiembrie, ora 15: emailurile site-ului pleacă prin Resend, inclusiv Contactul și cererile ADN, FormSubmit rămâne doar rezervă; după-amiază: siguranța contului, adică verificarea în 2 pași, jurnalul de securitate, cookie-ul cn_dispozitiv și Cloudflare Turnstile; la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
+ * Ultima schimbare a Politicii de confidențialitate (13 noiembrie seara: vizitele numărate anonim, fără cookie-uri, pentru Admin → Analiză; ora 15: emailurile site-ului pleacă prin Resend, inclusiv Contactul și cererile ADN, FormSubmit rămâne doar rezervă; după-amiază: siguranța contului, adică verificarea în 2 pași, jurnalul de securitate, cookie-ul cn_dispozitiv și Cloudflare Turnstile; la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
  * contabilul și ANAF, Resend, transferurile spuse exact (FormSubmit fără contract), păstrarea plăților, opoziția, copiii, cookie-urile Stripe; 12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-13T13:15:00Z");
+export const PRIVACY_DATE = new Date("2026-11-13T19:00:00Z");
 export const TERMS_VERSION = "2026-11-13-pastrare";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";

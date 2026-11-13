@@ -36,7 +36,7 @@ export const hu: Catalog = {
     surnames: "Családnevek",
     places: "Levéltárak megyénként",
     cookieLead: "Csak feltétlenül szükséges sütik.",
-    cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs látogatásszámlálás, ezért nem kérünk hozzájárulást.",
+    cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs követés: a látogatásokat névtelenül, sütik nélkül számoljuk, ezért nem kérünk hozzájárulást.",
     cookieMore: "A teljes lista",
     cookieOk: "Értem",
   },

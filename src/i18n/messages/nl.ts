@@ -36,7 +36,7 @@ export const nl: Catalog = {
     surnames: "Achternamen",
     places: "Archieven per district",
     cookieLead: "Alleen strikt noodzakelijke cookies.",
-    cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen bezoekersstatistieken, dus we vragen geen toestemming.",
+    cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen tracking: we tellen bezoeken anoniem, zonder cookies, dus we vragen geen toestemming.",
     cookieMore: "Bekijk de lijst",
     cookieOk: "Begrepen",
   },
