@@ -196,8 +196,8 @@ describe("componentele din browser", () => {
       const need = new Set<string>();
       for (const f of reach(page)) if (isClient(code.get(f)!)) for (const ns of asked(f)) if ((PAGE_NAMESPACES as readonly string[]).includes(ns)) need.add(ns);
       if (!need.size) continue;
-      // Ce dă pagina însăși și layout-urile de deasupra ei.
-      const have = new Set(given(page));
+      // Ce dă pagina însăși (sau pagina obișnuită pe care o refolosește o variantă din app/(public)) și layout-urile de deasupra ei.
+      const have = new Set([...reach(page)].filter((f) => /\bpage\.tsx$/.test(f)).flatMap(given));
       for (let dir = dirname(page); dir.startsWith(join("src", "app")); dir = dirname(dir)) {
         const layout = join(dir, "layout.tsx");
         if (layout !== page && code.has(layout)) for (const ns of given(layout)) have.add(ns);

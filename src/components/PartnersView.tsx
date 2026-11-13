@@ -1,25 +1,10 @@
-import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
-import type { Metadata } from "next";
-import { db } from "@/db";
-import { currentUser } from "@/lib/access";
-import { partnerState, partnerUrl } from "@/lib/partners";
 import { getT } from "@/i18n/server";
+import { partnerUrl, type partnerState } from "@/lib/partners";
 
-export async function generateMetadata(): Promise<Metadata> {
+/** Pagina în sine; `state` e acordul celui intrat în cont (null pentru vizitatori, și în varianta gata făcută din app/(public)). */
+export default async function PartnersView({ state }: { state: Awaited<ReturnType<typeof partnerState>> | null }) {
   const t = await getT("PartnersPage");
-  return publicPageMetadata({ path: "/parteneri", title: t("metaTitle"), description: t("metaDescription") });
-}
-
-/**
- * Singura pagină cu partenerii (acum doar PropManage). Nu apare nicăieri în arbore, în amintiri, în cronologie, pe hartă sau
- * în carte: se ajunge aici doar din meniul contului și din subsol. Legătura spre partener poartă doar UTM-ul, iar sigla e
- * pusă la noi (public/parteneri), ca browserul să nu ceară nimic de la partener până nu apasă omul pe legătură.
- */
-export default async function PartnersPage() {
-  const t = await getT("PartnersPage");
-  const me = await currentUser();
-  const state = me ? await partnerState(db, me.id).catch(() => null) : null;
   const myData = (c: React.ReactNode) => <Link href="/datele-mele#parteneri">{c}</Link>;
   return (
     <section className="stack partners" style={{ maxWidth: 760, margin: "0 auto" }}>
