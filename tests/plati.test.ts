@@ -3,8 +3,11 @@ import { createHmac } from "node:crypto";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { accountPlan, tree, treeMember, user } from "@/db/schema";
-import { applyPayment, bookPaid, createCheckout, paidSession, priceFor, verifyStripeSignature } from "@/lib/plati";
-import { DEFAULT_SETTINGS } from "@/lib/plans";
+import { readFileSync } from "node:fs";
+import { sql } from "drizzle-orm";
+import { applyPayment, bookIncluded, bookPaid, claimIncludedBook, createCheckout, includedBooksLeft, paidSession, priceFor, quoteYear, verifyStripeSignature } from "@/lib/plati";
+import { DEFAULT_SETTINGS, accessFor, limitsFor, type Access } from "@/lib/plans";
+import { document, person } from "@/db/schema";
 
 const sign = (payload: string, secret: string, t: number) => `t=${t},v1=${createHmac("sha256", secret).update(`${t}.${payload}`).digest("hex")}`;
 
@@ -42,7 +45,8 @@ describe("plata cu cardul", () => {
 
   it("din evenimente, doar plățile încheiate cu bani primiți", () => {
     const ev = (o: object, type = "checkout.session.completed") => ({ type, data: { object: { id: "cs_1", payment_status: "paid", amount_total: 5000, currency: "ron", metadata: { kind: "an", userId: "u1" }, ...o } } });
-    expect(paidSession(ev({}))).toEqual({ id: "cs_1", kind: "an", userId: "u1", treeId: null, amount: 5000, currency: "ron" });
+    expect(paidSession(ev({}))).toEqual({ id: "cs_1", kind: "an", userId: "u1", treeId: null, amount: 5000, currency: "ron", tier: "basic", upgradeFrom: null });
+    expect(paidSession(ev({ metadata: { kind: "an", userId: "u1", tier: "premium", upgradeFrom: "familie" } }))).toMatchObject({ tier: "premium", upgradeFrom: "familie" });
     expect(paidSession(ev({ payment_status: "unpaid" }))).toBeNull();
     // Cu un cod promoțional: suma e mai mică (sau zero), accesul e același.
     expect(paidSession(ev({ amount_total: 200 }))).toMatchObject({ kind: "an", userId: "u1", amount: 200 });
@@ -50,6 +54,57 @@ describe("plata cu cardul", () => {
     expect(paidSession(ev({ amount_total: 200 }, "checkout.session.async_payment_succeeded"))).toMatchObject({ amount: 200 });
     expect(paidSession(ev({ metadata: { kind: "altceva", userId: "u1" } }))).toBeNull();
     expect(paidSession(ev({}, "payment_intent.created"))).toBeNull();
+  });
+
+  it("prețul anului pe fiecare plan, în lei și în euro", () => {
+    const s = DEFAULT_SETTINGS;
+    expect(priceFor("an", "ro", true, s, "basic").label).toBe("50 lei");
+    expect(priceFor("an", "ro", true, s, "familie")).toEqual({ amount: 14900, currency: "ron", label: "149 lei" });
+    expect(priceFor("an", "ro", true, s, "premium")).toEqual({ amount: 24900, currency: "ron", label: "249 lei" });
+    expect(priceFor("an", "de", true, s, "familie")).toEqual({ amount: 3000, currency: "eur", label: "30 €" });
+    expect(priceFor("an", "fr", true, s, "premium").amount).toBe(5000);
+    expect(priceFor("an", "ro", true, { ...s, familieLei: 159 }, "familie").amount).toBe(15900);
+  });
+
+  it("trecerea pe un plan mai scump: doar diferența pe zilele rămase, data de sfârșit rămâne", () => {
+    const s = DEFAULT_SETTINGS, now = new Date("2027-01-01T00:00:00Z");
+    const until = new Date(now.getTime() + 100 * 86_400_000);
+    const basic: Access = { kind: "platit", until, tier: "basic" };
+    // (149 − 50) × 100 / 365 = 27,1232… → 27,12
+    expect(quoteYear("familie", basic, true, "ro", s, now)).toEqual({ ok: true, tier: "familie", value: 27.12, upgradeFrom: "basic", until, daysLeft: 100 });
+    // (50 − 30) × 100 / 365 = 5,479… → 5,48 €
+    expect(quoteYear("premium", { ...basic, tier: "familie" }, true, "de", s, now)).toMatchObject({ value: 5.48, upgradeFrom: "familie" });
+    // Cel puțin 1 leu.
+    const soon: Access = { kind: "platit", until: new Date(now.getTime() + 86_400_000), tier: "basic" };
+    expect(quoteYear("familie", soon, true, "ro", s, now)).toMatchObject({ value: 1 });
+    // Același plan: prețul întreg; un plan mai mic: nu se poate.
+    expect(quoteYear("basic", basic, true, "ro", s, now)).toMatchObject({ ok: true, value: 50, upgradeFrom: null });
+    expect(quoteYear("basic", { ...basic, tier: "premium" }, true, "ro", s, now)).toEqual({ ok: false, reason: "downgrade" });
+    // Fără an plătit sau expirat: prețul întreg.
+    expect(quoteYear("premium", { kind: "expirat", since: now }, true, "ro", s, now)).toMatchObject({ ok: true, value: 249, upgradeFrom: null, until: null });
+    expect(quoteYear("familie", { kind: "proba", until: now, daysLeft: 3 }, true, "ro", s, now)).toMatchObject({ value: 149 });
+    expect(quoteYear("familie", { kind: "mereu" }, true, "ro", s, now)).toEqual({ ok: false, reason: "free" });
+    expect(priceFor("an", "ro", true, s).label).toBe("50 lei");
+  });
+
+  it("Stripe primește planul și, la o trecere pe un plan mai scump, de unde vine și până când rămâne anul", async () => {
+    let sent: URLSearchParams | null = null;
+    const fake = (async (_u: string, init: RequestInit) => { sent = init.body as URLSearchParams; return new Response(JSON.stringify({ url: "https://x" })); }) as typeof fetch;
+    await createCheckout({ kind: "an", userId: "u1", email: "a@b.ro", name: "An", amount: 2712, currency: "ron", locale: "ro", successUrl: "s", cancelUrl: "c",
+      tier: "familie", upgradeFrom: "basic", paidUntil: new Date("2027-04-11T00:00:00Z") }, fake);
+    expect(sent!.get("metadata[tier]")).toBe("familie");
+    expect(sent!.get("metadata[upgradeFrom]")).toBe("basic");
+    expect(sent!.get("metadata[paidUntil]")).toBe("2027-04-11T00:00:00.000Z");
+    expect(sent!.get("allow_promotion_codes")).toBe("true");
+  });
+
+  it("cartea PDF: inclusă la toți arborii titularului doar pe Premium plătit", () => {
+    const s = DEFAULT_SETTINGS, until = new Date("2030-01-01");
+    expect(bookIncluded({ kind: "platit", until, tier: "premium" }, s, true)).toBe(true);
+    expect(bookIncluded({ kind: "platit", until, tier: "premium" }, s, false)).toBe(false);
+    expect(bookIncluded({ kind: "platit", until, tier: "familie" }, s, true)).toBe(false);
+    expect(bookIncluded({ kind: "beta", until }, s, true)).toBe(false);
+    expect(bookIncluded({ kind: "expirat", since: until }, s, true)).toBe(false);
   });
 
   describe("în baza de date", () => {
@@ -102,5 +157,64 @@ describe("plata cu cardul", () => {
       expect(await bookPaid(db, "u2", treeId, now)).toBe(false);
       expect(await bookPaid(db, "u1", treeId, new Date("2028-02-02T00:00:00Z"))).toBe(false);
     });
+
+    it("plățile vechi trec pe Basic și își păstrează data", async () => {
+      await db.insert(user).values([{ id: "v1", name: "Vechi", email: "v1@test.ro" }, { id: "v2", name: "Mereu", email: "v2@test.ro" }]);
+      const until = new Date("2027-08-01T00:00:00Z");
+      await db.insert(accountPlan).values([{ userId: "v1", plan: "familie", paidUntil: until }, { userId: "v2", plan: "mereu" }]);
+      for (const q of readFileSync("drizzle/0020_planuri.sql", "utf8").split("--> statement-breakpoint")) await db.execute(sql.raw(q));
+      const rows = await db.select().from(accountPlan);
+      expect(rows.find((r) => r.userId === "v1")).toMatchObject({ tier: "basic", paidUntil: until, plan: "familie" });
+      expect(rows.find((r) => r.userId === "v2")).toMatchObject({ tier: null, plan: "mereu" });
+    });
+
+    it("anul pe un plan: același plan +365 zile; trecerea mai sus păstrează data; de la zero, un an de azi", async () => {
+      await db.insert(user).values({ id: "t1", name: "Plan", email: "t1@test.ro" });
+      const now = new Date("2027-01-01T00:00:00Z");
+      const pay = (id: string, o: object, at = now) => applyPayment(db, { id, kind: "an", userId: "t1", treeId: null, amount: 1, currency: "ron", ...o }, at);
+      const row = async () => (await db.select().from(accountPlan)).find((r) => r.userId === "t1")!;
+      await pay("t_a", { tier: "basic" });
+      expect(await row()).toMatchObject({ tier: "basic", paidUntil: new Date("2028-01-01T00:00:00Z") });
+      await pay("t_b", { tier: "basic" }, new Date("2027-03-01T00:00:00Z"));
+      expect(await row()).toMatchObject({ tier: "basic", paidUntil: new Date("2028-12-31T00:00:00Z") });
+      await pay("t_c", { tier: "premium", upgradeFrom: "basic" }, new Date("2027-04-01T00:00:00Z"));
+      expect(await row()).toMatchObject({ tier: "premium", paidUntil: new Date("2028-12-31T00:00:00Z") });
+      // După ce a expirat, o plată (chiar marcată ca trecere) dă un an întreg de azi.
+      await pay("t_d", { tier: "familie", upgradeFrom: "basic" }, new Date("2029-02-01T00:00:00Z"));
+      expect(await row()).toMatchObject({ tier: "familie", paidUntil: new Date("2030-02-01T00:00:00Z") });
+    });
+
+    it("cartea inclusă la Familie: una pe an, aleasă, apoi ca o carte plătită", async () => {
+      await db.insert(user).values({ id: "f1", name: "Familie", email: "f1@test.ro" });
+      const [{ id: a }] = await db.insert(tree).values({ name: "A", ownerId: "f1" }).returning({ id: tree.id });
+      const [{ id: b }] = await db.insert(tree).values({ name: "B", ownerId: "f1" }).returning({ id: tree.id });
+      const now = new Date("2027-05-01T00:00:00Z"), s = DEFAULT_SETTINGS;
+      const fam: Access = { kind: "platit", until: new Date("2027-12-01T00:00:00Z"), tier: "familie" };
+      expect(await includedBooksLeft(db, "f1", { ...fam, tier: "basic" }, s, now)).toBe(0);
+      expect(await includedBooksLeft(db, "f1", { ...fam, tier: "premium" }, s, now)).toBeNull();
+      expect(await includedBooksLeft(db, "f1", fam, s, now)).toBe(1);
+      expect(await claimIncludedBook(db, "f1", a, fam, s, now)).toBe(true);
+      expect(await bookPaid(db, "f1", a, now)).toBe(true);
+      expect(await includedBooksLeft(db, "f1", fam, s, now)).toBe(0);
+      expect(await claimIncludedBook(db, "f1", b, fam, s, now)).toBe(false);
+      expect(await bookPaid(db, "f1", b, now)).toBe(false);
+      // Anul următor pe Familie: încă una.
+      const next: Access = { ...fam, until: new Date("2028-12-01T00:00:00Z") };
+      expect(await includedBooksLeft(db, "f1", next, s, new Date("2028-01-01T00:00:00Z"))).toBe(1);
+    });
+
+    it("la expirare nu se șterge nimic: persoanele și pozele rămân, doar adăugările noi se opresc", async () => {
+      await db.insert(user).values({ id: "x1", name: "Exp", email: "x1@test.ro", createdAt: new Date("2027-01-01T00:00:00Z") });
+      const [{ id: t }] = await db.insert(tree).values({ name: "X", ownerId: "x1" }).returning({ id: tree.id });
+      await db.insert(person).values(Array.from({ length: 35 }, (_, i) => ({ treeId: t, givenName: `P${i}` })));
+      await db.insert(document).values({ treeId: t, kind: "photo", title: "poză", fileKey: "k", mimeType: "image/jpeg" });
+      const on = { ...DEFAULT_SETTINGS, on: true, startedAt: "2026-12-01T00:00:00.000Z" };
+      const a = accessFor({ createdAt: new Date("2027-01-01T00:00:00Z"), plan: "familie", paidUntil: new Date("2027-02-01T00:00:00Z"), tier: "premium" }, on, new Date("2027-03-01"));
+      expect(a.kind).toBe("expirat");
+      expect(limitsFor(a, on)?.persons).toBe(30);
+      expect((await db.select().from(person).where(sql`${person.treeId} = ${t}`)).length).toBe(35);
+      expect((await db.select().from(document).where(sql`${document.treeId} = ${t}`)).length).toBe(1);
+    });
+
   });
 });

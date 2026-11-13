@@ -81,7 +81,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         <ul className="plan-limits">
           {LIMIT_KEYS.map((k) => <li key={k}><span>{t(`lim.${k}`)}</span><b>{limitValue(lim[k])}</b></li>)}
           <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s).label })}</b></li>
-          <li><span>{t("lim.print")}</span><b>{pct > 0 ? t("printOff", { pct }) : t("printFull")}</b></li>
+          <li><span>{t("lim.print")}</span><b>{pct > 0 ? t("printOff", { pct: String(pct) }) : t("printFull")}</b></li>
         </ul>
         <p className="muted plan-writers">{x === "basic" ? t("writersPay") : t("writersFree")}</p>
         {currentTier === x && <p className="plan-now">{t("yourPlan")}</p>}
@@ -116,7 +116,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
 
       <div className="card">
         <p className="muted" style={{ margin: 0 }}>
-          {t("trialLimits", { days: s.trialDays, persons: tl.persons ?? 0, photos: tl.photos ?? 0, audio: tl.audio ?? 0, docs: tl.docs ?? 0 })}
+          {t("trialLimits", { days: String(s.trialDays), persons: tl.persons ?? 0, photos: tl.photos ?? 0, audio: tl.audio ?? 0, docs: tl.docs ?? 0 })}
           {" "}{t("visitors")} {t("afterEnd")} {t("noAuto")}
         </p>
       </div>
