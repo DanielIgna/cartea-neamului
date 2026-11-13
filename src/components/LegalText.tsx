@@ -48,7 +48,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
     .map((k) => [k, ps[k] > 0 ? format.number(ps[k]) : unlimited]));
   const prices = {
     trialDays: ps.trialDays, trialPersons: ps.trialPersons, priceLei: ps.priceLei, priceEur: ps.priceEur, invitePriceLei: ps.invitePriceLei, invitePriceEur: ps.invitePriceEur,
-    bookLei: ps.bookLei, bookEur: ps.bookEur, familieLei: ps.familieLei, familieEur: ps.familieEur, premiumLei: ps.premiumLei, premiumEur: ps.premiumEur,
+    bookLei: ps.bookLei, bookEur: ps.bookEur, keepLei: ps.keepLei, keepEur: ps.keepEur, keepBookLei: ps.keepBookLei, keepBookEur: ps.keepBookEur, familieLei: ps.familieLei, familieEur: ps.familieEur, premiumLei: ps.premiumLei, premiumEur: ps.premiumEur,
     premiumPrint: ps.premiumPrint, ...caps,
   };
   const values = { name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, phone: contactPhone(), minAge: MIN_AGE, consent: tp("checkbox"), ...prices, ...tags };

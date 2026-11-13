@@ -215,11 +215,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
     ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, platitPanaLa: iso(plan.paidUntil), pastrarePanaLa: iso(plan.keepUntil), schimbata: iso(plan.updatedAt) } } : {}),
     // Plățile făcute cu cardul (fără datele cardului, pe care nu le vedem): ce, cât și când. Se păstrează pentru contabilitate.
-<<<<<<< HEAD
-    plati: payments.map((x) => ({ ce: x.kind === "carte" ? "Cartea neamului (PDF)" : x.kind === "cadou" ? "Un an dăruit" : "Un an în Cartea Neamului", arbore: x.treeId ? treeOf(x.treeId) : null,
-=======
     plati: payments.map((x) => ({ ce: x.kind === "carte" ? "Cartea neamului (PDF)" : x.kind === "pastrare" ? "Păstrarea arborelui (un an)" : x.kind === "cadou" ? "Un an dăruit" : "Un an în Cartea Neamului", arbore: x.treeId ? treeOf(x.treeId) : null,
->>>>>>> 0a54772 (Păstrarea: 25 lei pe an după anul plătit, pachet cu cartea PDF, arhiva mea, anunț pentru conturile existente)
       suma: x.amount / 100, moneda: x.currency.toUpperCase(), cand: iso(x.createdAt) })),
     aniDaruiti: gifts.map((g) => ({ eu: g.buyerId === userId ? "l-am cumpărat" : "l-am primit", plan: g.tier, pentru: g.forName, bilet: g.note,
       cumparat: iso(g.createdAt), folosit: iso(g.redeemedAt) })),
