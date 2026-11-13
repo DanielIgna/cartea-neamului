@@ -7,6 +7,7 @@ import { captcha, twoFactor } from "better-auth/plugins";
 import { db } from "@/db";
 import { user, session, account, verification, twoFactor as twoFactorTable } from "@/db/schema";
 import { recordConsent } from "./consent";
+import { isOwnerEmail } from "./admin";
 import { setPartnerConsent, signupPartnerFromCookie } from "./partners";
 import { DEFAULT_LOCALE, localeFromCookieHeader } from "@/i18n/locales";
 
@@ -63,8 +64,18 @@ export const auth = betterAuth({
       waitUntil(sendResetMail(u.email, u.name, url, locale).catch((e) => console.error("reset mail", e)));
     },
   },
-  // Cel mult 3 cereri de parolă nouă pe minut de la aceeași adresă.
-  rateLimit: { customRules: { "/request-password-reset": { window: 60, max: 3 }, "/reset-password": { window: 60, max: 10 } } },
+  // Confirmarea adresei de email, la cerere, din „Siguranța contului” (pentru proprietari e cerută: src/lib/admin.ts).
+  // Legătura e valabilă o oră; după ea, contul are emailul confirmat.
+  emailVerification: {
+    expiresIn: 60 * 60,
+    sendVerificationEmail: async ({ user: u, url }, request) => {
+      const { sendVerifyMail } = await import("./securitate-mail");
+      waitUntil(sendVerifyMail(u.id, url, request?.headers.get("cookie") ?? null).catch((e) => console.error("verify mail", e)));
+    },
+  },
+  // Cel mult 3 cereri de parolă nouă pe minut de la aceeași adresă; 3 emailuri de confirmare la 5 minute.
+  rateLimit: { customRules: { "/request-password-reset": { window: 60, max: 3 }, "/reset-password": { window: 60, max: 10 },
+    "/send-verification-email": { window: 300, max: 3 } } },
   // Cine e intrat în cont: ținut 5 minute într-un cookie semnat, ca fiecare pagină să nu mai întrebe baza de date la fiecare clic.
   session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   // Limba contului (aleasă din site, nu trimisă la creare): îl urmează pe alt telefon sau calculator.
@@ -95,6 +106,16 @@ export const auth = betterAuth({
     },
     account: {
       create: {
+        // Pază pentru adresele proprietarilor (Daniel și Cristina): dacă cineva și-ar fi făcut dinainte un cont cu parolă pe adresa
+        // unui proprietar, fără s-o confirme, iar proprietarul intră apoi cu Google pe aceeași adresă, parola aceea străină se șterge
+        // și se închid sesiunile vechi. Așa nimeni nu poate „ocupa” dinainte contul de proprietar.
+        before: async (acc) => {
+          if (acc.providerId !== "google") return;
+          const [u] = await db.select({ email: user.email, verified: user.emailVerified }).from(user).where(eq(user.id, acc.userId));
+          if (!u || u.verified || !isOwnerEmail(u.email)) return;
+          await db.delete(account).where(and(eq(account.userId, acc.userId), eq(account.providerId, "credential")));
+          await db.delete(session).where(eq(session.userId, acc.userId));
+        },
         // Când cineva își leagă contul Google, poza din Google devine poza contului, dacă nu are deja una.
         after: async (acc) => {
           if (acc.providerId !== "google") return;

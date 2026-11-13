@@ -63,7 +63,14 @@ export const itSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Fatto, sei uscito dagli altri telefoni e computer.",
     "alertsTitle": "Ti avvisiamo via email",
     "alertsText": "Quando qualcuno entra nel tuo account da un telefono o computer nuovo, ti scriviamo. Dopo 5 password sbagliate di seguito, l’accesso si ferma per 15 minuti, così nessuno può indovinare la tua password.",
-    "myDataLink": "Sicurezza dell’account: verifica in due passaggi e dove hai effettuato l’accesso"
+    "myDataLink": "Sicurezza dell’account: verifica in due passaggi e dove hai effettuato l’accesso",
+    "verifyTitle": "Indirizzo email",
+    "verifyOk": "L’indirizzo {email} è confermato.",
+    "verifyText": "L’indirizzo {email} non è ancora confermato. Tocca il pulsante e ti mandiamo un link via email; quando lo apri, l’indirizzo è confermato. Aiuta a recuperare l’account.",
+    "verifySend": "Mandami il link di conferma",
+    "verifySent": "Fatto. Apri l’email e tocca il link (guarda anche in Spam o Promozioni). È valido un’ora.",
+    "ownerTitle": "Sei il proprietario del sito",
+    "ownerText": "Per avere i diritti di proprietario nel pannello di amministrazione, conferma prima il tuo indirizzo email, poi attiva la verifica in due passaggi.",
   },
   "SecurityMail": {
     "hello": "Ciao {name},",
@@ -74,6 +81,10 @@ export const itSecuritate: SecuritateCatalog = {
     "offSubject": "La verifica in due passaggi è stata disattivata su {app}",
     "offIntro": "La verifica in due passaggi è stata disattivata per il tuo account di {app}.",
     "changePassword": "Cambia la password",
-    "securityPage": "Sicurezza dell’account"
+    "securityPage": "Sicurezza dell’account",
+    "verifySubject": "Conferma il tuo indirizzo email per {app}",
+    "verifyIntro": "Tocca il pulsante qui sotto per confermare che questo indirizzo email è tuo, per il tuo account di {app}:",
+    "verifyButton": "Conferma l’indirizzo",
+    "verifyIgnore": "Il link è valido un’ora. Se non l’hai chiesto tu, non fare nulla.",
   }
 };

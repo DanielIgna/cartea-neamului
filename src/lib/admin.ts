@@ -11,18 +11,34 @@ export function isAdminEmail(email: string | null | undefined, raw = process.env
 }
 
 /**
- * Daniel Igna, care ține site-ul, a cerut panoul pentru adresa lui (6 noiembrie 2026). Adresa e publică, așa că nu ajunge să-ți
- * faci un cont cu ea: contul trebuie să aibă emailul verificat (intrarea cu Google) sau să fi fost făcut înainte de regula asta.
+ * Proprietarii site-ului, cu drepturi depline în panou: Daniel Igna (6 noiembrie 2026) și, la cererea lui (13 noiembrie 2026),
+ * soția lui, Cristina Igna, „admin master” și adresa de recuperare. Adresele sunt publice, așa că nu ajunge să-ți faci un cont
+ * cu ele: contul trebuie să aibă emailul confirmat (legătura din email sau intrarea cu Google). Contul lui Daniel, făcut înainte
+ * de regula asta, e primit și fără confirmare. Unul poate reseta verificarea în 2 pași a celuilalt (Admin → Securitate).
  */
-export const OWNER_ADMIN = { email: "danieligna1@gmail.com", createdBefore: "2026-11-06T18:45:00Z" };
+export const OWNERS: { email: string; name: string; createdBefore?: string }[] = [
+  { email: "danieligna1@gmail.com", name: "Daniel", createdBefore: "2026-11-06T18:45:00Z" },
+  { email: "dr.cristina.igna@gmail.com", name: "Cristina" },
+];
+/** Păstrat pentru locurile care îl vor doar pe Daniel (primul proprietar). */
+export const OWNER_ADMIN = { email: OWNERS[0].email, createdBefore: OWNERS[0].createdBefore! };
+
+export const ownerOf = (email: string | null | undefined) => OWNERS.find((o) => o.email === (email ?? "").trim().toLowerCase()) ?? null;
+export const isOwnerEmail = (email: string | null | undefined) => !!ownerOf(email);
 
 type AdminCandidate = { email?: string | null; emailVerified?: boolean | null; createdAt?: Date | string | null } | null | undefined;
+/** Proprietar adevărat: adresa e pe listă și contul e confirmat (sau, pentru Daniel, făcut înainte de 6 noiembrie, seara). */
+export function isOwnerUser(u: AdminCandidate) {
+  const o = ownerOf(u?.email);
+  if (!o || !u) return false;
+  if (u.emailVerified) return true;
+  return !!o.createdBefore && !!u.createdAt && new Date(u.createdAt).getTime() < Date.parse(o.createdBefore);
+}
+
 export function isAdminUser(u: AdminCandidate, raw = process.env.ADMIN_EMAILS) {
   if (!u?.email) return false;
   if (isAdminEmail(u.email, raw)) return true;
-  if (u.email.trim().toLowerCase() !== OWNER_ADMIN.email) return false;
-  if (u.emailVerified) return true;
-  return !!u.createdAt && new Date(u.createdAt).getTime() < Date.parse(OWNER_ADMIN.createdBefore);
+  return isOwnerUser(u);
 }
 
 /** Neon, planul gratuit: 0,5 GB pe proiect. */

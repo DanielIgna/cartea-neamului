@@ -63,7 +63,14 @@ export const huSecuritate: SecuritateCatalog = {
     "signedOutOthers": "Kész, kiléptél a többi telefonról és számítógépről.",
     "alertsTitle": "E-mailben értesítünk",
     "alertsText": "Ha valaki új telefonról vagy számítógépről lép be a fiókodba, írunk neked. 5 egymás utáni hibás jelszó után a belépés 15 percre leáll, hogy senki ne találhassa ki a jelszavadat.",
-    "myDataLink": "A fiók biztonsága: kétlépéses azonosítás és hol vagy belépve"
+    "myDataLink": "A fiók biztonsága: kétlépéses azonosítás és hol vagy belépve",
+    "verifyTitle": "E-mail-cím",
+    "verifyOk": "A(z) {email} cím megerősítve.",
+    "verifyText": "A(z) {email} cím még nincs megerősítve. Koppints a gombra, és e-mailben küldünk egy linket; ha megnyitod, a cím megerősítést nyer. Ez segít a fiók visszaállításában.",
+    "verifySend": "Küldjétek el a megerősítő linket",
+    "verifySent": "Kész. Nyisd meg az e-mailt, és koppints a linkre (nézd meg a Spam vagy Promóciók mappát is). Egy óráig érvényes.",
+    "ownerTitle": "Te vagy az oldal tulajdonosa",
+    "ownerText": "Ahhoz, hogy tulajdonosi jogaid legyenek az admin felületen, előbb erősítsd meg az e-mail-címedet, majd kapcsold be a kétlépéses azonosítást.",
   },
   "SecurityMail": {
     "hello": "Kedves {name}!",
@@ -74,6 +81,10 @@ export const huSecuritate: SecuritateCatalog = {
     "offSubject": "Kikapcsolták a kétlépéses azonosítást: {app}",
     "offIntro": "Kikapcsolták a kétlépéses azonosítást a(z) {app} fiókodban.",
     "changePassword": "Jelszó megváltoztatása",
-    "securityPage": "A fiók biztonsága"
+    "securityPage": "A fiók biztonsága",
+    "verifySubject": "Erősítsd meg az e-mail-címedet: {app}",
+    "verifyIntro": "Koppints a lenti gombra, hogy megerősítsd: ez az e-mail-cím a tiéd, a(z) {app} fiókodhoz:",
+    "verifyButton": "Cím megerősítése",
+    "verifyIgnore": "A link egy óráig érvényes. Ha nem te kérted, ne tegyél semmit.",
   }
 };

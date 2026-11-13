@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { db } from "@/db";
 import { account, user } from "@/db/schema";
 import { currentUser, requireUser } from "./access";
-import { isAdminUser } from "./admin";
+import { isAdminUser, isOwnerEmail, isOwnerUser } from "./admin";
 
 export async function isAdmin() {
   const me = await currentUser();
@@ -22,15 +22,27 @@ export async function adminNeedsTwoStep(userId: string) {
   return pwd.length > 0;
 }
 
+type Candidate = { id: string; email: string; createdAt?: Date | string | null; emailVerified?: boolean | null };
+/**
+ * Admin, citit proaspăt: sesiunea e ținută 5 minute într-un cookie, așa că un proprietar care tocmai și-a confirmat adresa
+ * ar aștepta. Pentru adresele proprietarilor întrebăm baza de date.
+ */
+async function isAdminFresh(me: Candidate) {
+  if (isAdminUser(me)) return true;
+  if (!isOwnerEmail(me.email)) return false;
+  const [u] = await db.select({ email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt }).from(user).where(eq(user.id, me.id));
+  return isOwnerUser(u);
+}
+
 /** Paginile de admin: cine nu e admin vede „pagina nu există”, ca să nu afle nici că panoul e acolo. */
 export async function requireAdmin(next = "/admin") {
   const me = await requireUser(next);
-  if (!isAdminUser(me)) notFound();
+  if (!(await isAdminFresh(me))) notFound();
   if (await adminNeedsTwoStep(me.id)) redirect("/securitate?admin=1");
   return me;
 }
 
 /** Pentru acțiunile și adresele de admin: e admin și, unde se cere, are verificarea în 2 pași pornită. */
 export async function adminReady(me: { id: string; email: string; createdAt?: Date | string | null; emailVerified?: boolean | null } | null) {
-  return !!me && isAdminUser(me) && !(await adminNeedsTwoStep(me.id));
+  return !!me && (await isAdminFresh(me)) && !(await adminNeedsTwoStep(me.id));
 }

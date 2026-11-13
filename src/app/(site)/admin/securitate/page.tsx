@@ -5,11 +5,15 @@ import { KIND_LABEL, LIMITS, type SecurityKind } from "@/lib/securitate";
 import { reminderMailReady } from "@/lib/extra";
 import { turnstileSiteKey } from "@/lib/auth";
 import { AdminNav, Status, ago, day, num } from "@/components/admin/ui";
+import OwnerRecovery from "@/components/admin/OwnerRecovery";
+import { OWNERS, isOwnerUser } from "@/lib/admin";
+import { account, user } from "@/db/schema";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Securitate · Admin" };
 
-const SHOWN: SecurityKind[] = ["parola_gresita", "intrare_blocata", "cod_gresit", "cod_rezerva", "dispozitiv_nou", "2pasi_pornit", "2pasi_oprit",
+const SHOWN: SecurityKind[] = ["recuperare_proprietar", "parola_gresita", "intrare_blocata", "cod_gresit", "cod_rezerva", "dispozitiv_nou", "2pasi_pornit", "2pasi_oprit",
   "plata_semnatura", "plata_disputa", "plata_frauda"];
 
 /**
@@ -17,8 +21,15 @@ const SHOWN: SecurityKind[] = ["parola_gresita", "intrare_blocata", "cod_gresit"
  * numerele pe 24 h și 7 zile, jurnalul ultimelor 100 de întâmplări și ce pază e pornită.
  */
 export default async function AdminSecurity() {
-  await requireAdmin("/admin/securitate");
+  const me = await requireAdmin("/admin/securitate");
   const o = await securityOverview(db);
+  // Proprietarii (Daniel și Cristina): dacă au cont, dacă e confirmat, dacă au verificarea în 2 pași și parolă.
+  const emails = OWNERS.map((x) => x.email);
+  const rows = await db.select({ id: user.id, email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt, on: user.twoFactorEnabled })
+    .from(user).where(inArray(sql`lower(${user.email})`, emails));
+  const pw = rows.length ? (await db.select({ userId: account.userId }).from(account).where(and(inArray(account.userId, rows.map((r) => r.id)), eq(account.providerId, "credential")))).map((r) => r.userId) : [];
+  const owners = OWNERS.map((x) => ({ ...x, u: rows.find((r) => r.email.toLowerCase() === x.email) ?? null }));
+  const iAmOwner = owners.some((x) => x.u?.id === me.id && isOwnerUser(x.u));
   return (
     <section className="stack">
       <AdminNav active="securitate" />
@@ -29,6 +40,31 @@ export default async function AdminSecurity() {
           : <ul style={{ paddingLeft: 18, marginBottom: 0 }}>{o.alerts.map((a, i) => (
             <li key={i}><Status ok={false} warn={a.level === "warn"}>{a.level === "bad" ? "atenție" : "de urmărit"}</Status> {a.text}{a.who ? <> · <code>{a.who}</code></> : null}</li>
           ))}</ul>}
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Proprietarii și recuperarea</h2>
+        <p className="muted" style={{ maxWidth: "78ch" }}>
+          Daniel și Cristina au drepturi depline și sunt adresa de recuperare unul pentru altul. Fiecare devine proprietar doar după ce își
+          confirmă adresa (legătura din email sau intrarea cu Google) și pornește verificarea în 2 pași. Dacă unul pierde telefonul și codurile
+          de rezervă, celălalt îi resetează de aici verificarea; parola nouă și-o face fiecare cu „Ai uitat parola?”.
+        </p>
+        <div className="tbl-wrap">
+          <table className="tbl stacked">
+            <thead><tr><th>Cine</th><th>Cont</th><th>Adresă confirmată</th><th>2 pași</th><th></th></tr></thead>
+            <tbody>
+              {owners.map((x) => (
+                <tr key={x.email}>
+                  <td>{x.name} <small className="muted">{x.email}</small></td>
+                  <td>{x.u ? <Status ok>are cont</Status> : <Status ok={false} warn>fără cont încă</Status>}</td>
+                  <td>{!x.u ? "—" : isOwnerUser(x.u) ? <Status ok>da</Status> : <Status ok={false} warn>încă nu: din /securitate</Status>}</td>
+                  <td>{!x.u ? "—" : x.u.on ? <Status ok>pornită</Status> : pw.includes(x.u.id) ? <Status ok={false} warn>oprită</Status> : <span className="muted">intră cu Google</span>}</td>
+                  <td>{iAmOwner && x.u && x.u.id !== me.id && x.u.on ? <OwnerRecovery email={x.email} name={x.name} /> : null}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="card">
