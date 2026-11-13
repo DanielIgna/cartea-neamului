@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
+import { domainEmail } from "@/lib/email-domeniu";
 import { businessStats, infraStats } from "@/lib/admin-stats";
 import { funnelOf, peopleList } from "@/lib/admin-people";
 import { ENV_KEYS, NEON_FREE_BYTES, envSet } from "@/lib/admin";
@@ -79,6 +80,12 @@ export default async function AdminHome() {
             <div className="stats">
               <Stat label="Acum se vede" value={word.changed ? "textul tău" : "textul inițial"} hint={word.changed ? `schimbat pe ${day(word.updatedAt?.toISOString())}` : "cel scris la început"} />
             </div>
+          </div>
+        </Link>
+        <Link href="/admin/email" className="zone-link">
+          <div className="card">
+            <h2 style={{ marginTop: 0 }}>Email</h2>
+            <p className="muted" style={{ marginTop: 0 }}>{domainEmail()}: căsuța în Gmail, trimise, mesajele din Contact și verificarea înregistrărilor.</p>
           </div>
         </Link>
         <Link href="/admin/infra" className="zone-link">
