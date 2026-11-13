@@ -1,9 +1,13 @@
+import type { Metadata } from "next";
+import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/access";
 import { googleEnabled } from "@/lib/auth";
 import AuthForm from "@/components/AuthForm";
 
 export const dynamic = "force-dynamic";
+/** Intrarea în cont nu are ce căuta în Google (pe lângă robots.txt). */
+export const metadata: Metadata = { robots: PRIVATE_ROBOTS };
 
 export default async function SignIn({ searchParams }: { searchParams: Promise<{ next?: string; mod?: string; eroare?: string; error?: string }> }) {
   const { next, mod, eroare, error } = await searchParams;

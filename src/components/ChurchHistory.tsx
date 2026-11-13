@@ -32,7 +32,7 @@ export default function ChurchHistory() {
   return (
     <article className="card ch">
       <header className="ch-head">
-        <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
+        <h1 className="section-label" style={{ marginTop: 0 }}>{t("label")}</h1>
         <h2>{t("title")}</h2>
         <p className="ch-lead">{t("intro")}</p>
       </header>

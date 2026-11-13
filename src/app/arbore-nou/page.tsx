@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
+import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { requireUser } from "@/lib/access";
 import FamilyStart from "@/components/FamilyStart";
 import GedcomImport from "@/components/GedcomImport";
 import { getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = { robots: PRIVATE_ROBOTS };
 
 /** Arbore nou: pornit pas cu pas (tu, părinții, bunicii) sau adus dintr-un fișier GEDCOM. */
 export default async function NewTreePage() {

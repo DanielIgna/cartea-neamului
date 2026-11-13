@@ -14,7 +14,7 @@ export const nlParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partners · Het Familieboek",
+    metaTitle: "Partners | Het Familieboek",
     metaDescription: "De partners van het Familieboek en wat ze families bieden.",
     label: "Partners",
     title: "De partners van het Familieboek",

@@ -14,6 +14,7 @@ export const nlContact: ContactCatalog = {
     "waTitle": "Via WhatsApp",
     "waText": "Het snelst: open het gesprek en schrijf ons meteen.",
     "waCta": "Stuur ons een WhatsApp-bericht",
+    "facebook": "Je vindt ons ook op <link>Facebook</link>, waar we het nieuws delen.",
     "waGreeting": "Hallo! Ik schrijf je via Het Familieboek.",
     "waFloat": "Stuur ons een WhatsApp-bericht",
     "mailTitle": "Per e-mail",

@@ -1376,3 +1376,18 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .book-locked .pagedjs_page{position:relative}
 .book-locked .pagedjs_page::after{content:var(--wm);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:italic 700 60px/1 Alegreya,Georgia,serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(168,116,31,.17);transform:rotate(-35deg);pointer-events:none;z-index:9;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .site-foot .site-seller{flex-basis:100%;font-size:12px;color:var(--muted)}
+
+/* Prima pagină: H1 cu „Arborele genealogic al familiei tale” și numele, arătând ca înainte */
+.lp-h1{margin:0}
+.lp-h1>span{display:block}
+.lp-h1 .lp-tagline{font-family:var(--body);font-weight:400;text-wrap:wrap}
+/* Ce este un arbore genealogic + paginile de istorie */
+.lp-what-in{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(28px,4vw,48px)}
+@media (min-width:900px){.lp-what-in{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.lp-what h2{font-size:clamp(24px,2.6vw,32px);line-height:1.15;margin:0 0 12px}
+.lp-what h3{font-size:22px;line-height:1.2;margin:0 0 10px}
+.lp-what p{font-size:17px;line-height:1.6;margin:0;color:var(--l-muted)}
+.lp-history ul{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}
+.lp-history a{color:var(--l-ink);font-weight:700;text-decoration-color:var(--l-gold);text-underline-offset:3px}
+/* Paginile interioare: numele paginii e H1, cu aceeași înfățișare ca eticheta de deasupra titlului */
+h1.section-label{font-family:var(--body);text-wrap:wrap}

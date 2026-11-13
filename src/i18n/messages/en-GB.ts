@@ -15,6 +15,7 @@ import { enGBDatele } from "./datele/en-GB";
 export const enGB: Catalog = {
   Meta: {
     appName: "The Family Book",
+    homeTitle: "Online family tree | The Family Book",
     description: "The family tree, built together, printed as a book.",
   },
   Layout: {
@@ -116,6 +117,22 @@ export const enGB: Catalog = {
     gen3Text: "They learn where they come from and carry the story on.",
     gen4Title: "Children",
     gen4Text: "They will grow up knowing their roots.",
+    whatTitle: "What is a family tree?",
+    whatText: "A family tree shows who descends from whom: you, your parents, grandparents and great-grandparents, with each one’s brothers, sisters and cousins. Here you build it online, together with your relatives, and everyone in the tree has photos, documents and memories.",
+    ancestorsTitle: "Who were my ancestors?",
+    ancestorsText: "Start with what you know and ask your relatives. Grandparents remember names and villages you won’t find written anywhere, and their memories, recorded in their own voice, stay in the family book for the grandchildren.",
+    historyTitle: "Your family in the history of the world",
+    historyText: "For anyone who wants to look further back than their great-grandparents:",
+    alt: {
+      gen1: "The family’s grandparents",
+      gen2: "Parents with their children",
+      gen3: "Young people of the family",
+      gen4: "The family’s children",
+      memories: "A grandfather sharing his memories with his grandson",
+      map: "The village the family comes from",
+      book: "An album of old family photos",
+      table: "The family gathered around the table",
+    },
   },
   Home: {
     welcomeEyebrow: "Welcome back",

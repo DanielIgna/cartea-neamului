@@ -4,4 +4,6 @@
  */
 export const SITE_URL = (process.env.BETTER_AUTH_URL
   || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "")
-  || "https://carteaneamului.ro").replace(/\/+$/, "");
+  || "https://carteaneamului.ro").replace(/\/+$/, "")
+  // Adresa principală e fără www (https://carteaneamului.ro), chiar dacă vreo variabilă din Vercel vine cu www.
+  .replace(/^(https?:\/\/)www\./, "$1");

@@ -1,14 +1,15 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import type { Metadata } from "next";
 import ContactForm from "@/components/ContactForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import PageIntl from "@/i18n/PageIntl";
-import { getT } from "@/i18n/server";
-import { whatsappUrl } from "@/lib/contact";
+import { getAppName, getT } from "@/i18n/server";
+import { FACEBOOK_URL, whatsappUrl } from "@/lib/contact";
 import { operator } from "@/lib/legal";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("ContactPage");
-  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/contact" } };
+  return publicPageMetadata({ path: "/contact", title: `${t("metaTitle")} | ${await getAppName()}`, description: t("metaDescription") });
 }
 
 /**
@@ -26,9 +27,10 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   return (
     <section className="stack contact" style={{ maxWidth: 760, margin: "0 auto" }}>
       <div className="card">
-        <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
+        <h1 className="section-label" style={{ marginTop: 0 }}>{t("label")}</h1>
         <h2>{t("title")}</h2>
         <p>{t("lead")}</p>
+        <p className="muted" style={{ margin: 0 }}>{t.rich("facebook", { link: (c) => <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">{c}</a> })}</p>
       </div>
       <div className="contact-ways">
         <div className="card stack">

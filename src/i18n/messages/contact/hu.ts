@@ -14,6 +14,7 @@ export const huContact: ContactCatalog = {
     "waTitle": "WhatsAppon",
     "waText": "A leggyorsabb: nyisd meg a beszélgetést, és írj nekünk közvetlenül.",
     "waCta": "Írj nekünk WhatsAppon",
+    "facebook": "Megtalálsz minket a <link>Facebookon</link> is, ahol a híreket közöljük.",
     "waGreeting": "Jó napot! A Család Könyve oldaláról írok.",
     "waFloat": "Írj nekünk WhatsAppon",
     "mailTitle": "E-mailben",

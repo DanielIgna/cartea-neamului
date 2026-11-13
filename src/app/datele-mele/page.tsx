@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import type { ReactNode } from "react";
 import { db } from "@/db";
 import { requireUser } from "@/lib/access";
@@ -15,7 +16,7 @@ import PageIntl from "@/i18n/PageIntl";
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
   const t = await getT("MyData");
-  return { title: `${t("metaTitle")} · ${await getAppName()}` };
+  return { title: `${t("metaTitle")} · ${await getAppName()}`, robots: PRIVATE_ROBOTS };
 }
 
 const tags = {

@@ -28,6 +28,7 @@ import { isAdminUser } from "@/lib/admin";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import { SITE_URL } from "@/lib/site-url";
+import { FACEBOOK_URL } from "@/lib/contact";
 import UsageBeat from "@/components/UsageBeat";
 import UsageNotice from "@/components/UsageNotice";
 import LanguagePicker from "@/components/LanguagePicker";
@@ -52,7 +53,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(SITE_URL),
     title: t("appName"), description: t("description"), applicationName: t("appName"),
-    openGraph: { ...SHARE, url: "/", siteName: "Cartea Neamului", locale: "ro_RO", type: "website" },
+    openGraph: { ...SHARE, siteName: "Cartea Neamului", locale: "ro_RO", type: "website" },
     twitter: { card: "summary_large_image", ...SHARE },
     // Pe iPhone, după „Adaugă pe ecranul principal”, se deschide ca o aplicație, cu numele întreg sub iconiță.
     appleWebApp: { capable: true, title: t("appName"), statusBarStyle: "default" },
@@ -84,6 +85,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
   const tc = await getT("ContactPage");
+  const th = await getT("Church");
   const seller = operator();
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
@@ -120,6 +122,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
               <Link href="/parteneri">{tp("menu")}</Link>
               <Link href="/contact">{tc("menu")}</Link>
+              <Link href="/istoria-umanitatii">{th("humanity")}</Link>
+              <Link href="/genealogii-vechi">{th("genealogies")}</Link>
+              <Link href="/libertatea-de-a-crede">{th("label")}</Link>
+              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Facebook</a>
               {/* Cine vinde (cerut de lege pentru comerțul online): datele PFA-ului din src/lib/legal.ts și legătura ANPC – SAL. */}
               <span className="site-seller">{seller.name} · CUI {seller.cui} · {seller.regCom} · <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer">ANPC – SAL</a></span>
             </footer>

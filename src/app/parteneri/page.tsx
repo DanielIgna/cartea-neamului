@@ -1,3 +1,4 @@
+import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { db } from "@/db";
@@ -7,7 +8,7 @@ import { getT } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("PartnersPage");
-  return { title: t("metaTitle"), description: t("metaDescription"), alternates: { canonical: "/parteneri" } };
+  return publicPageMetadata({ path: "/parteneri", title: t("metaTitle"), description: t("metaDescription") });
 }
 
 /**
@@ -23,7 +24,7 @@ export default async function PartnersPage() {
   return (
     <section className="stack partners" style={{ maxWidth: 760, margin: "0 auto" }}>
       <div className="card">
-        <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
+        <h1 className="section-label" style={{ marginTop: 0 }}>{t("label")}</h1>
         <h2>{t("title")}</h2>
         <p>{t("lead")}</p>
       </div>

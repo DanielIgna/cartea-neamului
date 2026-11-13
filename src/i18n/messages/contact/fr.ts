@@ -14,6 +14,7 @@ export const frContact: ContactCatalog = {
     "waTitle": "Sur WhatsApp",
     "waText": "Le plus rapide : ouvrez la conversation et écrivez-nous directement.",
     "waCta": "Écrivez-nous sur WhatsApp",
+    "facebook": "Retrouvez-nous aussi sur <link>Facebook</link>, où nous publions les nouveautés.",
     "waGreeting": "Bonjour ! Je vous écris depuis le Livre de la Famille.",
     "waFloat": "Écrivez-nous sur WhatsApp",
     "mailTitle": "Par e-mail",

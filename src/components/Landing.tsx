@@ -1,10 +1,12 @@
+import JsonLd from "@/components/JsonLd";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { whatsappUrl } from "@/lib/contact";
 import { getAppName, getT } from "@/i18n/server";
 import Image from "next/image";
 import { db } from "@/db";
-import { homeImages, type HomeImage } from "@/lib/home-images";
+import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
 
 /**
@@ -74,25 +76,29 @@ const STATS = [["10", "stat1"], ["9", "stat2"], ["1", "stat3"], ["1", "stat4"]] 
 /* O fotografie din public/home, servită de Next la mărimea potrivită ecranului (WebP/AVIF). */
 /* O fotografie a primei pagini: cea inițială o servește Next la mărimea ecranului (WebP/AVIF); cea pusă de admin vine
    gata micșorată din /api/poza-acasa (vezi src/lib/home-images.ts și Admin → Poze prima pagină). */
-const Photo = ({ img, sizes, priority = false, className }: { img: HomeImage; sizes: string; priority?: boolean; className?: string }) => (
-  <Image src={img.src} alt="" fill sizes={sizes} priority={priority} unoptimized={img.custom} className={className ?? "lp-img"} />
+/** O poză a primei pagini; `alt` gol doar la cele de fundal, puse sub text. */
+const Photo = ({ img, sizes, alt = "", quality, priority = false, className }: { img: HomeImage; sizes: string; alt?: string; quality?: number; priority?: boolean; className?: string }) => (
+  <Image src={img.src} alt={alt} fill sizes={sizes} quality={quality} priority={priority} unoptimized={img.custom} className={className ?? "lp-img"} />
 );
 const GENS = [["gen1", "50% 30%"], ["gen2", "50% 40%"], ["gen3", "50% 35%"], ["gen4", "50% 45%"]] as const;
 
+/** Pozele alese în Admin se schimbă rar: le ținem în cache 10 minute, iar orice salvare golește cache-ul pe loc. */
+const cachedHomeImages = unstable_cache(() => homeImages(db), ["home-images"], { tags: [HOME_IMAGES_TAG], revalidate: 600 });
+
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, tc, imgs] = await Promise.all([getT("Landing"), getT("ContactPage"), homeImages(db)]);
+  const [t, tc, th, imgs] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), cachedHomeImages()]);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
   const cards = [
     { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
-    { k: "memories", art: <><Photo img={imgs.memories[0]} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
-    { k: "map", art: <Photo img={imgs.map[0]} sizes="(max-width:640px) 100vw, 300px" /> },
-    { k: "book", art: <Photo img={imgs.book[0]} sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "memories", art: <><Photo img={imgs.memories[0]} alt={t("alt.memories")} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
+    { k: "map", art: <Photo img={imgs.map[0]} alt={t("alt.map")} sizes="(max-width:640px) 100vw, 300px" /> },
+    { k: "book", art: <Photo img={imgs.book[0]} alt={t("alt.book")} sizes="(max-width:640px) 100vw, 300px" /> },
   ] as const;
   return (
     <div className="lp">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <JsonLd data={jsonLd} />
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
       {/* Butonul rotund de WhatsApp, în colț, pentru cine vrea să ne scrie (Daniel, 11 noiembrie 2026). */}
       <a className="wa-float" href={whatsappUrl(tc("waGreeting"))} target="_blank" rel="noopener noreferrer" aria-label={tc("waFloat")} title={tc("waFloat")}>
@@ -103,8 +109,8 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       <section className="lp-band lp-banner">
         <BannerSlides imgs={imgs.banner.map(({ src, custom }) => ({ src, custom }))} />
         <div className="lp-banner-panel">
-          <p className="lp-tagline">{t("eyebrow")}</p>
-          <h1 className="lp-name">{await getAppName()}</h1>
+          {/* Un singur H1: „Arborele genealogic al familiei tale” deasupra, apoi numele, ca înainte la vedere. */}
+          <h1 className="lp-h1"><span className="lp-tagline">{t("eyebrow")}</span><span className="lp-name">{await getAppName()}</span></h1>
           {ornament}
           <p className="lp-subtitle">{t.rich("heroTitleRich", { em })}</p>
           {t("brandNote") && <p className="lp-brand">{t("brandNote")}</p>}
@@ -132,7 +138,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
           <div className="lp-gens">
             {GENS.map(([k, pos]) => (
               <figure key={k} className="lp-gen">
-                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo img={imgs[k][0]} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
+                <div className="lp-photo"><div className="lp-photo-in" style={{ ["--pos" as string]: pos }}><Photo img={imgs[k][0]} alt={t(`alt.${k}`)} sizes="(max-width:640px) 90vw, (max-width:1000px) 45vw, 280px" /></div></div>
                 <figcaption><h3>{t(`${k}Title`)}</h3><p>{t(`${k}Text`)}</p></figcaption>
               </figure>
             ))}
@@ -162,7 +168,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
 
       {/* Gândul din spate, peste siluetele unei familii la apus, cu cifrele dedesubt */}
       <section className="lp-band lp-sunset">
-        <Photo img={imgs.sunset[0]} sizes="100vw" className="lp-img lp-sunset-img" />
+        <Photo img={imgs.sunset[0]} sizes="100vw" quality={60} className="lp-img lp-sunset-img" />
         <div className="lp-in lp-quote">
           <span className="lp-quote-mark" aria-hidden="true">“</span>
           <blockquote><p>{t("quote")}</p></blockquote>
@@ -177,7 +183,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
       {/* Cum începi, lângă o masă în familie */}
       <section className="lp-band lp-paper" aria-labelledby="lp-how">
         <div className="lp-in lp-how">
-          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo img={imgs.table[0]} sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
+          <div className="lp-how-photo"><div className="lp-photo"><div className="lp-photo-in"><Photo img={imgs.table[0]} alt={t("alt.table")} sizes="(max-width:1000px) 90vw, 480px" /></div></div></div>
           <div>
             <h2 id="lp-how">{t("howTitle")}</h2>
             <p className="lp-how-text">{t("howText")}</p>
@@ -190,8 +196,31 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         </div>
       </section>
 
+      {/* Ce este un arbore genealogic, cum îți afli strămoșii și, pentru cine vrea, paginile de istorie */}
+      <section className="lp-band lp-light lp-what" aria-labelledby="lp-what">
+        <div className="lp-in lp-what-in">
+          <div>
+            <h2 id="lp-what">{t("whatTitle")}</h2>
+            <p>{t("whatText")}</p>
+          </div>
+          <div>
+            <h2>{t("ancestorsTitle")}</h2>
+            <p>{t("ancestorsText")}</p>
+          </div>
+          <nav className="lp-history" aria-labelledby="lp-history">
+            <h3 id="lp-history">{t("historyTitle")}</h3>
+            <p>{t("historyText")}</p>
+            <ul>
+              <li><Link href="/istoria-umanitatii">{th("humanity")}</Link></li>
+              <li><Link href="/genealogii-vechi">{th("genealogies")}</Link></li>
+              <li><Link href="/libertatea-de-a-crede">{th("label")}</Link></li>
+            </ul>
+          </nav>
+        </div>
+      </section>
+
       <section className="lp-band lp-cta" aria-labelledby="lp-cta">
-        <Photo img={imgs.hands[0]} sizes="100vw" className="lp-img lp-cta-img" />
+        <Photo img={imgs.hands[0]} sizes="100vw" quality={60} className="lp-img lp-cta-img" />
         <div className="lp-in">
           <h2 id="lp-cta">{t("ctaTitle")}</h2>
           {ornament}

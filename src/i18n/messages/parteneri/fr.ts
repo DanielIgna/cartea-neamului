@@ -14,7 +14,7 @@ export const frParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partenaires · Le Livre de la Famille",
+    metaTitle: "Partenaires | Le Livre de la Famille",
     metaDescription: "Les partenaires du Livre de la Famille et ce qu’ils proposent aux familles.",
     label: "Partenaires",
     title: "Les partenaires du Livre de la Famille",
