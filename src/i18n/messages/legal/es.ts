@@ -77,6 +77,7 @@ export const esLegal: LegalCatalog = {
           l3: "<b>Cuánto tiempo:</b> mientras tu consentimiento esté dado. La lista que recibe PropManage la hacemos de nuevo cada vez a partir de los consentimientos actuales, así que, después de retirarlo, tu dirección ya no le llega. Le pedimos que borre tu dirección en cuanto sepa que has retirado tu consentimiento.",
           l4: "<b>Cómo lo retiras:</b> con un clic, en <dataPartners>Mis datos</dataPartners> (el interruptor «Ventajas de los socios»), o con el enlace para darte de baja de cualquier correo que recibas, sin entrar en la cuenta. Retirarlo no cambia nada en tu cuenta ni en tu árbol.",
           l5: "Los enlaces a PropManage en el sitio (en la página Socios, junto a la casa familiar y después de descargar el libro) son simples enlaces: solo indican que vienes del Libro de la Familia, sin ningún dato sobre ti.",
+          l6: "<b>Quién es PropManage:</b> la plataforma propmanage.ro pertenece a la sociedad VINTAGE FURNITURE SRL (CUI 35250247, n.º de registro mercantil J2015003534120, domicilio en Aleea Negoiu nr. 8D, Cluj-Napoca, Rumanía). Tiene el mismo administrador que la empresa individual que gestiona el Libro de la Familia, Daniel Igna, pero es una sociedad distinta: solo recibe el correo de quienes marcan la casilla y responde de él como responsable del tratamiento independiente.",
         },
         dna: {
           h: "La solicitud «Quiero un test de ADN»",

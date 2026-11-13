@@ -77,6 +77,7 @@ export const nlLegal: LegalCatalog = {
           l3: "<b>Hoe lang:</b> zolang je toestemming geldt. De lijst die PropManage krijgt, maken we elke keer opnieuw uit de huidige toestemmingen, dus na het intrekken komt je adres er niet meer. We vragen PropManage je adres te verwijderen zodra het hoort dat je je toestemming hebt ingetrokken.",
           l4: "<b>Hoe je haar intrekt:</b> met één klik, in <dataPartners>Mijn gegevens</dataPartners> (de schakelaar ‘Voordelen van partners’), of via de afmeldlink in elke e-mail die je krijgt, zonder in te loggen. Intrekken verandert niets aan je account of je stamboom.",
           l5: "De links naar PropManage op de site (op de pagina Partners, naast het ouderlijk huis en na het downloaden van het boek) zijn gewone links: ze laten alleen zien dat je van het Familieboek komt, zonder enig gegeven over jou.",
+          l6: "<b>Wie PropManage is:</b> het platform propmanage.ro is van het bedrijf VINTAGE FURNITURE SRL (CUI 35250247, handelsregisternr. J2015003534120, gevestigd te Aleea Negoiu nr. 8D, Cluj-Napoca, Roemenië). Het heeft dezelfde bestuurder als de eenmanszaak achter het Familieboek, Daniel Igna, maar het is een apart bedrijf: het krijgt alleen het e-mailadres van wie het vakje aanvinkt en is daarvoor verantwoordelijk als aparte verwerkingsverantwoordelijke.",
         },
         dna: {
           h: "De vraag ‘Ik wil een DNA-test’",

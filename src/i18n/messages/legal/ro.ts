@@ -87,6 +87,7 @@ export const roLegal = {
           l3: "<b>Cât timp:</b> cât timp acordul tău e dat. Lista pe care o primește PropManage o facem din nou de fiecare dată din acordurile de acum, așa că, după ce îl retragi, adresa ta nu mai ajunge la el. Îi cerem să-ți șteargă adresa când află că ți-ai retras acordul.",
           l4: "<b>Cum îl retragi:</b> dintr-un clic, din <dataPartners>Datele mele</dataPartners> (comutatorul „Beneficii de la parteneri”), sau din legătura de dezabonare din orice email primit, fără să intri în cont. Retragerea nu schimbă nimic în contul sau în arborele tău.",
           l5: "Linkurile spre PropManage din site (din pagina Parteneri, de lângă casa bătrânească și de după descărcarea cărții) sunt simple legături: arată doar că vii de la Cartea Neamului, fără vreo dată despre tine.",
+          l6: "<b>Cine e PropManage:</b> platforma propmanage.ro aparține firmei VINTAGE FURNITURE SRL (CUI 35250247, Nr. Reg. Com. J2015003534120, sediul în Aleea Negoiu nr. 8D, Cluj-Napoca, România). Are același administrator ca PFA-ul care ține Cartea Neamului, Daniel Igna, dar e o firmă separată: primește doar adresa de email a celor care bifează și răspunde de ea ca operator separat.",
         },
         // DE VERIFICAT DE AVOCAT: formularul „Vreau un test ADN” (temei, păstrare, fără date genetice).
         dna: {

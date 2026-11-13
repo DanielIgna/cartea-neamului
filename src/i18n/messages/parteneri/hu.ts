@@ -4,7 +4,7 @@ import type { ParteneriCatalog } from "./ro";
 export const huParteneri: ParteneriCatalog = {
   Partners: {
     checkbox: "Szeretnék időnként kedvezményeket kapni az otthonomhoz a PropManage-től, a Család Könyve partnerétől.",
-    checkboxHint: "Nem kötelező. A családfa nélküle is ugyanúgy működik. Csak az e-mail-címedet adjuk át, és bármikor leiratkozhatsz egy kattintással.",
+    checkboxHint: "Nem kötelező. A családfa nélküle is ugyanúgy működik. Csak az e-mail-címedet adjuk át, és bármikor leiratkozhatsz egy kattintással. A PropManage a VINTAGE FURNITURE SRL cégé, amelynek ugyanaz az ügyvezetője, mint A Család Könyvének.",
     menu: "Partnerek",
     bookCard: {
       label: "Egyik partnerünk",
