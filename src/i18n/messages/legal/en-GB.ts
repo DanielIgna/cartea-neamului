@@ -4,7 +4,7 @@ export const enGBLegal: LegalCatalog = {
   Legal: {
     updated: "Last changed: {date}",
     contactTitle: "Contact",
-    contactLine: "{name}, registered office {address} (tax ID CUI {cui}, Trade Register no. {regCom}, EUID {euid}). Email: <mail>{email}</mail>.",
+    contactLine: "{name}, registered office {address} (tax ID CUI {cui}, Trade Register no. {regCom}, EUID {euid}). Email: <mail>{email}</mail>. Phone and WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Privacy policy",
       metaDescription: "What data we keep, why, who sees it and how you download or delete it.",
@@ -33,6 +33,7 @@ export const enGBLegal: LegalCatalog = {
           l10: "<b>The old family home:</b> what you write about the family’s house on a person’s page (the address or village, who built it, the year, photos and its story). Only the people you choose can see it, just as with memories.",
           l13: "<b>Photos proposed for the home page</b>, only if you choose to propose one from the family album: a copy of the photo, the line written under it, who proposed it, when, in which language and the version of the consent you ticked. Until it is approved, only we can see it.",
           l14: "<b>When you write to us</b> from the Contact page: your name, your email address (so that we can reply) and your message. We do not keep them on the site: they go straight to our email inbox. If you write to us on WhatsApp, we see your phone number, your WhatsApp name and what you write.",
+          l15: "<b>Payments and gifts:</b> what you paid, how much, when and which plan you chose (without your card details, which we never see), your consent to start immediately, a gifted year (the recipient’s name and your note, if you write them), the extra days you receive when you bring a relative who pays, and the emails reminding you that your year is ending.",
           l11: "<b>In your browser</b>, besides the cookies listed at the end of this page, a few choices kept only on your phone or computer, so that you do not have to make them every time: the family lines you chose to see, what you last chose in “The history of humanity”, “Ancient genealogies” and “The freedom to believe”, the records you marked as not being duplicates, whether you hid the card for installing the app and whether you have already seen the partner card shown after downloading the book. If you said “OK” to measuring time, also the last minute counted, at most one hour’s worth, so that it reaches us even when you close the page in a hurry.",
           l12: "<b>Technical logs</b> of the server (IP address, page requested, time), kept for a short while so that we can fix errors.",
         },
@@ -44,6 +45,7 @@ export const enGBLegal: LegalCatalog = {
           l4: "For living relatives you add to a tree, the legal basis is the family’s legitimate interest in keeping its history, with care: family trees are private, and living people are visible only in their own tree, never to other families. Anyone who appears in a tree can ask us to correct or delete their data.",
           l5: "Based on your consent, which you can withdraw at any time: the “Faith” chapter (Art. 9(2)(a)), stories recorded “at the grandparents’”, “From the same places”, how much you use the site, benefits from partners and photos proposed for the home page (Art. 6(1)(a)). Withdrawing consent does not change what was done before with the consent you gave.",
           l6: "To reply when you write to us (from the Contact page, by email or on WhatsApp). The legal basis is our legitimate interest in answering those who contact us (Art. 6(1)(f)) or, when you write about your account, the contract between us (point (b)).",
+          l7: "To comply with the law: invoices, accounting records and proof of your consent to receive digital content immediately. The legal basis is a legal obligation (Art. 6(1)(c) GDPR).",
         },
         who: {
           h: "Who sees the data",
@@ -54,6 +56,7 @@ export const enGBLegal: LegalCatalog = {
           l7: "<b>The photos on the home page</b> can be seen by anyone who opens the site: they are photos chosen by us and photos proposed by you, once we approve them. You can withdraw the ones you proposed at any time, from “A life on film” on your page in the family tree; they then leave the home page and their copy is deleted.",
           l5: "<b>We</b> see in the admin panel only what we need to keep the site running: lists and figures about accounts (name, email, when and from what kind of device they signed in), about family trees (name, how many people and files they have), for each account how much it has added (how many people, memories, photos, invitations and messages) and, for those who said “OK”, how long they spend in each part of the site. We also see the history of changes to the records in family trees (who changed which names, dates or places, and when), so that we can undo a deletion or a mistake and stop someone who is damaging a tree, and the photos proposed for the home page, so that we can approve them. There we can also keep a short note about an account, for example that it stays free. We do not read memories or messages, and we count nothing from the “Faith” chapter; we look at them only if you ask us for help or if the law requires it.",
           l6: "We do not sell data, we show no adverts and we give it to no one else apart from the providers below, our partner PropManage (only the email address of those who ticked the box, as described below) and the authorities, when the law requires it.",
+          l8: "<b>Our accountant</b> and <b>ANAF</b> (the Romanian tax authority) see only the details on invoices: your name, email, what you paid, how much and when, as tax law requires.",
         },
         vendors: {
           h: "The providers who help us",
@@ -63,7 +66,8 @@ export const enGBLegal: LegalCatalog = {
           l3: "<b>Google</b>, only if you choose “Continue with Google”, confirms your identity when you sign in.",
           l4: "<b>OpenStreetMap</b> (the OpenStreetMap Foundation, United Kingdom) provides the map tiles in “Family map”. Your browser requests them directly from them, so they see the IP address you request them from.",
           l5: "<b>FormSubmit</b> (formsubmit.co, USA) delivers to our email the messages sent from the Contact page. <b>WhatsApp</b> (WhatsApp Ireland Ltd., part of the Meta group), only if you choose to write to us there, under its own privacy rules. <b>Stripe</b> (Stripe Payments Europe Ltd., Ireland), only if you pay for something, takes the card payment on its own page; we never see the card details, only what was paid, how much and when (kept for accounting as long as the law requires).",
-          p2: "For transfers outside the European Union, these providers use the standard contractual clauses approved by the European Commission or the EU–US Data Privacy Framework. We send nothing about living people to artificial intelligence services.",
+          l6: "<b>Resend</b> (Resend Inc., USA) sends the email reminding you, 14 days ahead, that your paid year is ending; it receives only your email address and the text of the message.",
+          p2: "Vercel, Neon, Google, Stripe and Resend work under data processing agreements; for transfers outside the European Union they rely on the EU–US Data Privacy Framework where they are certified and on the standard contractual clauses approved by the European Commission. FormSubmit has no such agreement with us: your message passes through its servers in the USA only to reach us, because you asked us to send it; if you do not want that, write to us directly at <mail>{email}</mail>.",
         },
         partner: {
           h: "Our partner, PropManage",
@@ -77,22 +81,27 @@ export const enGBLegal: LegalCatalog = {
         dna: {
           h: "The “I want a DNA test” request",
           p1: "On the <res>Free genealogy resources</res> page you can ask us about DNA tests. We keep only what you write in the form (name, email, phone if you give it, town and message) and the date you gave your consent, only to answer you; the legal basis is your consent. This is not genetic data: we do not receive, store or pass on DNA files, results or matches. We do not send your request to laboratories and receive no commission. Only the person running the site sees the request; we delete it when you ask us, at <mail>{email}</mail>, or once it is no longer needed.",
+          p2: "We keep the request for no more than 12 months after we reply, and then delete it.",
         },
         keep: {
           h: "How long we keep data",
           p1: "For as long as you have an account. What you delete disappears from the site at once, and backup copies of the database are overwritten automatically within 30 days at most. When you delete your account, everything that is yours goes: your account, the memories in your chest, your messages, what you wrote to others and your consents. Family trees remain the family’s: a tree with other members passes to one of them, and one in which you are alone is deleted completely. Your record in family trees remains, so that the tree is not broken, without the link to your account; if you wish, it is also emptied of your data. We keep how much you use the site for at most 13 months; if you say “I no longer want this”, it is deleted at once.",
           p2: "We keep photos proposed for the home page until you withdraw them or delete your account; one we do not choose stays only with us and is not shown publicly. We keep messages received from the Contact page or on WhatsApp for as long as we need to deal with what you wrote; if you want us to delete them sooner, just tell us.",
+          p3: "We keep payments, invoices and the consent to start immediately for as long as accounting law requires (Romanian Law no. 82/1991), usually up to 10 years, even if you delete your account; they are then no longer linked to the account. Technical server logs are deleted automatically within 30 days at most.",
         },
         rights: {
           h: "Your rights",
           p1: "You can find out what data we hold about you, correct it, delete it, take it with you, ask us to stop using it in a certain way and withdraw your consent at any time. You can do much of this yourself, on the <data>My data</data> page: download everything linked to your account, withdraw your consent for “Faith” or for benefits from partners, stop the measuring of time spent on the site or delete your account. For everything else, write to us at <mail>{email}</mail>; we reply within one month at most.",
           p2: "If you believe we have not respected your rights, you can complain to the Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP), B-dul G-ral. Gheorghe Magheru nr. 28-30, sector 1, București, <anspdcp>www.dataprotection.ro</anspdcp>.",
+          p3: "We make no automated decisions about you with legal effects and we do no profiling. You can object at any time to processing based on legitimate interest (Art. 21 GDPR); we then stop, unless we have stronger legitimate grounds or need the data to defend a legal claim.",
         },
         kids: {
           h: "Children, the living and those who have passed away",
           l1: "Accounts are for people aged at least {minAge}. Children can be added to the family tree by their parents.",
           l2: "Anyone added to a tree as living can ask the owner of the tree or us to correct, hide or delete their data.",
           l3: "Data protection law does not apply to those who have passed away, but we keep their memory with the same respect.",
+          l4: "We do not write individually to everyone added to a tree by their relatives (that would take disproportionate effort, Art. 14(5)(b) GDPR); this is why trees are private, and those people can always find out what is written about them, ask for corrections or deletion, and object.",
+          l5: "For living children, only what is needed is added (usually the name and the year of birth). Parents can ask the tree owner or us at any time to remove the child’s photos or details.",
         },
         cookies: {
           h: "Cookies",
@@ -104,6 +113,7 @@ export const enGBLegal: LegalCatalog = {
           l6: "<code>cn-cookie-uri</code>, after you press “Got it” on the notice about cookies, so that you do not see it again, kept for a year;",
           l4: "<code>cn-parteneri</code>, only if you tick the benefits from partners when creating your account: it remembers the tick for at most 30 minutes, just long enough for your choice to reach your new account (also when you create it with Google), and then it disappears.",
           p2: "We use no advertising, analytics or social media cookies, and the site loads no scripts from other companies. The only things your browser requests directly from others are the map tiles from OpenStreetMap and, if you signed in with Google, your Google account picture.",
+          p3: "When you pay, the payment page is hosted by Stripe on its own address; there Stripe sets its own cookies, for example against fraud, under its own privacy policy.",
         },
         safety: {
           h: "Security",
@@ -130,6 +140,7 @@ export const enGBLegal: LegalCatalog = {
           l1: "Accounts are for people aged at least {minAge}. Children can be added to the family tree by their parents.",
           l2: "An account belongs to one person only. Keep your password to yourself; what is done from your account is your responsibility.",
           l3: "The demo account has a public password, so it belongs to everyone: do not put anything about your family in it.",
+          l4: "Only people aged 18 or over may make payments.",
         },
         content: {
           h: "2. What you add to the site",
@@ -138,6 +149,7 @@ export const enGBLegal: LegalCatalog = {
           l3: "Do not add anything illegal, offensive or that incites hatred, nor other people’s data without the right to do so.",
           l4: "We may hide or delete anything that breaks these terms or the law, and we will tell you why.",
           l5: "When you propose a photo for the home page, you confirm that you are in it or that you have the consent of everyone in it (for children, of their parents), and you allow us to show it publicly on the home page for as long as you do not withdraw it. We may choose not to show it or remove it at any time.",
+          l6: "For living children, add only what is needed (usually the name and the year of birth). If a parent asks you to remove their child’s photos or details, you remove them.",
         },
         owner: {
           h: "3. Who owns what you add",
@@ -163,6 +175,7 @@ export const enGBLegal: LegalCatalog = {
           l8: "<b>The family book as a PDF</b>, when not included in your plan, costs {bookLei} lei (€{bookEur}) per tree. The preview is free; after payment you can rebuild and download it as often as you like for 12 months.",
           l9: "<b>The printed book</b> is made to order: you ask us for a quote from the book page, and the price depends on the number of pages, the format, the cover and the number of copies. With the Premium plan you get {premiumPrint}% off the quoted price.",
           p2: "The price shown at checkout is the final price. You pay by card, through Stripe; we never see your card details. The seller is {name}, tax ID (CUI) {cui}, Trade Register no. {regCom}, registered office {address}.",
+          p3: "<b>How the contract is concluded:</b> you choose the plan or the book on the Payment page, see the final price, tick the consent to start immediately and press the payment button; you pay on the Stripe page, and the contract is concluded once the payment is received. Until you pay you can go back and correct your choice at any time. The confirmation, with the invoice and your consent, arrives by email. The contract is concluded in Romanian (the other languages are translations); these Terms stay on the site and you can save or print them at any time.",
         },
         withdrawal: {
           h: "6. Right of withdrawal",
@@ -170,6 +183,7 @@ export const enGBLegal: LegalCatalog = {
           l1: "<b>A year in the Family Book and the PDF book</b> are digital content that you receive immediately after payment. Before paying, you tick that you want to start immediately and that you know you thereby lose the right of withdrawal (art. 16(m) of GEO no. 34/2014). You cannot pay without ticking it. We keep your consent, with its date, and you receive the payment confirmation by email.",
           l2: "<b>The printed book</b> is made from your data, specially for you, so there is no right of withdrawal for it either (art. 16(c) of GEO no. 34/2014). If it arrives damaged or wrong through our fault, we remake it or refund you.",
           l3: "If something you paid for doesn’t work as promised, write to us at <mail>{email}</mail> and we will put it right or refund you. Your statutory rights as a consumer remain.",
+          l4: "<b>Legal guarantee of conformity:</b> what you pay for must work as promised for as long as your paid year lasts (the PDF book, for 12 months). If it does not, you are entitled to have it brought into conformity free of charge and, if we cannot, to a price reduction or to end the contract with a refund (Romanian Emergency Ordinance no. 141/2021, Directive (EU) 2019/770).",
           p2: "You can write to us with a complaint at any time. If we cannot agree, you can turn to the Romanian National Authority for Consumer Protection (<anpc>ANPC</anpc>) or to an alternative dispute resolution body (<sal>SAL</sal>).",
         },
         reliability: {
@@ -187,10 +201,19 @@ export const enGBLegal: LegalCatalog = {
         law: {
           h: "10. Governing law",
           p1: "These terms are governed by Romanian law. We will first try to settle any disagreement amicably; if that is not possible, it will be decided by the courts of Romania.",
+          p2: "If you are a consumer living in another country, the choice of Romanian law does not deprive you of the protection given by the mandatory rules of your country, and you may also bring proceedings in the courts where you live.",
         },
         changes: {
           h: "11. Changes",
           p1: "If we change anything important in these terms, we will let you know on the site before the change takes effect.",
+          p2: "A year you have already paid for keeps the price and the limits you paid for. If you do not agree with a change, you can download your data and close your account before it takes effect.",
+        },
+        dsa: {
+          h: "12. Illegal content and point of contact",
+          p1: "The address <mail>{email}</mail> is our single point of contact for people, for the authorities of EU Member States and for the European Commission (Regulation (EU) 2022/2065, the Digital Services Act). You can write to us in Romanian or English.",
+          l1: "If you see something on the site that you believe is illegal (for example a photo posted without permission, or details about you written without your consent), write to that address with: where it is (the link, or the names of the tree and the profile), why you believe it is illegal, your name and email (except where the law lets you stay anonymous) and a statement that you are writing in good faith.",
+          l2: "We confirm receipt, look at it carefully and without delay, and tell you what we decided.",
+          l3: "If we hide or delete something you posted, we tell you why and on what grounds. You can contest the decision by writing to the same address, and a person will review it; you can also go to court or complain to ANCOM, Romania’s Digital Services Coordinator.",
         },
       },
     },

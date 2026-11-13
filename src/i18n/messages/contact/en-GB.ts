@@ -25,6 +25,7 @@ export const enGBContact: ContactCatalog = {
     "email": "Your email address",
     "message": "Message",
     "messagePlaceholder": "Write what you’d like to tell us…",
+    "privacyNote": "Your message reaches our email through FormSubmit (USA). If you would rather not, write to us on WhatsApp or at the address in the <privacy>Privacy policy</privacy>.",
     "send": "Send message",
     "sending": "Sending…",
     "sent": "Thank you! Your message is on its way and we’ll reply by email.",

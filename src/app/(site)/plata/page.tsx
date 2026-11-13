@@ -11,6 +11,7 @@ import { LIMIT_KEYS, TIERS, tierBook, tierLimits, tierPrint, tierPrice, trialLim
 import { getLocale, getT } from "@/i18n/server";
 import { giftsBy } from "@/lib/extra";
 import { siteOrigin } from "@/lib/site";
+import { contactPhone } from "@/lib/contact";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
@@ -195,7 +196,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
       )}
 
       <p className="muted" style={{ fontSize: 14 }}>
-        {t("secure")} {t("seller", { name: op.name, cui: op.cui })} <Link href="/termeni">{t("terms")}</Link>
+        {t("secure")} {t("seller", { name: op.name, cui: op.cui, address: op.address, email: op.email, phone: contactPhone() })} <Link href="/termeni">{t("terms")}</Link>
       </p>
     </section>
   );

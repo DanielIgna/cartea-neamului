@@ -25,6 +25,7 @@ export const itContact: ContactCatalog = {
     "email": "Il tuo indirizzo email",
     "message": "Messaggio",
     "messagePlaceholder": "Scrivi qui cosa vuoi dirci…",
+    "privacyNote": "Il tuo messaggio ci arriva via email tramite FormSubmit (USA). Se preferisci di no, scrivici su WhatsApp o all’indirizzo indicato nell’<privacy>Informativa sulla privacy</privacy>.",
     "send": "Invia il messaggio",
     "sending": "Invio in corso…",
     "sent": "Grazie! Il messaggio è partito e ti risponderemo via email.",
