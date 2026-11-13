@@ -75,7 +75,7 @@ export default async function AdminControl() {
           Anul nu se reînnoiește singur. Cei al căror an plătit se termină în următoarele {count(s.reminderDays, "zile")} și n-au primit încă aducerea
           aminte. {mailReady
             ? "Emailul pleacă singur, o dată pe zi, prin serviciul de email pus în Vercel."
-            : "Emailul nu pleacă singur până nu pui un serviciu de email (RESEND_API_KEY, MAIL_FROM și CRON_SECRET în Vercel, plus o rulare zilnică a adresei /api/cron/aminteste-plata). Până atunci, scrie-le tu cu butonul de lângă nume."}
+            : "Emailul nu pleacă singur până nu pui un serviciu de email (RESEND_API_KEY, EMAIL_FROM și CRON_SECRET în Vercel, plus o rulare zilnică a adresei /api/cron/aminteste-plata). Până atunci, scrie-le tu cu butonul de lângă nume."}
         </p>
         {due.length ? (
           <ul>
