@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
+import { sendKeepMail } from "@/lib/pastrare";
 
 /**
  * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
@@ -13,6 +14,9 @@ export async function POST(req: Request) {
   let event: unknown;
   try { event = JSON.parse(body); } catch { return new Response("JSON greșit", { status: 400 }); }
   const paid = paidSession(event);
-  if (paid) await applyPayment(db, paid);
+  if (paid && (await applyPayment(db, paid)) && paid.kind === "pastrare" && paid.userId) {
+    // O dată pe an, cu fiecare „Păstrare” plătită: legătura spre arhiva completă, pe email. O greșeală aici nu strică plata.
+    await sendKeepMail(db, paid.userId).catch((e) => console.error("sendKeepMail", e));
+  }
   return Response.json({ ok: true });
 }

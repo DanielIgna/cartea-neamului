@@ -77,6 +77,12 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
         {field("referralDays", "Zile în plus pentru o rudă adusă", "când o rudă invitată își deschide arborele și plătește primul an (0 = fără)")}
         {field("reminderDays", "Aducerea aminte înainte de expirare, zile", "o dată pe an, pe email (0 = fără)")}
       </div>
+      <div className="limits-row">
+        {field("keepLei", "Păstrare, lei pe an", "după anul plătit: familia vede și ascultă tot online, fără adăugări (0 = nu se oferă)", 0.5)}
+        {field("keepEur", "Păstrare, € pe an", "", 0.5)}
+        {field("keepBookLei", "Păstrare + cartea PDF, lei", "pachetul la final de an (0 = fără pachet)", 0.5)}
+        {field("keepBookEur", "Păstrare + cartea PDF, €", "", 0.5)}
+      </div>
       <label className="check">
         <input type="checkbox" name="on" defaultChecked={value.on} />{" "}
         <b>Pornește plățile în site.</b> Fiecare om primește zilele gratuite de azi (sau de când își face contul); după ele, arborii se pot doar vedea,

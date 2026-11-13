@@ -60,6 +60,7 @@ export function PlanPill({ plan, access }: { plan: Plan; access?: Access | null 
   if (plan === "familie" && !access) return <span className="pill ok">plătit</span>;
   if (access?.kind === "beta") return <span className="pill ok">primul an gratuit, până la {day(access.until.toISOString())}</span>;
   if (access?.kind === "proba") return <span className="pill">{access.daysLeft === 1 ? "o zi gratuită" : `${access.daysLeft} zile gratuite`}</span>;
+  if (access?.kind === "expirat" && access.keptUntil) return <span className="pill">păstrare</span>;
   if (access?.kind === "expirat") return <span className="pill warn">doar citire</span>;
   return <span className="muted">gratuit</span>;
 }

@@ -48,7 +48,7 @@ describe("planurile", () => {
     const beta = { ...on, betaDays: 365 };
     const old = { createdAt: d("2026-11-01"), plan: null, paidUntil: null };
     expect(accessFor(old, beta, d("2027-06-01"))).toEqual({ kind: "beta", until: d("2027-12-01T00:00:00Z") });
-    expect(accessFor(old, beta, d("2027-12-02"))).toEqual({ kind: "expirat", since: d("2027-12-01T00:00:00Z") });
+    expect(accessFor(old, beta, d("2027-12-02"))).toMatchObject({ kind: "expirat", since: d("2027-12-01T00:00:00Z") });
     expect(accessFor({ createdAt: d("2026-12-05"), plan: null, paidUntil: null }, beta, d("2026-12-06"))).toMatchObject({ kind: "proba" });
   });
   it("„gratuit mereu”, contul demo și anul plătit trec peste zilele gratuite; după anul plătit, doar citire", () => {
@@ -57,7 +57,7 @@ describe("planurile", () => {
     expect(accessFor({ createdAt: d("2026-01-01"), plan: null, paidUntil: null, exempt: true }, on, now)).toEqual({ kind: "mereu" });
     expect(accessFor({ createdAt: d("2026-01-01"), plan: "gratuit", paidUntil: d("2027-12-01") }, on, now)).toMatchObject({ kind: "platit" });
     expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: null }, on, now)).toEqual({ kind: "platit", until: null, tier: "basic" });
-    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: d("2027-02-01") }, on, now)).toEqual({ kind: "expirat", since: d("2027-02-01") });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: d("2027-02-01") }, on, now)).toMatchObject({ kind: "expirat", since: d("2027-02-01") });
   });
   it("banii: cel cu arbore plătește prețul întreg, ruda invitată prețul ei; „gratuit mereu” niciodată", () => {
     const t = { ...on, invitePriceLei: 30 };

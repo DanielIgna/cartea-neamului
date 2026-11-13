@@ -18,9 +18,12 @@ import type { Db } from "@/db";
 import { accountPlan, gift, payment, referralBonus, tree, treeMember, user } from "@/db/schema";
 import { isTier, planSettings, tierBook, tierOf, tierPrice, tierRank, type Access, type PlanSettings, type Tier } from "./plans";
 
-/** „an” (un an pe un plan), „carte” (cartea PDF a unui arbore) și „cadou” (un an dăruit altcuiva, vezi src/lib/extra.ts). */
-export type PayKind = "an" | "carte" | "cadou";
-export const isPayKind = (v: unknown): v is PayKind => v === "an" || v === "carte" || v === "cadou";
+/**
+ * „an” (un an pe un plan), „carte” (cartea PDF a unui arbore), „cadou” (un an dăruit altcuiva, vezi src/lib/extra.ts) și
+ * „pastrare” (după anul plătit: familia vede și ascultă tot online un an, fără adăugări; cu `extra: "carte"`, și cartea PDF).
+ */
+export type PayKind = "an" | "carte" | "cadou" | "pastrare";
+export const isPayKind = (v: unknown): v is PayKind => v === "an" || v === "carte" || v === "cadou" || v === "pastrare";
 const DAY = 86_400_000;
 export const YEAR_DAYS = 365;
 
@@ -37,6 +40,7 @@ export function money(v: number, locale: string) {
 export function priceFor(kind: PayKind, locale: string, ownsTree: boolean, s: PlanSettings, tier: Tier = "basic") {
   const lei = locale === "ro";
   const p = tierPrice(tier, ownsTree, s);
+  if (kind === "pastrare") return money(lei ? s.keepLei : s.keepEur, locale);
   return money(kind === "carte" ? (lei ? s.bookLei : s.bookEur) : (lei ? p.lei : p.eur), locale);
 }
 
@@ -154,6 +158,7 @@ export function paidSession(event: unknown): PaidSession | null {
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
   const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
   if (md.kind === "cadou") return { ...base, tier: isTier(md.tier) ? md.tier : "familie", forName: md.forName || null, note: md.note || null };
+  if (md.kind === "pastrare") return md.extra === "carte" ? { ...base, extra: "carte" as const } : base;
   if (md.kind !== "an") return base;
   const year = { ...base, tier: isTier(md.tier) ? md.tier : "basic", upgradeFrom: isTier(md.upgradeFrom) ? md.upgradeFrom : null };
   return md.extra === "carte" ? { ...year, extra: "carte" as const } : year;
@@ -185,6 +190,7 @@ export async function applyPayment(db: Db, paid: PaidSession, now = new Date()):
       await referralOnPayment(tx as unknown as Db, p.userId, now);
     }
     if (p.kind === "cadou") await createGift(tx as unknown as Db, p, now);
+    if (p.kind === "pastrare" && p.userId) await setKeep(tx as unknown as Db, p, now);
     return true;
   });
 }
@@ -223,6 +229,23 @@ export async function referralOnPayment(db: Db, userId: string, now: Date) {
     await db.update(accountPlan).set({ paidUntil: new Date(cur.paidUntil.getTime() + s.referralDays * DAY), updatedAt: now }).where(eq(accountPlan.userId, m.by));
     await db.update(referralBonus).set({ appliedAt: now }).where(eq(referralBonus.referredId, userId));
   }
+}
+
+/**
+ * „Păstrarea” plătită: un an de azi sau de la sfârșitul celei în curs. Cu pachetul „Păstrare + carte”, cartea PDF a arborelui
+ * ales se trece ca plătită (suma 0, moneda „pachet”), 12 luni, ca o carte cumpărată.
+ */
+export async function setKeep(db: Db, p: PaidSession, now: Date) {
+  const [cur] = await db.select({ keepUntil: accountPlan.keepUntil }).from(accountPlan).where(eq(accountPlan.userId, p.userId));
+  const from = cur?.keepUntil && cur.keepUntil > now ? cur.keepUntil : now;
+  const until = new Date(from.getTime() + YEAR_DAYS * DAY);
+  await db.insert(accountPlan).values({ userId: p.userId, plan: "gratuit", keepUntil: until, updatedAt: now })
+    .onConflictDoUpdate({ target: accountPlan.userId, set: { keepUntil: until, updatedAt: now } });
+  if (p.extra === "carte" && p.treeId) {
+    await db.insert(payment).values({ id: `${p.id}_carte`, userId: p.userId, kind: "carte", treeId: p.treeId, amount: 0, currency: "pachet", createdAt: now })
+      .onConflictDoNothing();
+  }
+  return until;
 }
 
 /** Anul dăruit, plătit: se face codul din legătura pe care cel care a plătit o trimite celui care îl primește. */

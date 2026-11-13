@@ -122,6 +122,7 @@ export const itDatele: DateleCatalog = {
     noDocument: "Il documento non esiste.",
     noFile: "Il documento non ha un file allegato.",
     noStorage: "L’archivio dei file non è configurato.",
+    mediaKept: "Questo file si apre per intero finché il titolare dell’albero ha un anno pagato o la «Conservazione». Chi l’ha caricato può sempre scaricarlo.",
     noTree: "L’albero non esiste.",
     notFound: "La pagina non esiste.",
   },

@@ -132,6 +132,7 @@ const ADDITIVE = [
   sql`CREATE TABLE IF NOT EXISTS "dna_lab" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "city" text, "url" text NOT NULL, "price_note" text,
     "position" integer DEFAULT 0 NOT NULL, "visible" boolean DEFAULT true NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "keep_until" timestamp`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

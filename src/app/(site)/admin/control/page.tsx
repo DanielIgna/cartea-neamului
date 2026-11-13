@@ -54,6 +54,7 @@ export default async function AdminControl() {
           <Stat label="Gratuit mereu" value={num(ov.counts.mereu)} />
           <Stat label="Primul an gratuit" value={num(ov.counts.beta)} hint="aveau cont înainte de pornire" />
           <Stat label="Plătit" value={num(ov.counts.platit)} hint={`≈ ${lei(ov.revenue.leiYearNow)} pe an · Basic ${ov.counts.basic}, Familie ${ov.counts.familie}, Premium ${ov.counts.premium}`} />
+          <Stat label="Păstrare" value={num(ov.counts.pastrare)} hint="după anul plătit: văd tot, fără adăugări" />
           <Stat label="În zilele gratuite" value={num(ov.counts.proba)} />
           <Stat label="Doar citire" value={num(ov.counts.expirat)} hint="zilele gratuite s-au terminat" tone={ov.counts.expirat ? "warn" : undefined} />
           <Stat label="Venit posibil pe an" value={lei(ov.revenue.leiYearPossible)} hint={`dacă plătesc și cei ${ov.revenue.wouldPay} în probă sau doar citire`} />

@@ -19,6 +19,8 @@ import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
+import KeepNotice, { KEEP_NOTICE_COOKIE } from "@/components/KeepNotice";
+import { planSettings } from "@/lib/plans";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
@@ -52,9 +54,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       : null,
     // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
     me && !isDemo(me.email) ? consentState(db, me.id, "usage").catch(() => null) : null,
-    cookies().then((c) => ({ theme: parseTheme(c.get(THEME_COOKIE)?.value), cookieSeen: c.has(COOKIE_NOTICE_COOKIE) })),
+    cookies().then((c) => ({ theme: parseTheme(c.get(THEME_COOKIE)?.value), cookieSeen: c.has(COOKIE_NOTICE_COOKIE), keepSeen: c.has(KEEP_NOTICE_COOKIE) })),
   ]);
-  const { theme, cookieSeen } = prefs;
+  const { theme, cookieSeen, keepSeen } = prefs;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
@@ -84,6 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
               && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
+            {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <SiteFooter signedIn={!!me} />
@@ -92,4 +95,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </body>
     </html>
   );
+}
+
+/**
+ * Anunțul despre „Păstrare” (2026-11-13), o singură dată, doar pentru cei care aveau deja cont și doar când plățile sunt pornite.
+ * Nu vine peste celelalte anunțuri: așteaptă pagina următoare.
+ */
+async function keepNotice(createdAt: Date, locale: string) {
+  if (createdAt >= new Date("2026-11-14T00:00:00Z")) return null;
+  const s = await planSettings(db).catch(() => null);
+  const price = s && (locale === "ro" ? s.keepLei : s.keepEur);
+  if (!s?.on || !price) return null;
+  const [tk, tp] = await Promise.all([getT("Keep"), getT("Plata")]);
+  return <KeepNotice lead={tk("noticeLead")} text={tk("notice", { price: locale === "ro" ? `${price} lei` : `${price} €` })} more={tk("noticeMore")} terms={tp("terms")} ok={tk("noticeOk")} />;
 }
