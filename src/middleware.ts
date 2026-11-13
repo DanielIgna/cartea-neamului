@@ -39,6 +39,6 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie", "/cadou-de-sarbatori",
     // Secțiunile publice (src/lib/public-sections.ts): hubul și paginile din el.
-    "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug",
+    "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug", "/nume", "/nume/:slug",
     "/pub", "/pub/:path*"],
 };

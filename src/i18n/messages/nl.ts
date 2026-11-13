@@ -33,6 +33,7 @@ export const nl: Catalog = {
     cookies: "Cookies",
     guides: "Genealogiegidsen",
     glossary: "Woordenlijst",
+    surnames: "Achternamen",
     cookieLead: "Alleen strikt noodzakelijke cookies.",
     cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen bezoekersstatistieken, dus we vragen geen toestemming.",
     cookieMore: "Bekijk de lijst",

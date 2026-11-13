@@ -33,6 +33,7 @@ export const hu: Catalog = {
     cookies: "Sütik",
     guides: "Családfakutatási útmutatók",
     glossary: "Szójegyzék",
+    surnames: "Családnevek",
     cookieLead: "Csak feltétlenül szükséges sütik.",
     cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs látogatásszámlálás, ezért nem kérünk hozzájárulást.",
     cookieMore: "A teljes lista",
