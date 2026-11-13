@@ -1,5 +1,5 @@
 import {
-  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date, doublePrecision,
+  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date, doublePrecision, primaryKey,
 } from "drizzle-orm/pg-core";
 
 /* ---------- Conturi (tabelele cerute de Better Auth) ---------- */
@@ -598,4 +598,37 @@ export const pageView = pgTable("page_view", {
 export const visitSalt = pgTable("visit_salt", {
   day: date("day").primaryKey(),
   salt: text("salt").notNull(),
+});
+
+/* ---------- Autonomia (Admin → Autonomie), vezi src/lib/autonomie.ts și migrația 0027 ---------- */
+// Fiecare rulare a unei automatizări: cine a pornit-o (ceasul zilnic, butonul din panou, o aprobare), ce a văzut, ce a făcut
+// și ce așteaptă aprobarea omului. Nimic din ce atinge bani, conturi sau texte publice nu se face fără aprobare.
+export const automationRun = pgTable("automation_run", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  automation: text("automation").notNull(),
+  trigger: text("trigger").notNull(), // ceas / manual / aprobare
+  status: text("status").notNull(), // ok / nimic / asteapta / sarit / eroare / oprit
+  observed: integer("observed").notNull().default(0),
+  acted: integer("acted").notNull().default(0),
+  pending: integer("pending").notNull().default(0),
+  note: text("note"),
+  details: jsonb("details"),
+  actorId: text("actor_id").references(() => user.id, { onDelete: "set null" }),
+  startedAt: timestamp("started_at").notNull().defaultNow(),
+  finishedAt: timestamp("finished_at"),
+}, (t) => [index("automation_run_idx").on(t.automation, t.startedAt), index("automation_run_at_idx").on(t.startedAt)]);
+
+// Ce s-a făcut deja o dată (de ex. emailul de sfârșit al zilelor gratuite pentru un cont), ca să nu se repete.
+export const automationMark = pgTable("automation_mark", {
+  automation: text("automation").notNull(),
+  ref: text("ref").notNull(),
+  at: timestamp("at").notNull().defaultNow(),
+}, (t) => [primaryKey({ name: "automation_mark_pk", columns: [t.automation, t.ref] })]);
+
+// Scorul de autonomie al fiecărei zile, pentru graficul din pagină.
+export const autonomySnapshot = pgTable("autonomy_snapshot", {
+  day: date("day").primaryKey(),
+  score: integer("score").notNull(),
+  parts: jsonb("parts").notNull(),
+  at: timestamp("at").notNull().defaultNow(),
 });

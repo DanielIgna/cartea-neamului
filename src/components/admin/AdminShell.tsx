@@ -35,6 +35,7 @@ const PATHS: Record<AdminIcon | "star" | "menu" | "close" | "chev", string> = {
   mail: "M3 5h18v14H3zM3 6l9 7 9-7",
   shield: "M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6zM9 12l2 2 4-4",
   server: "M3 4h18v7H3zM3 13h18v7H3zM7 7.5h.01M7 16.5h.01",
+  robot: "M5 8h14v11H5zM12 8V4M9 13h.01M15 13h.01M9.5 16.5h5M3 12v3M21 12v3",
   star: "m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z",
   menu: "M4 6h16M4 12h16M4 18h16",
   close: "M6 6l12 12M18 6 6 18",

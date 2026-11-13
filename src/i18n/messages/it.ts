@@ -548,6 +548,8 @@ export const it: Catalog = {
   ReminderMail: {
     subject: "{app}: il tuo anno finisce il {date}",
     body: "Ciao {name},\n\nil tuo anno nel {app}, con il piano {plan}, finisce il {date}. Non si rinnova da solo e non addebitiamo mai nulla in automatico. Non si cancella nulla: dopo, l’albero resta leggibile e puoi scaricarlo quando vuoi.\n\nSe vuoi continuare ad aggiungere, puoi pagare un altro anno qui: {link}\n\nGrazie perché custodisci la storia della tua famiglia!",
+    trialSubject: "{app}: i tuoi giorni gratuiti finiscono il {date}",
+    trialBody: "Ciao {name},\n\ni tuoi giorni gratuiti su {app} finiscono il {date}. Non addebitiamo mai nulla in automatico e non si cancella niente: dopo, l’albero resta consultabile e puoi scaricarlo quando vuoi.\n\nSe vuoi continuare ad aggiungere, puoi scegliere un anno qui: {link}\n\nGrazie perché custodisci la storia della tua famiglia!",
   },
   NotFound: {
     title: "Questa pagina non esiste",

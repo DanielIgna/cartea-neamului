@@ -548,6 +548,8 @@ export const hu: Catalog = {
   ReminderMail: {
     subject: "{app}: az éved lejár: {date}",
     body: "Szia, {name}!\n\nAz éved itt: {app}, {plan} csomaggal, ekkor jár le: {date}\nNem újul meg magától, és soha nem vonunk le automatikusan pénzt. Semmi sem törlődik: utána a családfa olvasható marad, és bármikor letöltheted.\n\nHa továbbra is bővítenéd, itt fizethetsz egy újabb évet: {link}\n\nKöszönjük, hogy megőrzöd a családod történetét!",
+    trialSubject: "{app}: az ingyenes napjaid {date} napon véget érnek",
+    trialBody: "Kedves {name}!\n\nAz ingyenes napjaid a(z) {app} oldalon {date} napon véget érnek. Soha nem vonunk le automatikusan pénzt, és semmi sem törlődik: utána a családfa olvasható marad, és bármikor letöltheted.\n\nHa tovább szeretnél bővíteni, itt választhatsz egy évet: {link}\n\nKöszönjük, hogy megőrzöd a családod történetét!",
   },
   NotFound: {
     title: "Ez az oldal nem létezik",

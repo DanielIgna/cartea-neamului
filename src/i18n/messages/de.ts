@@ -548,6 +548,8 @@ export const de: Catalog = {
   ReminderMail: {
     subject: "{app}: dein Jahr endet am {date}",
     body: "Hallo {name},\n\ndein Jahr im {app}, im Tarif {plan}, endet am {date}. Es verlängert sich nicht von selbst, und wir buchen nie automatisch ab. Es wird nichts gelöscht: danach bleibt der Stammbaum lesbar, und du kannst ihn jederzeit herunterladen.\n\nWenn du weiter hinzufügen möchtest, kannst du hier ein weiteres Jahr bezahlen: {link}\n\nDanke, dass du die Geschichte deiner Familie bewahrst!",
+    trialSubject: "{app}: Deine kostenlosen Tage enden am {date}",
+    trialBody: "Hallo {name},\n\nDeine kostenlosen Tage in {app} enden am {date}. Wir buchen nie automatisch ab und nichts wird gelöscht: Danach bleibt der Stammbaum lesbar und du kannst ihn jederzeit herunterladen.\n\nWenn du weiter hinzufügen möchtest, kannst du hier ein Jahr wählen: {link}\n\nDanke, dass du die Geschichte deiner Familie bewahrst!",
   },
   NotFound: {
     title: "Diese Seite gibt es nicht",

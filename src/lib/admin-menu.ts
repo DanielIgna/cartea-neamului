@@ -3,7 +3,7 @@
  * Orice pagină nouă din panou se trece aici, ca să apară în meniu, în căutarea rapidă și la favorite.
  */
 export type AdminSide = "business" | "infra";
-export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server";
+export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server" | "robot";
 export type AdminItem = { key: string; href: string; label: string; icon: AdminIcon; hint: string; isNew?: boolean; words?: string };
 export type AdminGroup = { id: string; label: string; items: AdminItem[] };
 
@@ -48,6 +48,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
       {
         id: "sistem", label: "Sistem", items: [
           { key: "infra", href: "/admin/infra", label: "Infra & Dev", icon: "server", hint: "Baza de date, erori, chei, migrații", words: "server erori baza de date neon vercel chei" },
+          { key: "autonomie", href: "/admin/autonomie", label: "Autonomie", icon: "robot", hint: "Cât merge site-ul singur, automatizări, recomandări", isNew: true, words: "automatizari cron scor autopilot bucla recomandari" },
           { key: "email", href: "/admin/email", label: "Email", icon: "mail", hint: "Adresa site-ului și trimiterile", words: "gmail resend contact dns" },
         ],
       },
