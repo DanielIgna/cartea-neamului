@@ -8,7 +8,7 @@ import Image from "next/image";
 import { db } from "@/db";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
-import { LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
+import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 
@@ -91,7 +91,9 @@ const cachedHomeImages = unstable_cache(() => homeImages(db), ["home-images"], {
 const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, tc, th, tp, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), cachedHomeImages(), cachedPlans(), getLocale()]);
+  const [t, tc, th, tp, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), cachedHomeImages(),
+    // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
+    cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
   // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
   const sales = s.on;
   const lei = locale === "ro";

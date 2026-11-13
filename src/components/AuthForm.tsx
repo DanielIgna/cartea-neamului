@@ -72,6 +72,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
       {signUp && <label>{t("name")}<input id="name" name="name" required autoComplete="name" /></label>}
       <label>{t("email")}<input id="email" name="email" type="email" required autoComplete="email" /></label>
       <label>{t("password")}<input id="password" name="password" type="password" required minLength={8} autoComplete={signUp ? "new-password" : "current-password"} /></label>
+      {!signUp && <Link className="forgot-link" href="/intrare/parola-uitata">{t("forgotLink")}</Link>}
       {signUp && (
         // Separată de Termeni și nebifată de la sine: contul și arborele merg la fel și fără ea.
         <label className="radio partner-optin">
