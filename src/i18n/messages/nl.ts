@@ -9,6 +9,7 @@ import { nlParteneri } from "./parteneri/nl";
 import { nlContact } from "./contact/nl";
 import { nlProbleme } from "./probleme/nl";
 import { nlResurse } from "./resurse/nl";
+import { nlCadou } from "./cadou/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
@@ -419,6 +420,7 @@ export const nl: Catalog = {
   ...nlContact,
   ...nlProbleme,
   ...nlResurse,
+  ...nlCadou,
   ...nlFilm,
   ...nlLegal,
   ...nlDatele,

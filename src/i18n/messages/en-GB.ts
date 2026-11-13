@@ -9,6 +9,7 @@ import { enGBParteneri } from "./parteneri/en-GB";
 import { enGBContact } from "./contact/en-GB";
 import { enGBProbleme } from "./probleme/en-GB";
 import { enGBResurse } from "./resurse/en-GB";
+import { enGBCadou } from "./cadou/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -419,6 +420,7 @@ export const enGB: Catalog = {
   ...enGBContact,
   ...enGBProbleme,
   ...enGBResurse,
+  ...enGBCadou,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,

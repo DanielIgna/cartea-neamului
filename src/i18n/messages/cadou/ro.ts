@@ -1,0 +1,56 @@
+/**
+ * Pagina /cadou-de-sarbatori (`GiftPage`): anul Basic dăruit de Crăciun, pașii, întrebările frecvente, banda de pe prima pagină
+ * și cardul de tipărit al unui dar. Prețul și plafoanele vin din Admin → Manager control ({price}, {persons}…), nu sunt scrise aici.
+ */
+import type { Widen } from "../types";
+
+export const roCadou = {
+  GiftPage: {
+    metaTitle: "Cadou de Crăciun pentru părinți și bunici – arborele familiei, {price}",
+    metaDescription: "Dăruiește părinților sau bunicilor un an în Cartea Neamului, {price}: arborele familiei, pozele vechi și glasurile bunicilor, într-un singur loc. Primești o legătură sau un card de tipărit.",
+    home: "Prima pagină",
+    label: "Cadou de sărbători",
+    title: "Cel mai ieftin cadou de sărbători: Cartea Neamului, de la doar {price}",
+    lead: "Un dar care nu se strică și nu stă într-un sertar: un an în care părinții sau bunicii pun la un loc neamul, pozele și amintirile lor, iar voi le păstrați pentru copii.",
+    getTitle: "Ce primește cel căruia îi dăruiești",
+    get1Title: "Un an întreg pe planul {plan}",
+    get1: "Plătit o singură dată, fără abonament: nu se reînnoiește singur și nu se ia nimic de pe card după un an.",
+    get2Title: "Arborele familiei",
+    get2: "Până la {persons} de persoane, cu părinți, frați, bunici și străbunici, pe care le poate completa împreună cu rudele.",
+    get3Title: "Pozele vechi, la adăpost",
+    get3: "Până la {photos} de fotografii puse lângă oamenii din ele, cu nume, ani și locuri, ca să nu rămână poze fără poveste.",
+    get4Title: "Glasurile bunicilor",
+    get4: "Până la {audio} de înregistrări cu vocea lor: o poveste, un cântec, o binecuvântare, ascultate oricând de nepoți.",
+    stepsTitle: "Cum funcționează darul, pas cu pas",
+    step1Title: "Cumperi darul",
+    step1: "Apeși „Dăruiește acum”, îți faci cont gratuit dacă nu ai, scrii pentru cine este și un bilet scurt, apoi plătești cu cardul.",
+    step2Title: "Primești o legătură sau un card de tipărit",
+    step2: "Legătura o trimiți pe WhatsApp sau pe email. Dacă vrei ceva de pus în plic, tipărești cardul, cu biletul tău și un cod de scanat cu telefonul.",
+    step3Title: "Îl dai la masa de Crăciun",
+    step3: "Cel care primește deschide legătura sau scanează codul, intră în cont și apasă „Primește anul”. Din clipa aceea anul este al lui.",
+    cta: "Dăruiește acum",
+    ctaNote: "Plătești o singură dată, cu cardul, prin Stripe. Poți alege și planurile Familie sau Premium.",
+    soon: "Darurile se pot cumpăra în curând. Dacă vrei unul acum, scrie-ne.",
+    soonLink: "Scrie-ne",
+    faqTitle: "Întrebări frecvente",
+    q1: "Ce se întâmplă după un an?",
+    a1: "Anul nu se reînnoiește singur și nu se ia nimic de pe niciun card. La sfârșit, cel care l-a primit hotărăște singur dacă mai continuă.",
+    q2: "Dacă cel căruia îi dăruiesc are deja un an plătit?",
+    a2: "Nu se pierde nimic: anul dăruit se adaugă după cel pe care îl are deja.",
+    q3: "Cât timp e bună legătura?",
+    a3: "Legătura nu expiră, deci o poți cumpăra acum și o poți da și după sărbători. Se poate primi o singură dată, de un singur cont.",
+    q4: "Părinții mei nu se pricep la telefon. Se descurcă?",
+    a4: "Le poți face contul împreună, la masă, în câteva minute, cu adresa lor de email. Apoi îi poți ajuta să adauge primele poze și înregistrări.",
+    band: "Cadou de Crăciun pentru părinți și bunici: un an în Cartea Neamului, {price}.",
+    bandLink: "Vezi darul",
+    footer: "Cadou de sărbători",
+    printCard: "Tipărește cardul",
+    cardTitle: "Un dar pentru tine",
+    cardFor: "Pentru {name}",
+    cardText: "Ți-am dăruit un an în Cartea Neamului, pe planul {plan}: arborele familiei, pozele și glasurile celor dragi, într-un singur loc.",
+    cardHow: "Scanează codul sau deschide legătura, intră în cont și apasă „Primește anul”.",
+    cardHint: "Din fereastra de tipărire poți alege și „Salvează ca PDF”.",
+    cardBack: "Înapoi la darurile tale",
+  },
+} as const;
+export type CadouCatalog = Widen<typeof roCadou>;

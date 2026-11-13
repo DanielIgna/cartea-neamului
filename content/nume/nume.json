@@ -1,0 +1,3353 @@
+{
+ "_despre": "Numele de familie pentru paginile /nume/<slug>. Scrise de mână: kind = de unde vine numele (functie, patronimic, prenume, loc, etnic, meserie, porecla); regions = regiunile istorice unde e mai frecvent (gol = în toată țara); variants = alte scrieri; note = o observație. Unde originea nu e sigură, textul o spune.",
+ "nume": [
+  {
+   "slug": "achim",
+   "name": "Achim",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Achim*, purtat de un strămoș: la început, copiii erau numiți „ai lui Achim”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Joachim"
+   ]
+  },
+  {
+   "slug": "albu",
+   "name": "Albu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *alb*, dată unui om blond sau cu părul alb.",
+   "regions": [],
+   "variants": [
+    "Alb",
+    "Albescu",
+    "Fehér"
+   ]
+  },
+  {
+   "slug": "alexandru",
+   "name": "Alexandru",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Alexandru*, purtat de un strămoș: la început, copiii erau numiți „ai lui Alexandru”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Sandu",
+    "Sándor"
+   ]
+  },
+  {
+   "slug": "andreescu",
+   "name": "Andreescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Andrei* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Andrei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "andrei",
+   "name": "Andrei",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Andrei*, purtat de un strămoș: la început, copiii erau numiți „ai lui Andrei”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "András",
+    "Andreiu"
+   ]
+  },
+  {
+   "slug": "anghel",
+   "name": "Anghel",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Anghel*, purtat de un strămoș: la început, copiii erau numiți „ai lui Anghel”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Anghelescu",
+    "Angel"
+   ]
+  },
+  {
+   "slug": "ardelean",
+   "name": "Ardelean",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Ardeal (Transilvania)*. Un om venit „de la Ardeal (Transilvania)” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania",
+    "banat",
+    "crisana"
+   ],
+   "variants": [
+    "Ardeleanu",
+    "Erdélyi"
+   ],
+   "note": "Un ardelean din Banat sau Crișana era cel venit din Transilvania propriu-zisă."
+  },
+  {
+   "slug": "ardeleanu",
+   "name": "Ardeleanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Ardeal (Transilvania)*. Un om venit „de la Ardeal (Transilvania)” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia",
+    "oltenia",
+    "moldova"
+   ],
+   "variants": [
+    "Ardelean"
+   ]
+  },
+  {
+   "slug": "armasu",
+   "name": "Armașu",
+   "kind": "functie",
+   "meaning": "De la *armaș*, dregător care păzea închisorile și ducea la îndeplinire pedepsele.",
+   "regions": [
+    "muntenia",
+    "moldova"
+   ],
+   "variants": [
+    "Armaș",
+    "Armășescu"
+   ]
+  },
+  {
+   "slug": "arnautu",
+   "name": "Arnăutu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *arnăut (albanez; mai târziu, nume dat gărzilor boierilor)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Arnăut"
+   ]
+  },
+  {
+   "slug": "aron",
+   "name": "Aron",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Aron*, purtat de un strămoș: la început, copiii erau numiți „ai lui Aron”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Áron"
+   ]
+  },
+  {
+   "slug": "avram",
+   "name": "Avram",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Avram*, purtat de un strămoș: la început, copiii erau numiți „ai lui Avram”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Abraham",
+    "Ábrahám"
+   ]
+  },
+  {
+   "slug": "avramescu",
+   "name": "Avramescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Avram* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Avram.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "badea",
+   "name": "Badea",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bade (frate mai mare, om mai în vârstă)*, folosit ca titlu de respect la sat.",
+   "regions": [
+    "transilvania",
+    "muntenia"
+   ],
+   "variants": [
+    "Bădescu"
+   ]
+  },
+  {
+   "slug": "balan",
+   "name": "Bălan",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bălan (blond)*, dată unui om cu părul deschis la culoare.",
+   "regions": [],
+   "variants": [
+    "Balan",
+    "Bălănescu"
+   ]
+  },
+  {
+   "slug": "balanescu",
+   "name": "Bălănescu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bălan*, cu sufixul *-escu*: urmașii unui om blond.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Bălan"
+   ]
+  },
+  {
+   "slug": "banateanu",
+   "name": "Bănățeanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Banat*. Un om venit „de la Banat” era numit așa de cei din noul sat.",
+   "regions": [],
+   "variants": [
+    "Bănățean"
+   ]
+  },
+  {
+   "slug": "barbieru",
+   "name": "Bărbieru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *bărbier*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Bărbier",
+    "Borbély"
+   ]
+  },
+  {
+   "slug": "barbu",
+   "name": "Barbu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *barbă*, dată unui om cu barbă; poate fi și din prenumele Barbu.",
+   "regions": [],
+   "variants": [
+    "Bărbulescu",
+    "Barbul"
+   ]
+  },
+  {
+   "slug": "barsan",
+   "name": "Bârsan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Țara Bârsei (zona Brașovului)*. Un om venit „de la Țara Bârsei (zona Brașovului)” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Barsan",
+    "Bârseanu"
+   ]
+  },
+  {
+   "slug": "batranu",
+   "name": "Bătrânu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bătrân*, pentru a-l deosebi pe tată de fiul cu același nume.",
+   "regions": [],
+   "variants": [
+    "Bătrân"
+   ]
+  },
+  {
+   "slug": "bejan",
+   "name": "Bejan",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bejan (fugar, pribeag)*, dat cuiva venit din altă parte, refugiat.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Bejenaru"
+   ]
+  },
+  {
+   "slug": "bejenaru",
+   "name": "Bejenaru",
+   "kind": "porecla",
+   "meaning": "Din *bejenar* (refugiat, pribeag).",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Bejan",
+    "Bejenar"
+   ]
+  },
+  {
+   "slug": "bihorean",
+   "name": "Bihorean",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Bihor*. Un om venit „de la Bihor” era numit așa de cei din noul sat.",
+   "regions": [
+    "crisana",
+    "transilvania"
+   ],
+   "variants": [
+    "Bihoreanu",
+    "Biharian"
+   ]
+  },
+  {
+   "slug": "boboc",
+   "name": "Boboc",
+   "kind": "porecla",
+   "meaning": "Din *boboc* (pui de gâscă sau om tânăr, nou venit).",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Bobocu"
+   ]
+  },
+  {
+   "slug": "bogdan",
+   "name": "Bogdan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Bogdan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Bogdan”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "boieru",
+   "name": "Boieru",
+   "kind": "functie",
+   "meaning": "De la *boier*; dat celor din familii boierești sau, ca poreclă, unui om înstărit.",
+   "regions": [],
+   "variants": [
+    "Boier",
+    "Boierescu"
+   ]
+  },
+  {
+   "slug": "bota",
+   "name": "Bota",
+   "kind": "porecla",
+   "meaning": "Numele vine probabil de la *botă* (bâtă, ciomag), ca poreclă.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Botă",
+    "Botea"
+   ]
+  },
+  {
+   "slug": "botezatu",
+   "name": "Botezatu",
+   "kind": "porecla",
+   "meaning": "Din *botezat*: un om care s-a creștinat la vârstă adultă sau, ca poreclă, după o întâmplare legată de botez.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Botezat"
+   ]
+  },
+  {
+   "slug": "branzaru",
+   "name": "Brânzaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *brânzar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Brânzar"
+   ]
+  },
+  {
+   "slug": "bratu",
+   "name": "Bratu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Bratu (de la frate, „brat”)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Bratu (de la frate, „brat”)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "bucovineanu",
+   "name": "Bucovineanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Bucovina*. Un om venit „de la Bucovina” era numit așa de cei din noul sat.",
+   "regions": [],
+   "variants": [
+    "Bucovinean"
+   ]
+  },
+  {
+   "slug": "bucur",
+   "name": "Bucur",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Bucur*, purtat de un strămoș: la început, copiii erau numiți „ai lui Bucur”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "bud",
+   "name": "Bud",
+   "kind": "prenume",
+   "meaning": "Nume vechi, frecvent în Transilvania și Maramureș, purtat întâi ca prenume sau poreclă; originea exactă nu e sigură.",
+   "regions": [
+    "maramures",
+    "transilvania"
+   ],
+   "variants": [
+    "Budă",
+    "Buda"
+   ]
+  },
+  {
+   "slug": "bulgaru",
+   "name": "Bulgaru",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *bulgar*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Bulgar"
+   ]
+  },
+  {
+   "slug": "bunea",
+   "name": "Bunea",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *bun*, nume de dezmierdare din *bun*, devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Bunu",
+    "Bunescu"
+   ]
+  },
+  {
+   "slug": "butnaru",
+   "name": "Butnaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *butnar (meșter de butoaie)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Butnar",
+    "Butnariu"
+   ]
+  },
+  {
+   "slug": "buzatu",
+   "name": "Buzatu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *buzat*, dată unui om cu buze mari.",
+   "regions": [],
+   "variants": [
+    "Buză"
+   ]
+  },
+  {
+   "slug": "caldararu",
+   "name": "Căldăraru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *căldărar (meșter de căldări)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Căldărar"
+   ]
+  },
+  {
+   "slug": "campean",
+   "name": "Câmpean",
+   "kind": "loc",
+   "meaning": "De la *câmp*: omul care locuia sau venea de la câmpie.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Campean",
+    "Câmpeanu"
+   ]
+  },
+  {
+   "slug": "campeanu",
+   "name": "Câmpeanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *câmpie (de la câmp)*. Un om venit „de la câmpie (de la câmp)” era numit așa de cei din noul sat.",
+   "regions": [],
+   "variants": [
+    "Câmpean",
+    "Campean"
+   ]
+  },
+  {
+   "slug": "capitanu",
+   "name": "Căpitanu",
+   "kind": "functie",
+   "meaning": "De la *căpitan*, conducătorul unei cete de ostași sau de grăniceri.",
+   "regions": [],
+   "variants": [
+    "Căpitan"
+   ]
+  },
+  {
+   "slug": "carciumaru",
+   "name": "Cârciumaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *cârciumar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Cârciumar"
+   ]
+  },
+  {
+   "slug": "carlig",
+   "name": "Cârlig",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *cârlig*, poate pentru un om cocoșat sau după o unealtă.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "cazacu",
+   "name": "Cazacu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *cazac*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Cazac"
+   ]
+  },
+  {
+   "slug": "cernat",
+   "name": "Cernat",
+   "kind": "porecla",
+   "meaning": "Din cuvântul slav pentru *negru* (*cern-*), ca poreclă a unui om brunet.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Cernea",
+    "Cernescu"
+   ]
+  },
+  {
+   "slug": "chiriac",
+   "name": "Chiriac",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Chiriac* (de origine grecească).",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Chiriacescu",
+    "Kiriak"
+   ]
+  },
+  {
+   "slug": "chirila",
+   "name": "Chirilă",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Chiril*.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Chirila",
+    "Chirilescu"
+   ]
+  },
+  {
+   "slug": "chis",
+   "name": "Chiș",
+   "kind": "porecla",
+   "meaning": "Forma românească a maghiarului *kis* (mic).",
+   "regions": [
+    "transilvania",
+    "crisana",
+    "maramures"
+   ],
+   "variants": [
+    "Kis",
+    "Kiss",
+    "Chis"
+   ]
+  },
+  {
+   "slug": "cioban",
+   "name": "Cioban",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *cioban (păstor de oi)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Ciobanu",
+    "Csobán"
+   ]
+  },
+  {
+   "slug": "ciobanu",
+   "name": "Ciobanu",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *cioban (păstor de oi)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Cioban",
+    "Csobán"
+   ],
+   "note": "Forma fără *-u* (*Cioban*) e mai des întâlnită în Transilvania."
+  },
+  {
+   "slug": "ciocan",
+   "name": "Ciocan",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *ciocan*, poate pentru un fierar sau un om încăpățânat.",
+   "regions": [],
+   "variants": [
+    "Ciocanu"
+   ]
+  },
+  {
+   "slug": "ciubotaru",
+   "name": "Ciubotaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *ciubotar (cizmar)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Ciubotar",
+    "Ciobotaru"
+   ]
+  },
+  {
+   "slug": "clucer",
+   "name": "Clucer",
+   "kind": "functie",
+   "meaning": "De la *clucer*, dregătorul care avea grijă de proviziile curții.",
+   "regions": [
+    "muntenia"
+   ],
+   "variants": [
+    "Clucerescu"
+   ]
+  },
+  {
+   "slug": "cnezu",
+   "name": "Cnezu",
+   "kind": "functie",
+   "meaning": "De la *cneaz*, conducător local al unei obști de sat.",
+   "regions": [],
+   "variants": [
+    "Cnez",
+    "Chinezu",
+    "Kenéz"
+   ]
+  },
+  {
+   "slug": "cojocar",
+   "name": "Cojocar",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *cojocar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Cojocaru"
+   ]
+  },
+  {
+   "slug": "cojocaru",
+   "name": "Cojocaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *cojocar (meșter de cojoace)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Cojocar",
+    "Cojocariu",
+    "Kozsokár"
+   ]
+  },
+  {
+   "slug": "coman",
+   "name": "Coman",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Coman*, purtat de un strămoș: la început, copiii erau numiți „ai lui Coman”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "constantin",
+   "name": "Constantin",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Constantin*, purtat de un strămoș: la început, copiii erau numiți „ai lui Constantin”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Costin",
+    "Constandin"
+   ]
+  },
+  {
+   "slug": "constantinescu",
+   "name": "Constantinescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Constantin* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Constantin.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "corbu",
+   "name": "Corbu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *corb*, poate pentru un om cu părul foarte negru.",
+   "regions": [],
+   "variants": [
+    "Corb",
+    "Corbea"
+   ]
+  },
+  {
+   "slug": "costache",
+   "name": "Costache",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Costache*, formă a lui Constantin cu sufixul *-ache*.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Costachi",
+    "Costachescu"
+   ]
+  },
+  {
+   "slug": "covaci",
+   "name": "Covaci",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *fierar (din maghiarul *kovács*)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania",
+    "banat",
+    "crisana",
+    "maramures"
+   ],
+   "variants": [
+    "Kovács",
+    "Covaciu"
+   ]
+  },
+  {
+   "slug": "cozma",
+   "name": "Cozma",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Cozma*, purtat de un strămoș: la început, copiii erau numiți „ai lui Cozma”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Kozma",
+    "Cosma"
+   ]
+  },
+  {
+   "slug": "crisan",
+   "name": "Crișan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *valea Crișurilor*. Un om venit „de la valea Crișurilor” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania",
+    "crisana"
+   ],
+   "variants": [
+    "Crisan",
+    "Krisán"
+   ]
+  },
+  {
+   "slug": "cristea",
+   "name": "Cristea",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Cristea (Hristea, Cristian)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Cristea (Hristea, Cristian)”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "croitoru",
+   "name": "Croitoru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *croitor*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Croitor",
+    "Croitoriu",
+    "Szabó"
+   ],
+   "note": "În registrele maghiare, meseria de croitor e *szabó*; numele poate apărea și tradus."
+  },
+  {
+   "slug": "cucos",
+   "name": "Cucoș",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *cocoș*, poate pentru un om mândru.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Cocoș",
+    "Kakas"
+   ]
+  },
+  {
+   "slug": "cucu",
+   "name": "Cucu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *cuc*, poate pentru un om singuratic sau după o întâmplare uitată.",
+   "regions": [],
+   "variants": [
+    "Cuc"
+   ]
+  },
+  {
+   "slug": "curelaru",
+   "name": "Curelaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *curelar (meșter de hamuri și curele)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Curelar"
+   ]
+  },
+  {
+   "slug": "damian",
+   "name": "Damian",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Damian*, purtat de un strămoș: la început, copiii erau numiți „ai lui Damian”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Demian"
+   ]
+  },
+  {
+   "slug": "dan",
+   "name": "Dan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dan”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "dascalu",
+   "name": "Dascălu",
+   "kind": "functie",
+   "meaning": "De la *dascăl*: învățător sau cântăreț de strană.",
+   "regions": [],
+   "variants": [
+    "Dascăl",
+    "Dascalu",
+    "Dăscălescu"
+   ]
+  },
+  {
+   "slug": "deac",
+   "name": "Deac",
+   "kind": "functie",
+   "meaning": "Formă scurtă a lui *diac*, cu sensul de diacon sau de om cu carte, scriitor de acte.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Deák",
+    "Diac"
+   ],
+   "note": "În maghiară, *deák* înseamnă și „om cu carte”, iar în registre se întâlnește forma *Deák*."
+  },
+  {
+   "slug": "dealu",
+   "name": "Dealu",
+   "kind": "loc",
+   "meaning": "Omul care locuia pe deal sau venea „din deal”.",
+   "regions": [],
+   "variants": [
+    "Deal",
+    "Dealeanu"
+   ]
+  },
+  {
+   "slug": "diaconescu",
+   "name": "Diaconescu",
+   "kind": "patronimic",
+   "meaning": "De la *diacon* cu sufixul *-escu*: urmașul unui diacon.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Diaconu"
+   ]
+  },
+  {
+   "slug": "diaconu",
+   "name": "Diaconu",
+   "kind": "functie",
+   "meaning": "De la *diacon*, slujitor în biserică, sau „al diaconului”.",
+   "regions": [],
+   "variants": [
+    "Diacon",
+    "Diaconescu",
+    "Deac"
+   ]
+  },
+  {
+   "slug": "diculescu",
+   "name": "Diculescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Dicu* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Dicu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dinescu",
+   "name": "Dinescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Dinu* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Dinu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dinu",
+   "name": "Dinu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dinu*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dinu”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dobre",
+   "name": "Dobre",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dobre*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dobre”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dobrescu",
+   "name": "Dobrescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Dobre* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Dobre.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dobrin",
+   "name": "Dobrin",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *dobru (bun)*, cu sufix; din cuvântul slav pentru „bun”.",
+   "regions": [],
+   "variants": [
+    "Dobre",
+    "Dobrescu"
+   ]
+  },
+  {
+   "slug": "dobrogeanu",
+   "name": "Dobrogeanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Dobrogea*. Un om venit „de la Dobrogea” era numit așa de cei din noul sat.",
+   "regions": [
+    "dobrogea",
+    "muntenia"
+   ],
+   "variants": [
+    "Dobrogean"
+   ]
+  },
+  {
+   "slug": "dogaru",
+   "name": "Dogaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *dogar (meșter de butoaie)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Dogar",
+    "Dogariu"
+   ]
+  },
+  {
+   "slug": "dragomir",
+   "name": "Dragomir",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dragomir*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dragomir”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Drăgulescu"
+   ]
+  },
+  {
+   "slug": "dragos",
+   "name": "Dragoș",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dragoș*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dragoș”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "dragu",
+   "name": "Dragu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *drag*, nume de dezmierdare, devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Drag",
+    "Drăgulescu"
+   ]
+  },
+  {
+   "slug": "dumitras",
+   "name": "Dumitraș",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Dumitru* cu sufixul *-aș*.",
+   "regions": [
+    "moldova",
+    "transilvania"
+   ],
+   "variants": [
+    "Dumitras",
+    "Dumitrașcu"
+   ]
+  },
+  {
+   "slug": "dumitrascu",
+   "name": "Dumitrașcu",
+   "kind": "patronimic",
+   "meaning": "Din *Dumitraș* (Dumitru) cu sufixul *-cu*.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Dumitrascu"
+   ]
+  },
+  {
+   "slug": "dumitrescu",
+   "name": "Dumitrescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Dumitru* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Dumitru.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "dumitru",
+   "name": "Dumitru",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Dumitru*, purtat de un strămoș: la început, copiii erau numiți „ai lui Dumitru”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Dumitriu",
+    "Dimitrie"
+   ]
+  },
+  {
+   "slug": "dunareanu",
+   "name": "Dunăreanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Dunăre*. Un om venit „de la Dunăre” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Dunărean"
+   ]
+  },
+  {
+   "slug": "enache",
+   "name": "Enache",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Enache*, formă a lui Ene (Ion).",
+   "regions": [
+    "muntenia",
+    "moldova"
+   ],
+   "variants": [
+    "Enachi",
+    "Enachescu"
+   ]
+  },
+  {
+   "slug": "ene",
+   "name": "Ene",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ene*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ene”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "farcas",
+   "name": "Fărcaș",
+   "kind": "porecla",
+   "meaning": "Din maghiarul *farkas* (lup).",
+   "regions": [
+    "transilvania",
+    "crisana"
+   ],
+   "variants": [
+    "Farkas",
+    "Farcas",
+    "Lupu"
+   ]
+  },
+  {
+   "slug": "fieraru",
+   "name": "Fieraru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *fierar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Fierar",
+    "Kovács"
+   ],
+   "note": "Echivalentul maghiar al numelui este *Kovács*, iar cel german *Schmidt*."
+  },
+  {
+   "slug": "filip",
+   "name": "Filip",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Filip*, purtat de un strămoș: la început, copiii erau numiți „ai lui Filip”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Fülöp"
+   ]
+  },
+  {
+   "slug": "florea",
+   "name": "Florea",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *floare*, sau din prenumele Florea.",
+   "regions": [],
+   "variants": [
+    "Florescu",
+    "Florian"
+   ]
+  },
+  {
+   "slug": "florescu",
+   "name": "Florescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Florea* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Florea.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "gavrila",
+   "name": "Gavrilă",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Gavril*, purtat de un strămoș: la început, copiii erau numiți „ai lui Gavril”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Gavrila",
+    "Gabor"
+   ]
+  },
+  {
+   "slug": "gavrilescu",
+   "name": "Gavrilescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Gavril* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Gavril.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "georgescu",
+   "name": "Georgescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *George* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui George.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "gheorghe",
+   "name": "Gheorghe",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Gheorghe*, purtat de un strămoș: la început, copiii erau numiți „ai lui Gheorghe”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Gheorghiu",
+    "György"
+   ]
+  },
+  {
+   "slug": "gheorghiu",
+   "name": "Gheorghiu",
+   "kind": "patronimic",
+   "meaning": "Din prenumele *Gheorghe*, cu terminația *-iu*, des întâlnită în Moldova.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Gheorghe",
+    "Georgiu"
+   ]
+  },
+  {
+   "slug": "gherman",
+   "name": "Gherman",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Gherman*, purtat de un strămoș: la început, copiii erau numiți „ai lui Gherman”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Germán"
+   ]
+  },
+  {
+   "slug": "ghitescu",
+   "name": "Ghițescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Ghiță* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Ghiță.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Ghitescu"
+   ]
+  },
+  {
+   "slug": "grecu",
+   "name": "Grecu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *grec*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [],
+   "variants": [
+    "Grec",
+    "Grecea"
+   ]
+  },
+  {
+   "slug": "grigore",
+   "name": "Grigore",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Grigore*, purtat de un strămoș: la început, copiii erau numiți „ai lui Grigore”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Grigoraș"
+   ]
+  },
+  {
+   "slug": "grigorescu",
+   "name": "Grigorescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Grigore* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Grigore.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "grosu",
+   "name": "Grosu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *gros*, dată unui om voinic.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Gros",
+    "Grosul"
+   ]
+  },
+  {
+   "slug": "groza",
+   "name": "Groza",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *groază*, dată unui om aspru sau temut.",
+   "regions": [
+    "transilvania",
+    "banat"
+   ],
+   "variants": [
+    "Grozea",
+    "Grozescu"
+   ]
+  },
+  {
+   "slug": "horvat",
+   "name": "Horvat",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *croat (horvat)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "banat",
+    "crisana"
+   ],
+   "variants": [
+    "Horváth"
+   ]
+  },
+  {
+   "slug": "hossu",
+   "name": "Hossu",
+   "kind": "porecla",
+   "meaning": "Probabil din maghiarul *hosszú* (lung), ca poreclă a unui om înalt.",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Hosu",
+    "Hosszú"
+   ]
+  },
+  {
+   "slug": "hritcu",
+   "name": "Hrițcu",
+   "kind": "prenume",
+   "meaning": "Formă ucraineană sau rutenă a prenumelui *Grigore* (Hrițco).",
+   "regions": [
+    "moldova",
+    "bucovina"
+   ],
+   "variants": [
+    "Hritcu",
+    "Grigore"
+   ]
+  },
+  {
+   "slug": "hutanu",
+   "name": "Huțanu",
+   "kind": "porecla",
+   "meaning": "Probabil din *huțan* (huțul, locuitor din zona de munte a Bucovinei).",
+   "regions": [
+    "bucovina",
+    "moldova"
+   ],
+   "variants": [
+    "Huțan"
+   ]
+  },
+  {
+   "slug": "iacob",
+   "name": "Iacob",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Iacob*, purtat de un strămoș: la început, copiii erau numiți „ai lui Iacob”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Jakab",
+    "Iacobescu"
+   ]
+  },
+  {
+   "slug": "igna",
+   "name": "Igna",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Igna, probabil o formă scurtă a prenumelui Ignat (Ignatie)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Igna, probabil o formă scurtă a prenumelui Ignat (Ignatie)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Ignea",
+    "Ignat"
+   ],
+   "note": "Originea exactă a numelui nu este lămurită cu documente; legătura cu prenumele Ignat este cea mai probabilă, dar nu sigură."
+  },
+  {
+   "slug": "ignat",
+   "name": "Ignat",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ignat*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ignat”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Ignatie",
+    "Ignác"
+   ]
+  },
+  {
+   "slug": "ilie",
+   "name": "Ilie",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ilie*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ilie”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Ilieș",
+    "Ilyés"
+   ]
+  },
+  {
+   "slug": "ilies",
+   "name": "Ilieș",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ilieș (Ilie)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ilieș (Ilie)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Ilies",
+    "Illyés"
+   ]
+  },
+  {
+   "slug": "iliescu",
+   "name": "Iliescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Ilie* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Ilie.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "ion",
+   "name": "Ion",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ion*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ion”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Ioan",
+    "János"
+   ]
+  },
+  {
+   "slug": "ionascu",
+   "name": "Ionașcu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Ion* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Ion.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Ionaşcu"
+   ]
+  },
+  {
+   "slug": "ionescu",
+   "name": "Ionescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Ion* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Ion.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Ionesco"
+   ]
+  },
+  {
+   "slug": "iordache",
+   "name": "Iordache",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Iordache*, formă a lui Iordan.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Iordachi"
+   ]
+  },
+  {
+   "slug": "iordan",
+   "name": "Iordan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Iordan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Iordan”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "ivan",
+   "name": "Ivan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ivan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ivan”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Iván"
+   ]
+  },
+  {
+   "slug": "ivanovici",
+   "name": "Ivanovici",
+   "kind": "patronimic",
+   "meaning": "Din *Ivan* (Ion) cu sufixul slav *-ovici*.",
+   "regions": [
+    "banat"
+   ],
+   "variants": [
+    "Ivanović"
+   ]
+  },
+  {
+   "slug": "jude",
+   "name": "Jude",
+   "kind": "functie",
+   "meaning": "De la *jude*, conducătorul ales al satului în trecut (primarul de azi).",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Judea",
+    "Judele"
+   ]
+  },
+  {
+   "slug": "kiss",
+   "name": "Kiss",
+   "kind": "porecla",
+   "meaning": "Din maghiarul *kis* (mic), ca poreclă; purtat și de familii românești din Transilvania.",
+   "regions": [
+    "transilvania",
+    "crisana"
+   ],
+   "variants": [
+    "Kis",
+    "Chiș",
+    "Micu"
+   ]
+  },
+  {
+   "slug": "lazar",
+   "name": "Lazăr",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Lazăr*, purtat de un strămoș: la început, copiii erau numiți „ai lui Lazăr”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Lazar",
+    "Lázár"
+   ]
+  },
+  {
+   "slug": "lazarescu",
+   "name": "Lăzărescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Lazăr* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Lazăr.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "lazarovici",
+   "name": "Lazarovici",
+   "kind": "patronimic",
+   "meaning": "Din *Lazăr* cu sufixul slav *-ovici*.",
+   "regions": [
+    "banat",
+    "bucovina"
+   ],
+   "variants": [
+    "Lazarević"
+   ]
+  },
+  {
+   "slug": "leahu",
+   "name": "Leahu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *leah (polonez)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "moldova",
+    "bucovina"
+   ],
+   "variants": [
+    "Leah"
+   ]
+  },
+  {
+   "slug": "lemnaru",
+   "name": "Lemnaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *lemnar (tâmplar)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Lemnar"
+   ]
+  },
+  {
+   "slug": "logofatu",
+   "name": "Logofătu",
+   "kind": "functie",
+   "meaning": "De la *logofăt*, scriitor de acte în cancelaria domnească sau a unui boier.",
+   "regions": [],
+   "variants": [
+    "Logofăt",
+    "Logofătul"
+   ]
+  },
+  {
+   "slug": "lungu",
+   "name": "Lungu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *lung*, dată unui om înalt.",
+   "regions": [],
+   "variants": [
+    "Lung",
+    "Hosszú"
+   ]
+  },
+  {
+   "slug": "lup",
+   "name": "Lup",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *lup*, pentru curaj sau asprime; e și un prenume vechi.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Lupu",
+    "Farkas"
+   ]
+  },
+  {
+   "slug": "lupu",
+   "name": "Lupu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *lup*, poate pentru curaj sau pentru un om aspru; e și un prenume vechi.",
+   "regions": [],
+   "variants": [
+    "Lup",
+    "Farkas"
+   ],
+   "note": "Echivalentul maghiar, *Farkas*, apare uneori în registre pentru aceeași familie."
+  },
+  {
+   "slug": "manole",
+   "name": "Manole",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Manole*, purtat de un strămoș: la început, copiii erau numiți „ai lui Manole”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "manolescu",
+   "name": "Manolescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Manole* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Manole.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "mare",
+   "name": "Mare",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *mare*, dată unui om înalt sau cel mai în vârstă dintre doi cu același nume.",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Marele"
+   ]
+  },
+  {
+   "slug": "marginean",
+   "name": "Mărginean",
+   "kind": "loc",
+   "meaning": "Arată un om care locuia la marginea satului sau venea din Mărginimea Sibiului.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Marginean",
+    "Mărgineanu"
+   ]
+  },
+  {
+   "slug": "marin",
+   "name": "Marin",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Marin*, purtat de un strămoș: la început, copiii erau numiți „ai lui Marin”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "marinescu",
+   "name": "Marinescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Marin* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Marin.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "mateescu",
+   "name": "Mateescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Matei* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Matei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "matei",
+   "name": "Matei",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Matei*, purtat de un strămoș: la început, copiii erau numiți „ai lui Matei”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Mateiu",
+    "Máté"
+   ]
+  },
+  {
+   "slug": "micu",
+   "name": "Micu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *mic*, dată unui om scund sau celui mai tânăr dintre doi cu același nume.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Mic",
+    "Kis"
+   ],
+   "note": "În registrele maghiare se găsește uneori ca *Kis* (mic)."
+  },
+  {
+   "slug": "mierla",
+   "name": "Mierlă",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *mierlă*, poate pentru un om care cânta frumos.",
+   "regions": [],
+   "variants": [
+    "Mierla"
+   ]
+  },
+  {
+   "slug": "mihai",
+   "name": "Mihai",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Mihai*, purtat de un strămoș: la început, copiii erau numiți „ai lui Mihai”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Mihail",
+    "Mihály"
+   ]
+  },
+  {
+   "slug": "mihaila",
+   "name": "Mihăilă",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Mihăilă*, formă a lui Mihai.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Mihaila",
+    "Mihăilescu"
+   ]
+  },
+  {
+   "slug": "mihailescu",
+   "name": "Mihăilescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Mihăilă* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Mihăilă.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Mihailescu"
+   ]
+  },
+  {
+   "slug": "mihalache",
+   "name": "Mihalache",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Mihalache*, formă a lui Mihai.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Mihalachi"
+   ]
+  },
+  {
+   "slug": "mircea",
+   "name": "Mircea",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Mircea*, purtat de un strămoș: la început, copiii erau numiți „ai lui Mircea”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "mitrea",
+   "name": "Mitrea",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Mitrea (formă a lui Dumitru)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Mitrea (formă a lui Dumitru)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "mocan",
+   "name": "Mocan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *zona mocanilor, păstorii de munte*. Un om venit „de la zona mocanilor” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Mocanu"
+   ]
+  },
+  {
+   "slug": "mocanu",
+   "name": "Mocanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *zona mocanilor, păstorii de munte din jurul Sibiului și Brașovului*. Un om venit „de la zona mocanilor” era numit așa de cei din noul sat.",
+   "regions": [],
+   "variants": [
+    "Mocan"
+   ],
+   "note": "*Mocan* numea păstorii din satele de munte ale sudului Transilvaniei, care urcau și coborau cu turmele până departe."
+  },
+  {
+   "slug": "moise",
+   "name": "Moise",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Moise*, purtat de un strămoș: la început, copiii erau numiți „ai lui Moise”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Mózes"
+   ]
+  },
+  {
+   "slug": "moldovan",
+   "name": "Moldovan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Moldova*. Un om venit „de la Moldova” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Moldován",
+    "Moldovanu"
+   ],
+   "note": "Forma fără *-u* e tipică Transilvaniei; în registrele maghiare apare ca *Moldován*."
+  },
+  {
+   "slug": "moldoveanu",
+   "name": "Moldoveanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Moldova*. Un om venit „de la Moldova” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Moldovan"
+   ]
+  },
+  {
+   "slug": "morar",
+   "name": "Morar",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *morar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Moraru",
+    "Morariu",
+    "Molnár"
+   ],
+   "note": "În registrele maghiare meseria poate fi tradusă: *molnár*."
+  },
+  {
+   "slug": "morariu",
+   "name": "Morariu",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *morar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania",
+    "bucovina"
+   ],
+   "variants": [
+    "Moraru",
+    "Morar"
+   ]
+  },
+  {
+   "slug": "moraru",
+   "name": "Moraru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *morar (cel care avea sau lucra la moară)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Morar",
+    "Morariu",
+    "Molnár"
+   ]
+  },
+  {
+   "slug": "mos",
+   "name": "Moș",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *moș*, dat unui om bătrân sau unui strămoș respectat.",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Moșu",
+    "Moșneagu"
+   ]
+  },
+  {
+   "slug": "muntean",
+   "name": "Muntean",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *munte sau din Țara Românească*. Un om venit „de la munte sau din Țara Românească” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Munteanu",
+    "Montyán"
+   ]
+  },
+  {
+   "slug": "munteanu",
+   "name": "Munteanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *munte, din zona de munte, sau din Țara Românească (Muntenia)*. Un om venit „de la munte” era numit așa de cei din noul sat.",
+   "regions": [],
+   "variants": [
+    "Muntean",
+    "Munteanu"
+   ],
+   "note": "În Transilvania și Moldova, *muntean* putea însemna atât omul venit din Țara Românească, cât și cel venit de la munte."
+  },
+  {
+   "slug": "muresan",
+   "name": "Mureșan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *valea Mureșului*. Un om venit „de la valea Mureșului” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Muresan",
+    "Mureşan",
+    "Muresián"
+   ],
+   "note": "În registrele maghiare apare ca *Muresán*."
+  },
+  {
+   "slug": "mutu",
+   "name": "Mutu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *mut*, dat unui om tăcut sau care nu putea vorbi.",
+   "regions": [],
+   "variants": [
+    "Mut"
+   ]
+  },
+  {
+   "slug": "neagu",
+   "name": "Neagu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Neagu*, purtat de un strămoș: la început, copiii erau numiți „ai lui Neagu”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "neamtu",
+   "name": "Neamțu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *neamț (german)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [],
+   "variants": [
+    "Neamț",
+    "Nemeș"
+   ],
+   "note": "În Moldova, *Neamț* poate arăta și legătura cu ținutul Neamțului."
+  },
+  {
+   "slug": "neculai",
+   "name": "Neculai",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Neculai*, forma moldovenească a lui Nicolae.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Neculae",
+    "Neculau"
+   ]
+  },
+  {
+   "slug": "nedelcu",
+   "name": "Nedelcu",
+   "kind": "prenume",
+   "meaning": "Din prenumele vechi *Nedelcu*, legat de *nedelea* (duminică, în slavă).",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Nedelea",
+    "Nedelescu"
+   ]
+  },
+  {
+   "slug": "negru",
+   "name": "Negru",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *negru*, dată unui om brunet, cu păr sau ten închis.",
+   "regions": [],
+   "variants": [
+    "Negrea",
+    "Negrescu",
+    "Fekete"
+   ]
+  },
+  {
+   "slug": "nemes",
+   "name": "Nemeș",
+   "kind": "porecla",
+   "meaning": "Din maghiarul *nemes* (nobil): numele unei familii înnobilate sau al unui om liber.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Nemes",
+    "Nemeșu"
+   ],
+   "note": "În Maramureș, mai multe familii românești aveau statut de nobili mici, iar numele poate păstra această amintire."
+  },
+  {
+   "slug": "nicolae",
+   "name": "Nicolae",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Nicolae*, purtat de un strămoș: la început, copiii erau numiți „ai lui Nicolae”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Niculae",
+    "Miklós"
+   ]
+  },
+  {
+   "slug": "nicolaescu",
+   "name": "Nicolaescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Nicolae* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Nicolae.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "niculescu",
+   "name": "Niculescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Nicu* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Nicu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "nistor",
+   "name": "Nistor",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Nistor*, purtat de un strămoș: la început, copiii erau numiți „ai lui Nistor”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Nestor"
+   ]
+  },
+  {
+   "slug": "olaru",
+   "name": "Olaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *olar (meșter de oale)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Olar",
+    "Olariu",
+    "Fazekas"
+   ]
+  },
+  {
+   "slug": "oltean",
+   "name": "Oltean",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Oltenia sau valea Oltului*. Un om venit „de la Oltenia sau valea Oltului” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Olteanu"
+   ]
+  },
+  {
+   "slug": "olteanu",
+   "name": "Olteanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Oltenia sau valea Oltului*. Un om venit „de la Oltenia sau valea Oltului” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Oltean"
+   ]
+  },
+  {
+   "slug": "onu",
+   "name": "Onu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Onu (Ioan)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Onu (Ioan)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "oprea",
+   "name": "Oprea",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Oprea*, purtat de un strămoș: la început, copiii erau numiți „ai lui Oprea”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "oprisan",
+   "name": "Oprișan",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Opriș* (Oprea) cu sufixul *-an*.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Oprisan",
+    "Oprișanu"
+   ]
+  },
+  {
+   "slug": "pacuraru",
+   "name": "Păcuraru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *păcurar (păstor de oi, cuvânt vechi)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania",
+    "bucovina",
+    "moldova"
+   ],
+   "variants": [
+    "Păcurar",
+    "Păcurariu"
+   ]
+  },
+  {
+   "slug": "padureanu",
+   "name": "Pădureanu",
+   "kind": "loc",
+   "meaning": "Omul care locuia lângă pădure sau venea din ținutul Pădurenilor (Hunedoara).",
+   "regions": [],
+   "variants": [
+    "Pădurean",
+    "Padurean"
+   ]
+  },
+  {
+   "slug": "paharnicu",
+   "name": "Paharnicu",
+   "kind": "functie",
+   "meaning": "De la *paharnic*, dregător la curtea domnească.",
+   "regions": [],
+   "variants": [
+    "Paharnic"
+   ]
+  },
+  {
+   "slug": "pandaru",
+   "name": "Pândaru",
+   "kind": "functie",
+   "meaning": "De la *pândar*, paznicul viilor sau al câmpului.",
+   "regions": [
+    "muntenia",
+    "moldova"
+   ],
+   "variants": [
+    "Pândar"
+   ]
+  },
+  {
+   "slug": "panzaru",
+   "name": "Pânzaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *pânzar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Pânzar"
+   ]
+  },
+  {
+   "slug": "paraschiv",
+   "name": "Paraschiv",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Paraschiv* (de origine grecească).",
+   "regions": [],
+   "variants": [
+    "Paraschiva",
+    "Paraschivescu"
+   ]
+  },
+  {
+   "slug": "parvu",
+   "name": "Pârvu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Pârvu*, purtat de un strămoș: la început, copiii erau numiți „ai lui Pârvu”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [],
+   "note": "*Pârvu* era și un prenume vechi, legat de cuvântul slav pentru „primul”."
+  },
+  {
+   "slug": "parvulescu",
+   "name": "Pârvulescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Pârvu* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Pârvu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "pasca",
+   "name": "Pașca",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Pașca (din Paște sau Pascal)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Pașca (din Paște sau Pascal)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Pasca",
+    "Paska"
+   ]
+  },
+  {
+   "slug": "pascu",
+   "name": "Pascu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Pascu (din Pascal sau Paște)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Pascu (din Pascal sau Paște)”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "paun",
+   "name": "Păun",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *păun*, poate pentru un om mândru sau chipeș; e și prenume vechi.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Păunescu"
+   ]
+  },
+  {
+   "slug": "pavel",
+   "name": "Pavel",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Pavel*, purtat de un strămoș: la început, copiii erau numiți „ai lui Pavel”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Pál",
+    "Paul"
+   ]
+  },
+  {
+   "slug": "pavelescu",
+   "name": "Pavelescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Pavel* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Pavel.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "pescaru",
+   "name": "Pescaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *pescar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "muntenia",
+    "dobrogea"
+   ],
+   "variants": [
+    "Pescar",
+    "Pescariu"
+   ]
+  },
+  {
+   "slug": "petcu",
+   "name": "Petcu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Petcu (formă a lui Petru)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Petcu (formă a lui Petru)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "petre",
+   "name": "Petre",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Petre*, purtat de un strămoș: la început, copiii erau numiți „ai lui Petre”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Petru",
+    "Péter"
+   ]
+  },
+  {
+   "slug": "petrescu",
+   "name": "Petrescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Petre* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Petre.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "petrovici",
+   "name": "Petrovici",
+   "kind": "patronimic",
+   "meaning": "Din *Petru* cu sufixul slav *-ovici* („fiul lui”).",
+   "regions": [
+    "banat",
+    "bucovina"
+   ],
+   "variants": [
+    "Petrović",
+    "Petrowicz"
+   ]
+  },
+  {
+   "slug": "pitigoi",
+   "name": "Pițigoi",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *pițigoi*, poate pentru un om mărunt și iute.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "plugaru",
+   "name": "Plugaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *plugar (om care ară)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Plugar"
+   ]
+  },
+  {
+   "slug": "pop",
+   "name": "Pop",
+   "kind": "functie",
+   "meaning": "Forma fără articol a lui *popă* (preot): „al popii”, fiul sau urmașul unui preot.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Popp",
+    "Pap",
+    "Póp"
+   ],
+   "note": "În registrele maghiare apare foarte des ca *Pap*, iar în cele germane ca *Popp*."
+  },
+  {
+   "slug": "popa",
+   "name": "Popa",
+   "kind": "functie",
+   "meaning": "Vine de la cuvântul *popă*, adică preot. Numele arăta la început că omul era preot sau fiul unui preot.",
+   "regions": [],
+   "variants": [
+    "Popă",
+    "Pope"
+   ],
+   "note": "E unul dintre cele mai răspândite nume de familie din România."
+  },
+  {
+   "slug": "popan",
+   "name": "Popan",
+   "kind": "functie",
+   "meaning": "Din *popă* (preot), cu sufixul *-an*.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Popan",
+    "Papan"
+   ]
+  },
+  {
+   "slug": "popescu",
+   "name": "Popescu",
+   "kind": "patronimic",
+   "meaning": "Format din *popă* (preot) cu sufixul *-escu*: „al popii”, urmașul unui preot.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Popesco"
+   ],
+   "note": "Este printre cele mai frecvente nume de familie din țară, cu cele mai multe familii în sud."
+  },
+  {
+   "slug": "popovici",
+   "name": "Popovici",
+   "kind": "patronimic",
+   "meaning": "Format din *popă* cu sufixul de origine slavă *-ovici* („fiul lui”): fiul preotului.",
+   "regions": [
+    "banat",
+    "bucovina",
+    "moldova"
+   ],
+   "variants": [
+    "Popović",
+    "Popowicz",
+    "Popovich"
+   ]
+  },
+  {
+   "slug": "prahoveanu",
+   "name": "Prahoveanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *valea Prahovei*. Un om venit „de la valea Prahovei” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia"
+   ],
+   "variants": [
+    "Prahovean"
+   ]
+  },
+  {
+   "slug": "preda",
+   "name": "Preda",
+   "kind": "prenume",
+   "meaning": "Din prenumele vechi *Preda*.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Predescu",
+    "Predoiu"
+   ]
+  },
+  {
+   "slug": "prodan",
+   "name": "Prodan",
+   "kind": "porecla",
+   "meaning": "Din *prodan* (cuvânt vechi pentru copil găsit sau vândut, de origine slavă), ca poreclă.",
+   "regions": [
+    "moldova",
+    "bucovina",
+    "transilvania"
+   ],
+   "variants": [
+    "Prodanu"
+   ]
+  },
+  {
+   "slug": "puiu",
+   "name": "Puiu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *pui*, nume de dezmierdare.",
+   "regions": [],
+   "variants": [
+    "Pui"
+   ]
+  },
+  {
+   "slug": "puscas",
+   "name": "Pușcaș",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *pușcaș (soldat cu pușcă)*, adică omul care slujise ca pușcaș; e și o meserie.",
+   "regions": [
+    "transilvania",
+    "maramures"
+   ],
+   "variants": [
+    "Puskás",
+    "Pușcașu"
+   ]
+  },
+  {
+   "slug": "radu",
+   "name": "Radu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Radu*, purtat de un strămoș: la început, copiii erau numiți „ai lui Radu”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Raduly",
+    "Radul"
+   ]
+  },
+  {
+   "slug": "radulescu",
+   "name": "Rădulescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Radu* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Radu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "roman",
+   "name": "Roman",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Roman*, purtat de un strămoș: la început, copiii erau numiți „ai lui Roman”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "rosca",
+   "name": "Roșca",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *roșcat*, dată unui om cu părul roșcat.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Roșu",
+    "Rosca"
+   ]
+  },
+  {
+   "slug": "rosu",
+   "name": "Roșu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *roșu*, dată unui om roșcat.",
+   "regions": [],
+   "variants": [
+    "Roșca",
+    "Vörös"
+   ]
+  },
+  {
+   "slug": "rotar",
+   "name": "Rotar",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *rotar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Rotaru",
+    "Rotariu"
+   ]
+  },
+  {
+   "slug": "rotaru",
+   "name": "Rotaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *rotar (meșter de roți și căruțe)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Rotar",
+    "Rotariu"
+   ]
+  },
+  {
+   "slug": "rus",
+   "name": "Rus",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *rus (sau rutean)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Rusu",
+    "Orosz"
+   ],
+   "note": "În registrele maghiare numele poate apărea tradus ca *Orosz*."
+  },
+  {
+   "slug": "rusu",
+   "name": "Rusu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *rus (sau rutean, ucrainean)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [],
+   "variants": [
+    "Rus",
+    "Ruso"
+   ],
+   "note": "În Transilvania și Maramureș, *rus* îi numea adesea pe ruteni (ucrainenii de la nord)."
+  },
+  {
+   "slug": "sabau",
+   "name": "Sabău",
+   "kind": "meserie",
+   "meaning": "Forma românească a maghiarului *szabó* (croitor).",
+   "regions": [
+    "transilvania",
+    "crisana",
+    "maramures"
+   ],
+   "variants": [
+    "Szabó",
+    "Sabou",
+    "Croitoru"
+   ]
+  },
+  {
+   "slug": "sandu",
+   "name": "Sandu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Sandu (Alexandru)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Sandu (Alexandru)”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Sandor"
+   ]
+  },
+  {
+   "slug": "sapunaru",
+   "name": "Săpunaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *săpunar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Săpunar"
+   ]
+  },
+  {
+   "slug": "saracu",
+   "name": "Săracu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *sărac*, dat unui om nevoiaș.",
+   "regions": [],
+   "variants": [
+    "Sărac"
+   ]
+  },
+  {
+   "slug": "sarbu",
+   "name": "Sârbu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *sârb*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [],
+   "variants": [
+    "Sârb",
+    "Sîrbu",
+    "Sirbu"
+   ]
+  },
+  {
+   "slug": "sas",
+   "name": "Sas",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *sas (germanii din Transilvania)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Sasu",
+    "Szász"
+   ]
+  },
+  {
+   "slug": "sava",
+   "name": "Sava",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Sava*, purtat de un strămoș: la început, copiii erau numiți „ai lui Sava”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Savu",
+    "Săvescu"
+   ]
+  },
+  {
+   "slug": "schiopu",
+   "name": "Șchiopu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *șchiop*, dată unui om care șchiopăta.",
+   "regions": [],
+   "variants": [
+    "Șchiop",
+    "Schiopu"
+   ]
+  },
+  {
+   "slug": "simion",
+   "name": "Simion",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Simion*, purtat de un strămoș: la început, copiii erau numiți „ai lui Simion”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Simon",
+    "Șimon"
+   ]
+  },
+  {
+   "slug": "simionescu",
+   "name": "Simionescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Simion* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Simion.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "solomon",
+   "name": "Solomon",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Solomon*, purtat de un strămoș: la început, copiii erau numiți „ai lui Solomon”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Salamon"
+   ]
+  },
+  {
+   "slug": "somesan",
+   "name": "Someșan",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *valea Someșului*. Un om venit „de la valea Someșului” era numit așa de cei din noul sat.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Somesan",
+    "Szamosán"
+   ]
+  },
+  {
+   "slug": "stan",
+   "name": "Stan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Stan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Stan”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Stanciu",
+    "Stănescu"
+   ]
+  },
+  {
+   "slug": "stanciu",
+   "name": "Stanciu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Stanciu (formă a lui Stan)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Stanciu (formă a lui Stan)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "stanescu",
+   "name": "Stănescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Stan* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Stan.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "stefan",
+   "name": "Ștefan",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ștefan*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ștefan”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Stefan",
+    "István"
+   ]
+  },
+  {
+   "slug": "stoenescu",
+   "name": "Stoenescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Stoian* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Stoian.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "stoica",
+   "name": "Stoica",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Stoica*, purtat de un strămoș: la început, copiii erau numiți „ai lui Stoica”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "stoicescu",
+   "name": "Stoicescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Stoica* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Stoica.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "stoleru",
+   "name": "Stoleru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *stoler (tâmplar, cuvânt de origine germană)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [
+    "moldova",
+    "bucovina"
+   ],
+   "variants": [
+    "Stoler",
+    "Stolerul"
+   ]
+  },
+  {
+   "slug": "strajeru",
+   "name": "Străjeru",
+   "kind": "functie",
+   "meaning": "De la *străjer*, paznic.",
+   "regions": [],
+   "variants": [
+    "Străjer"
+   ]
+  },
+  {
+   "slug": "surdu",
+   "name": "Surdu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *surd*, dată unui om care auzea greu.",
+   "regions": [],
+   "variants": [
+    "Surd"
+   ]
+  },
+  {
+   "slug": "tamas",
+   "name": "Tamaș",
+   "kind": "prenume",
+   "meaning": "Forma românească a prenumelui maghiar *Tamás* (Toma).",
+   "regions": [
+    "transilvania",
+    "crisana"
+   ],
+   "variants": [
+    "Tamas",
+    "Tamás",
+    "Toma"
+   ]
+  },
+  {
+   "slug": "tamplaru",
+   "name": "Tâmplaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *tâmplar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Tâmplar"
+   ]
+  },
+  {
+   "slug": "tanase",
+   "name": "Tănase",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Tănase (Atanasie)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Tănase (Atanasie)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "tanasescu",
+   "name": "Tănăsescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Tănase* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Tănase.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "tataru",
+   "name": "Tătaru",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *tătar*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "moldova",
+    "muntenia",
+    "dobrogea"
+   ],
+   "variants": [
+    "Tătar",
+    "Tatar"
+   ]
+  },
+  {
+   "slug": "tatu",
+   "name": "Tatu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Tatu (de la tată)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Tatu (de la tată)”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "teodorescu",
+   "name": "Teodorescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Teodor* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Teodor.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "toader",
+   "name": "Toader",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Toader (Teodor)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Toader (Teodor)”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Todor",
+    "Tudor"
+   ]
+  },
+  {
+   "slug": "todea",
+   "name": "Todea",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Todea (formă populară a lui Teodor sau Toader)*, purtat de un strămoș: la început, copiii erau numiți „ai lui Todea (formă populară a lui Teodor sau Toader)”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "transilvania"
+   ],
+   "variants": [
+    "Toder",
+    "Todor",
+    "Tódea"
+   ]
+  },
+  {
+   "slug": "toma",
+   "name": "Toma",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Toma*, purtat de un strămoș: la început, copiii erau numiți „ai lui Toma”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Tomă",
+    "Tamás"
+   ]
+  },
+  {
+   "slug": "tudor",
+   "name": "Tudor",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Tudor*, purtat de un strămoș: la început, copiii erau numiți „ai lui Tudor”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Todor",
+    "Toader"
+   ]
+  },
+  {
+   "slug": "tudorache",
+   "name": "Tudorache",
+   "kind": "prenume",
+   "meaning": "Din prenumele *Tudorache*, formă a lui Tudor.",
+   "regions": [
+    "moldova",
+    "muntenia"
+   ],
+   "variants": [
+    "Tudorachi"
+   ]
+  },
+  {
+   "slug": "turcanu",
+   "name": "Țurcanu",
+   "kind": "etnic",
+   "meaning": "Din *țurcan*, numele unei rase de oi de munte, sau de la *turc*; ca poreclă pentru un cioban sau un om din altă parte.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Țurcan",
+    "Turcanu"
+   ],
+   "note": "Explicația exactă nu e sigură; ambele sensuri sunt propuse."
+  },
+  {
+   "slug": "turcu",
+   "name": "Turcu",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *turc*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [],
+   "variants": [
+    "Turc",
+    "Turcuș"
+   ]
+  },
+  {
+   "slug": "ungur",
+   "name": "Ungur",
+   "kind": "etnic",
+   "meaning": "Vine de la numele unui popor, *ungur (maghiar)*: îl primea fie un om venit de acolo, fie unul care avusese legături cu ei, fie unul poreclit așa.",
+   "regions": [
+    "transilvania",
+    "maramures",
+    "crisana"
+   ],
+   "variants": [
+    "Ungureanu",
+    "Magyar"
+   ]
+  },
+  {
+   "slug": "ungureanu",
+   "name": "Ungureanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Ungaria sau Transilvania (pe care cei de peste munți o numeau „țara ungurească”)*. Un om venit „de la Ungaria sau Transilvania (pe care cei de peste munți o numeau „țara ungurească”)” era numit așa de cei din noul sat.",
+   "regions": [
+    "moldova",
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Ungurean",
+    "Ungur"
+   ],
+   "note": "Purtătorii acestui nume erau de obicei români veniți din Transilvania, nu neapărat unguri."
+  },
+  {
+   "slug": "ursache",
+   "name": "Ursache",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *urs*, cu sufixul *-ache*; numea un om puternic.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Ursachi",
+    "Ursu"
+   ]
+  },
+  {
+   "slug": "ursu",
+   "name": "Ursu",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Ursu*, purtat de un strămoș: la început, copiii erau numiți „ai lui Ursu”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [],
+   "note": "Poate veni și din cuvântul *urs*, ca poreclă a unui om puternic sau greoi, și din prenumele Ursu."
+  },
+  {
+   "slug": "vacaru",
+   "name": "Văcaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *văcar (păzitor de vaci)*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Văcar",
+    "Vacaru"
+   ]
+  },
+  {
+   "slug": "valceanu",
+   "name": "Vâlceanu",
+   "kind": "loc",
+   "meaning": "Arată locul de unde venea familia: *Vâlcea*. Un om venit „de la Vâlcea” era numit așa de cei din noul sat.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Vâlcean",
+    "Valceanu"
+   ]
+  },
+  {
+   "slug": "valeanu",
+   "name": "Văleanu",
+   "kind": "loc",
+   "meaning": "Omul care locuia în vale sau venea „din vale”.",
+   "regions": [],
+   "variants": [
+    "Vălean",
+    "Valeanu"
+   ]
+  },
+  {
+   "slug": "vanatoru",
+   "name": "Vânătoru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *vânător*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Vânător",
+    "Vanatoru"
+   ]
+  },
+  {
+   "slug": "varga",
+   "name": "Varga",
+   "kind": "meserie",
+   "meaning": "Din maghiarul *varga* (cizmar).",
+   "regions": [
+    "transilvania",
+    "crisana",
+    "banat"
+   ],
+   "variants": [
+    "Vargă",
+    "Ciubotaru"
+   ]
+  },
+  {
+   "slug": "vasile",
+   "name": "Vasile",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Vasile*, purtat de un strămoș: la început, copiii erau numiți „ai lui Vasile”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": [
+    "Vasiliu",
+    "Vaszi"
+   ]
+  },
+  {
+   "slug": "vasilescu",
+   "name": "Vasilescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Vasile* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Vasile.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "vasiliu",
+   "name": "Vasiliu",
+   "kind": "patronimic",
+   "meaning": "Din prenumele *Vasile*, cu terminația *-iu*.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Vasile",
+    "Vasilescu"
+   ]
+  },
+  {
+   "slug": "vatafu",
+   "name": "Vătafu",
+   "kind": "functie",
+   "meaning": "De la *vătaf*, conducătorul unui grup de slujitori sau de lucrători pe o moșie.",
+   "regions": [
+    "muntenia",
+    "moldova"
+   ],
+   "variants": [
+    "Vătaf",
+    "Vatavu"
+   ]
+  },
+  {
+   "slug": "vlad",
+   "name": "Vlad",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Vlad*, purtat de un strămoș: la început, copiii erau numiți „ai lui Vlad”, iar numele a rămas apoi familiei.",
+   "regions": [],
+   "variants": []
+  },
+  {
+   "slug": "vlaicu",
+   "name": "Vlaicu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *vlah sau din prenumele Vlaicu*, nume vechi, purtat și ca prenume.",
+   "regions": [],
+   "variants": [
+    "Vlaic"
+   ]
+  },
+  {
+   "slug": "voicu",
+   "name": "Voicu",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *voinic*, sau din prenumele vechi Voicu.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": [
+    "Voiculescu"
+   ]
+  },
+  {
+   "slug": "vornicu",
+   "name": "Vornicu",
+   "kind": "functie",
+   "meaning": "De la *vornic*, dregător sau om care conducea treburile satului ori ale nunții.",
+   "regions": [
+    "moldova"
+   ],
+   "variants": [
+    "Vornic",
+    "Vornicescu"
+   ]
+  },
+  {
+   "slug": "vulpe",
+   "name": "Vulpe",
+   "kind": "porecla",
+   "meaning": "Vine dintr-o poreclă: *vulpe*, dată unui om iscusit.",
+   "regions": [],
+   "variants": [
+    "Vulpescu"
+   ]
+  },
+  {
+   "slug": "zamfir",
+   "name": "Zamfir",
+   "kind": "prenume",
+   "meaning": "Vine din prenumele *Zamfir*, purtat de un strămoș: la început, copiii erau numiți „ai lui Zamfir”, iar numele a rămas apoi familiei.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "zamfirescu",
+   "name": "Zamfirescu",
+   "kind": "patronimic",
+   "meaning": "Format din prenumele *Zamfir* cu sufixul *-escu*, care înseamnă „al lui”, „din neamul lui”: urmașii lui Zamfir.",
+   "regions": [
+    "muntenia",
+    "oltenia"
+   ],
+   "variants": []
+  },
+  {
+   "slug": "zidaru",
+   "name": "Zidaru",
+   "kind": "meserie",
+   "meaning": "Arată meseria unui strămoș: *zidar*. Satul îl numea după ce lucra, iar porecla a devenit nume de familie.",
+   "regions": [],
+   "variants": [
+    "Zidar"
+   ]
+  }
+ ]
+}

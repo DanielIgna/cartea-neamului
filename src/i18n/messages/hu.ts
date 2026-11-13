@@ -9,6 +9,7 @@ import { huParteneri } from "./parteneri/hu";
 import { huContact } from "./contact/hu";
 import { huProbleme } from "./probleme/hu";
 import { huResurse } from "./resurse/hu";
+import { huCadou } from "./cadou/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
@@ -419,6 +420,7 @@ export const hu: Catalog = {
   ...huContact,
   ...huProbleme,
   ...huResurse,
+  ...huCadou,
   ...huFilm,
   ...huLegal,
   ...huDatele,
