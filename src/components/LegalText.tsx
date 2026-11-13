@@ -32,6 +32,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
     data: (c: ReactNode) => <Link href="/datele-mele">{c}</Link>,
     dataPartners: (c: ReactNode) => <Link href="/datele-mele#parteneri">{c}</Link>,
     partners: (c: ReactNode) => <Link href="/parteneri">{c}</Link>,
+    res: (c: ReactNode) => <Link href="/resurse-genealogie">{c}</Link>,
     pm: ext("https://propmanage.ro"),
     anspdcp: ext("https://www.dataprotection.ro"),
     anpc: ext("https://anpc.ro"),

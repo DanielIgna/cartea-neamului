@@ -74,6 +74,10 @@ export const huLegal: LegalCatalog = {
           l4: "<b>Hogyan vonhatod vissza:</b> egy kattintással az <dataPartners>Adataim</dataPartners> oldalon (a „Partnerek kedvezményei” kapcsoló), vagy bármelyik kapott e-mail leiratkozási linkjével, belépés nélkül. A visszavonás semmin sem változtat a fiókodban vagy a családfádban.",
           l5: "Az oldalon lévő, a PropManage-re mutató linkek (a Partnerek oldalon, a régi családi ház mellett és a könyv letöltése után) egyszerű hivatkozások: csak azt mutatják, hogy a Család Könyvéből érkezel, rólad semmilyen adatot nem adnak át.",
         },
+        dna: {
+          h: "A „DNS-tesztet szeretnék” kérés",
+          p1: "Az <res>Ingyenes családfakutatási források</res> oldalon tájékoztatást kérhetsz tőlünk a DNS-tesztekről. Csak azt őrizzük meg, amit az űrlapba írsz (név, e-mail-cím, telefon, ha megadod, település és üzenet), és a hozzájárulásod dátumát, kizárólag azért, hogy válaszoljunk; a jogalap a hozzájárulásod. Ezek nem genetikai adatok: nem fogadunk, nem tárolunk és nem továbbítunk DNS-fájlokat, -eredményeket vagy -egyezéseket. A kérést nem küldjük el laboratóriumoknak, és nem kapunk jutalékot. A kérést csak az oldal üzemeltetője látja; töröljük, ha kéred, a(z) <mail>{email}</mail> címen, vagy ha már nincs rá szükség.",
+        },
         keep: {
           h: "Meddig őrizzük az adatokat",
           p1: "Amíg fiókod van. Amit törölsz, azonnal eltűnik az oldalról, az adatbázis biztonsági másolatai pedig legfeljebb 30 napon belül maguktól felülíródnak. Ha törlöd a fiókodat, minden eltűnik, ami a tiéd: a fiók, a ládád emlékei, az üzenetek, amit másoknak írtál, és a hozzájárulások. A családfák a családé maradnak: a több taggal rendelkező családfa átszáll valamelyikükre, az pedig, amelyben egyedül vagy, teljesen törlődik. Az adatlapod a családfákban megmarad, hogy a családfa ne szakadjon meg, de a fiókoddal való kapcsolat nélkül; ha szeretnéd, az adataidtól is kiürítjük. Az oldal használatának mérését legfeljebb 13 hónapig őrizzük; ha azt mondod, „Már nem kérem”, azonnal töröljük.",

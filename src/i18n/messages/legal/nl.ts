@@ -74,6 +74,10 @@ export const nlLegal: LegalCatalog = {
           l4: "<b>Hoe je haar intrekt:</b> met één klik, in <dataPartners>Mijn gegevens</dataPartners> (de schakelaar ‘Voordelen van partners’), of via de afmeldlink in elke e-mail die je krijgt, zonder in te loggen. Intrekken verandert niets aan je account of je stamboom.",
           l5: "De links naar PropManage op de site (op de pagina Partners, naast het ouderlijk huis en na het downloaden van het boek) zijn gewone links: ze laten alleen zien dat je van het Familieboek komt, zonder enig gegeven over jou.",
         },
+        dna: {
+          h: "De vraag ‘Ik wil een DNA-test’",
+          p1: "Op de pagina <res>Gratis bronnen voor genealogie</res> kun je ons om informatie over DNA-tests vragen. We bewaren alleen wat je in het formulier schrijft (naam, e-mail, telefoon als je die geeft, woonplaats en bericht) en de datum van je toestemming, alleen om je te antwoorden; de rechtsgrond is je toestemming. Het zijn geen genetische gegevens: we ontvangen, bewaren en versturen geen DNA-bestanden, -uitslagen of -matches. We sturen de vraag niet naar laboratoria en krijgen geen commissie. Alleen wie de site beheert ziet de vraag; we wissen hem als je het ons vraagt, via <mail>{email}</mail>, of als hij niet meer nodig is.",
+        },
         keep: {
           h: "Hoe lang we de gegevens bewaren",
           p1: "Zolang je een account hebt. Wat je verwijdert, verdwijnt meteen van de site, en de reservekopieën van de database worden binnen hoogstens 30 dagen vanzelf overschreven. Als je je account verwijdert, verdwijnt alles wat van jou is: het account, de herinneringen in je kist, de berichten, wat je anderen schreef en de toestemmingen. De stambomen blijven van de familie: een stamboom met andere leden gaat over naar een van hen, en een stamboom waarin je alleen bent, wordt helemaal verwijderd. Je kaart in de stambomen blijft, zodat de stamboom niet breekt, zonder de koppeling met het account; als je wilt, wordt ze ook leeggemaakt van je gegevens. Hoeveel je de site gebruikt, bewaren we hoogstens 13 maanden; als je zegt ‘Ik wil niet meer’, wordt het meteen verwijderd.",

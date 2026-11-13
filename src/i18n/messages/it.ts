@@ -7,6 +7,7 @@ import { itCalatorie } from "./calatorie/it";
 import { itBiserica } from "./biserica/it";
 import { itParteneri } from "./parteneri/it";
 import { itContact } from "./contact/it";
+import { itResurse } from "./resurse/it";
 import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
 import { itDatele } from "./datele/it";
@@ -358,6 +359,7 @@ export const it: Catalog = {
   ...itBiserica,
   ...itParteneri,
   ...itContact,
+  ...itResurse,
   ...itFilm,
   ...itLegal,
   ...itDatele,

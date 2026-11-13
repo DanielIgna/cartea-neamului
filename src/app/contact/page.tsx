@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import PageIntl from "@/i18n/PageIntl";
@@ -46,6 +47,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
           <PageIntl ns={["Contact"]}><ContactForm from={prefill ? "carte-tiparita" : undefined} message={prefill} /></PageIntl>
         </div>
       </div>
+      <p className="muted" style={{ fontSize: 14, margin: 0 }}><Link href="/resurse-genealogie">{(await getT("Resources"))("contactLink")}</Link></p>
       <p className="muted" style={{ fontSize: 14, margin: 0 }}>{t("seller", { name: op.name, cui: op.cui, regCom: op.regCom, address: op.address })}</p>
     </section>
   );

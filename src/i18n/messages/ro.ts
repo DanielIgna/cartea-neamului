@@ -16,6 +16,7 @@ import { roCalatorie } from "./calatorie/ro";
 import { roBiserica } from "./biserica/ro";
 import { roParteneri } from "./parteneri/ro";
 import { roContact } from "./contact/ro";
+import { roResurse } from "./resurse/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -371,6 +372,7 @@ export const ro = {
   // Partenerii (PropManage) și casa bătrânească a familiei (src/i18n/messages/parteneri/).
   ...roParteneri,
   ...roContact,
+  ...roResurse,
   ...roFilm,
   ...roLegal,
   ...roDatele,

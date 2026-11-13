@@ -74,6 +74,10 @@ export const enGBLegal: LegalCatalog = {
           l4: "<b>How to withdraw it:</b> with one click, in <dataPartners>My data</dataPartners> (the “Benefits from partners” switch), or from the unsubscribe link in any email you receive, without signing in. Withdrawing changes nothing in your account or your family tree.",
           l5: "Links to PropManage on the site (on the Partners page, next to the old family home and after downloading the book) are simple links: they only show that you come from the Family Book, with no data about you.",
         },
+        dna: {
+          h: "The “I want a DNA test” request",
+          p1: "On the <res>Free genealogy resources</res> page you can ask us about DNA tests. We keep only what you write in the form (name, email, phone if you give it, town and message) and the date you gave your consent, only to answer you; the legal basis is your consent. This is not genetic data: we do not receive, store or pass on DNA files, results or matches. We do not send your request to laboratories and receive no commission. Only the person running the site sees the request; we delete it when you ask us, at <mail>{email}</mail>, or once it is no longer needed.",
+        },
         keep: {
           h: "How long we keep data",
           p1: "For as long as you have an account. What you delete disappears from the site at once, and backup copies of the database are overwritten automatically within 30 days at most. When you delete your account, everything that is yours goes: your account, the memories in your chest, your messages, what you wrote to others and your consents. Family trees remain the family’s: a tree with other members passes to one of them, and one in which you are alone is deleted completely. Your record in family trees remains, so that the tree is not broken, without the link to your account; if you wish, it is also emptied of your data. We keep how much you use the site for at most 13 months; if you say “I no longer want this”, it is deleted at once.",

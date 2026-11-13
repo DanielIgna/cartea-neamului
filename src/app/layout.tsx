@@ -84,6 +84,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const { locale, source } = await getLocaleInfo();
   const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
   const tc = await getT("ContactPage");
+  const tr = await getT("Resources");
   const seller = operator();
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
@@ -119,6 +120,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <a href="/confidentialitate#cookie-uri">{t("cookies")}</a>
               {me && <Link href="/datele-mele">{t("myData")}</Link>}
               <Link href="/parteneri">{tp("menu")}</Link>
+              <Link href="/resurse-genealogie">{tr("footer")}</Link>
               <Link href="/contact">{tc("menu")}</Link>
               {/* Cine vinde (cerut de lege pentru comerțul online): datele PFA-ului din src/lib/legal.ts și legătura ANPC – SAL. */}
               <span className="site-seller">{seller.name} · CUI {seller.cui} · {seller.regCom} · <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer">ANPC – SAL</a></span>

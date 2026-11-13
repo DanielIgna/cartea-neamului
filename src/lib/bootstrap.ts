@@ -115,6 +115,14 @@ const ADDITIVE = [
     "tree_id" uuid REFERENCES "tree"("id") ON DELETE set null, "amount" integer NOT NULL, "currency" text NOT NULL,
     "created_at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE INDEX IF NOT EXISTS "payment_user_idx" ON "payment" USING btree ("user_id","kind")`,
+  // „Vreau un test ADN” (fără date genetice) și laboratoarele din lista informativă.
+  sql`CREATE TABLE IF NOT EXISTS "dna_request" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "email" text NOT NULL, "phone" text, "city" text NOT NULL,
+    "message" text NOT NULL, "locale" text, "consent_at" timestamp NOT NULL, "consent_version" text NOT NULL, "resolved_at" timestamp,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "dna_lab" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "city" text, "url" text NOT NULL, "price_note" text,
+    "position" integer DEFAULT 0 NOT NULL, "visible" boolean DEFAULT true NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

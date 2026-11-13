@@ -74,6 +74,10 @@ export const esLegal: LegalCatalog = {
           l4: "<b>Cómo lo retiras:</b> con un clic, en <dataPartners>Mis datos</dataPartners> (el interruptor «Ventajas de los socios»), o con el enlace para darte de baja de cualquier correo que recibas, sin entrar en la cuenta. Retirarlo no cambia nada en tu cuenta ni en tu árbol.",
           l5: "Los enlaces a PropManage en el sitio (en la página Socios, junto a la casa familiar y después de descargar el libro) son simples enlaces: solo indican que vienes del Libro de la Familia, sin ningún dato sobre ti.",
         },
+        dna: {
+          h: "La solicitud «Quiero un test de ADN»",
+          p1: "En la página <res>Recursos gratuitos de genealogía</res> puedes pedirnos información sobre los tests de ADN. Guardamos solo lo que escribes en el formulario (nombre, correo, teléfono si lo das, ciudad y mensaje) y la fecha de tu consentimiento, solo para responderte; la base legal es tu consentimiento. No son datos genéticos: no recibimos, no guardamos ni transmitimos archivos, resultados ni coincidencias de ADN. No enviamos la solicitud a laboratorios ni cobramos comisión. Solo quien gestiona el sitio ve la solicitud; la borramos cuando nos lo pidas, en <mail>{email}</mail>, o cuando ya no haga falta.",
+        },
         keep: {
           h: "Cuánto tiempo guardamos los datos",
           p1: "Mientras tengas cuenta. Lo que borras desaparece al instante del sitio, y las copias de seguridad de la base de datos se sobrescriben solas en 30 días como mucho. Cuando borras tu cuenta, se va todo lo que es tuyo: la cuenta, los recuerdos de tu baúl, los mensajes, lo que escribiste a otros y los consentimientos. Los árboles siguen siendo de la familia: un árbol con otros miembros pasa a uno de ellos, y uno en el que estás solo se borra por completo. Tu ficha en los árboles se queda, para que el árbol no se rompa, sin el vínculo con la cuenta; si quieres, también se vacía de tus datos. Cuánto usas el sitio lo guardamos como mucho 13 meses; si dices «Ya no quiero», se borra al instante.",

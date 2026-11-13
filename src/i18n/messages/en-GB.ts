@@ -7,6 +7,7 @@ import { enGBCalatorie } from "./calatorie/en-GB";
 import { enGBBiserica } from "./biserica/en-GB";
 import { enGBParteneri } from "./parteneri/en-GB";
 import { enGBContact } from "./contact/en-GB";
+import { enGBResurse } from "./resurse/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -358,6 +359,7 @@ export const enGB: Catalog = {
   ...enGBBiserica,
   ...enGBParteneri,
   ...enGBContact,
+  ...enGBResurse,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,

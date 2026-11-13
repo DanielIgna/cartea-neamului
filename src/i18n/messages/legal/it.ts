@@ -74,6 +74,10 @@ export const itLegal: LegalCatalog = {
           l4: "<b>Come lo revochi:</b> con un clic, in <dataPartners>I miei dati</dataPartners> (l’interruttore «Vantaggi dai partner»), o con il link di disiscrizione in qualsiasi email ricevuta, senza entrare nell’account. La revoca non cambia nulla nel tuo account o nel tuo albero.",
           l5: "I link a PropManage nel sito (nella pagina Partner, accanto alla casa di famiglia e dopo aver scaricato il libro) sono semplici collegamenti: mostrano solo che arrivi dal Libro della Famiglia, senza alcun dato su di te.",
         },
+        dna: {
+          h: "La richiesta «Voglio un test del DNA»",
+          p1: "Nella pagina <res>Risorse gratuite per la genealogia</res> puoi chiederci informazioni sui test del DNA. Conserviamo solo ciò che scrivi nel modulo (nome, email, telefono se lo dai, città e messaggio) e la data del tuo consenso, solo per risponderti; la base giuridica è il tuo consenso. Non sono dati genetici: non riceviamo, non conserviamo e non trasmettiamo file, risultati o corrispondenze del DNA. Non inviamo la richiesta ai laboratori e non riceviamo commissioni. Solo chi gestisce il sito vede la richiesta; la cancelliamo quando ce lo chiedi, a <mail>{email}</mail>, o quando non serve più.",
+        },
         keep: {
           h: "Per quanto tempo conserviamo i dati",
           p1: "Finché hai un account. Ciò che cancelli sparisce subito dal sito, e le copie di sicurezza del database si sovrascrivono da sole entro 30 giorni al massimo. Quando cancelli il tuo account, se ne va tutto ciò che è tuo: l’account, i ricordi del tuo baule, i messaggi, ciò che hai scritto ad altri e i consensi. Gli alberi restano della famiglia: un albero con altri membri passa a uno di loro, mentre uno in cui sei solo viene cancellato del tutto. La tua scheda negli alberi resta, perché l’albero non si spezzi, senza il collegamento all’account; se vuoi, viene anche svuotata dei tuoi dati. Quanto usi il sito lo conserviamo al massimo 13 mesi; se dici «Non voglio più», viene cancellato subito.",

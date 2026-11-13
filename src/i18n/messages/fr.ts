@@ -7,6 +7,7 @@ import { frCalatorie } from "./calatorie/fr";
 import { frBiserica } from "./biserica/fr";
 import { frParteneri } from "./parteneri/fr";
 import { frContact } from "./contact/fr";
+import { frResurse } from "./resurse/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
@@ -358,6 +359,7 @@ export const fr: Catalog = {
   ...frBiserica,
   ...frParteneri,
   ...frContact,
+  ...frResurse,
   ...frFilm,
   ...frLegal,
   ...frDatele,

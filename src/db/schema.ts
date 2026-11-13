@@ -466,3 +466,31 @@ export const homeSubmission = pgTable("home_submission", {
   decidedAt: timestamp("decided_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("home_submission_user_idx").on(t.userId), index("home_submission_status_idx").on(t.status, t.createdAt)]);
+
+// „Vreau un test ADN” de pe /resurse-genealogie: doar o cerere de informații (nume, email, oraș, mesaj), fără date genetice
+// sau medicale. Nu se trimite nimic la laboratoare; cererea o vede doar adminul și se șterge la cerere. Vezi src/lib/resurse.ts.
+export const dnaRequest = pgTable("dna_request", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  city: text("city").notNull(),
+  message: text("message").notNull(),
+  locale: text("locale"),
+  consentAt: timestamp("consent_at").notNull(), // bifa GDPR, cu data ei
+  consentVersion: text("consent_version").notNull(),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Laboratoarele din lista informativă de pe /resurse-genealogie, puse din Admin. Fără afiliere și fără comision.
+export const dnaLab = pgTable("dna_lab", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  city: text("city"),
+  url: text("url").notNull(),
+  priceNote: text("price_note"),
+  position: integer("position").notNull().default(0),
+  visible: boolean("visible").notNull().default(true),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

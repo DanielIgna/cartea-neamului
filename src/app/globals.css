@@ -1395,3 +1395,10 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .plan-now{font-weight:600;color:var(--accent);margin:0}
 .plan-card .pay-form{margin-top:auto}
 .tree-limits{font-size:14px;margin:0 0 8px;padding:6px 12px;border-radius:10px;background:var(--accent-soft);display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+
+/* Resurse gratuite pentru genealogie. */
+.source-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.source-list li p{margin:2px 0 0;font-size:14px}
+.source-ext{font-size:13px}
+.dna-note{border-left:3px solid var(--accent);padding-left:10px}
+.dna-form label.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
