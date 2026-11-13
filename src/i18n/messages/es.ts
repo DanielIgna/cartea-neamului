@@ -51,6 +51,7 @@ export const es: Catalog = {
     stay: "Seguir en rumano",
   },
   UserMenu: {
+    plan: "Mi plan",
     admin: "Admin",
     messages: "Mensajes",
     account: "Tu cuenta y tus datos",
@@ -67,6 +68,12 @@ export const es: Catalog = {
     more: "Qué significa",
   },
   Landing: {
+    freeNote: "{days} días gratis, sin tarjeta y sin renovación automática.",
+    plansLabel: "Precios",
+    plansTitle: "Planes sencillos, pagados una vez al año",
+    plansText: "Empiezas con {days} días gratis, sin tarjeta. Si quieres seguir, eliges un plan para un año. No se renueva solo y el árbol sigue siendo tuyo en cualquier caso.",
+    plansNote: "Quien solo ve el árbol no paga nada, en ningún plan. Puedes pasar en cualquier momento a un plan mayor pagando solo la diferencia.",
+    plansTerms: "Todas las condiciones:",
     deleted: "Tu cuenta se ha borrado, con todo lo que era tuyo. Gracias por haber estado con nosotros.",
     heroTitle: "El árbol de la familia, construido juntos",
     brandNote: "En rumano: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const es: Catalog = {
     },
   },
   Home: {
+    planTitle: "Tu plan",
+    planUpText: "Puedes pasar en cualquier momento a un plan mayor: pagas solo la diferencia por los días que quedan.",
+    planUpBtn: "Pasar a un plan mayor",
     welcomeEyebrow: "Bienvenido de nuevo",
     welcomeLead: "Tu árbol, tus recuerdos y el libro de tu familia, todo en un solo lugar.",
     openTree: "Abrir el árbol",
@@ -392,6 +402,7 @@ export const es: Catalog = {
     voiceNudgeCta: "Empezar «En casa de los abuelos»",
   },
   Plata: {
+    upgradeBtn: "Pasar a {plan}: {price}",
     adminTest: "Los pagos están desactivados para todos los demás: no se les pide nada. Como administrador, puedes hacer aquí un pago de prueba (por ejemplo, con un código promocional).",
     adminPaid: "Se ha recibido el pago de prueba: tu año está pagado hasta el {date}.",
     title: "Pago",

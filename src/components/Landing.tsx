@@ -8,6 +8,9 @@ import Image from "next/image";
 import { db } from "@/db";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
+import { LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
+import { money } from "@/lib/plati";
+import { getLocale } from "@/i18n/server";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -84,9 +87,15 @@ const GENS = [["gen1", "50% 30%"], ["gen2", "50% 40%"], ["gen3", "50% 35%"], ["g
 
 /** Pozele alese în Admin se schimbă rar: le ținem în cache 10 minute, iar orice salvare golește cache-ul pe loc. */
 const cachedHomeImages = unstable_cache(() => homeImages(db), ["home-images"], { tags: [HOME_IMAGES_TAG], revalidate: 600 });
+/** Prețurile și plafoanele planurilor, din Admin → Manager control: în cache 10 minute, golit pe loc la salvare. */
+const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, tc, th, imgs] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), cachedHomeImages()]);
+  const [t, tc, th, tp, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), cachedHomeImages(), cachedPlans(), getLocale()]);
+  // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
+  const sales = s.on;
+  const lei = locale === "ro";
+  const nf = new Intl.NumberFormat(locale);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
@@ -119,6 +128,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
             <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
             <Link className="lp-btn lp-btn-ghost" href="/intrare">{t("signIn")}</Link>
           </div>
+          {sales && <p className="lp-free">{t("freeNote", { days: String(s.trialDays) })}</p>}
         </div>
         <ul className="lp-trust">
           <li><Icon>{CHECK}</Icon>{t("trust1")}</li>
@@ -219,6 +229,41 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         </div>
       </section>
 
+      {/* Prețurile: cele trei planuri pe un an, cu plafoanele lor, citite din Admin (Daniel, 13 noiembrie 2026). */}
+      {sales && (
+        <section className="lp-band lp-paper" aria-labelledby="lp-plans" id="preturi">
+          <div className="lp-in">
+            <header className="lp-head">
+              <p className="lp-eyebrow">{t("plansLabel")}</p>
+              <h2 id="lp-plans">{t("plansTitle")}</h2>
+              {ornament}
+              <p>{t("plansText", { days: String(s.trialDays) })}</p>
+            </header>
+            <div className="lp-plans">
+              {TIERS.map((x) => {
+                const p = tierPrice(x, true, s), lim = tierLimits(x, s), book = tierBook(x, s);
+                return (
+                  <article key={x} className={`lp-plan${x === "familie" ? " lp-plan-rec" : ""}`}>
+                    {x === "familie" && <span className="lp-plan-badge">{tp("recommended")}</span>}
+                    <h3>{tp(`tiers.${x}.name`)}</h3>
+                    <p className="lp-plan-price">{tp("perYear", { price: money(lei ? p.lei : p.eur, locale).label })}</p>
+                    <p className="lp-plan-lead">{tp(`tiers.${x}.lead`)}</p>
+                    <ul>
+                      {LIMIT_KEYS.map((k) => <li key={k}><span>{tp(`lim.${k}`)}</span><b>{lim[k] === null ? tp("unlimited") : nf.format(lim[k])}</b></li>)}
+                      <li><span>{tp("lim.book")}</span><b>{book === "toti" ? tp("bookAll") : book === "una" ? tp("bookOne") : tp("bookSeparate", { price: money(lei ? s.bookLei : s.bookEur, locale).label })}</b></li>
+                    </ul>
+                  </article>
+                );
+              })}
+            </div>
+            <p className="lp-plans-note">{t("plansNote")} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</p>
+            <div className="lp-actions lp-plans-actions">
+              <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       <section className="lp-band lp-cta" aria-labelledby="lp-cta">
         <Photo img={imgs.hands[0]} sizes="100vw" quality={60} className="lp-img lp-cta-img" />
         <div className="lp-in">
@@ -229,6 +274,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
             <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("start")}<span aria-hidden="true">→</span></Link>
             <Link className="lp-btn lp-btn-ghost" href="/intrare">{t("signIn")}</Link>
           </div>
+          {sales && <p className="lp-free">{t("freeNote", { days: String(s.trialDays) })}</p>}
           <p className="lp-privacy">{t.rich("privacy", { link: (c) => <Link href="/confidentialitate">{c}</Link> })}</p>
         </div>
       </section>

@@ -9,7 +9,7 @@ import { exportMyData } from "@/lib/account";
 import { roleIn, roleInTree } from "@/lib/access";
 import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, accessFor, holdsYear, limitsFor, room, tierPrice, tierBook, tierPrint, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
+  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, basicPrice49Once, accessFor, holdsYear, limitsFor, room, tierPrice, tierBook, tierPrint, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -61,7 +61,7 @@ describe("planurile", () => {
   });
   it("banii: cel cu arbore plătește prețul întreg, ruda invitată prețul ei; „gratuit mereu” niciodată", () => {
     const t = { ...on, invitePriceLei: 30 };
-    expect(yearPrice(true, t)).toEqual({ lei: 50, eur: 10 });
+    expect(yearPrice(true, t)).toEqual({ lei: 49, eur: 10 });
     expect(yearPrice(false, t)).toEqual({ lei: 30, eur: 10 });
     const r = revenue([
       { access: { kind: "platit", until: null, tier: "basic" }, ownsTree: true },
@@ -69,7 +69,7 @@ describe("planurile", () => {
       { access: { kind: "proba", until: d("2027-01-01"), daysLeft: 2 }, ownsTree: true },
       { access: { kind: "mereu" }, ownsTree: true },
     ], t);
-    expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 50, leiYearPossible: 130 });
+    expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 49, leiYearPossible: 128 });
   });
   it("setările se scriu ca numere, cu mesaje în română, iar comutatorul vine din bifă", () => {
     const rest = Object.fromEntries(Object.entries(DEFAULT_SETTINGS).filter(([k]) => k !== "on" && k !== "startedAt").map(([k, v]) => [k, String(v)]));
@@ -316,7 +316,7 @@ describe("plata nu se ocolește invitându-se unii pe alții", () => {
   });
 
   it("prețurile pe fiecare plan", () => {
-    expect(tierPrice("basic", true, s)).toEqual({ lei: 50, eur: 10 });
+    expect(tierPrice("basic", true, s)).toEqual({ lei: 49, eur: 10 });
     expect(tierPrice("basic", false, { ...s, invitePriceLei: 30 })).toEqual({ lei: 30, eur: 10 });
     expect(tierPrice("familie", true, s)).toEqual({ lei: 149, eur: 30 });
     expect(tierPrice("premium", false, s)).toEqual({ lei: 249, eur: 50 });
@@ -339,9 +339,21 @@ describe("pornirea vânzării, o singură dată", () => {
   it("pornește plățile la prima rulare și nu le repornește după o oprire din Admin", async () => {
     const d = createDb(); await runMigrations(d);
     expect(await startSalesOnce(d, new Date("2026-11-13T00:00:00Z"))).toBe("pornit");
-    expect(await planSettings(d)).toMatchObject({ on: true, startedAt: "2026-11-13T00:00:00.000Z", priceLei: 50, trialDays: 7 });
+    expect(await planSettings(d)).toMatchObject({ on: true, startedAt: "2026-11-13T00:00:00.000Z", priceLei: 49, trialDays: 7 });
     await savePlanSettings(d, { ...DEFAULT_SETTINGS, on: false }, null as unknown as string);
     expect(await startSalesOnce(d)).toBe("deja");
     expect((await planSettings(d)).on).toBe(false);
+  });
+});
+
+describe("Basic 49 lei, o singură dată", () => {
+  it("schimbă 50 în 49 la Basic și la ruda invitată, lasă un alt preț pus din Admin și nu mai repetă", async () => {
+    const d = createDb(); await runMigrations(d);
+    await savePlanSettings(d, { ...DEFAULT_SETTINGS, on: true, priceLei: 50, invitePriceLei: 40 }, null as unknown as string);
+    expect(await basicPrice49Once(d)).toBe("schimbat");
+    expect(await planSettings(d)).toMatchObject({ on: true, priceLei: 49, invitePriceLei: 40, familieLei: 149 });
+    await savePlanSettings(d, { ...(await planSettings(d)), priceLei: 50 }, null as unknown as string);
+    expect(await basicPrice49Once(d)).toBe("deja");
+    expect((await planSettings(d)).priceLei).toBe(50);
   });
 });

@@ -51,6 +51,7 @@ export const de: Catalog = {
     stay: "Auf Rumänisch bleiben",
   },
   UserMenu: {
+    plan: "Mein Tarif",
     admin: "Admin",
     messages: "Nachrichten",
     account: "Dein Konto und deine Daten",
@@ -67,6 +68,12 @@ export const de: Catalog = {
     more: "Was das bedeutet",
   },
   Landing: {
+    freeNote: "{days} Tage kostenlos, ohne Karte und ohne automatische Verlängerung.",
+    plansLabel: "Preise",
+    plansTitle: "Einfache Tarife, einmal im Jahr bezahlt",
+    plansText: "Du beginnst mit {days} kostenlosen Tagen, ohne Karte. Wenn du weitermachen willst, wählst du einen Tarif für ein Jahr. Er verlängert sich nicht von selbst, und dein Stammbaum bleibt in jedem Fall deiner.",
+    plansNote: "Wer den Stammbaum nur ansieht, zahlt nie etwas, bei jedem Tarif. Du kannst jederzeit in einen größeren Tarif wechseln und zahlst nur die Differenz.",
+    plansTerms: "Alle Bedingungen:",
     deleted: "Dein Konto wurde gelöscht, mit allem, was dir gehörte. Danke, dass du bei uns warst.",
     heroTitle: "Der Stammbaum der Familie, gemeinsam aufgebaut",
     brandNote: "Auf Rumänisch: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const de: Catalog = {
     },
   },
   Home: {
+    planTitle: "Dein Tarif",
+    planUpText: "Du kannst jederzeit in einen größeren Tarif wechseln: Du zahlst nur die Differenz für die restlichen Tage.",
+    planUpBtn: "In einen größeren Tarif wechseln",
     welcomeEyebrow: "Willkommen zurück",
     welcomeLead: "Dein Stammbaum, deine Erinnerungen und euer Familienbuch, alles an einem Ort.",
     openTree: "Stammbaum öffnen",
@@ -392,6 +402,7 @@ export const de: Catalog = {
     voiceNudgeCta: "„Bei den Großeltern“ beginnen",
   },
   Plata: {
+    upgradeBtn: "Zu {plan} wechseln: {price}",
     adminTest: "Zahlungen sind für alle anderen ausgeschaltet: Niemand muss etwas bezahlen. Als Admin kannst du hier eine Testzahlung machen (zum Beispiel mit einem Aktionscode).",
     adminPaid: "Die Testzahlung ist eingegangen: Dein Jahr ist bis zum {date} bezahlt.",
     title: "Zahlung",

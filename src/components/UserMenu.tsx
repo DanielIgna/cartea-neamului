@@ -43,6 +43,7 @@ export default function UserMenu({ name, unread = 0, image, admin = false, prefs
           {avatar(30)}
           <span className="muted">{name}</span>
         </Link>
+        <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
         <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
         <button className="btn" onClick={signOut}>{t("signOut")}</button>
       </div>
@@ -57,6 +58,7 @@ export default function UserMenu({ name, unread = 0, image, admin = false, prefs
             <Link href="/">{t("home")}</Link>
             <Link href="/mesaje">{t("messages")}{unread ? <span className="badge">{unread}</span> : null}</Link>
             <Link href="/datele-mele">{t("account")}</Link>
+            <Link href="/plata">{t("plan")}</Link>
             {admin && <Link href="/admin">{t("admin")}</Link>}
             <Link href="/parteneri">{tp("menu")}</Link>
           </nav>

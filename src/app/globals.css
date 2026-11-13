@@ -1422,3 +1422,21 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .lp-history a{color:var(--l-ink);font-weight:700;text-decoration-color:var(--l-gold);text-underline-offset:3px}
 /* Paginile interioare: numele paginii e H1, cu aceeași înfățișare ca eticheta de deasupra titlului */
 h1.section-label{font-family:var(--body);text-wrap:wrap}
+
+/* Prima pagină: „7 zile gratuite, fără card” sub butoane și prețurile celor trei planuri (13 noiembrie 2026) */
+.lp-free{margin:14px auto 0;font-size:15px;color:var(--cream);opacity:.92}
+.lp-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch;max-width:1040px;margin-inline:auto}
+.lp-plan{position:relative;display:flex;flex-direction:column;gap:8px;background:var(--l-card);border:1px solid var(--l-line);border-radius:18px;padding:26px 22px;box-shadow:var(--lp-shadow)}
+.lp-plan-rec{border:2px solid var(--l-gold)}
+.lp-plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,var(--gold-2),var(--gold));color:var(--gold-ink);font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:4px 14px;border-radius:999px;white-space:nowrap}
+.lp-plan h3{font-size:24px;margin:0;text-align:center}
+.lp-plan-price{margin:0;text-align:center;font-family:var(--display);font-size:30px;color:var(--l-gold)}
+.lp-plan-lead{margin:0 0 6px;text-align:center;color:var(--l-muted);font-size:15px;line-height:1.55}
+.lp-plan ul{list-style:none;margin:auto 0 0;padding:12px 0 0;border-top:1px solid var(--l-line);display:grid;gap:7px;font-size:15px}
+.lp-plan li{display:flex;justify-content:space-between;gap:12px}
+.lp-plan li span{color:var(--l-muted)}
+.lp-plan li b{text-align:right}
+.lp-plans-note{max-width:70ch;margin:32px auto 0;text-align:center;color:var(--l-muted);font-size:16px;line-height:1.6}
+.lp-plans-note a{color:var(--l-gold)}
+.lp-plans-actions{justify-content:center}
+@media (max-width:900px){.lp-plans{grid-template-columns:minmax(0,1fr);max-width:460px}.lp-plan-rec{order:-1}}
