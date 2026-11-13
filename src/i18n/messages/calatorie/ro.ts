@@ -98,7 +98,7 @@ export const roCalatorie = {
     errors: {
       tooLong: "Textul poate avea cel mult {max} de caractere.",
       notOwner: "Doar proprietarul arborelui schimbă cuvântul de la final.",
-      demo: "În contul de probă cuvântul de la final rămâne cel de bază.",
+      demo: "În contul de demonstrație cuvântul de la final rămâne cel de bază.",
       empty: "Scrie textul sau alege „Ascunde pentru toți”.",
     },
   },

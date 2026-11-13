@@ -76,7 +76,7 @@ export const roDatele = {
       confirm: "Da, retrag acordul",
     },
     usage: {
-      demo: "Contul de probă nu se măsoară.",
+      demo: "Contul de demonstrație nu se măsoară.",
       stopped: "Am oprit măsurarea și am șters tot ce se adunase.",
       started: "Am pornit măsurarea. Mulțumim!",
       pending: "Se schimbă…",
@@ -84,7 +84,7 @@ export const roDatele = {
       start: "Pornește măsurarea",
     },
     partner: {
-      demo: "Contul de probă e folosit de mai mulți oameni, așa că nu primește beneficii de la parteneri.",
+      demo: "Contul de demonstrație e folosit de mai mulți oameni, așa că nu primește beneficii de la parteneri.",
       withdrawn: "Am retras acordul. Adresa ta nu mai ajunge la PropManage.",
       given: "Gata, ți-ai dat acordul. Mulțumim!",
       switch: "Beneficii de la parteneri",
@@ -93,7 +93,7 @@ export const roDatele = {
       label: "Șterge contul",
       text: "Îți poți șterge contul oricând. Înainte, îți arătăm ce pleacă și ce rămâne în arborii familiei.",
       contact: "Pentru orice întrebare despre datele tale ne scrii la <mail>{email}</mail>.",
-      demo: "Contul de probă e folosit de mai mulți oameni, așa că nu se poate șterge.",
+      demo: "Contul de demonstrație e folosit de mai mulți oameni, așa că nu se poate șterge.",
       open: "Vreau să-mi șterg contul",
       goneTitle: "Se șterg pentru totdeauna:",
       account: "contul tău, cu emailul și parola;",
@@ -115,10 +115,10 @@ export const roDatele = {
       cancel: "Renunță",
     },
     errors: {
-      demoDelete: "Contul de probă e folosit de mai mulți oameni, așa că nu se poate șterge.",
+      demoDelete: "Contul de demonstrație e folosit de mai mulți oameni, așa că nu se poate șterge.",
       email: "Scrie adresa ta de email exact cum e în cont, ca să confirmi.",
       partnerSignIn: "Intră în cont ca să schimbi acordul.",
-      partnerDemo: "Contul de probă e folosit de mai mulți oameni, așa că nu-și poate da acordul.",
+      partnerDemo: "Contul de demonstrație e folosit de mai mulți oameni, așa că nu-și poate da acordul.",
     },
   },
   // Răspunsurile scurte ale legăturilor directe (descărcări, documente), când omul deschide una fără drept sau fără cont.

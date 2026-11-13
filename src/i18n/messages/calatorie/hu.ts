@@ -93,7 +93,7 @@ export const huCalatorie: CalatorieCatalog = {
     errors: {
       tooLong: "A szöveg legfeljebb {max} karakter lehet.",
       notOwner: "A záró gondolatot csak a családfa tulajdonosa módosíthatja.",
-      demo: "A próbafiókban a záró gondolat az alapszöveg marad.",
+      demo: "A bemutatófiókban a záró gondolat az alapszöveg marad.",
       empty: "Írd meg a szöveget, vagy válaszd az „Elrejtés mindenki elől” lehetőséget.",
     },
   },

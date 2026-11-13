@@ -93,7 +93,7 @@ export const itCalatorie: CalatorieCatalog = {
     errors: {
       tooLong: "Il testo può avere al massimo {max} caratteri.",
       notOwner: "Solo il proprietario dell’albero può cambiare la parola finale.",
-      demo: "Nell’account di prova la parola finale resta il testo di base.",
+      demo: "Nell’account dimostrativo la parola finale resta il testo di base.",
       empty: "Scrivi il testo oppure scegli «Nascondi per tutti».",
     },
   },

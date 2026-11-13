@@ -60,6 +60,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     // method="post": dacă cineva apasă înainte să se încarce pagina, parola nu ajunge în bara de adrese.
     <form onSubmit={submit} method="post" className="form">
       <h2 style={{ fontSize: 24 }}>{signUp ? t("signUpTitle") : t("signInTitle")}</h2>
+      {signUp && <p className="muted" style={{ margin: 0 }}>{t("signUpTrial")}</p>}
       {google && (
         <>
           <button type="button" className="btn google-btn" disabled={pending} onClick={withGoogle}>

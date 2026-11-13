@@ -72,7 +72,7 @@ export const itDatele: DateleCatalog = {
       confirm: "Sì, revoco il consenso",
     },
     usage: {
-      demo: "L’account di prova non viene misurato.",
+      demo: "L’account dimostrativo non viene misurato.",
       stopped: "Misurazione fermata e tutto ciò che era stato raccolto è stato cancellato.",
       started: "Misurazione avviata. Grazie!",
       pending: "Modifica in corso…",
@@ -80,7 +80,7 @@ export const itDatele: DateleCatalog = {
       start: "Avvia la misurazione",
     },
     partner: {
-      demo: "L’account di prova è usato da molte persone, quindi non riceve vantaggi dai partner.",
+      demo: "L’account dimostrativo è usato da molte persone, quindi non riceve vantaggi dai partner.",
       withdrawn: "Consenso revocato. Il tuo indirizzo non arriva più a PropManage.",
       given: "Fatto, hai dato il consenso. Grazie!",
       switch: "Vantaggi dai partner",
@@ -89,7 +89,7 @@ export const itDatele: DateleCatalog = {
       label: "Cancella l’account",
       text: "Puoi cancellare il tuo account quando vuoi. Prima ti mostriamo cosa se ne va e cosa resta negli alberi della famiglia.",
       contact: "Per qualsiasi domanda sui tuoi dati scrivici a <mail>{email}</mail>.",
-      demo: "L’account di prova è usato da molte persone, quindi non si può cancellare.",
+      demo: "L’account dimostrativo è usato da molte persone, quindi non si può cancellare.",
       open: "Voglio cancellare il mio account",
       goneTitle: "Si cancellano per sempre:",
       account: "il tuo account, con l’email e la password;",
@@ -111,10 +111,10 @@ export const itDatele: DateleCatalog = {
       cancel: "Annulla",
     },
     errors: {
-      demoDelete: "L’account di prova è usato da molte persone, quindi non si può cancellare.",
+      demoDelete: "L’account dimostrativo è usato da molte persone, quindi non si può cancellare.",
       email: "Per confermare, scrivi il tuo indirizzo email esattamente come è nell’account.",
       partnerSignIn: "Accedi per cambiare il consenso.",
-      partnerDemo: "L’account di prova è usato da molte persone, quindi non può dare il consenso.",
+      partnerDemo: "L’account dimostrativo è usato da molte persone, quindi non può dare il consenso.",
     },
   },
   ApiErrors: {

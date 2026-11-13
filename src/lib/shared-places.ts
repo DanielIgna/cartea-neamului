@@ -12,7 +12,7 @@ import { DEMO_EMAIL, isDemo } from "./demo";
  * Cei în viață nu apar niciodată. Și vezi alte neamuri doar dacă îl arăți și tu pe al tău.
  */
 
-export const DEMO_NO = "Contul de probă e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii și nici nu poate cere legături. Fă-ți un cont al tău.";
+export const DEMO_NO = "Contul de demonstrație e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii și nici nu poate cere legături. Fă-ți un cont al tău.";
 const DAILY_REQUESTS = 10;
 
 const sig = (r: SharedPlace) => [r.placeId, r.area ?? "", r.name, r.detail ?? "", r.people, r.fromYear ?? "", r.toYear ?? "", r.surnames].join("\t");

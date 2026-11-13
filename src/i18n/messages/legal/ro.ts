@@ -64,7 +64,7 @@ export const roLegal = {
           l3: "<b>Amintirile</b> le vede doar cine alege cel care le scrie: doar el (ciornă), cel care a întrebat, familia apropiată până la un grad de rudenie sau tot arborele. În Cartea neamului intră doar cele bifate pentru carte.",
           l4: "<b>Mesajele</b> le văd doar cei doi care și le scriu.",
           l7: "<b>Pozele de pe prima pagină</b> le vede oricine deschide site-ul: sunt pozele alese de noi și cele propuse de voi, după ce le aprobăm. Pe cele propuse de tine le poți retrage oricând, din „Filmul vieții” de pe pagina ta din arbore; atunci ies de pe prima pagină și copia lor se șterge.",
-          l5: "<b>Noi</b> vedem în panoul de administrare doar ce ne trebuie ca să ținem site-ul în picioare: liste și cifre despre conturi (nume, email, când și de pe ce fel de dispozitiv au intrat), despre arbori (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus „Bine”, cât timp stau în fiecare parte a site-ului. Mai vedem istoricul schimbărilor din fișele arborilor (cine a schimbat, ce nume, date sau locuri și când), ca să putem anula o ștergere sau o greșeală și să oprim pe cineva care strică un arbore, și pozele propuse pentru prima pagină, ca să le aprobăm. Tot acolo putem ține o notă scurtă despre cont, de pildă că rămâne gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.",
+          l5: "<b>Noi</b> vedem în panoul de administrare doar ce ne trebuie ca să ținem site-ul în picioare: liste și cifre despre conturi (nume, email, când și de pe ce fel de dispozitiv au intrat), despre arbori (nume, câte persoane și fișiere au), la fiecare cont cât a adăugat (câte persoane, amintiri, poze, invitații și mesaje) și, la cei care au spus „Bine”, cât timp stau în fiecare parte a site-ului. Mai vedem istoricul schimbărilor din fișele arborilor (cine a schimbat, ce nume, date sau locuri și când), ca să putem anula o ștergere sau o greșeală și să oprim pe cineva care strică un arbore, și pozele propuse pentru prima pagină, ca să le aprobăm. Tot acolo putem ține o notă scurtă despre cont, de pildă că are primul an gratuit. Amintirile și mesajele nu le citim, iar din capitolul „Credința” nu numărăm nimic; ne uităm la ele doar dacă ne ceri tu ajutorul sau dacă ne obligă legea.",
           l6: "Nu vindem date, nu facem reclame și nu le dăm nimănui altcuiva în afară de furnizorii de mai jos, de partenerul PropManage (doar emailul celor care au bifat, cum scrie mai jos) și de autorități, când legea ne obligă.",
           l8: "<b>Contabilul nostru</b> și <b>ANAF</b> (autoritatea fiscală din România) văd doar datele de pe facturi: numele, emailul, ce ai plătit, cât și când, cum cere legea fiscală.",
         },
@@ -151,7 +151,7 @@ export const roLegal = {
           h: "1. Contul",
           l1: "Contul e pentru cei care au cel puțin {minAge} ani. Copiii pot fi trecuți în arbore de părinții lor.",
           l2: "Un cont e al unui singur om. Parola o păstrezi doar pentru tine; ce se face din contul tău e în grija ta.",
-          l3: "Contul de probă are o parolă publică, deci e al tuturor: nu pune în el nimic din familia ta.",
+          l3: "Contul de demonstrație are o parolă publică, deci e al tuturor: nu pune în el nimic din familia ta.",
           l4: "Plățile le face doar cine are cel puțin 18 ani.",
         },
         content: {

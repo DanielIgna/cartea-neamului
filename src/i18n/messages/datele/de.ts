@@ -72,7 +72,7 @@ export const deDatele: DateleCatalog = {
       confirm: "Ja, ich widerrufe",
     },
     usage: {
-      demo: "Das Probekonto wird nicht gemessen.",
+      demo: "Das Demokonto wird nicht gemessen.",
       stopped: "Messung gestoppt und alles Gesammelte gelöscht.",
       started: "Messung gestartet. Danke!",
       pending: "Wird geändert…",
@@ -80,7 +80,7 @@ export const deDatele: DateleCatalog = {
       start: "Messung starten",
     },
     partner: {
-      demo: "Das Probekonto wird von vielen Menschen genutzt, deshalb bekommt es keine Vorteile von Partnern.",
+      demo: "Das Demokonto wird von vielen Menschen genutzt, deshalb bekommt es keine Vorteile von Partnern.",
       withdrawn: "Einwilligung widerrufen. Deine Adresse erreicht PropManage nicht mehr.",
       given: "Fertig, du hast eingewilligt. Danke!",
       switch: "Vorteile von Partnern",
@@ -89,7 +89,7 @@ export const deDatele: DateleCatalog = {
       label: "Konto löschen",
       text: "Du kannst dein Konto jederzeit löschen. Vorher zeigen wir dir, was verschwindet und was in den Stammbäumen der Familie bleibt.",
       contact: "Für jede Frage zu deinen Daten schreib uns an <mail>{email}</mail>.",
-      demo: "Das Probekonto wird von vielen Menschen genutzt, deshalb kann es nicht gelöscht werden.",
+      demo: "Das Demokonto wird von vielen Menschen genutzt, deshalb kann es nicht gelöscht werden.",
       open: "Ich möchte mein Konto löschen",
       goneTitle: "Für immer gelöscht werden:",
       account: "dein Konto, mit E-Mail und Passwort;",
@@ -111,10 +111,10 @@ export const deDatele: DateleCatalog = {
       cancel: "Abbrechen",
     },
     errors: {
-      demoDelete: "Das Probekonto wird von vielen Menschen genutzt, deshalb kann es nicht gelöscht werden.",
+      demoDelete: "Das Demokonto wird von vielen Menschen genutzt, deshalb kann es nicht gelöscht werden.",
       email: "Gib zur Bestätigung deine E-Mail-Adresse genau so ein, wie sie im Konto steht.",
       partnerSignIn: "Melde dich an, um deine Einwilligung zu ändern.",
-      partnerDemo: "Das Probekonto wird von vielen Menschen genutzt, deshalb kann es nicht einwilligen.",
+      partnerDemo: "Das Demokonto wird von vielen Menschen genutzt, deshalb kann es nicht einwilligen.",
     },
   },
   ApiErrors: {

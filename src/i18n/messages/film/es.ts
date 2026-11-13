@@ -61,7 +61,7 @@ export const esFilm: FilmCatalog = {
       family: "Familia",
     },
     errors: {
-      demo: "Desde la cuenta de prueba no se pueden proponer fotos.",
+      demo: "Desde la cuenta de demostración no se pueden proponer fotos.",
       consent: "Marca la casilla del permiso para que podamos poner la foto en la portada.",
       photo: "Esta foto no se puede proponer.",
       storage: "El espacio para fotos no está disponible ahora. Inténtalo más tarde.",
