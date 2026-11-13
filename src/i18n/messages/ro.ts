@@ -18,6 +18,7 @@ import { roParteneri } from "./parteneri/ro";
 import { roContact } from "./contact/ro";
 import { roProbleme } from "./probleme/ro";
 import { roResurse } from "./resurse/ro";
+import { roCadou } from "./cadou/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -430,6 +431,7 @@ export const ro = {
   ...roContact,
   ...roProbleme,
   ...roResurse,
+  ...roCadou,
   ...roFilm,
   ...roLegal,
   ...roDatele,

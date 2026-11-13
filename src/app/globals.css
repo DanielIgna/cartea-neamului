@@ -1464,3 +1464,28 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .problem-reply{border-left:3px solid var(--accent);padding:6px 0 6px 12px}
 .problem-reply b{display:block;margin-bottom:2px}
 @media (max-width:520px){.problem-pics li,.problem-pics img{width:96px}.problem-pics img{height:96px}}
+
+/* Cadou de sărbători (/cadou-de-sarbatori), banda discretă de pe prima pagină și cardul de tipărit al unui dar */
+.lp-gift-band{margin:0;padding:9px 16px;text-align:center;font-size:15px;line-height:1.45;background:var(--brown);color:var(--cream);border-bottom:1px solid #d39b4f55}
+.lp-gift-band a{color:var(--gold-2);font-weight:700;white-space:nowrap;text-decoration:none}
+.lp-gift-band a:hover{text-decoration:underline}
+.crumbs{font-size:14px;color:var(--muted)}
+.crumbs a{color:inherit}
+.gift-hero h1{margin:.2em 0 .4em;line-height:1.2}
+.gift-lead{font-size:18px;line-height:1.6}
+.gift-cta{margin-top:14px}
+.gift-gets{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px}
+.gift-gets h3,.gift-steps h3{margin:0 0 4px;font-size:18px}
+.gift-gets p,.gift-steps p{margin:0}
+.gift-steps{margin:0 0 8px;padding-left:1.4em;display:grid;gap:14px}
+.gift-faq{border-top:1px solid var(--line);padding:12px 0}
+.gift-faq summary{cursor:pointer;font-weight:700}
+.gift-faq p{margin:8px 0 0}
+@media (max-width:640px){.gift-gets{grid-template-columns:1fr}}
+.gift-card{max-width:560px;margin:0 auto;padding:36px 32px;text-align:center;border:3px double #a8722f;border-radius:14px;background:#fffdf8;color:#2a1d17}
+.gift-card h1{margin:.2em 0;font-size:32px}
+.gift-card .gift-card-note{font-style:italic;font-size:18px;margin:18px auto;max-width:42ch}
+.gift-card .gift-card-qr{width:160px;height:160px;margin:12px auto}
+.gift-card .gift-card-qr svg{width:100%;height:100%}
+.gift-card code{word-break:break-all;font-size:13px}
+@media print{.gift-print-hide,header.top,.site-foot,.wa-float{display:none!important}.gift-card{border-color:#a8722f;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
