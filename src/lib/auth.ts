@@ -1,5 +1,6 @@
 import { and, eq, isNull } from "drizzle-orm";
 import { betterAuth } from "better-auth";
+import { waitUntil } from "@vercel/functions";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
@@ -40,7 +41,21 @@ export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined),
   trustedOrigins: vercelOrigins,
   database: drizzleAdapter(db, { provider: "pg", schema: { user, session, account, verification } }),
-  emailAndPassword: { enabled: true, minPasswordLength: 8 },
+  emailAndPassword: {
+    enabled: true, minPasswordLength: 8,
+    // „Ai uitat parola?”: legătura e valabilă o oră și merge o singură dată; după schimbare se închid toate sesiunile vechi.
+    // Răspunsul e același și pentru un email fără cont, ca nimeni să nu poată afla cine are cont.
+    resetPasswordTokenExpiresIn: 60 * 60,
+    revokeSessionsOnPasswordReset: true,
+    sendResetPassword: async ({ user: u, url }, request) => {
+      const { resetMailLocale, sendResetMail } = await import("./parola-uitata");
+      const locale = resetMailLocale(request?.headers.get("cookie"), (u as { locale?: string | null }).locale);
+      // Trimis după răspuns, ca timpul răspunsului să nu arate dacă emailul are cont.
+      waitUntil(sendResetMail(u.email, u.name, url, locale).catch((e) => console.error("reset mail", e)));
+    },
+  },
+  // Cel mult 3 cereri de parolă nouă pe minut de la aceeași adresă.
+  rateLimit: { customRules: { "/request-password-reset": { window: 60, max: 3 }, "/reset-password": { window: 60, max: 10 } } },
   // Cine e intrat în cont: ținut 5 minute într-un cookie semnat, ca fiecare pagină să nu mai întrebe baza de date la fiecare clic.
   session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   // Limba contului (aleasă din site, nu trimisă la creare): îl urmează pe alt telefon sau calculator.

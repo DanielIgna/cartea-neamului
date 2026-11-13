@@ -62,17 +62,21 @@ export async function markReminded(db: Pick<Db, "update">, userId: string, paidU
   await db.update(accountPlan).set({ remindedFor: paidUntil }).where(eq(accountPlan.userId, userId));
 }
 
-/** Se poate trimite emailul singur? Doar cu un serviciu de email pus de cel care ține site-ul (cheie în Vercel). */
-export const reminderMailReady = () => !!process.env.RESEND_API_KEY?.trim() && !!process.env.REMINDER_FROM?.trim();
+/**
+ * Se poate trimite emailul singur? Doar cu un serviciu de email pus de cel care ține site-ul (cheie în Vercel):
+ * RESEND_API_KEY și adresa de la care pleacă, MAIL_FROM (sau vechiul nume REMINDER_FROM).
+ */
+export const mailFrom = () => process.env.MAIL_FROM?.trim() || process.env.REMINDER_FROM?.trim() || "";
+export const reminderMailReady = () => !!process.env.RESEND_API_KEY?.trim() && !!mailFrom();
 
 /** Trimite un email prin Resend (REST, fără bibliotecă). Întoarce false dacă nu e pus serviciul sau n-a mers. */
-export async function sendMail(to: string, subject: string, text: string, fetcher: typeof fetch = fetch): Promise<boolean> {
+export async function sendMail(to: string, subject: string, text: string, fetcher: typeof fetch = fetch, html?: string): Promise<boolean> {
   if (!reminderMailReady()) return false;
   try {
     const r = await fetcher("https://api.resend.com/emails", {
       method: "POST",
       headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, "content-type": "application/json" },
-      body: JSON.stringify({ from: process.env.REMINDER_FROM, to: [to], subject, text }),
+      body: JSON.stringify({ from: mailFrom(), to: [to], subject, text, ...(html ? { html } : {}) }),
     });
     return r.ok;
   } catch {

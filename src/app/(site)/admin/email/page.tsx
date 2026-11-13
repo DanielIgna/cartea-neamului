@@ -68,7 +68,7 @@ export default async function AdminEmail() {
           </table>
         </div>
         <p className="muted" style={{ marginBottom: 0 }}>
-          Emailurile trimise de site singur (aducerea aminte de plată): {reminderMailReady() ? <Status ok>Resend e pus</Status> : <Status ok={false} warn>Resend nu e pus încă (opțional)</Status>}
+          Emailurile trimise de site singur (parola uitată, aducerea aminte de plată): {reminderMailReady() ? <Status ok>Resend e pus</Status> : <Status ok={false} warn>Resend nu e pus încă: fără el nu pleacă emailul pentru parola uitată (RESEND_API_KEY și MAIL_FROM în Vercel)</Status>}
         </p>
       </div>
 
