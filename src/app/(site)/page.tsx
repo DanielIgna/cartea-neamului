@@ -17,6 +17,9 @@ import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/page-metadata";
 import { HOME_JSON_LD } from "@/lib/home-jsonld";
+import { userAccess } from "@/lib/plata";
+import { tierRank, TIERS } from "@/lib/plans";
+import { getLocale } from "@/i18n/server";
 
 // Prima pagină are o singură adresă (fără ?cont=…), iar motoarele de căutare află numele site-ului din datele WebSite, Organization și SoftwareApplication.
 // Tot aici stă codul de verificare Google Search Console, pus din Admin → SEO (sau GOOGLE_SITE_VERIFICATION în Vercel).
@@ -64,6 +67,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const stack = (["gen1", "gen2", "gen4"] as const).map((k) => imgs[k][0]).filter(Boolean);
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, first.id), eq(person.claimedByUserId, me.id))).limit(1);
   const firstName = (me.name ?? "").replace(/\s*\(.*\)\s*$/, "").split(/\s+/)[0] || me.name;
+  // Planul tău: cine are un an plătit pe Basic sau Familie vede că poate trece oricând pe unul mai mare (plătind diferența).
+  const [{ access }, tp, locale] = await Promise.all([userAccess(db, me.id).catch(() => null).then((x) => x ?? { access: { kind: "deschis" as const } }), getT("Plata"), getLocale()]);
+  const paid = access.kind === "platit" && access.until ? access : null;
+  const canUp = !!paid && tierRank(paid.tier) < TIERS.length - 1;
+  const date = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(d);
   return (
     <>
     <header className="pf-cover home-cover">
@@ -104,6 +112,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
           <p className="muted">{t("newText")}</p>
           <Link className="btn" href="/arbore-nou">{t("newButton")}</Link>
         </div>
+        {paid && paid.until && (
+          <div className="card">
+            <h2 style={{ fontSize: 20 }}>{t("planTitle")}</h2>
+            <p>{tp("tierUntil", { plan: tp(`tiers.${paid.tier}.name`), date: date(paid.until) })}</p>
+            {canUp && <p className="muted">{t("planUpText")}</p>}
+            <Link className={`btn${canUp ? " primary" : ""}`} href="/plata">{canUp ? t("planUpBtn") : tp("treeLink")}</Link>
+          </div>
+        )}
         <InstallApp compact />
       </aside>
     </div>

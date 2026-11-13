@@ -51,6 +51,7 @@ export const enGB: Catalog = {
     stay: "Stay in Romanian",
   },
   UserMenu: {
+    plan: "My plan",
     admin: "Admin",
     messages: "Messages",
     account: "Your account and your data",
@@ -67,6 +68,12 @@ export const enGB: Catalog = {
     more: "What this means",
   },
   Landing: {
+    freeNote: "{days} days free, no card and no automatic renewal.",
+    plansLabel: "Prices",
+    plansTitle: "Simple plans, paid once a year",
+    plansText: "You start with {days} free days, no card needed. If you want to carry on, you choose a plan for one year. It doesn’t renew by itself, and your tree stays yours either way.",
+    plansNote: "People who only view the tree never pay, on any plan. You can move up to a bigger plan at any time and pay only the difference.",
+    plansTerms: "All the conditions:",
     deleted: "Your account has been deleted, together with everything that was yours. Thank you for being with us.",
     heroTitle: "Your family tree, built together",
     brandNote: "In Romanian: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const enGB: Catalog = {
     },
   },
   Home: {
+    planTitle: "Your plan",
+    planUpText: "You can move up to a bigger plan at any time: you pay only the difference for the days left.",
+    planUpBtn: "Move to a bigger plan",
     welcomeEyebrow: "Welcome back",
     welcomeLead: "Your family tree, your memories and your family book, all in one place.",
     openTree: "Open the tree",
@@ -392,6 +402,7 @@ export const enGB: Catalog = {
     voiceNudgeCta: "Start “At the grandparents’”",
   },
   Plata: {
+    upgradeBtn: "Move to {plan}: {price}",
     adminTest: "Payments are switched off for everyone else: nobody is asked to pay. As an admin, you can make a test payment here (for example with a promotion code).",
     adminPaid: "The test payment was received: your year is paid until {date}.",
     title: "Payment",

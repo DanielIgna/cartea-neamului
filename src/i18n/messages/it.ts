@@ -51,6 +51,7 @@ export const it: Catalog = {
     stay: "Resto in rumeno",
   },
   UserMenu: {
+    plan: "Il mio piano",
     admin: "Admin",
     messages: "Messaggi",
     account: "Il tuo account e i tuoi dati",
@@ -67,6 +68,12 @@ export const it: Catalog = {
     more: "Cosa significa",
   },
   Landing: {
+    freeNote: "{days} giorni gratuiti, senza carta e senza rinnovo automatico.",
+    plansLabel: "Prezzi",
+    plansTitle: "Piani semplici, pagati una volta l’anno",
+    plansText: "Inizi con {days} giorni gratuiti, senza carta. Se vuoi continuare, scegli un piano per un anno. Non si rinnova da solo e l’albero resta tuo in ogni caso.",
+    plansNote: "Chi guarda soltanto l’albero non paga nulla, con qualsiasi piano. Puoi passare in ogni momento a un piano più grande pagando solo la differenza.",
+    plansTerms: "Tutte le condizioni:",
     deleted: "Il tuo account è stato eliminato, con tutto ciò che era tuo. Grazie di essere stato con noi.",
     heroTitle: "L’albero della famiglia, costruito insieme",
     brandNote: "In rumeno: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const it: Catalog = {
     },
   },
   Home: {
+    planTitle: "Il tuo piano",
+    planUpText: "Puoi passare in ogni momento a un piano più grande: paghi solo la differenza per i giorni rimasti.",
+    planUpBtn: "Passa a un piano più grande",
     welcomeEyebrow: "Bentornato",
     welcomeLead: "Il tuo albero, i tuoi ricordi e il libro della tua famiglia, tutto in un unico posto.",
     openTree: "Apri l’albero",
@@ -392,6 +402,7 @@ export const it: Catalog = {
     voiceNudgeCta: "Inizia «Dai nonni»",
   },
   Plata: {
+    upgradeBtn: "Passa a {plan}: {price}",
     adminTest: "I pagamenti sono disattivati per tutti gli altri: a nessuno si chiede nulla. Come amministratore, qui puoi fare un pagamento di prova (per esempio con un codice promozionale).",
     adminPaid: "Il pagamento di prova è arrivato: il tuo anno è pagato fino al {date}.",
     title: "Pagamento",

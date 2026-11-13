@@ -61,6 +61,7 @@ export const ro = {
     stay: "Rămân la română",
   },
   UserMenu: {
+    plan: "Planul meu",
     admin: "Admin",
     messages: "Mesaje",
     account: "Contul tău și datele tale",
@@ -77,6 +78,12 @@ export const ro = {
     more: "Ce înseamnă",
   },
   Landing: {
+    freeNote: "{days} zile gratuite, fără card și fără reînnoire automată.",
+    plansLabel: "Prețuri",
+    plansTitle: "Planuri simple, plătite o dată pe an",
+    plansText: "Începi cu {days} zile gratuite, fără card. Dacă vrei să continui, alegi un plan pe un an. Nu se reînnoiește singur, iar arborele rămâne al tău oricum.",
+    plansNote: "Cine doar vede arborele nu plătește nimic, pe orice plan. Poți trece oricând pe un plan mai mare, plătind doar diferența.",
+    plansTerms: "Toate condițiile:",
     deleted: "Contul tău a fost șters, cu tot ce era al tău. Îți mulțumim că ai fost cu noi.",
     heroTitle: "Arborele familiei, construit împreună",
     brandNote: "",
@@ -147,6 +154,9 @@ export const ro = {
     },
   },
   Home: {
+    planTitle: "Planul tău",
+    planUpText: "Poți trece oricând pe un plan mai mare: plătești doar diferența pentru zilele rămase.",
+    planUpBtn: "Treci pe un plan mai mare",
     welcomeEyebrow: "Bine ai revenit",
     welcomeLead: "Arborele, amintirile și cartea neamului vostru, toate într-un singur loc.",
     openTree: "Deschide arborele",
@@ -406,6 +416,7 @@ export const ro = {
     voiceNudgeCta: "Începe „La bunici”",
   },
   Plata: {
+    upgradeBtn: "Treci pe {plan}: {price}",
     adminTest: "Plățile sunt oprite pentru toți ceilalți: lor nu li se cere nimic. Tu, ca admin, poți face aici o plată de probă (de pildă cu un cod promoțional).",
     adminPaid: "Plata de probă a fost primită: ai anul plătit până la {date}.",
     title: "Plată",

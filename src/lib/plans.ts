@@ -6,6 +6,7 @@
  * din „Datele mele” (o cere și legea). După zilele gratuite, fără plată, arborii se pot doar vedea, nu se șterge nimic.
  */
 import { eq, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import type { Db } from "@/db";
 import { accountPlan, appSetting } from "@/db/schema";
@@ -86,7 +87,7 @@ export const PlanSettings = z.object({
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
-  on: false, startedAt: null, trialDays: 7, priceLei: 50, priceEur: 10, invitePriceLei: 50, invitePriceEur: 10, bookLei: 99, bookEur: 20,
+  on: false, startedAt: null, trialDays: 7, priceLei: 49, priceEur: 10, invitePriceLei: 49, invitePriceEur: 10, bookLei: 99, bookEur: 20,
   // Cei care au testat site-ul înainte de pornirea plăților au primul an gratuit (alegerea lui Daniel, 2026-11-12).
   betaDays: 365,
   // Cât încape familia apropiată (părinți, bunici, soț/soție, copii, frați, nepoți): în zilele gratuite, un arbore al cuiva
@@ -114,6 +115,8 @@ export const trialLimits = (s: PlanSettings): Limits =>
 export const tierBook = (t: Tier, s: PlanSettings): BookMode => s[`${t}Book`];
 export const tierPrint = (t: Tier, s: PlanSettings): number => s[`${t}Print`];
 const KEY = "planuri";
+/** Eticheta cache-ului cu prețurile de pe prima pagină; se golește la fiecare salvare din Admin. */
+export const PLANS_TAG = "plan-settings";
 
 /** Setările plăților, cum le-a lăsat cel care ține site-ul (sau cele propuse, dacă nu le-a schimbat). */
 export async function planSettings(db: Pick<Db, "select">): Promise<PlanSettings> {
@@ -128,6 +131,7 @@ export async function savePlanSettings(db: Pick<Db, "insert" | "select">, v: Pla
   const value: PlanSettings = { ...v, startedAt: v.on ? (before.on && before.startedAt ? before.startedAt : now.toISOString()) : null };
   await db.insert(appSetting).values({ key: KEY, value, updatedBy: by, updatedAt: now })
     .onConflictDoUpdate({ target: appSetting.key, set: { value, updatedBy: by, updatedAt: now } });
+  try { revalidateTag(PLANS_TAG); } catch { /* în afara unei cereri Next (teste, scripturi) nu e cache de golit */ }
   return value;
 }
 
@@ -144,6 +148,24 @@ export async function startSalesOnce(db: Pick<Db, "insert" | "select">, now = ne
   await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
   return "pornit";
+}
+
+/**
+ * Basic de la 50 la 49 de lei pe an (Daniel, 2026-11-13), la fel și anul unei rude care scrie: o singură dată, la publicare.
+ * Schimbă doar ce era încă 50, ca un preț pus altfel din Admin să rămână cum l-a pus; anii deja plătiți nu se ating.
+ */
+export async function basicPrice49Once(db: Pick<Db, "insert" | "select">, now = new Date()): Promise<"schimbat" | "deja"> {
+  const MARK = "pret_basic_49_2026_11_13";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const [row] = await db.select({ value: appSetting.value }).from(appSetting).where(eq(appSetting.key, KEY));
+  if (row) {
+    const before = await planSettings(db);
+    const value: PlanSettings = { ...before, priceLei: before.priceLei === 50 ? 49 : before.priceLei, invitePriceLei: before.invitePriceLei === 50 ? 49 : before.invitePriceLei };
+    await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  return "schimbat";
 }
 
 /** Planul ales pentru un cont; „gratuit” fără notă și fără plată șterge alegerea, ca omul să fie din nou ca toți. */

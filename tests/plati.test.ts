@@ -24,7 +24,7 @@ describe("plata cu cardul", () => {
 
   it("prețurile: lei în română, euro în rest; ruda invitată plătește prețul ei", () => {
     const s = { ...DEFAULT_SETTINGS, invitePriceLei: 30 };
-    expect(priceFor("an", "ro", true, s)).toEqual({ amount: 5000, currency: "ron", label: "50 lei" });
+    expect(priceFor("an", "ro", true, s)).toEqual({ amount: 4900, currency: "ron", label: "49 lei" });
     expect(priceFor("an", "ro", false, s)).toMatchObject({ amount: 3000 });
     expect(priceFor("an", "de", true, s)).toEqual({ amount: 1000, currency: "eur", label: "10 €" });
     expect(priceFor("carte", "ro", false, s)).toEqual({ amount: 9900, currency: "ron", label: "99 lei" });
@@ -64,7 +64,7 @@ describe("plata cu cardul", () => {
 
   it("prețul anului pe fiecare plan, în lei și în euro", () => {
     const s = DEFAULT_SETTINGS;
-    expect(priceFor("an", "ro", true, s, "basic").label).toBe("50 lei");
+    expect(priceFor("an", "ro", true, s, "basic").label).toBe("49 lei");
     expect(priceFor("an", "ro", true, s, "familie")).toEqual({ amount: 14900, currency: "ron", label: "149 lei" });
     expect(priceFor("an", "ro", true, s, "premium")).toEqual({ amount: 24900, currency: "ron", label: "249 lei" });
     expect(priceFor("an", "de", true, s, "familie")).toEqual({ amount: 3000, currency: "eur", label: "30 €" });
@@ -76,21 +76,21 @@ describe("plata cu cardul", () => {
     const s = DEFAULT_SETTINGS, now = new Date("2027-01-01T00:00:00Z");
     const until = new Date(now.getTime() + 100 * 86_400_000);
     const basic: Access = { kind: "platit", until, tier: "basic" };
-    // (149 − 50) × 100 / 365 = 27,1232… → 27,12
-    expect(quoteYear("familie", basic, true, "ro", s, now)).toEqual({ ok: true, tier: "familie", value: 27.12, upgradeFrom: "basic", until, daysLeft: 100 });
+    // (149 − 49) × 100 / 365 = 27,3972… → 27,40
+    expect(quoteYear("familie", basic, true, "ro", s, now)).toEqual({ ok: true, tier: "familie", value: 27.4, upgradeFrom: "basic", until, daysLeft: 100 });
     // (50 − 30) × 100 / 365 = 5,479… → 5,48 €
     expect(quoteYear("premium", { ...basic, tier: "familie" }, true, "de", s, now)).toMatchObject({ value: 5.48, upgradeFrom: "familie" });
     // Cel puțin 1 leu.
     const soon: Access = { kind: "platit", until: new Date(now.getTime() + 86_400_000), tier: "basic" };
     expect(quoteYear("familie", soon, true, "ro", s, now)).toMatchObject({ value: 1 });
     // Același plan: prețul întreg; un plan mai mic: nu se poate.
-    expect(quoteYear("basic", basic, true, "ro", s, now)).toMatchObject({ ok: true, value: 50, upgradeFrom: null });
+    expect(quoteYear("basic", basic, true, "ro", s, now)).toMatchObject({ ok: true, value: 49, upgradeFrom: null });
     expect(quoteYear("basic", { ...basic, tier: "premium" }, true, "ro", s, now)).toEqual({ ok: false, reason: "downgrade" });
     // Fără an plătit sau expirat: prețul întreg.
     expect(quoteYear("premium", { kind: "expirat", since: now }, true, "ro", s, now)).toMatchObject({ ok: true, value: 249, upgradeFrom: null, until: null });
     expect(quoteYear("familie", { kind: "proba", until: now, daysLeft: 3 }, true, "ro", s, now)).toMatchObject({ value: 149 });
     expect(quoteYear("familie", { kind: "mereu" }, true, "ro", s, now)).toEqual({ ok: false, reason: "free" });
-    expect(priceFor("an", "ro", true, s).label).toBe("50 lei");
+    expect(priceFor("an", "ro", true, s).label).toBe("49 lei");
   });
 
   it("Stripe primește planul și, la o trecere pe un plan mai scump, de unde vine și până când rămâne anul", async () => {

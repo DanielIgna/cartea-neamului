@@ -51,6 +51,7 @@ export const nl: Catalog = {
     stay: "In het Roemeens blijven",
   },
   UserMenu: {
+    plan: "Mijn pakket",
     admin: "Admin",
     messages: "Berichten",
     account: "Je account en je gegevens",
@@ -67,6 +68,12 @@ export const nl: Catalog = {
     more: "Wat dit betekent",
   },
   Landing: {
+    freeNote: "{days} dagen gratis, zonder kaart en zonder automatische verlenging.",
+    plansLabel: "Prijzen",
+    plansTitle: "Eenvoudige pakketten, één keer per jaar betaald",
+    plansText: "Je begint met {days} gratis dagen, zonder kaart. Wil je verder, dan kies je een pakket voor één jaar. Het verlengt niet vanzelf en je stamboom blijft hoe dan ook van jou.",
+    plansNote: "Wie de stamboom alleen bekijkt, betaalt nooit, bij elk pakket. Je kunt altijd overstappen op een groter pakket en betaalt alleen het verschil.",
+    plansTerms: "Alle voorwaarden:",
     deleted: "Je account is verwijderd, met alles wat van jou was. Bedankt dat je bij ons was.",
     heroTitle: "De stamboom van je familie, samen opgebouwd",
     brandNote: "In het Roemeens: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const nl: Catalog = {
     },
   },
   Home: {
+    planTitle: "Je pakket",
+    planUpText: "Je kunt altijd overstappen op een groter pakket: je betaalt alleen het verschil voor de resterende dagen.",
+    planUpBtn: "Overstappen op een groter pakket",
     welcomeEyebrow: "Welkom terug",
     welcomeLead: "Je stamboom, je herinneringen en je familieboek, alles op één plek.",
     openTree: "Open de stamboom",
@@ -392,6 +402,7 @@ export const nl: Catalog = {
     voiceNudgeCta: "Begin ‘Bij opa en oma’",
   },
   Plata: {
+    upgradeBtn: "Overstappen op {plan}: {price}",
     adminTest: "Betalingen staan uit voor iedereen anders: niemand hoeft iets te betalen. Als beheerder kun je hier een testbetaling doen (bijvoorbeeld met een promotiecode).",
     adminPaid: "De testbetaling is ontvangen: je jaar is betaald tot {date}.",
     title: "Betaling",

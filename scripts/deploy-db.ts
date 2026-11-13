@@ -7,13 +7,15 @@ import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { applySchema } from "../src/lib/bootstrap";
 import { tree } from "../src/db/schema";
-import { startSalesOnce } from "../src/lib/plans";
+import { basicPrice49Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
   console.log("deploy-db: fără DATABASE_URL, nu am ce migra.");
-  process.exit(0);
+  // Basic 49 lei în loc de 50 (Daniel, 13.11.2026): o singură dată; după aceea prețul se schimbă din Admin.
+try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
+process.exit(0);
 }
 await applySchema(db);
 console.log("deploy-db: migrațiile sunt aplicate.");
@@ -25,4 +27,6 @@ try { console.log(`deploy-db: numele de fată Curtuli → Igna: ${await fixCurtu
 try { console.log(`deploy-db: Anca și Simona la Iosif fiul: ${await fixAncaSimona(db)}`); } catch (e) { console.error("deploy-db: corectura Anca/Simona a eșuat", e); }
 // Pornirea vânzării (Daniel, 13.11.2026): o singură dată; după aceea comutatorul din Admin hotărăște.
 try { console.log(`deploy-db: pornirea vânzării: ${await startSalesOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea vânzării a eșuat", e); }
+// Basic 49 lei în loc de 50 (Daniel, 13.11.2026): o singură dată; după aceea prețul se schimbă din Admin.
+try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
 process.exit(0);

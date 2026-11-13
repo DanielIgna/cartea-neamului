@@ -109,7 +109,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
             <input type="hidden" name="kind" value="an" />
             <input type="hidden" name="tier" value={x} />
             {consent}
-            <div className="actions"><button className={`btn${x === "familie" ? " primary" : ""}`}>{t("pay", { price: money(quote.value, locale).label })}</button></div>
+            <div className="actions"><button className={`btn${x === "familie" || quote.upgradeFrom ? " primary" : ""}`}>{quote.upgradeFrom ? t("upgradeBtn", { plan: tierName(x), price: money(quote.value, locale).label }) : t("pay", { price: money(quote.value, locale).label })}</button></div>
           </form>
         )}
         {paying && quote.ok && x === "basic" && !quote.upgradeFrom && bundle > 0 && (

@@ -51,6 +51,7 @@ export const hu: Catalog = {
     stay: "Maradok a románnál",
   },
   UserMenu: {
+    plan: "A csomagom",
     admin: "Admin",
     messages: "Üzenetek",
     account: "A fiókod és az adataid",
@@ -67,6 +68,12 @@ export const hu: Catalog = {
     more: "Mit jelent ez",
   },
   Landing: {
+    freeNote: "{days} nap ingyen, kártya és automatikus megújítás nélkül.",
+    plansLabel: "Árak",
+    plansTitle: "Egyszerű csomagok, évente egyszer fizetve",
+    plansText: "{days} ingyenes nappal kezdesz, kártya nélkül. Ha folytatnád, választasz egy csomagot egy évre. Nem újul meg magától, és a családfa mindenképp a tiéd marad.",
+    plansNote: "Aki csak nézi a családfát, semmit sem fizet, egyik csomagnál sem. Bármikor átválthatsz nagyobb csomagra, és csak a különbözetet fizeted.",
+    plansTerms: "Minden feltétel:",
     deleted: "A fiókodat töröltük, mindazzal együtt, ami a tiéd volt. Köszönjük, hogy velünk voltál.",
     heroTitle: "Családfa, közösen építve",
     brandNote: "Románul: Cartea Neamului.",
@@ -137,6 +144,9 @@ export const hu: Catalog = {
     },
   },
   Home: {
+    planTitle: "A csomagod",
+    planUpText: "Bármikor átválthatsz nagyobb csomagra: csak a hátralévő napok különbözetét fizeted.",
+    planUpBtn: "Váltás nagyobb csomagra",
     welcomeEyebrow: "Üdv újra itt",
     welcomeLead: "A családfád, az emlékeid és a családod könyve, mind egy helyen.",
     openTree: "A családfa megnyitása",
@@ -392,6 +402,7 @@ export const hu: Catalog = {
     voiceNudgeCta: "„A nagyszülőknél” indítása",
   },
   Plata: {
+    upgradeBtn: "Váltás erre: {plan}, {price}",
     adminTest: "A fizetés mindenki más számára ki van kapcsolva: senkitől sem kérünk semmit. Adminként itt próbafizetést végezhetsz (például promóciós kóddal).",
     adminPaid: "A próbafizetés megérkezett: az éved eddig van kifizetve: {date}.",
     title: "Fizetés",

@@ -51,6 +51,7 @@ export const fr: Catalog = {
     stay: "Rester en roumain",
   },
   UserMenu: {
+    plan: "Ma formule",
     admin: "Admin",
     messages: "Messages",
     account: "Votre compte et vos données",
@@ -67,6 +68,12 @@ export const fr: Catalog = {
     more: "Ce que cela veut dire",
   },
   Landing: {
+    freeNote: "{days} jours gratuits, sans carte et sans renouvellement automatique.",
+    plansLabel: "Tarifs",
+    plansTitle: "Des formules simples, payées une fois par an",
+    plansText: "Vous commencez avec {days} jours gratuits, sans carte. Pour continuer, vous choisissez une formule pour un an. Elle ne se renouvelle pas toute seule, et votre arbre reste à vous dans tous les cas.",
+    plansNote: "Ceux qui consultent seulement l’arbre ne paient rien, quelle que soit la formule. Vous pouvez passer à tout moment à une formule supérieure en ne payant que la différence.",
+    plansTerms: "Toutes les conditions :",
     deleted: "Votre compte a été supprimé, avec tout ce qui vous appartenait. Merci d’avoir été avec nous.",
     heroTitle: "L’arbre de la famille, construit ensemble",
     brandNote: "En roumain : Cartea Neamului.",
@@ -137,6 +144,9 @@ export const fr: Catalog = {
     },
   },
   Home: {
+    planTitle: "Votre formule",
+    planUpText: "Vous pouvez passer à tout moment à une formule supérieure : vous ne payez que la différence pour les jours restants.",
+    planUpBtn: "Passer à une formule supérieure",
     welcomeEyebrow: "Bon retour",
     welcomeLead: "Votre arbre, vos souvenirs et le livre de votre famille, réunis en un seul endroit.",
     openTree: "Ouvrir l’arbre",
@@ -392,6 +402,7 @@ export const fr: Catalog = {
     voiceNudgeCta: "Commencer « Chez les grands-parents »",
   },
   Plata: {
+    upgradeBtn: "Passer à {plan} : {price}",
     adminTest: "Les paiements sont désactivés pour tous les autres : on ne leur demande rien. En tant qu’administrateur, vous pouvez faire ici un paiement d’essai (par exemple avec un code promotionnel).",
     adminPaid: "Le paiement d’essai a été reçu : votre année est payée jusqu’au {date}.",
     title: "Paiement",
