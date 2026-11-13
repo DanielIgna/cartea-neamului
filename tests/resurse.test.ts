@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
-import sitemap from "@/app/sitemap";
+import { sitemapGroups } from "@/lib/continut/sitemap";
 import { PUBLIC_PAGES, PRIVATE_PREFIXES } from "@/lib/public-pages";
 import { SOURCES, checkDnaRequest, checkLab, dnaLabs, dnaRequests, deleteDnaRequest, publicDnaLabs, resolveDnaRequest, saveDnaRequest, saveLab } from "@/lib/resurse";
 import { ro } from "@/i18n/messages/ro";
@@ -12,7 +12,7 @@ describe("resurse gratuite pentru genealogie", () => {
   it("pagina e publică și în sitemap, cu adresa ei", () => {
     expect(PUBLIC_PAGES.some((p) => p.path === "/resurse-genealogie")).toBe(true);
     expect(PRIVATE_PREFIXES.some((p) => "/resurse-genealogie".startsWith(p))).toBe(false);
-    expect(sitemap().some((e) => e.url.endsWith("/resurse-genealogie"))).toBe(true);
+    expect(sitemapGroups().flatMap((g) => g.urls).some((u) => u.path === "/resurse-genealogie")).toBe(true);
   });
 
   it("cele 15 surse au text și duc doar spre site-uri https, fără afiliere", () => {

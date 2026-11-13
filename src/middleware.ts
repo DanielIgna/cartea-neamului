@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, isLocale, localeFromAcceptLanguage } from "@/i18n/locales";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
-import { PUBLIC_PATHS, PUBLIC_PREFIX, variantKey } from "@/lib/public-variant";
+import { PUBLIC_PREFIX, isPublicPath, variantKey } from "@/lib/public-variant";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 
 /**
@@ -15,7 +15,7 @@ export function middleware(req: NextRequest) {
   // Adresa internă nu se deschide direct (ar fi o a doua adresă pentru aceeași pagină).
   if (pathname === PUBLIC_PREFIX || pathname.startsWith(`${PUBLIC_PREFIX}/`)) return NextResponse.rewrite(new URL("/pagina-inexistenta", req.url));
   if (req.method !== "GET" && req.method !== "HEAD") return NextResponse.next();
-  if (!PUBLIC_PATHS.has(pathname)) return NextResponse.next();
+  if (!isPublicPath(pathname)) return NextResponse.next();
   if ([...searchParams.keys()].some((k) => k !== "_rsc")) return NextResponse.next();
   const cookies = req.cookies;
   // Sesiunea (better-auth.session_token, cu sau fără prefixul __Secure-): pagina se face pe loc, cu antetul contului.
@@ -37,5 +37,8 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie", "/pub", "/pub/:path*"],
+  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie",
+    // Secțiunile publice (src/lib/public-sections.ts): hubul și paginile din el.
+    "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug",
+    "/pub", "/pub/:path*"],
 };

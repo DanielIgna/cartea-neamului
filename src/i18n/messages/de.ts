@@ -30,6 +30,8 @@ export const de: Catalog = {
     signIn: "Anmelden",
     signInShort: "Anmelden",
     cookies: "Cookies",
+    guides: "Ratgeber Ahnenforschung",
+    glossary: "Glossar",
     cookieLead: "Nur unbedingt notwendige Cookies.",
     cookieText: "Wir nutzen sie, damit du angemeldet bleibst und deine gewählte Sprache und dein Farbschema gespeichert werden. Keine Werbung und keine Besucherzählung, deshalb fragen wir nicht nach deiner Einwilligung.",
     cookieMore: "Zur Liste",
@@ -62,6 +64,7 @@ export const de: Catalog = {
     signOut: "Abmelden",
     menu: "Menü",
     home: "Startseite",
+    guides: "Ratgeber",
   },
   UsageNotice: {
     label: "Wie du die Seite nutzt",

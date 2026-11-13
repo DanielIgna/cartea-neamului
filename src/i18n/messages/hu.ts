@@ -30,6 +30,8 @@ export const hu: Catalog = {
     signIn: "Belépés",
     signInShort: "Belépés",
     cookies: "Sütik",
+    guides: "Családfakutatási útmutatók",
+    glossary: "Szójegyzék",
     cookieLead: "Csak feltétlenül szükséges sütik.",
     cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs látogatásszámlálás, ezért nem kérünk hozzájárulást.",
     cookieMore: "A teljes lista",
@@ -62,6 +64,7 @@ export const hu: Catalog = {
     signOut: "Kilépés",
     menu: "Menü",
     home: "Kezdőlap",
+    guides: "Útmutatók",
   },
   UsageNotice: {
     label: "Hogyan használod az oldalt",

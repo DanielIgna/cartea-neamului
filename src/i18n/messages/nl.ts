@@ -30,6 +30,8 @@ export const nl: Catalog = {
     signIn: "Inloggen",
     signInShort: "Inloggen",
     cookies: "Cookies",
+    guides: "Genealogiegidsen",
+    glossary: "Woordenlijst",
     cookieLead: "Alleen strikt noodzakelijke cookies.",
     cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen bezoekersstatistieken, dus we vragen geen toestemming.",
     cookieMore: "Bekijk de lijst",
@@ -62,6 +64,7 @@ export const nl: Catalog = {
     signOut: "Uitloggen",
     menu: "Menu",
     home: "Start",
+    guides: "Gidsen",
   },
   UsageNotice: {
     label: "Hoe je de site gebruikt",

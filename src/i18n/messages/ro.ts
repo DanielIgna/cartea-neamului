@@ -40,6 +40,8 @@ export const ro = {
     signIn: "Intră în cont",
     signInShort: "Intră",
     cookies: "Cookie-uri",
+    guides: "Ghiduri de genealogie",
+    glossary: "Glosar",
     cookieLead: "Doar cookie-uri strict necesare.",
     cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără numărarea vizitelor, așa că nu-ți cerem acordul.",
     cookieMore: "Vezi lista",
@@ -72,6 +74,7 @@ export const ro = {
     signOut: "Ieși",
     menu: "Meniu",
     home: "Acasă",
+    guides: "Ghiduri",
   },
   UsageNotice: {
     label: "Cât folosești site-ul",
