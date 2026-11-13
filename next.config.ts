@@ -72,6 +72,9 @@ const config: NextConfig = {
       { source: "/firul-vremii", destination: "/istoria-umanitatii", permanent: true },
       { source: "/de-la-adam-la-hristos", destination: "/genealogii-vechi", permanent: true },
       { source: "/istoria-bisericii", destination: "/libertatea-de-a-crede", permanent: true },
+      // Cine scrie de mână /preturi sau /planuri ajunge la prețurile de pe prima pagină (Daniel, 13 noiembrie 2026).
+      { source: "/preturi", destination: "https://www.carteaneamului.ro/#preturi", statusCode: 301 },
+      { source: "/planuri", destination: "https://www.carteaneamului.ro/#preturi", statusCode: 301 },
     ];
   },
   async headers() {

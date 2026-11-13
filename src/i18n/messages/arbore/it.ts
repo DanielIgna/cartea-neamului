@@ -460,7 +460,7 @@ export const itArbore: ArboreCatalog = {
       treeOwner: "Questo albero è congelato per ora: solo il proprietario può cambiare qualcosa.",
     },
     contact: {
-      demo: "L’account di prova è usato da molte persone, quindi non può mostrare la famiglia ad altre famiglie né chiedere contatti. Crea un tuo account.",
+      demo: "L’account dimostrativo è usato da molte persone, quindi non può mostrare la famiglia ad altre famiglie né chiedere contatti. Crea un tuo account.",
       sameTree: "Scegli una famiglia diversa dalla tua.",
       notMember: "Non fai parte di questo albero.",
       together: "Fate già parte dello stesso albero; potete scrivervi da Messaggi.",
@@ -648,7 +648,7 @@ export const itArbore: ArboreCatalog = {
     people: "{count, plural, one {# persona} other {# persone}}",
     morePlaces: "{count, plural, one {e ancora un luogo} other {e ancora # luoghi}}",
     previewEmpty: "Ancora niente: nelle schede dei defunti non è indicato nessun paese trovato sulla mappa.",
-    demo: "Qui trovi le famiglie di altri alberi con antenati negli stessi paesi. L’account di prova è usato da molte persone, quindi non può mostrare la famiglia ad altre famiglie. Crea un tuo account per trovarle.",
+    demo: "Qui trovi le famiglie di altri alberi con antenati negli stessi paesi. L’account dimostrativo è usato da molte persone, quindi non può mostrare la famiglia ad altre famiglie. Crea un tuo account per trovarle.",
     offText: "Trova le famiglie di altri alberi con antenati negli stessi paesi. Vedono solo i paesi, quante persone defunte ci sono, gli anni e i cognomi, oltre al nome dell’albero e {owner, select, yes {al tuo nome} other {al nome del proprietario}} con l’iniziale. Le persone in vita non compaiono mai. Anche voi vedete le loro famiglie allo stesso modo.",
     starting: "Attivazione…",
     turnOn: "Mostra la famiglia a chi viene dagli stessi paesi",

@@ -464,7 +464,7 @@ export const roArbore = {
       treeOwner: "Arborele e înghețat deocamdată: doar proprietarul lui poate schimba ceva.",
     },
     contact: {
-      demo: "Contul de probă e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii și nici nu poate cere legături. Fă-ți un cont al tău.",
+      demo: "Contul de demonstrație e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii și nici nu poate cere legături. Fă-ți un cont al tău.",
       sameTree: "Alege alt neam decât al tău.",
       notMember: "Nu ești în acest arbore.",
       together: "Faceți deja parte din același arbore; vă puteți scrie din Mesaje.",
@@ -655,7 +655,7 @@ export const roArbore = {
     people: "{count, plural, one {o persoană} few {# persoane} other {# de persoane}}",
     morePlaces: "{count, plural, one {și încă un loc} few {și încă # locuri} other {și încă # de locuri}}",
     previewEmpty: "Încă nimic: în fișele celor decedați nu e trecut niciun sat găsit pe hartă.",
-    demo: "Aici găsești familiile din alți arbori care au strămoși în aceleași sate. Contul de probă e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii. Fă-ți un cont al tău ca să le găsești.",
+    demo: "Aici găsești familiile din alți arbori care au strămoși în aceleași sate. Contul de demonstrație e folosit de mai mulți oameni, așa că nu poate arăta neamul altor familii. Fă-ți un cont al tău ca să le găsești.",
     offText: "Găsește familiile din alți arbori care au strămoși în aceleași sate. Ele văd doar satele, câte persoane decedate sunt acolo, anii și numele de familie, plus numele arborelui și {owner, select, yes {prenumele tău} other {prenumele proprietarului}} cu inițiala. Cei în viață nu apar niciodată. Vedeți și voi la fel neamurile lor.",
     starting: "Se pornește…",
     turnOn: "Arată neamul celor din aceleași sate",

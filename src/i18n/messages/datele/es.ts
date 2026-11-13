@@ -72,7 +72,7 @@ export const esDatele: DateleCatalog = {
       confirm: "Sí, retiro mi consentimiento",
     },
     usage: {
-      demo: "La cuenta de prueba no se mide.",
+      demo: "La cuenta de demostración no se mide.",
       stopped: "Medición detenida y todo lo registrado, borrado.",
       started: "Medición activada. ¡Gracias!",
       pending: "Cambiando…",
@@ -80,7 +80,7 @@ export const esDatele: DateleCatalog = {
       start: "Activar la medición",
     },
     partner: {
-      demo: "La cuenta de prueba la usan muchas personas, así que no recibe ventajas de socios.",
+      demo: "La cuenta de demostración la usan muchas personas, así que no recibe ventajas de socios.",
       withdrawn: "Consentimiento retirado. Tu dirección ya no llega a PropManage.",
       given: "Listo, has dado tu consentimiento. ¡Gracias!",
       switch: "Ventajas de socios",
@@ -89,7 +89,7 @@ export const esDatele: DateleCatalog = {
       label: "Borrar la cuenta",
       text: "Puedes borrar tu cuenta cuando quieras. Antes, te mostramos lo que se va y lo que se queda en los árboles de la familia.",
       contact: "Para cualquier pregunta sobre tus datos, escríbenos a <mail>{email}</mail>.",
-      demo: "La cuenta de prueba la usan muchas personas, así que no se puede borrar.",
+      demo: "La cuenta de demostración la usan muchas personas, así que no se puede borrar.",
       open: "Quiero borrar mi cuenta",
       goneTitle: "Se borran para siempre:",
       account: "tu cuenta, con el correo y la contraseña;",
@@ -111,10 +111,10 @@ export const esDatele: DateleCatalog = {
       cancel: "Cancelar",
     },
     errors: {
-      demoDelete: "La cuenta de prueba la usan muchas personas, así que no se puede borrar.",
+      demoDelete: "La cuenta de demostración la usan muchas personas, así que no se puede borrar.",
       email: "Para confirmar, escribe tu dirección de correo tal como está en la cuenta.",
       partnerSignIn: "Entra en tu cuenta para cambiar tu consentimiento.",
-      partnerDemo: "La cuenta de prueba la usan muchas personas, así que no puede dar su consentimiento.",
+      partnerDemo: "La cuenta de demostración la usan muchas personas, así que no puede dar su consentimiento.",
     },
   },
   ApiErrors: {

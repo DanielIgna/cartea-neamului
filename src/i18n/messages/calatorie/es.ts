@@ -93,7 +93,7 @@ export const esCalatorie: CalatorieCatalog = {
     errors: {
       tooLong: "El texto puede tener como máximo {max} caracteres.",
       notOwner: "Solo el propietario del árbol puede cambiar las palabras finales.",
-      demo: "En la cuenta de prueba las palabras finales siguen siendo el texto base.",
+      demo: "En la cuenta de demostración las palabras finales siguen siendo el texto base.",
       empty: "Escribe el texto o elige «Ocultar para todos».",
     },
   },

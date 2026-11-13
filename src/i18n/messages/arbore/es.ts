@@ -460,7 +460,7 @@ export const esArbore: ArboreCatalog = {
       treeOwner: "Este árbol está congelado por ahora: solo su propietario puede cambiar algo.",
     },
     contact: {
-      demo: "La cuenta de prueba la usan muchas personas, así que no puede mostrar la familia a otras familias ni pedir conexiones. Crea tu propia cuenta.",
+      demo: "La cuenta de demostración la usan muchas personas, así que no puede mostrar la familia a otras familias ni pedir conexiones. Crea tu propia cuenta.",
       sameTree: "Elige una familia distinta de la tuya.",
       notMember: "No estás en este árbol.",
       together: "Ya estáis en el mismo árbol; podéis escribiros desde Mensajes.",
@@ -648,7 +648,7 @@ export const esArbore: ArboreCatalog = {
     people: "{count, plural, one {# persona} other {# personas}}",
     morePlaces: "{count, plural, one {y un lugar más} other {y # lugares más}}",
     previewEmpty: "Nada todavía: en las fichas de los fallecidos no figura ningún pueblo encontrado en el mapa.",
-    demo: "Aquí encuentras las familias de otros árboles con antepasados en los mismos pueblos. La cuenta de prueba la usan muchas personas, así que no puede mostrar la familia a otras familias. Crea tu propia cuenta para encontrarlas.",
+    demo: "Aquí encuentras las familias de otros árboles con antepasados en los mismos pueblos. La cuenta de demostración la usan muchas personas, así que no puede mostrar la familia a otras familias. Crea tu propia cuenta para encontrarlas.",
     offText: "Encuentra las familias de otros árboles con antepasados en los mismos pueblos. Solo ven los pueblos, cuántas personas fallecidas hay allí, los años y los apellidos, además del nombre del árbol y {owner, select, yes {tu nombre} other {el nombre del propietario}} con la inicial. Las personas vivas nunca aparecen. Vosotros veis sus familias de la misma manera.",
     starting: "Activando…",
     turnOn: "Mostrar la familia a los de los mismos pueblos",

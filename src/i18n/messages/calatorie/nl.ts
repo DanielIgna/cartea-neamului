@@ -93,7 +93,7 @@ export const nlCalatorie: CalatorieCatalog = {
     errors: {
       tooLong: "De tekst mag hoogstens {max} tekens lang zijn.",
       notOwner: "Alleen de eigenaar van de stamboom kan het slotwoord wijzigen.",
-      demo: "In het proefaccount blijft het slotwoord de standaardtekst.",
+      demo: "In het demo-account blijft het slotwoord de standaardtekst.",
       empty: "Schrijf de tekst of kies ‘Voor iedereen verbergen’.",
     },
   },

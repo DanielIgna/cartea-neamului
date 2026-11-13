@@ -64,7 +64,7 @@ export const roFilm = {
       family: "Familia",
     },
     errors: {
-      demo: "Din contul de probă nu se pot propune poze.",
+      demo: "Din contul de demonstrație nu se pot propune poze.",
       consent: "Bifează acordul ca să putem pune poza pe prima pagină.",
       photo: "Poza aceasta nu se poate propune.",
       storage: "Locul pentru poze nu e pornit acum. Încearcă mai târziu.",

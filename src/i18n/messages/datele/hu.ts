@@ -72,7 +72,7 @@ export const huDatele: DateleCatalog = {
       confirm: "Igen, visszavonom",
     },
     usage: {
-      demo: "A próbafiókot nem mérjük.",
+      demo: "A bemutatófiókot nem mérjük.",
       stopped: "Leállítottuk a mérést, és töröltünk mindent, ami összegyűlt.",
       started: "Elindítottuk a mérést. Köszönjük!",
       pending: "Módosítás…",
@@ -80,7 +80,7 @@ export const huDatele: DateleCatalog = {
       start: "Mérés indítása",
     },
     partner: {
-      demo: "A próbafiókot sokan használják, ezért nem kap kedvezményeket a partnerektől.",
+      demo: "A bemutatófiókot sokan használják, ezért nem kap kedvezményeket a partnerektől.",
       withdrawn: "Visszavontuk a hozzájárulást. A címed már nem jut el a PropManage-hez.",
       given: "Kész, hozzájárultál. Köszönjük!",
       switch: "Partnerek kedvezményei",
@@ -89,7 +89,7 @@ export const huDatele: DateleCatalog = {
       label: "Fiók törlése",
       text: "A fiókodat bármikor törölheted. Előtte megmutatjuk, mi tűnik el, és mi marad a család családfáiban.",
       contact: "Ha bármilyen kérdésed van az adataiddal kapcsolatban, írj nekünk ide: <mail>{email}</mail>.",
-      demo: "A próbafiókot sokan használják, ezért nem törölhető.",
+      demo: "A bemutatófiókot sokan használják, ezért nem törölhető.",
       open: "Törölni szeretném a fiókomat",
       goneTitle: "Végleg törlődik:",
       account: "a fiókod, az e-mail-címmel és a jelszóval;",
@@ -111,10 +111,10 @@ export const huDatele: DateleCatalog = {
       cancel: "Mégsem",
     },
     errors: {
-      demoDelete: "A próbafiókot sokan használják, ezért nem törölhető.",
+      demoDelete: "A bemutatófiókot sokan használják, ezért nem törölhető.",
       email: "A megerősítéshez írd be az e-mail-címedet pontosan úgy, ahogy a fiókban szerepel.",
       partnerSignIn: "Lépj be, hogy módosítsd a hozzájárulásodat.",
-      partnerDemo: "A próbafiókot sokan használják, ezért nem tud hozzájárulni.",
+      partnerDemo: "A bemutatófiókot sokan használják, ezért nem tud hozzájárulni.",
     },
   },
   ApiErrors: {

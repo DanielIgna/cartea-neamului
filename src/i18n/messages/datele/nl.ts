@@ -72,7 +72,7 @@ export const nlDatele: DateleCatalog = {
       confirm: "Ja, ik trek mijn toestemming in",
     },
     usage: {
-      demo: "Het proefaccount wordt niet gemeten.",
+      demo: "Het demo-account wordt niet gemeten.",
       stopped: "Meten gestopt en alles wat verzameld was, is verwijderd.",
       started: "Meten gestart. Dank je!",
       pending: "Bezig met wijzigen…",
@@ -80,7 +80,7 @@ export const nlDatele: DateleCatalog = {
       start: "Meten starten",
     },
     partner: {
-      demo: "Het proefaccount wordt door veel mensen gebruikt, dus het krijgt geen voordelen van partners.",
+      demo: "Het demo-account wordt door veel mensen gebruikt, dus het krijgt geen voordelen van partners.",
       withdrawn: "Toestemming ingetrokken. Je adres komt niet meer bij PropManage.",
       given: "Klaar, je hebt toestemming gegeven. Dank je!",
       switch: "Voordelen van partners",
@@ -89,7 +89,7 @@ export const nlDatele: DateleCatalog = {
       label: "Account verwijderen",
       text: "Je kunt je account altijd verwijderen. Eerst laten we zien wat weggaat en wat in de stambomen van de familie blijft.",
       contact: "Voor elke vraag over je gegevens schrijf je ons op <mail>{email}</mail>.",
-      demo: "Het proefaccount wordt door veel mensen gebruikt, dus het kan niet worden verwijderd.",
+      demo: "Het demo-account wordt door veel mensen gebruikt, dus het kan niet worden verwijderd.",
       open: "Ik wil mijn account verwijderen",
       goneTitle: "Voorgoed verwijderd:",
       account: "je account, met e-mailadres en wachtwoord;",
@@ -111,10 +111,10 @@ export const nlDatele: DateleCatalog = {
       cancel: "Annuleren",
     },
     errors: {
-      demoDelete: "Het proefaccount wordt door veel mensen gebruikt, dus het kan niet worden verwijderd.",
+      demoDelete: "Het demo-account wordt door veel mensen gebruikt, dus het kan niet worden verwijderd.",
       email: "Typ ter bevestiging je e-mailadres precies zoals het in je account staat.",
       partnerSignIn: "Log in om je toestemming te wijzigen.",
-      partnerDemo: "Het proefaccount wordt door veel mensen gebruikt, dus het kan geen toestemming geven.",
+      partnerDemo: "Het demo-account wordt door veel mensen gebruikt, dus het kan geen toestemming geven.",
     },
   },
   ApiErrors: {

@@ -91,7 +91,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         {x === "familie" && <span className="plan-badge">{t("recommended")}</span>}
         <h3>{tierName(x)}</h3>
         <p className="plan-price">{t("perYear", { price: full })}</p>
-        <p className="muted plan-lead">{t(`tiers.${x}.lead`)}</p>
+        <p className="muted plan-lead">{t(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label })}</p>
         <ul className="plan-limits">
           {LIMIT_KEYS.map((k) => <li key={k}><span>{t(`lim.${k}`)}</span><b>{limitValue(lim[k])}</b></li>)}
           <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s).label })}</b></li>

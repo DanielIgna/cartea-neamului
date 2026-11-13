@@ -237,7 +237,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
               <p className="lp-eyebrow">{t("plansLabel")}</p>
               <h2 id="lp-plans">{t("plansTitle")}</h2>
               {ornament}
-              <p>{t("plansText", { days: String(s.trialDays) })}</p>
+              <p>{t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs })}</p>
             </header>
             <div className="lp-plans">
               {TIERS.map((x) => {
@@ -247,7 +247,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
                     {x === "familie" && <span className="lp-plan-badge">{tp("recommended")}</span>}
                     <h3>{tp(`tiers.${x}.name`)}</h3>
                     <p className="lp-plan-price">{tp("perYear", { price: money(lei ? p.lei : p.eur, locale).label })}</p>
-                    <p className="lp-plan-lead">{tp(`tiers.${x}.lead`)}</p>
+                    <p className="lp-plan-lead">{tp(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label })}</p>
                     <ul>
                       {LIMIT_KEYS.map((k) => <li key={k}><span>{tp(`lim.${k}`)}</span><b>{lim[k] === null ? tp("unlimited") : nf.format(lim[k])}</b></li>)}
                       <li><span>{tp("lim.book")}</span><b>{book === "toti" ? tp("bookAll") : book === "una" ? tp("bookOne") : tp("bookSeparate", { price: money(lei ? s.bookLei : s.bookEur, locale).label })}</b></li>
@@ -256,7 +256,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
                 );
               })}
             </div>
-            <p className="lp-plans-note">{t("plansNote")} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</p>
+            <p className="lp-plans-note">{t("plansNote", { keep: money(lei ? s.keepLei : s.keepEur, locale).label })} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</p>
             <div className="lp-actions lp-plans-actions">
               <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
             </div>

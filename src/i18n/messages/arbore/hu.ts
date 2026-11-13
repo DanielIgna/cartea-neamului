@@ -463,7 +463,7 @@ export const huArbore: ArboreCatalog = {
       treeOwner: "Ez a családfa egyelőre be van fagyasztva: csak a tulajdonosa változtathat rajta.",
     },
     contact: {
-      demo: "A próbafiókot sokan használják, ezért nem mutathatja meg a családot más családoknak, és kapcsolatot sem kérhet. Hozz létre saját fiókot.",
+      demo: "A bemutatófiókot sokan használják, ezért nem mutathatja meg a családot más családoknak, és kapcsolatot sem kérhet. Hozz létre saját fiókot.",
       sameTree: "Válassz a sajátodtól eltérő családot.",
       notMember: "Nem vagy tagja ennek a családfának.",
       together: "Már ugyanabban a családfában vagytok; az Üzenetekből írhattok egymásnak.",
@@ -651,7 +651,7 @@ export const huArbore: ArboreCatalog = {
     people: "{count, plural, one {# személy} other {# személy}}",
     morePlaces: "{count, plural, one {és még egy hely} other {és még # hely}}",
     previewEmpty: "Még semmi: az elhunytak adatlapjain nem szerepel olyan falu, amelyet a térkép megtalált.",
-    demo: "Itt találod azokat a családokat más családfákból, akiknek az ősei ugyanazokból a falvakból valók. A próbafiókot sokan használják, ezért nem mutathatja meg a családot más családoknak. Hozz létre saját fiókot, hogy megtaláld őket.",
+    demo: "Itt találod azokat a családokat más családfákból, akiknek az ősei ugyanazokból a falvakból valók. A bemutatófiókot sokan használják, ezért nem mutathatja meg a családot más családoknak. Hozz létre saját fiókot, hogy megtaláld őket.",
     offText: "Találd meg azokat a családokat más családfákból, akiknek az ősei ugyanazokból a falvakból valók. Ők csak a falvakat látják, hogy hány elhunyt személy van ott, az évszámokat és a családneveket, továbbá a családfa nevét és {owner, select, yes {a keresztnevedet} other {a tulajdonos keresztnevét}} kezdőbetűvel. Az élők soha nem jelennek meg. Ti is ugyanígy látjátok az ő családjukat.",
     starting: "Bekapcsolás…",
     turnOn: "Mutasd meg a családot az ugyanazon falvakból valóknak",
