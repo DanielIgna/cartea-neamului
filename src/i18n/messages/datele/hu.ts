@@ -122,6 +122,7 @@ export const huDatele: DateleCatalog = {
     noDocument: "A dokumentum nem létezik.",
     noFile: "A dokumentumhoz nincs fájl csatolva.",
     noStorage: "A fájltárolás nincs beállítva.",
+    mediaKept: "Ez a fájl teljes egészében akkor nyílik meg, ha a családfa gazdájának van kifizetett éve vagy „Megőrzése”. Aki feltöltötte, bármikor letöltheti.",
     noTree: "A családfa nem létezik.",
     notFound: "Az oldal nem létezik.",
   },

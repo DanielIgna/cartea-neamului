@@ -122,6 +122,7 @@ export const enGBDatele: DateleCatalog = {
     noDocument: "The document does not exist.",
     noFile: "The document has no attached file.",
     noStorage: "File storage is not set up.",
+    mediaKept: "This file opens in full while the tree’s owner has a paid year or “Keepsake”. Whoever uploaded it can always download it.",
     noTree: "The family tree does not exist.",
     notFound: "The page does not exist.",
   },

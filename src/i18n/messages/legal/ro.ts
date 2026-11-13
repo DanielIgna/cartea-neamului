@@ -43,7 +43,7 @@ export const roLegal = {
           l10: "<b>Casa bătrânească:</b> ce scrii despre casa familiei pe pagina unei persoane (adresa sau satul, cine a construit-o, anul, poze și povestea ei). O vede doar cine alegi tu, ca la amintiri.",
           l13: "<b>Pozele propuse pentru prima pagină</b>, doar dacă alegi tu să propui una din albumul familiei: o copie a pozei, rândul scris sub ea, cine a propus-o, când, în ce limbă și versiunea acordului bifat. Cât timp nu e aprobată, o vedem doar noi.",
           l14: "<b>Când ne scrii</b> din pagina Contact: numele, adresa de email (ca să-ți putem răspunde) și mesajul. Nu le păstrăm în site: pleacă direct în căsuța noastră de email. Dacă ne scrii pe WhatsApp, vedem numărul tău de telefon, numele tău din WhatsApp și ce ne scrii.",
-          l15: "<b>Plățile și darurile:</b> ce ai plătit, cât, când și ce plan ai ales (fără datele cardului, pe care nu le vedem), acordul tău pentru începerea imediată, anul dăruit (numele celui care îl primește și biletul tău, dacă le scrii), zilele în plus primite când aduci o rudă care plătește și emailurile prin care îți amintim că se termină anul.",
+          l15: "<b>Plățile și darurile:</b> ce ai plătit, cât, când și ce plan ai ales (fără datele cardului, pe care nu le vedem), acordul tău pentru începerea imediată, anul dăruit (numele celui care îl primește și biletul tău, dacă le scrii), zilele în plus primite când aduci o rudă care plătește și emailurile prin care îți amintim că se termină anul. Ținem minte și până când ai Păstrarea arborelui.",
           l11: "<b>În browserul tău</b>, pe lângă cookie-urile de la capătul paginii, câteva alegeri ținute doar pe telefonul sau calculatorul tău, ca să nu le faci de fiecare dată: spițele pe care ai ales să le vezi, ce ai ales ultima dată în „Istoria umanității”, „Genealogii vechi” și „Libertatea de a crede”, fișele pe care le-ai marcat că nu sunt dubluri, dacă ai ascuns cardul de instalare a aplicației și dacă ai văzut deja cardul partenerului de după descărcarea cărții. Dacă ai spus „Bine” la măsurarea timpului, și ultimul minut numărat, cel mult o oră, ca să ajungă la noi și când închizi pagina în grabă.",
           l12: "<b>Jurnalele tehnice</b> ale serverului (adresa IP, pagina cerută, ora), păstrate pentru scurt timp, ca să putem repara erorile.",
         },
@@ -122,6 +122,7 @@ export const roLegal = {
           l5: "<code>limba_intrebare</code>, doar dacă închizi cu ✕ întrebarea despre limba site-ului, ca să nu te mai întrebăm, păstrat un an;",
           l3: "<code>tema</code>, cu tema aleasă (luminoasă, întunecată sau automată), păstrat un an;",
           l6: "<code>cn-cookie-uri</code>, după ce apeși „Am înțeles” pe anunțul despre cookie-uri, ca să nu-l mai vezi, păstrat un an;",
+          l7: "<code>cn-pastrare-anunt</code>, după ce apeși „Am înțeles” pe anunțul despre Păstrare, ca să nu-l mai vezi, păstrat un an;",
           l4: "<code>cn-parteneri</code>, doar dacă bifezi beneficiile de la parteneri când îți faci contul: ține minte bifa cel mult 30 de minute, cât să ajungă alegerea ta la contul nou (și când îl faci cu Google), apoi dispare.",
           p2: "Nu folosim cookie-uri de reclamă, de statistici sau de rețele sociale, iar site-ul nu încarcă scripturi de la alte firme. Singurele lucruri pe care browserul tău le cere direct de la alții sunt bucățile de hartă de la OpenStreetMap și, dacă ai intrat cu Google, poza contului tău Google.",
           p3: "Când plătești, pagina de plată e la Stripe, pe adresa lor; acolo Stripe pune propriile cookie-uri, de pildă împotriva fraudei, după politica lui de confidențialitate.",
@@ -160,7 +161,7 @@ export const roLegal = {
           l3: "Nu pui nimic ilegal, jignitor sau care îndeamnă la ură, nici datele altora fără drept.",
           l4: "Putem ascunde sau șterge ce încalcă acești termeni sau legea și îți spunem de ce.",
           l5: "Când propui o poză pentru prima pagină, ne asiguri că ești în ea sau că ai acordul tuturor celor din ea (pentru copii, al părinților lor) și ne dai voie s-o arătăm public pe prima pagină cât timp nu o retragi. Putem alege să n-o punem sau s-o scoatem oricând.",
-          l6: "Despre copiii în viață treci doar ce e nevoie (de obicei numele și anul nașterii). Dacă un părinte îți cere să scoți pozele sau datele copilului lui, le scoți.",
+          l6: "Dacă anul se termină și nu plătești, nu se șterge nimic: arborii tăi rămân, numele, datele, legăturile și textele se văd în continuare, iar arborele întreg îl poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești. Pozele încărcate de alte rude se văd atunci doar în mic, iar glasurile și actele lor nu se mai deschid online, până când tu (titularul) plătești un an sau Păstrarea. Ce ai încărcat tu se deschide și se descarcă mereu întreg și gratuit. La fel, pe un plan mai mic, ce e peste plafoanele lui rămâne și se vede; se opresc doar adăugările noi.",
         },
         owner: {
           h: "3. Al cui e ce pui",
@@ -172,7 +173,7 @@ export const roLegal = {
           l2: "O amintire e a celui care o scrie: doar el alege cine o vede și doar el o schimbă sau o șterge.",
           l3: "Capitolul „Credința” al autobiografiei e doar pentru cei în viață, care răspund ei înșiși, cu acordul lor.",
         },
-        // DE VERIFICAT DE AVOCAT (actualizat 13.11.2026): cele trei planuri (Basic, Familie, Premium) și plafoanele lor, cartea PDF inclusă/separat,
+        // DE VERIFICAT DE AVOCAT (actualizat 13.11.2026; l6 și l10 = Păstrarea, adăugată în aceeași zi): cele trei planuri (Basic, Familie, Premium) și plafoanele lor, cartea PDF inclusă/separat,
         // reducerea la tipar, trecerea pro rata pe un plan mai scump, ce se întâmplă la expirare, renunțarea la dreptul de retragere
         // (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
@@ -187,6 +188,7 @@ export const roLegal = {
           l7: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
           l8: "<b>Cartea neamului în PDF</b>, când nu e inclusă în plan, costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
           l9: "<b>Cartea tipărită</b> se face la comandă: ne ceri o ofertă din pagina cărții, iar prețul depinde de numărul de pagini, de format, de copertă și de numărul de exemplare. Cu planul Premium ai {premiumPrint}% reducere la prețul din ofertă.",
+          l10: "<b>Păstrarea</b>, {keepLei} lei ({keepEur} €) pe an, aceeași la orice plan, pentru cine a avut un an (plătit sau primul an gratuit): după anul plătit, toată familia vede și ascultă tot online (poze mari, glasuri, acte), fără adăugări noi. La fiecare plată primești pe email legătura spre arhiva completă (pagina „Arhiva mea”). Cu cartea PDF a unui arbore, pachetul costă {keepBookLei} lei ({keepBookEur} €). Nici Păstrarea nu se reînnoiește singură.",
           p2: "Prețul arătat la plată e prețul final. Plătești cu cardul, prin Stripe; noi nu vedem datele cardului. Vânzătorul e {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
           p3: "<b>Cum se încheie contractul:</b> alegi planul sau cartea pe pagina Plată, vezi prețul final, bifezi acordul pentru începerea imediată și apeși butonul de plată; plătești pe pagina Stripe, iar contractul e încheiat când plata e primită. Până la plată poți reveni oricând și îndrepta alegerea. Confirmarea, cu factura și acordul tău, vine pe email. Contractul se încheie în limba română (celelalte limbi sunt traduceri); acești Termeni rămân pe site și îi poți salva sau tipări oricând.",
         },

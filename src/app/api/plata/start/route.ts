@@ -4,7 +4,7 @@ import { recordConsent } from "@/lib/consent";
 import { isAdminUser } from "@/lib/admin";
 import { claimIncludedBook, createCheckout, isPayKind, money, priceFor, quoteYear, stripeReady } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { isTier, tierPrice, type Tier } from "@/lib/plans";
+import { isTier, mayKeep, tierPrice, type Tier } from "@/lib/plans";
 import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
 import { operator } from "@/lib/legal";
@@ -61,18 +61,32 @@ export async function POST(req: Request) {
     price = money(locale === "ro" ? p.lei : p.eur, locale);
     year = { tier, upgradeFrom: null, paidUntil: null, forName: String(form.get("forName") ?? "").trim().slice(0, 120) || null, note: String(form.get("note") ?? "").trim().slice(0, 400) || null };
   }
+  let keepTree: string | null = null;
+  if (kind === "pastrare") {
+    // „Păstrarea”: doar după un an avut, cu anul terminat (adminul o poate încerca oricând). Cu pachetul, și cartea PDF a unui arbore.
+    if (!isAdminUser(me) && !mayKeep(access)) return back("eroare=1");
+    const lei = locale === "ro";
+    const bundle = form.get("pachet") === "1" && UUID.test(treeId) && (lei ? settings.keepBookLei : settings.keepBookEur) > 0;
+    if (bundle && !(await roleInTree(db, treeId, me.id))) return back("eroare=1");
+    const value = bundle ? (lei ? settings.keepBookLei : settings.keepBookEur) : (lei ? settings.keepLei : settings.keepEur);
+    if (value <= 0) return back("eroare=1");
+    price = money(value, locale);
+    keepTree = bundle ? treeId : null;
+    year = { tier: "basic", upgradeFrom: null, paidUntil: null, extra: bundle ? "carte" : null };
+  }
   await recordConsent(db, me.id, "withdrawal", true);
   try {
     const url = await createCheckout({
-      kind, userId: me.id, email: me.email, treeId: kind === "carte" ? treeId : null,
-      name: kind === "carte" ? t("bookName") : kind === "cadou" ? t("giftName", { plan: t(`tiers.${year!.tier}.name`) })
+      kind, userId: me.id, email: me.email, treeId: kind === "carte" ? treeId : keepTree,
+      name: kind === "pastrare" ? (await getT("Keep"))(keepTree ? "bundleName" : "name") : kind === "carte" ? t("bookName") : kind === "cadou" ? t("giftName", { plan: t(`tiers.${year!.tier}.name`) })
         : year?.extra ? t("bundleName") : t("yearName", { plan: t(`tiers.${year!.tier}.name`) }),
       amount: price.amount, currency: price.currency, locale,
-      successUrl: `${origin}/plata?gata=${kind}${tq}`, cancelUrl: `${origin}/plata?renuntat=1${tq}`,
+      successUrl: `${origin}/plata?gata=${kind}${kind === "pastrare" ? "" : tq}`, cancelUrl: `${origin}/plata?renuntat=1${tq}`,
       ...(year ?? {}),
       // Confirmarea acordului de retragere pe suport durabil (OUG 34/2014, art. 12 alin. 7): pe pagina Stripe și pe factura trimisă pe email.
       waiver: t("waiverRecord", { url: `${origin}/termeni` }),
       seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
+      ...(kind === "pastrare" ? { tier: undefined } : {}),
     });
     return Response.redirect(url, 303);
   } catch (e) {

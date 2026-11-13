@@ -11,6 +11,7 @@ import { frResurse } from "./resurse/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
+import { frPastrare } from "./pastrare/fr";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -380,6 +381,7 @@ export const fr: Catalog = {
   ...frFilm,
   ...frLegal,
   ...frDatele,
+  ...frPastrare,
   Access: {
     trial: "{days, plural, one {Il vous reste un jour gratuit} other {Il vous reste # jours gratuits}}. Ensuite, pour continuer à ajouter et à modifier, l’année coûte {price}.",
     ended: "<b>Vos jours gratuits sont terminés.</b> L’arbre reste visible et rien n’est perdu, mais pour ajouter ou modifier quelque chose, l’année coûte {price}.",
