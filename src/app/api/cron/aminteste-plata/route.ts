@@ -8,7 +8,7 @@ import { getAppName, getT } from "@/i18n/server";
 /**
  * Aducerea aminte înainte de expirare (o dată pe an, cu `reminderDays` zile înainte): anul nu se reînnoiește singur, așa că
  * le scriem celor al căror an se termină, cu legătura la /plata. Rulează doar dacă cel care ține site-ul a pus serviciul de email
- * (RESEND_API_KEY, REMINDER_FROM) și cheia de pornire CRON_SECRET; până atunci, lista e în Admin → Manager control.
+ * (RESEND_API_KEY, EMAIL_FROM) și cheia de pornire CRON_SECRET; până atunci, lista e în Admin → Manager control.
  */
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET?.trim();

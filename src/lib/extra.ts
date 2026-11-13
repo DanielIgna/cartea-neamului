@@ -8,6 +8,7 @@ import type { Db } from "@/db";
 import { accountPlan, document, gift, person, user } from "@/db/schema";
 import { isTier, tierRank, type Tier } from "./plans";
 import { setYear, YEAR_DAYS } from "./plati";
+import { emailFrom, emailReady, emailSent, sendEmail } from "./email";
 
 const DAY = 86_400_000;
 
@@ -63,25 +64,19 @@ export async function markReminded(db: Pick<Db, "update">, userId: string, paidU
 }
 
 /**
- * Se poate trimite emailul singur? Doar cu un serviciu de email pus de cel care ține site-ul (cheie în Vercel):
- * RESEND_API_KEY și adresa de la care pleacă, MAIL_FROM (sau vechiul nume REMINDER_FROM).
+ * Se poate trimite emailul singur? Doar cu cheia Resend pusă de cel care ține site-ul (RESEND_API_KEY în Vercel). Expeditorul
+ * e EMAIL_FROM (sau vechile MAIL_FROM / REMINDER_FROM), altfel adresa de contact a site-ului. Totul e în src/lib/email.ts.
  */
-export const mailFrom = () => process.env.MAIL_FROM?.trim() || process.env.REMINDER_FROM?.trim() || "";
-export const reminderMailReady = () => !!process.env.RESEND_API_KEY?.trim() && !!mailFrom();
+export const mailFrom = emailFrom;
+export const reminderMailReady = emailReady;
 
-/** Trimite un email prin Resend (REST, fără bibliotecă). Întoarce false dacă nu e pus serviciul sau n-a mers. */
-export async function sendMail(to: string, subject: string, text: string, fetcher: typeof fetch = fetch, html?: string): Promise<boolean> {
-  if (!reminderMailReady()) return false;
-  try {
-    const r = await fetcher("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, "content-type": "application/json" },
-      body: JSON.stringify({ from: mailFrom(), to: [to], subject, text, ...(html ? { html } : {}) }),
-    });
-    return r.ok;
-  } catch {
-    return false;
-  }
+/**
+ * Trimite un email text (cu HTML dacă e dat) prin src/lib/email.ts. Întoarce false dacă nu e pusă cheia sau n-a mers.
+ * `_fetcher` a rămas doar ca să nu se schimbe cine o cheamă deja.
+ */
+export async function sendMail(to: string, subject: string, text: string, _fetcher?: typeof fetch, html?: string): Promise<boolean> {
+  const esc = (v: string) => v.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  return emailSent(await sendEmail({ to, subject, text, html: html ?? `<div style="white-space:pre-wrap;font-family:Georgia,serif">${esc(text)}</div>` }));
 }
 
 /**

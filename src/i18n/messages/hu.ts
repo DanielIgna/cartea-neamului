@@ -14,6 +14,7 @@ import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
 import { huPastrare } from "./pastrare/hu";
 import { huSecuritate } from "./securitate/hu";
+import { huEmailuri } from "./emailuri/hu";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -420,6 +421,7 @@ export const hu: Catalog = {
   ...huDatele,
   ...huPastrare,
   ...huSecuritate,
+  ...huEmailuri,
   Access: {
     trial: "{days, plural, one {Még egy ingyenes napod van} other {Még # ingyenes napod van}}. Utána egy év {price}, hogy tovább bővíthesd és szerkeszthesd.",
     ended: "<b>Az ingyenes napjaid lejártak.</b> A családfa továbbra is látható, és semmi sem vész el, de ahhoz, hogy bármit hozzáadj vagy módosíts, egy év {price}.",

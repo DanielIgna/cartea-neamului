@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
 import { sendKeepMail } from "@/lib/pastrare";
 import { clientIp, logSecurity, stripeAlert } from "@/lib/securitate";
+import { sendPaymentMail } from "@/lib/emailuri";
 
 /**
  * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
@@ -23,9 +24,14 @@ export async function POST(req: Request) {
     return Response.json({ ok: true });
   }
   const paid = paidSession(event);
-  if (paid && (await applyPayment(db, paid)) && paid.kind === "pastrare" && paid.userId) {
-    // O dată pe an, cu fiecare „Păstrare” plătită: legătura spre arhiva completă, pe email. O greșeală aici nu strică plata.
-    await sendKeepMail(db, paid.userId).catch((e) => console.error("sendKeepMail", e));
+  // applyPayment întoarce true o singură dată pe sesiune Stripe: dacă Stripe trimite evenimentul din nou, emailurile nu pleacă a doua oară.
+  if (paid && (await applyPayment(db, paid))) {
+    // Confirmarea plății (planul, suma, data, legătura spre cont). O greșeală aici nu strică plata.
+    await sendPaymentMail(db, paid).catch((e) => console.error("sendPaymentMail", e instanceof Error ? e.name : "Error"));
+    if (paid.kind === "pastrare" && paid.userId) {
+      // O dată pe an, cu fiecare „Păstrare” plătită: legătura spre arhiva completă, pe email.
+      await sendKeepMail(db, paid.userId).catch((e) => console.error("sendKeepMail", e));
+    }
   }
   return Response.json({ ok: true });
 }
