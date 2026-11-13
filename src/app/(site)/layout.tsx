@@ -1,5 +1,4 @@
 import { Logo } from "@/components/Logo";
-import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
@@ -7,7 +6,7 @@ import "@fontsource/alegreya/700.css";
 import "@fontsource/alegreya-sans/400.css";
 import "@fontsource/alegreya-sans/500.css";
 import "@fontsource/alegreya-sans/700.css";
-import "./globals.css";
+import "../globals.css";
 import { currentUser } from "@/lib/access";
 import UserMenu from "@/components/UserMenu";
 import { db } from "@/db";
@@ -20,49 +19,25 @@ import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
-import { COOKIE_NOTICE_COOKIE, operator } from "@/lib/legal";
+import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminUser } from "@/lib/admin";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
-import { SITE_URL } from "@/lib/site-url";
-import { FACEBOOK_URL } from "@/lib/contact";
 import UsageBeat from "@/components/UsageBeat";
 import UsageNotice from "@/components/UsageNotice";
 import LanguagePicker from "@/components/LanguagePicker";
 import SignInLink from "@/components/SignInLink";
 import LanguageSuggest from "@/components/LanguageSuggest";
 import IntlClient from "@/i18n/IntlClient";
+import SiteFooter from "@/components/SiteFooter";
 import { clientMessages } from "@/i18n/messages";
 import { getLocaleInfo, getMessages, getT, suggestedLocale } from "@/i18n/server";
 
 
-/**
- * Previzualizarea linkului pe WhatsApp, Facebook și în alte aplicații: titlul, descrierea și poza (app/opengraph-image).
- * Sunt fixe, în română, ca să arate la fel oricui trimite linkul; roboții acestor aplicații nu au cookie de limbă.
- */
-const SHARE = {
-  title: "Cartea Neamului",
-  description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
-} as const;
-
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getT("Meta");
-  return {
-    metadataBase: new URL(SITE_URL),
-    title: t("appName"), description: t("description"), applicationName: t("appName"),
-    openGraph: { ...SHARE, siteName: "Cartea Neamului", locale: "ro_RO", type: "website" },
-    twitter: { card: "summary_large_image", ...SHARE },
-    // Pe iPhone, după „Adaugă pe ecranul principal”, se deschide ca o aplicație, cu numele întreg sub iconiță.
-    appleWebApp: { capable: true, title: t("appName"), statusBarStyle: "default" },
-    formatDetection: { telephone: false },
-  };
-}
-export const viewport: Viewport = {
-  themeColor: [{ media: "(prefers-color-scheme: light)", color: "#f6efe4" }, { media: "(prefers-color-scheme: dark)", color: "#16100d" }],
-};
+export { rootMetadata as generateMetadata, viewport } from "@/lib/root-metadata";
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await currentUser();
@@ -83,10 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
-  const [messages, t, tp, suggest] = await Promise.all([getMessages(locale), getT("Layout"), getT("Partners"), suggestedLocale()]);
-  const tc = await getT("ContactPage");
-  const th = await getT("Church");
-  const seller = operator();
+  const [messages, t, suggest] = await Promise.all([getMessages(locale), getT("Layout"), suggestedLocale()]);
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
@@ -114,21 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {me && <AccessBanner userId={me.id} locale={locale} />}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
-            <footer className="site-foot">
-              <span>© {new Date().getFullYear()} {appName}</span>
-              <Link href="/confidentialitate">{t("privacy")}</Link>
-              <Link href="/termeni">{t("terms")}</Link>
-              <a href="/confidentialitate#cookie-uri">{t("cookies")}</a>
-              {me && <Link href="/datele-mele">{t("myData")}</Link>}
-              <Link href="/parteneri">{tp("menu")}</Link>
-              <Link href="/contact">{tc("menu")}</Link>
-              <Link href="/istoria-umanitatii">{th("humanity")}</Link>
-              <Link href="/genealogii-vechi">{th("genealogies")}</Link>
-              <Link href="/libertatea-de-a-crede">{th("label")}</Link>
-              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Facebook</a>
-              {/* Cine vinde (cerut de lege pentru comerțul online): datele PFA-ului din src/lib/legal.ts și legătura ANPC – SAL. */}
-              <span className="site-seller">{seller.name} · CUI {seller.cui} · {seller.regCom} · <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer">ANPC – SAL</a></span>
-            </footer>
+            <SiteFooter signedIn={!!me} />
           </div>
         </IntlClient>
       </body>

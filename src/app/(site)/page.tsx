@@ -12,12 +12,11 @@ import { getT } from "@/i18n/server";
 import Landing from "@/components/Landing";
 import Image from "next/image";
 import { homeImages } from "@/lib/home-images";
-import { SITE_URL } from "@/lib/site-url";
-import { FACEBOOK_URL } from "@/lib/contact";
 import { seoSettings, SEO_TAG } from "@/lib/seo";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/page-metadata";
+import { HOME_JSON_LD } from "@/lib/home-jsonld";
 
 // Prima pagină are o singură adresă (fără ?cont=…), iar motoarele de căutare află numele site-ului din datele WebSite, Organization și SoftwareApplication.
 // Tot aici stă codul de verificare Google Search Console, pus din Admin → SEO (sau GOOGLE_SITE_VERIFICATION în Vercel).
@@ -31,26 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
     ...(code ? { verification: { google: code } } : {}),
   };
 }
-const DESCRIPTION = "Fă online arborele genealogic al familiei, împreună cu rudele. Păstrezi poze, povești și glasul bunicilor, apoi tipărești cartea neamului.";
-/** Datele pentru motoarele de căutare: site-ul, cine îl face și ce este (o aplicație web). Fără note sau recenzii. */
-const JSON_LD = {
-  "@context": "https://schema.org",
-  "@graph": [
-    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Cartea Neamului", url: SITE_URL, inLanguage: "ro", description: DESCRIPTION, publisher: { "@id": `${SITE_URL}/#organization` } },
-    { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/apple-icon.png`, sameAs: [FACEBOOK_URL] },
-    {
-      "@type": "SoftwareApplication", "@id": `${SITE_URL}/#app`, name: "Cartea Neamului", url: SITE_URL, description: DESCRIPTION,
-      applicationCategory: "LifestyleApplication", operatingSystem: "Web", inLanguage: "ro", publisher: { "@id": `${SITE_URL}/#organization` },
-    },
-  ],
-};
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ cont?: string }> }) {
   const me = await currentUser();
   const deleted = (await searchParams).cont === "sters";
-  if (!me) return <Landing deleted={deleted} jsonLd={JSON_LD} />;
+  if (!me) return <Landing deleted={deleted} jsonLd={HOME_JSON_LD} />;
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, count: sql<number>`(select count(*) from person p where p.tree_id = ${tree.id})::int` })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, me.id)).orderBy(desc(tree.createdAt));
   const requests = (await myJoinRequests(db, me.id)).map((j) => ({ ...j, at: j.at.toISOString() }));
