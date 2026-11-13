@@ -13,6 +13,7 @@ import CookieNotice from "@/components/CookieNotice";
 import LanguagePicker from "@/components/LanguagePicker";
 import SignInLink from "@/components/SignInLink";
 import SiteFooter from "@/components/SiteFooter";
+import VisitBeacon from "@/components/VisitBeacon";
 import IntlClient from "@/i18n/IntlClient";
 import { clientMessages } from "@/i18n/messages";
 import { getAppName, getMessages, getT } from "@/i18n/server";
@@ -57,6 +58,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
             </header>
             {!v.cookieSeen && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
             <main id="continut">{children}</main>
+            <VisitBeacon />
             <SiteFooter signedIn={false} />
           </div>
         </IntlClient>

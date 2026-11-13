@@ -573,3 +573,29 @@ export const problemReport = pgTable("problem_report", {
   resolvedAt: timestamp("resolved_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("problem_report_user_idx").on(t.userId, t.createdAt), index("problem_report_status_idx").on(t.status, t.createdAt)]);
+
+/* ---------- Vizitele, numărate anonim (Admin → Analiză), vezi src/lib/vizite.ts și migrația 0026 ---------- */
+// Fiecare pagină deschisă: ziua și ora (ora României), o amprentă de vizitator care se schimbă zilnic (nu se poate lega de
+// cineva), pagina (cele private doar până la primul cuvânt), de unde a venit, felul ecranului, țara (după IP, doar codul).
+export const pageView = pgTable("page_view", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  at: timestamp("at").notNull().defaultNow(),
+  day: date("day").notNull(),
+  hour: integer("hour").notNull(),
+  visitor: text("visitor").notNull(),
+  path: text("path").notNull(),
+  source: text("source").notNull(),
+  referrer: text("referrer"),
+  medium: text("medium"),
+  campaign: text("campaign"),
+  device: text("device").notNull(),
+  country: text("country"),
+  lang: text("lang"),
+  logged: boolean("logged").notNull().default(false),
+}, (t) => [index("page_view_day_idx").on(t.day), index("page_view_visitor_idx").on(t.visitor, t.at)]);
+
+// Sarea zilei pentru amprenta vizitatorilor; cea de ieri și mai vechi se șterge, ca amprentele vechi să nu mai poată fi refăcute.
+export const visitSalt = pgTable("visit_salt", {
+  day: date("day").primaryKey(),
+  salt: text("salt").notNull(),
+});

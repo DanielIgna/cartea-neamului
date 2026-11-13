@@ -9,6 +9,7 @@ import { baseWordInfo } from "@/lib/texte";
 import { changeStats } from "@/lib/admin-istoric";
 import { editLimits } from "@/lib/edit-limits";
 import { newReportsCount } from "@/lib/probleme";
+import { rangeOf, uniqueVisitors } from "@/lib/analiza";
 import { AdminNav, Stat, Status, bytes, day, eur, lei, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function AdminHome() {
   await requireAdmin("/admin");
   const [b, i, people, word, changes, limits, problems] = await Promise.all([businessStats(db), infraStats(db), peopleList(db), baseWordInfo(db), changeStats(db), editLimits(db),
     newReportsCount(db).catch(() => 0)]);
+  const visits = await uniqueVisitors(db, rangeOf("7z").cur).catch(() => ({ visitors: 0, views: 0 }));
   const funnel = funnelOf(people);
   const step = (k: number) => funnel[k]?.count ?? 0;
   const missing = ENV_KEYS.filter((k) => k.needed && !envSet(k.key));
@@ -55,6 +57,16 @@ export default async function AdminHome() {
               <Stat label="Activi în 7 zile" value={num(b.users.active7)} />
               <Stat label="Arbori" value={num(b.trees.total)} hint={`${b.trees.shared} cu mai mulți membri`} />
               <Stat label="Persoane trecute" value={num(b.content.persons)} hint={`+${b.content.persons7} în 7 zile`} />
+            </div>
+          </div>
+        </Link>
+        <Link href="/admin/analiza" className="zone-link">
+          <div className="card">
+            <h2 style={{ marginTop: 0 }}>Analiză</h2>
+            <p className="muted" style={{ marginTop: 0 }}>Vizite, surse, campanii și drumul de la vizită la cont, arbore și plată, numărate anonim.</p>
+            <div className="stats">
+              <Stat label="Vizitatori în 7 zile" value={num(visits.visitors)} />
+              <Stat label="Pagini văzute" value={num(visits.views)} />
             </div>
           </div>
         </Link>

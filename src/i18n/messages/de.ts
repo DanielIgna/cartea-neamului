@@ -34,7 +34,7 @@ export const de: Catalog = {
     guides: "Ratgeber Ahnenforschung",
     glossary: "Glossar",
     cookieLead: "Nur unbedingt notwendige Cookies.",
-    cookieText: "Wir nutzen sie, damit du angemeldet bleibst und deine gewählte Sprache und dein Farbschema gespeichert werden. Keine Werbung und keine Besucherzählung, deshalb fragen wir nicht nach deiner Einwilligung.",
+    cookieText: "Wir nutzen sie, damit du angemeldet bleibst und deine gewählte Sprache und dein Farbschema gespeichert werden. Keine Werbung und kein Tracking: Besuche zählen wir anonym, ohne Cookies, deshalb fragen wir nicht nach deiner Einwilligung.",
     cookieMore: "Zur Liste",
     cookieOk: "Verstanden",
   },
