@@ -11,6 +11,7 @@ import { esResurse } from "./resurse/es";
 import { esFilm } from "./film/es";
 import { esLegal } from "./legal/es";
 import { esDatele } from "./datele/es";
+import { esPastrare } from "./pastrare/es";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -380,6 +381,7 @@ export const es: Catalog = {
   ...esFilm,
   ...esLegal,
   ...esDatele,
+  ...esPastrare,
   Access: {
     trial: "{days, plural, one {Te queda un día gratis} other {Te quedan # días gratis}}. Después, para seguir añadiendo y editando, el año cuesta {price}.",
     ended: "<b>Tus días gratis han terminado.</b> El árbol se sigue viendo y no se pierde nada, pero para añadir o cambiar algo, el año cuesta {price}.",

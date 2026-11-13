@@ -22,7 +22,10 @@ export async function GET(req: Request) {
     const date = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(r.paidUntil!);
     const tp = await getT("Plata", locale);
     const plan = tp(`tiers.${isTier(r.tier) ? r.tier : "basic"}.name` as "tiers.basic.name");
-    const ok = await sendMail(r.email, t("subject", { app, date }), t("body", { name: r.name, app, date, plan, link: `${SITE_URL}/plata` }));
+    // „Păstrarea”: cine nu mai vrea să adauge află că familia poate vedea tot în continuare, cu o sumă mică.
+    const keep = locale === "ro" ? s.keepLei : s.keepEur;
+    const note = keep > 0 ? (await getT("Keep", locale))("mailNote", { price: locale === "ro" ? `${keep} lei` : `${keep} €` }) : "";
+    const ok = await sendMail(r.email, t("subject", { app, date }), t("body", { name: r.name, app, date, plan, link: `${SITE_URL}/plata` }) + note);
     if (ok) { await markReminded(db, r.userId, r.paidUntil!); sent++; }
   }
   return Response.json({ ok: true, sent });

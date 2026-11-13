@@ -10,7 +10,7 @@ import { accountPlan, document, person, tree, treeMember, user } from "@/db/sche
 import { isAdminUser } from "./admin";
 import { isDemo } from "./demo";
 import {
-  accessFor, isTier, limitsFor, mayInviteWriters, mayStartTree, planSettings, room, writesInTree, yearPrice, type Access, type LimitKey, type PlanSettings,
+  accessFor, fullMedia, isKept, isTier, limitsFor, mayKeep, mayInviteWriters, mayStartTree, planSettings, room, writesInTree, yearPrice, type Access, type LimitKey, type PlanSettings,
 } from "./plans";
 import { isPlan } from "./plan-names";
 
@@ -20,12 +20,12 @@ export async function userAccess(db: Db, userId: string, now = new Date()): Prom
   const settings = await settingsOnce(db);
   if (!settings.on) return { access: { kind: "deschis" }, settings, ownsTree: false };
   const [u] = await db.select({
-    email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt, plan: accountPlan.plan, paidUntil: accountPlan.paidUntil, tier: accountPlan.tier,
+    email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt, plan: accountPlan.plan, paidUntil: accountPlan.paidUntil, tier: accountPlan.tier, keepUntil: accountPlan.keepUntil,
     owns: sql<boolean>`exists (select 1 from tree t where t.owner_id = ${user.id})`,
   }).from(user).leftJoin(accountPlan, eq(accountPlan.userId, user.id)).where(eq(user.id, userId));
   if (!u) return { access: { kind: "expirat", since: now }, settings, ownsTree: false };
   const exempt = isDemo(u.email) || isAdminUser(u);
-  const access = accessFor({ createdAt: u.createdAt, plan: isPlan(u.plan) ? u.plan : null, paidUntil: u.paidUntil, tier: isTier(u.tier) ? u.tier : null, exempt }, settings, now);
+  const access = accessFor({ createdAt: u.createdAt, plan: isPlan(u.plan) ? u.plan : null, paidUntil: u.paidUntil, tier: isTier(u.tier) ? u.tier : null, exempt, keepUntil: u.keepUntil }, settings, now);
   return { access, settings, ownsTree: !!u.owns };
 }
 
@@ -39,7 +39,8 @@ export async function canWriteNow(db: Db, userId: string) {
 export async function accessBanner(db: Db, userId: string) {
   const { access, settings, ownsTree } = await accessOnce(db, userId);
   if (access.kind !== "proba" && access.kind !== "expirat") return null;
-  return { access, price: yearPrice(ownsTree, settings), familie: { lei: settings.familieLei, eur: settings.familieEur } };
+  return { access, price: yearPrice(ownsTree, settings), familie: { lei: settings.familieLei, eur: settings.familieEur },
+    keep: mayKeep(access) ? { lei: settings.keepLei, eur: settings.keepEur } : null, kept: isKept(access) };
 }
 
 /** Proprietarul arborelui și accesul lui (o dată pe cerere). */
@@ -48,6 +49,17 @@ const ownerOnce = cache(async (db: Db, treeId: string) => {
   if (!t?.ownerId) return null;
   return { ownerId: t.ownerId, access: (await accessOnce(db, t.ownerId)).access };
 });
+
+/**
+ * Se deschid întregi pozele, glasurile și actele din arborele ăsta pentru om? (src/lib/plans.ts, `fullMedia`). Fișierele
+ * încărcate de el însuși se deschid mereu: asta se verifică la deschidere, nu aici.
+ */
+export async function mediaFullIn(db: Db, treeId: string, userId: string) {
+  const { access, settings } = await accessOnce(db, userId);
+  if (!settings.on) return true;
+  const owner = await ownerOnce(db, treeId);
+  return fullMedia(owner?.access ?? null, access);
+}
 
 /** Poate scrie omul în arborele ăsta? Ține seama și de proprietar (src/lib/plans.ts, `writesInTree`). */
 export async function canWriteInTree(db: Db, treeId: string, userId: string) {

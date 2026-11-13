@@ -61,7 +61,8 @@ export default async function MyDataPage() {
       <div className="card">
         <div className="section-label" style={{ marginTop: 0 }}>{t("download.label")}</div>
         <p>{t("download.text")}</p>
-        <div className="actions"><a className="btn primary" href="/api/datele-mele" download>{t("download.button")}</a></div>
+        <div className="actions"><a className="btn primary" href="/api/datele-mele" download>{t("download.button")}</a>
+          <Link className="btn" href="/arhiva">{(await getT("Archive", locale))("title")}</Link></div>
         {trees.length > 0 && (
           <>
             <p className="muted" style={{ marginBottom: 4 }}>{t("download.gedcom")}</p>

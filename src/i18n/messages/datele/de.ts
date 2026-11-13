@@ -122,6 +122,7 @@ export const deDatele: DateleCatalog = {
     noDocument: "Das Dokument existiert nicht.",
     noFile: "Das Dokument hat keine angehängte Datei.",
     noStorage: "Der Dateispeicher ist nicht eingerichtet.",
+    mediaKept: "Diese Datei öffnet sich vollständig, solange der Inhaber des Stammbaums ein bezahltes Jahr oder „Aufbewahren“ hat. Wer sie hochgeladen hat, kann sie jederzeit herunterladen.",
     noTree: "Der Stammbaum existiert nicht.",
     notFound: "Die Seite existiert nicht.",
   },

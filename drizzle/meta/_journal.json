@@ -162,6 +162,13 @@
       "when": 1794620000000,
       "tag": "0022_daruri",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1794630000000,
+      "tag": "0023_pastrare",
+      "breakpoints": true
     }
   ]
 }

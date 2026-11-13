@@ -122,6 +122,7 @@ export const nlDatele: DateleCatalog = {
     noDocument: "Het document bestaat niet.",
     noFile: "Het document heeft geen bijgevoegd bestand.",
     noStorage: "De bestandsopslag is niet ingesteld.",
+    mediaKept: "Dit bestand opent volledig zolang de eigenaar van de stamboom een betaald jaar of „Bewaren” heeft. Wie het uploadde, kan het altijd downloaden.",
     noTree: "De stamboom bestaat niet.",
     notFound: "De pagina bestaat niet.",
   },

@@ -77,6 +77,12 @@ export const PlanSettings = z.object({
   printFromEur: num(0, 20000, ""),
   referralDays: num(0, 365, "zile").int("Scrie un număr întreg."),
   reminderDays: num(0, 60, "zile").int("Scrie un număr întreg."),
+  // „Păstrarea” (Daniel, 2026-11-13): după un an plătit, o sumă mică pe an ca familia să vadă și să asculte tot online, fără
+  // adăugări noi; și pachetul „Păstrare + cartea PDF”. Aceeași sumă la orice plan.
+  keepLei: num(0, 5000, ""),
+  keepEur: num(0, 1000, ""),
+  keepBookLei: num(0, 5000, ""),
+  keepBookEur: num(0, 1000, ""),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
@@ -92,6 +98,7 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   premiumLei: 249, premiumEur: 50,
   premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "toti", premiumPrint: 20,
   bundleLei: 129, bundleEur: 25, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
+  keepLei: 25, keepEur: 5, keepBookLei: 109, keepBookEur: 22,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
 const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;
@@ -153,11 +160,11 @@ export async function setAccountPlan(db: Pick<Db, "insert" | "delete">, userId: 
     .onConflictDoUpdate({ target: accountPlan.userId, set: { plan, note: clean, paidUntil, tier: t, setBy: by, updatedAt: now } });
 }
 
-export type AccountPlanRow = { plan: Plan; tier: Tier | null; note: string | null; paidUntil: string | null; updatedAt: string | null };
+export type AccountPlanRow = { plan: Plan; tier: Tier | null; note: string | null; paidUntil: string | null; keepUntil: string | null; updatedAt: string | null };
 export async function accountPlans(db: Pick<Db, "select">): Promise<Map<string, AccountPlanRow>> {
   const rows = await db.select().from(accountPlan);
   return new Map(rows.map((r) => [r.userId, {
-    plan: isPlan(r.plan) ? r.plan : "gratuit", tier: isTier(r.tier) ? r.tier : null, note: r.note, paidUntil: r.paidUntil?.toISOString() ?? null, updatedAt: r.updatedAt?.toISOString() ?? null,
+    plan: isPlan(r.plan) ? r.plan : "gratuit", tier: isTier(r.tier) ? r.tier : null, note: r.note, paidUntil: r.paidUntil?.toISOString() ?? null, keepUntil: r.keepUntil?.toISOString() ?? null, updatedAt: r.updatedAt?.toISOString() ?? null,
   }]));
 }
 
@@ -169,7 +176,9 @@ const DAY = 86_400_000;
  * - „platit”: are anul plătit pe un plan (Basic, Familie, Premium; fără dată = pus „Plătit” de mână, fără termen);
  * - „beta”: avea cont înainte de pornirea plăților, deci are primul an gratuit (`betaDays` de la pornire);
  * - „proba”: e în zilele gratuite;
- * - „expirat”: zilele gratuite (sau anul plătit) s-au terminat: arborii lui sunt doar de citit până plătește.
+ * - „expirat”: zilele gratuite (sau anul plătit) s-au terminat: arborii lui sunt doar de citit până plătește. Dacă a avut
+ *   un an (plătit sau primul an din beta), poate lua „Păstrarea” (`keepable`); cât o are (`keptUntil`), familia vede și
+ *   ascultă tot online. Fără ea, numele, datele și textele rămân de văzut, iar pozele și glasurile altora doar în mic.
  * Fiecare om are zilele lui: și cel care pornește arborele, și fiecare rudă invitată (alegerea lui Daniel din 2026-11-12).
  */
 export type Access =
@@ -178,9 +187,11 @@ export type Access =
   | { kind: "platit"; until: Date | null; tier: Tier }
   | { kind: "beta"; until: Date }
   | { kind: "proba"; until: Date; daysLeft: number }
-  | { kind: "expirat"; since: Date };
+  | { kind: "expirat"; since: Date; keptUntil?: Date | null; keepable?: boolean };
 
-export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; tier?: Tier | null; exempt?: boolean }, s: PlanSettings, now = new Date()): Access {
+export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; tier?: Tier | null; exempt?: boolean; keepUntil?: Date | null }, s: PlanSettings, now = new Date()): Access {
+  const ended = (since: Date, hadYear: boolean): Access =>
+    ({ kind: "expirat", since, keptUntil: a.keepUntil && a.keepUntil > now ? a.keepUntil : null, keepable: hadYear || !!(a.keepUntil) });
   if (!s.on) return { kind: "deschis" };
   if (a.exempt || a.plan === "mereu") return { kind: "mereu" };
   // „familie” în `account_plan.plan` înseamnă „a plătit anul”; planul ales (Basic / Familie / Premium) e în `tier`.
@@ -191,12 +202,33 @@ export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Da
   if (s.betaDays > 0 && a.createdAt < started) {
     const betaEnd = new Date(started.getTime() + s.betaDays * DAY);
     if (now < betaEnd) return { kind: "beta", until: betaEnd };
-    return { kind: "expirat", since: a.paidUntil && a.paidUntil > betaEnd ? a.paidUntil : betaEnd };
+    return ended(a.paidUntil && a.paidUntil > betaEnd ? a.paidUntil : betaEnd, true);
   }
   const from = Math.max(a.createdAt.getTime(), started.getTime());
   const trialEnd = new Date(from + s.trialDays * DAY);
   if (now < trialEnd) return { kind: "proba", until: trialEnd, daysLeft: Math.ceil((trialEnd.getTime() - now.getTime()) / DAY) };
-  return { kind: "expirat", since: a.paidUntil && a.paidUntil > trialEnd ? a.paidUntil : trialEnd };
+  return ended(a.paidUntil && a.paidUntil > trialEnd ? a.paidUntil : trialEnd, !!a.paidUntil);
+}
+
+/** Are „Păstrarea” acum? */
+export const isKept = (a: Access) => a.kind === "expirat" && !!a.keptUntil;
+/** Poate lua (sau prelungi) „Păstrarea”: doar după un an avut (plătit sau beta), cu anul terminat. */
+export const mayKeep = (a: Access) => a.kind === "expirat" && !!a.keepable;
+/** Până când ține „Păstrarea” dacă se plătește acum: un an de azi sau de la sfârșitul celei în curs. */
+export function keepEnd(a: Access, now = new Date()) {
+  const from = a.kind === "expirat" && a.keptUntil && a.keptUntil > now ? a.keptUntil : now;
+  return new Date(from.getTime() + 365 * DAY);
+}
+
+/**
+ * Pozele, glasurile și actele dintr-un arbore se deschid întregi? Da, cât titularul ține arborele (anul plătit, beta, gratuit
+ * mereu, zilele gratuite, plăți oprite) sau are „Păstrarea”; da și pentru cine își are el însuși anul. Altfel se arată doar în
+ * mic (pozele) și nu se ascultă online; fișierele încărcate de om însuși se deschid mereu întregi (sunt datele lui).
+ */
+export function fullMedia(owner: Access | null, viewer: Access) {
+  if (viewer.kind === "deschis" || holdsYear(viewer)) return true;
+  if (!owner) return false;
+  return owner.kind !== "expirat" || isKept(owner);
 }
 export const mayWrite = (a: Access) => a.kind !== "expirat";
 
@@ -320,7 +352,8 @@ export async function planOverview(db: Db, now = new Date()) {
   const access = new Map<string, Access>();
   for (const p of people) {
     const ap = plans.get(p.id);
-    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt }, sim, now));
+    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt,
+      keepUntil: ap?.keepUntil ? new Date(ap.keepUntil) : null }, sim, now));
   }
   const planOf = (uid: string | null): Plan => (uid ? plans.get(uid)?.plan ?? "gratuit" : "gratuit");
   const trees = (await treeSizes(db)).map((t) => ({ ...t, plan: planOf(t.ownerId), access: t.ownerId ? access.get(t.ownerId) ?? null : null }));
@@ -334,6 +367,7 @@ export async function planOverview(db: Db, now = new Date()) {
       proba: kinds.filter((k) => k === "proba").length,
       expirat: kinds.filter((k) => k === "expirat").length,
       beta: kinds.filter((k) => k === "beta").length,
+      pastrare: [...access.values()].filter(isKept).length,
       basic: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "basic").length,
       familie: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "familie").length,
       premium: [...access.values()].filter((a) => a.kind === "platit" && a.tier === "premium").length,

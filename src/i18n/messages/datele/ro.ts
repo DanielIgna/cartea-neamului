@@ -127,6 +127,7 @@ export const roDatele = {
     noDocument: "Documentul nu există.",
     noFile: "Documentul nu are fișier atașat.",
     noStorage: "Stocarea de fișiere nu e configurată.",
+    mediaKept: "Fișierul acesta se deschide întreg cât titularul arborelui are anul plătit sau „Păstrarea”. Cine l-a încărcat îl poate descărca oricând.",
     noTree: "Arborele nu există.",
     notFound: "Pagina nu există.",
   },

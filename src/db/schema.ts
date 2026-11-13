@@ -230,6 +230,7 @@ export const accountPlan = pgTable("account_plan", {
   note: text("note"),
   paidUntil: timestamp("paid_until"), // până când are plătit (50 lei pe an); după, arborii lui sunt doar de citit. Vezi src/lib/plata.ts
   tier: text("tier"), // planul anului plătit: basic / familie / premium (src/lib/plans.ts); gol = fără an plătit
+  keepUntil: timestamp("keep_until"), // „Păstrarea” plătită (25 lei/an): după anul plătit, familia vede tot online, fără adăugări
   remindedFor: timestamp("reminded_for"), // sfârșitul anului pentru care s-a trimis deja aducerea aminte (o dată pe an)
   setBy: text("set_by").references(() => user.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),

@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
-import { tree } from "@/db/schema";
+import { tree, treeMember } from "@/db/schema";
 import { requireUser, roleInTree } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { operator } from "@/lib/legal";
 import { bookIncluded, bookPaid, includedBooksLeft, money, priceFor, quoteYear } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { LIMIT_KEYS, TIERS, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
+import { LIMIT_KEYS, TIERS, isKept, mayKeep, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
 import { giftsBy } from "@/lib/extra";
 import { siteOrigin } from "@/lib/site";
@@ -29,7 +29,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const me = await requireUser("/plata");
   const q = await searchParams;
   const str = (k: string) => (typeof q[k] === "string" ? (q[k] as string) : "");
-  const [t, locale] = await Promise.all([getT("Plata"), getLocale()]);
+  const [t, tk, locale] = await Promise.all([getT("Plata"), getT("Keep"), getLocale()]);
   const { access, settings: s, ownsTree } = await userAccess(db, me.id);
   const admin = isAdminUser(me);
   const open = s.on || admin;
@@ -52,7 +52,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   } : null;
 
   const err = str("eroare");
-  const notice = str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
+  const notice = str("gata") === "pastrare" ? tk("thanks") : str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
     : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err ? t("err") : null;
 
   const status = payAccess.kind === "mereu" ? t("freeForever")
@@ -66,6 +66,14 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const bundle = lei ? s.bundleLei : s.bundleEur;
   const gifts = await giftsBy(db, me.id);
   const origin = await siteOrigin();
+
+  // „Păstrarea”: după un an avut (plătit sau beta), cu anul terminat; adminul o poate încerca oricând.
+  const keepPrice = lei ? s.keepLei : s.keepEur;
+  const keepBook = lei ? s.keepBookLei : s.keepBookEur;
+  const showKeep = keepPrice > 0 && (mayKeep(payAccess) || (admin && !s.on));
+  const myTrees = showKeep && keepBook > 0
+    ? await db.select({ id: tree.id, name: tree.name }).from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, me.id)).orderBy(tree.name)
+    : [];
 
   const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
   const limitValue = (n: number | null) => (n === null ? t("unlimited") : nf.format(n));
@@ -121,13 +129,44 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     <section className="stack plata">
       <div className="card">
         <h1 style={{ marginTop: 0 }}>{t("title")}</h1>
-        {notice && <p role="status" className={err ? "err" : "pay-ok"}>{notice}{err === "curand" && <> <Link href="/contact">{t("contact")}</Link></>}</p>}
+        {notice && <p role="status" className={err ? "err" : "pay-ok"}>{notice}{str("gata") === "pastrare" && <> <Link href="/arhiva">{tk("archiveLink")}</Link></>}{err === "curand" && <> <Link href="/contact">{t("contact")}</Link></>}</p>}
         <h2>{t("yearTitle")}</h2>
-        <p>{status}</p>
+        <p>{isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil ? tk("keptUntil", { date: date(payAccess.keptUntil) }) : status}</p>
         <p className="muted">{t("yearText")}</p>
       </div>
 
       <div className="plan-cards">{TIERS.map(card)}</div>
+
+      {showKeep && (
+        <div className="card" id="pastrare">
+          <h2 style={{ marginTop: 0 }}>{tk("title")}</h2>
+          <p>{tk("text", { price: money(keepPrice, locale).label })}</p>
+          <p className="muted">{tk("free")}</p>
+          {isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil && <p className="muted">{tk("extend", { date: date(payAccess.keptUntil) })}</p>}
+          {open && (
+            <form action="/api/plata/start" method="post" className="form pay-form">
+              <input type="hidden" name="kind" value="pastrare" />
+              {consent}
+              <div className="actions"><button className="btn primary">{t("pay", { price: money(keepPrice, locale).label })}</button></div>
+            </form>
+          )}
+          {open && myTrees.length > 0 && (
+            <form action="/api/plata/start" method="post" className="form pay-form plan-bundle">
+              <input type="hidden" name="kind" value="pastrare" />
+              <input type="hidden" name="pachet" value="1" />
+              <p><b>{tk("bundleTitle")}</b> {tk("bundleText", { price: money(keepBook, locale).label, separate: money(keepPrice + (lei ? s.bookLei : s.bookEur), locale).label })}</p>
+              <label>{tk("bundleTree")}
+                <select name="treeId" defaultValue={myTrees[0].id}>
+                  {myTrees.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+                </select>
+              </label>
+              {consent}
+              <div className="actions"><button className="btn">{t("pay", { price: money(keepBook, locale).label })}</button></div>
+            </form>
+          )}
+          <p className="muted" style={{ marginBottom: 0 }}><Link href="/arhiva">{tk("archiveLink")}</Link></p>
+        </div>
+      )}
 
       <div className="card">
         <p className="muted" style={{ margin: 0 }}>
