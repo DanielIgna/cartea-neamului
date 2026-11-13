@@ -9,7 +9,7 @@ import type { Widen } from "../types";
 export const roParteneri = {
   Partners: {
     checkbox: "Vreau să primesc din când în când beneficii pentru casa mea de la PropManage, partenerul Cartea Neamului.",
-    checkboxHint: "Opțional. Arborele merge la fel și fără. Le dăm doar adresa ta de email și poți renunța oricând, dintr-un clic.",
+    checkboxHint: "Opțional. Arborele merge la fel și fără. Le dăm doar adresa ta de email și poți renunța oricând, dintr-un clic. PropManage e al firmei VINTAGE FURNITURE SRL, cu același administrator ca Cartea Neamului.",
     menu: "Parteneri",
     bookCard: {
       label: "Un partener al nostru",

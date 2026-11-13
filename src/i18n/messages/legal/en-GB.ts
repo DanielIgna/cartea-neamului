@@ -77,6 +77,7 @@ export const enGBLegal: LegalCatalog = {
           l3: "<b>For how long:</b> for as long as your consent stands. We build the list PropManage receives afresh each time from the current consents, so once you withdraw yours, your address no longer reaches it. We ask it to delete your address when it learns that you have withdrawn your consent.",
           l4: "<b>How to withdraw it:</b> with one click, in <dataPartners>My data</dataPartners> (the “Benefits from partners” switch), or from the unsubscribe link in any email you receive, without signing in. Withdrawing changes nothing in your account or your family tree.",
           l5: "Links to PropManage on the site (on the Partners page, next to the old family home and after downloading the book) are simple links: they only show that you come from the Family Book, with no data about you.",
+          l6: "<b>Who PropManage is:</b> the propmanage.ro platform belongs to VINTAGE FURNITURE SRL (tax ID CUI 35250247, Trade Register no. J2015003534120, registered office Aleea Negoiu nr. 8D, Cluj-Napoca, Romania). It has the same director as the sole trader who runs the Family Book, Daniel Igna, but it is a separate company: it receives only the email address of those who tick the box and is responsible for it as a separate controller.",
         },
         dna: {
           h: "The “I want a DNA test” request",

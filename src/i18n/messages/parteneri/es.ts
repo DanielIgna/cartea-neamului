@@ -4,7 +4,7 @@ import type { ParteneriCatalog } from "./ro";
 export const esParteneri: ParteneriCatalog = {
   Partners: {
     checkbox: "Quiero recibir de vez en cuando ventajas para mi casa de PropManage, socio del Libro de la Familia.",
-    checkboxHint: "Opcional. El árbol funciona igual sin esto. Solo compartimos tu correo electrónico y puedes darte de baja cuando quieras, con un clic.",
+    checkboxHint: "Opcional. El árbol funciona igual sin esto. Solo compartimos tu correo electrónico y puedes darte de baja cuando quieras, con un clic. PropManage pertenece a VINTAGE FURNITURE SRL, con el mismo administrador que el Libro de la Familia.",
     menu: "Socios",
     bookCard: {
       label: "Uno de nuestros socios",

@@ -4,7 +4,7 @@ import type { ParteneriCatalog } from "./ro";
 export const nlParteneri: ParteneriCatalog = {
   Partners: {
     checkbox: "Ik wil af en toe voordelen voor mijn huis ontvangen van PropManage, partner van het Familieboek.",
-    checkboxHint: "Optioneel. De stamboom werkt zonder dit precies hetzelfde. We delen alleen je e-mailadres en je kunt je altijd met één klik afmelden.",
+    checkboxHint: "Optioneel. De stamboom werkt zonder dit precies hetzelfde. We delen alleen je e-mailadres en je kunt je altijd met één klik afmelden. PropManage is van VINTAGE FURNITURE SRL, met dezelfde bestuurder als het Familieboek.",
     menu: "Partners",
     bookCard: {
       label: "Een van onze partners",

@@ -77,6 +77,7 @@ export const deLegal: LegalCatalog = {
           l3: "<b>Wie lange:</b> solange deine Einwilligung besteht. Die Liste, die PropManage erhält, stellen wir jedes Mal neu aus den aktuellen Einwilligungen zusammen, sodass deine Adresse nach dem Widerruf nicht mehr dorthin gelangt. Wir bitten PropManage, deine Adresse zu löschen, sobald es erfährt, dass du deine Einwilligung widerrufen hast.",
           l4: "<b>Wie du sie widerrufst:</b> mit einem Klick unter <dataPartners>Meine Daten</dataPartners> (der Schalter „Vorteile von Partnern“) oder über den Abmeldelink in jeder erhaltenen E-Mail, ohne dich anzumelden. Der Widerruf ändert nichts an deinem Konto oder deinem Stammbaum.",
           l5: "Die Links zu PropManage auf der Seite (auf der Partnerseite, neben dem alten Familienhaus und nach dem Herunterladen des Buches) sind einfache Links: Sie zeigen nur, dass du vom Familienbuch kommst, ohne irgendwelche Daten über dich.",
+          l6: "<b>Wer PropManage ist:</b> Die Plattform propmanage.ro gehört der Firma VINTAGE FURNITURE SRL (CUI 35250247, Handelsregisternr. J2015003534120, Sitz Aleea Negoiu nr. 8D, Cluj-Napoca, Rumänien). Sie hat denselben Geschäftsführer wie das Einzelunternehmen, das das Familienbuch betreibt, Daniel Igna, ist aber eine eigene Firma: Sie erhält nur die E-Mail-Adresse derer, die das Häkchen setzen, und ist dafür als eigener Verantwortlicher zuständig.",
         },
         dna: {
           h: "Die Anfrage „Ich möchte einen DNA-Test“",

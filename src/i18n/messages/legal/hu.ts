@@ -77,6 +77,7 @@ export const huLegal: LegalCatalog = {
           l3: "<b>Meddig:</b> amíg a hozzájárulásod érvényes. A listát, amelyet a PropManage kap, minden alkalommal újra összeállítjuk az aktuális hozzájárulásokból, így a visszavonás után a címed már nem jut el hozzá. Megkérjük, hogy törölje a címedet, amint megtudja, hogy visszavontad a hozzájárulásodat.",
           l4: "<b>Hogyan vonhatod vissza:</b> egy kattintással az <dataPartners>Adataim</dataPartners> oldalon (a „Partnerek kedvezményei” kapcsoló), vagy bármelyik kapott e-mail leiratkozási linkjével, belépés nélkül. A visszavonás semmin sem változtat a fiókodban vagy a családfádban.",
           l5: "Az oldalon lévő, a PropManage-re mutató linkek (a Partnerek oldalon, a régi családi ház mellett és a könyv letöltése után) egyszerű hivatkozások: csak azt mutatják, hogy a Család Könyvéből érkezel, rólad semmilyen adatot nem adnak át.",
+          l6: "<b>Ki a PropManage:</b> a propmanage.ro platform a VINTAGE FURNITURE SRL cégé (CUI 35250247, cégjegyzékszám J2015003534120, székhely: Aleea Negoiu nr. 8D, Cluj-Napoca, Románia). Ugyanaz az ügyvezetője, mint A Család Könyvét működtető egyéni vállalkozásnak, Daniel Igna, de külön cég: csak azok e-mail-címét kapja meg, akik bejelölik a négyzetet, és azért önálló adatkezelőként felel.",
         },
         dna: {
           h: "A „DNS-tesztet szeretnék” kérés",

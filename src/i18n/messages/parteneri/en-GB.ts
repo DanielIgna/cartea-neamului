@@ -4,7 +4,7 @@ import type { ParteneriCatalog } from "./ro";
 export const enGBParteneri: ParteneriCatalog = {
   Partners: {
     checkbox: "I would like to receive occasional benefits for my home from PropManage, a partner of the Family Book.",
-    checkboxHint: "Optional. The tree works exactly the same without it. We only share your email address, and you can opt out at any time with one click.",
+    checkboxHint: "Optional. The tree works exactly the same without it. We only share your email address, and you can opt out at any time with one click. PropManage belongs to VINTAGE FURNITURE SRL, which has the same director as the Family Book.",
     menu: "Partners",
     bookCard: {
       label: "One of our partners",
