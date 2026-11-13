@@ -47,6 +47,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
           <span className="muted">{name}</span>
         </Link>
         <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
+        <Link className="menu-quiet" href="/ghid">{t("guides")}</Link>
         <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
         <Link className="menu-quiet" href={report}>{t("report")}{replyBadge}</Link>
         <button className="btn" onClick={signOut}>{t("signOut")}</button>
@@ -64,6 +65,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
             <Link href="/datele-mele">{t("account")}</Link>
             <Link href="/plata">{t("plan")}</Link>
             {admin && <Link href="/admin">{t("admin")}</Link>}
+            <Link href="/ghid">{t("guides")}</Link>
             <Link href="/parteneri">{tp("menu")}</Link>
             <Link href={report}>{t("report")}{replyBadge}</Link>
           </nav>

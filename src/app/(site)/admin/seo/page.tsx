@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { SITE_URL } from "@/lib/site-url";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
+import { INDEX_LIMIT, sitemapGroups } from "@/lib/continut/sitemap";
 import {
   activeServiceAccount, inspectUrl, listSitemaps, listSites, matchWatched, mergeKeywords, periods, pickSite, searchAnalytics, seoSettings,
   type GscSite, type Inspection, type KeywordRow, type Row, type Sitemap,
@@ -36,7 +37,7 @@ const VERDICT: Record<string, { label: string; ok: boolean; warn?: boolean }> = 
 type Live = {
   sites: GscSite[]; site: string | null; error: string | null;
   keywords: KeywordRow[]; pages: Row[]; totals: { cur: Row | null; prev: Row | null };
-  sitemaps: Sitemap[]; inspections: Inspection[];
+  sitemaps: Sitemap[]; inspections: Inspection[]; hubInspections: Inspection[];
 };
 
 /**
@@ -48,32 +49,39 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
   const zile = Number((await searchParams).zile);
   const days = (PERIODS as readonly number[]).includes(zile) ? zile : 28;
   const s = await seoSettings(db);
+  const groups = sitemapGroups();
+  // Secțiunile cu multe pagini (ghiduri, glosar…): prima adresă din fiecare e hubul secțiunii.
+  const sections = groups.filter((g) => g.name !== "pagini");
+  const totalUrls = groups.reduce((n, g) => n + g.urls.length, 0);
   const key = activeServiceAccount(s);
   const verification = process.env.GOOGLE_SITE_VERIFICATION?.trim() || s.verification;
 
   let live: Live | null = null;
   if (key) {
-    live = { sites: [], site: null, error: null, keywords: [], pages: [], totals: { cur: null, prev: null }, sitemaps: [], inspections: [] };
+    live = { sites: [], site: null, error: null, keywords: [], pages: [], totals: { cur: null, prev: null }, sitemaps: [], inspections: [], hubInspections: [] };
     try {
       live.sites = await listSites(key.account);
       live.site = pickSite(live.sites, s.siteUrl, SITE_URL);
       if (live.site) {
         const p = periods(days);
         const site = live.site;
-        const [cur, prev, pages, tCur, tPrev, maps, inspections] = await Promise.all([
+        const [cur, prev, pages, tCur, tPrev, maps, inspections, hubInspections] = await Promise.all([
           searchAnalytics(key.account, site, p.cur, ["query"], 1000),
           searchAnalytics(key.account, site, p.prev, ["query"], 1000),
-          searchAnalytics(key.account, site, p.cur, ["page"], 100),
+          // Toate paginile cu afișări (nu doar primele 100), ca să le putem număra pe secțiuni.
+          searchAnalytics(key.account, site, p.cur, ["page"], 5000),
           searchAnalytics(key.account, site, p.cur, [], 1),
           searchAnalytics(key.account, site, p.prev, [], 1),
           listSitemaps(key.account, site).catch(() => []),
           Promise.all(PUBLIC_PAGES.map((pg) => inspectUrl(key.account, site, `${SITE_URL}${pg.path === "/" ? "/" : pg.path}`))),
+          Promise.all(sections.map((g) => inspectUrl(key.account, site, `${SITE_URL}${g.urls[0].path}`))),
         ]);
         live.keywords = mergeKeywords(cur, prev);
         live.pages = pages;
         live.totals = { cur: tCur[0] ?? null, prev: tPrev[0] ?? null };
         live.sitemaps = maps;
         live.inspections = inspections;
+        live.hubInspections = hubInspections;
       }
     } catch (e) {
       live.error = e instanceof Error ? e.message : String(e);
@@ -95,7 +103,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
           <table className="tbl">
             <tbody>
               <tr><td style={{ width: 1 }}><Status ok>merge</Status></td><td>Adresa principală<small>{SITE_URL}</small></td></tr>
-              <tr><td><Status ok>merge</Status></td><td>Harta site-ului (sitemap) cu {PUBLIC_PAGES.length} pagini publice<small><a href="/sitemap.xml" target="_blank">{SITE_URL}/sitemap.xml</a></small></td></tr>
+              <tr><td><Status ok>merge</Status></td><td>Harta site-ului (sitemap) cu {totalUrls} pagini publice{totalUrls > INDEX_LIMIT ? `, împărțită pe ${groups.length} secțiuni` : ""}<small><a href="/sitemap.xml" target="_blank">{SITE_URL}/sitemap.xml</a></small></td></tr>
               <tr><td><Status ok>merge</Status></td><td>robots.txt: Google citește paginile publice, nu arborii, mesajele sau datele cuiva<small><a href="/robots.txt" target="_blank">{SITE_URL}/robots.txt</a></small></td></tr>
               <tr>
                 <td><Status ok={!!verification} warn>{verification ? "pus" : "lipsește"}</Status></td>
@@ -255,6 +263,34 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
           </ol>
         </div>
       )}
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Secțiunile cu multe pagini</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Ghiduri, glosar și celelalte secțiuni publice, scrise din fișierele din repo. „Văzute în Google” = pagini care au apărut cel puțin o dată în rezultate în ultimele {days} zile, deci sigur sunt indexate (Google nu dă o listă completă a paginilor indexate prin cheie; pentru cifra exactă vezi Search Console → Pagini).</p>
+        <div className="tbl-wrap">
+          <table className="tbl">
+            <thead><tr><th>Secțiunea</th><th className="n">Pagini în sitemap</th><th className="n">Văzute în Google</th><th className="n">Afișări</th><th className="n">Clicuri</th><th>Hubul în index</th></tr></thead>
+            <tbody>
+              {sections.map((g, i) => {
+                const prefix = `${SITE_URL}${g.urls[0].path}`;
+                const rows = live?.pages.filter((r) => { const u = r.keys[0].replace(/\/$/, ""); return u === prefix || u.startsWith(`${prefix}/`) || u.startsWith(`${prefix}?`); }) ?? [];
+                const ins = live?.hubInspections[i];
+                const v = ins ? VERDICT[ins.verdict] ?? { label: "necunoscut", ok: false, warn: true } : null;
+                return (
+                  <tr key={g.name}>
+                    <td>{g.label}<small><a href={g.urls[0].path} target="_blank">{g.urls[0].path}</a> · <a href={`/sitemaps/${g.name}.xml`} target="_blank">sitemap</a></small></td>
+                    <td className="n">{num(g.urls.length)}</td>
+                    <td className="n">{live?.site ? num(rows.length) : "—"}</td>
+                    <td className="n">{live?.site ? num(rows.reduce((n, r) => n + r.impressions, 0)) : "—"}</td>
+                    <td className="n">{live?.site ? num(rows.reduce((n, r) => n + r.clicks, 0)) : "—"}</td>
+                    <td>{v ? <Status ok={v.ok} warn={v.warn}>{v.label}</Status> : <span className="muted">fără legătura cu Google</span>}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Setări</h2>

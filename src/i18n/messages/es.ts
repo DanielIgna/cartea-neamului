@@ -31,6 +31,8 @@ export const es: Catalog = {
     signIn: "Entrar",
     signInShort: "Entrar",
     cookies: "Cookies",
+    guides: "Guías de genealogía",
+    glossary: "Glosario",
     cookieLead: "Solo cookies estrictamente necesarias.",
     cookieText: "Las usamos para mantener tu sesión iniciada y recordar el idioma y el tema elegidos. Sin publicidad ni recuento de visitas, por eso no te pedimos el consentimiento.",
     cookieMore: "Ver la lista",
@@ -63,6 +65,7 @@ export const es: Catalog = {
     signOut: "Salir",
     menu: "Menú",
     home: "Inicio",
+    guides: "Guías",
   },
   UsageNotice: {
     label: "Cómo usas el sitio",

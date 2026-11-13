@@ -31,6 +31,8 @@ export const enGB: Catalog = {
     signIn: "Sign in",
     signInShort: "Sign in",
     cookies: "Cookies",
+    guides: "Genealogy guides",
+    glossary: "Glossary",
     cookieLead: "Only strictly necessary cookies.",
     cookieText: "We use them to keep you signed in and to remember your language and theme. No ads and no visitor tracking, so we do not ask for your consent.",
     cookieMore: "See the list",
@@ -63,6 +65,7 @@ export const enGB: Catalog = {
     signOut: "Sign out",
     menu: "Menu",
     home: "Home",
+    guides: "Guides",
   },
   UsageNotice: {
     label: "How you use the site",

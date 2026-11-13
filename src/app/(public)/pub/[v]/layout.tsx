@@ -23,8 +23,10 @@ export { viewport } from "@/lib/root-metadata";
 export const dynamic = "force-static";
 export const revalidate = 600;
 export const generateStaticParams = variantParams;
-// Altă variantă decât cele 54 nu există (middleware.ts nu trimite decât la ele).
-export const dynamicParams = false;
+// Altă variantă decât cele 54 nu există: readVariant() dă 404 (iar middleware.ts nu trimite decât la ele). Nu „false” aici,
+// ca paginile din secțiuni (ghiduri, glosar…) să se poată face la prima cerere în celelalte variante (Next ia „false” de
+// pe layout pentru toate paginile de sub el).
+export const dynamicParams = true;
 
 export async function generateMetadata(props: VariantParams) {
   await readVariant(props);

@@ -1,5 +1,6 @@
 import { LOCALES, type Locale } from "@/i18n/locales";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
+import { sectionOf } from "@/lib/public-sections";
 
 /**
  * Paginile publice, pentru vizitatorii fără cont, se servesc gata făcute din cache: câte o variantă pentru fiecare limbă,
@@ -27,3 +28,9 @@ export const ALL_VARIANTS = LOCALES.flatMap((locale) => THEMES.flatMap((theme) =
 
 /** Paginile care au variantă gata făcută: toate cele din PUBLIC_PAGES. */
 export const PUBLIC_PATHS = new Set(PUBLIC_PAGES.map((p) => p.path));
+
+/** Paginile servite gata făcute: cele din PUBLIC_PAGES și cele din secțiunile publice (ghiduri, glosar…). */
+export const isPublicPath = (pathname: string) => PUBLIC_PATHS.has(pathname) || sectionOf(pathname) !== null;
+
+/** Varianta făcută la publicare pentru paginile din secțiuni (cea pe care o primesc Google și vizitatorii noi în română). */
+export const BUILD_VARIANT = variantKey({ locale: "ro", theme: "auto", cookieSeen: false });
