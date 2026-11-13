@@ -31,7 +31,7 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
 
   return (
     <section className="stack">
-      <AdminNav active="oameni" />
+      <AdminNav active="oameni" heading={false} />
       <p style={{ margin: 0 }}><Link href="/admin/oameni">← Toți oamenii</Link></p>
 
       <div className="card">
