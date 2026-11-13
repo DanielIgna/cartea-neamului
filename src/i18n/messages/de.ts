@@ -33,6 +33,7 @@ export const de: Catalog = {
     cookies: "Cookies",
     guides: "Ratgeber Ahnenforschung",
     glossary: "Glossar",
+    surnames: "Familiennamen",
     cookieLead: "Nur unbedingt notwendige Cookies.",
     cookieText: "Wir nutzen sie, damit du angemeldet bleibst und deine gewählte Sprache und dein Farbschema gespeichert werden. Keine Werbung und kein Tracking: Besuche zählen wir anonym, ohne Cookies, deshalb fragen wir nicht nach deiner Einwilligung.",
     cookieMore: "Zur Liste",

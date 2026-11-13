@@ -43,6 +43,7 @@ export const ro = {
     cookies: "Cookie-uri",
     guides: "Ghiduri de genealogie",
     glossary: "Glosar",
+    surnames: "Nume de familie",
     cookieLead: "Doar cookie-uri strict necesare.",
     cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără urmărire: vizitele le numărăm anonim, fără cookie-uri, așa că nu-ți cerem acordul.",
     cookieMore: "Vezi lista",

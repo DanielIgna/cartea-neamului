@@ -33,6 +33,7 @@ export const es: Catalog = {
     cookies: "Cookies",
     guides: "Guías de genealogía",
     glossary: "Glosario",
+    surnames: "Apellidos",
     cookieLead: "Solo cookies estrictamente necesarias.",
     cookieText: "Las usamos para mantener tu sesión iniciada y recordar el idioma y el tema elegidos. Sin publicidad ni rastreo: contamos las visitas de forma anónima, sin cookies, por eso no te pedimos el consentimiento.",
     cookieMore: "Ver la lista",

@@ -6,6 +6,7 @@
 export const PUBLIC_SECTIONS = [
   { key: "ghid", hub: "/ghid", label: "Ghiduri de genealogie", depth: 1 },
   { key: "glosar", hub: "/glosar", label: "Glosar de genealogie", depth: 1 },
+  { key: "nume", hub: "/nume", label: "Nume de familie", depth: 1 },
 ] as const;
 export type SectionKey = (typeof PUBLIC_SECTIONS)[number]["key"];
 

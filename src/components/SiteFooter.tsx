@@ -21,6 +21,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       {giftSeason() && <Link href={GIFT_PATH}>{tg("footer")}</Link>}
       <Link href="/ghid">{t("guides")}</Link>
       <Link href="/glosar">{t("glossary")}</Link>
+      <Link href="/nume">{t("surnames")}</Link>
       <Link href="/contact">{tc("menu")}</Link>
       <Link href="/istoria-umanitatii">{th("humanity")}</Link>
       <Link href="/genealogii-vechi">{th("genealogies")}</Link>
