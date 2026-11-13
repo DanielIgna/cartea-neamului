@@ -7,7 +7,7 @@
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
 export const TERMS_DATE = new Date("2026-11-13T12:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (13 noiembrie, la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
+ * Ultima schimbare a Politicii de confidențialitate (13 noiembrie, după-amiază: siguranța contului, adică verificarea în 2 pași, jurnalul de securitate, cookie-ul cn_dispozitiv și Cloudflare Turnstile; la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
  * contabilul și ANAF, Resend, transferurile spuse exact (FormSubmit fără contract), păstrarea plăților, opoziția, copiii, cookie-urile Stripe; 12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).

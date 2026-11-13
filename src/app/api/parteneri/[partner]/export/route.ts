@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { db } from "@/db";
 import { auditLog } from "@/db/schema";
 import { currentUser } from "@/lib/access";
-import { isAdminUser } from "@/lib/admin";
+import { adminReady } from "@/lib/admin-access";
 import { isPartner, partnerCsv, partnerExport } from "@/lib/partners";
 import { siteOrigin } from "@/lib/site";
 
@@ -25,7 +25,7 @@ function tokenOk(req: Request) {
 export async function GET(req: Request, { params }: { params: Promise<{ partner: string }> }) {
   const { partner } = await params;
   const me = await currentUser().catch(() => null);
-  const admin = isAdminUser(me);
+  const admin = await adminReady(me);
   if (!isPartner(partner) || (!admin && !tokenOk(req))) return new Response("Pagina nu există.", { status: 404 });
   const rows = await partnerExport(db, await siteOrigin(), partner);
   await db.insert(auditLog).values({ entity: "parteneri", entityId: partner, action: "export", actorId: admin ? me!.id : null, diff: { adrese: rows.length } })

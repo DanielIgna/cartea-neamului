@@ -13,6 +13,7 @@ import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
 import { dePastrare } from "./pastrare/de";
+import { deSecuritate } from "./securitate/de";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -418,6 +419,7 @@ export const de: Catalog = {
   ...deLegal,
   ...deDatele,
   ...dePastrare,
+  ...deSecuritate,
   Access: {
     trial: "{days, plural, one {Du hast noch einen kostenlosen Tag} other {Du hast noch # kostenlose Tage}}. Danach kostet ein Jahr {price}, um weiter hinzuzufügen und zu bearbeiten.",
     ended: "<b>Deine kostenlosen Tage sind vorbei.</b> Der Stammbaum bleibt sichtbar und nichts geht verloren, aber um etwas hinzuzufügen oder zu ändern, kostet ein Jahr {price}.",

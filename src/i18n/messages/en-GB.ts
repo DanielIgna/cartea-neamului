@@ -13,6 +13,7 @@ import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
 import { enGBPastrare } from "./pastrare/en-GB";
+import { enGBSecuritate } from "./securitate/en-GB";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -418,6 +419,7 @@ export const enGB: Catalog = {
   ...enGBLegal,
   ...enGBDatele,
   ...enGBPastrare,
+  ...enGBSecuritate,
   Access: {
     trial: "{days, plural, one {You have one free day left} other {You have # free days left}}. After that, to keep adding and editing, a year costs {price}.",
     ended: "<b>Your free days are over.</b> You can still see the tree and nothing is lost, but to add or change anything, a year costs {price}.",

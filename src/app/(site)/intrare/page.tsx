@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/access";
-import { googleEnabled } from "@/lib/auth";
+import { googleEnabled, turnstileSiteKey } from "@/lib/auth";
+import PageIntl from "@/i18n/PageIntl";
 import AuthForm from "@/components/AuthForm";
 
 export const dynamic = "force-dynamic";
@@ -13,5 +14,5 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
   const { next, mod, eroare, error } = await searchParams;
   const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
   if (await currentUser()) redirect(safeNext);
-  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} /></div>;
+  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}><PageIntl ns={["TwoStep"]}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} turnstileKey={turnstileSiteKey()} /></PageIntl></div>;
 }

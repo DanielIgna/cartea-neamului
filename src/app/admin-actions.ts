@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { tree, user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
+import { adminReady } from "@/lib/admin-access";
 import { PlanSettings, isPlan, isTier, savePlanSettings, setAccountPlan } from "@/lib/plans";
 import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
@@ -23,7 +24,7 @@ export type AdminFormState = { ok?: string; error?: string } | null;
 /** Doar adminul schimbă planurile; ceilalți primesc un răspuns sec, fără să afle ce e aici. */
 async function admin() {
   const me = await currentUser();
-  return isAdminUser(me) ? me : null;
+  return (await adminReady(me)) ? me : null;
 }
 
 /** Toate câmpurile setărilor din formular (zilele, prețurile și plafoanele fiecărui plan), în afară de comutator și ziua pornirii. */

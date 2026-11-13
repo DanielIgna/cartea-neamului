@@ -10,6 +10,7 @@ export const user = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   locale: text("locale").notNull().default("ro"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false), // verificarea în 2 pași, aleasă de om (src/lib/securitate.ts)
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -209,6 +210,35 @@ export const consent = pgTable("consent", {
   granted: boolean("granted").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+/* ---------- Securitate: verificarea în 2 pași, dispozitivele cunoscute și jurnalul de securitate (src/lib/securitate.ts) ---------- */
+export const twoFactor = pgTable("two_factor", {
+  id: text("id").primaryKey(),
+  secret: text("secret").notNull(), // cheia aplicației de coduri, criptată de better-auth
+  backupCodes: text("backup_codes").notNull(), // codurile de rezervă, criptate
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+}, (t) => [index("two_factor_user_idx").on(t.userId)]);
+
+export const securityEvent = pgTable("security_event", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kind: text("kind").notNull(), // vezi SecurityKind în src/lib/securitate.ts
+  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+  email: text("email"),
+  ip: text("ip"),
+  device: text("device"), // „Chrome pe Android”, fără alte amănunte
+  place: text("place"), // orașul și țara aproximative, după adresa IP (de la Vercel)
+  detail: text("detail"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("security_event_kind_idx").on(t.kind, t.createdAt), index("security_event_email_idx").on(t.email, t.createdAt),
+  index("security_event_ip_idx").on(t.ip, t.createdAt)]);
+
+export const knownDevice = pgTable("known_device", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  deviceHash: text("device_hash").notNull(),
+  label: text("label"),
+  firstSeen: timestamp("first_seen").notNull().defaultNow(),
+  lastSeen: timestamp("last_seen").notNull().defaultNow(),
+}, (t) => [uniqueIndex("known_device_pk").on(t.userId, t.deviceHash)]);
 
 export const auditLog = pgTable("audit_log", {
   id: uuid("id").primaryKey().defaultRandom(),

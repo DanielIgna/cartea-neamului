@@ -27,9 +27,11 @@ const files = [...storage, "https://*.neon.tech"].join(" ");
  * Fonturile sunt pe site; „Continuă cu Google” e o trecere de pagină, nu o încărcare. Paginile nu pot fi puse în cadrul altui site.
  * Next pune scripturi și stiluri în pagină, de aceea 'unsafe-inline'; în dezvoltare mai cere și 'unsafe-eval'.
  */
+/** „Nu sunt robot” (Cloudflare Turnstile) la contul nou: doar dacă e pusă cheia, altfel nimic de la Cloudflare. */
+const turnstile = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ? " https://challenges.cloudflare.com" : "";
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}${turnstile}`,
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.googleusercontent.com ${files}`,
   "font-src 'self' data:",
@@ -37,7 +39,7 @@ const csp = [
   `connect-src 'self' ${files}${realtime.length ? ` ${realtime.join(" ")}` : ""}${dev ? " ws:" : ""}`,
   "worker-src 'self' blob:",
   "manifest-src 'self'",
-  "frame-src 'self'",
+  `frame-src 'self'${turnstile}`,
   "frame-ancestors 'self'",
   // Plata: formularul de pe /plata trimite la server, care redirecționează spre pagina Stripe; fără Stripe aici, browserul oprește redirecționarea.
   "form-action 'self' https://accounts.google.com https://checkout.stripe.com",
@@ -47,6 +49,8 @@ const csp = [
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
+  // Doar prin https, și la următoarele vizite (un an), ca nimeni să nu poată prinde parola pe o rețea Wi-Fi străină.
+  ...(dev ? [] : [{ key: "Strict-Transport-Security", value: "max-age=31536000" }]),
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   // Microfonul doar pentru site (amintirile spuse cu glasul); restul, oprite.
   { key: "Permissions-Policy", value: "microphone=(self), camera=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), midi=(), magnetometer=(), gyroscope=(), accelerometer=(), display-capture=(), browsing-topics=(), interest-cohort=()" },

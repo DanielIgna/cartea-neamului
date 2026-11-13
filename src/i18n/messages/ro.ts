@@ -22,6 +22,7 @@ import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
 import { roPastrare } from "./pastrare/ro";
+import { roSecuritate } from "./securitate/ro";
 
 export const ro = {
   Meta: {
@@ -432,6 +433,7 @@ export const ro = {
   ...roLegal,
   ...roDatele,
   ...roPastrare,
+  ...roSecuritate,
   Access: {
     trial: "{days, plural, one {Mai ai o zi gratuită} few {Mai ai # zile gratuite} other {Mai ai # de zile gratuite}}. După ele, ca să adaugi și să schimbi în continuare, anul costă {price}.",
     ended: "<b>Zilele gratuite s-au terminat.</b> Arborele se vede în continuare și nu se pierde nimic, dar ca să adaugi sau să schimbi ceva, anul costă {price}.",

@@ -13,6 +13,7 @@ import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
 import { nlPastrare } from "./pastrare/nl";
+import { nlSecuritate } from "./securitate/nl";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -418,6 +419,7 @@ export const nl: Catalog = {
   ...nlLegal,
   ...nlDatele,
   ...nlPastrare,
+  ...nlSecuritate,
   Access: {
     trial: "{days, plural, one {Je hebt nog één gratis dag} other {Je hebt nog # gratis dagen}}. Daarna kost een jaar {price} om verder toe te voegen en te bewerken.",
     ended: "<b>Je gratis dagen zijn voorbij.</b> Je ziet de stamboom nog en er gaat niets verloren, maar om iets toe te voegen of te wijzigen kost een jaar {price}.",

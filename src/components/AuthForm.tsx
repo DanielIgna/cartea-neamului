@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "use-intl";
@@ -15,8 +15,75 @@ function rememberPartner(on: boolean) {
   document.cookie = on ? `${SIGNUP_PARTNER_COOKIE}=propmanage; Path=/; Max-Age=1800; SameSite=Lax` : `${SIGNUP_PARTNER_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
 
-export default function AuthForm({ next, startWithSignUp, google = false, oauthError }: { next: string; startWithSignUp: boolean; google?: boolean; oauthError?: string }) {
+/** Eroarea întoarsă de server când intrarea e oprită pentru o vreme (prea multe greșeli); vezi src/app/api/auth/[...all]/route.ts. */
+const lockedFor = (e: unknown) => {
+  const x = e as { code?: string; minutes?: number; status?: number } | null;
+  return x?.code === "ACCOUNT_LOCKED" ? Math.max(1, Number(x.minutes) || 15) : 0;
+};
+
+/** Căsuța „nu sunt robot” (Cloudflare Turnstile), doar dacă sunt puse cheile; altfel nu apare nimic. */
+function Turnstile({ siteKey }: { siteKey: string }) {
+  useEffect(() => {
+    if (document.querySelector("script[data-turnstile]")) return;
+    const s = document.createElement("script");
+    s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+    s.async = true; s.defer = true; s.dataset.turnstile = "1";
+    document.head.appendChild(s);
+  }, []);
+  return <div className="cf-turnstile" data-sitekey={siteKey} data-language="auto" />;
+}
+
+/**
+ * Pasul 2 al intrării, doar pentru cine și-a pornit singur verificarea în 2 pași: codul din aplicație sau un cod de rezervă.
+ * Poate cere ca telefonul sau calculatorul să fie ținut minte 30 de zile (atunci nu mai cere codul acolo).
+ */
+function SecondStep({ next, onBack }: { next: string; onBack: () => void }) {
+  const t = useTranslations("TwoStep");
+  const [backup, setBackup] = useState(false);
+  const [trust, setTrust] = useState(true);
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
+  const router = useRouter();
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(""); setPending(true);
+    const code = String(new FormData(e.currentTarget).get("code") ?? "").replace(/\s+/g, "");
+    const res = backup
+      ? await authClient.twoFactor.verifyBackupCode({ code, trustDevice: trust })
+      : await authClient.twoFactor.verifyTotp({ code, trustDevice: trust });
+    setPending(false);
+    if (res.error) {
+      const wait = lockedFor(res.error);
+      const msg = (res.error.message ?? "").toLowerCase();
+      setError(wait ? t("locked", { minutes: wait }) : msg.includes("two factor cookie") ? t("expired") : t("wrongCode"));
+      return;
+    }
+    router.push(next); router.refresh();
+  }
+
+  return (
+    <form onSubmit={submit} method="post" className="form" key={backup ? "b" : "a"}>
+      <h2 style={{ fontSize: 24 }}>{backup ? t("backupTitle") : t("title")}</h2>
+      <p className="muted" style={{ margin: 0 }}>{backup ? t("backupText") : t("text")}</p>
+      <label>{backup ? t("backupCode") : t("code")}
+        <input name="code" required autoFocus autoComplete="one-time-code" inputMode={backup ? "text" : "numeric"} pattern={backup ? undefined : "[0-9 ]{6,7}"}
+          maxLength={backup ? 24 : 7} style={{ fontSize: 22, letterSpacing: "0.2em" }} />
+      </label>
+      <label className="radio"><input type="checkbox" checked={trust} onChange={(e) => setTrust(e.target.checked)} /><span>{t("trust")}</span></label>
+      {error && <p className="err">{error}</p>}
+      <button className="btn primary" disabled={pending}>{pending ? "…" : t("enter")}</button>
+      <button type="button" className="btn" onClick={() => { setBackup(!backup); setError(""); }}>{backup ? t("useApp") : t("useBackup")}</button>
+      {backup && <p className="muted" style={{ margin: 0, fontSize: 14 }}>{t("lostAll")}</p>}
+      <button type="button" className="forgot-link" style={{ background: "none", border: 0, padding: 0, cursor: "pointer" }} onClick={onBack}>{t("back")}</button>
+    </form>
+  );
+}
+
+export default function AuthForm({ next, startWithSignUp, google = false, oauthError, turnstileKey = "" }: { next: string; startWithSignUp: boolean; google?: boolean; oauthError?: string; turnstileKey?: string }) {
   const t = useTranslations("AuthForm");
+  const ts = useTranslations("TwoStep");
+  const [secondStep, setSecondStep] = useState(false);
   const tp = useTranslations("Partners");
   const [partner, setPartner] = useState(false);
   const [signUp, setSignUp] = useState(startWithSignUp);
@@ -29,23 +96,31 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     setError(""); setPending(true);
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email")), password = String(f.get("password"));
+    const robot = String(f.get("cf-turnstile-response") ?? "");
+    if (signUp && turnstileKey && !robot) { setPending(false); setError(ts("robot")); return; }
     rememberPartner(signUp && partner);
     const res = signUp
-      ? await authClient.signUp.email({ email, password, name: String(f.get("name")) })
+      ? await authClient.signUp.email({ email, password, name: String(f.get("name")) }, robot ? { headers: { "x-captcha-response": robot } } : undefined)
       : await authClient.signIn.email({ email, password });
     setPending(false);
     rememberPartner(false);
     if (res.error) {
       const code = res.error.code;
-      setError(code === "INVALID_EMAIL_OR_PASSWORD" ? t("wrongPassword")
+      const wait = lockedFor(res.error);
+      setError(wait ? ts("locked", { minutes: wait })
+        : code === "INVALID_EMAIL_OR_PASSWORD" ? t("wrongPassword")
         : code === "USER_ALREADY_EXISTS" || code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL" ? t("exists")
         : code === "PASSWORD_TOO_SHORT" ? t("shortPassword")
         : code === "PASSWORD_TOO_LONG" ? t("longPassword")
         : code === "INVALID_EMAIL" ? t("badEmail")
         : res.error.status === 429 ? t("tooMany")
         : t("failed"));
+      // Căsuța „nu sunt robot” merge o singură dată: o pregătim pentru încă o încercare.
+      (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
       return;
     }
+    // Cine și-a pornit verificarea în 2 pași mai scrie codul de pe telefon.
+    if ((res.data as { twoFactorRedirect?: boolean } | null)?.twoFactorRedirect) { setSecondStep(true); return; }
     router.push(next); router.refresh();
   }
 
@@ -55,6 +130,8 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     const res = await authClient.signIn.social({ provider: "google", callbackURL: next, errorCallbackURL: `/intrare?next=${encodeURIComponent(next)}&eroare=google` });
     if (res?.error) { setPending(false); setError(t("googleFailed")); }
   }
+
+  if (secondStep) return <SecondStep next={next} onBack={() => { setSecondStep(false); setError(""); }} />;
 
   return (
     // method="post": dacă cineva apasă înainte să se încarce pagina, parola nu ajunge în bara de adrese.
@@ -81,6 +158,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
           <span>{tp("checkbox")}<small className="muted">{tp("checkboxHint")}</small></span>
         </label>
       )}
+      {signUp && turnstileKey && <Turnstile siteKey={turnstileKey} />}
       {error && <p className="err">{error}</p>}
       <button className="btn primary" disabled={pending}>{pending ? t("wait") : signUp ? t("create") : t("enter")}</button>
       {(signUp || google) && (
