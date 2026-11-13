@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
-import { isAdminUser } from "@/lib/admin";
+import { adminReady } from "@/lib/admin-access";
 import { homeImagesState, isHomeSlot, MAX_UPLOADS, saveHomeImagesState, withUpload } from "@/lib/home-images";
 import { putObject, storageConfigured } from "@/lib/storage";
 import { fileType } from "@/lib/file-type";
@@ -21,7 +21,7 @@ function looksLikeImage(b: Uint8Array) {
 /** Admin → Poze prima pagină: adaugă o poză la un loc și o pune pe pagină (la banner, alături de celelalte). */
 export async function POST(req: Request) {
   const me = await currentUser();
-  if (!isAdminUser(me) || !me) return Response.json({ error: "Nu ai voie aici." }, { status: 403 });
+  if (!me || !(await adminReady(me))) return Response.json({ error: "Nu ai voie aici." }, { status: 403 });
   if (!storageConfigured()) return Response.json({ error: "Locul pentru fișiere (Neon Storage) nu e pornit." }, { status: 503 });
   const form = await req.formData();
   const slot = form.get("slot"), file = form.get("file");

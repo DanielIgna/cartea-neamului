@@ -13,6 +13,7 @@ import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
 import { itDatele } from "./datele/it";
 import { itPastrare } from "./pastrare/it";
+import { itSecuritate } from "./securitate/it";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -418,6 +419,7 @@ export const it: Catalog = {
   ...itLegal,
   ...itDatele,
   ...itPastrare,
+  ...itSecuritate,
   Access: {
     trial: "{days, plural, one {Ti resta un giorno gratuito} other {Ti restano # giorni gratuiti}}. Dopo, per continuare ad aggiungere e modificare, un anno costa {price}.",
     ended: "<b>I tuoi giorni gratuiti sono finiti.</b> L’albero resta visibile e non si perde nulla, ma per aggiungere o cambiare qualcosa un anno costa {price}.",

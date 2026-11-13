@@ -3,13 +3,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
-import { isAdminUser } from "@/lib/admin";
+import { adminReady } from "@/lib/admin-access";
 import { checkLab, deleteDnaRequest, deleteLab, resolveDnaRequest, saveLab } from "@/lib/resurse";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 async function admin() {
   const me = await currentUser();
-  if (!isAdminUser(me)) redirect("/");
+  if (!(await adminReady(me))) redirect("/");
 }
 const done = (q = "") => { revalidatePath("/admin/adn"); revalidatePath("/resurse-genealogie"); redirect(`/admin/adn${q}`); };
 

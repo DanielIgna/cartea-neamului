@@ -133,6 +133,20 @@ const ADDITIVE = [
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "city" text, "url" text NOT NULL, "price_note" text,
     "position" integer DEFAULT 0 NOT NULL, "visible" boolean DEFAULT true NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "keep_until" timestamp`,
+  // Securitate: verificarea în 2 pași, dispozitivele cunoscute și jurnalul de securitate.
+  sql`ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "two_factor_enabled" boolean DEFAULT false`,
+  sql`CREATE TABLE IF NOT EXISTS "two_factor" ("id" text PRIMARY KEY NOT NULL, "secret" text NOT NULL, "backup_codes" text NOT NULL,
+    "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade)`,
+  sql`CREATE INDEX IF NOT EXISTS "two_factor_user_idx" ON "two_factor" ("user_id")`,
+  sql`CREATE TABLE IF NOT EXISTS "security_event" ("id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "kind" text NOT NULL,
+    "user_id" text REFERENCES "user"("id") ON DELETE cascade, "email" text, "ip" text, "device" text, "place" text, "detail" text,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE INDEX IF NOT EXISTS "security_event_kind_idx" ON "security_event" ("kind","created_at")`,
+  sql`CREATE INDEX IF NOT EXISTS "security_event_email_idx" ON "security_event" ("email","created_at")`,
+  sql`CREATE INDEX IF NOT EXISTS "security_event_ip_idx" ON "security_event" ("ip","created_at")`,
+  sql`CREATE TABLE IF NOT EXISTS "known_device" ("user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "device_hash" text NOT NULL,
+    "label" text, "first_seen" timestamp DEFAULT now() NOT NULL, "last_seen" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "known_device_pk" ON "known_device" ("user_id","device_hash")`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

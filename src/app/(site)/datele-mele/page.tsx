@@ -32,7 +32,7 @@ const tags = {
 export default async function MyDataPage() {
   const me = await requireUser("/datele-mele");
   const locale = await getLocale();
-  const [t, tp, format] = await Promise.all([getT("MyData", locale), getT("Partners", locale), getFormat(locale)]);
+  const [t, tp, format, tsec] = await Promise.all([getT("MyData", locale), getT("Partners", locale), getFormat(locale), getT("Security", locale)]);
   const day = (d: Date) => format.dateTime(d, { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Bucharest" });
   const rich = (key: string, v: Record<string, unknown> = {}) => (t.rich as unknown as (k: string, v: object) => ReactNode)(key, { ...tags, ...v });
   const duration = (seconds: number) => {
@@ -56,6 +56,10 @@ export default async function MyDataPage() {
         <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
         <h2>{t("title")}</h2>
         <p>{rich("intro", { name: me.name, email: me.email, date: day(me.createdAt) })}</p>
+      </div>
+
+      <div className="card">
+        <Link href="/securitate" className="btn">{tsec("myDataLink")}</Link>
       </div>
 
       <div className="card">

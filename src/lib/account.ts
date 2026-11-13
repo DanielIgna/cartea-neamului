@@ -16,6 +16,7 @@ import type { Db } from "@/db";
 import {
   account, accountPlan, consent, document, oldHouse, usageDay, invitation, joinRequest, memory, memoryQuestion, memoryReply, message, person, placeContact, session, tree, treeMember,
   user, verification, homeSubmission, payment, gift, dnaRequest, referralBonus, problemReport,
+  knownDevice, securityEvent,
 } from "@/db/schema";
 import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
@@ -132,6 +133,8 @@ export async function deleteAccount(db: Db, userId: string, opts: { scrub: boole
     // Problemele raportate pleacă odată cu contul; pozele ecranului se șterg și ele.
     fileKeys.push(...(await userProblemKeys(tx, userId)));
     await tx.delete(verification).where(eq(verification.identifier, u.email));
+    // Jurnalul de securitate: și rândurile scrise doar cu emailul (parole greșite), nu doar cele legate de cont.
+    await tx.delete(securityEvent).where(eq(securityEvent.email, u.email.toLowerCase()));
     // Contul: odată cu el pleacă sesiunile, intrările (parola, Google), apartenența la arbori, mesajele, acordurile și cererile.
     await tx.delete(user).where(eq(user.id, userId));
     return { fileKeys, deletedTrees: doomed.length };
@@ -175,6 +178,9 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
   const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const proposals = await db.select().from(homeSubmission).where(eq(homeSubmission.userId, userId)).orderBy(asc(homeSubmission.createdAt));
   const problems = await db.select().from(problemReport).where(eq(problemReport.userId, userId)).orderBy(asc(problemReport.createdAt));
+  // Siguranța contului: dacă are verificarea în 2 pași, dispozitivele ținute minte și jurnalul de securitate (90 de zile).
+  const devices = await db.select({ label: knownDevice.label, first: knownDevice.firstSeen, last: knownDevice.lastSeen }).from(knownDevice).where(eq(knownDevice.userId, userId));
+  const secEvents = await db.select().from(securityEvent).where(or(eq(securityEvent.userId, userId), eq(securityEvent.email, u.email.toLowerCase()))).orderBy(asc(securityEvent.createdAt));
   const usage = await db.select().from(usageDay).where(eq(usageDay.userId, userId)).orderBy(asc(usageDay.day), asc(usageDay.section));
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, joinedAt: treeMember.joinedAt })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, userId)).orderBy(asc(treeMember.joinedAt));
@@ -210,6 +216,11 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
       fisiere: "Legăturile spre poze și înregistrări se deschid după ce intri în cont. Arborii întregi îi descarci ca GEDCOM, de la legătura fiecăruia.",
     },
     cont: { nume: u.name, email: u.email, emailVerificat: u.emailVerified, poza: u.image, creat: iso(u.createdAt), intrari: logins.map((l) => ({ fel: l.provider, din: iso(l.createdAt) })) },
+    securitate: {
+      verificareIn2Pasi: !!u.twoFactorEnabled,
+      dispozitiveCunoscute: devices.map((d) => ({ dispozitiv: d.label, primaData: iso(d.first), ultimaData: iso(d.last) })),
+      jurnal: secEvents.map((e) => ({ ce: e.kind, cand: iso(e.createdAt), ip: e.ip, dispozitiv: e.device, loc: e.place })),
+    },
     sesiuni: sessions.map((s) => ({ inceput: iso(s.createdAt), expira: iso(s.expiresAt), ip: s.ip, browser: s.browser })),
     acorduri: consents.map((c) => ({ pentru: CONSENT_LABEL[c.purpose as ConsentPurpose] ?? c.purpose,
       versiune: c.textVersion, dat: c.granted, cand: iso(c.createdAt) })),

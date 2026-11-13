@@ -3,8 +3,9 @@ import { betterAuth } from "better-auth";
 import { waitUntil } from "@vercel/functions";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { captcha, twoFactor } from "better-auth/plugins";
 import { db } from "@/db";
-import { user, session, account, verification } from "@/db/schema";
+import { user, session, account, verification, twoFactor as twoFactorTable } from "@/db/schema";
 import { recordConsent } from "./consent";
 import { setPartnerConsent, signupPartnerFromCookie } from "./partners";
 import { DEFAULT_LOCALE, localeFromCookieHeader } from "@/i18n/locales";
@@ -36,11 +37,19 @@ function pictureOf(idToken: string | null | undefined): string | null {
   }
 }
 
+/**
+ * Verificarea „nu ești robot” (Cloudflare Turnstile, gratuită) la contul nou: doar dacă sunt puse cheile în Vercel
+ * (NEXT_PUBLIC_TURNSTILE_SITE_KEY și TURNSTILE_SECRET_KEY). Fără ele, formularul merge ca până acum.
+ */
+const turnstileSecret = process.env.TURNSTILE_SECRET_KEY?.trim();
+export const turnstileSiteKey = () => (turnstileSecret ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() || "" : "");
+
 export const auth = betterAuth({
+  appName: "Cartea Neamului",
   secret: process.env.BETTER_AUTH_SECRET ?? DEV_SECRET,
   baseURL: process.env.BETTER_AUTH_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : undefined),
   trustedOrigins: vercelOrigins,
-  database: drizzleAdapter(db, { provider: "pg", schema: { user, session, account, verification } }),
+  database: drizzleAdapter(db, { provider: "pg", schema: { user, session, account, verification, twoFactor: twoFactorTable } }),
   emailAndPassword: {
     enabled: true, minPasswordLength: 8,
     // „Ai uitat parola?”: legătura e valabilă o oră și merge o singură dată; după schimbare se închid toate sesiunile vechi.
@@ -97,5 +106,12 @@ export const auth = betterAuth({
   },
   // Dacă intrarea cu Google nu reușește, omul ajunge înapoi la pagina de intrare, cu un mesaj, nu pe o pagină de eroare în engleză.
   onAPIError: { errorURL: "/intrare" },
-  plugins: [nextCookies()],
+  plugins: [
+    // Verificarea în 2 pași, la alegerea fiecăruia (Daniel, 2026-11-13): un cod din aplicația de pe telefon (Google Authenticator,
+    // Microsoft Authenticator…) sau unul din cele 10 coduri de rezervă. Omul are 10 minute să scrie codul după parolă.
+    // Blocarea după prea multe coduri greșite e în src/app/api/auth/[...all]/route.ts.
+    twoFactor({ issuer: "Cartea Neamului", otpOptions: { period: 10 }, backupCodeOptions: { amount: 10, length: 10 } }),
+    ...(turnstileSiteKey() ? [captcha({ provider: "cloudflare-turnstile", secretKey: turnstileSecret!, endpoints: ["/sign-up/email"] })] : []),
+    nextCookies(),
+  ],
 });

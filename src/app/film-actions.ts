@@ -4,7 +4,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { document, homeSubmission } from "@/db/schema";
 import { currentUser, roleIn } from "@/lib/access";
-import { isAdminUser } from "@/lib/admin";
+import { adminReady } from "@/lib/admin-access";
 import { isDemo } from "@/lib/demo";
 import { canOpenDocument, memoryMediaIds } from "@/lib/lada-db";
 import { deleteObjects, getObjectBytes, putObject, storageConfigured } from "@/lib/storage";
@@ -77,7 +77,7 @@ export async function withdrawHomePhoto(id: string): Promise<Result> {
 /** Admin → Propuneri: aprobă (intră prima în rotația bannerului), nu aprobă, sau scoate de pe pagină o poză aprobată. */
 export async function decideHomePhoto(id: string, decision: "approve" | "reject" | "remove"): Promise<{ ok?: string; error?: string }> {
   const me = await currentUser();
-  if (!isAdminUser(me) || !me) return { error: "Nu ai voie aici." };
+  if (!me || !(await adminReady(me))) return { error: "Nu ai voie aici." };
   if (!UUID.test(id) || !["approve", "reject", "remove"].includes(decision)) return { error: "Propunerea nu există." };
   const [s] = await db.select().from(homeSubmission).where(eq(homeSubmission.id, id));
   if (!s) return { error: "Propunerea nu există." };
