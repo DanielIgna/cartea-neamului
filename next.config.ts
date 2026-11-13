@@ -56,6 +56,11 @@ const securityHeaders = [
 const config: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite"],
   poweredByHeader: false,
+  // Pagina 404 pentru adresele care nu există: site-ul are două cadre fără unul comun (app/(site) și app/(public)).
+  experimental: { globalNotFound: true },
+  // Pozele prin next/image: cel mult 1920 px lățime (nu 2048/3840, care trimiteau poza aproape întreagă pe ecranele mari)
+  // și păstrate o lună în cache; pozele din public/home sunt fișiere fixe, schimbate doar la publicare.
+  images: { deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920], minimumCacheTTL: 2678400 },
   // Titlul, descrierea și poza pentru previzualizarea linkurilor stau în <head> chiar din primul HTML, pentru orice browser sau robot
   // (altfel Next le poate trimite mai târziu, în corpul paginii, celor pe care nu-i recunoaște ca roboți).
   htmlLimitedBots: /.*/,

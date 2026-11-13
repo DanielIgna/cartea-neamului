@@ -14,5 +14,5 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: "/termeni", label: "Termeni", priority: 0.3, changeFrequency: "yearly" },
 ];
 
-/** Părțile private: arborii, invitațiile, mesajele, datele cuiva și panoul de admin nu au ce căuta în Google. */
-export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/datele-mele", "/mesaje", "/a/", "/intrare/eroare", "/parteneri/dezabonare", "/cadou/"];
+/** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
+export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/cadou/"];

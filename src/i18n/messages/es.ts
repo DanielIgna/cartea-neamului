@@ -16,6 +16,7 @@ import { esDatele } from "./datele/es";
 export const es: Catalog = {
   Meta: {
     appName: "El Libro de la Familia",
+    homeTitle: "Árbol genealógico en línea | El Libro de la Familia",
     description: "El árbol de la familia, construido juntos e impreso como un libro.",
   },
   Layout: {
@@ -117,6 +118,22 @@ export const es: Catalog = {
     gen3Text: "Descubren de dónde vienen y llevan la historia más lejos.",
     gen4Title: "Los niños",
     gen4Text: "Crecerán conociendo sus raíces.",
+    whatTitle: "¿Qué es un árbol genealógico?",
+    whatText: "Un árbol genealógico muestra quién desciende de quién: tú, tus padres, tus abuelos y bisabuelos, con los hermanos y primos de cada uno. Aquí lo haces en línea, junto con tus familiares, y cada persona del árbol tiene fotos, documentos y recuerdos.",
+    ancestorsTitle: "¿Quiénes fueron mis antepasados?",
+    ancestorsText: "Empiezas con lo que sabes y preguntas a tus familiares. Los abuelos recuerdan nombres y pueblos que no encuentras escritos en ninguna parte, y sus recuerdos, grabados con su voz, quedan en el libro de la familia para los nietos.",
+    historyTitle: "Tu familia en la historia del mundo",
+    historyText: "Para quien quiera mirar más allá de sus bisabuelos:",
+    alt: {
+      gen1: "Los abuelos de la familia",
+      gen2: "Padres con sus hijos",
+      gen3: "Los jóvenes de la familia",
+      gen4: "Los niños de la familia",
+      memories: "Un abuelo cuenta sus recuerdos a su nieto",
+      map: "El pueblo del que viene la familia",
+      book: "Un álbum de fotos antiguas de familia",
+      table: "La familia reunida alrededor de la mesa",
+    },
   },
   Home: {
     welcomeEyebrow: "Bienvenido de nuevo",

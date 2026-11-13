@@ -8,14 +8,16 @@ export function register() {}
  */
 let windowStart = 0, inWindow = 0;
 export const onRequestError: Instrumentation.onRequestError = async (err, request, context) => {
-  if (process.env.NEXT_RUNTIME !== "nodejs") return;
-  const now = Date.now();
-  if (now - windowStart > 60_000) { windowStart = now; inWindow = 0; }
-  if (++inWindow > 20) return;
-  try {
-    const { recordError } = await import("./lib/errors");
-    await recordError(err, { path: request.path, method: request.method, route: context.routePath, kind: context.routeType });
-  } catch {
-    /* dacă nici baza nu răspunde, eroarea rămâne doar în jurnalul Vercel */
+  // Importul stă înăuntrul condiției, ca varianta pentru middleware (edge, fără baza de date) să nu-l includă deloc.
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    const now = Date.now();
+    if (now - windowStart > 60_000) { windowStart = now; inWindow = 0; }
+    if (++inWindow > 20) return;
+    try {
+      const { recordError } = await import("./lib/errors");
+      await recordError(err, { path: request.path, method: request.method, route: context.routePath, kind: context.routeType });
+    } catch {
+      /* dacă nici baza nu răspunde, eroarea rămâne doar în jurnalul Vercel */
+    }
   }
 };

@@ -9,8 +9,8 @@ import type { Widen } from "../types";
 export const roBiserica = {
   Church: {
     meta: {
-      title: "Libertatea de a crede",
-      description: "Două mii de ani de istorie a creștinismului: martirii Romei, Reforma, primele cărți în limba română și oamenii închiși pentru credința lor în închisorile comuniste.",
+      title: "Libertatea de a crede | Istoria creștinismului",
+      description: "Două mii de ani de creștinism: martirii Romei, Reforma, primele cărți românești și cei închiși pentru credința lor.",
     },
     label: "Libertatea de a crede",
     title: "Două mii de ani de creștinism și oamenii care au plătit pentru credința lor",

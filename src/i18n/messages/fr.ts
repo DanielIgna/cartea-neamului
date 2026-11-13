@@ -16,6 +16,7 @@ import { frDatele } from "./datele/fr";
 export const fr: Catalog = {
   Meta: {
     appName: "Le Livre de la Famille",
+    homeTitle: "Arbre généalogique en ligne | Le Livre de la Famille",
     description: "L’arbre de la famille, construit ensemble, imprimé comme un livre.",
   },
   Layout: {
@@ -117,6 +118,22 @@ export const fr: Catalog = {
     gen3Text: "Ils découvrent d’où ils viennent et portent l’histoire plus loin.",
     gen4Title: "Les enfants",
     gen4Text: "Ils grandiront en connaissant leurs racines.",
+    whatTitle: "Qu’est-ce qu’un arbre généalogique ?",
+    whatText: "Un arbre généalogique montre qui descend de qui : vous, vos parents, vos grands-parents et arrière-grands-parents, avec les frères, sœurs et cousins de chacun. Ici, vous le construisez en ligne avec vos proches, et chaque personne de l’arbre a ses photos, ses documents et ses souvenirs.",
+    ancestorsTitle: "Qui étaient mes ancêtres ?",
+    ancestorsText: "Commencez par ce que vous savez et interrogez vos proches. Les grands-parents se souviennent de noms et de villages que l’on ne trouve écrits nulle part, et leurs souvenirs, enregistrés avec leur voix, restent dans le livre de la famille pour les petits-enfants.",
+    historyTitle: "Votre famille dans l’histoire du monde",
+    historyText: "Pour qui veut regarder plus loin que ses arrière-grands-parents :",
+    alt: {
+      gen1: "Les grands-parents de la famille",
+      gen2: "Des parents avec leurs enfants",
+      gen3: "Les jeunes de la famille",
+      gen4: "Les enfants de la famille",
+      memories: "Un grand-père raconte ses souvenirs à son petit-fils",
+      map: "Le village d’où vient la famille",
+      book: "Un album de vieilles photos de famille",
+      table: "La famille réunie autour de la table",
+    },
   },
   Home: {
     welcomeEyebrow: "Bon retour",

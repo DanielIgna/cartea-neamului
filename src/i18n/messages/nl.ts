@@ -16,6 +16,7 @@ import { nlDatele } from "./datele/nl";
 export const nl: Catalog = {
   Meta: {
     appName: "Het Familieboek",
+    homeTitle: "Stamboom online | Het Familieboek",
     description: "De stamboom van de familie, samen opgebouwd en gedrukt als een boek.",
   },
   Layout: {
@@ -117,6 +118,22 @@ export const nl: Catalog = {
     gen3Text: "Ze ontdekken waar ze vandaan komen en dragen het verhaal verder.",
     gen4Title: "Kinderen",
     gen4Text: "Ze groeien op en kennen hun wortels.",
+    whatTitle: "Wat is een stamboom?",
+    whatText: "Een stamboom laat zien wie van wie afstamt: jij, je ouders, je grootouders en overgrootouders, met ieders broers, zussen, neven en nichten. Hier maak je hem online, samen met je familie, en iedereen in de stamboom heeft foto’s, documenten en herinneringen.",
+    ancestorsTitle: "Wie waren mijn voorouders?",
+    ancestorsText: "Begin met wat je weet en vraag het je familie. Grootouders herinneren zich namen en dorpen die nergens opgeschreven staan, en hun herinneringen, opgenomen met hun eigen stem, blijven in het familieboek voor de kleinkinderen.",
+    historyTitle: "Jouw familie in de geschiedenis van de wereld",
+    historyText: "Voor wie verder terug wil kijken dan de overgrootouders:",
+    alt: {
+      gen1: "De grootouders van de familie",
+      gen2: "Ouders met hun kinderen",
+      gen3: "Jongeren uit de familie",
+      gen4: "De kinderen van de familie",
+      memories: "Een opa vertelt zijn kleinzoon over vroeger",
+      map: "Het dorp waar de familie vandaan komt",
+      book: "Een album met oude familiefoto’s",
+      table: "De familie samen aan tafel",
+    },
   },
   Home: {
     welcomeEyebrow: "Welkom terug",

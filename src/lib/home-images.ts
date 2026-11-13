@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
@@ -67,7 +68,12 @@ export async function saveHomeImagesState(db: Pick<Db, "insert">, state: HomeIma
   const value = { v: 2, slots: state };
   await db.insert(appSetting).values({ key: KEY, value, updatedBy: by, updatedAt: now })
     .onConflictDoUpdate({ target: appSetting.key, set: { value, updatedBy: by, updatedAt: now } });
+  // Prima pagină ține pozele alese în cache (HOME_IMAGES_TAG); după o schimbare, le citește din nou.
+  try { revalidateTag(HOME_IMAGES_TAG); } catch { /* în afara unei cereri Next (teste, scripturi) nu e cache de golit */ }
 }
+
+/** Eticheta cache-ului cu pozele primei pagini (vezi components/Landing.tsx). */
+export const HOME_IMAGES_TAG = "home-images";
 
 /** O poză de ales pentru un loc: cea inițială, o variantă din public/home/variante sau una încărcată de admin. */
 export type HomeImage = { id: string; src: string; custom: boolean; credit?: string };

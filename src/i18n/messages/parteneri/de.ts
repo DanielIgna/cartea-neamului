@@ -14,7 +14,7 @@ export const deParteneri: ParteneriCatalog = {
     },
   },
   PartnersPage: {
-    metaTitle: "Partner · Das Familienbuch",
+    metaTitle: "Partner | Das Familienbuch",
     metaDescription: "Die Partner des Familienbuchs und was sie Familien bieten.",
     label: "Partner",
     title: "Die Partner des Familienbuchs",

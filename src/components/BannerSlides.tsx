@@ -35,7 +35,7 @@ export default function BannerSlides({ imgs, every = 7000 }: { imgs: Img[]; ever
   return (
     <div className="lp-banner-slides" aria-hidden="true">
       {imgs.map((img, n) => (
-        <Image key={img.src} src={img.src} alt="" fill sizes="100vw" priority={n === 0} unoptimized={img.custom}
+        <Image key={img.src} src={img.src} alt="" fill sizes="100vw" quality={60} priority={n === 0} unoptimized={img.custom}
           className={`lp-img lp-banner-img${n === i ? " on" : ""}`} />
       ))}
       <span key={`f${i}`} className="lp-film" />

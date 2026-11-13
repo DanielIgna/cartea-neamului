@@ -221,7 +221,7 @@ export default function AdamHristos() {
   return (
     <article className="card ch ah">
       <header className="ch-head">
-        <div className="section-label" style={{ marginTop: 0 }}>Genealogii vechi</div>
+        <h1 className="section-label" style={{ marginTop: 0 }}>Genealogii biblice, de la Adam la Isus</h1>
         <h2>O genealogie de patru mii de ani</h2>
         <p className="ch-lead">Puține popoare și-au păstrat strămoșii în scris atât de departe în urmă ca evreii. Textele biblice dau o genealogie neîntreruptă, de la Adam, primul om din relatarea Genezei, prin Noe, Avraam și regele David, până la Isus din Nazaret. Aici o găsești în șase arbori, unul după altul, cu anii de viață pe care îi dau textele, cu ramurile laterale (Cain, fiii lui Noe, cele 12 seminții, Moise și Aaron) și cu cele două liste din Evanghelii: a lui Matei, prin Solomon, și a lui Luca, prin Natan.</p>
         <blockquote className="ch-verse"><p>„Cartea neamului lui Isus Hristos, fiul lui David, fiul lui Avraam.”</p><cite>Matei 1:1</cite></blockquote>

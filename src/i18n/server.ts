@@ -6,6 +6,15 @@ import { isDemo } from "@/lib/demo";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, TIME_ZONE, isLocale, localeFromAcceptLanguage, type Locale } from "./locales";
 import { loadMessages } from "./messages";
 
+/**
+ * Limba fixată pentru o pagină pregătită dinainte (fără cookie-uri): o pun layout-ul, pagina și generateMetadata din
+ * app/(public), înainte de orice text. `cache` o ține doar pentru randarea în curs.
+ */
+const staticLocale = cache((): { locale: Locale | null } => ({ locale: null }));
+export function setStaticLocale(locale: Locale) {
+  staticLocale().locale = locale;
+}
+
 /** Unde a găsit serverul limba: aleasă pe acest telefon (cookie), din cont sau niciuna (româna, de la sine). */
 export type LocaleSource = "cookie" | "account" | "default";
 
@@ -14,6 +23,9 @@ export type LocaleSource = "cookie" | "account" | "default";
  * Contul de probă îl folosesc mai mulți, așa că limba lui nu se ia din cont.
  */
 export const getLocaleInfo = cache(async (): Promise<{ locale: Locale; source: LocaleSource }> => {
+  // Paginile publice gata făcute pentru vizitatorii fără cont (app/(public)) au limba în adresă, nu în cookie.
+  const fixed = staticLocale().locale;
+  if (fixed) return { locale: fixed, source: "cookie" };
   const chosen = (await cookies()).get(LOCALE_COOKIE)?.value;
   if (isLocale(chosen)) return { locale: chosen, source: "cookie" };
   const me = await currentUser().catch(() => null);

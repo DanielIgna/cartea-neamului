@@ -16,6 +16,7 @@ import { deDatele } from "./datele/de";
 export const de: Catalog = {
   Meta: {
     appName: "Das Familienbuch",
+    homeTitle: "Stammbaum online | Das Familienbuch",
     description: "Der Stammbaum der Familie, gemeinsam aufgebaut und als Buch gedruckt.",
   },
   Layout: {
@@ -117,6 +118,22 @@ export const de: Catalog = {
     gen3Text: "Sie erfahren, woher sie kommen, und tragen die Geschichte weiter.",
     gen4Title: "Die Kinder",
     gen4Text: "Sie wachsen auf und kennen ihre Wurzeln.",
+    whatTitle: "Was ist ein Stammbaum?",
+    whatText: "Ein Stammbaum zeigt, wer von wem abstammt: du, deine Eltern, Großeltern und Urgroßeltern, mit den Geschwistern, Cousins und Cousinen von jedem. Hier erstellst du ihn online, gemeinsam mit deinen Verwandten, und jeder Mensch im Stammbaum hat Fotos, Dokumente und Erinnerungen.",
+    ancestorsTitle: "Wer waren meine Vorfahren?",
+    ancestorsText: "Fang mit dem an, was du weißt, und frag deine Verwandten. Großeltern erinnern sich an Namen und Dörfer, die nirgends aufgeschrieben sind, und ihre Erinnerungen, mit ihrer eigenen Stimme aufgenommen, bleiben im Familienbuch für die Enkel.",
+    historyTitle: "Deine Familie in der Geschichte der Welt",
+    historyText: "Für alle, die weiter zurückblicken wollen als bis zu den Urgroßeltern:",
+    alt: {
+      gen1: "Die Großeltern der Familie",
+      gen2: "Eltern mit ihren Kindern",
+      gen3: "Junge Leute aus der Familie",
+      gen4: "Die Kinder der Familie",
+      memories: "Ein Großvater erzählt seinem Enkel von früher",
+      map: "Das Dorf, aus dem die Familie stammt",
+      book: "Ein Album mit alten Familienfotos",
+      table: "Die Familie gemeinsam am Tisch",
+    },
   },
   Home: {
     welcomeEyebrow: "Willkommen zurück",

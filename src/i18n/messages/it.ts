@@ -16,6 +16,7 @@ import { itDatele } from "./datele/it";
 export const it: Catalog = {
   Meta: {
     appName: "Il Libro della Famiglia",
+    homeTitle: "Albero genealogico online | Il Libro della Famiglia",
     description: "L’albero della famiglia, costruito insieme e stampato come un libro.",
   },
   Layout: {
@@ -117,6 +118,22 @@ export const it: Catalog = {
     gen3Text: "Scoprono da dove vengono e portano avanti la storia.",
     gen4Title: "I bambini",
     gen4Text: "Cresceranno conoscendo le proprie radici.",
+    whatTitle: "Che cos’è un albero genealogico?",
+    whatText: "Un albero genealogico mostra chi discende da chi: tu, i tuoi genitori, i nonni e i bisnonni, con i fratelli, le sorelle e i cugini di ciascuno. Qui lo crei online, insieme ai parenti, e ogni persona dell’albero ha foto, documenti e ricordi.",
+    ancestorsTitle: "Chi erano i miei antenati?",
+    ancestorsText: "Parti da quello che sai e chiedi ai parenti. I nonni ricordano nomi e paesi che non trovi scritti da nessuna parte, e i loro ricordi, registrati con la loro voce, restano nel libro della famiglia per i nipoti.",
+    historyTitle: "La tua famiglia nella storia del mondo",
+    historyText: "Per chi vuole guardare più indietro dei bisnonni:",
+    alt: {
+      gen1: "I nonni della famiglia",
+      gen2: "Genitori con i loro figli",
+      gen3: "I giovani della famiglia",
+      gen4: "I bambini della famiglia",
+      memories: "Un nonno racconta i suoi ricordi al nipote",
+      map: "Il paese da cui viene la famiglia",
+      book: "Un album di vecchie foto di famiglia",
+      table: "La famiglia riunita a tavola",
+    },
   },
   Home: {
     welcomeEyebrow: "Bentornato",

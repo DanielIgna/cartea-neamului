@@ -10,6 +10,9 @@ const INBOX_DEFAULT = "contact.carteaneamului@gmail.com";
 /** Numărul de WhatsApp, cu prefixul țării și fără „+” sau „00”, cum îl cere wa.me. */
 const WHATSAPP_DEFAULT = "40790541342";
 
+/** Pagina de Facebook a site-ului (cerută de Daniel, 13 noiembrie 2026): în subsol, pe /contact și în datele Organization. */
+export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61596217751674";
+
 export function contactInbox(): string {
   return process.env.CONTACT_INBOX?.trim() || INBOX_DEFAULT;
 }
