@@ -3,6 +3,7 @@ import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
 import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
+import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 
 /**
  * Harta site-ului (sitemap.xml). Cât timp are câteva sute de adrese e un singur fișier; peste INDEX_LIMIT devine un index
@@ -39,6 +40,16 @@ export function sitemapGroups(): SitemapGroup[] {
       urls: [
         { path: "/nume", lastModified: NAMES_UPDATED, changeFrequency: "weekly", priority: 0.6 },
         ...loadNames().map((n): SitemapUrl => ({ path: `/nume/${n.slug}`, lastModified: NAMES_UPDATED, changeFrequency: "monthly", priority: 0.4 })),
+      ],
+    },
+    {
+      name: "localitati", label: "Localități",
+      urls: [
+        { path: "/localitati", lastModified: COUNTIES_UPDATED, changeFrequency: "weekly", priority: 0.6 },
+        ...loadCounties().flatMap((c): SitemapUrl[] => [
+          { path: countyPath(c), lastModified: COUNTIES_UPDATED, changeFrequency: "monthly", priority: 0.5 },
+          ...(seatPath(c) ? [{ path: seatPath(c)!, lastModified: COUNTIES_UPDATED, changeFrequency: "monthly" as const, priority: 0.4 }] : []),
+        ]),
       ],
     },
   ];

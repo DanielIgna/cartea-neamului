@@ -1,0 +1,515 @@
+{
+ "_despre": "Județele și reședințele pentru paginile /localitati. Scrise de mână; istoricul e intenționat scurt și general.",
+ "judete": [
+  {
+   "slug": "alba",
+   "name": "Alba",
+   "seat": "Alba Iulia",
+   "seatSlug": "alba-iulia",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Alba se află în centrul Transilvaniei, pe valea Mureșului și în Munții Apuseni. Satele de munte din Țara Moților au o istorie proprie, legată de exploatarea aurului și a lemnului.",
+   "seatHistory": "Alba Iulia s-a dezvoltat lângă vechiul castru roman Apulum. Aici a avut loc adunarea de la 1 decembrie 1918 care a hotărât unirea Transilvaniei cu România.",
+   "archive": "Serviciul Județean Alba al Arhivelor Naționale"
+  },
+  {
+   "slug": "arad",
+   "name": "Arad",
+   "seat": "Arad",
+   "seatSlug": "arad",
+   "regions": [
+    "crisana",
+    "banat"
+   ],
+   "history": "Județul Arad se întinde între Câmpia de Vest și Munții Zarandului, la granița dintre Crișana și Banat. A avut o populație amestecată: români, maghiari, germani, slovaci și alții.",
+   "seatHistory": "Arad este un oraș vechi pe Mureș, cu o cetate construită în secolul al XVIII-lea. A fost un centru important pentru românii din vestul țării.",
+   "archive": "Serviciul Județean Arad al Arhivelor Naționale"
+  },
+  {
+   "slug": "arges",
+   "name": "Argeș",
+   "seat": "Pitești",
+   "seatSlug": "pitesti",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Argeș, în nord-vestul Munteniei, cuprinde zone de munte, deal și câmpie. Aici se află Curtea de Argeș, una dintre vechile reședințe ale domnilor Țării Românești.",
+   "seatHistory": "Pitești este un oraș vechi de pe valea Argeșului. Tot aici se află Centrul de Studii și Păstrare a Arhivelor Militare Istorice, important pentru cei care caută strămoși care au fost în armată.",
+   "archive": "Serviciul Județean Argeș al Arhivelor Naționale"
+  },
+  {
+   "slug": "bacau",
+   "name": "Bacău",
+   "seat": "Bacău",
+   "seatSlug": "bacau",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Bacău se află în centrul Moldovei, pe văile Bistriței, Siretului și Trotușului. Are și comunități de catolici, ale căror registre parohiale sunt o sursă separată.",
+   "seatHistory": "Bacău este un oraș vechi al Moldovei, așezat pe Bistrița, cu un rol de târg și de reședință de ținut.",
+   "archive": "Serviciul Județean Bacău al Arhivelor Naționale"
+  },
+  {
+   "slug": "bihor",
+   "name": "Bihor",
+   "seat": "Oradea",
+   "seatSlug": "oradea",
+   "regions": [
+    "crisana"
+   ],
+   "history": "Județul Bihor este inima Crișanei, între Câmpia de Vest și Munții Apuseni. Până în 1918 a făcut parte din comitatul Bihor; registrele de stare civilă din 1895–1918 sunt în maghiară.",
+   "seatHistory": "Oradea este unul dintre marile orașe ale vestului, pe Crișul Repede, cu o cetate veche și cu sediile mai multor eparhii.",
+   "archive": "Serviciul Județean Bihor al Arhivelor Naționale"
+  },
+  {
+   "slug": "bistrita-nasaud",
+   "name": "Bistrița-Năsăud",
+   "seat": "Bistrița",
+   "seatSlug": "bistrita",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Bistrița-Năsăud, în nordul Transilvaniei, cuprinde ținutul Năsăudului, unde multe sate au făcut parte din regimentul de graniță austriac în secolele XVIII–XIX, și zona săsească din jurul Bistriței.",
+   "seatHistory": "Bistrița a fost un oraș săsesc, cu meșteșugari și negustori germani; populația românească a satelor din jur apare în registrele confesiunilor proprii.",
+   "archive": "Serviciul Județean Bistrița-Năsăud al Arhivelor Naționale"
+  },
+  {
+   "slug": "botosani",
+   "name": "Botoșani",
+   "seat": "Botoșani",
+   "seatSlug": "botosani",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Botoșani se află în nord-estul Moldovei, între Siret și Prut. Este o zonă mai ales agricolă, cu sate vechi de răzeși și de clăcași.",
+   "seatHistory": "Botoșani a fost un târg important al Moldovei, cu negustori de mai multe neamuri.",
+   "archive": "Serviciul Județean Botoșani al Arhivelor Naționale"
+  },
+  {
+   "slug": "braila",
+   "name": "Brăila",
+   "seat": "Brăila",
+   "seatSlug": "braila",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Brăila se află în nord-estul Munteniei, la Dunăre, într-o zonă de câmpie și de bălți.",
+   "seatHistory": "Brăila a fost port la Dunăre și, mult timp, raia otomană; după 1829 a devenit unul dintre marile porturi ale țării, cu negustori de multe neamuri.",
+   "archive": "Serviciul Județean Brăila al Arhivelor Naționale"
+  },
+  {
+   "slug": "brasov",
+   "name": "Brașov",
+   "seat": "Brașov",
+   "seatSlug": "brasov",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Brașov cuprinde Țara Bârsei și Țara Făgărașului. În Țara Bârsei au trăit împreună români, sași și maghiari; Țara Făgărașului are o istorie românească veche.",
+   "seatHistory": "Brașovul a fost unul dintre marile orașe săsești ale Transilvaniei, cu un cartier românesc vechi, Șcheii Brașovului.",
+   "archive": "Serviciul Județean Brașov al Arhivelor Naționale"
+  },
+  {
+   "slug": "bucuresti",
+   "name": "București",
+   "seat": null,
+   "seatSlug": null,
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Bucureștiul a fost capitala Țării Românești și apoi a României. Multe familii au venit aici, în secolele XIX și XX, din toate regiunile țării, așa că rădăcinile lor sunt adesea în alt județ.",
+   "seatHistory": null,
+   "archive": "Serviciul Municipiului București al Arhivelor Naționale"
+  },
+  {
+   "slug": "buzau",
+   "name": "Buzău",
+   "seat": "Buzău",
+   "seatSlug": "buzau",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Buzău se află în nord-estul Munteniei, de la Carpații de Curbură până în câmpie.",
+   "seatHistory": "Buzău este un oraș vechi, reședința unei episcopii și a unui ținut important al Țării Românești.",
+   "archive": "Serviciul Județean Buzău al Arhivelor Naționale"
+  },
+  {
+   "slug": "calarasi",
+   "name": "Călărași",
+   "seat": "Călărași",
+   "seatSlug": "calarasi",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Călărași se află în sud-estul Munteniei, în Bărăgan și la Dunăre. Multe sate s-au întemeiat sau au crescut după împroprietăririle din secolele XIX și XX.",
+   "seatHistory": "Călărași este un oraș de câmpie, la brațul Borcea al Dunării.",
+   "archive": "Serviciul Județean Călărași al Arhivelor Naționale"
+  },
+  {
+   "slug": "caras-severin",
+   "name": "Caraș-Severin",
+   "seat": "Reșița",
+   "seatSlug": "resita",
+   "regions": [
+    "banat"
+   ],
+   "history": "Județul Caraș-Severin cuprinde partea de munte a Banatului. Multe sate au făcut parte din granița militară austriacă, iar zonele miniere au atras coloniști din alte părți ale imperiului.",
+   "seatHistory": "Reșița s-a dezvoltat în jurul uzinelor de fier fondate în secolul al XVIII-lea, cu muncitori veniți din mai multe regiuni.",
+   "archive": "Serviciul Județean Caraș-Severin al Arhivelor Naționale"
+  },
+  {
+   "slug": "cluj",
+   "name": "Cluj",
+   "seat": "Cluj-Napoca",
+   "seatSlug": "cluj-napoca",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Cluj se află în nord-vestul Transilvaniei, între Munții Apuseni și Câmpia Transilvaniei. În multe sate au existat comunități ortodoxe și greco-catolice, cu registre separate.",
+   "seatHistory": "Cluj-Napoca este cel mai mare oraș al Transilvaniei și un vechi centru universitar; aici se află și arhive și biblioteci importante pentru istoria regiunii.",
+   "archive": "Serviciul Județean Cluj al Arhivelor Naționale"
+  },
+  {
+   "slug": "constanta",
+   "name": "Constanța",
+   "seat": "Constanța",
+   "seatSlug": "constanta",
+   "regions": [
+    "dobrogea"
+   ],
+   "history": "Județul Constanța se află în sudul Dobrogei, între Dunăre și Marea Neagră. După 1878 s-au așezat aici familii din toate regiunile țării, alături de comunități turcești, tătărești, grecești și altele.",
+   "seatHistory": "Constanța este cel mai mare port al țării, pe locul vechii cetăți grecești Tomis.",
+   "archive": "Serviciul Județean Constanța al Arhivelor Naționale"
+  },
+  {
+   "slug": "covasna",
+   "name": "Covasna",
+   "seat": "Sfântu Gheorghe",
+   "seatSlug": "sfantu-gheorghe",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Covasna se află în sud-estul Transilvaniei, în ținutul secuiesc. Majoritatea registrelor vechi sunt în maghiară sau latină.",
+   "seatHistory": "Sfântu Gheorghe este un oraș din ținutul secuiesc; registrele bisericilor lui sunt mai ales reformate, catolice și unitariene, alături de cele românești ortodoxe.",
+   "archive": "Serviciul Județean Covasna al Arhivelor Naționale"
+  },
+  {
+   "slug": "dambovita",
+   "name": "Dâmbovița",
+   "seat": "Târgoviște",
+   "seatSlug": "targoviste",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Dâmbovița se află în centrul Munteniei, de la munte până în câmpie.",
+   "seatHistory": "Târgoviște a fost multă vreme capitala Țării Românești, iar ruinele Curții Domnești se văd și azi.",
+   "archive": "Serviciul Județean Dâmbovița al Arhivelor Naționale"
+  },
+  {
+   "slug": "dolj",
+   "name": "Dolj",
+   "seat": "Craiova",
+   "seatSlug": "craiova",
+   "regions": [
+    "oltenia"
+   ],
+   "history": "Județul Dolj se află în sudul Olteniei, între Jiu și Dunăre, într-o zonă mai ales de câmpie.",
+   "seatHistory": "Craiova a fost reședința băniei Olteniei și este cel mai mare oraș al regiunii.",
+   "archive": "Serviciul Județean Dolj al Arhivelor Naționale"
+  },
+  {
+   "slug": "galati",
+   "name": "Galați",
+   "seat": "Galați",
+   "seatSlug": "galati",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Galați se află în sudul Moldovei, la confluența Siretului și Prutului cu Dunărea.",
+   "seatHistory": "Galați a fost principalul port al Moldovei la Dunăre, cu negustori și meșteșugari de multe neamuri.",
+   "archive": "Serviciul Județean Galați al Arhivelor Naționale"
+  },
+  {
+   "slug": "giurgiu",
+   "name": "Giurgiu",
+   "seat": "Giurgiu",
+   "seatSlug": "giurgiu",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Giurgiu se află în sudul Munteniei, la Dunăre, într-o zonă de câmpie.",
+   "seatHistory": "Giurgiu a fost port la Dunăre și, mult timp, raia otomană; a revenit Țării Românești în 1829.",
+   "archive": "Serviciul Județean Giurgiu al Arhivelor Naționale"
+  },
+  {
+   "slug": "gorj",
+   "name": "Gorj",
+   "seat": "Târgu Jiu",
+   "seatSlug": "targu-jiu",
+   "regions": [
+    "oltenia"
+   ],
+   "history": "Județul Gorj se află în nordul Olteniei, între Carpați și dealurile subcarpatice, cu sate vechi de moșneni.",
+   "seatHistory": "Târgu Jiu este orașul de pe Jiu în care se află ansamblul monumental al lui Constantin Brâncuși.",
+   "archive": "Serviciul Județean Gorj al Arhivelor Naționale"
+  },
+  {
+   "slug": "harghita",
+   "name": "Harghita",
+   "seat": "Miercurea Ciuc",
+   "seatSlug": "miercurea-ciuc",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Harghita se află în estul Transilvaniei, în ținutul secuiesc; registrele vechi sunt mai ales catolice, în latină și maghiară, alături de cele românești ortodoxe și greco-catolice.",
+   "seatHistory": "Miercurea Ciuc este centrul ținutului Ciuc, cu o populație majoritar maghiară.",
+   "archive": "Serviciul Județean Harghita al Arhivelor Naționale"
+  },
+  {
+   "slug": "hunedoara",
+   "name": "Hunedoara",
+   "seat": "Deva",
+   "seatSlug": "deva",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Hunedoara se află în sud-vestul Transilvaniei: Țara Hațegului, valea Jiului, ținutul Pădurenilor și Zarandul. Minele din valea Jiului au adus familii din multe regiuni.",
+   "seatHistory": "Deva este așezată la poalele unei cetăți medievale, pe valea Mureșului.",
+   "archive": "Serviciul Județean Hunedoara al Arhivelor Naționale"
+  },
+  {
+   "slug": "ialomita",
+   "name": "Ialomița",
+   "seat": "Slobozia",
+   "seatSlug": "slobozia",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Ialomița se află în estul Munteniei, în Bărăgan, de-a lungul râului Ialomița.",
+   "seatHistory": "Slobozia este un oraș de câmpie, pe Ialomița.",
+   "archive": "Serviciul Județean Ialomița al Arhivelor Naționale"
+  },
+  {
+   "slug": "iasi",
+   "name": "Iași",
+   "seat": "Iași",
+   "seatSlug": "iasi",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Iași se află în estul Moldovei, între Siret și Prut. Aici se găsesc multe dintre arhivele vechi ale Moldovei.",
+   "seatHistory": "Iași a fost capitala Moldovei timp de aproape trei secole, până la Unirea din 1859, și rămâne un centru cultural și universitar important.",
+   "archive": "Serviciul Județean Iași al Arhivelor Naționale"
+  },
+  {
+   "slug": "ilfov",
+   "name": "Ilfov",
+   "seat": "Buftea",
+   "seatSlug": "buftea",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Ilfov înconjoară Bucureștiul; multe sate au devenit cu timpul cartiere sau orașe-satelit ale capitalei.",
+   "seatHistory": "Buftea este reședința județului Ilfov, un oraș aflat la nord-vest de București.",
+   "archive": "Serviciul Județean Ilfov al Arhivelor Naționale"
+  },
+  {
+   "slug": "maramures",
+   "name": "Maramureș",
+   "seat": "Baia Mare",
+   "seatSlug": "baia-mare",
+   "regions": [
+    "maramures",
+    "transilvania"
+   ],
+   "history": "Județul Maramureș cuprinde Maramureșul istoric (valea Izei, a Vișeului și a Marei), Țara Lăpușului, Țara Chioarului și zona Băii Mari. Multe familii românești din Maramureșul istoric aveau statut de mică nobilime.",
+   "seatHistory": "Baia Mare s-a dezvoltat ca oraș minier, în jurul exploatărilor de aur și argint.",
+   "archive": "Serviciul Județean Maramureș al Arhivelor Naționale"
+  },
+  {
+   "slug": "mehedinti",
+   "name": "Mehedinți",
+   "seat": "Drobeta-Turnu Severin",
+   "seatSlug": "drobeta-turnu-severin",
+   "regions": [
+    "oltenia"
+   ],
+   "history": "Județul Mehedinți se află în vestul Olteniei, la Dunăre și în munții de lângă Porțile de Fier.",
+   "seatHistory": "Drobeta-Turnu Severin se află lângă locul unde romanii au construit podul peste Dunăre al împăratului Traian.",
+   "archive": "Serviciul Județean Mehedinți al Arhivelor Naționale"
+  },
+  {
+   "slug": "mures",
+   "name": "Mureș",
+   "seat": "Târgu Mureș",
+   "seatSlug": "targu-mures",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Mureș se află în centrul Transilvaniei, pe valea Mureșului și pe Câmpia Transilvaniei, cu sate românești, maghiare și săsești.",
+   "seatHistory": "Târgu Mureș este un oraș cu populație românească și maghiară, vechi centru al scaunului secuiesc Mureș.",
+   "archive": "Serviciul Județean Mureș al Arhivelor Naționale"
+  },
+  {
+   "slug": "neamt",
+   "name": "Neamț",
+   "seat": "Piatra Neamț",
+   "seatSlug": "piatra-neamt",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Neamț se află în vestul Moldovei, de la Ceahlău și valea Bistriței până în valea Siretului.",
+   "seatHistory": "Piatra Neamț este un oraș vechi pe Bistrița, la poalele munților.",
+   "archive": "Serviciul Județean Neamț al Arhivelor Naționale"
+  },
+  {
+   "slug": "olt",
+   "name": "Olt",
+   "seat": "Slatina",
+   "seatSlug": "slatina",
+   "regions": [
+    "oltenia",
+    "muntenia"
+   ],
+   "history": "Județul Olt se întinde de-o parte și de alta a râului Olt, între Oltenia și Muntenia, mai ales în zonă de câmpie.",
+   "seatHistory": "Slatina este un oraș vechi pe Olt.",
+   "archive": "Serviciul Județean Olt al Arhivelor Naționale"
+  },
+  {
+   "slug": "prahova",
+   "name": "Prahova",
+   "seat": "Ploiești",
+   "seatSlug": "ploiesti",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Prahova se află în nordul Munteniei, de pe Valea Prahovei până în câmpie. Exploatarea petrolului a adus aici, din secolul al XIX-lea, familii din multe regiuni.",
+   "seatHistory": "Ploiești s-a dezvoltat ca centru al industriei petroliere românești.",
+   "archive": "Serviciul Județean Prahova al Arhivelor Naționale"
+  },
+  {
+   "slug": "salaj",
+   "name": "Sălaj",
+   "seat": "Zalău",
+   "seatSlug": "zalau",
+   "regions": [
+    "transilvania",
+    "crisana"
+   ],
+   "history": "Județul Sălaj se află între Transilvania și Crișana, pe dealurile dintre Meseș și Someș.",
+   "seatHistory": "Zalău se află lângă ruinele orașului roman Porolissum.",
+   "archive": "Serviciul Județean Sălaj al Arhivelor Naționale"
+  },
+  {
+   "slug": "satu-mare",
+   "name": "Satu Mare",
+   "seat": "Satu Mare",
+   "seatSlug": "satu-mare",
+   "regions": [
+    "crisana",
+    "maramures"
+   ],
+   "history": "Județul Satu Mare se află în nord-vestul țării, cu Țara Oașului și zona Codrului. Are și comunități de șvabi sătmăreni, ale căror registre sunt în germană sau latină.",
+   "seatHistory": "Satu Mare este un oraș vechi pe Someș, cu populație românească și maghiară.",
+   "archive": "Serviciul Județean Satu Mare al Arhivelor Naționale"
+  },
+  {
+   "slug": "sibiu",
+   "name": "Sibiu",
+   "seat": "Sibiu",
+   "seatSlug": "sibiu",
+   "regions": [
+    "transilvania"
+   ],
+   "history": "Județul Sibiu cuprinde zona săsească din jurul Sibiului și Mărginimea Sibiului, cu sate de păstori care umblau cu oile până departe.",
+   "seatHistory": "Sibiul a fost principalul oraș al sașilor din Transilvania și sediul unor importante instituții bisericești românești.",
+   "archive": "Serviciul Județean Sibiu al Arhivelor Naționale"
+  },
+  {
+   "slug": "suceava",
+   "name": "Suceava",
+   "seat": "Suceava",
+   "seatSlug": "suceava",
+   "regions": [
+    "bucovina",
+    "moldova"
+   ],
+   "history": "Județul Suceava cuprinde sudul Bucovinei, sub administrație austriacă între 1775 și 1918, și o parte din Moldova. Registrele vechi pot fi în română, germană, latină sau ucraineană.",
+   "seatHistory": "Suceava a fost capitala Moldovei în secolele XIV–XVI, cu o cetate de scaun.",
+   "archive": "Serviciul Județean Suceava al Arhivelor Naționale"
+  },
+  {
+   "slug": "teleorman",
+   "name": "Teleorman",
+   "seat": "Alexandria",
+   "seatSlug": "alexandria",
+   "regions": [
+    "muntenia"
+   ],
+   "history": "Județul Teleorman se află în sudul Munteniei, în câmpia dintre Olt, Vedea și Dunăre.",
+   "seatHistory": "Alexandria a fost întemeiată în secolul al XIX-lea, ca oraș planificat.",
+   "archive": "Serviciul Județean Teleorman al Arhivelor Naționale"
+  },
+  {
+   "slug": "timis",
+   "name": "Timiș",
+   "seat": "Timișoara",
+   "seatSlug": "timisoara",
+   "regions": [
+    "banat"
+   ],
+   "history": "Județul Timiș cuprinde câmpia Banatului, colonizată în secolul al XVIII-lea și cu șvabi, sârbi, maghiari și alte comunități, alături de români.",
+   "seatHistory": "Timișoara este principalul oraș al Banatului, cu multe confesiuni și registre în mai multe limbi.",
+   "archive": "Serviciul Județean Timiș al Arhivelor Naționale"
+  },
+  {
+   "slug": "tulcea",
+   "name": "Tulcea",
+   "seat": "Tulcea",
+   "seatSlug": "tulcea",
+   "regions": [
+    "dobrogea"
+   ],
+   "history": "Județul Tulcea cuprinde nordul Dobrogei și Delta Dunării, cu comunități de lipoveni, ucraineni, turci, tătari și alții, alături de români.",
+   "seatHistory": "Tulcea este poarta spre Delta Dunării.",
+   "archive": "Serviciul Județean Tulcea al Arhivelor Naționale"
+  },
+  {
+   "slug": "valcea",
+   "name": "Vâlcea",
+   "seat": "Râmnicu Vâlcea",
+   "seatSlug": "ramnicu-valcea",
+   "regions": [
+    "oltenia"
+   ],
+   "history": "Județul Vâlcea se află în nord-estul Olteniei, pe valea Oltului, cu sate vechi de moșneni și mănăstiri vechi.",
+   "seatHistory": "Râmnicu Vâlcea este un oraș vechi pe Olt, sediu al unei episcopii.",
+   "archive": "Serviciul Județean Vâlcea al Arhivelor Naționale"
+  },
+  {
+   "slug": "vaslui",
+   "name": "Vaslui",
+   "seat": "Vaslui",
+   "seatSlug": "vaslui",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Vaslui se află în estul Moldovei, pe dealurile dintre Bârlad și Prut, cu multe sate vechi de răzeși.",
+   "seatHistory": "Vaslui a fost una dintre reședințele domnilor Moldovei.",
+   "archive": "Serviciul Județean Vaslui al Arhivelor Naționale"
+  },
+  {
+   "slug": "vrancea",
+   "name": "Vrancea",
+   "seat": "Focșani",
+   "seatSlug": "focsani",
+   "regions": [
+    "moldova"
+   ],
+   "history": "Județul Vrancea se află în sud-vestul Moldovei; Țara Vrancei avea sate de răzeși cu o organizare proprie.",
+   "seatHistory": "Focșani a fost oraș de graniță între Moldova și Țara Românească, iar Unirea din 1859 l-a făcut un simbol al unirii.",
+   "archive": "Serviciul Județean Vrancea al Arhivelor Naționale"
+  }
+ ]
+}

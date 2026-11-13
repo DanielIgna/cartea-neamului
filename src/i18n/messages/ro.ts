@@ -44,6 +44,7 @@ export const ro = {
     guides: "Ghiduri de genealogie",
     glossary: "Glosar",
     surnames: "Nume de familie",
+    places: "Arhive pe județe",
     cookieLead: "Doar cookie-uri strict necesare.",
     cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără urmărire: vizitele le numărăm anonim, fără cookie-uri, așa că nu-ți cerem acordul.",
     cookieMore: "Vezi lista",
