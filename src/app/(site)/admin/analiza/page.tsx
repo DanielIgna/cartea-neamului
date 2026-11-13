@@ -48,7 +48,7 @@ export default async function Analiza({ searchParams }: { searchParams: Promise<
 
   return (
     <section className="stack">
-      <AdminNav active="analiza" />
+      <AdminNav active="analiza" heading={false} />
       <div className="an-head">
         <div>
           <h1>Analiză și creștere</h1>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ALL_ADMIN_ITEMS } from "@/lib/admin-menu";
 import { cereDe } from "@/lib/ro-words";
 import type { Access, Plan } from "@/lib/plans";
 import { STAGES, type Stage } from "@/lib/admin-people";
@@ -31,29 +31,19 @@ export function ago(isoDate: string | null | undefined) {
   return d === 1 ? "ieri" : `acum ${d} zile`;
 }
 
-export function AdminNav({ active }: { active: "home" | "oameni" | "business" | "control" | "istoric" | "texte" | "poze" | "propuneri" | "seo" | "adn" | "email" | "probleme" | "securitate" | "analiza" | "infra" }) {
-  const tab = (key: typeof active, href: string, label: string) => (
-    <Link href={href} className="btn" aria-current={active === key ? "page" : undefined}>{label}</Link>
-  );
+/**
+ * Titlul paginii din panou (numele și rostul ei, luate din meniu). Meniul în sine e în AdminShell, pus de layout-ul /admin;
+ * `heading={false}` pentru paginile care își au titlul lor.
+ */
+export function AdminNav({ active, heading = true }: { active: string; heading?: boolean }) {
+  if (!heading) return null;
+  const item = ALL_ADMIN_ITEMS.find((i) => i.key === active);
+  if (!item) return null;
   return (
-    <nav className="admin-nav" aria-label="Panoul de admin">
-      <span className="admin-tag">Admin</span>
-      {tab("home", "/admin", "Prezentare")}
-      {tab("oameni", "/admin/oameni", "Oamenii")}
-      {tab("business", "/admin/business", "Business")}
-      {tab("analiza", "/admin/analiza", "Analiză")}
-      {tab("control", "/admin/control", "Manager control")}
-      {tab("istoric", "/admin/istoric", "Istoric și limite")}
-      {tab("texte", "/admin/texte", "Texte")}
-      {tab("poze", "/admin/poze", "Poze prima pagină")}
-      {tab("propuneri", "/admin/propuneri", "Poze propuse")}
-      {tab("seo", "/admin/seo", "SEO")}
-      {tab("adn", "/admin/adn", "Test ADN")}
-      {tab("email", "/admin/email", "Email")}
-      {tab("probleme", "/admin/probleme", "Probleme")}
-      {tab("securitate", "/admin/securitate", "Securitate")}
-      {tab("infra", "/admin/infra", "Infra & Dev")}
-    </nav>
+    <header className="adm-pagehead">
+      <h1>{item.label}</h1>
+      <p className="muted">{item.hint}</p>
+    </header>
   );
 }
 
