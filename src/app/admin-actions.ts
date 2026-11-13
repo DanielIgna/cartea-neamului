@@ -3,10 +3,11 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { tree, user } from "@/db/schema";
+import { appSetting, tree, user } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { adminReady } from "@/lib/admin-access";
+import { ERRORS_SEEN_KEY } from "@/lib/admin-stats";
 import { PlanSettings, isPlan, isTier, savePlanSettings, setAccountPlan } from "@/lib/plans";
 import { MAX_WORD } from "@/lib/cuvant-final";
 import { saveBaseWord } from "@/lib/texte";
@@ -203,4 +204,22 @@ export async function submitSitemapNow(): Promise<AdminFormState> {
   }
   revalidatePath("/admin/seo");
   return { ok: "Trimis. Google îl citește în câteva ore sau zile." };
+}
+
+/**
+ * „Infra & Dev” → „Erori pe server”: adminul marchează erorile de până acum ca rezolvate, ca lista să arate doar ce apare de aici
+ * încolo. Nu se șterge nimic din jurnal; „Arată-le din nou” le aduce înapoi.
+ */
+export async function markServerErrorsSeen(form: FormData): Promise<void> {
+  const me = await admin();
+  if (!me) return;
+  const now = new Date();
+  if (form.get("undo") === "1") {
+    await db.delete(appSetting).where(eq(appSetting.key, ERRORS_SEEN_KEY));
+  } else {
+    const value = { at: now.toISOString() };
+    await db.insert(appSetting).values({ key: ERRORS_SEEN_KEY, value, updatedBy: me.id, updatedAt: now })
+      .onConflictDoUpdate({ target: appSetting.key, set: { value, updatedBy: me.id, updatedAt: now } });
+  }
+  revalidatePath("/admin/infra");
 }

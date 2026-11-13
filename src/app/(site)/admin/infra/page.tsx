@@ -6,6 +6,7 @@ import { googleEnabled } from "@/lib/auth";
 import { aiConfigured } from "@/lib/ai";
 import { realtimeConfigured } from "@/lib/realtime";
 import { bucketReachable, localStorageMode, storageConfigured } from "@/lib/storage";
+import { markServerErrorsSeen } from "@/app/admin-actions";
 import { AdminNav, Meter, Stat, Status, bytes, day, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +75,9 @@ export default async function AdminInfra() {
           <Stat label="În ultimele 7 zile" value={num(i.errors.d7)} />
         </div>
         {i.errors.recent.length === 0
-          ? <p className="muted" style={{ marginBottom: 0 }}>Nicio eroare prinsă. Erorile de pe server se scriu aici de la această versiune încolo; cele mai vechi sunt doar în jurnalul Vercel.</p>
+          ? <p className="muted" style={{ marginBottom: 0 }}>{i.errors.seenAt
+            ? `Nicio eroare nouă de când le-ai marcat ca rezolvate (${day(i.errors.seenAt, true)}).`
+            : "Nicio eroare prinsă. Erorile de pe server se scriu aici de la această versiune încolo; cele mai vechi sunt doar în jurnalul Vercel."}</p>
           : (
             <div className="tbl-wrap" style={{ marginTop: 12 }}>
               <table className="tbl">
@@ -91,6 +94,20 @@ export default async function AdminInfra() {
               </table>
             </div>
           )}
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginTop: 12 }}>
+          {i.errors.recent.length > 0 && (
+            <form action={markServerErrorsSeen}>
+              <button className="btn" type="submit">Am rezolvat, ascunde-le</button>
+            </form>
+          )}
+          {i.errors.hidden > 0 && (
+            <form action={markServerErrorsSeen}>
+              <input type="hidden" name="undo" value="1" />
+              <small className="muted">{num(i.errors.hidden)} {i.errors.hidden === 1 ? "eroare mai veche ascunsă" : "erori mai vechi ascunse"}. </small>
+              <button className="btn" type="submit">Arată-le din nou</button>
+            </form>
+          )}
+        </div>
       </div>
 
       <div className="card">

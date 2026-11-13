@@ -9,6 +9,8 @@ async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
   return (r.rows ?? []) as T[];
 }
 const n = (v: unknown) => Number(v ?? 0) || 0;
+/** Cheia din app_setting unde stă momentul până la care adminul a marcat erorile de pe server ca rezolvate. */
+export const ERRORS_SEEN_KEY = "erori_rezolvate";
 const iso = (v: unknown) => (v == null ? null : new Date(v as string).toISOString());
 
 /* ------------------------------ Business ------------------------------ */
@@ -131,9 +133,14 @@ export async function infraStats(db: Db) {
   } catch { /* tabela migrațiilor nu există încă */ }
   const [s] = await rows(db, sql`select count(*) filter (where expires_at > now()) as live, count(*) filter (where expires_at <= now()) as expired from session`);
   const [ja] = await rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '1 day' and not found) as miss1 from join_attempt`);
-  const [e] = await rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '7 days') as d7
-    from audit_log where entity = 'eroare'`);
-  const errors = await rows(db, sql`select created_at, entity_id, action, diff from audit_log where entity = 'eroare' order by created_at desc limit 25`);
+  // Erorile pe care adminul le-a marcat „rezolvate” (cele de până la acel moment) nu se mai numără și nu se mai arată în listă.
+  const [seenRow] = await rows(db, sql`select value from app_setting where key = ${ERRORS_SEEN_KEY}`);
+  const seenAt = typeof (seenRow?.value as { at?: unknown } | undefined)?.at === "string" ? new Date((seenRow!.value as { at: string }).at) : null;
+  const after = seenAt && !Number.isNaN(seenAt.getTime()) ? seenAt : new Date(0);
+  const [e] = await rows(db, sql`select count(*) as hidden from audit_log where entity = 'eroare' and created_at <= ${after.toISOString()}`);
+  const [shown] = await rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '7 days') as d7
+    from audit_log where entity = 'eroare' and created_at > ${after.toISOString()}`);
+  const errors = await rows(db, sql`select created_at, entity_id, action, diff from audit_log where entity = 'eroare' and created_at > ${after.toISOString()} order by created_at desc limit 25`);
   const [docs] = await rows(db, sql`select count(*) filter (where file_key is not null) as files from document`);
   return {
     db: { pingMs, version: String(info.version ?? "").split(" on ")[0].split(",")[0], bytes: n(info.bytes), name: String(info.name ?? "") },
@@ -143,7 +150,7 @@ export async function infraStats(db: Db) {
     sessions: { live: n(s.live), expired: n(s.expired) },
     joinAttempts: { d1: n(ja.d1), miss1: n(ja.miss1) },
     errors: {
-      d1: n(e.d1), d7: n(e.d7),
+      d1: n(shown.d1), d7: n(shown.d7), hidden: n(e.hidden), seenAt: seenAt ? seenAt.toISOString() : null,
       recent: errors.map((r) => ({ at: iso(r.created_at), path: String(r.entity_id), kind: String(r.action), ...(r.diff as { message?: string; digest?: string; method?: string; route?: string } ?? {}) })),
     },
     storedFiles: n(docs.files),
