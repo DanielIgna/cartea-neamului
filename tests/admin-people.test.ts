@@ -9,7 +9,7 @@ import { exportMyData } from "@/lib/account";
 import { roleIn, roleInTree } from "@/lib/access";
 import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, accessFor, holdsYear, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
+  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, accessFor, holdsYear, limitsFor, room, tierPrice, tierBook, tierPrint, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -56,7 +56,7 @@ describe("planurile", () => {
     expect(accessFor({ createdAt: d("2026-01-01"), plan: "mereu", paidUntil: null }, on, now)).toEqual({ kind: "mereu" });
     expect(accessFor({ createdAt: d("2026-01-01"), plan: null, paidUntil: null, exempt: true }, on, now)).toEqual({ kind: "mereu" });
     expect(accessFor({ createdAt: d("2026-01-01"), plan: "gratuit", paidUntil: d("2027-12-01") }, on, now)).toMatchObject({ kind: "platit" });
-    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: null }, on, now)).toEqual({ kind: "platit", until: null });
+    expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: null }, on, now)).toEqual({ kind: "platit", until: null, tier: "basic" });
     expect(accessFor({ createdAt: d("2026-01-01"), plan: "familie", paidUntil: d("2027-02-01") }, on, now)).toEqual({ kind: "expirat", since: d("2027-02-01") });
   });
   it("banii: cel cu arbore plătește prețul întreg, ruda invitată prețul ei; „gratuit mereu” niciodată", () => {
@@ -64,7 +64,7 @@ describe("planurile", () => {
     expect(yearPrice(true, t)).toEqual({ lei: 50, eur: 10 });
     expect(yearPrice(false, t)).toEqual({ lei: 30, eur: 10 });
     const r = revenue([
-      { access: { kind: "platit", until: null }, ownsTree: true },
+      { access: { kind: "platit", until: null, tier: "basic" }, ownsTree: true },
       { access: { kind: "expirat", since: d("2027-01-01") }, ownsTree: false },
       { access: { kind: "proba", until: d("2027-01-01"), daysLeft: 2 }, ownsTree: true },
       { access: { kind: "mereu" }, ownsTree: true },
@@ -72,8 +72,9 @@ describe("planurile", () => {
     expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 50, leiYearPossible: 130 });
   });
   it("setările se scriu ca numere, cu mesaje în română, iar comutatorul vine din bifă", () => {
-    const form = { on: "on", trialDays: "14", priceLei: "50", priceEur: "10", invitePriceLei: "25", invitePriceEur: "5", bookLei: "99", bookEur: "20", betaDays: "365", trialPersons: "30" };
-    expect(PlanSettings.safeParse(form).data).toEqual({ ...form, on: true, startedAt: null, trialDays: 14, priceLei: 50, priceEur: 10, invitePriceLei: 25, invitePriceEur: 5, bookLei: 99, bookEur: 20, betaDays: 365, trialPersons: 30 });
+    const rest = Object.fromEntries(Object.entries(DEFAULT_SETTINGS).filter(([k]) => k !== "on" && k !== "startedAt").map(([k, v]) => [k, String(v)]));
+    const form = { ...rest, on: "on", trialDays: "14", priceLei: "50", priceEur: "10", invitePriceLei: "25", invitePriceEur: "5", bookLei: "99", bookEur: "20", betaDays: "365", trialPersons: "30" };
+    expect(PlanSettings.safeParse(form).data).toEqual({ ...DEFAULT_SETTINGS, on: true, startedAt: null, trialDays: 14, priceLei: 50, priceEur: 10, invitePriceLei: 25, invitePriceEur: 5, bookLei: 99, bookEur: 20, betaDays: 365, trialPersons: 30 });
     expect(PlanSettings.safeParse({ ...form, on: null }).data?.on).toBe(false);
     expect(PlanSettings.safeParse({ ...form, trialDays: "0" }).error?.issues[0].message).toBe("Cel puțin 1 zile.");
     expect(PlanSettings.safeParse({ ...form, trialDays: "2.5" }).error?.issues[0].message).toBe("Scrie un număr întreg.");
@@ -246,39 +247,91 @@ describe("Oamenii și Manager control", () => {
 describe("plata nu se ocolește invitându-se unii pe alții", () => {
   const s = DEFAULT_SETTINGS;
   const proba = { kind: "proba", until: new Date(), daysLeft: 3 } as const;
-  const platit = { kind: "platit", until: null } as const;
+  const basic = { kind: "platit", until: null, tier: "basic" } as const;
+  const familie = { kind: "platit", until: null, tier: "familie" } as const;
+  const premium = { kind: "platit", until: null, tier: "premium" } as const;
   const expirat = { kind: "expirat", since: new Date() } as const;
   const beta = { kind: "beta", until: new Date() } as const;
 
-  it("în zilele gratuite, un arbore neplătit crește doar până la familia apropiată", () => {
+  it("persoanele: plafonul vine din planul titularului", () => {
     expect(s.trialPersons).toBe(30);
-    expect(personRoom(proba, proba, 12, s)).toBe(18);
-    expect(personRoom(proba, expirat, 40, s)).toBe(0);
-    expect(personRoom(proba, platit, 500, s)).toBeNull();
-    expect(personRoom(proba, beta, 500, s)).toBeNull();
-    expect(personRoom(platit, proba, 500, s)).toBeNull();
+    expect(personRoom(proba, 12, s)).toBe(18);
+    expect(personRoom(expirat, 40, s)).toBe(0);
+    expect(personRoom(basic, 98, s)).toBe(2);
+    expect(personRoom(familie, 500, s)).toBe(0);
+    expect(personRoom(beta, 399, s)).toBe(1);
+    expect(personRoom(premium, 50_000, s)).toBeNull();
+    expect(personRoom({ kind: "mereu" }, 50_000, s)).toBeNull();
+    expect(personRoom({ kind: "deschis" }, 50_000, s)).toBeNull();
   });
 
-  it("rudele se invită să scrie doar cu anul plătit; în probă, doar să vadă", () => {
-    expect(mayInviteWriters(proba)).toBe(false);
-    expect(mayInviteWriters(platit)).toBe(true);
-    expect(mayInviteWriters({ kind: "deschis" })).toBe(true);
+  it("cotele pe probă, Basic, Familie, Premium, expirat și gratuit mereu", () => {
+    expect(limitsFor(proba, s)).toEqual({ persons: 30, photos: 40, audio: 10, docs: 10, writers: 1, trees: 1 });
+    expect(limitsFor(expirat, s)).toEqual(limitsFor(proba, s));
+    expect(limitsFor(basic, s)).toEqual({ persons: 100, photos: 200, audio: 20, docs: 40, writers: 2, trees: 1 });
+    expect(limitsFor(familie, s)).toEqual({ persons: 400, photos: 800, audio: 80, docs: 150, writers: 8, trees: 2 });
+    expect(limitsFor(premium, s)).toEqual({ persons: null, photos: 3000, audio: 250, docs: 500, writers: 20, trees: 5 });
+    expect(limitsFor(beta, s)).toEqual(limitsFor(familie, s));
+    expect(limitsFor({ kind: "mereu" }, s)).toBeNull();
+    expect(room(basic, "photos", 198, s)).toEqual({ cap: 200, used: 198, left: 2 });
+    expect(room(basic, "photos", 250, s)).toEqual({ cap: 200, used: 250, left: 0 });
+    // Plafoanele se schimbă din Admin.
+    expect(room({ ...familie }, "audio", 80, { ...s, familieAudio: 100 })?.left).toBe(20);
+  });
+
+  it("rudele se invită să scrie doar cât încap în planul titularului; în probă, doar să vadă", () => {
+    expect(mayInviteWriters(proba, 1, s)).toBe(false);
+    expect(mayInviteWriters(basic, 1, s)).toBe(true);
+    expect(mayInviteWriters(basic, 2, s)).toBe(false);
+    expect(mayInviteWriters(familie, 7, s)).toBe(true);
+    expect(mayInviteWriters(familie, 8, s)).toBe(false);
+    expect(mayInviteWriters(premium, 19, s)).toBe(true);
+    expect(mayInviteWriters(expirat, 1, s)).toBe(false);
+    expect(mayInviteWriters({ kind: "deschis" }, 100, s)).toBe(true);
     expect(holdsYear(expirat)).toBe(false);
   });
 
-  it("invitatul în probă nu mai scrie în arborele unui proprietar rămas doar cu citirea", () => {
+  it("cine scrie: la Familie și Premium nu plătește separat; la Basic își plătește anul", () => {
     expect(writesInTree(proba, expirat, false)).toBe(false);
-    expect(writesInTree(proba, platit, false)).toBe(true);
+    expect(writesInTree(proba, basic, false)).toBe(true);
     expect(writesInTree(proba, proba, false)).toBe(true);
     expect(writesInTree(proba, expirat, true)).toBe(true);
-    expect(writesInTree(platit, expirat, false)).toBe(true);
-    expect(writesInTree(expirat, platit, false)).toBe(false);
+    expect(writesInTree(basic, expirat, false)).toBe(true);
+    expect(writesInTree(expirat, basic, false)).toBe(false);
+    expect(writesInTree(expirat, familie, false)).toBe(true);
+    expect(writesInTree(expirat, premium, false)).toBe(true);
+    expect(writesInTree(expirat, beta, false)).toBe(true);
+    expect(writesInTree(expirat, familie, true)).toBe(false);
   });
 
-  it("în zilele gratuite, un singur arbore", () => {
-    expect(mayStartTree(proba, 0)).toBe(true);
-    expect(mayStartTree(proba, 1)).toBe(false);
-    expect(mayStartTree(platit, 3)).toBe(true);
+  it("câți arbori: unul în probă și la Basic, 2 la Familie, 5 la Premium", () => {
+    expect(mayStartTree(proba, 0, s)).toBe(true);
+    expect(mayStartTree(proba, 1, s)).toBe(false);
+    expect(mayStartTree(basic, 1, s)).toBe(false);
+    expect(mayStartTree(familie, 1, s)).toBe(true);
+    expect(mayStartTree(familie, 2, s)).toBe(false);
+    expect(mayStartTree(premium, 4, s)).toBe(true);
+    expect(mayStartTree(premium, 5, s)).toBe(false);
+    expect(mayStartTree({ kind: "mereu" }, 50, s)).toBe(true);
+  });
+
+  it("prețurile pe fiecare plan", () => {
+    expect(tierPrice("basic", true, s)).toEqual({ lei: 50, eur: 10 });
+    expect(tierPrice("basic", false, { ...s, invitePriceLei: 30 })).toEqual({ lei: 30, eur: 10 });
+    expect(tierPrice("familie", true, s)).toEqual({ lei: 149, eur: 30 });
+    expect(tierPrice("premium", false, s)).toEqual({ lei: 249, eur: 50 });
+    expect(tierBook("basic", s)).toBe("separat");
+    expect(tierBook("familie", s)).toBe("una");
+    expect(tierBook("premium", s)).toBe("toti");
+    expect(tierPrint("premium", s)).toBe(20);
+    expect(tierPrint("familie", s)).toBe(0);
+  });
+
+  it("anul plătit are planul lui; plățile vechi fără plan sunt Basic", () => {
+    const on = { ...s, on: true, startedAt: "2026-11-13T00:00:00.000Z" };
+    const now = new Date("2027-01-01");
+    expect(accessFor({ createdAt: new Date("2026-12-01"), plan: "familie", paidUntil: new Date("2027-06-01") }, on, now)).toMatchObject({ kind: "platit", tier: "basic" });
+    expect(accessFor({ createdAt: new Date("2026-12-01"), plan: "familie", paidUntil: new Date("2027-06-01"), tier: "premium" }, on, now)).toMatchObject({ kind: "platit", tier: "premium" });
   });
 });
 

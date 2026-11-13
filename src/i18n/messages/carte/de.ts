@@ -147,6 +147,7 @@ export const deCarte: CarteCatalog = {
       preview: "VORSCHAU",
       previewNote: "{count, plural, one {Eine Seite} other {# Seiten}}. Das ist die Vorschau: Du kannst sie ganz durchblättern; nach der Zahlung lädst du sie ohne die Markierung auf den Seiten herunter.",
       printed: "Ich möchte das gedruckte Buch",
+      printFrom: "ab {price}, je nach Seiten und Exemplaren",
       ready: "{count, plural, one {# Seite} other {# Seiten}}. Das Druckfenster öffnet sich: Wähle „Als PDF speichern“ (auf dem iPhone: Teilen, dann In Dateien sichern).",
     },
   },

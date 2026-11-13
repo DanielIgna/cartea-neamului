@@ -78,8 +78,10 @@ function fillPageNumbers(area: HTMLElement) {
  * `locked`: plățile sunt pornite și omul n-a plătit cartea: o vede toată, cu „Previzualizare” pe fiecare pagină (și la tipărire),
  * iar în locul lui „Descarcă PDF” e butonul de plată.
  */
-export default function BookView({ format, renderKey, fileName, locked, children }: {
-  format: BookFormat; renderKey: string; fileName: string; locked?: { buyHref: string; price: string } | null; children: React.ReactNode;
+export default function BookView({ format, renderKey, fileName, locked, printFrom, children }: {
+  format: BookFormat; renderKey: string; fileName: string; locked?: { buyHref: string; price: string } | null;
+  /** „de la X lei” la cartea tipărită, din Admin (doar când e pus). */
+  printFrom?: string | null; children: React.ReactNode;
 }) {
   const src = useRef<HTMLDivElement>(null), out = useRef<HTMLDivElement>(null), stage = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<"work" | "done" | "error">("work");
@@ -167,6 +169,7 @@ export default function BookView({ format, renderKey, fileName, locked, children
               ? <a className="btn primary" href={locked.buyHref}>{t("buy", { price: locked.price })}</a>
               : <button type="button" className="btn primary" onClick={print}>{t("download")}</button>}
             <a className="btn" href={`/contact?tipar=${pages}&format=${format}`}>{t("printed")}</a>
+            {printFrom && <span className="muted book-print-from">{t("printFrom", { price: printFrom })}</span>}
             <span className="muted">{t(locked ? "previewNote" : "ready", { count: pages })}</span>
           </>
         )}

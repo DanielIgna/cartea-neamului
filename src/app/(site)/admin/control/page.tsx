@@ -6,6 +6,8 @@ import { planOverview } from "@/lib/plans";
 import { AdminNav, PlanPill, Stat, count, day, eur, lei, num } from "@/components/admin/ui";
 import { AccountPlanForm, LimitsForm } from "@/components/admin/PlanForms";
 import { partnerExport } from "@/lib/partners";
+import { dueReminders, reminderMailReady } from "@/lib/extra";
+import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Manager control · Admin" };
@@ -18,6 +20,7 @@ export default async function AdminControl() {
   await requireAdmin("/admin/control");
   const [ov, people, pm] = await Promise.all([planOverview(db), peopleList(db), partnerExport(db, "")]);
   const s = ov.settings;
+  const [due, mailReady] = [await dueReminders(db, s.reminderDays), reminderMailReady()];
   const biggest = new Map<string, (typeof ov.trees)[number]>();
   for (const t of ov.trees) if (t.ownerId && (biggest.get(t.ownerId)?.persons ?? -1) < t.persons) biggest.set(t.ownerId, t);
   const rows = people
@@ -37,17 +40,20 @@ export default async function AdminControl() {
         </p>
         <p className="muted" style={{ maxWidth: "78ch" }}>
           Regula aleasă: fiecare om, și cel care pornește arborele, și fiecare rudă invitată, are {count(s.trialDays, "zile")} cu totul deschis.
-          După ele vede tot, dar nu mai poate adăuga sau schimba nimic până nu plătește anul ({lei(s.priceLei)} / {eur(s.priceEur)}; rudele invitate{" "}
-          {lei(s.invitePriceLei)} / {eur(s.invitePriceEur)}). Cei care aveau cont înainte de pornire au primul an gratuit ({count(s.betaDays, "zile")}). Nu se șterge nimic, iar descărcarea datelor rămâne gratuită. Pe cei apropiați îi pui „Gratuit mereu”.
-          {" "}Ca plata să nu se ocolească invitându-se unii pe alții: în zilele gratuite, un arbore pe care nu l-a plătit nimeni crește până la {count(s.trialPersons, "persoane")};
-          în zilele gratuite ai un singur arbore și poți invita rude doar să vadă; rudele se invită să scrie doar de cine are anul plătit, iar invitații în probă
-          nu mai scriu într-un arbore al cărui proprietar a rămas doar cu citirea.
+          După ele vede tot, dar nu mai poate adăuga sau schimba nimic până nu plătește anul pe un plan: Basic {lei(s.priceLei)} / {eur(s.priceEur)},
+          Familie {lei(s.familieLei)} / {eur(s.familieEur)} (recomandat) sau Premium {lei(s.premiumLei)} / {eur(s.premiumEur)}. Fiecare plan are plafoanele lui
+          (persoane, poze, glasuri, acte, cine scrie, arbori); peste plafon nu se șterge nimic, doar nu se mai adaugă. La Familie și Premium, rudele care scriu
+          nu plătesc separat; la Basic își plătesc anul lor ({lei(s.invitePriceLei)} / {eur(s.invitePriceEur)}). Trecerea pe un plan mai scump costă doar
+          diferența pe zilele rămase. Cei care aveau cont înainte de pornire au primul an gratuit ({count(s.betaDays, "zile")}), cu plafoanele planului Familie.
+          Nu se șterge nimic, iar descărcarea datelor rămâne gratuită. Pe cei apropiați îi pui „Gratuit mereu” (fără limite).
+          {" "}În zilele gratuite: un arbore de cel mult {count(s.trialPersons, "persoane")}, {count(s.trialPhotos, "poze")}, {count(s.trialAudio, "înregistrări")},
+          {" "}{count(s.trialDocs, "acte")}, iar rudele se pot invita doar să vadă.
           Până merg plățile cu cardul, cine plătește altfel (de pildă prin transfer) primește aici „plătit până la”.
         </p>
         <div className="stats">
           <Stat label="Gratuit mereu" value={num(ov.counts.mereu)} />
           <Stat label="Primul an gratuit" value={num(ov.counts.beta)} hint="aveau cont înainte de pornire" />
-          <Stat label="Plătit" value={num(ov.counts.platit)} hint={`≈ ${lei(ov.revenue.leiYearNow)} pe an`} />
+          <Stat label="Plătit" value={num(ov.counts.platit)} hint={`≈ ${lei(ov.revenue.leiYearNow)} pe an · Basic ${ov.counts.basic}, Familie ${ov.counts.familie}, Premium ${ov.counts.premium}`} />
           <Stat label="În zilele gratuite" value={num(ov.counts.proba)} />
           <Stat label="Doar citire" value={num(ov.counts.expirat)} hint="zilele gratuite s-au terminat" tone={ov.counts.expirat ? "warn" : undefined} />
           <Stat label="Venit posibil pe an" value={lei(ov.revenue.leiYearPossible)} hint={`dacă plătesc și cei ${ov.revenue.wouldPay} în probă sau doar citire`} />
@@ -55,11 +61,31 @@ export default async function AdminControl() {
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Zile gratuite, prețuri și pornirea plăților</h3>
+        <h3 style={{ marginTop: 0 }}>Zile gratuite, planuri, prețuri și pornirea plăților</h3>
         <p className="muted" style={{ marginTop: 0 }}>
           Comutatorul vânzării e bifa de jos, „Pornește plățile în site”: bifată = vânzarea merge; debifată și salvată = nimeni nu mai e oprit.
         </p>
         <LimitsForm value={s} />
+      </div>
+
+      <div className="card" id="expira">
+        <h3 style={{ marginTop: 0 }}>Expiră în curând</h3>
+        <p className="muted" style={{ marginTop: 0, maxWidth: "78ch" }}>
+          Anul nu se reînnoiește singur. Cei al căror an plătit se termină în următoarele {count(s.reminderDays, "zile")} și n-au primit încă aducerea
+          aminte. {mailReady
+            ? "Emailul pleacă singur, o dată pe zi, prin serviciul de email pus în Vercel."
+            : "Emailul nu pleacă singur până nu pui un serviciu de email (RESEND_API_KEY, REMINDER_FROM și CRON_SECRET în Vercel, plus o rulare zilnică a adresei /api/cron/aminteste-plata). Până atunci, scrie-le tu cu butonul de lângă nume."}
+        </p>
+        {due.length ? (
+          <ul>
+            {due.map((r) => (
+              <li key={r.userId}>
+                {r.name} ({r.email}), până la {day(r.paidUntil?.toISOString() ?? null)}{" "}
+                <a className="btn" href={`mailto:${r.email}?subject=${encodeURIComponent(`Cartea Neamului: anul tău se termină pe ${day(r.paidUntil?.toISOString() ?? null)}`)}&body=${encodeURIComponent(`Bună, ${r.name}!\n\nAnul tău în Cartea Neamului se termină pe ${day(r.paidUntil?.toISOString() ?? null)}. Nu se reînnoiește singur și nu se șterge nimic: după aceea arborele rămâne de citit. Dacă vrei să adaugi în continuare, poți plăti anul aici: ${SITE_URL}/plata\n\nMulțumim!`)}`}>Scrie-i</a>
+              </li>
+            ))}
+          </ul>
+        ) : <p className="muted">Nimeni deocamdată.</p>}
       </div>
 
       <div className="card" id="parteneri">
@@ -80,7 +106,7 @@ export default async function AdminControl() {
         <h3 style={{ marginTop: 0 }}>Planul fiecărui cont</h3>
         <p className="muted" style={{ marginTop: 0 }}>
           „Gratuit” e ca la toți: zilele gratuite, apoi plătește. „Gratuit mereu” e pentru familie, prieteni și cei care ajută. „Plătit până la” ține
-          minte până când are omul anul plătit.
+          minte până când are omul anul plătit, iar „planul anului” spune pe ce plan (Basic, Familie, Premium); fără plan ales, e Basic.
           Nota e doar pentru tine; omul o poate vedea numai dacă își descarcă datele din „Datele mele”, cum cere legea.
         </p>
         <div className="tbl-wrap">
@@ -93,7 +119,7 @@ export default async function AdminControl() {
                   <td>{tree ? <>{tree.name}<small>{count(tree.persons, "persoane")} · {count(tree.files, "fișiere")}</small></>
                     : <span className="muted">{p.trees ? "doar în arborii rudelor" : "n-are arbore"}</span>}</td>
                   <td><PlanPill plan={p.plan} access={ov.access.get(p.id)} /></td>
-                  <td className="plan-cell"><AccountPlanForm userId={p.id} plan={p.plan} note={p.planNote} paidUntil={ov.plans.get(p.id)?.paidUntil} compact /></td>
+                  <td className="plan-cell"><AccountPlanForm userId={p.id} plan={p.plan} note={p.planNote} paidUntil={ov.plans.get(p.id)?.paidUntil} tier={ov.plans.get(p.id)?.tier} compact /></td>
                 </tr>
               ))}
             </tbody>

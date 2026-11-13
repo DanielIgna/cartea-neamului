@@ -37,5 +37,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/pub", "/pub/:path*"],
+  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie", "/pub", "/pub/:path*"],
 };

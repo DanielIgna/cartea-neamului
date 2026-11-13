@@ -108,11 +108,30 @@ const ADDITIVE = [
     "key" text PRIMARY KEY NOT NULL, "value" jsonb NOT NULL,
     "updated_by" text REFERENCES "user"("id") ON DELETE set null, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "paid_until" timestamp`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "tier" text`,
+  sql`UPDATE "account_plan" SET "tier" = 'basic' WHERE "tier" IS NULL AND ("plan" = 'familie' OR "paid_until" > now())`,
   sql`CREATE TABLE IF NOT EXISTS "payment" (
     "id" text PRIMARY KEY NOT NULL, "user_id" text REFERENCES "user"("id") ON DELETE set null, "kind" text NOT NULL,
     "tree_id" uuid REFERENCES "tree"("id") ON DELETE set null, "amount" integer NOT NULL, "currency" text NOT NULL,
     "created_at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE INDEX IF NOT EXISTS "payment_user_idx" ON "payment" USING btree ("user_id","kind")`,
+  sql`ALTER TABLE "payment" ADD COLUMN IF NOT EXISTS "extra" text`,
+  sql`ALTER TABLE "account_plan" ADD COLUMN IF NOT EXISTS "reminded_for" timestamp`,
+  sql`CREATE TABLE IF NOT EXISTS "gift" (
+    "id" text PRIMARY KEY NOT NULL, "payment_id" text NOT NULL, "buyer_id" text REFERENCES "user"("id") ON DELETE set null, "tier" text NOT NULL,
+    "note" text, "for_name" text, "redeemed_by" text REFERENCES "user"("id") ON DELETE set null, "redeemed_at" timestamp,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "referral_bonus" (
+    "referred_id" text PRIMARY KEY NOT NULL, "referrer_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "days" integer NOT NULL,
+    "applied_at" timestamp, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  // „Vreau un test ADN” (fără date genetice) și laboratoarele din lista informativă.
+  sql`CREATE TABLE IF NOT EXISTS "dna_request" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "email" text NOT NULL, "phone" text, "city" text NOT NULL,
+    "message" text NOT NULL, "locale" text, "consent_at" timestamp NOT NULL, "consent_version" text NOT NULL, "resolved_at" timestamp,
+    "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE TABLE IF NOT EXISTS "dna_lab" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "name" text NOT NULL, "city" text, "url" text NOT NULL, "price_note" text,
+    "position" integer DEFAULT 0 NOT NULL, "visible" boolean DEFAULT true NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

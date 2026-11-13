@@ -84,6 +84,11 @@ export const roLegal = {
           l4: "<b>Cum îl retragi:</b> dintr-un clic, din <dataPartners>Datele mele</dataPartners> (comutatorul „Beneficii de la parteneri”), sau din legătura de dezabonare din orice email primit, fără să intri în cont. Retragerea nu schimbă nimic în contul sau în arborele tău.",
           l5: "Linkurile spre PropManage din site (din pagina Parteneri, de lângă casa bătrânească și de după descărcarea cărții) sunt simple legături: arată doar că vii de la Cartea Neamului, fără vreo dată despre tine.",
         },
+        // DE VERIFICAT DE AVOCAT: formularul „Vreau un test ADN” (temei, păstrare, fără date genetice).
+        dna: {
+          h: "Cererea „Vreau un test ADN”",
+          p1: "Pe pagina <res>Resurse gratuite pentru genealogie</res> ne poți cere informații despre testele ADN. Păstrăm doar ce scrii în formular (nume, email, telefonul dacă îl dai, orașul și mesajul) și data la care ți-ai dat acordul, doar ca să-ți răspundem; temeiul e acordul tău. Nu sunt date genetice: nu primim, nu păstrăm și nu transmitem fișiere, rezultate sau potriviri ADN. Nu trimitem cererea la laboratoare și nu primim comision. Cererea o vede doar cel care ține site-ul; o ștergem când ne ceri, la <mail>{email}</mail>, sau după ce nu mai e nevoie de ea.",
+        },
         keep: {
           h: "Cât timp păstrăm datele",
           p1: "Cât timp ai cont. Ce ștergi tu dispare imediat din site, iar copiile de siguranță ale bazei de date se rescriu singure în cel mult 30 de zile. Când îți ștergi contul, pleacă tot ce e al tău: contul, amintirile din lada ta, mesajele, ce ai scris altora și acordurile. Arborii rămân ai familiei: un arbore cu alți membri trece la unul dintre ei, iar unul în care ești singur se șterge cu totul. Fișa ta din arbori rămâne, ca să nu se rupă arborele, fără legătura cu contul; dacă vrei, se golește și de datele tale. Cât folosești site-ul păstrăm cel mult 13 luni; dacă spui „Nu mai vreau”, se șterge imediat.",
@@ -155,14 +160,21 @@ export const roLegal = {
           l2: "O amintire e a celui care o scrie: doar el alege cine o vede și doar el o schimbă sau o șterge.",
           l3: "Capitolul „Credința” al autobiografiei e doar pentru cei în viață, care răspund ei înșiși, cu acordul lor.",
         },
-        // DE VERIFICAT DE AVOCAT: prețurile, renunțarea la dreptul de retragere (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
+        // DE VERIFICAT DE AVOCAT (actualizat 13.11.2026): cele trei planuri (Basic, Familie, Premium) și plafoanele lor, cartea PDF inclusă/separat,
+        // reducerea la tipar, trecerea pro rata pe un plan mai scump, ce se întâmplă la expirare, renunțarea la dreptul de retragere
+        // (art. 16 lit. m și c din OUG 34/2014) și ANPC/SAL.
         price: {
-          h: "5. Prețul",
-          p1: "Când îți faci cont ai {trialDays} zile gratuite, cu tot ce oferă site-ul. După ele, ca să adaugi și să schimbi în continuare, plătești un an: {priceLei} lei (în celelalte limbi ale site-ului, {priceEur} €). O rudă invitată în arborele altcuiva are aceleași zile gratuite, apoi plătește {invitePriceLei} lei ({invitePriceEur} €) pe an. Cine avea cont înainte să pornim plățile primește primul an gratuit. În zilele gratuite, un arbore pe care nu l-a plătit nimeni poate avea până la {trialPersons} de persoane, ai un singur arbore al tău, iar rudele le poți invita doar să vadă arborele. Cu anul plătit, aceste limite dispar.",
-          l1: "Dacă nu plătești, nu se șterge nimic: arborii tăi rămân, îi vezi și îi poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești.",
-          l2: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
-          l3: "<b>Cartea neamului în PDF</b> costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
-          l4: "<b>Cartea tipărită</b> se face la comandă: ne ceri o ofertă din pagina cărții, iar prețul depinde de numărul de pagini, de format, de copertă și de numărul de exemplare.",
+          h: "5. Prețul și planurile",
+          p1: "Când îți faci cont ai {trialDays} zile gratuite. În ele ai un singur arbore (persoane: {trialPersons}; poze: {trialPhotos}; înregistrări cu glasul: {trialAudio}; acte și documente: {trialDocs}), iar rudele le poți invita doar să vadă. După ele, ca să adaugi și să schimbi în continuare, alegi un plan pe un an. Prețurile sunt în lei; în celelalte limbi ale site-ului, în euro.",
+          l1: "<b>Basic</b>, {priceLei} lei ({priceEur} €) pe an: arbori: {basicTrees}; într-un arbore, persoane: {basicPersons}; poze: {basicPhotos}; înregistrări cu glasul: {basicAudio}; acte și documente: {basicDocs}; cine scrie, cu titularul: {basicWriters}. O rudă care scrie în arborele altcuiva are zilele ei gratuite, apoi își plătește anul: {invitePriceLei} lei ({invitePriceEur} €). Cartea PDF se plătește separat.",
+          l2: "<b>Familie</b>, {familieLei} lei ({familieEur} €) pe an: arbori: {familieTrees}; într-un arbore, persoane: {familiePersons}; poze: {familiePhotos}; înregistrări cu glasul: {familieAudio}; acte și documente: {familieDocs}; cine scrie, cu titularul: {familieWriters}, iar rudele care scriu nu plătesc separat. Include o carte PDF pe an, pentru un arbore ales de tine, valabilă 12 luni.",
+          l3: "<b>Premium</b>, {premiumLei} lei ({premiumEur} €) pe an: arbori: {premiumTrees}; într-un arbore, persoane: {premiumPersons}; poze: {premiumPhotos}; înregistrări cu glasul: {premiumAudio}; acte și documente: {premiumDocs}; cine scrie, cu titularul: {premiumWriters}, fără plată separată. Cartea PDF e inclusă la toți arborii tăi cât ai anul plătit, iar la oferta pentru cartea tipărită ai {premiumPrint}% reducere.",
+          l4: "Plafoanele unui arbore vin din planul celui care l-a pornit. Cei care doar văd arborele sunt nelimitați pe orice plan. Cine avea cont înainte să pornim plățile primește primul an gratuit, cu plafoanele planului Familie.",
+          l5: "Poți trece oricând pe un plan mai mare: plătești doar diferența de preț pentru zilele rămase din anul plătit (cel puțin 1 leu sau 1 €), iar anul se termină la aceeași dată. Pe un plan mai mic treci doar după ce se termină anul. Încă un an pe același plan se adaugă după anul în curs.",
+          l6: "Dacă anul se termină și nu plătești, nu se șterge nimic: arborii tăi rămân, îi vezi și îi poți descărca oricând (GEDCOM și <data>Datele mele</data>), doar că nu mai poți adăuga sau schimba nimic până plătești. La fel, pe un plan mai mic, ce e peste plafoanele lui rămâne și se vede; se opresc doar adăugările noi.",
+          l7: "Anul nu se reînnoiește singur și nu îți luăm bani automat de pe card.",
+          l8: "<b>Cartea neamului în PDF</b>, când nu e inclusă în plan, costă {bookLei} lei ({bookEur} €) pentru un arbore. Previzualizarea e gratuită; după plată o poți reface și descărca de câte ori vrei timp de 12 luni.",
+          l9: "<b>Cartea tipărită</b> se face la comandă: ne ceri o ofertă din pagina cărții, iar prețul depinde de numărul de pagini, de format, de copertă și de numărul de exemplare. Cu planul Premium ai {premiumPrint}% reducere la prețul din ofertă.",
           p2: "Prețul arătat la plată e prețul final. Plătești cu cardul, prin Stripe; noi nu vedem datele cardului. Vânzătorul e {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
         },
         withdrawal: {

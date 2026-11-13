@@ -147,6 +147,7 @@ export const nlCarte: CarteCatalog = {
       preview: "VOORBEELD",
       previewNote: "{count, plural, one {Eén pagina} other {# pagina’s}}. Dit is het voorbeeld: je kunt het helemaal doorbladeren; na betaling download je het zonder de markering op de pagina’s.",
       printed: "Ik wil het gedrukte boek",
+      printFrom: "vanaf {price}, afhankelijk van pagina’s en exemplaren",
       ready: "{count, plural, one {# pagina} other {# pagina’s}}. Het afdrukvenster gaat open: kies ‘Opslaan als pdf’ (op iPhone: Deel, dan Bewaar in Bestanden).",
     },
   },

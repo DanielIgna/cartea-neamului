@@ -141,6 +141,27 @@
       "when": 1794510000000,
       "tag": "0019_plati",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794600000000,
+      "tag": "0020_planuri",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794610000000,
+      "tag": "0021_adn",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1794620000000,
+      "tag": "0022_daruri",
+      "breakpoints": true
     }
   ]
 }

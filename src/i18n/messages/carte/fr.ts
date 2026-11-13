@@ -147,6 +147,7 @@ export const frCarte: CarteCatalog = {
       preview: "APERÇU",
       previewNote: "{count, plural, one {Une page} other {# pages}}. Ceci est l’aperçu : vous pouvez le feuilleter en entier ; après le paiement, vous le téléchargez sans la mention sur les pages.",
       printed: "Je veux le livre imprimé",
+      printFrom: "à partir de {price}, selon le nombre de pages et d’exemplaires",
       ready: "{count, plural, one {# page} other {# pages}}. La fenêtre d’impression va s’ouvrir : choisissez « Enregistrer au format PDF » (sur iPhone : Partager, puis Enregistrer dans Fichiers).",
     },
   },

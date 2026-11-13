@@ -1377,6 +1377,37 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .book-locked .pagedjs_page::after{content:var(--wm);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:italic 700 60px/1 Alegreya,Georgia,serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(168,116,31,.17);transform:rotate(-35deg);pointer-events:none;z-index:9;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .site-foot .site-seller{flex-basis:100%;font-size:12px;color:var(--muted)}
 
+/* Planurile pe /plata (Basic, Familie, Premium) și plafoanele din panou. */
+.limits-form .tier-fields{border:1px solid var(--line, #ddd);border-radius:10px;padding:10px 12px;margin:10px 0}
+.limits-form .tier-fields legend{padding:0 6px}
+.plan-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;align-items:stretch}
+.plan-card{position:relative;background:var(--card, #fff);border:1px solid var(--line, #ddd);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:6px}
+.plan-card.recommended{border:2px solid var(--accent)}
+.plan-card.current{box-shadow:0 0 0 3px var(--accent-soft)}
+.plan-card h3{margin:0}
+.plan-badge{position:absolute;top:-11px;right:14px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px}
+.plan-price{font-size:22px;font-weight:700;margin:0}
+.plan-lead{margin:0;font-size:14px}
+.plan-limits{list-style:none;padding:0;margin:6px 0;font-size:14px}
+.plan-limits li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line, #ddd);padding:4px 0}
+.plan-limits li b{text-align:right}
+.plan-writers{font-size:13px;margin:0}
+.plan-now{font-weight:600;color:var(--accent);margin:0}
+.plan-card .pay-form{margin-top:auto}
+.tree-limits{font-size:14px;margin:0 0 8px;padding:6px 12px;border-radius:10px;background:var(--accent-soft);display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}
+
+/* Resurse gratuite pentru genealogie. */
+.source-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.source-list li p{margin:2px 0 0;font-size:14px}
+.source-ext{font-size:13px}
+.dna-note{border-left:3px solid var(--accent);padding-left:10px}
+.dna-form label.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
+.plan-bundle{border-top:1px dashed var(--line, #ddd);padding-top:8px;margin-top:6px}
+.gift-list{padding-left:18px;font-size:14px}
+.gift-list code{word-break:break-all}
+.gift-note{margin:10px 0;padding:8px 12px;border-left:3px solid var(--accent);font-style:italic}
+.voice-nudge{font-size:14px;margin:0 0 8px;padding:8px 12px;border-radius:10px;border:1px dashed var(--accent);display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center}
+.book-print-from{font-size:13px}
 /* Prima pagină: H1 cu „Arborele genealogic al familiei tale” și numele, arătând ca înainte */
 .lp-h1{margin:0}
 .lp-h1>span{display:block}

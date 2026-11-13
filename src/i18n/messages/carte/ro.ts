@@ -157,6 +157,7 @@ export const roCarte = {
       preview: "PREVIZUALIZARE",
       previewNote: "{count, plural, one {O pagină} few {# pagini} other {# de pagini}}. Asta e previzualizarea: o poți răsfoi toată; după plată o descarci fără semnul de pe pagini.",
       printed: "Vreau cartea tipărită",
+      printFrom: "de la {price}, după numărul de pagini și exemplare",
       ready: "{count, plural, one {O pagină} few {# pagini} other {# de pagini}}. Se deschide fereastra de tipărire: alege „Salvează ca PDF” (pe iPhone: Partajează, apoi Salvează în Fișiere).",
     },
   },

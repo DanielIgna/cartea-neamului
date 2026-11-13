@@ -7,6 +7,7 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: "/istoria-umanitatii", label: "Istoria umanității", priority: 0.7, changeFrequency: "monthly" },
   { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly" },
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },
   { path: "/parteneri", label: "Parteneri", priority: 0.3, changeFrequency: "yearly" },
   { path: "/confidentialitate", label: "Confidențialitate", priority: 0.3, changeFrequency: "yearly" },
@@ -14,4 +15,4 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
 ];
 
 /** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
-export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare"];
+export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/cadou/"];
