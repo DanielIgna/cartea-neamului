@@ -109,7 +109,7 @@ export const hu: Catalog = {
     eyebrow: "A családod története, közösen",
     trust1: "7 ingyenes nap kezdésnek",
     trust2: "Privát: csak a rokonaid látják",
-    trust3: "9 nyelven, a messze élőknek is",
+    trust3: "10 nyelven, a messze élőknek is",
     visualLabel: "Legyező alakú családfa példája, egy felvett emlékkel és a család könyvével",
     visualYou: "Te",
     voiceTitle: "Ana nagymama hangja",

@@ -10,7 +10,7 @@ const pick = <T,>(a: T, b: T) => (empty(a) ? b : a);
 const both = (a: string | null, b: string | null) => (empty(a) ? b : empty(b) || a === b || a!.includes(b!) ? a : `${a}\n\n${b}`);
 
 /** Începutul notei puse singure pe un „Tată necunoscut” („Adăugat automat ca să-i lege pe frații…”), în fiecare limbă a site-ului. */
-export const AUTO_NOTE = /^(Adăugat automat|Added automatically|Ajouté automatiquement|Añadido automáticamente|Automatisch toegevoegd|Automatisch hinzugefügt|Aggiunto automaticamente|Automatikusan hozzáadva)/;
+export const AUTO_NOTE = /^(Adăugat automat|Added automatically|Ajouté automatiquement|Añadido automáticamente|Automatisch toegevoegd|Automatisch hinzugefügt|Aggiunto automaticamente|Automatikusan hozzáadva|נוסף אוטומטית)/;
 /** Nota pusă singură pe un „Tată necunoscut” nu trece în fișa omului adevărat. */
 const ownNote = (p: Person) => (isPlaceholder(p.givenName) && AUTO_NOTE.test(p.notes ?? "") ? null : p.notes);
 

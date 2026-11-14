@@ -21,6 +21,7 @@ export const DATE_WORDS: Record<Locale, DateWords> = {
   de: { approx: "um ", before: (y) => `vor ${y}`, after: (y) => `nach ${y}`, ...dots },
   it: { approx: "ca. ", before: (y) => `prima del ${y}`, after: (y) => `dopo il ${y}`, ...slash },
   hu: { approx: "kb. ", before: (y) => `${y} előtt`, after: (y) => `${y} után`, dmy: (d, m, y) => `${y}. ${m}. ${d}.`, my: (m, y) => `${y}. ${m}.` },
+  he: { approx: "בערך ", before: (y) => `לפני ${y}`, after: (y) => `אחרי ${y}`, ...dots },
 };
 
 /** „1898–1967”, „cca. 1870–?”, „1988” pentru cei în viață; nimic pentru cei în viață fără an de naștere (sau cu datele ascunse, în carte). */

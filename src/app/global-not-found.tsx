@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { dirOf } from "@/i18n/locales";
 import type { Metadata } from "next";
 import "@fontsource/alegreya/500.css";
 import "@fontsource/alegreya/700.css";
@@ -24,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function GlobalNotFound() {
   const [t, appName, locale] = await Promise.all([getT("NotFound"), getAppName(), getLocale()]);
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={dirOf(locale)}>
       <body>
         <div className="wrap">
           <header className="top">

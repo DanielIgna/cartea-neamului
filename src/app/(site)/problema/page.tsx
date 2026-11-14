@@ -62,7 +62,7 @@ export default async function ProblemPage({ searchParams }: { searchParams: Prom
                 )}
                 {r.reply ? (
                   <div className="problem-reply">
-                    <b>{t("ourReply")}{unseen.has(r.id) && <span className="badge" style={{ marginLeft: 8 }}>{t("newReply")}</span>}</b>
+                    <b>{t("ourReply")}{unseen.has(r.id) && <span className="badge" style={{ marginInlineStart: 8 }}>{t("newReply")}</span>}</b>
                     <p>{r.reply}</p>
                   </div>
                 ) : <p className="muted" style={{ fontSize: 14 }}>{t("noReply")}</p>}

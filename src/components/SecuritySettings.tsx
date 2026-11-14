@@ -177,7 +177,7 @@ export default function SecuritySettings({ enabled, hasPassword, sessions }: { e
       <div className="card">
         <h3 style={{ marginTop: 0 }}>{t("devicesTitle")}</h3>
         <p>{t("devicesText")}</p>
-        <ul style={{ paddingLeft: 18 }}>
+        <ul style={{ paddingInlineStart: 18 }}>
           {sessions.map((s) => <li key={s.id}>{s.label} · {s.since}{s.current ? <b> ({t("thisDevice")})</b> : null}</li>)}
         </ul>
         {sessions.length > 1 && <button type="button" className="btn" disabled={pending} onClick={signOutOthers}>{t("signOutOthers")}</button>}

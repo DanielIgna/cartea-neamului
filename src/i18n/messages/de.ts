@@ -109,7 +109,7 @@ export const de: Catalog = {
     eyebrow: "Die Familiengeschichte, gemeinsam",
     trust1: "7 kostenlose Tage zum Start",
     trust2: "Privat: nur deine Verwandten sehen ihn",
-    trust3: "In 9 Sprachen, auch für die in der Ferne",
+    trust3: "In 10 Sprachen, auch für die in der Ferne",
     visualLabel: "Beispiel eines Fächer-Stammbaums mit einer aufgenommenen Erinnerung und dem Familienbuch",
     visualYou: "Du",
     voiceTitle: "Die Stimme von Oma Ana",

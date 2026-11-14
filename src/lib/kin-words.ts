@@ -480,6 +480,64 @@ const hu: Words = (k, sex) => {
   }
 };
 
+/* ───────────── עברית ───────────── */
+
+/** Numerale ordinale în ebraică, bărbătești și femeiești: „ראשון”, „שנייה”… */
+const HE_ORD_M = ["", "ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי"];
+const HE_ORD_F = ["", "ראשונה", "שנייה", "שלישית", "רביעית", "חמישית", "שישית"];
+const heOrd = (n: number, sex: Sex) => (sex === "F" ? HE_ORD_F : HE_ORD_M)[n] ?? `${n}`;
+
+function heBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["אב", "אם", "הורה"], ["סבא", "סבתא", "סבא או סבתא"], ["סבא רבא", "סבתא רבתא", "סבא רבא או סבתא רבתא"], ["אבי סבא רבא", "אם סבתא רבתא", "הורה של סבא רבא"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `${pick(sex, ["אב קדמון", "אם קדמונית", "אב קדמון"])} (דור ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["בן", "בת", "ילד"], ["נכד", "נכדה", "נכד או נכדה"], ["נין", "נינה", "נין או נינה"], ["חימש", "חימשה", "חימש או חימשה"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `${pick(sex, ["צאצא", "צאצאית", "צאצא"])} (דור ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["אח", "אחות", "אח או אחות"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["אחיין", "אחיינית", "אחיין או אחיינית"]);
+    return down === 3 ? pick(sex, ["נכד של אח או אחות", "נכדה של אח או אחות", "נכד של אח או אחות"]) : "צאצא של אח או אחות";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["דוד", "דודה", "דוד או דודה"]);
+    if (up === 3) return pick(sex, ["אח של סבא או סבתא", "אחות של סבא או סבתא", "אח או אחות של סבא או סבתא"]);
+    return pick(sex, ["אח של אב קדמון", "אחות של אב קדמון", "אח או אחות של אב קדמון"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? pick(sex, ["בן דוד", "בת דודה", "בן או בת דודים"]) : `${pick(sex, ["בן דוד", "בת דודה", "בן או בת דודים"])} ${heOrd(n, sex === "F" ? "F" : "M")}`;
+  return up === down ? base : `${base}, מדור ${up > down ? "מבוגר" : "צעיר"} יותר`;
+}
+
+const he: Words = (k, sex) => {
+  const partner = (s: Sex) => pick(s, ["בן הזוג", "בת הזוג", "בן או בת הזוג"]);
+  switch (k.t) {
+    case "self": return "האדם שבמרכז";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["אח למחצה", "אחות למחצה", "אח או אחות למחצה"])}${pick(k.half, [" מצד האב", " מצד האם", ""])}`;
+      return heBlood(k.up, k.down, sex);
+    case "spouse": return pick(sex, ["בעל", "אישה", "בן או בת זוג"]);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["אב חורג", "אם חורגת", "הורה חורג"]);
+      const of = pick(k.parent, ["האב", "האם", "ההורה"]);
+      return k.when === "before" ? `${partner(sex)} ה${heOrd(k.order, sex === "F" ? "F" : "M")} של ${of}` : `${partner(sex)} של ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["חתן", "כלה", "בן או בת הזוג של הילד"]);
+    case "siblingInLaw": return pick(sex, ["גיס", "גיסה", "גיס או גיסה"]);
+    case "stepGrandparent": return pick(sex, ["סבא חורג", "סבתא חורגת", "סבא או סבתא חורגים"]);
+    case "piblingByMarriage": return `${pick(sex, ["דוד", "דודה", "דוד או דודה"])} מנישואין`;
+    case "kinSpouse": return `${partner(sex)} של קרוב משפחה (${he(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["חותן או חם", "חותנת או חמות", "הורה של בן או בת הזוג"]);
+    case "stepChild": return pick(sex, ["בן חורג", "בת חורגת", "ילד חורג"]);
+    case "stepGrandchild": return pick(sex, ["נכד חורג", "נכדה חורגת", "נכד חורג"]);
+    case "spouseKin": return `קרבה מנישואין: ${he(k.kin, sex)}, מצד ${pick(k.spouse, ["הבעל", "האישה", "בן או בת הזוג"])}`;
+  }
+};
+
 /** Gradul în cifre romane, ca în actele de succesiune: 4 → „IV”. */
 export function romanDegree(n: number) {
   const r: [number, string][] = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
@@ -488,7 +546,7 @@ export function romanDegree(n: number) {
   return out;
 }
 
-const WORDS: Record<Locale, Words> = { ro, "en-GB": en("centre"), "en-US": en("center"), fr, es, nl, de, it, hu };
+const WORDS: Record<Locale, Words> = { ro, "en-GB": en("centre"), "en-US": en("center"), fr, es, nl, de, it, hu, he };
 
 /** Numele rudeniei în limba cerută: kinLabel(k.term, k.sex, "de") → „Cousine”. */
 export function kinLabel(term: KinTerm, sex: Sex, locale: Locale): string {
@@ -510,5 +568,6 @@ export function degreeWord(n: number, locale: Locale): string {
     case "es": return `${n}.º`;
     case "nl": return `${n}e`;
     case "de": case "hu": return `${n}.`;
+    case "he": return `${n}`;
   }
 }

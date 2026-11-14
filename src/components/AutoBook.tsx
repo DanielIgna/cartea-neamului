@@ -82,7 +82,7 @@ export default function AutoBook({ treeId, owner, chapters, own, people, storage
         </div>
         <div className="actions" style={{ alignItems: "center" }}>
           <span className="muted">{written ? t("progress", { done: String(written), total }) : t("waiting", { total })}</span>
-          <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie/carte`} style={{ marginLeft: "auto" }}>{t("seeBook")}</Link>
+          <Link className="btn primary" href={`/arbore/${treeId}/persoana/${owner.id}/autobiografie/carte`} style={{ marginInlineStart: "auto" }}>{t("seeBook")}</Link>
         </div>
         {msg && <p className="notice" role="status" style={{ margin: "10px 0 0" }}>{msg}</p>}
       </div>

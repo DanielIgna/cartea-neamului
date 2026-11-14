@@ -109,7 +109,7 @@ export const nl: Catalog = {
     eyebrow: "De stamboom van je familie, samen",
     trust1: "7 gratis dagen om te beginnen",
     trust2: "Privé: alleen je familie ziet hem",
-    trust3: "In 9 talen, ook voor wie ver weg woont",
+    trust3: "In 10 talen, ook voor wie ver weg woont",
     visualLabel: "Voorbeeld van een waaierstamboom, met een opgenomen herinnering en het familieboek",
     visualYou: "Jij",
     voiceTitle: "De stem van oma Ana",

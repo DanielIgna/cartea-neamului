@@ -17,5 +17,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const me = await currentUser();
   if (!isAdminUser(me)) return children;
   const badges = await adminBadges(db).catch(() => ({ probleme: 0, propuneri: 0, adn: 0, infra: 0 }));
-  return <AdminShell badges={badges}>{children}</AdminShell>;
+  // Panoul rămâne în română și de la stânga la dreapta, oricare ar fi limba site-ului.
+  return <div dir="ltr" lang="ro"><AdminShell badges={badges}>{children}</AdminShell></div>;
 }

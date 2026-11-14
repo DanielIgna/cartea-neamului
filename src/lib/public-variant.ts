@@ -23,7 +23,7 @@ export function parseVariant(key: string): PublicVariant | null {
   return { locale: locale as Locale, theme: theme as PublicVariant["theme"], cookieSeen: seen === "1" };
 }
 
-/** Toate variantele (9 limbi × 3 teme × anunț închis sau nu = 54), făcute la publicare și reîmprospătate din 10 în 10 minute. */
+/** Toate variantele (10 limbi × 3 teme × anunț închis sau nu = 60), făcute la publicare și reîmprospătate din 10 în 10 minute. */
 export const ALL_VARIANTS = LOCALES.flatMap((locale) => THEMES.flatMap((theme) => [false, true].map((cookieSeen) => variantKey({ locale, theme, cookieSeen }))));
 
 /** Paginile care au variantă gata făcută: toate cele din PUBLIC_PAGES. */

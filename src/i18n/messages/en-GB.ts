@@ -109,7 +109,7 @@ export const enGB: Catalog = {
     eyebrow: "Your family’s genealogy, together",
     trust1: "7 free days to start",
     trust2: "Private: only your relatives see it",
-    trust3: "In 9 languages, for family abroad too",
+    trust3: "In 10 languages, for family abroad too",
     visualLabel: "Example of a fan-chart tree, with a recorded memory and the family book",
     visualYou: "You",
     voiceTitle: "Grandma Ana’s voice",

@@ -109,7 +109,7 @@ export const es: Catalog = {
     eyebrow: "La genealogía de tu familia, juntos",
     trust1: "7 días gratis para empezar",
     trust2: "Privado: solo tus familiares lo ven",
-    trust3: "En 9 idiomas, también para los que viven lejos",
+    trust3: "En 10 idiomas, también para los que viven lejos",
     visualLabel: "Ejemplo de árbol en abanico, con un recuerdo grabado y el libro de la familia",
     visualYou: "Tú",
     voiceTitle: "La voz de la abuela Ana",

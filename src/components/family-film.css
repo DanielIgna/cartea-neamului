@@ -26,7 +26,7 @@
 .ff-strip::before{top:6px}.ff-strip::after{bottom:6px}
 .ff-track{display:flex;width:max-content;animation:ff-roll var(--ff-dur,40s) linear infinite}
 .ff-strip:hover .ff-track,.ff-strip:focus-within .ff-track{animation-play-state:paused}
-.ff-half{display:flex;gap:10px;padding-right:10px}
+.ff-half{display:flex;gap:10px;padding-inline-end:10px}
 .ff-cell{position:relative;flex:0 0 auto;width:clamp(150px,22vw,230px);aspect-ratio:4/3;border:0;padding:0;margin:0;background:#2a2017;
   border-radius:3px;overflow:hidden;cursor:pointer;display:block}
 .ff-cell img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.75) contrast(1.05) brightness(.92);transition:filter .5s,transform .6s}
@@ -43,7 +43,7 @@
 .ff-sub h3,.ff-mine h3{font-family:var(--display);font-size:22px;margin:0;color:var(--ff-ink)}
 .ff-sub p{margin:0;color:var(--ff-muted);font-size:14px}
 .ff-reels{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:4px 22px 0}
-.ff-reel{display:grid;gap:12px;text-align:left;background:var(--ff-bg-2);border:1px solid var(--ff-line);border-radius:12px;padding:14px;color:inherit;font:inherit;cursor:pointer;
+.ff-reel{display:grid;gap:12px;text-align:start;background:var(--ff-bg-2);border:1px solid var(--ff-line);border-radius:12px;padding:14px;color:inherit;font:inherit;cursor:pointer;
   transition:border-color .25s,transform .25s}
 .ff-reel:hover,.ff-reel:focus-visible{border-color:var(--ff-gold);transform:translateY(-2px)}
 .ff-stack{position:relative;height:120px;display:block}
@@ -125,7 +125,7 @@
 
 @media (max-width:640px){
   .ff{border-radius:12px;padding-top:18px}
-  .ff-head,.ff-sub{padding-left:16px;padding-right:16px}
+  .ff-head,.ff-sub{padding-inline-start:16px;padding-inline-end:16px}
   .ff-reels{padding:4px 16px 0;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
   .ff-stack{height:96px}
   .ff-mine{margin:18px 16px 0}
