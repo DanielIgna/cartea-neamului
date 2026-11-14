@@ -4,7 +4,7 @@ import { countyMetadata, seatMetadata, localitiesHubMetadata } from "@/component
 import { sitemapGroups } from "@/lib/continut/sitemap";
 import { getName } from "@/lib/continut/nume";
 import { loadUats, getUat, uatPath, neighbours, rankInCounty } from "@/lib/continut/uat";
-import { uatGate } from "@/lib/continut/prag";
+import { uatGate, uatThin } from "@/lib/continut/prag";
 import { countOf, uatDescription, uatTitle } from "@/lib/continut/uat-text";
 
 describe("/localitati", () => {
@@ -77,8 +77,13 @@ describe("/localitati/<județ>/<localitate>", () => {
     expect(r.rank).toBeGreaterThan(0);
     expect(r.rank).toBeLessThanOrEqual(r.of);
   });
-  it("pragul ține afară doar comunele mici cu un singur sat", () => {
-    const gated = all.filter((u) => uatGate(u));
+  it("municipiile și orașele intră de la început, comunele pe rând", () => {
+    for (const u of all) if (u.kind !== "c") expect(uatGate(u)).toBeNull();
+    expect(all.filter((u) => u.kind === "c" && !uatGate(u))).toHaveLength(0);
+    expect(all.filter((u) => u.kind === "c" && !uatGate(u, () => true)).length).toBeGreaterThan(2000);
+  });
+  it("pragul de calitate ține afară doar comunele mici cu un singur sat", () => {
+    const gated = all.filter((u) => uatThin(u));
     expect(gated.length).toBeGreaterThan(0);
     expect(gated.length).toBeLessThan(all.length / 10);
     for (const u of gated) { expect(u.kind).toBe("c"); expect(u.villages).toHaveLength(1); }

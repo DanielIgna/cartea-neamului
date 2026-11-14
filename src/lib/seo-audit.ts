@@ -83,7 +83,9 @@ export function auditAlerts(pages: AuditPage[], o: { gscState?: string; gscError
   else if (o.gscState === "fara-cheie") out.push({ level: "avertisment", code: "GSC_NELEGAT", title: "Search Console nu e legat la panou", text: "Sitemap-ul e deja în Google, dar cuvintele căutate, afișările și starea indexării apar aici doar după legare.", fix: "Urmează pașii din fila Setări (o singură dată, cam 15 minute)." });
   else if (o.gscState === "fara-acces") out.push({ level: "critic", code: "GSC_FARA_ACCES", title: "Cheia nu are acces la carteaneamului.ro", text: "Contul de serviciu nu e adăugat ca utilizator la proprietate.", fix: "Search Console → Setări → Utilizatori și permisiuni → adaugă adresa contului de serviciu cu permisiunea Complet." });
 
-  const gated = pages.filter((p) => p.gate);
+  const queued = pages.filter((p) => p.gate?.startsWith("în coada"));
+  if (queued.length) out.push({ level: "info", code: "IN_COADA", title: "Pagini care așteaptă să intre în Google", text: `${queued.length} pagini de comune sunt deja în site, dar intră în Google pe rând, prin motorul de publicare, ca să nu apară dintr-odată mii de pagini noi.`, paths: queued.map((p) => p.path) });
+  const gated = pages.filter((p) => p.gate && !p.gate.startsWith("în coada"));
   if (gated.length) out.push({ level: "info", code: "SUBTIRE_EXCLUS", title: "Pagini subțiri ținute în afara Google (corect)", text: `${gated.length} pagini au prea puțin conținut propriu (nume cu sub ${NAME_MIN_WORDS} cuvinte proprii, comune mici cu un singur sat): rămân în site, dar cu „noindex” și fără sitemap. Când primesc text propriu, intră singure.`, paths: gated.map((p) => p.path) });
 
   const titles = new Map<string, string[]>();
