@@ -63,7 +63,8 @@ const config: NextConfig = {
   // Pagina 404 pentru adresele care nu există: site-ul are două cadre fără unul comun (app/(site) și app/(public)).
   experimental: { globalNotFound: true },
   // Ghidurile, glosarul și celelalte texte publice sunt fișiere din content/, citite și când o pagină se reface din cache.
-  outputFileTracingIncludes: { "/**": ["./content/**/*"] },
+  // Cardurile de distribuit (/api/card) desenează cu fonturile site-ului, citite din @fontsource.
+  outputFileTracingIncludes: { "/**": ["./content/**/*"], "/api/card": ["./node_modules/@fontsource/alegreya/files/*-700-normal.woff", "./node_modules/@fontsource/alegreya/files/*-500-normal.woff"] },
   // Pozele prin next/image: cel mult 1920 px lățime (nu 2048/3840, care trimiteau poza aproape întreagă pe ecranele mari)
   // și păstrate o lună în cache; pozele din public/home sunt fișiere fixe, schimbate doar la publicare.
   images: { deviceSizes: [640, 750, 828, 1080, 1200, 1600, 1920], minimumCacheTTL: 2678400 },

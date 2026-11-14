@@ -14,7 +14,7 @@ function scanRoutes() {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
       if (statSync(p).isDirectory()) walk(p);
-      else if (/^(page\.tsx|route\.ts)$/.test(name)) {
+      else if (/^(page\.tsx|route\.tsx?)$/.test(name)) {
         const parts = p.split(/[\\/]/).slice(2, -1).filter((s) => !/^\(.*\)$/.test(s));
         if (parts[0] !== "pub") out.add(`/${parts.join("/")}`);
       }

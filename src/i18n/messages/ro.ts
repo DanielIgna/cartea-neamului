@@ -19,6 +19,7 @@ import { roContact } from "./contact/ro";
 import { roProbleme } from "./probleme/ro";
 import { roResurse } from "./resurse/ro";
 import { roCadou } from "./cadou/ro";
+import { roCrestere } from "./crestere/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -437,6 +438,7 @@ export const ro = {
   ...roProbleme,
   ...roResurse,
   ...roCadou,
+  ...roCrestere,
   ...roFilm,
   ...roLegal,
   ...roDatele,

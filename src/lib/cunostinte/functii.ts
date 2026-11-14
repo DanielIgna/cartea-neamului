@@ -403,6 +403,52 @@ export const FUNCTIONS: Fn[] = [
     what: "Instalarea pe ecranul telefonului.",
     engine: ["src/components/InstallApp.tsx"],
   },
+  // Creșterea fără reclame plătite (Daniel, 14 noiembrie 2026; src/lib/crestere.ts)
+  {
+    key: "invitatii-distribuite", name: "Invitația pe WhatsApp, email și „Trimite”", area: "comunicare", lifecycle: "live", risk: "scazut", riskWhy: "Doar butoane lângă linkul care exista deja.",
+    what: "Linkul de invitație pleacă dintr-un clic, cu un mesaj cald gata scris în limba omului și cu semnul „invitatie” pentru Analiză.",
+    engine: ["src/components/InvitePanel.tsx", "src/lib/crestere.ts"],
+    tables: ["invitation"], metric: { table: "invitation", label: "invitații făcute" }, dashboard: "/admin/crestere",
+  },
+  {
+    key: "sfaturi-email", name: "Sfaturi pe email (bun venit)", area: "comunicare", lifecycle: "implementat", risk: "mediu", riskWhy: "Le scrie oamenilor; doar cu acordul lor și oprit până îl pornește Daniel.",
+    what: "5 emailuri în primele 3 săptămâni, doar celor care au spus „Da”, cu dezabonare dintr-un clic.",
+    engine: ["src/lib/crestere.ts", "src/components/NewsNotice.tsx", "src/app/vesti-actions.ts"],
+    pages: ["/dezabonare"], api: ["/api/vesti/dezabonare"], tables: ["consent", "automation_mark"],
+    automations: ["bun-venit"], dashboard: "/admin/crestere", env: ["RESEND_API_KEY"], tests: ["tests/crestere.test.ts"],
+    human: "Citește textele și pornește automatizarea „Email: sfaturi de bun venit”.",
+  },
+  {
+    key: "carduri-distribuire", name: "Cardurile de nume și localitate", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Doar date publice din content/.",
+    what: "Poza 1200×630 a fiecărui nume și județ (previzualizarea linkului) și butoanele de distribuit.",
+    engine: ["src/components/continut/ShareCard.tsx"], api: ["/api/card"], dashboard: "/admin/crestere",
+  },
+  {
+    key: "calendar-continut", name: "Calendarul de conținut", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar te ajută să postezi.",
+    what: "Ce postezi, unde și când, cu textul gata scris și legătura cu semnele din Analiză.",
+    engine: ["src/lib/calendar-continut.ts"], pages: ["/admin/calendar"], tests: ["tests/crestere.test.ts"],
+  },
+  {
+    key: "sanatate-afacere", name: "Sănătatea afacerii", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar citește.",
+    what: "Scoruri pe departamente din date reale, față de ținta de 1000 de abonamente pe lună, cu cauză, impact și pași.",
+    engine: ["src/lib/sanatate-afacere.ts"], pages: ["/admin/sanatate"], tests: ["tests/crestere.test.ts"],
+  },
+  {
+    key: "navigator-arhitectura", name: "Navigatorul de arhitectură", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar citește.",
+    what: "Fluxul de la reguli până la client, cu fișierele reale din spatele fiecărui bloc.",
+    engine: ["src/lib/cunostinte/arhitectura.ts"], pages: ["/admin/cunostinte/arhitectura"],
+  },
+  {
+    key: "invatare-conversii", name: "Învățare și conversii", area: "admin", lifecycle: "live", risk: "mediu", riskWhy: "Folosește ce fac oamenii în cont; emailul pleacă doar cu acord și după aprobarea ta.",
+    what: "Jurnalul recomandărilor cu efectul măsurat, conturile din probă aproape de plată (scor din reguli, mesaj de aprobat) și perspectivele din Analiză.",
+    engine: ["src/lib/invatare.ts"], pages: ["/admin/invatare"], tables: ["consent", "automation_mark", "page_view"], tests: ["tests/crestere.test.ts"],
+    human: "Citește și aprobă fiecare mesaj; bifează „Făcut” în jurnal.",
+  },
+  {
+    key: "recomandari-admin", name: "Creștere și recomandări", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar citește și comută.",
+    what: "Invitații, rude aduse, daruri, acorduri pentru email și vizitele aduse de distribuiri, cu comutatoarele creșterii.",
+    engine: ["src/lib/crestere.ts", "src/app/crestere-actions.ts"], pages: ["/admin/crestere"], tables: ["referral_bonus", "gift"],
+  },
   // Ce se poate anticipa în drumul spre o platformă autonomă (planificat; fără cod încă)
   {
     key: "copii-siguranta", name: "Copii de siguranță verificate", area: "sistem", lifecycle: "planificat", risk: "ridicat", riskWhy: "Azi refacerea se bazează doar pe istoricul Neon (câteva zile pe planul gratuit).",

@@ -43,7 +43,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "probleme-vechi"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -59,6 +59,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Cu 2 zile înainte de sfârșitul celor 7 zile gratuite, un singur email în limba omului: nu se șterge nimic, nu se iau bani automat, legătura la /plata." },
   { key: "aminteste-an", label: "Email: anul plătit se termină", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Cu câteva zile înainte (cât ai pus în Manager control) le scrie celor al căror an se termină. O dată pe an, pentru fiecare." },
+  { key: "bun-venit", label: "Email: sfaturi de bun venit", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
+    what: "Doar celor care au spus „Da” la „Vrei sfaturi pe email?”: 5 emailuri scurte în primele 3 săptămâni (ziua 1, 2, 4, 10, 21), câte unul pe zi, sărind ce omul a făcut deja (a invitat o rudă, a înregistrat un glas, a plătit). Fiecare are dezabonare dintr-un clic. Vezi Admin → Creștere." },
   { key: "probleme-vechi", label: "Închide problemele lămurite", risk: "aprobare", defaultOn: false, everyDays: 1,
     what: "Problemele raportate la care ai răspuns și la care omul n-a mai scris de 21 de zile. Pregătește lista; le trece la „Rezolvată” doar după ce apeși „Aprobă”." },
 ];
@@ -236,12 +238,58 @@ async function runStaleProblems({ db, approved, now }: Ctx): Promise<RunResult> 
   return { status: "ok", observed: list.length, acted: done.length, note: `${done.length} probleme trecute la „Rezolvată” (le poți redeschide din Probleme raportate)`, details: { ids }, verified: done.length === ids.length };
 }
 
+/** Sfaturile pe email (șirul de bun venit, src/lib/crestere.ts): cel mult un email pe zi pentru fiecare om, doar cu acordul lui. */
+async function runNews({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
+  const { dueStep, newsCandidates, unsubscribeToken } = await import("./crestere");
+  const { footerFor, renderMail } = await import("./emailuri");
+  const { giftSeason } = await import("./cadou-sarbatori");
+  const s = await planSettings(db);
+  const people = await newsCandidates(db, now);
+  let due = 0, sent = 0;
+  const byStep: Record<string, number> = {};
+  for (const u of people) {
+    const step = dueStep(new Date(u.created_at), new Set(u.sent ?? []), { invited: !!u.invited, voice: !!u.voice, paid: !!u.paid }, now);
+    if (!step) continue;
+    due++;
+    const locale = isLocale(u.locale) ? u.locale : "ro";
+    const [t, app] = await Promise.all([getT("NewsMail", locale), getAppName(locale)]);
+    const utm = `utm_source=email&utm_medium=email&utm_campaign=bun-venit`;
+    const gift = step === "e5" && giftSeason(now);
+    const price = locale === "ro" ? `${s.priceLei} lei` : `${s.priceEur} €`;
+    const link = { e1: `/?${utm}`, e2: `/?${utm}`, e3: `/ghid/intrebari-pentru-bunici?${utm}`, e4: `/plata?${utm}`, e5: gift ? `/cadou-de-sarbatori?${utm}` : `/?${utm}` }[step];
+    const tt = t as unknown as (k: string, v?: Record<string, string>) => string;
+    const body = tt(gift ? "e5GiftBody" : `${step}Body`, { name: u.name.split(" ")[0] || u.name, app, price });
+    const tok = unsubscribeToken(u.id);
+    const unsub = `${SITE_URL}/dezabonare?u=${encodeURIComponent(u.id)}&t=${tok}`;
+    const { html, text } = renderMail([
+      ...body.split("\n\n").map((p) => ({ p })),
+      { button: t(gift ? "e5GiftButton" : (`${step}Button` as "e1Button")), href: `${SITE_URL}${link}` },
+      { note: t("why", { app }), link: t("unsubscribe"), href: unsub },
+    ], await footerFor(locale));
+    const { sendEmail, emailSent } = await import("./email");
+    const r = await sendEmail({ to: u.email, subject: t(`${step}Subject` as "e1Subject"), html, text, tag: `bun-venit-${step}`,
+      idempotencyKey: `bun-venit-${u.id}-${step}`,
+      headers: { "List-Unsubscribe": `<${SITE_URL}/api/vesti/dezabonare?u=${encodeURIComponent(u.id)}&t=${tok}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } });
+    if (emailSent(r)) {
+      await db.insert(automationMark).values({ automation: "bun-venit", ref: `${u.id}:${step}`, at: now }).onConflictDoNothing();
+      sent++;
+      byStep[step] = (byStep[step] ?? 0) + 1;
+    }
+  }
+  const parts = Object.entries(byStep).map(([k, c]) => `${c}× ${k}`).join(", ");
+  return { status: sent ? "ok" : due ? "eroare" : "nimic", observed: people.length, acted: sent,
+    note: due ? `${sent} din ${due} emailuri trimise${parts ? ` (${parts})` : ""} · ${people.length} oameni cu acordul dat` : `${people.length} oameni cu acordul dat, niciunul nu are azi un email de primit`,
+    details: byStep, verified: sent === due };
+}
+
 const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   sanatate: (c) => runHealth(c),
   curatenie: runCleanup,
   sitemap: runSitemap,
   "aminteste-proba": runTrialMail,
   "aminteste-an": runYearMail,
+  "bun-venit": runNews,
   "probleme-vechi": runStaleProblems,
 };
 
@@ -307,6 +355,8 @@ export async function runLoop(db: Db, trigger: "ceas" | "manual", actorId: strin
   stats.paused = Object.keys((await automationSwitches(db)).paused ?? {}).length;
   stats.score = after.score;
   await saveSnapshot(db, after, now);
+  // Și scorul Sănătății afacerii pe ziua de azi (pentru tendința din Admin → Sănătatea afacerii).
+  await import("./sanatate-afacere").then((m) => m.recomputeHealth(db, now)).catch(() => undefined);
   await db.insert(automationRun).values({ automation: "bucla", trigger, status: stats.failed ? "eroare" : "ok", observed: stats.observed, acted: stats.acted,
     pending: stats.pending, note: `${stats.ran} automatizări rulate · scor ${before.score} → ${after.score}`, details: { stats, ran, before: before.score }, actorId, startedAt: now, finishedAt: new Date() });
   return { stats, ran };
@@ -487,7 +537,7 @@ export async function autonomyPage(db: Db) {
       sql`select id, automation, trigger, status, observed, acted, pending, note, started_at, details from automation_run where automation <> 'bucla' order by started_at desc limit 30`),
     rows(db, sql`select count(*) filter (where automation <> 'bucla') as runs, count(*) filter (where automation <> 'bucla' and status in ('ok','nimic')) as ok,
       count(*) filter (where status = 'eroare' and automation <> 'bucla') as errors, coalesce(sum(acted) filter (where automation <> 'bucla'), 0) as acted,
-      coalesce(sum(acted) filter (where automation in ('aminteste-proba','aminteste-an')), 0) as mails,
+      coalesce(sum(acted) filter (where automation in ('aminteste-proba','aminteste-an','bun-venit')), 0) as mails,
       count(*) filter (where trigger = 'aprobare') as approved
       from automation_run where started_at > now() - interval '7 days'`),
     rows<{ status: string; note: string | null; started_at: string; trigger: string; details: { stats?: LoopStats; ran?: { key: string; status: string; note: string }[] } | null }>(db,

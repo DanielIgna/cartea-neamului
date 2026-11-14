@@ -6,12 +6,13 @@ type Summary = { docs: number; review: number; functions: number; live: number; 
  * Antetul comun al Centrului de cunoștințe: titlul, „doar fondatori”, cifrele de azi, căutarea în documente și filele
  * Documente / De revizuit / Harta funcțiilor / Harta dependențelor.
  */
-export default function CunostinteHead({ s, active, counts, q }: { s: Summary; active: "documente" | "revizuire" | "functii" | "dependente"; counts: Record<string, number>; q?: string }) {
+export default function CunostinteHead({ s, active, counts, q }: { s: Summary; active: "documente" | "revizuire" | "functii" | "dependente" | "arhitectura"; counts: Record<string, number>; q?: string }) {
   const tabs = [
     { k: "documente", href: "/admin/cunostinte", label: "Documente" },
     { k: "revizuire", href: "/admin/cunostinte?v=revizuire", label: `De revizuit${s.review ? ` · ${s.review}` : ""}` },
     { k: "functii", href: "/admin/cunostinte/functii", label: "Harta funcțiilor" },
     { k: "dependente", href: "/admin/cunostinte/dependente", label: "Harta dependențelor" },
+    { k: "arhitectura", href: "/admin/cunostinte/arhitectura", label: "Navigator de arhitectură" },
   ];
   return (
     <header className="kc-head">

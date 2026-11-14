@@ -10,6 +10,7 @@ import { itContact } from "./contact/it";
 import { itProbleme } from "./probleme/it";
 import { itResurse } from "./resurse/it";
 import { itCadou } from "./cadou/it";
+import { itCrestere } from "./crestere/it";
 import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
 import { itDatele } from "./datele/it";
@@ -423,6 +424,7 @@ export const it: Catalog = {
   ...itProbleme,
   ...itResurse,
   ...itCadou,
+  ...itCrestere,
   ...itFilm,
   ...itLegal,
   ...itDatele,

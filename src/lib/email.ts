@@ -30,6 +30,8 @@ export type EmailMessage = {
   idempotencyKey?: string;
   /** Ce fel de email e („contact”, „plata”…): doar asta apare în jurnal, nu adresa sau textul. */
   tag?: string;
+  /** Antete în plus (de pildă List-Unsubscribe la sfaturile pe email). */
+  headers?: Record<string, string>;
 };
 
 export type EmailResult = { ok: true; id: string | null } | { skipped: true } | { ok: false };
@@ -49,7 +51,7 @@ export async function sendEmail(m: EmailMessage): Promise<EmailResult> {
   }
   try {
     const { data, error } = await resendFor(key).emails.send(
-      { from: emailFrom(), to: m.to, subject: m.subject, html: m.html, text: m.text, ...(m.replyTo ? { replyTo: m.replyTo } : {}) },
+      { from: emailFrom(), to: m.to, subject: m.subject, html: m.html, text: m.text, ...(m.replyTo ? { replyTo: m.replyTo } : {}), ...(m.headers ? { headers: m.headers } : {}) },
       m.idempotencyKey ? { idempotencyKey: m.idempotencyKey } : undefined,
     );
     if (error) {

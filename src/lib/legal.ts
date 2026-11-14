@@ -12,21 +12,24 @@ export const TERMS_DATE = new Date("2026-11-13T12:00:00Z");
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-13T19:00:00Z");
+export const PRIVACY_DATE = new Date("2026-11-14T10:00:00Z");
 export const TERMS_VERSION = "2026-11-13-pastrare";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
+/** Sfaturile pe email de bun venit (14 noiembrie 2026), cu dezabonare dintr-un clic. */
+export const NEWS_VERSION = "2026-11-14";
 
 /**
  * Acordurile păstrate în tabelul `consent`: termenii (la crearea contului), capitolul „Credința” (date ocrotite mai strict) și
  * măsurarea timpului petrecut în site („usage”, cerută o singură dată, cu „Bine” sau „Nu vreau”).
  */
-export type ConsentPurpose = "terms" | "faith" | "usage" | "withdrawal";
+export type ConsentPurpose = "terms" | "faith" | "usage" | "withdrawal" | "news";
 export const WITHDRAWAL_VERSION = "2026-11-12";
-export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION, withdrawal: WITHDRAWAL_VERSION };
+export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION, withdrawal: WITHDRAWAL_VERSION, news: NEWS_VERSION };
 export const CONSENT_LABEL: Record<ConsentPurpose, string> = {
   terms: "Termenii și Politica de confidențialitate", faith: "Capitolul „Credința”", usage: "Cât timp folosesc site-ul și ce părți din el",
   withdrawal: "La plată: accesul începe imediat, fără cele 14 zile de retragere (OUG 34/2014, art. 16 lit. m)",
+  news: "Sfaturi pe email în primele trei săptămâni (cu dezabonare dintr-un clic)",
 };
 
 /** Ce află cel care ține site-ul dacă omul spune „Bine”, cum îl citește omul în anunț. */

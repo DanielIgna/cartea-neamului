@@ -3,7 +3,7 @@
  * Orice pagină nouă din panou se trece aici, ca să apară în meniu, în căutarea rapidă și la favorite.
  */
 export type AdminSide = "business" | "infra";
-export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server" | "robot" | "book" | "map" | "graph";
+export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server" | "robot" | "book" | "map" | "graph" | "heart" | "share" | "calendar";
 export type AdminItem = { key: string; href: string; label: string; icon: AdminIcon; hint: string; isNew?: boolean; words?: string };
 export type AdminGroup = { id: string; label: string; items: AdminItem[] };
 
@@ -27,6 +27,10 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
           { key: "business", href: "/admin/business", label: "Business", icon: "chart", hint: "Conturi, arbori, activitate, venituri", words: "venituri statistici" },
           { key: "control", href: "/admin/control", label: "Manager control", icon: "sliders", hint: "Planuri, prețuri, pornirea plăților", words: "planuri preturi plati stripe gratuit" },
           { key: "analiza", href: "/admin/analiza", label: "Analiză", icon: "pulse", hint: "Vizite, surse, campanii, drumul spre plată", isNew: true, words: "trafic vizite analytics campanii" },
+          { key: "sanatate", href: "/admin/sanatate", label: "Sănătatea afacerii", icon: "heart", hint: "Scoruri pe departamente față de ținta de 1000 de abonamente", isNew: true, words: "business health venituri crestere conversii seo scor tinta" },
+          { key: "crestere", href: "/admin/crestere", label: "Creștere și recomandări", icon: "share", hint: "Invitații, rude aduse, daruri, emailuri cu acord, distribuiri", isNew: true, words: "referral invitatii viral marketing leaduri distribuire" },
+          { key: "invatare", href: "/admin/invatare", label: "Învățare și conversii", icon: "pulse", hint: "Jurnalul recomandărilor, cine e aproape de plată, perspective din Analiză", isNew: true, words: "learning lead intent scor proba conversie canal ora iesire jurnal" },
+          { key: "calendar", href: "/admin/calendar", label: "Calendar de conținut", icon: "calendar", hint: "Ce postezi, unde și când, cu textul gata scris", isNew: true, words: "postari facebook grupuri continut social" },
           { key: "adn", href: "/admin/adn", label: "Test ADN", icon: "dna", hint: "Cererile de test și laboratoarele", words: "dna laborator" },
         ],
       },
@@ -56,6 +60,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
         id: "cunoastere", label: "Cunoaștere", items: [
           { key: "cunostinte", href: "/admin/cunostinte", label: "Centru de cunoștințe", icon: "book", hint: "Hotărâri, reguli, audituri și ce e de recitit (doar fondatori)", isNew: true, words: "documente decizii reguli registru knowledge memorie revizuire" },
           { key: "functii", href: "/admin/cunostinte/functii", label: "Harta funcțiilor", icon: "map", hint: "Fiecare funcție: sănătate, risc, verificare, matrice", isNew: true, words: "function map functionalitati matrice sanatate risc export csv json" },
+          { key: "arhitectura", href: "/admin/cunostinte/arhitectura", label: "Navigator de arhitectură", icon: "map", hint: "De la reguli până la client, cu fișierele reale", isNew: true, words: "architecture flux straturi fisiere" },
           { key: "dependente", href: "/admin/cunostinte/dependente", label: "Harta dependențelor", icon: "graph", hint: "Documente → motoare → metrici → automatizări → API → tabele → panouri", isNew: true, words: "dependency graf legaturi tabele api" },
         ],
       },

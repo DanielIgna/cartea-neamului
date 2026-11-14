@@ -2,9 +2,24 @@
 import { useActionState, useState } from "react";
 import { useFormatter, useTranslations } from "use-intl";
 import { createInviteLink } from "@/app/actions";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
+
+/** Linkul cu semnele din Analiză: de unde a plecat (whatsapp, email, telefon) și campania „invitatie”. */
+function tagged(link: string, source: string) {
+  try {
+    const u = new URL(link);
+    u.searchParams.set("utm_source", source);
+    u.searchParams.set("utm_medium", "invitatie");
+    u.searchParams.set("utm_campaign", "invitatie");
+    return u.toString();
+  } catch {
+    return link;
+  }
+}
 
 export default function InvitePanel({ treeId, personId, personName }: { treeId: string; personId?: string; personName?: string }) {
   const t = useTranslations("InvitePanel");
+  const ts = useTranslations("Share");
   const format = useFormatter();
   const [state, action, pending] = useActionState(createInviteLink, null);
   const [copied, setCopied] = useState("");
@@ -31,6 +46,19 @@ export default function InvitePanel({ treeId, personId, personName }: { treeId: 
           <input readOnly value={state.link} onFocus={(e) => e.currentTarget.select()} aria-label={t("linkLabel")} />
           <button type="button" className="btn" onClick={() => copy(state.link!)}>{t("copy")}</button>
           <small className="muted" style={{ width: "100%" }}>{copied || t("valid", { date: until(state.expiresAt) })}</small>
+          {"share" in state && state.share && (() => {
+            const msg = (src: string) => ts("message", { app: state.app ?? "", link: tagged(state.link!, src) });
+            const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+            return (
+              <div className="actions invite-share" style={{ width: "100%", marginTop: 4 }}>
+                <a className="btn primary" href={`https://wa.me/?text=${encodeURIComponent(msg("whatsapp"))}`} target="_blank" rel="noopener noreferrer">
+                  <WhatsAppIcon size={18} /> {ts("whatsapp")}
+                </a>
+                <a className="btn" href={`mailto:?subject=${encodeURIComponent(ts("subject"))}&body=${encodeURIComponent(msg("email"))}`}>{ts("email")}</a>
+                {canShare && <button type="button" className="btn" onClick={() => navigator.share({ title: ts("subject"), text: msg("telefon") }).catch(() => undefined)}>{ts("share")}</button>}
+              </div>
+            );
+          })()}
         </div>
       )}
     </form>

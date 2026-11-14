@@ -10,6 +10,7 @@ import { huContact } from "./contact/hu";
 import { huProbleme } from "./probleme/hu";
 import { huResurse } from "./resurse/hu";
 import { huCadou } from "./cadou/hu";
+import { huCrestere } from "./crestere/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
@@ -423,6 +424,7 @@ export const hu: Catalog = {
   ...huProbleme,
   ...huResurse,
   ...huCadou,
+  ...huCrestere,
   ...huFilm,
   ...huLegal,
   ...huDatele,
