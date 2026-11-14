@@ -147,3 +147,16 @@ describe("fluxul de activare, în baza de date", () => {
     expect(await testBatchOnce(db)).toBe("deja");
   });
 });
+
+describe("pluralul în română", () => {
+  it("1 card, 2 carduri, 20 de carduri", async () => {
+    const { pl } = await import("@/lib/carduri-cadou");
+    expect(pl(1, "card vândut", "carduri vândute")).toBe("1 card vândut");
+    expect(pl(0, "card", "carduri")).toBe("0 carduri");
+    expect(pl(5, "card", "carduri")).toBe("5 carduri");
+    expect(pl(19, "card", "carduri")).toBe("19 carduri");
+    expect(pl(20, "card", "carduri")).toBe("20 de carduri");
+    expect(pl(101, "card", "carduri")).toBe("101 carduri");
+    expect(pl(120, "card", "carduri")).toBe("120 de carduri");
+  });
+});

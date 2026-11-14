@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { giftCardsEnabled, lotLabel, partnerBatches, partnerByToken, recentSoldBy } from "@/lib/carduri-cadou";
+import { giftCardsEnabled, lotLabel, partnerBatches, pl, partnerByToken, recentSoldBy } from "@/lib/carduri-cadou";
 import { portalLogin, portalLogout, portalMarkSold, portalSignedIn } from "@/app/carduri-actions";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +54,7 @@ export default async function Magazin({ params, searchParams }: { params: Promis
           <div className="limits-row">
             <label>Lotul
               <select name="batchId" required defaultValue={batches[0].id}>
-                {batches.map((b) => <option key={b.id} value={b.id}>Lot {lotLabel(b.id)} ({b.cantitate} carduri, {when(b.createdAt).split(",")[0]})</option>)}
+                {batches.map((b) => <option key={b.id} value={b.id}>Lot {lotLabel(b.id)} ({pl(b.cantitate, "card", "carduri")}, {when(b.createdAt).split(",")[0]})</option>)}
               </select>
             </label>
             <label>Nr.<input name="seq" type="number" min={1} required inputMode="numeric" /></label>
