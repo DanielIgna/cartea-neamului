@@ -51,6 +51,7 @@ export const huLegal: LegalCatalog = {
           l6: "Hogy válaszoljunk, amikor írsz nekünk (a Kapcsolat oldalról, e-mailben vagy WhatsAppon). A jogalap a jogos érdekünk, hogy válaszoljunk annak, aki keres minket (6. cikk (1) bekezdés f) pont), vagy ha a fiókodról írsz, a köztünk lévő szerződés (b) pont).",
           l7: "A jogszabályok betartása érdekében: a számlák, a könyvelés és annak igazolása, hogy hozzájárultál a digitális tartalom azonnali megkapásához. A jogalap jogi kötelezettség (GDPR 6. cikk (1) bekezdés c) pont).",
           l9: "Hogy az első hetekben e-mailes tanácsokat küldjünk: csak a hozzájárulásoddal (GDPR 6. cikk (1) a)), amelyet bármikor visszavonhatsz egy kattintással. Az e-mailek a Resenden keresztül mennek ki.",
+          l10: "Hogy segítsünk az ingyenes napokban: abból, amit a fiókodban teszel (hány személyt vettél fel, hány rokont hívtál meg, hány fényképet és emléket töltöttél fel, mikor léptél be utoljára), egyszerű pontszámot számolunk az általunk írt szabályok szerint, automatizált döntés nélkül, és soha nem kapcsoljuk össze a névtelen látogatásokkal. Csak mi látjuk az adminisztrációs felületen; ez alapján csak akkor küldünk üzenetet, ha „Igen”-t mondtál az e-mailes tanácsokra. A jogalap a jogos érdekünk, hogy megmutassuk, hogyan használd, amit elkezdtél (6. cikk (1) f)); bármikor tiltakozhatsz, ha írsz nekünk.",
         },
         who: {
           h: "Ki látja az adatokat",

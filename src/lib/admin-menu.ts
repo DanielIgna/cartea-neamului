@@ -29,6 +29,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
           { key: "analiza", href: "/admin/analiza", label: "Analiză", icon: "pulse", hint: "Vizite, surse, campanii, drumul spre plată", isNew: true, words: "trafic vizite analytics campanii" },
           { key: "sanatate", href: "/admin/sanatate", label: "Sănătatea afacerii", icon: "heart", hint: "Scoruri pe departamente față de ținta de 1000 de abonamente", isNew: true, words: "business health venituri crestere conversii seo scor tinta" },
           { key: "crestere", href: "/admin/crestere", label: "Creștere și recomandări", icon: "share", hint: "Invitații, rude aduse, daruri, emailuri cu acord, distribuiri", isNew: true, words: "referral invitatii viral marketing leaduri distribuire" },
+          { key: "invatare", href: "/admin/invatare", label: "Învățare și conversii", icon: "pulse", hint: "Jurnalul recomandărilor, cine e aproape de plată, perspective din Analiză", isNew: true, words: "learning lead intent scor proba conversie canal ora iesire jurnal" },
           { key: "calendar", href: "/admin/calendar", label: "Calendar de conținut", icon: "calendar", hint: "Ce postezi, unde și când, cu textul gata scris", isNew: true, words: "postari facebook grupuri continut social" },
           { key: "adn", href: "/admin/adn", label: "Test ADN", icon: "dna", hint: "Cererile de test și laboratoarele", words: "dna laborator" },
         ],

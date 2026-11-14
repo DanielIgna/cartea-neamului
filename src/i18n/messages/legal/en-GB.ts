@@ -51,6 +51,7 @@ export const enGBLegal: LegalCatalog = {
           l6: "To reply when you write to us (from the Contact page, by email or on WhatsApp). The legal basis is our legitimate interest in answering those who contact us (Art. 6(1)(f)) or, when you write about your account, the contract between us (point (b)).",
           l7: "To comply with the law: invoices, accounting records and proof of your consent to receive digital content immediately. The legal basis is a legal obligation (Art. 6(1)(c) GDPR).",
           l9: "To send you tips by email in your first weeks: only with your consent (Art. 6(1)(a) GDPR), which you can withdraw any time, in one click. The emails go out through Resend.",
+          l10: "To help you during the free days: from what you do in your account (how many people you added, how many relatives you invited, how many photos and memories you added, when you last signed in) we work out a simple score, using rules we wrote, with no automated decisions and never linked to anonymous visits. Only we see it, in the admin panel; we send you a message based on it only if you said “Yes” to tips by email. The basis is our legitimate interest in showing you how to use what you started (Art. 6(1)(f)); you can object any time by writing to us.",
         },
         who: {
           h: "Who sees the data",

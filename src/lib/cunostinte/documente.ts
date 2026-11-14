@@ -315,7 +315,7 @@ export const DOCS: KDoc[] = [
       "Un canal care nu aduce nimic în 6 săptămâni se oprește (cifrele din Analiză și Sănătatea afacerii).",
     ],
     source: ["Firul „Adu clienți fără reclame plătite” (14 noiembrie 2026)", "docs/plan-clienti-fara-reclame.md"],
-    governs: ["invitatii-distribuite", "sfaturi-email", "carduri-distribuire", "calendar-continut", "sanatate-afacere"],
+    governs: ["invitatii-distribuite", "sfaturi-email", "carduri-distribuire", "calendar-continut", "sanatate-afacere", "invatare-conversii"],
     open: ["Search Console de legat", "Sfaturile pe email de pornit după citirea textelor", "Pragul de TVA cu contabilul"],
   },
 ];

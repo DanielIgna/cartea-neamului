@@ -51,6 +51,7 @@ export const itLegal: LegalCatalog = {
           l6: "Per risponderti quando ci scrivi (dalla pagina Contatti, via email o su WhatsApp). La base è il nostro legittimo interesse a rispondere a chi ci cerca (art. 6, par. 1, lett. f) o, quando ci scrivi del tuo account, il contratto tra noi (lett. b).",
           l7: "Per rispettare la legge: le fatture, la contabilità e la prova del tuo consenso a ricevere subito il contenuto digitale. La base è un obbligo di legge (art. 6, par. 1, lett. c del GDPR).",
           l9: "Per inviarti consigli via email nelle prime settimane: solo con il tuo consenso (art. 6, par. 1, lett. a GDPR), che puoi revocare in qualsiasi momento, con un clic. Le email partono tramite Resend.",
+          l10: "Per aiutarti nei giorni gratuiti: da ciò che fai nel tuo account (quante persone hai aggiunto, quanti parenti hai invitato, quante foto e ricordi, quando sei entrato l’ultima volta) calcoliamo un punteggio semplice, con regole scritte da noi, senza decisioni automatizzate e mai collegato alle visite anonime. Lo vediamo solo noi, nel pannello di amministrazione; ti mandiamo un messaggio basato su di esso solo se hai accettato i consigli via email. La base è il nostro legittimo interesse a mostrarti come usare ciò che hai iniziato (art. 6, par. 1, lett. f); puoi opporti in qualsiasi momento scrivendoci.",
         },
         who: {
           h: "Chi vede i dati",

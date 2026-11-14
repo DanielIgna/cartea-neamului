@@ -61,6 +61,7 @@ export const roLegal = {
           l6: "Ca să-ți răspundem când ne scrii (din pagina Contact, pe email sau pe WhatsApp). Temeiul e interesul nostru legitim de a răspunde celor care ne caută (art. 6 alin. 1 lit. f) sau, când ne scrii despre contul tău, contractul dintre noi (lit. b).",
           l7: "Ca să respectăm legea: facturile, evidența contabilă și dovada acordului tău pentru începerea imediată a conținutului digital. Temeiul e obligația legală (art. 6 alin. 1 lit. c GDPR).",
           l9: "Ca să-ți trimitem sfaturi pe email în primele săptămâni: doar pe baza acordului tău (art. 6 alin. 1 lit. a GDPR), pe care îl retragi oricând, dintr-un clic. Emailurile pleacă prin Resend.",
+          l10: "Ca să te ajutăm în zilele gratuite: din ce faci în cont (câte persoane ai trecut, câte rude ai invitat, câte poze și amintiri ai pus, când ai intrat ultima oară) socotim un scor simplu, după reguli scrise de noi, fără decizii automate și fără să-l legăm de vizitele anonime. Îl vedem doar noi, în panoul de administrare; un mesaj pe baza lui îți trimitem doar dacă ai spus „Da” la sfaturile pe email. Temeiul e interesul nostru legitim de a-ți arăta cum să folosești ce ai început (art. 6 alin. 1 lit. f); te poți opune oricând, scriindu-ne.",
         },
         who: {
           h: "Cine vede datele",

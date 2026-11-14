@@ -104,3 +104,33 @@ describe("creșterea fără reclame", () => {
     });
   });
 });
+
+describe("învățare și conversii", () => {
+  it("scorul din semnalele contului și mesajul propus", async () => {
+    const { leadScore, suggestedMessage } = await import("@/lib/invatare");
+    const s = { persons: 12, invites: 2, photos: 4, memories: 1, activeDaysAgo: 1, daysLeft: 1 };
+    expect(leadScore(s)).toMatchObject({ score: 100, tier: "aproape" });
+    expect(leadScore({ ...s, persons: 2, invites: 0, photos: 0, memories: 0, daysLeft: 5 }).tier).toBe("inceput");
+    expect(suggestedMessage("Ana Pop", { ...s, invites: 0 }, 49).subject).toMatch(/familie/);
+    expect(suggestedMessage("Ana Pop", s, 49).body).toContain("49 lei");
+    expect(suggestedMessage("Ana Pop", s, 49).body).not.toMatch(/biseric|Dumnez|\bAI\b/);
+  });
+
+  it("jurnalul: adaugă, bifează făcut, măsoară înainte/după", async () => {
+    const { createDb } = await import("@/db");
+    const { runMigrations } = await import("@/db/migrate");
+    const { addRecommendation, ledger, outcomes, setRecommendation } = await import("@/lib/invatare");
+    const db = createDb();
+    await runMigrations(db);
+    const t0 = new Date("2026-12-01T00:00:00Z");
+    await addRecommendation(db, { text: "Postare în grupuri", source: "de mână" }, null, t0);
+    await addRecommendation(db, { text: "Postare în grupuri", source: "de mână" }, null, t0);
+    let items = await ledger(db);
+    expect(items).toHaveLength(1);
+    await setRecommendation(db, items[0].id, "facuta", "5 grupuri", null, t0);
+    items = await ledger(db);
+    expect(items[0]).toMatchObject({ status: "facuta", note: "5 grupuri" });
+    const o = await outcomes(db, items, new Date("2026-12-20T00:00:00Z"));
+    expect(o.get(items[0].id)).toMatchObject({ days: 14, complete: true });
+  });
+});

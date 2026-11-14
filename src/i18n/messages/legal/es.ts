@@ -51,6 +51,7 @@ export const esLegal: LegalCatalog = {
           l6: "Para responderte cuando nos escribes (desde la página Contacto, por correo o por WhatsApp). La base es nuestro interés legítimo en responder a quien nos busca (art. 6.1.f) o, cuando nos escribes sobre tu cuenta, el contrato entre nosotros (letra b).",
           l7: "Para cumplir la ley: las facturas, la contabilidad y la prueba de tu consentimiento para recibir de inmediato el contenido digital. La base es una obligación legal (art. 6.1.c del RGPD).",
           l9: "Para enviarte consejos por correo en las primeras semanas: solo con tu consentimiento (art. 6.1.a del RGPD), que puedes retirar cuando quieras, con un clic. Los correos se envían a través de Resend.",
+          l10: "Para ayudarte durante los días gratuitos: a partir de lo que haces en tu cuenta (cuántas personas añadiste, cuántos familiares invitaste, cuántas fotos y recuerdos subiste, cuándo entraste por última vez) calculamos una puntuación sencilla, con reglas escritas por nosotros, sin decisiones automatizadas y sin relacionarla con las visitas anónimas. Solo la vemos nosotros, en el panel de administración; solo te enviamos un mensaje basado en ella si aceptaste los consejos por correo. La base es nuestro interés legítimo en mostrarte cómo usar lo que empezaste (art. 6.1.f); puedes oponerte cuando quieras escribiéndonos.",
         },
         who: {
           h: "Quién ve los datos",

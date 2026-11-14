@@ -2,7 +2,8 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { ASSUMED, STATUS_LABEL, businessHealth, healthHistory, saveHealthDay } from "@/lib/sanatate-afacere";
-import { recomputeHealthNow } from "@/app/crestere-actions";
+import { addRecommendationAction, recomputeHealthNow } from "@/app/crestere-actions";
+import type { Action } from "@/lib/sanatate-afacere";
 import { AdminNav, HBars, num } from "@/components/admin/ui";
 import Ring from "@/components/admin/Ring";
 
@@ -11,6 +12,20 @@ export const metadata = { title: "Sănătatea afacerii · Admin" };
 
 const tone = (s: string) => (s === "sanatos" ? "ok" : s === "atentie" ? "warn" : "bad");
 const pctx = (v: number) => `${Math.round(v * 1000) / 10}%`;
+
+/** Un pas recomandat, cu „+ în jurnal” (Învățare și conversii), ca să i se măsoare efectul după ce îl faci. */
+function Step({ a, domain }: { a: Action; domain: string }) {
+  return (
+    <li>
+      {a.href ? <Link href={a.href}>{a.text}</Link> : a.text}{a.points > 0 && <b className="t-ok"> +{a.points} p</b>}{" "}
+      <form action={addRecommendationAction} style={{ display: "inline" }}>
+        <input type="hidden" name="text" value={a.text} /><input type="hidden" name="source" value={`Sănătatea afacerii · ${domain}`} />
+        {a.href && <input type="hidden" name="href" value={a.href} />}
+        <button className="linkish small" title="Adaugă în Jurnalul recomandărilor, ca să-i vezi efectul">+ în jurnal</button>
+      </form>
+    </li>
+  );
+}
 
 /**
  * Admin → Sănătatea afacerii: scorul general și câte un scor pe departament, fiecare cu formula lui pe datele din baza de date.
@@ -66,7 +81,7 @@ export default async function Sanatate() {
               <p style={{ margin: "2px 0" }}><span className="muted">Cauza:</span> {d.cause}</p>
               <p style={{ margin: "2px 0" }}><span className="muted">Impact:</span> {d.impact}</p>
               <ol style={{ margin: "6px 0 0" }}>
-                {d.actions.map((a) => <li key={a.text}>{a.href ? <Link href={a.href}>{a.text}</Link> : a.text}{a.points > 0 && <b className="t-ok"> +{a.points} p</b>}</li>)}
+                {d.actions.map((a) => <Step key={a.text} a={a} domain={d.label} />)}
               </ol>
             </div>
           ))}
@@ -90,7 +105,7 @@ export default async function Sanatate() {
             <p className="small" style={{ margin: "4px 0" }}><b>Cauza:</b> {d.cause}</p>
             <p className="small" style={{ margin: "4px 0" }}><b>Impact:</b> {d.impact}</p>
             {d.actions.length > 0 && <ol className="small" style={{ margin: "6px 0 0" }}>
-              {d.actions.map((a) => <li key={a.text}>{a.href ? <Link href={a.href}>{a.text}</Link> : a.text}{a.points > 0 && <b className="t-ok"> +{a.points} p</b>}</li>)}
+              {d.actions.map((a) => <Step key={a.text} a={a} domain={d.label} />)}
             </ol>}
           </details>
         ))}

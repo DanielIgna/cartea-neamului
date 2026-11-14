@@ -86,6 +86,7 @@
   "src/app/(site)/admin/cunostinte/page.tsx",
   "src/app/(site)/admin/email/page.tsx",
   "src/app/(site)/admin/infra/page.tsx",
+  "src/app/(site)/admin/invatare/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
   "src/app/(site)/admin/layout.tsx",
   "src/app/(site)/admin/oameni/[id]/page.tsx",
@@ -597,6 +598,7 @@
   "src/lib/home-jsonld.ts",
   "src/lib/home-submissions.ts",
   "src/lib/home-variants.ts",
+  "src/lib/invatare.ts",
   "src/lib/invitations.ts",
   "src/lib/istoria-bisericii.ts",
   "src/lib/join.ts",
@@ -794,6 +796,10 @@
   },
   {
    "path": "/admin/infra",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/invatare",
    "kind": "pagina"
   },
   {

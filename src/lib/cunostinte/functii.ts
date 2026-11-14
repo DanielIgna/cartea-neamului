@@ -439,6 +439,12 @@ export const FUNCTIONS: Fn[] = [
     engine: ["src/lib/cunostinte/arhitectura.ts"], pages: ["/admin/cunostinte/arhitectura"],
   },
   {
+    key: "invatare-conversii", name: "Învățare și conversii", area: "admin", lifecycle: "live", risk: "mediu", riskWhy: "Folosește ce fac oamenii în cont; emailul pleacă doar cu acord și după aprobarea ta.",
+    what: "Jurnalul recomandărilor cu efectul măsurat, conturile din probă aproape de plată (scor din reguli, mesaj de aprobat) și perspectivele din Analiză.",
+    engine: ["src/lib/invatare.ts"], pages: ["/admin/invatare"], tables: ["consent", "automation_mark", "page_view"], tests: ["tests/crestere.test.ts"],
+    human: "Citește și aprobă fiecare mesaj; bifează „Făcut” în jurnal.",
+  },
+  {
     key: "recomandari-admin", name: "Creștere și recomandări", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar citește și comută.",
     what: "Invitații, rude aduse, daruri, acorduri pentru email și vizitele aduse de distribuiri, cu comutatoarele creșterii.",
     engine: ["src/lib/crestere.ts", "src/app/crestere-actions.ts"], pages: ["/admin/crestere"], tables: ["referral_bonus", "gift"],

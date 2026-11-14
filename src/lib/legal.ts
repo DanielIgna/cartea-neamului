@@ -12,7 +12,7 @@ export const TERMS_DATE = new Date("2026-11-13T12:00:00Z");
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-14T09:00:00Z");
+export const PRIVACY_DATE = new Date("2026-11-14T10:00:00Z");
 export const TERMS_VERSION = "2026-11-13-pastrare";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";

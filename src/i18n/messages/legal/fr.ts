@@ -51,6 +51,7 @@ export const frLegal: LegalCatalog = {
           l6: "Pour vous répondre quand vous nous écrivez (depuis la page Contact, par e-mail ou sur WhatsApp). La base légale est notre intérêt légitime à répondre à ceux qui nous contactent (art. 6, par. 1, point f) ou, quand vous nous écrivez au sujet de votre compte, le contrat entre nous (point b).",
           l7: "Pour respecter la loi : les factures, la comptabilité et la preuve de votre accord pour recevoir immédiatement le contenu numérique. La base est l’obligation légale (art. 6, par. 1, point c du RGPD).",
           l9: "Pour vous envoyer des conseils par e-mail pendant les premières semaines : uniquement avec votre consentement (art. 6, par. 1, point a du RGPD), que vous pouvez retirer à tout moment, en un clic. Les e-mails partent via Resend.",
+          l10: "Pour vous aider pendant les jours gratuits : à partir de ce que vous faites dans votre compte (nombre de personnes ajoutées, de proches invités, de photos et de souvenirs, date de votre dernière connexion), nous calculons un score simple, selon des règles écrites par nous, sans décision automatisée et sans lien avec les visites anonymes. Nous seuls le voyons, dans le panneau d’administration ; nous ne vous envoyons un message fondé sur ce score que si vous avez accepté les conseils par e-mail. La base est notre intérêt légitime à vous montrer comment utiliser ce que vous avez commencé (art. 6, par. 1, point f) ; vous pouvez vous y opposer à tout moment en nous écrivant.",
         },
         who: {
           h: "Qui voit les données",

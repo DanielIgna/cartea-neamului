@@ -51,6 +51,7 @@ export const nlLegal: LegalCatalog = {
           l6: "Om je te antwoorden als je ons schrijft (via de pagina Contact, per e-mail of via WhatsApp). De grondslag is ons gerechtvaardigd belang om te antwoorden aan wie ons zoekt (art. 6 lid 1 sub f) of, als je over je account schrijft, de overeenkomst tussen ons (sub b).",
           l7: "Om de wet na te leven: facturen, de boekhouding en het bewijs van je toestemming om de digitale inhoud meteen te krijgen. De grondslag is een wettelijke verplichting (art. 6, lid 1, onder c AVG).",
           l9: "Om je in de eerste weken tips per e-mail te sturen: alleen met je toestemming (art. 6, lid 1, onder a AVG), die je altijd met één klik kunt intrekken. De e-mails gaan via Resend.",
+          l10: "Om je te helpen tijdens de gratis dagen: uit wat je in je account doet (hoeveel personen je toevoegde, hoeveel familieleden je uitnodigde, hoeveel foto’s en herinneringen, wanneer je laatst inlogde) berekenen we een eenvoudige score, met regels die wij schreven, zonder geautomatiseerde besluiten en nooit gekoppeld aan anonieme bezoeken. Alleen wij zien hem, in het beheerpaneel; we sturen je alleen een bericht op basis ervan als je „Ja” zei tegen tips per e-mail. De grondslag is ons gerechtvaardigd belang om je te laten zien hoe je gebruikt wat je begon (art. 6, lid 1, onder f); je kunt altijd bezwaar maken door ons te schrijven.",
         },
         who: {
           h: "Wie de gegevens ziet",
