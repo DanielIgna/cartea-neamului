@@ -184,6 +184,16 @@ const ADDITIVE = [
     "app_seconds" integer DEFAULT 0 NOT NULL, "last_beat" text, "updated_at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "usage_day_pk" ON "usage_day" USING btree ("user_id","day","section")`,
   sql`CREATE INDEX IF NOT EXISTS "usage_day_day_idx" ON "usage_day" USING btree ("day")`,
+  // Contul gratuit PropManage după activarea cardului (migrația 0030).
+  sql`ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "propmanage_invited_at" timestamp`,
+  sql`CREATE TABLE IF NOT EXISTS "propmanage_invite" ("id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "user_id" text REFERENCES "user"("id") ON DELETE set null, "consent_text" text NOT NULL, "consent_at" timestamp NOT NULL, "locale" text,
+    "place" text NOT NULL, "sursa" text DEFAULT 'cartea-neamului' NOT NULL, "partner_id" uuid REFERENCES "partners"("id") ON DELETE set null,
+    "card_id" uuid REFERENCES "gift_cards"("id") ON DELETE set null, "batch_id" uuid REFERENCES "gift_card_batches"("id") ON DELETE set null,
+    "status" text NOT NULL, "error" text, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_user_idx" ON "propmanage_invite" ("user_id")`,
+  sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_partner_idx" ON "propmanage_invite" ("partner_id","status")`,
+  sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_batch_idx" ON "propmanage_invite" ("batch_id","status")`,
 ];
 
 export async function applySchema(target: Db) {

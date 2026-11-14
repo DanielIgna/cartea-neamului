@@ -11,6 +11,7 @@ export const user = pgTable("user", {
   image: text("image"),
   locale: text("locale").notNull().default("ro"),
   twoFactorEnabled: boolean("two_factor_enabled").default(false), // verificarea în 2 pași, aleasă de om (src/lib/securitate.ts)
+  propmanageInvitedAt: timestamp("propmanage_invited_at"), // când a cerut contul gratuit PropManage (src/lib/propmanage-cont.ts); null = niciodată
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -722,3 +723,23 @@ export const giftCardAttempt = pgTable("gift_card_attempt", {
   ok: boolean("ok").notNull().default(false),
   at: timestamp("at").notNull().defaultNow(),
 }, (t) => [index("gift_card_attempt_idx").on(t.who, t.at)]);
+
+/* ---------- Contul gratuit PropManage, oferit după activarea cardului (Daniel, 2026-11-14) ---------- */
+// Un rând pentru fiecare cerere: omul a bifat acordul și a apăsat „Vreau contul gratuit”. Rândul e și dovada acordului (data,
+// ora, textul exact al bifei, limba). Numele și emailul au plecat la PropManage doar dacă `status` e „trimis”. Dacă omul își
+// șterge contul, rândul rămâne fără om (user_id = null), doar ca număr în raportul magazinului.
+export const propmanageInvite = pgTable("propmanage_invite", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  consentText: text("consent_text").notNull(),
+  consentAt: timestamp("consent_at").notNull(),
+  locale: text("locale"),
+  place: text("place").notNull(), // activare (pagina /activeaza) / datele-mele
+  sursa: text("sursa").notNull().default("cartea-neamului"),
+  partnerId: uuid("partner_id").references(() => partners.id, { onDelete: "set null" }), // magazinul de la care vine cardul
+  cardId: uuid("card_id").references(() => giftCards.id, { onDelete: "set null" }),
+  batchId: uuid("batch_id").references(() => giftCardBatches.id, { onDelete: "set null" }),
+  status: text("status").notNull(), // trimis / eroare
+  error: text("error"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("propmanage_invite_user_idx").on(t.userId), index("propmanage_invite_partner_idx").on(t.partnerId, t.status), index("propmanage_invite_batch_idx").on(t.batchId, t.status)]);

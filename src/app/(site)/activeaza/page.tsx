@@ -5,6 +5,8 @@ import { accountPlan } from "@/db/schema";
 import { currentUser } from "@/lib/access";
 import { giftCardsEnabled, normalizeCode } from "@/lib/carduri-cadou";
 import { activateAction } from "@/app/carduri-actions";
+import { offerVisible } from "@/lib/propmanage-cont";
+import { PropManageOffer } from "@/components/PropManageOffer";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Activează cardul cadou", robots: { index: false, follow: false } };
@@ -39,9 +41,13 @@ export default async function Activeaza({ searchParams }: { searchParams: Promis
   const cod = normalizeCode(rawCod ?? "") ?? (rawCod ?? "").slice(0, 20);
   const next = `/activeaza${cod ? `?cod=${encodeURIComponent(cod)}` : ""}`;
   let done: { plan: string; until: string } | null = null;
+  let pmOffer = false;
   if (r === "ok" || r === "used_by_you") {
     const [p] = me ? await db.select({ tier: accountPlan.tier, paidUntil: accountPlan.paidUntil }).from(accountPlan).where(eq(accountPlan.userId, me.id)) : [];
     if (p?.paidUntil) done = { plan: PLAN[p.tier ?? "basic"] ?? "Basic", until: new Intl.DateTimeFormat("ro", { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(p.paidUntil) };
+    // Oferta PropManage: doar cu comutatorul din Admin pornit, PropManage configurat și omul neinvitat încă. O greșeală aici
+    // nu atinge activarea: oferta pur și simplu nu apare.
+    if (done && me) pmOffer = await offerVisible(db, me.id).catch(() => false);
   }
   return (
     <section className="stack" style={{ maxWidth: 560, margin: "0 auto" }}>
@@ -53,6 +59,7 @@ export default async function Activeaza({ searchParams }: { searchParams: Promis
               {r === "ok" ? "Gata! Cardul este activat." : "Ai activat deja acest card."} Ai planul <b>{done.plan}</b> până pe <b>{done.until}</b>.
             </p>
             <div className="actions"><Link className="btn primary" href="/">Mergi la arborele tău</Link><Link className="btn" href="/plata">Vezi planul</Link></div>
+            {pmOffer && <PropManageOffer place="activare" />}
           </>
         ) : (
           <>
