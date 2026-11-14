@@ -16,7 +16,7 @@ import type { Db } from "@/db";
 import { appSetting, automationMark, automationRun, autonomySnapshot } from "@/db/schema";
 import { ENV_KEYS, OWNERS, envSet } from "./admin";
 import { ERRORS_SEEN_KEY } from "./admin-stats";
-import { securityOverview } from "./admin-securitate";
+import { securityOverviewOnce } from "./admin-securitate";
 import { emailReady } from "./email";
 import { dueReminders, markReminded, sendMail } from "./extra";
 import { accessFor, accessPeople, accountPlans, isTier, planSettings } from "./plans";
@@ -420,10 +420,12 @@ const chk = (label: string, ok: boolean, max: number, note: string, fix?: Check[
 
 export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
   const t0 = Date.now();
-  await db.execute(sql`select 1`);
-  const ping = Date.now() - t0;
-  const [sw, last, sec, seo, plans, base] = await Promise.all([
-    automationSwitches(db), lastRuns(db), securityOverview(db, now).catch(() => null), seoSettings(db).catch(() => null), planSettings(db),
+  // Totul deodată: ping-ul, citirile, migrațiile și rezumatul Centrului de cunoștințe (înainte veneau în 4 rânduri, unul după altul).
+  const pingP = db.execute(sql`select 1`).then(() => Date.now() - t0);
+  const migP = rows(db, sql`select count(*) as c from drizzle.__drizzle_migrations`).then((r) => n(r[0]?.c) as number | null).catch(() => null); // local
+  const kcP = import("./cunostinte/verificare").then((m) => m.knowledgeSummaryOnce(db)).catch(() => null);
+  const [ping, migApplied, kc, sw, last, sec, seo, plans, base] = await Promise.all([pingP, migP, kcP,
+    automationSwitches(db), lastRuns(db), securityOverviewOnce(db).catch(() => null), seoSettings(db).catch(() => null), planSettings(db),
     rows(db, sql`with seen as (select coalesce((select (value->>'at')::timestamptz from app_setting where key = ${ERRORS_SEEN_KEY}), 'epoch'::timestamptz) as at)
       select (select count(*) from audit_log, seen where entity = 'eroare' and created_at > seen.at and created_at > now() - interval '1 day') as err1,
         (select count(*) from audit_log where entity = 'eroare' and created_at > now() - interval '7 days') as err7,
@@ -439,8 +441,6 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
         (select max(started_at) from automation_run where trigger = 'ceas') as last_cron`).catch(() => [{} as Row]),
   ]);
   const b = base[0] ?? {};
-  let migApplied: number | null = null;
-  try { migApplied = n((await rows(db, sql`select count(*) as c from drizzle.__drizzle_migrations`))[0]?.c); } catch { /* local */ }
   const missing = ENV_KEYS.filter((k) => k.needed && !envSet(k.key)).map((k) => k.key);
 
   // Operațional
@@ -494,7 +494,6 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
   // Dezvoltare
   const err7 = n(b.err7), errPrev = n(b.errprev), repeat = n(b.repeat_routes), bugOld = n(b.bug_old);
   // Harta funcțiilor (Centrul de cunoștințe): legături rupte și funcții cu roșu. Import târziu, fiindcă harta citește și ea automatizările.
-  const kc = await import("./cunostinte/verificare").then((m) => m.knowledgeSummary(db, now)).catch(() => null);
   const dev: Check[] = [
     chk("Erorile nu cresc de la o săptămână la alta", err7 <= errPrev || err7 <= 2, 35, `${err7} în ultimele 7 zile, ${errPrev} în cele dinainte`, { text: "Erorile cresc: vezi ce s-a schimbat la ultima publicare", href: "/admin/infra" }),
     chk("Nicio pagină cu aceeași eroare de 3+ ori", repeat === 0, 35, `${repeat} pagini`, { text: `${repeat} pagini dau mereu eroare: încep cu ele`, href: "/admin/infra" }),
@@ -528,7 +527,7 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
 /* ---------- Ce se vede în pagină ---------- */
 
 export async function autonomyPage(db: Db) {
-  const [score, sw, last, history, recent, week, loop] = await Promise.all([
+  const [score, sw, last, history, recent, week, loop, plansNow] = await Promise.all([
     autonomyScore(db),
     automationSwitches(db),
     lastRuns(db),
@@ -542,13 +541,16 @@ export async function autonomyPage(db: Db) {
       from automation_run where started_at > now() - interval '7 days'`),
     rows<{ status: string; note: string | null; started_at: string; trigger: string; details: { stats?: LoopStats; ran?: { key: string; status: string; note: string }[] } | null }>(db,
       sql`select status, note, started_at, trigger, details from automation_run where automation = 'bucla' order by started_at desc limit 1`),
+    planSettings(db),
   ]);
   const pendingApprovals: { key: AutoKey; count: number; note: string; at: string }[] = [];
-  for (const a of AUTOMATIONS.filter((x) => x.risk === "aprobare")) {
-    const [r] = await rows<{ status: string; pending: number; note: string; started_at: string }>(db,
-      sql`select status, pending, note, started_at from automation_run where automation = ${a.key} order by started_at desc limit 1`);
+  const waiting = AUTOMATIONS.filter((x) => x.risk === "aprobare");
+  const lastOf = await Promise.all(waiting.map((a) => rows<{ status: string; pending: number; note: string; started_at: string }>(db,
+    sql`select status, pending, note, started_at from automation_run where automation = ${a.key} order by started_at desc limit 1`)));
+  waiting.forEach((a, i) => {
+    const [r] = lastOf[i];
     if (r?.status === "asteapta" && n(r.pending) > 0) pendingApprovals.push({ key: a.key, count: n(r.pending), note: r.note, at: new Date(r.started_at).toISOString() });
-  }
+  });
   const w = week[0] ?? {};
   return {
     score, switches: sw, last, pendingApprovals,
@@ -557,6 +559,6 @@ export async function autonomyPage(db: Db) {
     recent: recent.map((r) => ({ ...r, at: new Date(r.started_at).toISOString() })),
     week: { runs: n(w.runs), ok: n(w.ok), errors: n(w.errors), acted: n(w.acted), mails: n(w.mails), approved: n(w.approved) },
     loop: loop[0] ? { ...loop[0], at: new Date(loop[0].started_at).toISOString() } : null,
-    cron: { secret: !!process.env.CRON_SECRET?.trim(), mail: emailReady(), sales: (await planSettings(db)).on },
+    cron: { secret: !!process.env.CRON_SECRET?.trim(), mail: emailReady(), sales: plansNow.on },
   };
 }

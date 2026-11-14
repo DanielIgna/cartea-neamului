@@ -51,8 +51,10 @@
   "scripts/diacritice.ts",
   "scripts/e2e-neon.ts",
   "scripts/harta-cod.ts",
+  "scripts/masoara-viteza.ts",
   "scripts/migrate.ts",
   "scripts/seed.ts",
+  "scripts/test-incarcare.ts",
   "src/app/(public)/pub/[v]/cadou-de-sarbatori/page.tsx",
   "src/app/(public)/pub/[v]/confidentialitate/page.tsx",
   "src/app/(public)/pub/[v]/contact/page.tsx",
@@ -98,6 +100,7 @@
   "src/app/(site)/admin/invatare/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
   "src/app/(site)/admin/layout.tsx",
+  "src/app/(site)/admin/loading.tsx",
   "src/app/(site)/admin/oameni/[id]/page.tsx",
   "src/app/(site)/admin/oameni/page.tsx",
   "src/app/(site)/admin/page.tsx",
@@ -184,6 +187,7 @@
   "src/app/api/folosire/route.ts",
   "src/app/api/parteneri/[partner]/export/route.ts",
   "src/app/api/parteneri/dezabonare/route.ts",
+  "src/app/api/ping/route.ts",
   "src/app/api/plata/start/route.ts",
   "src/app/api/plata/stripe/route.ts",
   "src/app/api/poza-acasa/[id]/route.ts",
@@ -966,6 +970,10 @@
   },
   {
    "path": "/api/parteneri/dezabonare",
+   "kind": "api"
+  },
+  {
+   "path": "/api/ping",
    "kind": "api"
   },
   {

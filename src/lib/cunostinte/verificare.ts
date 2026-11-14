@@ -1,3 +1,4 @@
+import { cache } from "react";
 /**
  * Verificarea registrului (Admin → Centru de cunoștințe): ce e declarat în functii.ts și documente.ts, pus față în față cu
  * ce există cu adevărat: fișierele și adresele din codul publicat (cod.json), tabelele din baza de date, cifrele din ele,
@@ -274,42 +275,45 @@ export async function gatherFacts(db: Db, now = new Date()): Promise<Facts> {
   const routes = new Set(cod.routes.map((r) => r.path));
   let tables: Set<string> | null = null;
   let withCreated = new Set<string>();
+  // O singură întrebare pentru tabele și coloane (înainte: două, una după alta).
   try {
-    const t = await rows<{ table_name: string }>(db, sql`select table_name from information_schema.tables where table_schema = 'public'`);
+    const t = await rows<{ table_name: string; created: boolean }>(db, sql`select t.table_name,
+        exists (select 1 from information_schema.columns c where c.table_schema = 'public' and c.table_name = t.table_name and c.column_name = 'created_at') as created
+      from information_schema.tables t where t.table_schema = 'public'`);
     tables = new Set(t.map((x) => x.table_name));
-    const c = await rows<{ table_name: string }>(db, sql`select table_name from information_schema.columns where table_schema = 'public' and column_name = 'created_at'`);
-    withCreated = new Set(c.map((x) => x.table_name));
+    withCreated = new Set(t.filter((x) => x.created).map((x) => x.table_name));
   } catch { /* baza n-a răspuns: tabelele rămân „?” */ }
 
   const metrics = new Map<string, { total: number; last30: number | null } | "eroare">();
   if (tables) {
     const wanted = [...new Set(FUNCTIONS.flatMap((fn) => (fn.metric ? [fn.metric.table] : [])))].filter((t) => SAFE.test(t));
-    await Promise.all(wanted.map(async (t) => {
-      if (!tables!.has(t)) { metrics.set(t, "eroare"); return; }
+    for (const t of wanted) if (!tables.has(t)) metrics.set(t, "eroare");
+    const present = wanted.filter((t) => tables!.has(t));
+    // Toate numărătorile într-o singură întrebare (înainte: câte una pentru fiecare tabel, ~25 de drumuri până la bază).
+    if (present.length) {
       try {
-        const name = sql.raw(`"${t}"`);
-        const [r] = withCreated.has(t)
-          ? await rows(db, sql`select count(*) as total, count(*) filter (where created_at > now() - interval '30 days') as last30 from ${name}`)
-          : await rows(db, sql`select count(*) as total from ${name}`);
-        metrics.set(t, { total: n(r?.total), last30: withCreated.has(t) ? n(r?.last30) : null });
-      } catch { metrics.set(t, "eroare"); }
-    }));
+        const r = await rows<{ t: string; total: unknown; last30: unknown }>(db, sql.join(present.map((t) => {
+          const name = sql.raw(`"${t}"`);
+          return withCreated.has(t)
+            ? sql`select ${t}::text as t, count(*) as total, count(*) filter (where created_at > now() - interval '30 days') as last30 from ${name}`
+            : sql`select ${t}::text as t, count(*) as total, null::bigint as last30 from ${name}`;
+        }), sql` union all `));
+        for (const x of r) metrics.set(x.t, { total: n(x.total), last30: withCreated.has(x.t) ? n(x.last30) : null });
+      } catch {
+        for (const t of present) metrics.set(t, "eroare");
+      }
+    }
   }
 
-  let automations: Facts["automations"] = null;
-  try {
-    const [sw, last] = await Promise.all([automationSwitches(db), lastRuns(db)]);
-    automations = new Map(AUTOMATIONS.map((a) => [a.key, { on: sw[a.key], status: last.get(a.key)?.status ?? null, last: last.get(a.key)?.last ?? null, paused: sw.paused?.[a.key as AutoKey] }]));
-  } catch { /* fără tabelele automatizărilor */ }
-
-  const errors = new Map<string, number>();
-  try {
-    for (const r of await rows<{ entity_id: string; c: number }>(db, sql`select entity_id, count(*) as c from audit_log where entity = 'eroare' and created_at > now() - interval '7 days' group by entity_id`))
-      errors.set(r.entity_id, n(r.c));
-  } catch { /* fără jurnal */ }
-
-  let docState: Record<string, DocState> = {};
-  try { docState = await readDocState(db); } catch { /* fără setări */ }
+  const [automations, errors, docState] = await Promise.all([
+    Promise.all([automationSwitches(db), lastRuns(db)]).then(([sw, last]): Facts["automations"] =>
+      new Map(AUTOMATIONS.map((a) => [a.key, { on: sw[a.key], status: last.get(a.key)?.status ?? null, last: last.get(a.key)?.last ?? null, paused: sw.paused?.[a.key as AutoKey] }])))
+      .catch(() => null), // fără tabelele automatizărilor
+    rows<{ entity_id: string; c: number }>(db, sql`select entity_id, count(*) as c from audit_log where entity = 'eroare' and created_at > now() - interval '7 days' group by entity_id`)
+      .then((r) => new Map(r.map((x) => [x.entity_id, n(x.c)])))
+      .catch(() => new Map<string, number>()), // fără jurnal
+    readDocState(db).catch((): Record<string, DocState> => ({})), // fără setări
+  ]);
 
   return { files, routes, tables, metrics, env: envSet, automations, errors, menu: new Set(ALL_ADMIN_ITEMS.map((i) => i.href)), docState, now };
 }
@@ -355,3 +359,6 @@ export function knowledgeFrom(facts: Facts) {
 export async function knowledgeSummary(db: Db, now = new Date()) {
   try { return (await knowledge(db, now)).summary; } catch { return null; }
 }
+
+/** Rezumatul, o singură dată pe cerere (Sănătatea afacerii îl cere și direct, și prin scorul de autonomie). */
+export const knowledgeSummaryOnce = cache((db: Db) => knowledgeSummary(db));

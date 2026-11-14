@@ -16,9 +16,12 @@ export async function isAdmin() {
  */
 export async function adminNeedsTwoStep(userId: string) {
   if (process.env.NODE_ENV !== "production" || process.env.ADMIN_2FA?.trim() === "off") return false;
-  const [u] = await db.select({ on: user.twoFactorEnabled }).from(user).where(eq(user.id, userId));
+  // Amândouă deodată: se cer la fiecare pagină de admin.
+  const [[u], pwd] = await Promise.all([
+    db.select({ on: user.twoFactorEnabled }).from(user).where(eq(user.id, userId)),
+    db.select({ id: account.id }).from(account).where(and(eq(account.userId, userId), eq(account.providerId, "credential"))).limit(1),
+  ]);
   if (u?.on) return false;
-  const pwd = await db.select({ id: account.id }).from(account).where(and(eq(account.userId, userId), eq(account.providerId, "credential"))).limit(1);
   return pwd.length > 0;
 }
 
@@ -37,8 +40,10 @@ async function isAdminFresh(me: Candidate) {
 /** Paginile de admin: cine nu e admin vede „pagina nu există”, ca să nu afle nici că panoul e acolo. */
 export async function requireAdmin(next = "/admin") {
   const me = await requireUser(next);
-  if (!(await isAdminFresh(me))) notFound();
-  if (await adminNeedsTwoStep(me.id)) redirect("/securitate?admin=1");
+  // Verificările deodată; rezultatul pentru pasul 2 contează doar dacă e admin.
+  const [admin, twoStep] = await Promise.all([isAdminFresh(me), adminNeedsTwoStep(me.id)]);
+  if (!admin) notFound();
+  if (twoStep) redirect("/securitate?admin=1");
   return me;
 }
 

@@ -51,9 +51,10 @@ export function funnelTargets(paidPerMonth: number, trialToPaid: number, visitTo
 }
 
 export async function businessHealth(db: Db, now = new Date()) {
-  const s = await planSettings(db);
-  const price = s.priceLei || 49;
-  const [b] = await rows(db, sql`select
+  // Totul deodată (înainte: 5 rânduri de întrebări, unul după altul, iar rezumatul cunoștințelor se calcula de două ori).
+  const [s, [b], [visits], auto, sw, seo, kc] = await Promise.all([
+  planSettings(db),
+  rows(db, sql`select
       (select count(*) from account_plan p join "user" u on u.id = p.user_id where p.paid_until > now() and p.tier is not null and u.email <> ${DEMO_EMAIL}) as paid_active,
       (select count(*) from payment where created_at > now() - interval '30 days') as pay30,
       (select coalesce(sum(amount), 0) from payment where currency = 'ron' and created_at > now() - interval '30 days') as lei30,
@@ -72,16 +73,18 @@ export async function businessHealth(db: Db, now = new Date()) {
       (select count(distinct s.user_id) from session s join "user" u on u.id = s.user_id where u.email <> ${DEMO_EMAIL} and u.created_at < now() - interval '14 days' and s.updated_at > now() - interval '30 days') as old_active,
       (select count(*) from problem_report where status = 'nou') as prob_new,
       (select count(*) from problem_report where status <> 'rezolvat' and reply is null and created_at < now() - interval '2 days') as prob_late,
-      (select count(*) from problem_report where created_at > now() - interval '30 days') as prob30`).catch(() => [{} as Row]);
-  const x = b ?? {};
-  const [visits] = await rows(db, sql`select count(distinct visitor || day::text) as all_v,
+      (select count(*) from problem_report where created_at > now() - interval '30 days') as prob30`).catch(() => [{} as Row]),
+  rows(db, sql`select count(distinct visitor || day::text) as all_v,
       count(distinct visitor || day::text) filter (where source in (${sql.join([...SEARCH_SOURCES].map((v) => sql`${v}`), sql`, `)})) as organic,
       count(distinct visitor || day::text) filter (where campaign = 'invitatie') as invite,
       count(distinct visitor || day::text) filter (where campaign in ('card-nume', 'card-localitate') or medium = 'distribuire') as shares
-    from page_view where day > current_date - 30`).catch(() => [{} as Row]);
+    from page_view where day > current_date - 30`).catch(() => [{} as Row]),
+  autonomyScore(db, now).catch(() => null), automationSwitches(db).catch(() => null), seoSettings(db).catch(() => null),
+  import("./cunostinte/verificare").then((m) => m.knowledgeSummaryOnce(db)).catch(() => null),
+  ]);
+  const price = s.priceLei || 49;
+  const x = b ?? {};
   const v = visits ?? {};
-  const [auto, sw, seo] = await Promise.all([autonomyScore(db, now).catch(() => null), automationSwitches(db).catch(() => null), seoSettings(db).catch(() => null)]);
-  const kc = await import("./cunostinte/verificare").then((m) => m.knowledgeSummary(db, now)).catch(() => null);
 
   // Conversia reală (conturi trecute de cele 7 zile, din ultimele ~3 luni) când are destule conturi; altfel presupunerea.
   const cohort = n(x.cohort), cohortPaid = n(x.cohort_paid);

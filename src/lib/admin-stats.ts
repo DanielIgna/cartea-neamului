@@ -19,23 +19,24 @@ export type BusinessStats = Awaited<ReturnType<typeof businessStats>>;
 
 /** Tot ce arată zona Business: oameni, arbori, activitate și ce ar aduce planul „Familie”, cu limitele din „Manager control”. Doar citiri. */
 export async function businessStats(db: Db) {
-  const plans = await planOverview(db);
-  const [u] = await rows(db, sql`select
+  // Toate întrebările deodată: fiecare drum până la bază costă timp, iar una după alta se adunau.
+  const [plans, uRows, actRows, googleRows, weeks, tRows, cRows, books, topTrees, recentUsers] = await Promise.all([
+    planOverview(db),
+    rows(db, sql`select
       count(*) as total,
       count(*) filter (where created_at > now() - interval '7 days') as new7,
       count(*) filter (where created_at > now() - interval '30 days') as new30,
       count(*) filter (where email_verified) as verified
-    from "user"`);
-  const [act] = await rows(db, sql`select
+    from "user"`),
+    rows(db, sql`select
       count(distinct user_id) filter (where updated_at > now() - interval '1 day') as d1,
       count(distinct user_id) filter (where updated_at > now() - interval '7 days') as d7,
       count(distinct user_id) filter (where updated_at > now() - interval '30 days') as d30
-    from session`);
-  const [google] = await rows(db, sql`select count(distinct user_id) as c from account where provider_id = 'google'`);
-  const weeks = await rows<{ week: string; c: unknown }>(db, sql`select date_trunc('week', created_at) as week, count(*) as c
-    from "user" where created_at > now() - interval '12 weeks' group by 1 order by 1`);
-
-  const [t] = await rows(db, sql`with sizes as (
+    from session`),
+    rows(db, sql`select count(distinct user_id) as c from account where provider_id = 'google'`),
+    rows<{ week: string; c: unknown }>(db, sql`select date_trunc('week', created_at) as week, count(*) as c
+    from "user" where created_at > now() - interval '12 weeks' group by 1 order by 1`),
+    rows(db, sql`with sizes as (
       select t.id, t.discoverable, (select count(*) from person p where p.tree_id = t.id) as persons,
              (select count(*) from tree_member m where m.tree_id = t.id) as members
       from tree t)
@@ -44,8 +45,8 @@ export async function businessStats(db: Db) {
       count(*) filter (where members > 1) as shared,
       coalesce(round(avg(persons)), 0) as avg_persons,
       coalesce(max(persons), 0) as max_persons
-    from sizes`);
-  const [c] = await rows(db, sql`select
+    from sizes`),
+    rows(db, sql`select
       (select count(*) from person) as persons,
       (select count(*) from person where living) as living,
       (select count(*) from person where claimed_by_user_id is not null) as claimed,
@@ -59,22 +60,27 @@ export async function businessStats(db: Db) {
       (select count(*) from join_request where status = 'pending') as joins_pending,
       (select count(*) from join_request where status = 'accepted') as joins_accepted,
       (select count(*) from place_contact) as contacts,
-      (select count(*) from place_contact where status = 'accepted') as contacts_accepted`);
-  const books = await rows<{ status: string; c: unknown; bani: unknown }>(db, sql`select status, count(*) as c, coalesce(sum(price_bani), 0) as bani
-    from book_export group by status`);
-
-  const topTrees = await rows(db, sql`select t.id, t.name, t.created_at, t.discoverable, t.owner_id, o.name as owner, o.email as owner_email,
+      (select count(*) from place_contact where status = 'accepted') as contacts_accepted`),
+    rows<{ status: string; c: unknown; bani: unknown }>(db, sql`select status, count(*) as c, coalesce(sum(price_bani), 0) as bani
+    from book_export group by status`),
+    rows(db, sql`select t.id, t.name, t.created_at, t.discoverable, t.owner_id, o.name as owner, o.email as owner_email,
       (select count(*) from person p where p.tree_id = t.id) as persons,
       (select count(*) from tree_member m where m.tree_id = t.id) as members,
       (select count(*) from document d where d.tree_id = t.id) as documents,
       (select max(p.updated_at) from person p where p.tree_id = t.id) as last_edit
     from tree t left join "user" o on o.id = t.owner_id
-    order by persons desc, t.created_at desc limit 15`);
-  const recentUsers = await rows(db, sql`select u.id, u.name, u.email, u.created_at,
+    order by persons desc, t.created_at desc limit 15`),
+    rows(db, sql`select u.id, u.name, u.email, u.created_at,
       (select string_agg(distinct a.provider_id, ', ') from account a where a.user_id = u.id) as providers,
       (select count(*) from tree_member m where m.user_id = u.id) as trees,
       (select max(s.updated_at) from session s where s.user_id = u.id) as last_seen
-    from "user" u order by u.created_at desc limit 15`);
+    from "user" u order by u.created_at desc limit 15`),
+  ]);
+  const u = uRows[0];
+  const act = actRows[0];
+  const google = googleRows[0];
+  const t = tRows[0];
+  const c = cRows[0];
 
   const state = new Map(plans.trees.map((x) => [x.id, x]));
   const paidBani = books.filter((b) => b.status === "paid" || b.status === "ready").reduce((s, b) => s + n(b.bani), 0);
@@ -119,29 +125,43 @@ export async function infraStats(db: Db) {
   const t0 = Date.now();
   await db.execute(sql`select 1`);
   const pingMs = Date.now() - t0;
-  const [info] = await rows(db, sql`select version() as version, pg_database_size(current_database()) as bytes, current_database() as name`);
-  const existing = new Set((await rows<{ t: string }>(db, sql`select table_name as t from information_schema.tables where table_schema = 'public'`)).map((r) => r.t));
-  const present = TABLES.filter((x) => existing.has(x));
-  const counts = present.length
-    ? await rows<{ t: string; c: unknown; bytes: unknown }>(db, sql.join(present.map((x) =>
-        sql`select ${x} as t, (select count(*) from ${sql.identifier(x)}) as c, pg_total_relation_size(${`public."${x}"`}) as bytes`), sql` union all `))
-    : [];
-  let migrations = { applied: 0, last: null as string | null };
-  try {
-    const [m] = await rows(db, sql`select count(*) as c, max(created_at) as last from drizzle.__drizzle_migrations`);
-    migrations = { applied: n(m.c), last: m.last ? new Date(n(m.last)).toISOString() : null };
-  } catch { /* tabela migrațiilor nu există încă */ }
-  const [s] = await rows(db, sql`select count(*) filter (where expires_at > now()) as live, count(*) filter (where expires_at <= now()) as expired from session`);
-  const [ja] = await rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '1 day' and not found) as miss1 from join_attempt`);
-  // Erorile pe care adminul le-a marcat „rezolvate” (cele de până la acel moment) nu se mai numără și nu se mai arată în listă.
-  const [seenRow] = await rows(db, sql`select value from app_setting where key = ${ERRORS_SEEN_KEY}`);
-  const seenAt = typeof (seenRow?.value as { at?: unknown } | undefined)?.at === "string" ? new Date((seenRow!.value as { at: string }).at) : null;
-  const after = seenAt && !Number.isNaN(seenAt.getTime()) ? seenAt : new Date(0);
-  const [e] = await rows(db, sql`select count(*) as hidden from audit_log where entity = 'eroare' and created_at <= ${after.toISOString()}`);
-  const [shown] = await rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '7 days') as d7
-    from audit_log where entity = 'eroare' and created_at > ${after.toISOString()}`);
-  const errors = await rows(db, sql`select created_at, entity_id, action, diff from audit_log where entity = 'eroare' and created_at > ${after.toISOString()} order by created_at desc limit 25`);
-  const [docs] = await rows(db, sql`select count(*) filter (where file_key is not null) as files from document`);
+  // Restul deodată (înainte erau 11 întrebări una după alta).
+  const seenP = rows(db, sql`select value from app_setting where key = ${ERRORS_SEEN_KEY}`).then(([seenRow]) => {
+    const at = typeof (seenRow?.value as { at?: unknown } | undefined)?.at === "string" ? new Date((seenRow!.value as { at: string }).at) : null;
+    return at && !Number.isNaN(at.getTime()) ? at : null;
+  });
+  const tablesP = rows<{ t: string }>(db, sql`select table_name as t from information_schema.tables where table_schema = 'public'`).then(async (t) => {
+    const existing = new Set(t.map((r) => r.t));
+    const present = TABLES.filter((x) => existing.has(x));
+    const counts = present.length
+      ? await rows<{ t: string; c: unknown; bytes: unknown }>(db, sql.join(present.map((x) =>
+          sql`select ${x} as t, (select count(*) from ${sql.identifier(x)}) as c, pg_total_relation_size(${`public."${x}"`}) as bytes`), sql` union all `))
+      : [];
+    return { existing, counts };
+  });
+  const errorsP = seenP.then((seenAt) => {
+    const after = (seenAt ?? new Date(0)).toISOString();
+    return Promise.all([
+      rows(db, sql`select count(*) filter (where created_at <= ${after}) as hidden,
+          count(*) filter (where created_at > ${after} and created_at > now() - interval '1 day') as d1,
+          count(*) filter (where created_at > ${after} and created_at > now() - interval '7 days') as d7
+        from audit_log where entity = 'eroare'`),
+      rows(db, sql`select created_at, entity_id, action, diff from audit_log where entity = 'eroare' and created_at > ${after} order by created_at desc limit 25`),
+    ]);
+  });
+  const [[info], { existing, counts }, migrations, [s], [ja], seenAt, [[e], errors], [docs]] = await Promise.all([
+    rows(db, sql`select version() as version, pg_database_size(current_database()) as bytes, current_database() as name`),
+    tablesP,
+    rows(db, sql`select count(*) as c, max(created_at) as last from drizzle.__drizzle_migrations`)
+      .then(([m]) => ({ applied: n(m.c), last: m.last ? new Date(n(m.last)).toISOString() : null as string | null }))
+      .catch(() => ({ applied: 0, last: null as string | null })), // tabela migrațiilor nu există încă
+    rows(db, sql`select count(*) filter (where expires_at > now()) as live, count(*) filter (where expires_at <= now()) as expired from session`),
+    rows(db, sql`select count(*) filter (where created_at > now() - interval '1 day') as d1, count(*) filter (where created_at > now() - interval '1 day' and not found) as miss1 from join_attempt`),
+    seenP,
+    errorsP,
+    rows(db, sql`select count(*) filter (where file_key is not null) as files from document`),
+  ]);
+  const shown = e;
   return {
     db: { pingMs, version: String(info.version ?? "").split(" on ")[0].split(",")[0], bytes: n(info.bytes), name: String(info.name ?? "") },
     tables: counts.map((r) => ({ name: r.t, rows: n(r.c), bytes: n(r.bytes) })).sort((a, b) => b.bytes - a.bytes),
