@@ -415,8 +415,8 @@ export const FUNCTIONS: Fn[] = [
   {
     key: "infra", name: "Sănătate, erori și migrații", area: "sistem", lifecycle: "live", risk: "mediu", riskWhy: "Dacă pică, nu mai vede nimeni erorile.",
     what: "Erorile de pe server în jurnal, starea bazei, migrațiile la publicare, cheile de mediu.",
-    engine: ["src/lib/errors.ts", "src/instrumentation.ts", "src/lib/verificari.ts", "scripts/deploy-db.ts"],
-    api: ["/api/stare"],
+    engine: ["src/lib/errors.ts", "src/instrumentation.ts", "src/lib/verificari.ts", "scripts/deploy-db.ts", "scripts/masoara-viteza.ts", "scripts/test-incarcare.ts"],
+    api: ["/api/stare", "/api/ping"],
     tables: ["audit_log"],
     automations: ["sanatate"],
     env: ["DATABASE_URL"],

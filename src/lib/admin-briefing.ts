@@ -2,7 +2,7 @@ import { sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
 import { ENV_KEYS, envSet } from "./admin";
 import { ERRORS_SEEN_KEY } from "./admin-stats";
-import { securityOverview } from "./admin-securitate";
+import { securityOverviewOnce } from "./admin-securitate";
 import { emailReady } from "./email";
 import { planSettings } from "./plans";
 import { stripeReady } from "./plati";
@@ -47,12 +47,11 @@ export type Check = { label: string; ok: boolean; note: string };
  */
 export async function adminBriefing(db: Db) {
   const t0 = Date.now();
-  await db.execute(sql`select 1`);
-  const pingMs = Date.now() - t0;
-  const [badges, errors, sec, seo, plans, payRows, lastPay, mig] = await Promise.all([
+  const [pingMs, badges, errors, sec, seo, plans, payRows, lastPay, mig] = await Promise.all([
+    db.execute(sql`select 1`).then(() => Date.now() - t0),
     adminBadges(db),
     errorCounts(db),
-    securityOverview(db).catch(() => null),
+    securityOverviewOnce(db).catch(() => null),
     seoSettings(db).catch(() => null),
     planSettings(db),
     rows(db, sql`select currency, count(*) as c, coalesce(sum(amount), 0) as amount from payment where created_at > now() - interval '7 days' group by currency`).catch(() => []),

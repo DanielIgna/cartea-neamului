@@ -2,19 +2,20 @@
  * Test de încărcare simplu, fără nimic de instalat: N „oameni” deodată cer pagini timp de T secunde.
  * Arată timpii (mediana, p95, p99), erorile, regiunea Vercel și dacă pagina a venit din cache.
  *   npx tsx scripts/test-incarcare.ts [site] [oameni deodată] [secunde]
- *   npx tsx scripts/test-incarcare.ts https://www.carteaneamului.ro 10 60
+ *   npx tsx scripts/test-incarcare.ts https://carteaneamului.ro 10 60
  * Cu DEMO=1 intră și cu contul de probă și cere și paginile din cont.
  *
  * Socoteala pentru „1000 de oameni pe zi”: ~8 pagini de om = 8000 de pagini pe zi; dacă jumătate vin în 3 ore de seară,
  * vârful e ~0,4 pagini pe secundă, iar un vârf de 10× (o postare care se distribuie) ~4 pe secundă. 10 oameni deodată
  * care cer pagină după pagină fără pauză fac mult mai mult de atât, deci e un test cu rezervă.
  */
-const site = (process.argv[2] ?? "https://www.carteaneamului.ro").replace(/\/$/, "");
+export {};
+const site = (process.argv[2] ?? "https://carteaneamului.ro").replace(/\/$/, "");
 const users = Number(process.argv[3] ?? 10);
 const seconds = Number(process.argv[4] ?? 60);
 
 const PUBLIC = ["/", "/istoria-umanitatii", "/genealogii-vechi", "/contact", "/intrare", "/nume", "/localitati", "/ghid", "/cadou-de-sarbatori", "/plata"];
-const PRIVATE = ["/arbore", "/mesaje", "/datele-mele"];
+const PRIVATE = ["/mesaje", "/datele-mele", "/securitate"];
 
 async function demoCookie(): Promise<string | null> {
   const r = await fetch(`${site}/api/auth/sign-in/email`, {

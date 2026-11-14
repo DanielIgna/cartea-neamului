@@ -20,7 +20,8 @@ export const pgUrl = (url: string) => url.replace("sslmode=require", "sslmode=ve
 export function createDb(): Db {
   const url = process.env.DATABASE_URL;
   if (url) {
-    const pool = new Pool({ connectionString: pgUrl(url), max: 5 });
+    // 10 legături: paginile de admin cer multe lucruri deodată; pooler-ul Neon (PgBouncer) le duce fără grijă.
+    const pool = new Pool({ connectionString: pgUrl(url), max: 10 });
     attachDatabasePool(pool);
     return drizzlePg(pool, { schema }) as unknown as Db;
   }
