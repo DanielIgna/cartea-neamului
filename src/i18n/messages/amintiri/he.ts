@@ -179,7 +179,7 @@ export const heAmintiri: AmintiriCatalog = {
   Story: {
     memories: "{count, plural, one {זיכרון אחד} other {# זיכרונות}}",
     empty: "עדיין אין זיכרונות לדפדף בהם.",
-    hint: "געו בצד ימין כדי להתקדם, בצד שמאל כדי לחזור.",
+    hint: "געו בצד שמאל כדי להתקדם, בצד ימין כדי לחזור.",
     with: "עם {names}",
     writtenBy: "נכתב על ידי {name}",
     recordedBy: "הוקלט על ידי {name}, „אצל סבא וסבתא”",

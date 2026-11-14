@@ -41,9 +41,9 @@
 .journey-nav .btn:disabled{opacity:.45;cursor:default}
 .journey-card-wrap{display:flex;flex-direction:column;gap:12px;outline:none}
 .journey-card h2{font-family:var(--display);margin:4px 0 8px;font-size:26px}
-.journey-card.line-father{border-left:5px solid var(--accent)}
-.journey-card.line-mother{border-left:5px solid var(--ochre)}
-.journey-card.line-ego{border-left:5px solid var(--good)}
+.journey-card.line-father{border-inline-start:5px solid var(--accent)}
+.journey-card.line-mother{border-inline-start:5px solid var(--ochre)}
+.journey-card.line-ego{border-inline-start:5px solid var(--good)}
 .stop-head{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px}
 .time-road-key{margin:4px 2px 0;font-size:14px;color:var(--muted)}
 .line-chip{font-size:14px;font-weight:700;border-radius:999px;padding:2px 10px;background:var(--surface-2);border:1px solid var(--line)}
@@ -52,10 +52,10 @@
 .journey-bio{font-style:italic;margin:6px 0 8px;line-height:1.5}
 .contemporaries{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .contemporaries li{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:4px 10px;font-size:14px}
-.journey-card.word{border-left:5px solid var(--plum);line-height:1.6;font-size:16.5px}
+.journey-card.word{border-inline-start:5px solid var(--plum);line-height:1.6;font-size:16.5px}
 .journey-card.word h2{margin-top:18px}
 .journey-card.word h2:first-child{margin-top:4px}
-.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--ochre);background:var(--ochre-soft);border-radius:0 10px 10px 0}
+.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-inline-start:3px solid var(--ochre);background:var(--ochre-soft);border-radius:10px;border-start-start-radius:0;border-end-start-radius:0}
 .journey-card.word blockquote p{margin:0;font-family:var(--display);font-size:18px}
 .journey-card.word cite{display:block;margin-top:4px;font-style:normal;font-weight:700;font-size:14px;color:var(--muted)}
 /* Dungile de lumină din zbor. */
@@ -67,13 +67,13 @@
 @keyframes streaks{from{background-position:0 23px,40px 71px}to{background-position:180px 23px,300px 71px}}
 @media (prefers-reduced-motion:reduce){.cockpit .streaks{display:none}}
 .time-road i.regime{background:var(--red);border-radius:2px}
-.journey-card.line-regime{border-left:5px solid var(--red)}
-.journey-verse,.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--ochre);background:var(--ochre-soft);border-radius:0 10px 10px 0}
+.journey-card.line-regime{border-inline-start:5px solid var(--red)}
+.journey-verse,.journey-card.word blockquote{margin:10px 0;padding:10px 14px;border-inline-start:3px solid var(--ochre);background:var(--ochre-soft);border-radius:10px;border-start-start-radius:0;border-end-start-radius:0}
 .journey-verse p{margin:0;font-family:var(--display);font-size:18px}
 .journey-verse cite{display:block;margin-top:4px;font-style:normal;font-weight:700;font-size:14px;color:var(--muted)}
 .journey-quiz{margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:10px;background:var(--surface-2)}
 .quiz-options{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.quiz-options .btn{text-align:left;font:inherit;cursor:pointer}
+.quiz-options .btn{text-align:start;font:inherit;cursor:pointer}
 .quiz-options .btn:disabled{cursor:default}
 .quiz-options .btn.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 15%,var(--surface));font-weight:600}
 .quiz-options .btn.wrong{border-color:var(--red);text-decoration:line-through;opacity:.8}

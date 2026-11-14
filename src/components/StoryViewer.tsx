@@ -32,9 +32,12 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
   const down = useRef<{ x: number; y: number; t: number } | null>(null);
 
   useEffect(() => {
+    // În ebraică (dir="rtl") „înainte” e spre stânga: săgețile și atingerile se întorc.
     const key = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === "PageDown" || (e.key === " " && !(e.target as HTMLElement).closest("button,a"))) { e.preventDefault(); go(1); }
-      else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1); }
+      const rtl = document.documentElement.dir === "rtl";
+      const fwd = rtl ? "ArrowLeft" : "ArrowRight", bwd = rtl ? "ArrowRight" : "ArrowLeft";
+      if (e.key === fwd || e.key === "PageDown" || (e.key === " " && !(e.target as HTMLElement).closest("button,a"))) { e.preventDefault(); go(1); }
+      else if (e.key === bwd || e.key === "PageUp") { e.preventDefault(); go(-1); }
       else if (e.key === "Escape") router.push(back);
     };
     window.addEventListener("keydown", key);
@@ -45,11 +48,13 @@ export default function StoryViewer({ slides, back, title }: { slides: Slide[]; 
     const d = down.current;
     down.current = null;
     if (!d || (e.target as HTMLElement).closest("a,button,audio")) return;
-    const dx = e.clientX - d.x, dy = e.clientY - d.y;
+    const rtl = document.documentElement.dir === "rtl";
+    const dx = (e.clientX - d.x) * (rtl ? -1 : 1), dy = e.clientY - d.y;
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) return go(dx < 0 ? 1 : -1);
     if (Math.abs(dx) < 10 && Math.abs(dy) < 10 && Date.now() - d.t < 600) {
       const r = e.currentTarget.getBoundingClientRect();
-      go(e.clientX - r.left < r.width / 3 ? -1 : 1);
+      const fromStart = rtl ? r.right - e.clientX : e.clientX - r.left;
+      go(fromStart < r.width / 3 ? -1 : 1);
     }
   };
 

@@ -19,7 +19,7 @@ import { CHAPTERS, chapterKey } from "@/lib/questions";
 import { memoryShortPath } from "@/lib/short-link";
 import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
-import { isLocale, type Locale } from "@/i18n/locales";
+import { dirOf, isLocale, type Locale } from "@/i18n/locales";
 import BookView from "@/components/BookView";
 import { userAccess } from "@/lib/plata";
 import { bookIncluded, bookPaid, money, priceFor } from "@/lib/plati";
@@ -240,7 +240,7 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
   const oldest = stats.oldest;
   const treeCount = Object.keys(model.treePeople).length;
   return (
-    <div className={`bk bk-${options.format}`} lang={w.locale}>
+    <div className={`bk bk-${options.format}`} lang={w.locale} dir={dirOf(w.locale)}>
       <section className="bk-cover">
         <div className="bk-frame" aria-hidden><i /><i /><i /><i /></div>
         <div className="bk-kicker">{t("cover.kicker")}</div>
@@ -337,7 +337,7 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
           <p className="bk-chapter-sub">{t("descendants.sub")}</p>
           <ol className="bk-outline">
             {model.outline.map((l) => (
-              <li key={l.num} style={{ paddingLeft: `${Math.min(l.depth, 9) * 4}mm` }}>
+              <li key={l.num} style={{ paddingInlineStart: `${Math.min(l.depth, 9) * 4}mm` }}>
                 <span className="num">{l.num}</span>
                 <span className="who">{l.person.id ? <a href={`#p-${l.person.id}`}>{l.person.name}</a> : l.person.name}</span>
                 {l.person.dates && <span className="bk-muted"> {l.person.dates}</span>}

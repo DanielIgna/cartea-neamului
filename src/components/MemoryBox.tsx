@@ -266,7 +266,7 @@ function MemoryCard({ m, treeId, profileId, viewerPersonId, nameOf, run, pending
         {meHere && (meHere.hidden
           ? <button className="linklike" disabled={pending} onClick={() => run(() => hideMention(treeId, m.id, viewerPersonId!, false), t("shownAgain"))}>{t("showAgain")}</button>
           : <button className="linklike" disabled={pending} onClick={() => run(() => hideMention(treeId, m.id, viewerPersonId!, true), t("hidden"))}>{t("hide")}</button>)}
-        <span className="muted" style={{ marginLeft: "auto", fontSize: 13 }}>{fmtDay(m.createdAt, locale)}</span>
+        <span className="muted" style={{ marginInlineStart: "auto", fontSize: 13 }}>{fmtDay(m.createdAt, locale)}</span>
       </div>
       {confirm && (
         <div className="confirm" style={{ marginTop: 8 }}>

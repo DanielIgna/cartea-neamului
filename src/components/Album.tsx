@@ -31,7 +31,7 @@ export function Album({ p, treeId, canEdit, onChanged, large = false }: { p: Per
               <a href={`/api/document/${d.id}`} target="_blank" rel="noopener"><img src={`/api/document/${d.id}`} alt={d.description ?? d.title} loading="lazy" /></a>
               <figcaption>
                 <b>{d.title}</b>{d.dateText ? <small> · {d.dateText}</small> : null}
-                {p.photoId === d.id && <span className="chip ok" style={{ marginLeft: 6 }}>{t("profileChip")}</span>}
+                {p.photoId === d.id && <span className="chip ok" style={{ marginInlineStart: 6 }}>{t("profileChip")}</span>}
                 {editing === d.id ? (
                   <div className="form" style={{ marginTop: 6 }}>
                     <textarea value={text} onChange={(e) => setText(e.target.value)} style={{ minHeight: 60 }} placeholder={t("descPlaceholder")} />

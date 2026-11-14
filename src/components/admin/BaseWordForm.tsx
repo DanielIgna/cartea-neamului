@@ -2,7 +2,7 @@
 import { useState, useTransition } from "react";
 import { saveJourneyBaseWord, type AdminFormState } from "@/app/admin-actions";
 import WordBlocks from "@/components/WordBlocks";
-import type { Locale } from "@/i18n/locales";
+import { dirOf, type Locale } from "@/i18n/locales";
 
 /**
  * Editorul cuvântului de la finalul călătoriei: textul într-o parte, cum se vede în cealaltă (pe telefon, unul sub altul).
@@ -29,7 +29,7 @@ export default function BaseWordForm({ locale, text: saved, original, changed, m
           Un rând care începe cu „## ” e titlu, unul care începe cu „&gt; ” e verset (cu trimiterea după „ — ”), iar un rând gol începe un
           paragraf nou.
         </p>
-        <textarea lang={locale} value={text} onChange={(e) => edit(e.target.value)} rows={24} maxLength={max} disabled={pending} aria-label="Cuvântul de la final" />
+        <textarea lang={locale} dir={dirOf(locale)} value={text} onChange={(e) => edit(e.target.value)} rows={24} maxLength={max} disabled={pending} aria-label="Cuvântul de la final" />
         <p className="muted" style={{ fontSize: 13, margin: "4px 0 0" }}>{text.length} din {max} de caractere{dirty ? " · nesalvat" : ""}</p>
         <div className="actions" style={{ marginTop: 10, alignItems: "center" }}>
           <button type="button" className="btn primary" onClick={() => run(false)} disabled={pending || !dirty || !text.trim()}>
@@ -49,7 +49,7 @@ export default function BaseWordForm({ locale, text: saved, original, changed, m
       </div>
       <div>
         <div className="section-label">Cum se vede</div>
-        <article className="card journey-card word word-preview" lang={locale}><WordBlocks text={text} locale={locale} /></article>
+        <article className="card journey-card word word-preview" lang={locale} dir={dirOf(locale)}><WordBlocks text={text} locale={locale} /></article>
       </div>
     </div>
   );

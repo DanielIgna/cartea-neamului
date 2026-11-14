@@ -132,7 +132,7 @@ export default function MemoryForm({ treeId, ownerId, ownerName, people, storage
         <legend>{t("whoSees")}</legend>
         <label className="radio"><input type="radio" name="vis" checked={visibility === "tree"} onChange={() => setVisibility("tree")} /> {t("visTree")}</label>
         <label className="radio"><input type="radio" name="vis" checked={visibility === "close"} onChange={() => setVisibility("close")} /> {t("visClose")}
-          <select name="maxDegree" defaultValue={edit?.maxDegree ?? defaultDegree} disabled={visibility !== "close"} style={{ width: "auto", marginLeft: 6 }}>
+          <select name="maxDegree" defaultValue={edit?.maxDegree ?? defaultDegree} disabled={visibility !== "close"} style={{ width: "auto", marginInlineStart: 6 }}>
             {[1, 2, 3, 4, 5, 6, 7, 8].map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
         </label>
