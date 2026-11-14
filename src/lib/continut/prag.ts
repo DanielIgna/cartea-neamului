@@ -17,3 +17,14 @@ export function nameGate(n: Surname): string | null {
   const w = nameOwnWords(n);
   return w < NAME_MIN_WORDS ? `doar ${w} cuvinte proprii (pragul e ${NAME_MIN_WORDS}); restul paginii e text comun` : null;
 }
+
+/**
+ * Localitățile (/localitati/<județ>/<localitate>): fiecare are populația, satele, vecinii și distanțele ei, dar o comună cu un
+ * singur sat și puțini locuitori are prea puține lucruri proprii ca să merite o pagină în Google. Când va avea o istorie scrisă
+ * anume, pragul se poate coborî.
+ */
+export const UAT_MIN_POP_SINGLE_VILLAGE = 2000;
+export function uatGate(u: { kind: string; pop: number; villages: unknown[] }): string | null {
+  if (u.kind !== "c" || u.villages.length > 1 || u.pop >= UAT_MIN_POP_SINGLE_VILLAGE) return null;
+  return `comună cu un singur sat și ${u.pop} locuitori (pragul e ${UAT_MIN_POP_SINGLE_VILLAGE} sau mai multe sate)`;
+}

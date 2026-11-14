@@ -2,7 +2,9 @@ import { PRIVATE_PREFIXES, PUBLIC_PAGES } from "./public-pages";
 import { loadCollection } from "./continut/colectii";
 import { loadNames } from "./continut/nume";
 import { countyPath, isCapital, loadCounties, seatPath } from "./continut/localitati";
-import { NAME_MIN_WORDS, nameGate, nameOwnWords } from "./continut/prag";
+import { NAME_MIN_WORDS, nameGate, nameOwnWords, uatGate } from "./continut/prag";
+import { loadUats, uatPath } from "./continut/uat";
+import { uatDescription, uatTitle } from "./continut/uat-text";
 import { INDEX_LIMIT, sitemapGroups } from "./continut/sitemap";
 import { clusterOf, type Cluster } from "./seo-clustere";
 import { fitTitle } from "./page-metadata";
@@ -42,6 +44,10 @@ export function auditPages(): AuditPage[] {
     push({ path: countyPath(c), title: isCapital(c) ? `București: arhive, registre și nume de familie${SUFFIX}` : `Județul ${c.name}: arhive, registre și nume de familie${SUFFIX}`, description: null, words: null, indexable: true, gate: null, category: "județ" });
     const sp = seatPath(c);
     if (sp) push({ path: sp, title: `${c.seat}: unde cauți actele strămoșilor${SUFFIX}`, description: null, words: null, indexable: true, gate: null, category: "oraș" });
+    for (const u of loadUats().filter((x) => x.countySlug === c.slug && uatPath(x) !== sp)) {
+      const gate = uatGate(u);
+      push({ path: uatPath(u), title: uatTitle(u, c), description: uatDescription(u, c), words: null, indexable: !gate, gate, category: u.kind === "c" ? "comună" : "oraș" });
+    }
   }
   return out;
 }
@@ -78,7 +84,7 @@ export function auditAlerts(pages: AuditPage[], o: { gscState?: string; gscError
   else if (o.gscState === "fara-acces") out.push({ level: "critic", code: "GSC_FARA_ACCES", title: "Cheia nu are acces la carteaneamului.ro", text: "Contul de serviciu nu e adăugat ca utilizator la proprietate.", fix: "Search Console → Setări → Utilizatori și permisiuni → adaugă adresa contului de serviciu cu permisiunea Complet." });
 
   const gated = pages.filter((p) => p.gate);
-  if (gated.length) out.push({ level: "info", code: "SUBTIRE_EXCLUS", title: "Pagini subțiri ținute în afara Google (corect)", text: `${gated.length} pagini de nume au sub ${NAME_MIN_WORDS} cuvinte proprii: rămân în site, dar cu „noindex” și fără sitemap. Când le scrii sensul mai pe larg în content/nume/nume.json, intră singure.`, paths: gated.map((p) => p.path) });
+  if (gated.length) out.push({ level: "info", code: "SUBTIRE_EXCLUS", title: "Pagini subțiri ținute în afara Google (corect)", text: `${gated.length} pagini au prea puțin conținut propriu (nume cu sub ${NAME_MIN_WORDS} cuvinte proprii, comune mici cu un singur sat): rămân în site, dar cu „noindex” și fără sitemap. Când primesc text propriu, intră singure.`, paths: gated.map((p) => p.path) });
 
   const titles = new Map<string, string[]>();
   for (const p of pages.filter((x) => x.indexable)) titles.set(p.title, [...(titles.get(p.title) ?? []), p.path]);
