@@ -22,6 +22,7 @@ import type { Role } from "./access";
 import { dropMemories, type Q } from "./lada-db";
 import { dropHouses } from "./old-house";
 import { partnerHistory } from "./partners";
+import { inviteHistory } from "./propmanage-cont";
 import { chapterLabel } from "./questions";
 import { recordConsent } from "./consent";
 import { CONSENT_LABEL, type ConsentPurpose } from "./legal";
@@ -175,6 +176,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
   const dna = await db.select().from(dnaRequest).where(eq(dnaRequest.email, u.email)).orderBy(asc(dnaRequest.createdAt));
   const referrals = await db.select().from(referralBonus).where(or(eq(referralBonus.referrerId, userId), eq(referralBonus.referredId, userId)));
   const partners = await partnerHistory(db, userId);
+  const pmInvites = await inviteHistory(db, userId);
   const houses = await db.select().from(oldHouse).where(eq(oldHouse.authorId, userId)).orderBy(asc(oldHouse.createdAt));
   const proposals = await db.select().from(homeSubmission).where(eq(homeSubmission.userId, userId)).orderBy(asc(homeSubmission.createdAt));
   const problems = await db.select().from(problemReport).where(eq(problemReport.userId, userId)).orderBy(asc(problemReport.createdAt));
@@ -227,6 +229,9 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
     // Acordul pentru beneficiile de la parteneri (PropManage), cu tot istoricul: fiecare „da” și „nu”.
     acorduriParteneri: partners.map((p) => ({ partener: p.partner === "propmanage" ? "PropManage" : p.partner, dat: p.granted, versiune: p.textVersion, limba: p.locale,
       deUnde: p.source, dinData: iso(p.grantedAt), retrasPe: iso(p.revokedAt), scris: iso(p.createdAt) })),
+    // Cererile „Vreau contul gratuit” PropManage: acordul (textul exact al bifei, data, ora) și dacă numele și emailul au plecat.
+    contPropManage: pmInvites.map((r) => ({ acord: r.consentText, acordDat: iso(r.consentAt), limba: r.locale, deUnde: r.place, sursa: r.sursa,
+      magazin: r.partnerId, trimis: r.status === "trimis", eroare: r.error })),
     // Planul ales din panoul de admin și nota de acolo, dacă există (un drept al omului, ca orice altă dată despre el).
     ...(plan ? { notaNoastra: { plan: PLANS[plan.plan as Plan]?.label ?? plan.plan, nota: plan.note, platitPanaLa: iso(plan.paidUntil), pastrarePanaLa: iso(plan.keepUntil), schimbata: iso(plan.updatedAt) } } : {}),
     // Plățile făcute cu cardul (fără datele cardului, pe care nu le vedem): ce, cât și când. Se păstrează pentru contabilitate.

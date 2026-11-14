@@ -315,6 +315,17 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/parteneri.test.ts"],
   },
   {
+    key: "propmanage-cont", name: "Cont gratuit PropManage după card", area: "comunicare", lifecycle: "live", risk: "ridicat", riskWhy: "Numele și emailul pleacă la altă firmă; doar cu bifa separată, nebifată.",
+    what: "Caseta de după „Gata! Cardul este activat” și din Datele mele: bifă de acord, POST semnat HMAC la PropManage, linkul /cont-cadou într-un tab nou, „Conturi PropManage” pe magazin și pe lot, comutator separat (oprit).",
+    engine: ["src/lib/propmanage-cont.ts", "src/app/propmanage-actions.ts", "src/components/PropManageOffer.tsx", "src/components/admin/PropManageAdmin.tsx"],
+    pages: ["/activeaza", "/datele-mele", "/admin/carduri"],
+    tables: ["propmanage_invite", "app_setting"],
+    env: ["PROPMANAGE_INVITE_URL", "PARTNER_SHARED_SECRET"],
+    metric: { table: "propmanage_invite", label: "cereri de cont PropManage" },
+    dashboard: "/admin/carduri",
+    tests: ["tests/propmanage-cont.test.ts"],
+  },
+  {
     key: "adn", name: "Resurse și cererile de test ADN", area: "comunicare", lifecycle: "live", risk: "mediu", riskWhy: "Fără date genetice; doar cererea de contact.",
     what: "/resurse-genealogie: surse gratuite și formularul ADN.",
     engine: ["src/lib/resurse.ts", "src/components/DnaForm.tsx"],

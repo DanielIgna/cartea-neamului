@@ -30,6 +30,7 @@
   "drizzle/0027_autonomie.sql",
   "drizzle/0028_carduri_cadou.sql",
   "drizzle/0029_parteneri_crm.sql",
+  "drizzle/0030_propmanage_cont.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -219,6 +220,7 @@
   "src/app/parteneri-crm-actions.ts",
   "src/app/pornire-actions.ts",
   "src/app/probleme-actions.ts",
+  "src/app/propmanage-actions.ts",
   "src/app/r/[cod]/route.ts",
   "src/app/resurse-actions.ts",
   "src/app/robots.ts",
@@ -284,6 +286,7 @@
   "src/components/ProblemForm.tsx",
   "src/components/ProfileAlbum.tsx",
   "src/components/ProfileRelatives.tsx",
+  "src/components/PropManageOffer.tsx",
   "src/components/RaisedBy.tsx",
   "src/components/SecuritySettings.tsx",
   "src/components/SiblingsParents.tsx",
@@ -318,6 +321,7 @@
   "src/components/admin/OwnerRecovery.tsx",
   "src/components/admin/PlanForms.tsx",
   "src/components/admin/ProblemActions.tsx",
+  "src/components/admin/PropManageAdmin.tsx",
   "src/components/admin/ProposalActions.tsx",
   "src/components/admin/Ring.tsx",
   "src/components/admin/SeoForms.tsx",
@@ -647,6 +651,8 @@
   "src/lib/plata.ts",
   "src/lib/plati.ts",
   "src/lib/probleme.ts",
+  "src/lib/propmanage-cont.ts",
+  "src/lib/propmanage-texte.ts",
   "src/lib/public-pages.ts",
   "src/lib/public-sections.ts",
   "src/lib/public-variant-server.ts",
@@ -727,6 +733,7 @@
   "tests/places.test.ts",
   "tests/plati.test.ts",
   "tests/probleme.test.ts",
+  "tests/propmanage-cont.test.ts",
   "tests/public-variant.test.ts",
   "tests/raised.test.ts",
   "tests/resurse.test.ts",
@@ -1250,6 +1257,7 @@
   "tests/places.test.ts",
   "tests/plati.test.ts",
   "tests/probleme.test.ts",
+  "tests/propmanage-cont.test.ts",
   "tests/public-variant.test.ts",
   "tests/raised.test.ts",
   "tests/resurse.test.ts",
@@ -1267,5 +1275,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 30
+ "migrations": 31
 }
