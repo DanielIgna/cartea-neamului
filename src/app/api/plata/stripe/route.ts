@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { recordConversion } from "@/lib/conversii";
 import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
 import { sendKeepMail } from "@/lib/pastrare";
 import { clientIp, logSecurity, stripeAlert } from "@/lib/securitate";
@@ -26,6 +27,8 @@ export async function POST(req: Request) {
   const paid = paidSession(event);
   // applyPayment întoarce true o singură dată pe sesiune Stripe: dacă Stripe trimite evenimentul din nou, emailurile nu pleacă a doua oară.
   if (paid && (await applyPayment(db, paid))) {
+    // Plata încheiată, numărată la sursa vizitei în care s-a deschis (Admin → Analiză → Conversii). Plățile de probă ale adminilor nu au sursă și nu se numără.
+    if (paid.attr) await recordConversion(db, "plata", { attr: paid.attr, label: paid.kind, amount: paid.amount, currency: paid.currency });
     // Confirmarea plății (planul, suma, data, legătura spre cont). O greșeală aici nu strică plata.
     await sendPaymentMail(db, paid).catch((e) => console.error("sendPaymentMail", e instanceof Error ? e.name : "Error"));
     if (paid.kind === "pastrare" && paid.userId) {

@@ -97,6 +97,12 @@ async function saltOf(db: Db, day: string) {
   return salt;
 }
 
+/** Amprenta zilei pentru o cerere (aceeași pentru vizită și pentru o conversie din aceeași zi, din același browser). */
+export async function visitorOf(db: Db, day: string, ctx: { ip: string | null; ua: string | null; host: string | null }) {
+  const salt = await saltOf(db, day);
+  return createHash("sha256").update(`${salt}|${ctx.ip ?? ""}|${ctx.ua}|${(ctx.host ?? "").replace(/^www\./, "")}`).digest("hex").slice(0, 16);
+}
+
 export type Visit = {
   path: string; ref?: string | null; utmSource?: string | null; utmMedium?: string | null; utmCampaign?: string | null;
   width?: number | null; lang?: string | null;
@@ -125,8 +131,7 @@ export async function recordVisit(db: Db, v: Visit, ctx: {
   if (!path || path.startsWith("/admin") || path.startsWith("/api") || path.startsWith("/pub")) return false;
   const now = new Date();
   const { day, hour } = localDayHour(now);
-  const salt = await saltOf(db, day);
-  const visitor = createHash("sha256").update(`${salt}|${ctx.ip ?? ""}|${ctx.ua}|${(ctx.host ?? "").replace(/^www\./, "")}`).digest("hex").slice(0, 16);
+  const visitor = await visitorOf(db, day, ctx);
   const refHost = refHostOf(v.ref, ctx.host);
   await db.insert(pageView).values({
     day, hour, visitor, path,

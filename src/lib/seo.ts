@@ -231,3 +231,93 @@ export function matchWatched(watch: string[], rows: KeywordRow[]) {
     return { word: w, exact, related: related.slice(0, 5), relatedCount: related.length };
   });
 }
+
+/* ---------- Ce a răspuns Google, pe românește (ca „invalid_grant” să nu rămână o eroare fără sens) ---------- */
+
+export function explainGscError(msg: string): { title: string; fix: string } {
+  const m = msg.toLowerCase();
+  if (m.includes("invalid_grant") || m.includes("invalid jwt") || m.includes("account not found"))
+    return { title: "Google a refuzat cheia (invalid_grant)", fix: "Cheia contului de serviciu a fost ștearsă sau dezactivată în Google Cloud, contul de serviciu a fost șters, sau ceasul serverului e greșit. Fă o cheie JSON nouă (Google Cloud → Service Accounts → contul → Keys → Add key → JSON) și lipește-o în fila Setări." };
+  if (m.includes("invalid_client") || m.includes("unauthorized_client"))
+    return { title: "Cheia nu e bună", fix: "Fișierul lipit nu e o cheie de cont de serviciu validă. Descarcă din nou fișierul .json din Google Cloud și lipește tot textul." };
+  if (m.includes("has not been used") || m.includes("is disabled") || m.includes("accessnotconfigured") || m.includes("service_disabled"))
+    return { title: "API-ul Search Console nu e pornit", fix: "În Google Cloud, în proiectul contului de serviciu, pornește „Google Search Console API” (pasul 3), apoi reîncarcă pagina după un minut." };
+  if (m.includes("permission") || m.includes("forbidden") || m.includes("403"))
+    return { title: "Contul de serviciu nu are acces la proprietate", fix: "În Search Console → Setări → Utilizatori și permisiuni, adaugă adresa contului de serviciu (…@….iam.gserviceaccount.com) cu permisiunea „Complet”." };
+  if (m.includes("quota") || m.includes("rate") || m.includes("429"))
+    return { title: "Prea multe cereri la Google deodată", fix: "Google limitează cererile pe minut. Reîncarcă pagina peste câteva minute." };
+  if (m.includes("timeout") || m.includes("aborted") || m.includes("fetch failed"))
+    return { title: "Google n-a răspuns la timp", fix: "De obicei trece singur. Reîncarcă pagina peste un minut." };
+  return { title: "Google a răspuns cu o eroare", fix: "Verifică pașii de legare din fila Setări. Dacă eroarea rămâne, fă o cheie JSON nouă." };
+}
+
+/* ---------- O „poză” a datelor din Search Console, ținută 30 de minute (Analiză și SEO o folosesc pe aceeași) ---------- */
+
+export type GscSnapshot = {
+  state: "fara-cheie" | "eroare" | "fara-acces" | "legat";
+  error: string | null; site: string | null; email: string | null; source: "vercel" | "panou" | null; sites: GscSite[]; days: number;
+  totals: { cur: Row | null; prev: Row | null };
+  queries: KeywordRow[];
+  /** Paginile cu afișări (toate, până la 5000). */
+  pages: Row[];
+  /** Perechile căutare + pagină: ce cuvinte aduc la fiecare pagină. */
+  queryPages: Row[];
+  at: number;
+};
+
+const snapCache = new Map<string, GscSnapshot>();
+const SNAP_TTL = 30 * 60_000;
+
+export async function gscSnapshot(s: SeoSettings, siteUrl: string, days: number, fresh = false): Promise<GscSnapshot> {
+  const key = activeServiceAccount(s);
+  const base: GscSnapshot = { state: "fara-cheie", error: null, site: null, email: key?.account.client_email ?? null, source: key?.source ?? null, sites: [], days, totals: { cur: null, prev: null }, queries: [], pages: [], queryPages: [], at: Date.now() };
+  if (!key) return base;
+  const ck = `${key.account.client_email}|${s.siteUrl ?? ""}|${days}`;
+  const hit = snapCache.get(ck);
+  if (!fresh && hit && Date.now() - hit.at < SNAP_TTL) return hit;
+  try {
+    base.sites = await listSites(key.account);
+    base.site = pickSite(base.sites, s.siteUrl, siteUrl);
+    if (!base.site) { base.state = "fara-acces"; snapCache.set(ck, base); return base; }
+    const p = periods(days);
+    const [cur, prev, pages, qp, tCur, tPrev] = await Promise.all([
+      searchAnalytics(key.account, base.site, p.cur, ["query"], 1000),
+      searchAnalytics(key.account, base.site, p.prev, ["query"], 1000),
+      searchAnalytics(key.account, base.site, p.cur, ["page"], 5000),
+      searchAnalytics(key.account, base.site, p.cur, ["query", "page"], 5000),
+      searchAnalytics(key.account, base.site, p.cur, [], 1),
+      searchAnalytics(key.account, base.site, p.prev, [], 1),
+    ]);
+    Object.assign(base, { state: "legat", queries: mergeKeywords(cur, prev), pages, queryPages: qp, totals: { cur: tCur[0] ?? null, prev: tPrev[0] ?? null } });
+  } catch (e) {
+    base.state = "eroare";
+    base.error = e instanceof Error ? e.message : String(e);
+  }
+  snapCache.set(ck, base);
+  return base;
+}
+
+/** Adresa unei pagini din Search Console → calea ei pe site („https://carteaneamului.ro/ghid/x/” → „/ghid/x”). */
+export function pathOfUrl(url: string): string {
+  try { return new URL(url).pathname.replace(/\/+$/, "") || "/"; } catch { return url; }
+}
+
+/** Afișările, clicurile, locul mediu și cuvântul principal pentru fiecare cale. */
+export function gscByPath(snap: GscSnapshot) {
+  const out = new Map<string, { impressions: number; clicks: number; position: number; topQuery: string | null; queries: number }>();
+  for (const r of snap.pages) {
+    const p = pathOfUrl(r.keys[0]);
+    const cur = out.get(p);
+    if (cur) { cur.impressions += r.impressions; cur.clicks += r.clicks; }
+    else out.set(p, { impressions: r.impressions, clicks: r.clicks, position: r.position, topQuery: null, queries: 0 });
+  }
+  const best = new Map<string, number>();
+  for (const r of snap.queryPages) {
+    const p = pathOfUrl(r.keys[1]);
+    const o = out.get(p);
+    if (!o) continue;
+    o.queries += 1;
+    if (r.impressions > (best.get(p) ?? -1)) { best.set(p, r.impressions); o.topQuery = r.keys[0]; }
+  }
+  return out;
+}

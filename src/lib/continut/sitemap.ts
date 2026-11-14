@@ -3,6 +3,7 @@ import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
 import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
+import { nameGate } from "@/lib/continut/prag";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 
 /**
@@ -39,7 +40,7 @@ export function sitemapGroups(): SitemapGroup[] {
       name: "nume", label: "Nume de familie",
       urls: [
         { path: "/nume", lastModified: NAMES_UPDATED, changeFrequency: "weekly", priority: 0.6 },
-        ...loadNames().map((n): SitemapUrl => ({ path: `/nume/${n.slug}`, lastModified: NAMES_UPDATED, changeFrequency: "monthly", priority: 0.4 })),
+        ...loadNames().filter((n) => !nameGate(n)).map((n): SitemapUrl => ({ path: `/nume/${n.slug}`, lastModified: NAMES_UPDATED, changeFrequency: "monthly", priority: 0.4 })),
       ],
     },
     {
@@ -57,7 +58,8 @@ export function sitemapGroups(): SitemapGroup[] {
 
 const abs = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`;
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const iso = (d: Date) => d.toISOString();
+/** Data ultimei schimbări, niciodată în viitor (o dată din viitor îl face pe Google să nu mai creadă datele din sitemap). */
+const iso = (d: Date) => new Date(Math.min(d.getTime(), Date.now())).toISOString();
 
 export function urlsetXml(urls: SitemapUrl[]): string {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) =>

@@ -9,12 +9,13 @@ import { PUBLIC_PAGES } from "@/lib/public-pages";
 import { AdminNav, HBars, Stat, day, lei, num } from "@/components/admin/ui";
 import { Donut, TrafficChart, WeekHeat } from "@/components/admin/charts";
 import { CampaignLink, PrintButton } from "@/components/admin/AnalizaTools";
+import { Conversions } from "@/components/admin/AnalizaConversii";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Analiză · Admin · Cartea Neamului" };
 
 const TABS = [
-  { key: "prezentare", label: "Prezentare" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
+  { key: "prezentare", label: "Prezentare" }, { key: "conversii", label: "Conversii" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
   { key: "bounce", label: "Bounce" }, { key: "retentie", label: "Retenție" }, { key: "pagini", label: "Pagini" },
   { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" }, { key: "tari", label: "Țări și zone" },
 ] as const;
@@ -67,6 +68,7 @@ export default async function Analiza({ searchParams }: { searchParams: Promise<
       </nav>
 
       {tab === "prezentare" && await Overview({ cur, sessions, uv, prevUv, sum, prevSum, biz, prevBiz, sources, funnel, heat, prevAccounts: prevBiz.accounts })}
+      {tab === "conversii" && await Conversions({ cur, sessions })}
       {tab === "palnie" && <Funnel uv={uv.visitors} sessions={sessions} funnel={funnel} biz={biz} />}
       {tab === "ore" && <Hours heat={heat} sessions={sessions} />}
       {tab === "bounce" && <Bounce sessions={sessions} sum={sum} prevSum={prevSum} />}

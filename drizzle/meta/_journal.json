@@ -232,6 +232,13 @@
       "when": 1794720000000,
       "tag": "0032_arhiva_sigilata",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1794730000000,
+      "tag": "0033_conversii",
+      "breakpoints": true
     }
   ]
 }

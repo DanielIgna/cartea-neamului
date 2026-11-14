@@ -12,6 +12,7 @@
  * (sk_live_… / sk_test_…) sau, mai sigur, una restricționată (rk_live_… / rk_test_…) cu drept de scriere pe Checkout Sessions:
  * site-ul doar deschide pagini de plată, restul vine prin webhook. Cheile nu se scriu niciodată în cod.
  */
+import { attributionFromMetadata, type Attribution } from "./conversii";
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { and, asc, eq, gt, gte, isNotNull, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "@/db";
@@ -83,6 +84,8 @@ export async function createCheckout(o: {
   extra?: "carte" | null; forName?: string | null; note?: string | null;
   /** Textul acordului pentru începerea imediată (fără retragere) și datele vânzătorului, scrise pe pagina Stripe și pe factură. */
   waiver?: string; seller?: string;
+  /** Sursa vizitei (Google, o campanie…) și prima pagină, fără nimic despre om: se întoarce la confirmare (src/lib/conversii.ts). */
+  attribution?: Record<string, string>;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
     mode: "payment",
@@ -116,6 +119,7 @@ export async function createCheckout(o: {
   if (o.extra) body.set("metadata[extra]", o.extra);
   if (o.forName) body.set("metadata[forName]", o.forName.slice(0, 120));
   if (o.note) body.set("metadata[note]", o.note.slice(0, 400));
+  for (const [k, v] of Object.entries(o.attribution ?? {})) if (k.startsWith("metadata[a_")) body.set(k, v);
   const r = await fetcher("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: { authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`, "content-type": "application/x-www-form-urlencoded" },
@@ -142,6 +146,8 @@ export type PaidSession = {
   /** Planul anului plătit (plățile de dinainte de planuri: Basic) și, la o trecere pe un plan mai scump, planul de dinainte. */
   tier?: Tier; upgradeFrom?: Tier | null;
   extra?: "carte" | null; forName?: string | null; note?: string | null;
+  /** De unde venise vizita în care s-a deschis plata (pentru Admin → Analiză → Conversii); fără date despre om. */
+  attr?: Attribution | null;
 };
 
 /**
@@ -149,6 +155,8 @@ export type PaidSession = {
  * („no_payment_required”, când un cod promoțional acoperă tot prețul). Suma nu se compară cu prețul, ca un cod de reducere
  * să dea același acces; în `payment` se trece suma plătită de fapt.
  */
+const withAttr = (md: Record<string, string>) => { const attr = attributionFromMetadata(md); return attr ? { attr } : {}; };
+
 export function paidSession(event: unknown): PaidSession | null {
   const e = event as { type?: string; data?: { object?: Record<string, unknown> } };
   if (e?.type !== "checkout.session.completed" && e?.type !== "checkout.session.async_payment_succeeded") return null;
@@ -156,7 +164,7 @@ export function paidSession(event: unknown): PaidSession | null {
   if (o.payment_status !== "paid" && o.payment_status !== "no_payment_required") return null;
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
-  const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? ""), ...withAttr(md) };
   if (md.kind === "cadou") return { ...base, tier: isTier(md.tier) ? md.tier : "familie", forName: md.forName || null, note: md.note || null };
   if (md.kind === "pastrare") return md.extra === "carte" ? { ...base, extra: "carte" as const } : base;
   if (md.kind !== "an") return base;

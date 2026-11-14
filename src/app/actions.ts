@@ -14,6 +14,9 @@ import { currentUser, roleIn, can } from "@/lib/access";
 import { canInviteWriters, personsLeft, treeStart } from "@/lib/plata";
 import { createInvitation, acceptInvitation } from "@/lib/invitations";
 import { headers } from "next/headers";
+import { recordConversion } from "@/lib/conversii";
+import { isDemo } from "@/lib/demo";
+import { isAdminUser } from "@/lib/admin";
 import { toView } from "@/lib/tree-data";
 import { aiConfigured, biographyPrompt, chat } from "@/lib/ai";
 import { mergeInto } from "@/lib/merge";
@@ -132,6 +135,7 @@ export async function createTree(_: unknown, form: FormData) {
   });
   if (made === NO_PEOPLE) return { error: t("gedcomEmpty") };
   if (made === TOO_MANY) return { error: t("trialGedcom", { cap: String(start.cap ?? 0) }) };
+  if (!isDemo(me.email) && !isAdminUser(me)) await recordConversion(db, "arbore", { headers: await headers(), label: hasGedcom ? "din GEDCOM" : "arbore gol" });
   redirect(`/arbore/${made.id}`);
 }
 

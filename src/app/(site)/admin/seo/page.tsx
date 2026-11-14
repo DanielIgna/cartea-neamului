@@ -2,23 +2,36 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { SITE_URL } from "@/lib/site-url";
-import { PUBLIC_PAGES } from "@/lib/public-pages";
-import { INDEX_LIMIT, sitemapGroups } from "@/lib/continut/sitemap";
-import {
-  activeServiceAccount, inspectUrl, listSitemaps, listSites, matchWatched, mergeKeywords, periods, pickSite, searchAnalytics, seoSettings,
-  type GscSite, type Inspection, type KeywordRow, type Row, type Sitemap,
-} from "@/lib/seo";
+import { PUBLIC_PAGES, PRIVATE_PREFIXES } from "@/lib/public-pages";
+import { explainGscError, gscByPath, gscSnapshot, inspectUrl, listSitemaps, matchWatched, seoSettings, activeServiceAccount, type Inspection, type Sitemap } from "@/lib/seo";
+import { auditAlerts, auditPages, sitemapCheck, type AuditPage } from "@/lib/seo-audit";
+import { inspectOwnPage, ownPath } from "@/lib/seo-inspector";
+import { TARGET_KEYWORDS, matchTarget } from "@/lib/seo-cuvinte";
+import { NAME_MIN_WORDS } from "@/lib/continut/prag";
+import { conversionsBy } from "@/lib/conversii";
+import { rangeOf } from "@/lib/analiza";
+import { sql } from "drizzle-orm";
 import { AdminNav, Stat, Status, day, num } from "@/components/admin/ui";
 import { SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
 
+/**
+ * Admin → SEO, centrul de control (Daniel, 12.11 și 14.11.2026, după modelul din PropManage): ce pagini are site-ul, care intră în
+ * Google și de ce, sitemap-ul, inspectorul de adrese, alertele, cuvintele cheie țintă și ce aduce fiecare pagină (vizite din căutări
+ * și conversii, din Analiză). Partea din Google Search Console se aprinde singură după ce cheia e pusă în Setări.
+ */
+const TABS = [
+  { key: "prezentare", label: "Prezentare" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
+  { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "inspector", label: "Inspector URL" },
+  { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
+] as const;
+type Tab = (typeof TABS)[number]["key"];
 const PERIODS = [7, 28, 90] as const;
 const pos = (v: number) => v.toLocaleString("ro-RO", { maximumFractionDigits: 1 });
-const pct = (v: number) => `${(v * 100).toLocaleString("ro-RO", { maximumFractionDigits: 1 })}%`;
+const pctF = (v: number) => `${(v * 100).toLocaleString("ro-RO", { maximumFractionDigits: 1 })}%`;
 
-/** Săgeata locului: în Google, un loc mai mic e mai bine (1 = primul rezultat). */
 function Trend({ now, before }: { now: number; before: number | null }) {
   if (before == null) return <span className="pill ok" title="nu apărea în perioada de dinainte">nou</span>;
   const d = before - now;
@@ -27,263 +40,157 @@ function Trend({ now, before }: { now: number; before: number | null }) {
 }
 
 const VERDICT: Record<string, { label: string; ok: boolean; warn?: boolean }> = {
-  PASS: { label: "indexată", ok: true },
-  NEUTRAL: { label: "neindexată încă", ok: false, warn: true },
-  PARTIAL: { label: "parțial", ok: false, warn: true },
-  FAIL: { label: "cu probleme", ok: false },
-  EROARE: { label: "nu am putut verifica", ok: false, warn: true },
+  PASS: { label: "indexată", ok: true }, NEUTRAL: { label: "neindexată încă", ok: false, warn: true }, PARTIAL: { label: "parțial", ok: false, warn: true },
+  FAIL: { label: "cu probleme", ok: false }, EROARE: { label: "nu am putut verifica", ok: false, warn: true },
 };
 
-type Live = {
-  sites: GscSite[]; site: string | null; error: string | null;
-  keywords: KeywordRow[]; pages: Row[]; totals: { cur: Row | null; prev: Row | null };
-  sitemaps: Sitemap[]; inspections: Inspection[]; hubInspections: Inspection[];
-};
+type SP = { t?: string; zile?: string; q?: string; grupa?: string; stare?: string; url?: string };
 
-/**
- * Admin → SEO: dacă site-ul e în Google și după ce cuvinte îl găsesc oamenii. Datele vin din Google Search Console, prin cheia
- * unui cont de serviciu; fără cheie, pagina arată pașii de pornire și ce putem verifica singuri (sitemap, robots, verificarea).
- */
-export default async function AdminSeo({ searchParams }: { searchParams: Promise<{ zile?: string }> }) {
+export default async function AdminSeo({ searchParams }: { searchParams: Promise<SP> }) {
   await requireAdmin("/admin/seo");
-  const zile = Number((await searchParams).zile);
+  const sp = await searchParams;
+  const tab: Tab = TABS.some((t) => t.key === sp.t) ? (sp.t as Tab) : "prezentare";
+  const zile = Number(sp.zile);
   const days = (PERIODS as readonly number[]).includes(zile) ? zile : 28;
   const s = await seoSettings(db);
-  const groups = sitemapGroups();
-  // Secțiunile cu multe pagini (ghiduri, glosar…): prima adresă din fiecare e hubul secțiunii.
-  const sections = groups.filter((g) => g.name !== "pagini");
-  const totalUrls = groups.reduce((n, g) => n + g.urls.length, 0);
-  const key = activeServiceAccount(s);
-  const verification = process.env.GOOGLE_SITE_VERIFICATION?.trim() || s.verification;
-
-  let live: Live | null = null;
-  if (key) {
-    live = { sites: [], site: null, error: null, keywords: [], pages: [], totals: { cur: null, prev: null }, sitemaps: [], inspections: [], hubInspections: [] };
-    try {
-      live.sites = await listSites(key.account);
-      live.site = pickSite(live.sites, s.siteUrl, SITE_URL);
-      if (live.site) {
-        const p = periods(days);
-        const site = live.site;
-        const [cur, prev, pages, tCur, tPrev, maps, inspections, hubInspections] = await Promise.all([
-          searchAnalytics(key.account, site, p.cur, ["query"], 1000),
-          searchAnalytics(key.account, site, p.prev, ["query"], 1000),
-          // Toate paginile cu afișări (nu doar primele 100), ca să le putem număra pe secțiuni.
-          searchAnalytics(key.account, site, p.cur, ["page"], 5000),
-          searchAnalytics(key.account, site, p.cur, [], 1),
-          searchAnalytics(key.account, site, p.prev, [], 1),
-          listSitemaps(key.account, site).catch(() => []),
-          Promise.all(PUBLIC_PAGES.map((pg) => inspectUrl(key.account, site, `${SITE_URL}${pg.path === "/" ? "/" : pg.path}`))),
-          Promise.all(sections.map((g) => inspectUrl(key.account, site, `${SITE_URL}${g.urls[0].path}`))),
-        ]);
-        live.keywords = mergeKeywords(cur, prev);
-        live.pages = pages;
-        live.totals = { cur: tCur[0] ?? null, prev: tPrev[0] ?? null };
-        live.sitemaps = maps;
-        live.inspections = inspections;
-        live.hubInspections = hubInspections;
-      }
-    } catch (e) {
-      live.error = e instanceof Error ? e.message : String(e);
-    }
-  }
-
-  const watched = live ? matchWatched(s.watch, live.keywords) : [];
-  const indexed = live?.inspections.filter((i) => i.verdict === "PASS").length ?? 0;
-  const t = live?.totals;
-  const delta = (a?: number, b?: number) => (a != null && b != null && b > 0 ? ` · ${a >= b ? "+" : ""}${Math.round(((a - b) / b) * 100)}% față de înainte` : "");
+  const gsc = await gscSnapshot(s, SITE_URL, days);
+  const gscErr = gsc.error ? explainGscError(gsc.error) : null;
+  const gscPages = gsc.state === "legat" ? gscByPath(gsc) : undefined;
+  const pages = auditPages();
+  const alerts = auditAlerts(pages, { gscState: gsc.state, gscError: gscErr, gscPages });
+  const href = (o: Partial<SP>) => {
+    const q = new URLSearchParams();
+    const m = { t: tab, zile: days === 28 ? undefined : String(days), ...o };
+    for (const [k, v] of Object.entries(m)) if (v) q.set(k, v);
+    return `/admin/seo?${q}`;
+  };
 
   return (
     <section className="stack">
-      <AdminNav active="seo" />
-
-      <div className="card">
-        <h2 style={{ marginTop: 0 }}>Site-ul în Google</h2>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <tbody>
-              <tr><td style={{ width: 1 }}><Status ok>merge</Status></td><td>Adresa principală<small>{SITE_URL}</small></td></tr>
-              <tr><td><Status ok>merge</Status></td><td>Harta site-ului (sitemap) cu {totalUrls} pagini publice{totalUrls > INDEX_LIMIT ? `, împărțită pe ${groups.length} secțiuni` : ""}<small><a href="/sitemap.xml" target="_blank">{SITE_URL}/sitemap.xml</a></small></td></tr>
-              <tr><td><Status ok>merge</Status></td><td>robots.txt: Google citește paginile publice, nu arborii, mesajele sau datele cuiva<small><a href="/robots.txt" target="_blank">{SITE_URL}/robots.txt</a></small></td></tr>
-              <tr>
-                <td><Status ok={!!verification} warn>{verification ? "pus" : "lipsește"}</Status></td>
-                <td>Codul de verificare Google pe prima pagină<small>{verification ? "Google poate confirma că site-ul e al tău (sau folosește verificarea prin DNS)." : "Nu e nevoie dacă ai verificat domeniul prin DNS în Vercel."}</small></td>
-              </tr>
-              <tr>
-                <td><Status ok={!!key && !live?.error && !!live?.site} warn>{!key ? "lipsește" : live?.error ? "eroare" : live?.site ? "legat" : "fără acces"}</Status></td>
-                <td>Legătura cu Google Search Console
-                  <small>
-                    {!key ? "Pune cheia mai jos ca să vezi cuvintele cheie și paginile indexate."
-                      : live?.error ? `Google a răspuns: ${live.error}`
-                      : live?.site ? `Proprietatea ${live.site}, prin ${key.account.client_email}`
-                      : `Adaugă ${key.account.client_email} ca utilizator în Search Console (Setări → Utilizatori și permisiuni → Complet).`}
-                  </small>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <AdminNav active="seo" heading={false} />
+      <div className="an-head">
+        <div>
+          <h1>Centrul SEO</h1>
+          <p className="muted" style={{ margin: "4px 0 0" }}>Ce pagini are site-ul, care intră în Google și de ce, ce caută oamenii și ce aduce fiecare pagină.</p>
+        </div>
+        <div className="an-actions" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <a className="btn" href="/admin/seo/csv" download>⇩ Matricea de indexare (CSV)</a>
+          <a className="btn" href="/admin/seo/csv?ce=alerte" download>⇩ Alerte (CSV)</a>
         </div>
       </div>
-
-      {live?.site && (
-        <>
-          <nav className="chips" aria-label="Perioada" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {PERIODS.map((d) => (
-              <Link key={d} href={d === 28 ? "/admin/seo" : `/admin/seo?zile=${d}`} className={`chip${d === days ? " on" : ""}`} aria-current={d === days ? "page" : undefined}>
-                ultimele {d} zile
-              </Link>
-            ))}
-          </nav>
-
-          <div className="stats">
-            <Stat label="Pagini indexate" value={`${indexed} din ${PUBLIC_PAGES.length}`} tone={indexed === PUBLIC_PAGES.length ? "ok" : indexed ? "warn" : "bad"} />
-            <Stat label="Cuvinte cheie" value={num(live.keywords.length)} hint={`căutări după care ai apărut${live.keywords.filter((k) => k.isNew).length ? ` · ${live.keywords.filter((k) => k.isNew).length} noi` : ""}`} />
-            <Stat label="Afișări în Google" value={num(t?.cur?.impressions ?? 0)} hint={delta(t?.cur?.impressions, t?.prev?.impressions).replace(/^ · /, "") || undefined} />
-            <Stat label="Clicuri" value={num(t?.cur?.clicks ?? 0)} hint={delta(t?.cur?.clicks, t?.prev?.clicks).replace(/^ · /, "") || undefined} />
-            <Stat label="Locul mediu" value={t?.cur ? pos(t.cur.position) : "—"} hint="1 = primul rezultat" />
-          </div>
-
-          {s.watch.length > 0 && (
-            <div className="card">
-              <h2 style={{ marginTop: 0 }}>Cuvintele urmărite</h2>
-              <div className="tbl-wrap">
-                <table className="tbl">
-                  <thead><tr><th>Cuvânt</th><th className="n">Locul</th><th className="n">Schimbare</th><th className="n">Afișări</th><th className="n">Clicuri</th></tr></thead>
-                  <tbody>
-                    {watched.map((w) => (
-                      <tr key={w.word}>
-                        <td>{w.word}
-                          {w.relatedCount > 0 && <small>și în {w.relatedCount} căutări apropiate: {w.related.map((r) => `„${r.query}” (locul ${pos(r.position)})`).join(", ")}</small>}
-                        </td>
-                        {w.exact ? (
-                          <>
-                            <td className="n">{pos(w.exact.position)}</td>
-                            <td className="n"><Trend now={w.exact.position} before={w.exact.prevPosition} /></td>
-                            <td className="n">{num(w.exact.impressions)}</td>
-                            <td className="n">{num(w.exact.clicks)}</td>
-                          </>
-                        ) : <td className="n muted" colSpan={4}>nu apari încă pentru exact acest cuvânt</td>}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          <div className="card">
-            <h2 style={{ marginTop: 0 }}>Toate cuvintele cheie</h2>
-            <p className="muted" style={{ marginTop: 0 }}>Ce au căutat oamenii în Google când a apărut Cartea Neamului. Google arată datele cu 2–3 zile întârziere și ascunde căutările foarte rare.</p>
-            {live.keywords.length === 0
-              ? <p className="muted" style={{ marginBottom: 0 }}>Încă nimic. La un site nou durează de obicei câteva zile până la câteva săptămâni până apar primele căutări.</p>
-              : (
-                <div className="tbl-wrap">
-                  <table className="tbl">
-                    <thead><tr><th>Căutare</th><th className="n">Locul</th><th className="n">Schimbare</th><th className="n">Afișări</th><th className="n">Clicuri</th><th className="n">CTR</th></tr></thead>
-                    <tbody>
-                      {live.keywords.slice(0, 200).map((k) => (
-                        <tr key={k.query}>
-                          <td>{k.query}</td>
-                          <td className="n">{pos(k.position)}</td>
-                          <td className="n"><Trend now={k.position} before={k.prevPosition} /></td>
-                          <td className="n">{num(k.impressions)}</td>
-                          <td className="n">{num(k.clicks)}</td>
-                          <td className="n">{pct(k.ctr)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-          </div>
-
-          <div className="card">
-            <h2 style={{ marginTop: 0 }}>Paginile publice în index</h2>
-            <div className="tbl-wrap">
-              <table className="tbl">
-                <thead><tr><th>Pagina</th><th>Stare</th><th className="n">Afișări</th><th className="n">Clicuri</th><th>Ultima vizită Google</th></tr></thead>
-                <tbody>
-                  {PUBLIC_PAGES.map((pg, i) => {
-                    const ins = live.inspections[i];
-                    const v = VERDICT[ins?.verdict ?? ""] ?? { label: "necunoscut", ok: false, warn: true };
-                    const url = `${SITE_URL}${pg.path === "/" ? "/" : pg.path}`;
-                    const row = live.pages.find((r) => r.keys[0].replace(/\/$/, "") === url.replace(/\/$/, ""));
-                    return (
-                      <tr key={pg.path}>
-                        <td>{pg.label}<small>{pg.path}</small></td>
-                        <td><Status ok={v.ok} warn={v.warn}>{v.label}</Status>{(ins?.coverage || ins?.error) && <small>{ins.error ?? ins.coverage}</small>}</td>
-                        <td className="n">{num(row?.impressions ?? 0)}</td>
-                        <td className="n">{num(row?.clicks ?? 0)}</td>
-                        <td className="tight">{ins?.lastCrawl ? day(ins.lastCrawl) : "—"}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="card">
-            <h2 style={{ marginTop: 0 }}>Sitemap în Google</h2>
-            {live.sitemaps.length === 0
-              ? <p className="muted" style={{ marginTop: 0 }}>Google nu are încă sitemap-ul. Trimite-l cu butonul de mai jos.</p>
-              : (
-                <div className="tbl-wrap">
-                  <table className="tbl">
-                    <thead><tr><th>Adresa</th><th>Trimis</th><th>Citit de Google</th><th className="n">Pagini</th><th>Probleme</th></tr></thead>
-                    <tbody>
-                      {live.sitemaps.map((m) => (
-                        <tr key={m.path}>
-                          <td>{m.path}{m.isPending && <small>în așteptare</small>}</td>
-                          <td className="tight">{day(m.lastSubmitted)}</td>
-                          <td className="tight">{day(m.lastDownloaded)}</td>
-                          <td className="n">{m.contents?.[0]?.submitted ?? "—"}</td>
-                          <td>{Number(m.errors ?? 0) || Number(m.warnings ?? 0) ? `${m.errors ?? 0} erori, ${m.warnings ?? 0} avertismente` : "niciuna"}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            <SubmitSitemapButton />
-          </div>
-        </>
+      <nav className="an-tabs" aria-label="Părțile centrului SEO">
+        {TABS.map((t) => <Link key={t.key} className="btn" href={href({ t: t.key, q: undefined, grupa: undefined, stare: undefined, url: undefined })} aria-current={t.key === tab ? "page" : undefined}>
+          {t.label}{t.key === "alerte" && alerts.some((a) => a.level !== "info") ? ` (${alerts.filter((a) => a.level !== "info").length})` : ""}
+        </Link>)}
+      </nav>
+      {["prezentare", "cuvinte", "pagini", "sectiuni"].includes(tab) && gsc.state === "legat" && (
+        <nav className="an-periods" aria-label="Perioada din Google">
+          {PERIODS.map((d) => <Link key={d} className="btn" href={href({ zile: d === 28 ? undefined : String(d) })} aria-current={d === days ? "true" : undefined}>{d} zile</Link>)}
+          <span className="muted" style={{ alignSelf: "center", fontSize: 14 }}>Google arată datele cu 2–3 zile întârziere.</span>
+        </nav>
       )}
 
-      {!key && (
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>Cum legi Google Search Console (o singură dată, cam 15 minute)</h2>
-          <ol style={{ paddingLeft: 20, lineHeight: 1.6, marginBottom: 0 }}>
-            <li>Deschide <a href="https://search.google.com/search-console" target="_blank" rel="noreferrer">Google Search Console</a> și adaugă proprietatea <b>Domeniu</b> <code>carteaneamului.ro</code>. Google îți dă un rând TXT: pune-l în <a href="https://vercel.com/prop-manage/cartea-neamului/settings/domains" target="_blank" rel="noreferrer">Vercel → Domains</a> → carteaneamului.ro → DNS Records (tip TXT, nume <code>@</code>). Sau alege <b>Prefix URL</b> și lipește eticheta HTML mai jos.</li>
-            <li>În Search Console → Sitemaps, scrie <code>sitemap.xml</code> și apasă Trimite.</li>
-            <li>În <a href="https://console.cloud.google.com/apis/library/searchconsole.googleapis.com" target="_blank" rel="noreferrer">Google Cloud</a> (același proiect ca la „Continuă cu Google”), pornește <b>Google Search Console API</b>.</li>
-            <li>Tot acolo: <a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank" rel="noreferrer">Service Accounts</a> → Create service account (nume: <code>seo-cartea-neamului</code>, fără roluri) → Keys → Add key → JSON. Se descarcă un fișier .json.</li>
-            <li>În Search Console → Setări → Utilizatori și permisiuni → Adaugă utilizator: adresa contului (se termină în <code>.iam.gserviceaccount.com</code>), permisiune <b>Complet</b>.</li>
-            <li>Deschide fișierul .json, copiază tot textul și lipește-l mai jos, la „Cheia Search Console”. Gata.</li>
-          </ol>
-        </div>
-      )}
+      {tab === "prezentare" && await Overview({ pages, gsc, gscErr, alerts, days, href })}
+      {tab === "cuvinte" && <Keywords gsc={gsc} watch={s.watch} pages={pages} />}
+      {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
+      {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} />}
+      {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
+      {tab === "inspector" && await Inspector({ sp, pages, gscOn: gsc.state === "legat" })}
+      {tab === "sitemap" && await SitemapTab({ gscOn: gsc.state === "legat" })}
+      {tab === "alerte" && <Alerts alerts={alerts} />}
+      {tab === "setari" && <Settings gsc={gsc} gscErr={gscErr} s={s} />}
+    </section>
+  );
+}
 
+/* ---------------------------------- Prezentare ---------------------------------- */
+
+async function Overview({ pages, gsc, gscErr, alerts, days, href }: {
+  pages: AuditPage[]; gsc: Awaited<ReturnType<typeof gscSnapshot>>; gscErr: ReturnType<typeof explainGscError> | null; alerts: ReturnType<typeof auditAlerts>; days: number; href: (o: Partial<SP>) => string;
+}) {
+  const indexable = pages.filter((p) => p.indexable).length;
+  const sm = sitemapCheck();
+  const t = gsc.totals;
+  const delta = (a?: number, b?: number) => (a != null && b != null && b > 0 ? `${a >= b ? "+" : ""}${Math.round(((a - b) / b) * 100)}% față de înainte` : undefined);
+  // Vizitele din căutări de pe site (Analiză), pentru aceeași perioadă, ca să se vadă și fără Search Console.
+  const { cur } = rangeOf(days <= 7 ? "7z" : days <= 30 ? "30z" : "90z");
+  const [org] = ((await db.execute(sql`select count(distinct visitor) as v, count(*) as p from page_view where day between ${cur.from} and ${cur.to} and source in ('google','bing','duckduckgo','yahoo','yandex','ecosia','brave')`)).rows ?? []) as { v?: number; p?: number }[];
+  const conv = await conversionsBy(db, cur, "source");
+  const orgAccounts = [...conv.entries()].filter(([k]) => ["google", "bing", "duckduckgo", "yahoo", "yandex", "ecosia", "brave"].includes(k)).reduce((a, [, c]) => a + c.cont, 0);
+  const crit = alerts.filter((a) => a.level === "critic").length, warn = alerts.filter((a) => a.level === "avertisment").length;
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Pagini publice cunoscute" value={num(pages.length)} hint={`plus ${PRIVATE_PREFIXES.length} zone private oprite în robots.txt`} />
+        <Stat label="Indexabile (în sitemap)" value={num(indexable)} tone="ok" hint={`${num(sm.total)} adrese în sitemap`} />
+        <Stat label="Ținute afară (noindex)" value={num(pages.length - indexable)} tone={pages.length - indexable ? "warn" : undefined} hint={`sub pragul de ${NAME_MIN_WORDS} cuvinte proprii`} />
+        <Stat label="Alerte" value={`${crit} critice · ${warn}`} tone={crit ? "bad" : warn ? "warn" : "ok"} hint={<Link href={href({ t: "alerte" })}>vezi alertele</Link>} />
+        <Stat label={`Vizitatori din căutări (${days} z)`} value={num(Number(org?.v ?? 0))} hint="numărați pe site, anonim" />
+        <Stat label={`Conturi venite din căutări (${days} z)`} value={num(orgAccounts)} hint={<Link href="/admin/analiza?t=conversii">Analiză → Conversii</Link>} />
+      </div>
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Secțiunile cu multe pagini</h2>
-        <p className="muted" style={{ marginTop: 0 }}>Ghiduri, glosar și celelalte secțiuni publice, scrise din fișierele din repo. „Văzute în Google” = pagini care au apărut cel puțin o dată în rezultate în ultimele {days} zile, deci sigur sunt indexate (Google nu dă o listă completă a paginilor indexate prin cheie; pentru cifra exactă vezi Search Console → Pagini).</p>
-        <div className="tbl-wrap">
-          <table className="tbl">
-            <thead><tr><th>Secțiunea</th><th className="n">Pagini în sitemap</th><th className="n">Văzute în Google</th><th className="n">Afișări</th><th className="n">Clicuri</th><th>Hubul în index</th></tr></thead>
+        <h2 style={{ marginTop: 0 }}>Google Search Console</h2>
+        <GscState gsc={gsc} gscErr={gscErr} />
+        {gsc.state === "legat" && (
+          <div className="stats" style={{ marginTop: 12 }}>
+            <Stat label="Afișări în Google" value={num(t.cur?.impressions ?? 0)} hint={delta(t.cur?.impressions, t.prev?.impressions)} />
+            <Stat label="Clicuri" value={num(t.cur?.clicks ?? 0)} hint={delta(t.cur?.clicks, t.prev?.clicks)} />
+            <Stat label="Clicuri pe zi" value={num(Math.round((t.cur?.clicks ?? 0) / days))} hint="ținta: 300 pe zi" tone={(t.cur?.clicks ?? 0) / days >= 300 ? "ok" : undefined} />
+            <Stat label="Locul mediu" value={t.cur ? pos(t.cur.position) : "—"} hint="1 = primul rezultat" />
+            <Stat label="Cuvinte cheie" value={num(gsc.queries.length)} hint={`${gsc.queries.filter((k) => k.isNew).length} noi`} />
+            <Stat label="Pagini văzute în Google" value={num(gsc.pages.length)} hint={`din ${num(indexable)} indexabile`} />
+          </div>
+        )}
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Drumul spre 300 de vizite pe zi din Google</h2>
+        <ol style={{ paddingLeft: 20, lineHeight: 1.6, marginBottom: 0 }}>
+          <li><b>Indexarea</b> (săptămânile 1–4): Google a citit sitemap-ul; urmărește aici câte pagini ajung „indexate”.</li>
+          <li><b>Primele afișări</b> (lunile 1–3): paginile de nume, localități și ghiduri încep să apară pe locurile 20–50.</li>
+          <li><b>Urcarea</b> (lunile 3–6): paginile cu cele mai multe afișări primesc text mai bogat și legături (fila Alerte arată care sunt aproape de prima pagină).</li>
+          <li><b>Ținta</b> (lunile 4–9): 300 de clicuri pe zi înseamnă, la un loc mediu de 5–8, cam 6.000–10.000 de afișări pe zi, adică sute de pagini bine poziționate.</li>
+        </ol>
+      </div>
+    </>
+  );
+}
+
+function GscState({ gsc, gscErr }: { gsc: Awaited<ReturnType<typeof gscSnapshot>>; gscErr: ReturnType<typeof explainGscError> | null }) {
+  if (gsc.state === "legat") return <p style={{ margin: 0 }}><Status ok>legat</Status> Proprietatea <b>{gsc.site}</b>, prin {gsc.email} ({gsc.source === "vercel" ? "cheia din Vercel" : "cheia din panou"}). Datele se reîmprospătează la 30 de minute.</p>;
+  if (gsc.state === "eroare") return (<>
+    <p style={{ margin: 0 }}><Status ok={false}>eroare</Status> <b>{gscErr?.title}</b></p>
+    <p style={{ margin: "6px 0 0" }}>{gscErr?.fix}</p>
+    <p className="muted" style={{ margin: "6px 0 0", fontSize: 13 }}>Răspunsul exact de la Google: {gsc.error}</p>
+  </>);
+  if (gsc.state === "fara-acces") return <p style={{ margin: 0 }}><Status ok={false} warn>fără acces</Status> Adaugă <b>{gsc.email}</b> ca utilizator în Search Console (Setări → Utilizatori și permisiuni → Complet).</p>;
+  return <p style={{ margin: 0 }}><Status ok={false} warn>nelegat</Status> Sitemap-ul e deja trimis din contul tău Google, dar panoul nu are încă cheia. Pașii sunt în <Link href="/admin/seo?t=setari">Setări</Link>; după aceea, cuvintele, afișările și indexarea apar singure aici și în Analiză.</p>;
+}
+
+/* ---------------------------------- Cuvinte cheie ---------------------------------- */
+
+function Keywords({ gsc, watch, pages }: { gsc: Awaited<ReturnType<typeof gscSnapshot>>; watch: string[]; pages: AuditPage[] }) {
+  const on = gsc.state === "legat";
+  const known = new Map(pages.map((p) => [p.path, p]));
+  const watched = on ? matchWatched(watch, gsc.queries) : [];
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Planul de cuvinte cheie</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Căutările pe care vrem să le câștigăm și pagina care răspunde la fiecare (lista e în src/lib/seo-cuvinte.ts). „Cerere” e o estimare relativă, nu un număr din Google.</p>
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Cuvântul</th><th>Pagina</th><th>Tip</th><th>Cerere</th><th>Locul</th><th>Afișări</th><th>Clicuri</th></tr></thead>
             <tbody>
-              {sections.map((g, i) => {
-                const prefix = `${SITE_URL}${g.urls[0].path}`;
-                const rows = live?.pages.filter((r) => { const u = r.keys[0].replace(/\/$/, ""); return u === prefix || u.startsWith(`${prefix}/`) || u.startsWith(`${prefix}?`); }) ?? [];
-                const ins = live?.hubInspections[i];
-                const v = ins ? VERDICT[ins.verdict] ?? { label: "necunoscut", ok: false, warn: true } : null;
+              {TARGET_KEYWORDS.map((k) => {
+                const page = known.get(k.path);
+                const m = on ? matchTarget(k, gsc.queries) : null;
                 return (
-                  <tr key={g.name}>
-                    <td>{g.label}<small><a href={g.urls[0].path} target="_blank">{g.urls[0].path}</a> · <a href={`/sitemaps/${g.name}.xml`} target="_blank">sitemap</a></small></td>
-                    <td className="n">{num(g.urls.length)}</td>
-                    <td className="n">{live?.site ? num(rows.length) : "—"}</td>
-                    <td className="n">{live?.site ? num(rows.reduce((n, r) => n + r.impressions, 0)) : "—"}</td>
-                    <td className="n">{live?.site ? num(rows.reduce((n, r) => n + r.clicks, 0)) : "—"}</td>
-                    <td>{v ? <Status ok={v.ok} warn={v.warn}>{v.label}</Status> : <span className="muted">fără legătura cu Google</span>}</td>
+                  <tr key={k.keyword}>
+                    <td>{k.keyword}{m && !m.exact && m.best && <small className="muted"> · cel mai aproape: „{m.best.query}”</small>}</td>
+                    <td style={{ textAlign: "start" }}>{page ? <a href={k.path} target="_blank">{k.path}</a> : <span style={{ color: "var(--red)" }}>lipsește pagina</span>}{page && !page.indexable ? " (noindex)" : ""}</td>
+                    <td>{k.intent}</td><td>{k.demand}</td>
+                    <td>{m?.best ? pos(m.best.position) : on ? "nu apare încă" : "—"}</td>
+                    <td>{m?.best ? num(m.best.impressions) : "—"}</td><td>{m?.best ? num(m.best.clicks) : "—"}</td>
                   </tr>
                 );
               })}
@@ -291,12 +198,329 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
           </table>
         </div>
       </div>
+      {watch.length > 0 && on && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Cuvintele urmărite (din Setări)</h2>
+          <div className="an-scroll">
+            <table className="an-table">
+              <thead><tr><th>Cuvânt</th><th>Locul</th><th>Schimbare</th><th>Afișări</th><th>Clicuri</th></tr></thead>
+              <tbody>
+                {watched.map((w) => (
+                  <tr key={w.word}><td>{w.word}{w.relatedCount > 0 && <small> · în {w.relatedCount} căutări apropiate</small>}</td>
+                    {w.exact ? <><td>{pos(w.exact.position)}</td><td><Trend now={w.exact.position} before={w.exact.prevPosition} /></td><td>{num(w.exact.impressions)}</td><td>{num(w.exact.clicks)}</td></>
+                      : <td colSpan={4} className="muted">nu apari încă pentru exact acest cuvânt</td>}</tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ce caută oamenii (toate căutările din Google)</h2>
+        {!on ? <p className="muted" style={{ margin: 0 }}>Fără date: Search Console nu e legat la panou. Căutările reale apar aici după legare. Nu arătăm cifre estimate.</p>
+          : gsc.queries.length === 0 ? <p className="muted" style={{ margin: 0 }}>Încă nimic. La un site nou durează câteva zile până la câteva săptămâni până apar primele căutări.</p>
+          : (
+            <div className="an-scroll">
+              <table className="an-table">
+                <thead><tr><th>Căutare</th><th>Locul</th><th>Schimbare</th><th>Afișări</th><th>Clicuri</th><th>CTR</th></tr></thead>
+                <tbody>
+                  {gsc.queries.slice(0, 300).map((k) => (
+                    <tr key={k.query}><td>{k.query}</td><td>{pos(k.position)}</td><td><Trend now={k.position} before={k.prevPosition} /></td><td>{num(k.impressions)}</td><td>{num(k.clicks)}</td><td>{pctF(k.ctr)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+      </div>
+    </>
+  );
+}
 
+/* ---------------------------------- Pagini ---------------------------------- */
+
+async function Pages({ pages, gscPages, sp, href }: { pages: AuditPage[]; gscPages?: ReturnType<typeof gscByPath>; sp: SP; href: (o: Partial<SP>) => string }) {
+  const q = (sp.q ?? "").trim().toLowerCase();
+  const groups = [...new Map(pages.map((p) => [p.cluster.key, p.cluster.label])).entries()];
+  const list = pages.filter((p) => (!sp.grupa || p.cluster.key === sp.grupa) && (!sp.stare || (sp.stare === "index" ? p.indexable : !p.indexable))
+    && (!q || p.path.includes(q) || p.title.toLowerCase().includes(q)));
+  const { cur } = rangeOf("30z");
+  const rows = ((await db.execute(sql`select path, count(*) as s from page_view where day between ${cur.from} and ${cur.to} and source in ('google','bing','duckduckgo','yahoo','yandex','ecosia','brave') group by path`)).rows ?? []) as { path: string; s: number }[];
+  const org = new Map(rows.map((r) => [r.path, Number(r.s)]));
+  const conv = await conversionsBy(db, cur, "landing");
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Total pagini" value={num(pages.length)} />
+        <Stat label="Indexabile" value={num(pages.filter((p) => p.indexable).length)} tone="ok" />
+        <Stat label="Noindex" value={num(pages.filter((p) => !p.indexable).length)} tone="warn" />
+        <Stat label="Găsite cu filtrul" value={num(list.length)} />
+      </div>
+      <form className="card" method="get" action="/admin/seo" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end" }}>
+        <input type="hidden" name="t" value="pagini" />
+        <label style={{ flex: "1 1 220px" }}>Caută adresa sau titlul<input name="q" defaultValue={sp.q ?? ""} placeholder="ex. todea, cluj, registre" /></label>
+        <label>Grupa<select name="grupa" defaultValue={sp.grupa ?? ""}><option value="">Toate grupele</option>{groups.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></label>
+        <label>Starea<select name="stare" defaultValue={sp.stare ?? ""}><option value="">Toate</option><option value="index">Indexabile</option><option value="noindex">Noindex</option></select></label>
+        <button className="btn primary" type="submit">Arată</button>
+      </form>
+      <div className="card">
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Pagina</th><th>Grupa</th><th>Stare</th><th>Cuvinte</th><th>Afișări</th><th>Clicuri</th><th>Locul</th><th>Cuvântul principal</th><th>Vizite din căutări (30 z)</th><th>Conturi (30 z)</th><th></th></tr></thead>
+            <tbody>
+              {list.slice(0, 400).map((p) => {
+                const g = gscPages?.get(p.path); const c = conv.get(p.path);
+                return (
+                  <tr key={p.path}>
+                    <td><a href={p.path} target="_blank">{p.path}</a><small className="muted" style={{ display: "block" }}>{p.title.replace(" | Cartea Neamului", "")}</small></td>
+                    <td>{p.cluster.label}</td>
+                    <td>{p.indexable ? <Status ok>index</Status> : <Status ok={false} warn>noindex</Status>}</td>
+                    <td>{p.words ?? "—"}</td>
+                    <td>{g ? num(g.impressions) : "—"}</td><td>{g ? num(g.clicks) : "—"}</td><td>{g ? pos(g.position) : "—"}</td><td>{g?.topQuery ?? "—"}</td>
+                    <td>{num(org.get(p.path) ?? 0)}</td><td>{num(c?.cont ?? 0)}</td>
+                    <td><Link href={href({ t: "inspector", url: p.path, q: undefined, grupa: undefined, stare: undefined })}>inspectează</Link></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        {list.length > 400 && <p className="muted" style={{ marginBottom: 0 }}>Se văd primele 400 din {list.length}. Restrânge cu filtrul sau descarcă matricea CSV.</p>}
+      </div>
+    </>
+  );
+}
+
+/* ---------------------------------- Indexare (pragul) ---------------------------------- */
+
+function Indexing({ pages, href, sp }: { pages: AuditPage[]; href: (o: Partial<SP>) => string; sp: SP }) {
+  const byCluster = [...new Map(pages.map((p) => [p.cluster.key, p.cluster.label])).entries()].map(([k, label]) => {
+    const ps = pages.filter((p) => p.cluster.key === k);
+    return { k, label, total: ps.length, index: ps.filter((p) => p.indexable).length, inSitemap: ps.filter((p) => p.inSitemap).length };
+  });
+  const gated = pages.filter((p) => !p.indexable);
+  const show = sp.stare === "index" ? pages.filter((p) => p.indexable) : sp.stare === "toate" ? pages : gated;
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Indexabile" value={num(pages.filter((p) => p.indexable).length)} tone="ok" />
+        <Stat label="Ținute afară" value={num(gated.length)} tone={gated.length ? "warn" : undefined} />
+        <Stat label="Pragul la nume" value={`${NAME_MIN_WORDS} cuvinte proprii`} hint="sensul și nota numelui, fără textul comun" />
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Cum hotărâm ce intră în Google</h2>
+        <p style={{ marginTop: 0 }}>O pagină intră în Google doar dacă are destul conținut propriu. Paginile subțiri sau aproape la fel cu altele trag în jos tot site-ul, așa că rămân deschise oamenilor, dar au „noindex” și nu intră în sitemap. Pragul e în src/lib/continut/prag.ts. Ghidurile, glosarul, județele și orașele sunt scrise de mână, deci intră toate.</p>
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Grupa</th><th>Pagini</th><th>Indexabile</th><th>În sitemap</th><th>Ținute afară</th></tr></thead>
+            <tbody>{byCluster.map((c) => <tr key={c.k}><td>{c.label}</td><td>{num(c.total)}</td><td>{num(c.index)}</td><td>{num(c.inSitemap)}</td><td>{num(c.total - c.index)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </div>
+      <nav className="an-periods" aria-label="Ce pagini">
+        {[["", "Ținute afară"], ["index", "Indexabile"], ["toate", "Toate"]].map(([k, l]) => <Link key={k} className="btn" href={href({ stare: k || undefined })} aria-current={(sp.stare ?? "") === k ? "true" : undefined}>{l}</Link>)}
+      </nav>
+      <div className="card">
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Pagina</th><th>Grupa</th><th>Cuvinte</th><th>Stare</th><th>De ce</th></tr></thead>
+            <tbody>
+              {show.slice(0, 500).map((p) => <tr key={p.path}><td><a href={p.path} target="_blank">{p.path}</a></td><td>{p.cluster.label}</td><td>{p.words ?? "—"}</td>
+                <td>{p.indexable ? <Status ok>index</Status> : <Status ok={false} warn>noindex</Status>}</td><td style={{ textAlign: "start" }}>{p.gate ?? "conținut propriu suficient"}</td></tr>)}
+              {!show.length && <tr><td colSpan={5} className="muted">Nicio pagină.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ---------------------------------- Secțiuni (clustere) ---------------------------------- */
+
+async function Sections({ pages, gscPages, gscOn, days }: { pages: AuditPage[]; gscPages?: ReturnType<typeof gscByPath>; gscOn: boolean; days: number }) {
+  const { cur } = rangeOf(days <= 7 ? "7z" : days <= 30 ? "30z" : "90z");
+  const rows = ((await db.execute(sql`select path, count(*) as s from page_view where day between ${cur.from} and ${cur.to} and source in ('google','bing','duckduckgo','yahoo','yandex','ecosia','brave') group by path`)).rows ?? []) as { path: string; s: number }[];
+  const org = new Map(rows.map((r) => [r.path, Number(r.s)]));
+  const conv = await conversionsBy(db, cur, "landing");
+  // Grupele, și în ghiduri: pe categorii (Regiuni istorice, Românii din străinătate…), ca să se vadă ce temă aduce.
+  const keyOf = (p: AuditPage) => (p.cluster.key === "ghid" && p.category && p.category !== "hub" ? `ghid:${p.category}` : p.cluster.key);
+  const labelOf = (p: AuditPage) => (p.cluster.key === "ghid" && p.category && p.category !== "hub" ? `Ghiduri · ${p.category}` : p.cluster.label);
+  const clusters = [...new Map(pages.map((p) => [keyOf(p), labelOf(p)])).entries()].map(([k, label]) => {
+    const ps = pages.filter((p) => keyOf(p) === k);
+    const g = ps.map((p) => gscPages?.get(p.path)).filter((x) => !!x);
+    return {
+      k, label, total: ps.length, index: ps.filter((p) => p.indexable).length, seen: g.length,
+      impressions: g.reduce((a, b) => a + b!.impressions, 0), clicks: g.reduce((a, b) => a + b!.clicks, 0),
+      org: ps.reduce((a, p) => a + (org.get(p.path) ?? 0), 0), cont: ps.reduce((a, p) => a + (conv.get(p.path)?.cont ?? 0), 0), plata: ps.reduce((a, p) => a + (conv.get(p.path)?.plata ?? 0), 0),
+    };
+  });
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Secțiunile site-ului (clustere)</h2>
+      <p className="muted" style={{ marginTop: 0 }}>„Văzute în Google” = pagini care au apărut cel puțin o dată în rezultate în ultimele {days} zile, deci sigur sunt indexate. Vizitele și conturile sunt numărate pe site (prima pagină a vizitei).</p>
+      <div className="an-scroll">
+        <table className="an-table">
+          <thead><tr><th>Secțiunea</th><th>Pagini</th><th>Indexabile</th><th>Văzute în Google</th><th>Afișări</th><th>Clicuri</th><th>Vizite din căutări</th><th>Conturi</th><th>Plăți</th></tr></thead>
+          <tbody>
+            {clusters.map((c) => <tr key={c.k}><td>{c.label}</td><td>{num(c.total)}</td><td>{num(c.index)}</td><td>{gscOn ? num(c.seen) : "—"}</td><td>{gscOn ? num(c.impressions) : "—"}</td><td>{gscOn ? num(c.clicks) : "—"}</td><td>{num(c.org)}</td><td>{num(c.cont)}</td><td>{num(c.plata)}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------- Inspector URL ---------------------------------- */
+
+async function Inspector({ sp, pages, gscOn }: { sp: SP; pages: AuditPage[]; gscOn: boolean }) {
+  const path = ownPath(sp.url);
+  const page = path ? pages.find((p) => p.path === path.split("?")[0]) : null;
+  const res = path ? await inspectOwnPage(path, { inSitemap: !!page?.inSitemap, gate: page?.gate ?? null }) : null;
+  let google: Inspection | null = null;
+  if (path && gscOn) {
+    const s = await seoSettings(db); const key = activeServiceAccount(s);
+    const snap = await gscSnapshot(s, SITE_URL, 28);
+    if (key && snap.site) google = await inspectUrl(key.account, snap.site, `${SITE_URL}${path === "/" ? "/" : path}`);
+  }
+  const examples = ["/", "/ghid/cum-incepi-arborele-genealogic", "/nume/popescu", "/localitati/cluj", "/ghid/registrele-de-stare-civila", "/glosar/spita-neamului"];
+  return (
+    <>
+      <form className="card" method="get" action="/admin/seo" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end" }}>
+        <input type="hidden" name="t" value="inspector" />
+        <label style={{ flex: "1 1 300px" }}>Adresa de verificat<input name="url" defaultValue={sp.url ?? ""} placeholder="/ghid/... sau adresa întreagă" /></label>
+        <button className="btn primary" type="submit">Inspectează</button>
+        <div className="chips" style={{ flexBasis: "100%" }}>{examples.map((e) => <Link key={e} className="chip" href={`/admin/seo?t=inspector&url=${encodeURIComponent(e)}`}>{e}</Link>)}</div>
+      </form>
+      {sp.url && !path && <p className="muted">Adresa nu e de pe carteaneamului.ro.</p>}
+      {res && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>{res.url}</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Grupa: {page?.cluster.label ?? "pagină necunoscută în inventar"} · {page ? (page.indexable ? "trebuie să fie în Google" : "trebuie ținută afară") : "nu e în lista paginilor publice"}</p>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <tbody>
+                {res.checks.map((c) => <tr key={c.label}><td style={{ width: 1 }}><Status ok={c.ok} warn={c.warn}>{c.ok ? "bine" : c.warn ? "de văzut" : "problemă"}</Status></td><td>{c.label}<small>{c.detail}</small></td></tr>)}
+                {google && (() => { const v = VERDICT[google.verdict] ?? { label: google.verdict, ok: false, warn: true }; return (
+                  <tr><td><Status ok={v.ok} warn={v.warn}>{v.label}</Status></td><td>Starea în Google (Search Console)<small>{google.error ?? google.coverage}{google.lastCrawl ? ` · citită de Google ${day(google.lastCrawl)}` : ""}</small></td></tr>
+                ); })()}
+                {!gscOn && <tr><td><Status ok={false} warn>—</Status></td><td>Starea în Google<small>Apare aici după legarea Search Console (fila Setări). Până atunci, o vezi în Search Console → Verificarea adresei URL.</small></td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ---------------------------------- Sitemap ---------------------------------- */
+
+async function SitemapTab({ gscOn }: { gscOn: boolean }) {
+  const sm = sitemapCheck();
+  let maps: Sitemap[] = [];
+  if (gscOn) {
+    const s = await seoSettings(db); const key = activeServiceAccount(s); const snap = await gscSnapshot(s, SITE_URL, 28);
+    if (key && snap.site) maps = await listSitemaps(key.account, snap.site).catch(() => []);
+  }
+  const ok = !sm.duplicates.length && !sm.privateIn.length && !sm.badSlugs.length && !sm.overLimit.length;
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Structura sitemap-ului</h2>
+        <p style={{ marginTop: 0 }}><a href="/sitemap.xml" target="_blank">{SITE_URL}/sitemap.xml</a> · {sm.isIndex ? `index cu ${sm.groups.length} fișiere` : "un singur fișier"} · {num(sm.total)} adrese · robots.txt trimite spre el</p>
+        <div className="stats">
+          {sm.groups.map((g) => <Stat key={g.name} label={g.file.replace("/sitemaps/", "")} value={num(g.count)} hint={g.label} />)}
+        </div>
+        <h3>Verificarea</h3>
+        <div className="tbl-wrap"><table className="tbl"><tbody>
+          <tr><td style={{ width: 1 }}><Status ok={!sm.duplicates.length}>{sm.duplicates.length ? "problemă" : "bine"}</Status></td><td>Fără adrese duble<small>{sm.duplicates.slice(0, 10).join(", ") || "niciuna"}</small></td></tr>
+          <tr><td><Status ok={!sm.privateIn.length}>{sm.privateIn.length ? "problemă" : "bine"}</Status></td><td>Nicio pagină privată (arbori, cont, plată)<small>{sm.privateIn.slice(0, 10).join(", ") || "niciuna"}</small></td></tr>
+          <tr><td><Status ok={!sm.badSlugs.length} warn>{sm.badSlugs.length ? "de văzut" : "bine"}</Status></td><td>Adrese curate (litere mici, cifre, liniuțe)<small>{sm.badSlugs.slice(0, 10).join(", ") || "toate"}</small></td></tr>
+          <tr><td><Status ok={!sm.overLimit.length}>{sm.overLimit.length ? "problemă" : "bine"}</Status></td><td>Sub limita de 50.000 de adrese pe fișier</td></tr>
+          <tr><td><Status ok>bine</Status></td><td>Paginile sub pragul de conținut lăsate afară<small>vezi fila Indexare</small></td></tr>
+        </tbody></table></div>
+        <p className="muted" style={{ marginBottom: 0 }}>{ok ? "Sitemap-ul e în regulă." : "Sunt lucruri de reparat mai sus."}</p>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Sitemap-ul în Google</h2>
+        {!gscOn ? <p className="muted" style={{ marginTop: 0 }}>Din pozele tale din Search Console (14.11.2026): indexul a fost citit cu succes, 496 de pagini descoperite. Aici apare singur după legarea cheii.</p>
+          : maps.length === 0 ? <p className="muted" style={{ marginTop: 0 }}>Google nu are încă sitemap-ul. Trimite-l cu butonul de mai jos.</p>
+          : (
+            <div className="an-scroll">
+              <table className="an-table">
+                <thead><tr><th>Adresa</th><th>Trimis</th><th>Citit</th><th>Pagini</th><th>Probleme</th></tr></thead>
+                <tbody>{maps.map((m) => <tr key={m.path}><td>{m.path}{m.isPending && <small> · în așteptare</small>}</td><td>{day(m.lastSubmitted)}</td><td>{day(m.lastDownloaded)}</td><td>{m.contents?.[0]?.submitted ?? "—"}</td>
+                  <td>{Number(m.errors ?? 0) || Number(m.warnings ?? 0) ? `${m.errors ?? 0} erori, ${m.warnings ?? 0} avertismente` : "niciuna"}</td></tr>)}</tbody>
+              </table>
+            </div>
+          )}
+        {gscOn && <SubmitSitemapButton />}
+      </div>
+    </>
+  );
+}
+
+/* ---------------------------------- Alerte ---------------------------------- */
+
+function Alerts({ alerts }: { alerts: ReturnType<typeof auditAlerts> }) {
+  const tone = { critic: "var(--red)", avertisment: "var(--ochre, #b7791f)", info: "var(--muted)" } as const;
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Critice" value={num(alerts.filter((a) => a.level === "critic").length)} tone={alerts.some((a) => a.level === "critic") ? "bad" : "ok"} />
+        <Stat label="Avertismente" value={num(alerts.filter((a) => a.level === "avertisment").length)} tone={alerts.some((a) => a.level === "avertisment") ? "warn" : "ok"} />
+        <Stat label="Informări" value={num(alerts.filter((a) => a.level === "info").length)} />
+      </div>
+      {alerts.map((a) => (
+        <div key={a.code} className="card" style={{ borderLeft: `4px solid ${tone[a.level]}` }}>
+          <h2 style={{ marginTop: 0, fontSize: 18 }}>{a.title} <small className="muted" style={{ fontWeight: 400, fontSize: 12 }}>{a.code}</small></h2>
+          <p style={{ margin: 0 }}>{a.text}</p>
+          {a.fix && <p style={{ margin: "6px 0 0" }}><b>Ce faci:</b> {a.fix}</p>}
+          {a.paths && a.paths.length > 0 && (
+            <details style={{ marginTop: 6 }}><summary>{a.paths.length} pagini</summary>
+              <ul className="hub-list hub-cols">{a.paths.slice(0, 200).map((p) => <li key={p}><Link href={`/admin/seo?t=inspector&url=${encodeURIComponent(p)}`}>{p}</Link></li>)}</ul>
+            </details>
+          )}
+        </div>
+      ))}
+      {!alerts.length && <p className="muted">Nicio alertă.</p>}
+    </>
+  );
+}
+
+/* ---------------------------------- Setări ---------------------------------- */
+
+function Settings({ gsc, gscErr, s }: { gsc: Awaited<ReturnType<typeof gscSnapshot>>; gscErr: ReturnType<typeof explainGscError> | null; s: Awaited<ReturnType<typeof seoSettings>> }) {
+  const verification = process.env.GOOGLE_SITE_VERIFICATION?.trim() || s.verification;
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Starea legăturilor</h2>
+        <div className="tbl-wrap"><table className="tbl"><tbody>
+          <tr><td style={{ width: 1 }}><Status ok>merge</Status></td><td>Adresa principală<small>{SITE_URL}</small></td></tr>
+          <tr><td><Status ok>merge</Status></td><td>robots.txt: Google citește paginile publice, nu arborii, mesajele sau datele cuiva<small><a href="/robots.txt" target="_blank">{SITE_URL}/robots.txt</a></small></td></tr>
+          <tr><td><Status ok={!!verification} warn>{verification ? "pus" : "prin DNS"}</Status></td><td>Verificarea proprietății în Google<small>{verification ? "Eticheta HTML e pe prima pagină." : "Proprietatea „Domeniu” carteaneamului.ro e verificată prin DNS (din pozele tale), deci eticheta nu mai e necesară."}</small></td></tr>
+          <tr><td><Status ok={gsc.state === "legat"} warn>{gsc.state === "legat" ? "legat" : gsc.state === "eroare" ? "eroare" : gsc.state === "fara-acces" ? "fără acces" : "lipsește cheia"}</Status></td><td>Cheia pentru Search Console în panou<small><GscState gsc={gsc} gscErr={gscErr} /></small></td></tr>
+        </tbody></table></div>
+      </div>
+      {gsc.state !== "legat" && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Cum legi Search Console de panou (o singură dată, cam 10 minute)</h2>
+          <p style={{ marginTop: 0 }}>Proprietatea și sitemap-ul le ai deja. Mai trebuie doar o cheie, ca panoul să poată citi datele:</p>
+          <ol style={{ paddingLeft: 20, lineHeight: 1.6, marginBottom: 0 }}>
+            <li>În <a href="https://console.cloud.google.com/apis/library/searchconsole.googleapis.com" target="_blank" rel="noreferrer">Google Cloud</a> (același proiect ca la „Continuă cu Google”), apasă <b>Enable</b> la <b>Google Search Console API</b>.</li>
+            <li><a href="https://console.cloud.google.com/iam-admin/serviceaccounts" target="_blank" rel="noreferrer">Service Accounts</a> → Create service account (nume: <code>seo-cartea-neamului</code>, fără roluri) → intră în el → Keys → Add key → JSON. Se descarcă un fișier .json.</li>
+            <li>În <a href="https://search.google.com/search-console/users?resource_id=sc-domain%3Acarteaneamului.ro" target="_blank" rel="noreferrer">Search Console → Setări → Utilizatori și permisiuni</a> → Adaugă utilizator: adresa contului (se termină în <code>.iam.gserviceaccount.com</code>), permisiune <b>Complet</b>.</li>
+            <li>Deschide fișierul .json, copiază tot textul și lipește-l mai jos, la „Cheia Search Console”. Gata: Prezentarea, Cuvintele, Paginile și Analiză → Conversii se umplu singure.</li>
+          </ol>
+          <p className="muted" style={{ marginBottom: 0 }}>Dacă apare „invalid_grant” (ca la PropManage): cheia a fost ștearsă sau revocată. Fă o cheie nouă la pasul 2 și lipește-o din nou.</p>
+        </div>
+      )}
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Setări</h2>
-        <SeoSetupForm verification={s.verification} siteUrl={s.siteUrl} sites={(live?.sites ?? []).map((x) => x.siteUrl)} watch={s.watch}
-          keySource={key?.source ?? null} keyEmail={key?.account.client_email ?? null} />
+        <SeoSetupForm verification={s.verification} siteUrl={s.siteUrl} sites={gsc.sites.map((x) => x.siteUrl)} watch={s.watch} keySource={gsc.source} keyEmail={gsc.email} />
       </div>
-    </section>
+      <p className="muted" style={{ fontSize: 13 }}>Paginile principale: {PUBLIC_PAGES.length}. Zonele private oprite în robots.txt: {PRIVATE_PREFIXES.join(", ")}.</p>
+    </>
   );
 }
