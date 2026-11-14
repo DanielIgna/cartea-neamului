@@ -619,6 +619,27 @@ export const visitSalt = pgTable("visit_salt", {
   salt: text("salt").notNull(),
 });
 
+// Conversiile (cont nou, arbore nou, clic pe un buton de început, plată) cu sursa vizitei din care au venit (migrația 0033).
+// Fără id de cont: se pot doar număra pe surse, pagini și campanii, nu lega de un om. Vezi src/lib/conversii.ts.
+export const conversion = pgTable("conversion", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  at: timestamp("at").notNull().defaultNow(),
+  day: date("day").notNull(),
+  kind: text("kind").notNull(), // cont / arbore / cta / plata-start / plata
+  label: text("label"),
+  page: text("page"),
+  landing: text("landing"),
+  source: text("source").notNull(),
+  medium: text("medium"),
+  campaign: text("campaign"),
+  referrer: text("referrer"),
+  device: text("device"),
+  country: text("country"),
+  amount: integer("amount"),
+  currency: text("currency"),
+  attributed: boolean("attributed").notNull().default(false),
+}, (t) => [index("conversion_day_idx").on(t.day, t.kind)]);
+
 /* ---------- Autonomia (Admin → Autonomie), vezi src/lib/autonomie.ts și migrația 0027 ---------- */
 // Fiecare rulare a unei automatizări: cine a pornit-o (ceasul zilnic, butonul din panou, o aprobare), ce a văzut, ce a făcut
 // și ce așteaptă aprobarea omului. Nimic din ce atinge bani, conturi sau texte publice nu se face fără aprobare.

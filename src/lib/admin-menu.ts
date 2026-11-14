@@ -27,7 +27,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
           { key: "business", href: "/admin/business", label: "Business", icon: "chart", hint: "Conturi, arbori, activitate, venituri", words: "venituri statistici" },
           { key: "control", href: "/admin/control", label: "Manager control", icon: "sliders", hint: "Planuri, prețuri, pornirea plăților", words: "planuri preturi plati stripe gratuit" },
           { key: "arhiva", href: "/admin/arhiva", label: "Arhivă", icon: "book", hint: "Arhiva sigilată după anul plătit: termeni, ce urmează", isNew: true, words: "arhiva sigilata pastrare dupa an originale poze mici stocare rece backblaze gdpr" },
-          { key: "analiza", href: "/admin/analiza", label: "Analiză", icon: "pulse", hint: "Vizite, surse, campanii, drumul spre plată", isNew: true, words: "trafic vizite analytics campanii" },
+          { key: "analiza", href: "/admin/analiza", label: "Analiză", icon: "pulse", hint: "Vizite, surse, campanii, conversii pe sursă și pagină", isNew: true, words: "trafic vizite analytics campanii conversii atribuire conturi plati cta" },
           { key: "sanatate", href: "/admin/sanatate", label: "Sănătatea afacerii", icon: "heart", hint: "Scoruri pe departamente față de ținta de 1000 de abonamente", isNew: true, words: "business health venituri crestere conversii seo scor tinta" },
           { key: "crestere", href: "/admin/crestere", label: "Creștere și recomandări", icon: "share", hint: "Invitații, rude aduse, daruri, emailuri cu acord, distribuiri", isNew: true, words: "referral invitatii viral marketing leaduri distribuire" },
           { key: "invatare", href: "/admin/invatare", label: "Învățare și conversii", icon: "pulse", hint: "Jurnalul recomandărilor, cine e aproape de plată, perspective din Analiză", isNew: true, words: "learning lead intent scor proba conversie canal ora iesire jurnal" },
@@ -39,7 +39,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
       },
       {
         id: "continut", label: "Site și conținut", items: [
-          { key: "seo", href: "/admin/seo", label: "SEO", icon: "search", hint: "Google, cuvinte căutate, indexare", words: "google search console indexare" },
+          { key: "seo", href: "/admin/seo", label: "Centrul SEO", icon: "search", hint: "Indexare, pagini, inspector URL, sitemap, alerte, cuvinte cheie", isNew: true, words: "google search console indexare sitemap inspector alerte cuvinte cheie noindex prag clustere" },
           { key: "texte", href: "/admin/texte", label: "Texte", icon: "text", hint: "Cuvântul de la finalul Călătoriei", words: "epilog calatoria in timp" },
           { key: "poze", href: "/admin/poze", label: "Poze prima pagină", icon: "image", hint: "Banner și galeria de pe home", words: "banner galerie home" },
           { key: "propuneri", href: "/admin/propuneri", label: "Poze propuse", icon: "inbox", hint: "Pozele trimise de familii", words: "propuneri aprobare" },

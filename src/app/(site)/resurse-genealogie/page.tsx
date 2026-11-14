@@ -8,6 +8,7 @@ import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
 const PATH = "/resurse-genealogie";
+const OG = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "Cartea Neamului: arborele familiei, construit împreună" };
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("Resources");
@@ -15,8 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = t("metaDescription");
   return {
     title: { absolute: title }, description, alternates: { canonical: PATH },
-    openGraph: { title, description, url: `${SITE_URL}${PATH}`, type: "website" },
-    twitter: { card: "summary_large_image", title, description },
+    // Poza pentru linkuri pusă de mână: o pagină cu openGraph propriu nu o moștenește singură (auditul din 14.11.2026).
+    openGraph: { title, description, url: `${SITE_URL}${PATH}`, type: "website", images: [OG] },
+    twitter: { card: "summary_large_image", title, description, images: [OG] },
   };
 }
 

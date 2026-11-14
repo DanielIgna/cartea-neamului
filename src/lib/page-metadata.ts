@@ -11,8 +11,17 @@ export const canonicalUrl = (path: string) => `${SITE_URL}${path === "/" ? "/" :
  */
 const OG_IMAGE = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "Cartea Neamului: arborele familiei, construit împreună" };
 
-export function publicPageMetadata({ path, title, description, image }: { path: string; title: string; description: string; image?: { url: string; alt: string } }): Metadata {
+/**
+ * Titlul pentru Google: cele peste ~60 de semne sunt tăiate în rezultate (auditul din 14.11.2026 a găsit 405 așa). Dacă titlul
+ * cu „| Cartea Neamului” trece de 60, numele site-ului se lasă deoparte (Google îl arată oricum lângă adresă), la fel și în
+ * previzualizarea linkurilor, unde apare deja „siteName”.
+ */
+export const TITLE_SUFFIX = " | Cartea Neamului";
+export const fitTitle = (title: string) => (title.length > 60 && title.endsWith(TITLE_SUFFIX) ? title.slice(0, -TITLE_SUFFIX.length) : title);
+
+export function publicPageMetadata({ path, title: full, description, image }: { path: string; title: string; description: string; image?: { url: string; alt: string } }): Metadata {
   const url = canonicalUrl(path);
+  const title = fitTitle(full);
   // O pagină cu cardul ei (nume, localitate) îl arată în previzualizarea linkului, în locul pozei comune.
   const img = image ? { ...image, width: 1200, height: 630 } : OG_IMAGE;
   return {

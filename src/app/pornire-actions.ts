@@ -2,6 +2,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/db";
+import { headers } from "next/headers";
+import { recordConversion } from "@/lib/conversii";
+import { isDemo } from "@/lib/demo";
+import { isAdminUser } from "@/lib/admin";
 import { currentUser } from "@/lib/access";
 import { ensureSchema } from "@/lib/bootstrap";
 import { treeStart } from "@/lib/plata";
@@ -26,6 +30,7 @@ export async function startFamilyTree(input: StartInput): Promise<{ error?: stri
   const fix = <W extends { birth: string }>(w: W | undefined) => (w ? { ...w, birth: normalizeTypedDate(w.birth, locale) } : w);
   if (!(await treeStart(db, me.id)).ok) return { error: t("trialOneTree") };
   const r = await createFamilyTree(db, me.id, { ...v, me: fix(v.me)!, father: fix(v.father), mother: fix(v.mother), ff: fix(v.ff), fm: fix(v.fm), mf: fix(v.mf), mm: fix(v.mm) });
+  if (!isDemo(me.email) && !isAdminUser(me)) await recordConversion(db, "arbore", { headers: await headers(), label: "pornire ghidată" });
   revalidatePath("/");
   redirect(`/arbore/${r.treeId}/bun-venit`);
 }

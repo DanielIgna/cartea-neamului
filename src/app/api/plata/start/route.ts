@@ -1,3 +1,4 @@
+import { attributionOf, attributionToMetadata, recordConversion } from "@/lib/conversii";
 import { db } from "@/db";
 import { currentUser, roleInTree } from "@/lib/access";
 import { recordConsent } from "@/lib/consent";
@@ -75,6 +76,11 @@ export async function POST(req: Request) {
     year = { tier: "basic", upgradeFrom: null, paidUntil: null, extra: bundle ? "carte" : null };
   }
   await recordConsent(db, me.id, "withdrawal", true);
+  // De unde venise vizita (Google, o campanie, o pagină de ghid…): numărăm deschiderea plății și trimitem sursa prin Stripe, ca plata
+  // încheiată să se numere la aceeași sursă. Plățile de probă ale adminilor nu se numără.
+  const counted = !isAdminUser(me);
+  const attr = counted ? await attributionOf(db, req.headers) : null;
+  if (attr) await recordConversion(db, "plata-start", { attr, label: kind });
   try {
     const url = await createCheckout({
       kind, userId: me.id, email: me.email, treeId: kind === "carte" ? treeId : keepTree,
@@ -87,6 +93,7 @@ export async function POST(req: Request) {
       waiver: t("waiverRecord", { url: `${origin}/termeni` }),
       seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
       ...(kind === "pastrare" ? { tier: undefined } : {}),
+      attribution: attr ? { ...attributionToMetadata(attr), ...(attr.attributed ? {} : { "metadata[a_src]": "necunoscut" }) } : undefined,
     });
     return Response.redirect(url, 303);
   } catch (e) {

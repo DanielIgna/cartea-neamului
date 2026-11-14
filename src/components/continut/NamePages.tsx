@@ -1,3 +1,4 @@
+import { nameGate } from "@/lib/continut/prag";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -73,7 +74,9 @@ const descOf = (name: string) => `Ce înseamnă numele de familie ${name}, de un
 export function nameMetadata(slug: string): Metadata {
   const n = getName(slug);
   if (!n) notFound();
-  return publicPageMetadata({ path: `/nume/${n.slug}`, title: titleOf(n.name), description: descOf(n.name), image: { url: `/api/card?nume=${n.slug}`, alt: `Numele de familie ${n.name}` } });
+  const meta = publicPageMetadata({ path: `/nume/${n.slug}`, title: titleOf(n.name), description: descOf(n.name), image: { url: `/api/card?nume=${n.slug}`, alt: `Numele de familie ${n.name}` } });
+  // Sub pragul de conținut propriu: deschisă oamenilor, dar nu în Google (src/lib/continut/prag.ts).
+  return nameGate(n) ? { ...meta, robots: { index: false, follow: true } } : meta;
 }
 
 export async function NamePage({ slug }: { slug: string }) {

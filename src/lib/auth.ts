@@ -1,3 +1,4 @@
+import { recordConversion } from "./conversii";
 import { recordReferral } from "./parteneri-crm";
 import { and, eq, isNull } from "drizzle-orm";
 import { betterAuth } from "better-auth";
@@ -9,6 +10,7 @@ import { db } from "@/db";
 import { user, session, account, verification, twoFactor as twoFactorTable } from "@/db/schema";
 import { recordConsent } from "./consent";
 import { isOwnerEmail } from "./admin";
+import { isDemo } from "./demo";
 import { setPartnerConsent, signupPartnerFromCookie } from "./partners";
 import { DEFAULT_LOCALE, localeFromCookieHeader } from "@/i18n/locales";
 
@@ -95,6 +97,9 @@ export const auth = betterAuth({
         },
         after: async (u, ctx) => {
           await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e));
+          // Încă un cont nou, numărat la sursa vizitei din care a venit (Admin → Analiză → Conversii); fără legătură cu contul.
+          const h = ctx?.headers ?? ctx?.request?.headers;
+          if (h && !isDemo(u.email)) await recordConversion(db, "cont", { headers: h });
           // Bifa separată (nebifată de la sine) pentru beneficiile de la PropManage: doar dacă omul a bifat-o în formular.
           const cookie = ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie");
           // Venit prin legătura sau QR-ul unui magazin partener (/r/<cod>): contul e trecut pe acel partener (City Partners).

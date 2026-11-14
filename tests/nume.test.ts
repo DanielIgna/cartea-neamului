@@ -1,3 +1,4 @@
+import { nameGate } from "@/lib/continut/prag";
 import { beforeAll, describe, expect, it } from "vitest";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
@@ -45,7 +46,8 @@ describe("numele de familie (content/nume/nume.json)", () => {
 
   it("sunt în sitemap, care devine index de sitemap-uri", () => {
     const urls = sitemapGroups().flatMap((g) => g.urls.map((u) => u.path));
-    for (const n of names) expect(urls).toContain(`/nume/${n.slug}`);
+    // Numele sub pragul de conținut propriu (src/lib/continut/prag.ts) rămân în afara sitemap-ului.
+    for (const n of names.filter((x) => !nameGate(x))) expect(urls).toContain(`/nume/${n.slug}`);
     expect(urls.length).toBeGreaterThan(300);
     expect(mainSitemapXml()).toContain("<sitemapindex");
     expect(mainSitemapXml()).toContain("/sitemaps/nume.xml");
