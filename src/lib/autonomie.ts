@@ -329,7 +329,7 @@ const PART_META: Record<Part["key"], { label: string; what: string; weight: numb
   operational: { label: "Operațional", what: "Automatizările pornite, ceasul zilnic, rulările reușite", weight: 25, target: 90 },
   tehnic: { label: "Tehnic", what: "Baza de date, migrații, chei, stocare, erori", weight: 25, target: 90 },
   securitate: { label: "Securitate", what: "Alerte, verificarea în 2 pași a adminilor, plăți", weight: 20, target: 90 },
-  dezvoltare: { label: "Dezvoltare", what: "Erori care se repetă, tendința, probleme „nu merge”", weight: 15, target: 80 },
+  dezvoltare: { label: "Dezvoltare", what: "Erori care se repetă, tendința, probleme „nu merge”, harta funcțiilor", weight: 15, target: 80 },
   om: { label: "Dependență de om", what: "Câte lucruri așteaptă acum după tine (100 = niciunul)", weight: 15, target: 80 },
 };
 
@@ -443,10 +443,17 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
 
   // Dezvoltare
   const err7 = n(b.err7), errPrev = n(b.errprev), repeat = n(b.repeat_routes), bugOld = n(b.bug_old);
+  // Harta funcțiilor (Centrul de cunoștințe): legături rupte și funcții cu roșu. Import târziu, fiindcă harta citește și ea automatizările.
+  const kc = await import("./cunostinte/verificare").then((m) => m.knowledgeSummary(db, now)).catch(() => null);
   const dev: Check[] = [
     chk("Erorile nu cresc de la o săptămână la alta", err7 <= errPrev || err7 <= 2, 35, `${err7} în ultimele 7 zile, ${errPrev} în cele dinainte`, { text: "Erorile cresc: vezi ce s-a schimbat la ultima publicare", href: "/admin/infra" }),
     chk("Nicio pagină cu aceeași eroare de 3+ ori", repeat === 0, 35, `${repeat} pagini`, { text: `${repeat} pagini dau mereu eroare: încep cu ele`, href: "/admin/infra" }),
     chk("Nicio problemă „nu merge” deschisă de peste 7 zile", bugOld === 0, 30, `${bugOld} deschise`, { text: `Răspunde la cele ${bugOld} probleme „Ceva nu merge” mai vechi de o săptămână`, href: "/admin/probleme" }),
+    chk("Harta funcțiilor fără legături rupte", !!kc && kc.broken === 0, 20, kc ? `${kc.broken} funcții cu legături rupte (${kc.files} fișiere, ${kc.routes} adrese verificate)` : "harta nu s-a putut verifica",
+      { text: kc ? `Repară cele ${kc.broken} funcții cu legături rupte din Harta funcțiilor` : "Deschide Harta funcțiilor și vezi de ce nu se verifică", href: "/admin/cunostinte/functii" }),
+    chk("Funcțiile în lucru sunt sănătoase", !!kc && kc.red === 0 && kc.yellow === 0, 20, kc ? `${kc.green} verzi, ${kc.yellow} galbene, ${kc.red} roșii din ${kc.live}` : "harta nu s-a putut verifica",
+      { text: kc ? `${kc.red} funcții roșii și ${kc.yellow} galbene în Harta funcțiilor: începe cu cele roșii` : "Deschide Harta funcțiilor", href: "/admin/cunostinte/functii" },
+      kc && kc.live ? Math.round((20 * (kc.green + kc.yellow / 2)) / kc.live) : 0),
   ];
 
   // Dependență de om: fiecare lucru care așteaptă scade 10 puncte din grupul lui (cel puțin 0).
@@ -456,6 +463,7 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
     { label: "Cereri de test ADN", c: n(b.dna), href: "/admin/adn" },
     { label: "Aprobări cerute de automatizări", c: n(b.approvals), href: "/admin/autonomie#aprobari" },
     { label: "Erori noi pe server", c: err1, href: "/admin/infra" },
+    { label: "Documente de revizuit", c: kc?.review ?? 0, href: "/admin/cunostinte?v=revizuire" },
   ];
   const om: Check[] = waiting.map((w) => ({ label: w.label, max: 20, points: Math.max(0, 20 - 5 * w.c), note: w.c ? `${w.c} așteaptă` : "nimic",
     fix: w.c ? { text: `${w.label}: ${w.c}`, href: w.href } : undefined }));

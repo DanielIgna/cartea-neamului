@@ -46,3 +46,17 @@ export async function requireAdmin(next = "/admin") {
 export async function adminReady(me: { id: string; email: string; createdAt?: Date | string | null; emailVerified?: boolean | null } | null) {
   return !!me && (await isAdminFresh(me)) && !(await adminNeedsTwoStep(me.id));
 }
+
+/** Fondatorii (proprietarii din OWNERS, cu adresa confirmată): Centrul de cunoștințe e doar pentru ei, nu și pentru adminii din ADMIN_EMAILS. */
+async function isFounderFresh(id: string) {
+  const [u] = await db.select({ email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt }).from(user).where(eq(user.id, id));
+  return !!u && isOwnerUser(u);
+}
+export async function requireFounder(next = "/admin") {
+  const me = await requireAdmin(next);
+  if (!(await isFounderFresh(me.id))) notFound();
+  return me;
+}
+export async function founderReady(me: { id: string; email: string; createdAt?: Date | string | null; emailVerified?: boolean | null } | null) {
+  return !!me && (await adminReady(me)) && (await isFounderFresh(me.id));
+}
