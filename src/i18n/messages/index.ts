@@ -22,6 +22,7 @@ const LOADERS: Record<Locale, () => Promise<Catalog>> = {
   de: async () => (await import("./de")).de,
   it: async () => (await import("./it")).it,
   hu: async () => (await import("./hu")).hu,
+  he: async () => (await import("./he")).he,
 };
 
 /** Textele unei limbi, întregi (toate limbile au aceleași chei ca româna). */

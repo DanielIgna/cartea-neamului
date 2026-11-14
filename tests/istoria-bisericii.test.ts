@@ -31,7 +31,8 @@ describe("istoria Bisericii", () => {
       const heroes = c.heroes as Record<string, { verse: Verse }>;
       for (const v of [c.promise, ...Object.values(eras).map((e) => e.verse), ...Object.values(heroes).map((h) => h.verse)]) {
         expect(v.text.length, l).toBeGreaterThan(10);
-        expect(v.ref, l).toMatch(/\d+[:,]\d+/);
+        // ebraica scrie trimiterile cu litere (מתי טז, יח), celelalte cu cifre
+        expect(v.ref, l).toMatch(l === "he" ? /^[\u05D0-\u05EA ]+ [\u05D0-\u05EA]+, [\u05D0-\u05EA]+(–[\u05D0-\u05EA]+)?$/ : /\d+[:,]\d+/);
       }
     }
   });
