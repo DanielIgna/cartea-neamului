@@ -2,9 +2,8 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { AdminNav } from "@/components/admin/ui";
-import { siteOrigin } from "@/lib/site";
 import { batchList, cardLog, giftCardsEnabled, partnerList, partnerReport, pl, STATUS_LABEL, type CardStatus } from "@/lib/carduri-cadou";
-import { cardAction, createBatchAction, savePartnerAction, setPinAction, toggleGiftCards, togglePartnerAction } from "@/app/carduri-actions";
+import { cardAction, createBatchAction, toggleGiftCards } from "@/app/carduri-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Carduri cadou · Admin" };
@@ -25,27 +24,8 @@ const ACTION: Record<string, string> = {
 export default async function AdminCarduri({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   await requireAdmin("/admin/carduri");
   const q = await searchParams;
-  const [on, partners, batches, report, log, origin] = await Promise.all([giftCardsEnabled(db), partnerList(db), batchList(db), partnerReport(db), cardLog(db, 40), siteOrigin()]);
+  const [on, partners, batches, report, log] = await Promise.all([giftCardsEnabled(db), partnerList(db), batchList(db), partnerReport(db), cardLog(db, 40)]);
   const total = report.reduce((a, r) => ({ vandute: a.vandute + r.vandute, activate: a.activate + r.activate, comision: a.comision + r.comisionLei }), { vandute: 0, activate: 0, comision: 0 });
-  const partnerForm = (p?: (typeof partners)[number]) => (
-    <form action={savePartnerAction} className="form limits-form" key={p?.id ?? "nou"}>
-      {p && <input type="hidden" name="id" value={p.id} />}
-      <div className="limits-row">
-        <label>Numele magazinului<input name="numeMagazin" defaultValue={p?.numeMagazin} required maxLength={160} /></label>
-        <label>Oraș<input name="oras" defaultValue={p?.oras ?? ""} maxLength={120} /></label>
-        <label>Adresa<input name="adresa" defaultValue={p?.adresa ?? ""} maxLength={300} /></label>
-      </div>
-      <div className="limits-row">
-        <label>Persoana de contact<input name="persoanaContact" defaultValue={p?.persoanaContact ?? ""} maxLength={160} /></label>
-        <label>Telefon<input name="telefon" defaultValue={p?.telefon ?? ""} maxLength={40} /></label>
-        <label>Email<input name="email" type="email" defaultValue={p?.email ?? ""} maxLength={200} /></label>
-        <label>Comision %<input name="comisionProcent" inputMode="decimal" defaultValue={String(p?.comisionProcent ?? 25)} /></label>
-      </div>
-      <label>Note<textarea name="note" defaultValue={p?.note ?? ""} rows={2} maxLength={2000} /></label>
-      <label className="check"><input type="checkbox" name="activ" defaultChecked={p ? p.activ : true} /> Magazin activ</label>
-      <div className="actions" style={{ marginTop: 0 }}><button className="btn primary">{p ? "Salvează" : "Adaugă magazinul"}</button></div>
-    </form>
-  );
   return (
     <section className="stack">
       <AdminNav active="carduri" />
@@ -97,7 +77,7 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
             <div className="limits-row">
               <label>Magazinul
                 <select name="partnerId" required defaultValue={partners.find((p) => p.activ)?.id}>
-                  {partners.map((p) => <option key={p.id} value={p.id}>{p.numeMagazin}{p.oras ? ` (${p.oras})` : ""}{p.activ ? "" : " · inactiv"}</option>)}
+                  {partners.filter((p) => p.etapa !== "respins").map((p) => <option key={p.id} value={p.id}>{p.numeMagazin}{p.oras ? ` (${p.oras})` : ""}{p.activ ? "" : " · inactiv"}</option>)}
                 </select>
               </label>
               <label>Cantitate<input name="cantitate" type="number" min={1} max={1000} defaultValue={50} required /></label>
@@ -106,10 +86,11 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
               </label>
               <label>Durata (luni)<input name="durataLuni" type="number" min={1} max={60} defaultValue={12} /></label>
               <label>Preț de raft (lei)<input name="pretRaftLei" inputMode="decimal" defaultValue="49" /></label>
+              <label className="check"><input type="checkbox" name="digital" defaultChecked /> Digital (fără tipar: magazinul trimite cardul pe telefonul clientului)</label>
             </div>
             <div className="actions" style={{ marginTop: 0 }}><button className="btn primary">Generează lotul</button></div>
           </form>
-        ) : <p className="muted">Adaugă întâi un magazin, mai jos.</p>}
+        ) : <p className="muted">Adaugă întâi un partener, în <Link href="/admin/parteneri/nou">City Partners</Link>.</p>}
       </div>
 
       <div className="card">
@@ -122,13 +103,13 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
                 <tr key={b.id}>
                   <td>{when(b.createdAt)}</td>
                   <td>{b.partner}</td>
-                  <td>{PLAN[b.plan] ?? b.plan}<small>{b.durataLuni} luni · {lei(b.pretRaftLei)}</small></td>
+                  <td>{b.digital ? "Digital · " : ""}{PLAN[b.plan] ?? b.plan}<small>{b.durataLuni} luni · {lei(b.pretRaftLei)}</small></td>
                   <td>{b.cantitate}</td>
                   <td><small>{[pl(b.generat, "generat", "generate"), pl(b.livrat, "livrat", "livrate"), pl(b.vandut, "vândut", "vândute"), pl(b.folosit, "folosit", "folosite"), pl(b.anulat, "anulat", "anulate")].join(" · ")}</small></td>
                   <td>
                     <Link className="btn" href={`/admin/carduri/lot/${b.id}`}>Codurile</Link>{" "}
                     <a className="btn" href={`/admin/carduri/lot/${b.id}/csv`}>CSV</a>{" "}
-                    <Link className="btn" href={`/admin/carduri/lot/${b.id}/tipar`}>PDF de tipar</Link>
+                    {!b.digital && <Link className="btn" href={`/admin/carduri/lot/${b.id}/tipar`}>PDF de tipar</Link>}
                   </td>
                 </tr>
               ))}
@@ -154,31 +135,15 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>Magazinele partenere</h3>
-        {partners.map((p) => (
-          <details key={p.id} className="card" style={{ marginBottom: 10 }}>
-            <summary><b>{p.numeMagazin}</b> {p.oras ? `· ${p.oras}` : ""} · comision {p.comisionProcent}% · {p.activ ? "activ" : <span className="muted">inactiv</span>}</summary>
-            {partnerForm(p)}
-            <form action={togglePartnerAction} style={{ display: "inline" }}>
-              <input type="hidden" name="id" value={p.id} /><input type="hidden" name="activ" value={p.activ ? "0" : "1"} />
-              <button className="btn">{p.activ ? "Dezactivează magazinul" : "Activează magazinul"}</button>
-            </form>
-            <h4>Pagina magazinului (opțional)</h4>
-            <p className="muted" style={{ marginTop: 0 }}>
-              Magazinul își marchează singur cardurile vândute, cu un PIN. Vede doar cardurile lui și nu vede alte date.
-              {p.portalToken ? <> Legătura: <code style={{ wordBreak: "break-all" }}>{`${origin}/magazin/${p.portalToken}`}</code></> : " Legătura apare după ce pui un PIN."}
-            </p>
-            <form action={setPinAction} className="form limits-form">
-              <input type="hidden" name="id" value={p.id} />
-              <div className="limits-row">
-                <label>{p.pinHash ? "PIN nou (6–10 cifre)" : "PIN (6–10 cifre)"}<input name="pin" inputMode="numeric" pattern="\d{6,10}" required autoComplete="off" /></label>
-              </div>
-              <div className="actions" style={{ marginTop: 0 }}><button className="btn">{p.pinHash ? "Schimbă PIN-ul" : "Pune PIN-ul"}</button></div>
-            </form>
-          </details>
-        ))}
-        <h4>Adaugă un magazin</h4>
-        {partnerForm()}
+        <h3 style={{ marginTop: 0 }}>Partenerii</h3>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Magazinele și firmele, cu datele lor, etapa, PIN-ul paginii lor, kitul de tipar și raportul lunar de plată, sunt în{" "}
+          <Link href="/admin/parteneri">City Partners</Link>.
+        </p>
+        <div className="actions" style={{ marginTop: 0 }}>
+          <Link className="btn primary" href="/admin/parteneri">Deschide City Partners</Link>
+          <Link className="btn" href="/admin/parteneri/nou">+ Adaugă partener</Link>
+        </div>
       </div>
 
       <div className="card">

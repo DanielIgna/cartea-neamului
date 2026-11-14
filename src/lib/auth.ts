@@ -1,3 +1,4 @@
+import { recordReferral } from "./parteneri-crm";
 import { and, eq, isNull } from "drizzle-orm";
 import { betterAuth } from "better-auth";
 import { waitUntil } from "@vercel/functions";
@@ -96,6 +97,8 @@ export const auth = betterAuth({
           await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e));
           // Bifa separată (nebifată de la sine) pentru beneficiile de la PropManage: doar dacă omul a bifat-o în formular.
           const cookie = ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie");
+          // Venit prin legătura sau QR-ul unui magazin partener (/r/<cod>): contul e trecut pe acel partener (City Partners).
+          await recordReferral(db, u.id, cookie).catch((e) => console.error("recomandare partener", e));
           const partner = signupPartnerFromCookie(cookie);
           if (partner) {
             await setPartnerConsent(db, u.id, true, { partner, source: "cont-nou", locale: localeFromCookieHeader(cookie) ?? DEFAULT_LOCALE })

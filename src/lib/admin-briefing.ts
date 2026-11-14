@@ -17,7 +17,7 @@ async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
 const n = (v: unknown) => Number(v ?? 0) || 0;
 
 /** Semnele de lângă meniul din Admin: ce așteaptă o privire (probleme noi, poze propuse, cereri ADN, erori pe server în 24 h). */
-export type AdminBadges = { probleme: number; propuneri: number; adn: number; infra: number };
+export type AdminBadges = { probleme: number; propuneri: number; adn: number; infra: number; parteneri?: number };
 
 /** Numărul erorilor pe server de după ultima marcare „rezolvate”, din ultimele 24 h și 7 zile. */
 async function errorCounts(db: Db) {
@@ -34,8 +34,9 @@ export async function adminBadges(db: Db): Promise<AdminBadges> {
     select (select count(*) from problem_report where status = 'nou') as probleme,
       (select count(*) from home_submission where status = 'pending') as propuneri,
       (select count(*) from dna_request where resolved_at is null) as adn,
+      (select count(*) from partners where urmatorul_pas_la < date_trunc('day', now()) + interval '1 day' and etapa <> 'respins') as parteneri,
       (select count(*) from audit_log, seen where entity = 'eroare' and created_at > seen.at and created_at > now() - interval '1 day') as infra`);
-  return { probleme: n(r?.probleme), propuneri: n(r?.propuneri), adn: n(r?.adn), infra: n(r?.infra) };
+  return { probleme: n(r?.probleme), propuneri: n(r?.propuneri), adn: n(r?.adn), infra: n(r?.infra), parteneri: n(r?.parteneri) };
 }
 
 export type Check = { label: string; ok: boolean; note: string };

@@ -649,8 +649,39 @@ export const partners = pgTable("partners", {
   note: text("note"),
   portalToken: text("portal_token"),
   pinHash: text("pin_hash"),
+  // CRM (migrația 0029): etapa (prospect → necontactat → contactat → discutie → negociere → agreat → activ / pauzat / respins),
+  // categoria magazinului, județul (codul: CJ, B...), următorul pas cu data lui (aducerea aminte din panou).
+  etapa: text("etapa").notNull().default("prospect"),
+  categorie: text("categorie"),
+  judet: text("judet"),
+  website: text("website"),
+  functie: text("functie"),
+  sursa: text("sursa"),
+  urmatorulPas: text("urmatorul_pas"),
+  urmatorulPasLa: timestamp("urmatorul_pas_la"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  tip: text("tip").notNull().default("magazin"), // magazin / firma (firmele cumpără pachete de coduri pentru angajați)
+  refCode: text("ref_code"), // legătura de recomandare /r/<cod> de pe afișul din magazin
+  plafonZi: integer("plafon_zi").notNull().default(20), // câte carduri digitale poate vinde pe zi (paza unui link scăpat)
   createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => [uniqueIndex("partners_portal_token_idx").on(t.portalToken)]);
+}, (t) => [uniqueIndex("partners_portal_token_idx").on(t.portalToken), uniqueIndex("partners_ref_code_idx").on(t.refCode)]);
+
+// Conturile aduse de un partener prin legătura sau QR-ul de recomandare (/r/<cod>), ținute minte la crearea contului.
+export const partnerReferral = pgTable("partner_referral", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  partnerId: uuid("partner_id").notNull().references(() => partners.id, { onDelete: "cascade" }),
+  at: timestamp("at").notNull().defaultNow(),
+}, (t) => [index("partner_referral_partner_idx").on(t.partnerId, t.at)]);
+
+// Istoricul de contact cu un partener (telefon, vizită, email...), din fișa lui din CRM.
+export const partnerContactLog = pgTable("partner_contact_log", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  partnerId: uuid("partner_id").notNull().references(() => partners.id, { onDelete: "cascade" }),
+  canal: text("canal").notNull(),
+  nota: text("nota").notNull(),
+  at: timestamp("at").notNull().defaultNow(),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+}, (t) => [index("partner_contact_log_idx").on(t.partnerId, t.at)]);
 
 // Un lot de carduri tipărite pentru un magazin: planul, câte luni dă fiecare card și prețul de pe raft.
 export const giftCardBatches = pgTable("gift_card_batches", {
@@ -660,6 +691,7 @@ export const giftCardBatches = pgTable("gift_card_batches", {
   durataLuni: integer("durata_luni").notNull().default(12),
   pretRaftLei: numeric("pret_raft_lei", { precision: 10, scale: 2, mode: "number" }).notNull().default(49),
   cantitate: integer("cantitate").notNull(),
+  digital: boolean("digital").notNull().default(false), // fără tipar: fiecare card are legătura /card/<token>
   createdAt: timestamp("created_at").notNull().defaultNow(),
   createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
 }, (t) => [index("gift_card_batches_partner_idx").on(t.partnerId, t.createdAt)]);
@@ -675,8 +707,13 @@ export const giftCards = pgTable("gift_cards", {
   soldAt: timestamp("sold_at"),
   redeemedAt: timestamp("redeemed_at"),
   redeemedByUserId: text("redeemed_by_user_id").references(() => user.id, { onDelete: "set null" }),
+  // Cardul digital: legătura secretă /card/<token>, pentru cine e și biletul (opționale, scrise la vânzare) și pe unde a plecat.
+  shareToken: text("share_token"),
+  pentru: text("pentru"),
+  mesaj: text("mesaj"),
+  sentVia: text("sent_via"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-}, (t) => [uniqueIndex("gift_cards_cod_idx").on(t.cod), index("gift_cards_batch_idx").on(t.batchId, t.seq), index("gift_cards_partner_idx").on(t.partnerId, t.status)]);
+}, (t) => [uniqueIndex("gift_cards_cod_idx").on(t.cod), uniqueIndex("gift_cards_share_token_idx").on(t.shareToken), index("gift_cards_batch_idx").on(t.batchId, t.seq), index("gift_cards_partner_idx").on(t.partnerId, t.status)]);
 
 // Încercările de cod de pe /activeaza și de PIN de pe /magazin (amprenta IP-ului sau a contului, nu IP-ul), pentru limita pe oră.
 export const giftCardAttempt = pgTable("gift_card_attempt", {

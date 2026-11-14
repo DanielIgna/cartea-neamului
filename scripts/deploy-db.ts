@@ -9,7 +9,7 @@ import { applySchema } from "../src/lib/bootstrap";
 import { tree } from "../src/db/schema";
 import { basicPrice49Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
-import { testBatchOnce } from "../src/lib/carduri-cadou";
+import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -32,4 +32,6 @@ try { console.log(`deploy-db: pornirea vânzării: ${await startSalesOnce(db)}`)
 try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
 // Carduri cadou (Daniel, 14.11.2026): o singură dată, magazinul „Test Magazin” cu un lot de 5 coduri de verificat.
 try { console.log(`deploy-db: carduri cadou de test: ${await testBatchOnce(db)}`); } catch (e) { console.error("deploy-db: lotul de test a eșuat", e); }
+// Carduri digitale (Daniel, 14.11.2026): o singură dată, un lot digital de 5 carduri pentru „Test Magazin”.
+try { console.log(`deploy-db: carduri digitale de test: ${await testDigitalOnce(db)}`); } catch (e) { console.error("deploy-db: lotul digital de test a eșuat", e); }
 process.exit(0);

@@ -1842,3 +1842,79 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
   .cc-sheet{margin:0;box-shadow:none;height:297mm;min-height:0;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .cc-sheet:last-child{break-after:auto}
 }
+/* Cardul cadou digital (/card/<token>) */
+.dc-wrap{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.dc-card{background:linear-gradient(160deg,#fffdf8 0%,#f3e7d4 100%);color:#2a1d17;border:3px double #a8722f;border-radius:22px;padding:28px 22px;text-align:center;box-shadow:0 10px 30px rgba(80,50,20,.15);--accent:#2f5d8a;--ochre:#a8722f;--ink:#2a1d17}
+.dc-brand{display:flex;align-items:center;justify-content:center;gap:8px;font-family:Alegreya,Georgia,serif;font-size:20px}
+.dc-eyebrow{margin:14px 0 0;text-transform:uppercase;letter-spacing:.14em;font-size:12px;color:#8a4b2a}
+.dc-card h1{margin:.15em 0 .3em;font-size:34px;line-height:1.1}
+.dc-lead{margin:0 auto;max-width:36ch;color:#4b3a2e}
+.dc-note{margin:16px auto;font-style:italic;font-size:18px;max-width:34ch;color:#4b3a2e;border:0;padding:0}
+.dc-code{margin:18px auto 14px;display:inline-flex;flex-direction:column;gap:2px;border:2px solid #a8722f;border-radius:14px;padding:10px 18px;background:#fffdf8}
+.dc-code span{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#7a5520}
+.dc-code code{font-size:24px;font-weight:700;letter-spacing:.08em;background:none;color:#2a1d17}
+.dc-go{display:flex;justify-content:center;width:100%;font-size:18px;padding:14px}
+.dc-qr{width:120px;height:120px;margin:18px auto 6px}
+.dc-qr svg{width:100%;height:100%}
+.dc-small{font-size:12.5px;color:#6b5a4c;margin:6px 0 0}
+.cs-panel{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.cs-buttons{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cs-qr-wrap{display:flex;flex-direction:column;align-items:center}
+.cs-qr{width:220px;height:220px;background:#fffdf8;padding:10px;border-radius:12px}
+.cs-qr svg{width:100%;height:100%}
+.cs-url{word-break:break-all;font-size:12px}
+.mg-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0 14px}
+.mg-stats div{border:1px solid var(--line,#e5dccd);border-radius:12px;padding:10px 12px}
+.mg-stats b{display:block;font-size:22px}
+.mg-stats small{color:var(--muted,#6b5a4c)}
+.mg-sell .cs-buttons{justify-content:flex-start}
+/* City Partners (Admin → /admin/parteneri) */
+.crm-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.crm-tiles>div{background:var(--card,#fffdf8);border:1px solid var(--line,#e5dccd);border-radius:14px;padding:12px 14px}
+.crm-tiles small{display:block;color:var(--muted,#6b5a4c)}
+.crm-tiles b{font-size:24px}
+.crm-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.crm-tabs a,.crm-tabs .btn{padding:6px 12px;border-radius:999px;border:1px solid var(--line,#e5dccd);text-decoration:none;color:inherit;font-size:14px}
+.crm-tabs a[aria-current=page],.crm-tabs .btn[aria-current=page]{background:var(--ink,#2a1d17);color:var(--bg,#fff);border-color:transparent}
+.crm-tabs small{opacity:.7}
+.crm-filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.crm-filters select,.crm-filters input{min-width:0;flex:1 1 160px;padding:9px 12px;border:1px solid var(--line,#ddd);border-radius:10px;background:var(--surface,#fff);color:inherit;font:inherit}
+.crm-filters input[type=month]{flex:0 1 200px}
+.crm-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.crm-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line,#e5dccd);padding-bottom:8px}
+.crm-inline{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.crm-cov{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:12px}
+.crm-cov a{display:flex;flex-direction:column;padding:8px 10px;border-radius:10px;border:1px dashed var(--line,#d8ccb8);text-decoration:none;color:inherit}
+.crm-cov a.mid{border-style:solid;background:var(--accent-soft,#efe3cf)}
+.crm-cov a.on{border-style:solid;border-color:#2f7a3a;background:rgba(47,122,58,.12)}
+.crm-cov small{color:var(--muted,#6b5a4c)}
+.crm-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.crm-card{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:inherit}
+.crm-card:hover{border-color:var(--accent)}
+.crm-card-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.crm-card-nums{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;margin-top:4px}
+.crm-stage{font-size:12px;padding:2px 8px;border-radius:999px;background:var(--accent-soft,#efe3cf)}
+.crm-stage.s-activ,.crm-stage.s-agreat{background:rgba(47,122,58,.15);color:#2f7a3a}
+.crm-stage.s-respins,.crm-stage.s-pauzat{background:rgba(160,60,40,.12);color:#a03c28}
+.crm-steps{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--muted,#6b5a4c)}
+.crm-steps li.done{color:#2f7a3a}
+/* Kitul de tipar al partenerului */
+.kit-poster{display:flex;flex-direction:column;align-items:center;text-align:center;padding:22mm 20mm;color:#2a1d17;background:#fffdf8;--accent:#2f5d8a;--ochre:#a8722f;--ink:#2a1d17;font-family:"Alegreya Sans",system-ui,sans-serif}
+.kit-brand{display:flex;align-items:center;gap:4mm;font-family:Alegreya,Georgia,serif;font-size:28pt}
+.kit-brand.small{font-size:12pt;gap:2mm}
+.kit-at{font-size:14pt;margin:6mm 0 0;color:#7a5520}
+.kit-poster h1{font-family:Alegreya,Georgia,serif;font-size:40pt;line-height:1.08;margin:8mm 0 4mm}
+.kit-lead{font-size:15pt;max-width:150mm;margin:0;color:#4b3a2e}
+.kit-offer{display:flex;gap:6mm;margin:10mm 0 8mm}
+.kit-offer div{border:.6mm solid #a8722f;border-radius:4mm;padding:4mm 6mm;max-width:75mm;display:flex;flex-direction:column}
+.kit-offer b{font-size:16pt}
+.kit-offer span{font-size:11pt;color:#4b3a2e}
+.kit-qr{width:62mm;height:62mm}
+.kit-qr svg,.kit-qr-s svg{width:100%;height:100%}
+.kit-scan{font-size:16pt;font-weight:700;margin:5mm 0 1mm}
+.kit-url{font-size:12pt;color:#6b5a4c;margin:0}
+.kit-stickers{display:grid;grid-template-columns:90mm 90mm;grid-auto-rows:90mm;gap:12mm;justify-content:center;align-content:start;padding:30mm 0}
+.kit-sticker{box-sizing:border-box;border:.3mm dashed #bbb;border-radius:6mm;padding:6mm;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;background:#fffdf8;color:#2a1d17;--accent:#2f5d8a;--ochre:#a8722f;--ink:#2a1d17}
+.kit-sticker p{margin:0;font-size:11pt;font-weight:700}
+.kit-sticker small{font-size:8pt;color:#6b5a4c}
+.kit-qr-s{width:42mm;height:42mm}
