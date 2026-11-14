@@ -107,8 +107,19 @@ const clip = (v: string | null | undefined, n: number) => {
   return s || null;
 };
 
+/** Orașul din antetul Vercel („Cluj-Napoca”, scris codat în adresă): doar litere, spații, liniuțe și puncte, cel mult 60. */
+export function cityOf(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  let c = raw;
+  try { c = decodeURIComponent(raw); } catch { /* rămâne cum e */ }
+  c = c.normalize("NFC").replace(/[^\p{L}\p{M} .'’-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 60);
+  return c || null;
+}
+
 /** Ține minte o pagină deschisă. Întoarce false când n-a numărat (robot, adresă ciudată). */
-export async function recordVisit(db: Db, v: Visit, ctx: { ip: string | null; ua: string | null; host: string | null; country: string | null; logged: boolean }) {
+export async function recordVisit(db: Db, v: Visit, ctx: {
+  ip: string | null; ua: string | null; host: string | null; country: string | null; region?: string | null; city?: string | null; logged: boolean;
+}) {
   if (isBot(ctx.ua)) return false;
   const path = normalizePath(v.path);
   if (!path || path.startsWith("/admin") || path.startsWith("/api") || path.startsWith("/pub")) return false;
@@ -125,6 +136,8 @@ export async function recordVisit(db: Db, v: Visit, ctx: { ip: string | null; ua
     campaign: clip(v.utmCampaign, 60),
     device: deviceOf(ctx.ua ?? "", v.width ?? null),
     country: ctx.country && /^[A-Z]{2}$/.test(ctx.country) ? ctx.country : null,
+    region: ctx.country && ctx.region && /^[A-Z0-9]{1,3}$/.test(ctx.region) ? ctx.region : null,
+    city: ctx.country ? cityOf(ctx.city) : null,
     lang: v.lang && /^[a-z]{2}(-[A-Z]{2})?$/.test(v.lang) ? v.lang : null,
     logged: ctx.logged,
   });

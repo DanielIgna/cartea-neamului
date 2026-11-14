@@ -32,7 +32,8 @@ export async function POST(req: Request) {
   const d = parsed.data;
   try {
     await recordVisit(db, { path: d.path, ref: d.ref, utmSource: d.us, utmMedium: d.um, utmCampaign: d.uc, width: d.w, lang: d.lang }, {
-      ip: clientIp(h), ua: h.get("user-agent"), host: h.get("host"), country: h.get("x-vercel-ip-country"), logged: !!me,
+      ip: clientIp(h), ua: h.get("user-agent"), host: h.get("host"), country: h.get("x-vercel-ip-country"),
+      region: h.get("x-vercel-ip-country-region"), city: h.get("x-vercel-ip-city"), logged: !!me,
     });
     if (Math.random() < 0.01) await cleanupVisits(db).catch(() => {});
   } catch (e) {

@@ -370,7 +370,7 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "analiza", name: "Analiza traficului", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Anonim, fără cookie.",
-    what: "Vizite, surse, campanii și drumul vizită → cont → arbore → plată.",
+    what: "Vizite, surse, campanii, țări, județe și orașe (fără IP) și drumul vizită → cont → arbore → plată.",
     engine: ["src/lib/vizite.ts", "src/lib/analiza.ts", "src/components/VisitBeacon.tsx"],
     api: ["/api/vizita", "/admin/analiza/csv"],
     tables: ["page_view", "visit_salt"],

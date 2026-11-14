@@ -37,14 +37,14 @@ const localDay = (col: SQL) => sql`((${col}) at time zone 'UTC' at time zone 'Eu
 
 export type Session = {
   day: string; hour: number; views: number; secs: number; source: string; referrer: string | null; campaign: string | null; medium: string | null;
-  entry: string; exit: string; device: string; country: string | null; logged: boolean; signup: boolean; tree: boolean; pay: boolean;
+  entry: string; exit: string; device: string; country: string | null; region: string | null; logged: boolean; signup: boolean; tree: boolean; pay: boolean;
 };
 
 /** Sesiunile dintr-un interval, câte un rând fiecare, cu sursa și pagina de intrare (de la prima pagină) și cea de ieșire. */
 export async function sessionsOf(db: Db, r: Range): Promise<Session[]> {
   const list = await rows(db, sql`
     with v as (
-      select visitor, at, day, hour, path, source, referrer, campaign, medium, device, country, logged,
+      select visitor, at, day, hour, path, source, referrer, campaign, medium, device, country, region, logged,
         case when lag(at) over w is null or at - lag(at) over w > interval '30 minutes' then 1 else 0 end as starts
       from page_view where day between ${r.from} and ${r.to}
       window w as (partition by visitor order by at)),
@@ -54,13 +54,13 @@ export async function sessionsOf(db: Db, r: Range): Promise<Session[]> {
       (array_agg(source order by at))[1] as source, (array_agg(referrer order by at))[1] as referrer,
       (array_agg(campaign order by at))[1] as campaign, (array_agg(medium order by at))[1] as medium,
       (array_agg(path order by at))[1] as entry, (array_agg(path order by at desc))[1] as exit,
-      (array_agg(device order by at))[1] as device, (array_agg(country order by at))[1] as country, bool_or(logged) as logged,
+      (array_agg(device order by at))[1] as device, (array_agg(country order by at))[1] as country, (array_agg(region order by at))[1] as region, bool_or(logged) as logged,
       bool_or(path = '/intrare') as signup, bool_or(path = '/arbore-nou' or path like '/arbore/%') as tree, bool_or(path = '/plata' or path like '/plata/%') as pay
     from s group by visitor, sn limit 300000`);
   return list.map((x) => ({
     day: String(x.day).slice(0, 10), hour: n(x.hour), views: n(x.views), secs: Math.round(n(x.secs)), source: String(x.source),
     referrer: (x.referrer as string) ?? null, campaign: (x.campaign as string) ?? null, medium: (x.medium as string) ?? null,
-    entry: String(x.entry), exit: String(x.exit), device: String(x.device), country: (x.country as string) ?? null,
+    entry: String(x.entry), exit: String(x.exit), device: String(x.device), country: (x.country as string) ?? null, region: (x.region as string) ?? null,
     logged: !!x.logged, signup: !!x.signup, tree: !!x.tree, pay: !!x.pay,
   }));
 }
@@ -104,6 +104,57 @@ export async function countries(db: Db, r: Range) {
     where day between ${r.from} and ${r.to} group by 1 order by 2 desc limit 15`);
   return list.map((x) => ({ label: String(x.c), count: n(x.v) }));
 }
+
+/**
+ * Țările și zonele (Admin → Analiză → Țări și zone): o singură întrebare la bază, grupată pe țară, pe țară + regiune și pe
+ * țară + oraș. Vizitatorii se numără ca peste tot în Analiză (amprenta zilei), deci „unici în fiecare zi, adunați”.
+ */
+export type GeoRow = { country: string; region: string | null; city: string | null; visitors: number; views: number };
+export async function geography(db: Db, r: Range) {
+  const list = await rows(db, sql`select coalesce(country, '?') as country, region, city, grouping(region) as gr, grouping(city) as gc,
+      count(distinct visitor) as v, count(*) as views
+    from page_view where day between ${r.from} and ${r.to}
+    group by grouping sets ((coalesce(country, '?')), (coalesce(country, '?'), region), (coalesce(country, '?'), city))`);
+  const out = { countries: [] as GeoRow[], regions: [] as GeoRow[], cities: [] as GeoRow[] };
+  for (const x of list) {
+    const row: GeoRow = { country: String(x.country), region: (x.region as string) ?? null, city: (x.city as string) ?? null, visitors: n(x.v), views: n(x.views) };
+    if (n(x.gr) && n(x.gc)) out.countries.push(row);
+    else if (!n(x.gr)) out.regions.push(row);
+    else out.cities.push(row);
+  }
+  const byV = (a: GeoRow, b: GeoRow) => b.visitors - a.visitors || b.views - a.views;
+  out.countries.sort(byV); out.regions.sort(byV); out.cities.sort(byV);
+  return out;
+}
+
+const regionNames = new Intl.DisplayNames(["ro"], { type: "region" });
+/** Numele țării în română („DE” → „Germania”); „?” = necunoscut (local sau fără antet). */
+export function countryName(code: string) {
+  if (!code || code === "?") return "Necunoscut";
+  try { return regionNames.of(code) ?? code; } catch { return code; }
+}
+/** Steagul ca emoji, din cele două litere ale țării. */
+export const flagOf = (code: string) => /^[A-Z]{2}$/.test(code) ? String.fromCodePoint(...[...code].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : "🌐";
+
+/** Județele României după codul ISO 3166-2 pe care îl dă Vercel („RO-CJ” → „CJ”). */
+export const JUDETE: Record<string, string> = {
+  AB: "Alba", AR: "Arad", AG: "Argeș", BC: "Bacău", BH: "Bihor", BN: "Bistrița-Năsăud", BT: "Botoșani", BV: "Brașov", BR: "Brăila", B: "București",
+  BZ: "Buzău", CS: "Caraș-Severin", CL: "Călărași", CJ: "Cluj", CT: "Constanța", CV: "Covasna", DB: "Dâmbovița", DJ: "Dolj", GL: "Galați",
+  GR: "Giurgiu", GJ: "Gorj", HR: "Harghita", HD: "Hunedoara", IL: "Ialomița", IS: "Iași", IF: "Ilfov", MM: "Maramureș", MH: "Mehedinți",
+  MS: "Mureș", NT: "Neamț", OT: "Olt", PH: "Prahova", SM: "Satu Mare", SJ: "Sălaj", SB: "Sibiu", SV: "Suceava", TR: "Teleorman", TM: "Timiș",
+  TL: "Tulcea", VS: "Vaslui", VL: "Vâlcea", VN: "Vrancea",
+};
+/** Așezarea aproximativă a județelor pe o grilă (coloană, rând), ca o hartă simplă a României. */
+export const JUDETE_GRID: Record<string, [number, number]> = {
+  SM: [2, 0], MM: [3, 0], SV: [5, 0], BT: [6, 0],
+  BH: [1, 1], SJ: [2, 1], BN: [3, 1], NT: [5, 1], IS: [6, 1],
+  AR: [1, 2], CJ: [2, 2], MS: [3, 2], HR: [4, 2], BC: [5, 2], VS: [6, 2],
+  TM: [0, 3], HD: [1, 3], AB: [2, 3], SB: [3, 3], BV: [4, 3], CV: [5, 3], VN: [6, 3], GL: [7, 3],
+  CS: [0, 4], GJ: [1, 4], VL: [2, 4], AG: [3, 4], PH: [4, 4], BZ: [5, 4], BR: [6, 4], TL: [7, 4],
+  MH: [0, 5], DJ: [1, 5], OT: [2, 5], DB: [3, 5], IF: [4, 5], B: [5, 5], IL: [6, 5], CT: [7, 5],
+  TR: [3, 6], GR: [4, 6], CL: [5, 6],
+};
+export const judetName = (code: string | null) => (code && JUDETE[code]) || (code ? code : "Necunoscut");
 
 /** Conturile, arborii și plățile din interval (din baza de date, nu din vizite). Contul de probă nu intră. */
 export async function business(db: Db, r: Range) {
