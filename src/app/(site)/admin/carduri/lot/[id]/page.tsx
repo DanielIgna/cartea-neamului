@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { AdminNav } from "@/components/admin/ui";
-import { batchById, batchCards, lotLabel, pl, STATUS_LABEL, SOLDABLE, type CardStatus } from "@/lib/carduri-cadou";
-import { cardAction } from "@/app/carduri-actions";
+import QRCode from "qrcode";
+import CardShare from "@/components/CardShare";
+import { CARD_ORIGIN, batchById, batchCards, cardUrl, lotLabel, pl, shareLinks, STATUS_LABEL, SOLDABLE, type CardStatus } from "@/lib/carduri-cadou";
+import { adminSellDigital, cardAction } from "@/app/carduri-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Lot de carduri · Admin" };
@@ -22,6 +24,10 @@ export default async function AdminCardLot({ params, searchParams }: { params: P
   if (!b) notFound();
   const cards = await batchCards(db, id);
   const here = `/admin/carduri/lot/${id}`;
+  // Cardul digital ales (abia vândut sau „Trimite din nou”): panoul de trimitere, cu legătura, WhatsApp/SMS/email și QR.
+  const picked = b.digital && q.card ? cards.find((c) => c.id === q.card && c.shareToken && (c.status === "vandut_activat_de_magazin" || c.status === "folosit")) : null;
+  const pickedUrl = picked ? cardUrl(CARD_ORIGIN, picked.shareToken!) : null;
+  const pickedQr = pickedUrl ? await QRCode.toString(pickedUrl, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#2a1d17", light: "#fffdf8" } }) : "";
   const bulk = (what: string, label: string, primary = false) => (
     <form action={cardAction} style={{ display: "inline" }}>
       <input type="hidden" name="back" value={here} /><input type="hidden" name="batchId" value={id} /><input type="hidden" name="what" value={what} />
@@ -34,13 +40,20 @@ export default async function AdminCardLot({ params, searchParams }: { params: P
       <p><Link href="/admin/carduri">← Carduri cadou</Link></p>
       {q.eroare && <p className="err" role="alert">{q.eroare}</p>}
       {q.ok && <p className="cc-ok" role="status">{q.ok}</p>}
+      {picked && pickedUrl && (
+        <div className="card">
+          <p className="cc-ok" role="status" style={{ marginTop: 0 }}>Cardul nr. {picked.seq}{picked.pentru ? `, pentru ${picked.pentru}` : ""}: trimite-l pe telefonul omului.</p>
+          <CardShare url={pickedUrl} links={shareLinks(pickedUrl, b.durataLuni, picked.pentru)} qr={pickedQr} auto={q.via} />
+        </div>
+      )}
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Lotul {lotLabel(id)} pentru {b.partner}</h2>
+        <h2 style={{ marginTop: 0 }}>{b.digital ? "Lot digital" : "Lotul"} {lotLabel(id)} pentru {b.partner}</h2>
         <p className="muted" style={{ marginTop: 0 }}>
           {pl(b.cantitate, "card", "carduri")} · plan {PLAN[b.plan] ?? b.plan} · {pl(b.durataLuni, "lună", "luni")} · {b.pretRaftLei} lei pe raft · generat {when(b.createdAt)}
         </p>
         <div className="actions">
-          <Link className="btn primary" href={`${here}/tipar`}>PDF de tipar (carduri 85×55 mm)</Link>
+          {!b.digital && <Link className="btn primary" href={`${here}/tipar`}>PDF de tipar (carduri 85×55 mm)</Link>}
+          {b.digital && b.portalToken && <span className="muted">Partenerul vinde și trimite aceste carduri din pagina lui. Le poți trimite și de aici, cu „Vinde și trimite”.</span>}
           <a className="btn" href={`${here}/csv`}>Descarcă CSV</a>
         </div>
         <h4>Pe tot lotul</h4>
@@ -76,7 +89,16 @@ export default async function AdminCardLot({ params, searchParams }: { params: P
                   <td>{when(c.soldAt)}</td>
                   <td>{when(c.redeemedAt)}</td>
                   <td>
-                    {(SOLDABLE as string[]).includes(c.status) && (
+                    {b.digital && c.shareToken && (c.status === "vandut_activat_de_magazin" || c.status === "folosit") && (
+                      <Link className="btn" href={`${here}?card=${c.id}`}>Legătura</Link>
+                    )}{" "}
+                    {b.digital && (SOLDABLE as string[]).includes(c.status) && (
+                      <form action={adminSellDigital} style={{ display: "inline" }}>
+                        <input type="hidden" name="back" value={here} /><input type="hidden" name="cardId" value={c.id} /><input type="hidden" name="via" value="link" />
+                        <button className="btn primary">Vinde și trimite</button>
+                      </form>
+                    )}{" "}
+                    {!b.digital && (SOLDABLE as string[]).includes(c.status) && (
                       <form action={cardAction} style={{ display: "inline" }}>
                         <input type="hidden" name="back" value={here} /><input type="hidden" name="cod" value={c.cod} />
                         <button className="btn" name="what" value="vandut">Vândut</button>

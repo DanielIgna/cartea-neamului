@@ -165,6 +165,18 @@ const ADDITIVE = [
   sql`CREATE TABLE IF NOT EXISTS "gift_card_attempt" ("id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "who" text NOT NULL,
     "ok" boolean DEFAULT false NOT NULL, "at" timestamp DEFAULT now() NOT NULL)`,
   sql`CREATE INDEX IF NOT EXISTS "gift_card_attempt_idx" ON "gift_card_attempt" ("who","at")`,
+  // Parteneri ca CRM și carduri digitale (migrația 0029).
+  ...["etapa text DEFAULT 'prospect' NOT NULL", "categorie text", "judet text", "website text", "functie text", "sursa text", "urmatorul_pas text",
+    "urmatorul_pas_la timestamp", "updated_at timestamp DEFAULT now() NOT NULL",
+    "tip text DEFAULT 'magazin' NOT NULL", "ref_code text", "plafon_zi integer DEFAULT 20 NOT NULL"].map((c) => sql.raw(`ALTER TABLE "partners" ADD COLUMN IF NOT EXISTS ${c.replace(/^(\w+)/, '"$1"')}`)),
+  sql`CREATE TABLE IF NOT EXISTS "partner_contact_log" ("id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "partner_id" uuid NOT NULL REFERENCES "partners"("id") ON DELETE cascade, "canal" text NOT NULL, "nota" text NOT NULL,
+    "at" timestamp DEFAULT now() NOT NULL, "created_by" text REFERENCES "user"("id") ON DELETE set null)`,
+  sql`ALTER TABLE "gift_card_batches" ADD COLUMN IF NOT EXISTS "digital" boolean DEFAULT false NOT NULL`,
+  sql`CREATE TABLE IF NOT EXISTS "partner_referral" ("user_id" text PRIMARY KEY NOT NULL REFERENCES "user"("id") ON DELETE cascade,
+    "partner_id" uuid NOT NULL REFERENCES "partners"("id") ON DELETE cascade, "at" timestamp DEFAULT now() NOT NULL)`,
+  ...["share_token", "pentru", "mesaj", "sent_via"].map((c) => sql.raw(`ALTER TABLE "gift_cards" ADD COLUMN IF NOT EXISTS "${c}" text`)),
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "gift_cards_share_token_idx" ON "gift_cards" ("share_token")`,
   // Cât folosesc oamenii site-ul, doar cu acordul lor.
   sql`CREATE TABLE IF NOT EXISTS "usage_day" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE cascade, "day" date NOT NULL, "section" text NOT NULL,

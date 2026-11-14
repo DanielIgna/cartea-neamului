@@ -9,7 +9,7 @@ import { clientIp } from "@/lib/securitate";
 import {
   ATTEMPTS_PER_HOUR, attemptsLastHour, cancelCards, checkBatch, checkCode, checkPartner, createBatch, fingerprint, giftCardsEnabled,
   markDelivered, markSold, normalizeCode, partnerByToken, pl, pinMatches, portalSession, portalSessionOk, recordAttempt, redeemCard,
-  savePartner, setGiftCardsEnabled, setPartnerActive, setPartnerPin, type Target,
+  savePartner, setGiftCardsEnabled, setPartnerActive, setPartnerPin, type Target, isSendVia, sellDigital,
 } from "@/lib/carduri-cadou";
 
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -179,4 +179,38 @@ export async function portalMarkSold(form: FormData) {
   await recordAttempt(db, who, n > 0);
   revalidatePath(BASE);
   redirect(`/magazin/${token}?r=${n ? "vandut" : "nu"}${cod ? `&cod=${encodeURIComponent(cod)}` : seq > 0 ? `&nr=${seq}` : ""}`);
+}
+
+/* ---------- Cardurile digitale: vinde și trimite într-un singur pas ---------- */
+
+const VIA_OK = (v: unknown) => (isSendVia(v) ? v : "link");
+
+/** Pagina magazinului: ia următorul card digital, îl marchează vândut și deschide trimiterea pe canalul ales. */
+export async function portalSellDigital(form: FormData) {
+  const token = String(form.get("token") ?? "");
+  const p = await partnerByToken(db, token);
+  if (!p || !p.activ || !(await giftCardsEnabled(db)) || !(await portalSignedIn(token, p.pinHash))) redirect(`/magazin/${encodeURIComponent(token)}`);
+  const ip = clientIp(await headers()) ?? "necunoscut";
+  const who = [fingerprint("mag", `${token}|${ip}`)];
+  if ((await attemptsLastHour(db, who)) >= 120) redirect(`/magazin/${token}?r=prea_multe`);
+  const via = VIA_OK(form.get("via"));
+  const c = await sellDigital(db, { partnerId: p!.id, pentru: String(form.get("pentru") ?? ""), mesaj: String(form.get("mesaj") ?? ""), via, by: null, source: "magazin" });
+  await recordAttempt(db, who, !!c && c !== "plafon");
+  revalidatePath(BASE);
+  if (c === "plafon") redirect(`/magazin/${token}?r=plafon`);
+  if (!c) redirect(`/magazin/${token}?r=fara_digitale`);
+  redirect(`/magazin/${token}?card=${c.id}&via=${via}`);
+}
+
+/** Admin: vinde și trimite un card digital anume (din pagina lotului). */
+export async function adminSellDigital(form: FormData) {
+  const by = await admin();
+  const cardId = String(form.get("cardId") ?? "");
+  const path = backTo(form);
+  if (!UUID.test(cardId)) back(path);
+  const via = VIA_OK(form.get("via"));
+  const c = await sellDigital(db, { cardId, pentru: String(form.get("pentru") ?? ""), mesaj: String(form.get("mesaj") ?? ""), via, by, source: "admin" });
+  if (!c || c === "plafon") back(path, { eroare: "Cardul nu mai e disponibil (poate a fost deja vândut sau anulat)." });
+  revalidatePath(BASE);
+  redirect(`${path}?card=${(c as { id: string }).id}&via=${via}`);
 }

@@ -17,6 +17,7 @@ import { and, asc, desc, eq, gte, inArray, isNotNull, ne, sql } from "drizzle-or
 import type { Db } from "@/db";
 import { accountPlan, appSetting, auditLog, giftCardAttempt, giftCardBatches, giftCards, partners } from "@/db/schema";
 import { isTier, tierRank, type Tier } from "./plans";
+import { COUNTIES } from "./place-key";
 import { setYear } from "./plati";
 
 export const ENABLED_KEY = "gift_cards_enabled";
@@ -91,9 +92,28 @@ export async function cardLog(db: Pick<Db, "select">, limit = 50) {
 
 /* ---------- Partenerii (magazinele) ---------- */
 
+/** Etapele unui partener în CRM, în ordinea drumului. Pagina magazinului (PIN) și vânzarea merg doar la „agreat” și „activ”. */
+export const STAGES = ["prospect", "necontactat", "contactat", "discutie", "negociere", "agreat", "activ", "pauzat", "respins"] as const;
+export type Stage = (typeof STAGES)[number];
+export const STAGE_LABEL: Record<Stage, string> = {
+  prospect: "Prospect", necontactat: "Necontactat", contactat: "Contactat", discutie: "Discuție", negociere: "Negociere",
+  agreat: "Agreat", activ: "Activ", pauzat: "Pauzat", respins: "Respins",
+};
+export const isStage = (v: unknown): v is Stage => typeof v === "string" && (STAGES as readonly string[]).includes(v);
+export const stageActive = (s: Stage) => s === "agreat" || s === "activ";
+
+/** Felurile de magazine potrivite pentru carduri (CRM → filtru). */
+export const CATEGORIES: Record<string, string> = {
+  librarie: "Librării și papetării", cadouri: "Magazine de cadouri și suveniruri", foto: "Studiouri și laboratoare foto",
+  florarie: "Florării", tipografie: "Tipografii și copy-center", rame: "Rame și artă", muzeu: "Muzee și magazine de muzeu",
+  turism: "Agenții de turism și pensiuni", biserica: "Magazine de obiecte religioase", alta: "Altele",
+};
+
 export type PartnerInput = {
   numeMagazin: string; oras: string | null; adresa: string | null; persoanaContact: string | null; telefon: string | null;
   email: string | null; comisionProcent: number; activ: boolean; note: string | null;
+  etapa?: Stage; categorie?: string | null; judet?: string | null; website?: string | null; functie?: string | null; sursa?: string | null;
+  urmatorulPas?: string | null; urmatorulPasLa?: Date | null; tip?: "magazin" | "firma"; plafonZi?: number;
 };
 
 const txt = (v: unknown, max: number) => {
@@ -109,28 +129,44 @@ export function checkPartner(f: Record<string, unknown>): { ok: PartnerInput } |
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: "Adresa de email nu pare bună." };
   const raw = typeof f.comisionProcent === "string" && f.comisionProcent.trim() ? Number(f.comisionProcent.replace(",", ".")) : 25;
   if (!Number.isFinite(raw) || raw < 0 || raw > 100) return { error: "Comisionul trebuie să fie între 0 și 100%." };
-  return {
-    ok: {
-      numeMagazin, oras: txt(f.oras, 120), adresa: txt(f.adresa, 300), persoanaContact: txt(f.persoanaContact, 160),
-      telefon: txt(f.telefon, 40), email, comisionProcent: Math.round(raw * 100) / 100, activ: f.activ === "on" || f.activ === true,
-      note: txt(f.note, 2000),
-    },
+  const ok: PartnerInput = {
+    numeMagazin, oras: txt(f.oras, 120), adresa: txt(f.adresa, 300), persoanaContact: txt(f.persoanaContact, 160),
+    telefon: txt(f.telefon, 40), email, comisionProcent: Math.round(raw * 100) / 100, activ: f.activ === "on" || f.activ === true,
+    note: txt(f.note, 2000),
   };
+  // Câmpurile CRM vin doar din fișa partenerului; acolo etapa hotărăște dacă magazinul e activ.
+  if ("etapa" in f) {
+    if (!isStage(f.etapa)) return { error: "Alege etapa." };
+    const cat = txt(f.categorie, 40), jud = txt(f.judet, 4);
+    if (cat && !(cat in CATEGORIES)) return { error: "Categoria nu există." };
+    if (jud && !(jud in COUNTIES)) return { error: "Județul nu există." };
+    let web = txt(f.website, 300);
+    if (web && !/^https?:\/\//i.test(web)) web = `https://${web}`;
+    const plafon = typeof f.plafonZi === "string" && f.plafonZi.trim() ? Number(f.plafonZi) : 20;
+    if (!Number.isInteger(plafon) || plafon < 0 || plafon > 1000) return { error: "Plafonul pe zi trebuie să fie între 0 și 1000." };
+    const la = txt(f.urmatorulPasLa, 20);
+    const when = la && /^\d{4}-\d{2}-\d{2}$/.test(la) ? new Date(`${la}T07:00:00Z`) : null;
+    Object.assign(ok, {
+      etapa: f.etapa, activ: stageActive(f.etapa), categorie: cat, judet: jud, website: web, functie: txt(f.functie, 120), sursa: txt(f.sursa, 200),
+      urmatorulPas: txt(f.urmatorulPas, 300), urmatorulPasLa: when, tip: f.tip === "firma" ? "firma" : "magazin", plafonZi: plafon,
+    });
+  }
+  return { ok };
 }
 
 export async function savePartner(db: Db, id: string | null, v: PartnerInput, by: string | null, now = new Date()) {
   if (id) {
-    await db.update(partners).set(v).where(eq(partners.id, id));
-    await audit(db, by, id, "partener_schimbat", { nume: v.numeMagazin, activ: v.activ, comision: v.comisionProcent }, now);
+    await db.update(partners).set({ ...v, updatedAt: now }).where(eq(partners.id, id));
+    await audit(db, by, id, "partener_schimbat", { nume: v.numeMagazin, activ: v.activ, comision: v.comisionProcent, etapa: v.etapa ?? null }, now);
     return id;
   }
-  const [r] = await db.insert(partners).values({ ...v, createdAt: now }).returning({ id: partners.id });
+  const [r] = await db.insert(partners).values({ ...v, etapa: v.etapa ?? (v.activ ? "activ" : "prospect"), createdAt: now, updatedAt: now }).returning({ id: partners.id });
   await audit(db, by, r.id, "partener_nou", { nume: v.numeMagazin }, now);
   return r.id;
 }
 
 export async function setPartnerActive(db: Db, id: string, activ: boolean, by: string | null, now = new Date()) {
-  await db.update(partners).set({ activ }).where(eq(partners.id, id));
+  await db.update(partners).set({ activ, etapa: activ ? "activ" : "pauzat", updatedAt: now }).where(eq(partners.id, id));
   await audit(db, by, id, activ ? "partener_activat" : "partener_dezactivat", null, now);
 }
 
@@ -188,7 +224,7 @@ export function portalSessionOk(value: string | undefined, token: string, pinHas
 
 /* ---------- Loturile ---------- */
 
-export type BatchInput = { partnerId: string; plan: Tier; durataLuni: number; pretRaftLei: number; cantitate: number };
+export type BatchInput = { partnerId: string; plan: Tier; durataLuni: number; pretRaftLei: number; cantitate: number; digital?: boolean };
 
 export function checkBatch(f: Record<string, unknown>): { ok: BatchInput } | { error: string } {
   const partnerId = typeof f.partnerId === "string" ? f.partnerId : "";
@@ -200,7 +236,7 @@ export function checkBatch(f: Record<string, unknown>): { ok: BatchInput } | { e
   if (!Number.isInteger(cantitate) || cantitate < 1 || cantitate > MAX_BATCH) return { error: `Cantitatea trebuie să fie între 1 și ${MAX_BATCH}.` };
   if (!Number.isInteger(durataLuni) || durataLuni < 1 || durataLuni > 60) return { error: "Durata trebuie să fie între 1 și 60 de luni." };
   if (!Number.isFinite(pretRaftLei) || pretRaftLei < 0 || pretRaftLei > 10000) return { error: "Prețul de raft nu pare bun." };
-  return { ok: { partnerId, plan, durataLuni, cantitate, pretRaftLei: Math.round(pretRaftLei * 100) / 100 } };
+  return { ok: { partnerId, plan, durataLuni, cantitate, pretRaftLei: Math.round(pretRaftLei * 100) / 100, ...(f.digital === "on" || f.digital === true ? { digital: true } : {}) } };
 }
 
 /** Un lot nou: rândul lotului și `cantitate` coduri unice, numerotate 1..n. Codurile care se lovesc de altele se refac. */
@@ -211,20 +247,20 @@ export async function createBatch(db: Db, v: BatchInput, by: string | null, now 
     let seq = 1;
     for (let guard = 0; seq <= v.cantitate && guard < 50; guard++) {
       const rows = [];
-      for (let s = seq; s <= v.cantitate && rows.length < 500; s++) rows.push({ batchId: b.id, seq: s, cod: newCode(), partnerId: v.partnerId, createdAt: now });
+      for (let s = seq; s <= v.cantitate && rows.length < 500; s++) rows.push({ batchId: b.id, seq: s, cod: newCode(), partnerId: v.partnerId, createdAt: now, shareToken: v.digital ? shareToken() : null });
       const made = await t.insert(giftCards).values(rows).onConflictDoNothing().returning({ seq: giftCards.seq });
       // Dacă un cod a lovit unul existent (foarte rar), lipsește din `made`: îl refacem pe același număr.
       const got = new Set(made.map((m) => m.seq));
       const missing = rows.filter((r) => !got.has(r.seq));
       for (const r of missing) {
         for (let k = 0; k < 10; k++) {
-          const ok = await t.insert(giftCards).values({ ...r, cod: newCode() }).onConflictDoNothing().returning({ id: giftCards.id });
+          const ok = await t.insert(giftCards).values({ ...r, cod: newCode(), shareToken: v.digital ? shareToken() : null }).onConflictDoNothing().returning({ id: giftCards.id });
           if (ok.length) break;
         }
       }
       seq += rows.length;
     }
-    await audit(t, by, b.id, "lot_generat", { partnerId: v.partnerId, plan: v.plan, durataLuni: v.durataLuni, pretRaftLei: v.pretRaftLei, cantitate: v.cantitate }, now);
+    await audit(t, by, b.id, "lot_generat", { partnerId: v.partnerId, plan: v.plan, durataLuni: v.durataLuni, pretRaftLei: v.pretRaftLei, cantitate: v.cantitate, digital: !!v.digital }, now);
     return b.id;
   });
 }
@@ -233,7 +269,7 @@ export async function batchList(db: Pick<Db, "select">) {
   return db.select({
     id: giftCardBatches.id, partnerId: giftCardBatches.partnerId, partner: partners.numeMagazin, plan: giftCardBatches.plan,
     durataLuni: giftCardBatches.durataLuni, pretRaftLei: giftCardBatches.pretRaftLei, cantitate: giftCardBatches.cantitate,
-    createdAt: giftCardBatches.createdAt,
+    digital: giftCardBatches.digital, createdAt: giftCardBatches.createdAt,
     generat: sql<number>`count(*) filter (where ${giftCards.status} = 'generat')::int`,
     livrat: sql<number>`count(*) filter (where ${giftCards.status} = 'livrat_magazin')::int`,
     vandut: sql<number>`count(*) filter (where ${giftCards.status} = 'vandut_activat_de_magazin')::int`,
@@ -248,6 +284,7 @@ export async function batchById(db: Pick<Db, "select">, id: string) {
   const [b] = await db.select({
     id: giftCardBatches.id, partnerId: giftCardBatches.partnerId, partner: partners.numeMagazin, oras: partners.oras, plan: giftCardBatches.plan,
     durataLuni: giftCardBatches.durataLuni, pretRaftLei: giftCardBatches.pretRaftLei, cantitate: giftCardBatches.cantitate, createdAt: giftCardBatches.createdAt,
+    digital: giftCardBatches.digital, portalToken: partners.portalToken,
   }).from(giftCardBatches).innerJoin(partners, eq(partners.id, giftCardBatches.partnerId)).where(eq(giftCardBatches.id, id));
   return b ?? null;
 }
@@ -427,14 +464,98 @@ export const lotLabel = (batchId: string) => batchId.replace(/-/g, "").slice(0, 
 
 /** Loturile unui magazin, pentru pagina lui. */
 export const partnerBatches = (db: Pick<Db, "select">, partnerId: string) =>
-  db.select({ id: giftCardBatches.id, cantitate: giftCardBatches.cantitate, createdAt: giftCardBatches.createdAt }).from(giftCardBatches)
+  db.select({ id: giftCardBatches.id, cantitate: giftCardBatches.cantitate, createdAt: giftCardBatches.createdAt, digital: giftCardBatches.digital }).from(giftCardBatches)
     .where(eq(giftCardBatches.partnerId, partnerId)).orderBy(desc(giftCardBatches.createdAt));
 
 /** Cardurile vândute recent de un magazin (pentru pagina lui). */
 export const recentSoldBy = (db: Pick<Db, "select">, partnerId: string, limit = 20) =>
-  db.select({ cod: giftCards.cod, batchId: giftCards.batchId, seq: giftCards.seq, soldAt: giftCards.soldAt, status: giftCards.status }).from(giftCards)
+  db.select({ id: giftCards.id, cod: giftCards.cod, batchId: giftCards.batchId, seq: giftCards.seq, pentru: giftCards.pentru, sentVia: giftCards.sentVia, shareToken: giftCards.shareToken, soldAt: giftCards.soldAt, status: giftCards.status }).from(giftCards)
     .where(and(eq(giftCards.partnerId, partnerId), isNotNull(giftCards.soldAt), ne(giftCards.status, "anulat")))
     .orderBy(desc(giftCards.soldAt)).limit(limit);
+
+/* ---------- Cardurile digitale ---------- */
+
+export const shareToken = () => randomBytes(18).toString("base64url");
+export const cardUrl = (origin: string, token: string) => `${origin.replace(/\/$/, "")}/card/${token}`;
+export const SEND_VIA = ["whatsapp", "sms", "email", "qr", "link"] as const;
+export type SendVia = (typeof SEND_VIA)[number];
+export const isSendVia = (v: unknown): v is SendVia => typeof v === "string" && (SEND_VIA as readonly string[]).includes(v);
+
+/** Câte carduri digitale a vândut un magazin de la `since` încoace. */
+export async function digitalSoldSince(db: Pick<Db, "select">, partnerId: string, since: Date) {
+  const [r] = await db.select({ n: sql<number>`count(*)::int` }).from(giftCards).innerJoin(giftCardBatches, eq(giftCardBatches.id, giftCards.batchId))
+    .where(and(eq(giftCards.partnerId, partnerId), eq(giftCardBatches.digital, true), gte(giftCards.soldAt, since)));
+  return Number(r?.n ?? 0);
+}
+
+/** Câte carduri digitale mai are de vândut un magazin. */
+export async function digitalLeft(db: Pick<Db, "select">, partnerId: string) {
+  const [r] = await db.select({ n: sql<number>`count(*)::int` }).from(giftCards).innerJoin(giftCardBatches, eq(giftCardBatches.id, giftCards.batchId))
+    .where(and(eq(giftCards.partnerId, partnerId), eq(giftCardBatches.digital, true), inArray(giftCards.status, SOLDABLE)));
+  return Number(r?.n ?? 0);
+}
+
+/**
+ * Vânzarea unui card digital, într-un singur pas: ia următorul card digital nevândut al magazinului (sau cardul ales, din Admin),
+ * îl marchează vândut, ține minte pentru cine e, biletul și pe unde pleacă, și dă legătura de trimis clientului.
+ * Două vânzări deodată nu pot lua același card (UPDATE … WHERE status nevândut).
+ */
+export async function sellDigital(db: Db, o: { partnerId?: string; cardId?: string; pentru?: string | null; mesaj?: string | null; via: SendVia; by: string | null; source: "admin" | "magazin" }, now = new Date()) {
+  const pentru = txt(o.pentru, 80), mesaj = txt(o.mesaj, 400);
+  // Plafonul pe 24 de ore al magazinului (paza unei legături de magazin scăpate): doar la vânzările făcute de magazin.
+  if (o.source === "magazin" && o.partnerId) {
+    const [p] = await db.select({ plafon: partners.plafonZi }).from(partners).where(eq(partners.id, o.partnerId));
+    if ((await digitalSoldSince(db, o.partnerId, new Date(now.getTime() - 24 * HOUR))) >= (p?.plafon ?? 20)) return "plafon" as const;
+  }
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const conds = [eq(giftCardBatches.digital, true), inArray(giftCards.status, SOLDABLE)];
+    if (o.partnerId) conds.push(eq(giftCards.partnerId, o.partnerId));
+    if (o.cardId) conds.push(eq(giftCards.id, o.cardId));
+    const [pick] = await db.select({ id: giftCards.id }).from(giftCards).innerJoin(giftCardBatches, eq(giftCardBatches.id, giftCards.batchId))
+      .where(and(...conds)).orderBy(asc(giftCardBatches.createdAt), asc(giftCards.seq)).limit(1);
+    if (!pick) return null;
+    const [c] = await db.update(giftCards).set({ status: "vandut_activat_de_magazin", soldAt: now, pentru, mesaj, sentVia: o.via })
+      .where(and(eq(giftCards.id, pick.id), inArray(giftCards.status, SOLDABLE)))
+      .returning({ id: giftCards.id, cod: giftCards.cod, shareToken: giftCards.shareToken, seq: giftCards.seq, batchId: giftCards.batchId, partnerId: giftCards.partnerId });
+    if (!c) continue; // l-a luat altă vânzare chiar acum: încercăm următorul
+    let token = c.shareToken;
+    if (!token) { token = shareToken(); await db.update(giftCards).set({ shareToken: token }).where(eq(giftCards.id, c.id)); }
+    await audit(db, o.by, c.cod, "vandut", { cod: c.cod, carduri: 1, via: o.source, trimis: o.via, digital: true, partnerId: c.partnerId }, now);
+    return { ...c, shareToken: token };
+  }
+  return null;
+}
+
+/** Cardul digital după legătura lui (pagina publică /card/<token>). */
+export async function cardByShareToken(db: Pick<Db, "select">, token: string) {
+  if (!/^[A-Za-z0-9_-]{20,40}$/.test(token)) return null;
+  const [c] = await db.select({
+    id: giftCards.id, cod: giftCards.cod, status: giftCards.status, pentru: giftCards.pentru, mesaj: giftCards.mesaj, partnerId: giftCards.partnerId,
+    plan: giftCardBatches.plan, durataLuni: giftCardBatches.durataLuni, magazin: partners.numeMagazin,
+  }).from(giftCards).innerJoin(giftCardBatches, eq(giftCardBatches.id, giftCards.batchId)).innerJoin(partners, eq(partners.id, giftCards.partnerId))
+    .where(eq(giftCards.shareToken, token));
+  return c ?? null;
+}
+
+/** Cardul vândut de un magazin, pentru ecranul „trimite” de după vânzare (doar al lui). */
+export async function partnerCard(db: Pick<Db, "select">, partnerId: string, cardId: string) {
+  if (!/^[0-9a-f-]{36}$/i.test(cardId)) return null;
+  const [c] = await db.select({ id: giftCards.id, cod: giftCards.cod, shareToken: giftCards.shareToken, pentru: giftCards.pentru, status: giftCards.status, sentVia: giftCards.sentVia, durataLuni: giftCardBatches.durataLuni })
+    .from(giftCards).innerJoin(giftCardBatches, eq(giftCardBatches.id, giftCards.batchId)).where(and(eq(giftCards.id, cardId), eq(giftCards.partnerId, partnerId)));
+  return c ?? null;
+}
+
+/** Textul gata scris pentru client și legăturile de trimitere (WhatsApp, SMS, email). */
+export function shareLinks(url: string, months: number, pentru?: string | null) {
+  const durata = months === 12 ? "un an" : months % 12 === 0 ? `${months / 12} ani` : pl(months, "lună", "luni");
+  const text = `${pentru ? `${pentru}, ai` : "Ai"} primit un card cadou Cartea Neamului: ${durata} în care să scrii povestea familiei, cu arborele, pozele și amintirile ei. Deschide cardul și activează-l aici: ${url}`;
+  return {
+    text,
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(text)}`,
+    sms: `sms:?&body=${encodeURIComponent(text)}`,
+    email: `mailto:?subject=${encodeURIComponent("Un card cadou Cartea Neamului pentru tine")}&body=${encodeURIComponent(text)}`,
+  };
+}
 
 /* ---------- CSV ---------- */
 
@@ -458,4 +579,17 @@ export async function testBatchOnce(db: Db, now = new Date()): Promise<string> {
   const batchId = await createBatch(db, { partnerId: p.id, plan: "basic", durataLuni: 12, pretRaftLei: 49, cantitate: 5 }, null, now);
   await db.insert(appSetting).values({ key: TEST_MARK, value: { at: now.toISOString(), batchId }, updatedAt: now }).onConflictDoNothing();
   return `lot ${batchId}`;
+}
+
+const TEST_DIGITAL_MARK = "carduri_cadou_lot_digital_test_2026_11_14";
+/** O singură dată: un lot digital de 5 carduri pentru „Test Magazin”, ca Daniel să încerce vânzarea și trimiterea pe telefon. */
+export async function testDigitalOnce(db: Db, now = new Date()): Promise<string> {
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, TEST_DIGITAL_MARK));
+  if (seen) return "deja";
+  let [p] = await db.select({ id: partners.id }).from(partners).where(eq(partners.numeMagazin, "Test Magazin")).limit(1);
+  if (!p) p = { id: await savePartner(db, null, { numeMagazin: "Test Magazin", oras: "Cluj-Napoca", adresa: null, persoanaContact: null, telefon: null, email: null, comisionProcent: 25, activ: true, note: "Magazin de test." }, null, now) };
+  await db.update(partners).set({ etapa: "activ", activ: true, categorie: "librarie", judet: "CJ", updatedAt: now }).where(eq(partners.id, p.id));
+  const batchId = await createBatch(db, { partnerId: p.id, plan: "basic", durataLuni: 12, pretRaftLei: 49, cantitate: 5, digital: true }, null, now);
+  await db.insert(appSetting).values({ key: TEST_DIGITAL_MARK, value: { at: now.toISOString(), batchId }, updatedAt: now }).onConflictDoNothing();
+  return `lot digital ${batchId}`;
 }

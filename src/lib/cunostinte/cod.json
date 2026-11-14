@@ -29,6 +29,7 @@
   "drizzle/0026_vizite.sql",
   "drizzle/0027_autonomie.sql",
   "drizzle/0028_carduri_cadou.sql",
+  "drizzle/0029_parteneri_crm.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -99,6 +100,10 @@
   "src/app/(site)/admin/oameni/[id]/page.tsx",
   "src/app/(site)/admin/oameni/page.tsx",
   "src/app/(site)/admin/page.tsx",
+  "src/app/(site)/admin/parteneri/[id]/kit/page.tsx",
+  "src/app/(site)/admin/parteneri/[id]/page.tsx",
+  "src/app/(site)/admin/parteneri/page.tsx",
+  "src/app/(site)/admin/parteneri/raport-lunar.csv/route.ts",
   "src/app/(site)/admin/poze/page.tsx",
   "src/app/(site)/admin/probleme/page.tsx",
   "src/app/(site)/admin/propuneri/page.tsx",
@@ -122,6 +127,7 @@
   "src/app/(site)/cadou-de-sarbatori/page.tsx",
   "src/app/(site)/cadou/[cod]/card/page.tsx",
   "src/app/(site)/cadou/[cod]/page.tsx",
+  "src/app/(site)/card/[token]/page.tsx",
   "src/app/(site)/confidentialitate/page.tsx",
   "src/app/(site)/contact/page.tsx",
   "src/app/(site)/datele-mele/page.tsx",
@@ -188,6 +194,7 @@
   "src/app/apple-icon.png",
   "src/app/autonomie-actions.ts",
   "src/app/calatorie-actions.ts",
+  "src/app/card-imagine/[token]/route.tsx",
   "src/app/carduri-actions.ts",
   "src/app/carte-actions.ts",
   "src/app/casa-actions.ts",
@@ -209,8 +216,10 @@
   "src/app/opengraph-image.alt.txt",
   "src/app/opengraph-image.png",
   "src/app/parteneri-actions.ts",
+  "src/app/parteneri-crm-actions.ts",
   "src/app/pornire-actions.ts",
   "src/app/probleme-actions.ts",
+  "src/app/r/[cod]/route.ts",
   "src/app/resurse-actions.ts",
   "src/app/robots.ts",
   "src/app/securitate-actions.ts",
@@ -230,6 +239,7 @@
   "src/components/BookTextForm.tsx",
   "src/components/BookTree.tsx",
   "src/components/BookView.tsx",
+  "src/components/CardShare.tsx",
   "src/components/ChatBox.tsx",
   "src/components/ChatLimit.tsx",
   "src/components/Checks.tsx",
@@ -624,6 +634,7 @@
   "src/lib/origins.ts",
   "src/lib/page-metadata.ts",
   "src/lib/parola-uitata.ts",
+  "src/lib/parteneri-crm.ts",
   "src/lib/partners-shared.ts",
   "src/lib/partners.ts",
   "src/lib/pastrare.ts",
@@ -708,6 +719,7 @@
   "tests/localitati.test.ts",
   "tests/merge.test.ts",
   "tests/nume.test.ts",
+  "tests/parteneri-crm.test.ts",
   "tests/parteneri.test.ts",
   "tests/pastrare.test.ts",
   "tests/person-text.test.ts",
@@ -848,6 +860,22 @@
   {
    "path": "/admin/oameni/[id]",
    "kind": "pagina"
+  },
+  {
+   "path": "/admin/parteneri",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/parteneri/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/parteneri/[id]/kit",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/parteneri/raport-lunar.csv",
+   "kind": "api"
   },
   {
    "path": "/admin/poze",
@@ -1030,6 +1058,14 @@
    "kind": "pagina"
   },
   {
+   "path": "/card-imagine/[token]",
+   "kind": "api"
+  },
+  {
+   "path": "/card/[token]",
+   "kind": "pagina"
+  },
+  {
    "path": "/confidentialitate",
    "kind": "pagina"
   },
@@ -1142,6 +1178,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/r/[cod]",
+   "kind": "api"
+  },
+  {
    "path": "/resurse-genealogie",
    "kind": "pagina"
   },
@@ -1202,6 +1242,7 @@
   "tests/localitati.test.ts",
   "tests/merge.test.ts",
   "tests/nume.test.ts",
+  "tests/parteneri-crm.test.ts",
   "tests/parteneri.test.ts",
   "tests/pastrare.test.ts",
   "tests/person-text.test.ts",
@@ -1226,5 +1267,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 29
+ "migrations": 30
 }
