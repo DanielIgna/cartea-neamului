@@ -3,7 +3,7 @@
  * Orice pagină nouă din panou se trece aici, ca să apară în meniu, în căutarea rapidă și la favorite.
  */
 export type AdminSide = "business" | "infra";
-export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server" | "robot" | "book" | "map" | "graph" | "heart" | "share" | "calendar";
+export type AdminIcon = "home" | "people" | "chart" | "pulse" | "sliders" | "history" | "alert" | "text" | "image" | "inbox" | "search" | "dna" | "mail" | "shield" | "server" | "robot" | "book" | "map" | "graph" | "heart" | "share" | "calendar" | "gift";
 export type AdminItem = { key: string; href: string; label: string; icon: AdminIcon; hint: string; isNew?: boolean; words?: string };
 export type AdminGroup = { id: string; label: string; items: AdminItem[] };
 
@@ -31,6 +31,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
           { key: "crestere", href: "/admin/crestere", label: "Creștere și recomandări", icon: "share", hint: "Invitații, rude aduse, daruri, emailuri cu acord, distribuiri", isNew: true, words: "referral invitatii viral marketing leaduri distribuire" },
           { key: "invatare", href: "/admin/invatare", label: "Învățare și conversii", icon: "pulse", hint: "Jurnalul recomandărilor, cine e aproape de plată, perspective din Analiză", isNew: true, words: "learning lead intent scor proba conversie canal ora iesire jurnal" },
           { key: "calendar", href: "/admin/calendar", label: "Calendar de conținut", icon: "calendar", hint: "Ce postezi, unde și când, cu textul gata scris", isNew: true, words: "postari facebook grupuri continut social" },
+          { key: "carduri", href: "/admin/carduri", label: "Carduri cadou / Magazine", icon: "gift", hint: "Carduri vândute în magazine: parteneri, loturi de coduri, vânzări, comision", isNew: true, words: "gift card cadou magazin partener librarie cod qr activare lot comision raft" },
           { key: "adn", href: "/admin/adn", label: "Test ADN", icon: "dna", hint: "Cererile de test și laboratoarele", words: "dna laborator" },
         ],
       },
