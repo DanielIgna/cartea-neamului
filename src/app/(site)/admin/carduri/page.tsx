@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { AdminNav } from "@/components/admin/ui";
 import { siteOrigin } from "@/lib/site";
-import { batchList, cardLog, giftCardsEnabled, partnerList, partnerReport, STATUS_LABEL, type CardStatus } from "@/lib/carduri-cadou";
+import { batchList, cardLog, giftCardsEnabled, partnerList, partnerReport, pl, STATUS_LABEL, type CardStatus } from "@/lib/carduri-cadou";
 import { cardAction, createBatchAction, savePartnerAction, setPinAction, toggleGiftCards, togglePartnerAction } from "@/app/carduri-actions";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,7 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
           <button className={`btn ${on ? "" : "primary"}`}>{on ? "Oprește funcția (Inactiv)" : "Pornește funcția (Activ)"}</button>
         </form>
         <p style={{ marginTop: 12 }}>
-          <b>{total.vandute}</b> carduri vândute · <b>{total.activate}</b> activate · comision datorat în total <b>{lei(total.comision)}</b>
+          <b>{pl(total.vandute, "card vândut", "carduri vândute")}</b> · <b>{pl(total.activate, "activat", "activate")}</b> · comision datorat în total <b>{lei(total.comision)}</b>
         </p>
       </div>
 
@@ -124,7 +124,7 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
                   <td>{b.partner}</td>
                   <td>{PLAN[b.plan] ?? b.plan}<small>{b.durataLuni} luni · {lei(b.pretRaftLei)}</small></td>
                   <td>{b.cantitate}</td>
-                  <td><small>generate {b.generat} · livrate {b.livrat} · vândute {b.vandut} · folosite {b.folosit} · anulate {b.anulat}</small></td>
+                  <td><small>{[pl(b.generat, "generat", "generate"), pl(b.livrat, "livrat", "livrate"), pl(b.vandut, "vândut", "vândute"), pl(b.folosit, "folosit", "folosite"), pl(b.anulat, "anulat", "anulate")].join(" · ")}</small></td>
                   <td>
                     <Link className="btn" href={`/admin/carduri/lot/${b.id}`}>Codurile</Link>{" "}
                     <a className="btn" href={`/admin/carduri/lot/${b.id}/csv`}>CSV</a>{" "}
@@ -190,7 +190,7 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
             <tbody>
               {log.map((l, i) => {
                 const d = (l.diff ?? {}) as Record<string, unknown>;
-                const bits = [d.carduri ? `${d.carduri} carduri` : "", d.via === "magazin" ? "de magazin" : "", d.plan ? `plan ${PLAN[String(d.plan)] ?? d.plan}` : "", d.cantitate ? `${d.cantitate} coduri` : "", d.prelungit ? "prelungire" : ""].filter(Boolean);
+                const bits = [d.carduri ? pl(Number(d.carduri), "card", "carduri") : "", d.via === "magazin" ? "de magazin" : "", d.plan ? `plan ${PLAN[String(d.plan)] ?? d.plan}` : "", d.cantitate ? pl(Number(d.cantitate), "cod", "coduri") : "", d.prelungit ? "prelungire" : ""].filter(Boolean);
                 return (
                   <tr key={i}>
                     <td>{when(l.at)}</td><td>{ACTION[l.action] ?? l.action}</td>

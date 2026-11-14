@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { AdminNav } from "@/components/admin/ui";
-import { batchById, batchCards, lotLabel, STATUS_LABEL, SOLDABLE, type CardStatus } from "@/lib/carduri-cadou";
+import { batchById, batchCards, lotLabel, pl, STATUS_LABEL, SOLDABLE, type CardStatus } from "@/lib/carduri-cadou";
 import { cardAction } from "@/app/carduri-actions";
 
 export const dynamic = "force-dynamic";
@@ -37,7 +37,7 @@ export default async function AdminCardLot({ params, searchParams }: { params: P
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Lotul {lotLabel(id)} pentru {b.partner}</h2>
         <p className="muted" style={{ marginTop: 0 }}>
-          {b.cantitate} carduri · plan {PLAN[b.plan] ?? b.plan} · {b.durataLuni} luni · {b.pretRaftLei} lei pe raft · generat {when(b.createdAt)}
+          {pl(b.cantitate, "card", "carduri")} · plan {PLAN[b.plan] ?? b.plan} · {pl(b.durataLuni, "lună", "luni")} · {b.pretRaftLei} lei pe raft · generat {when(b.createdAt)}
         </p>
         <div className="actions">
           <Link className="btn primary" href={`${here}/tipar`}>PDF de tipar (carduri 85×55 mm)</Link>

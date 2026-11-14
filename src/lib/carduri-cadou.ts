@@ -27,6 +27,15 @@ export const STATUS_LABEL: Record<CardStatus, string> = {
   generat: "Generat", livrat_magazin: "Livrat magazinului", vandut_activat_de_magazin: "Vândut", folosit: "Folosit", anulat: "Anulat",
 };
 export const SOLDABLE: CardStatus[] = ["generat", "livrat_magazin"];
+/**
+ * Numărul cu cuvântul acordat în română: „1 card”, „2 carduri”, „20 de carduri” (de la 20 în sus, „de” când ultimele două cifre
+ * sunt 00 sau 20–99). `one` e forma de singular, `many` cea de plural.
+ */
+export function pl(n: number, one: string, many: string) {
+  if (n === 1) return `1 ${one}`;
+  const r = Math.abs(n) % 100;
+  return `${n} ${n !== 0 && (r === 0 || r >= 20) ? "de " : ""}${many}`;
+}
 export const ATTEMPTS_PER_HOUR = 10;
 export const MAX_BATCH = 1000;
 const HOUR = 3_600_000;

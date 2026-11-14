@@ -8,7 +8,7 @@ import { adminReady } from "@/lib/admin-access";
 import { clientIp } from "@/lib/securitate";
 import {
   ATTEMPTS_PER_HOUR, attemptsLastHour, cancelCards, checkBatch, checkCode, checkPartner, createBatch, fingerprint, giftCardsEnabled,
-  markDelivered, markSold, normalizeCode, partnerByToken, pinMatches, portalSession, portalSessionOk, recordAttempt, redeemCard,
+  markDelivered, markSold, normalizeCode, partnerByToken, pl, pinMatches, portalSession, portalSessionOk, recordAttempt, redeemCard,
   savePartner, setGiftCardsEnabled, setPartnerActive, setPartnerPin, type Target,
 } from "@/lib/carduri-cadou";
 
@@ -100,8 +100,8 @@ export async function cardAction(form: FormData) {
     : what === "livrat" ? await markDelivered(db, target, by)
     : what === "anulat" ? await cancelCards(db, target, by) : -1;
   if (n < 0) back(path);
-  const label = what === "vandut" ? "marcate vândute" : what === "livrat" ? "marcate livrate" : "anulate";
-  back(path, n ? { ok: `${n} ${n === 1 ? "card" : "carduri"} ${label}.` } : { eroare: "Niciun card nu s-a schimbat (poate erau deja în starea asta, folosite sau anulate)." });
+  const label = what === "vandut" ? ["marcat vândut", "marcate vândute"] : what === "livrat" ? ["marcat livrat", "marcate livrate"] : ["anulat", "anulate"];
+  back(path, n ? { ok: `${pl(n, `card ${label[0]}`, `carduri ${label[1]}`)}.` } : { eroare: "Niciun card nu s-a schimbat (poate erau deja în starea asta, folosite sau anulate)." });
 }
 
 /* ---------- Pagina publică /activeaza ---------- */
