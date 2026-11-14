@@ -28,6 +28,7 @@
   "drizzle/0025_securitate.sql",
   "drizzle/0026_vizite.sql",
   "drizzle/0027_autonomie.sql",
+  "drizzle/0028_carduri_cadou.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -71,12 +72,18 @@
   "src/app/(public)/pub/[v]/resurse-genealogie/page.tsx",
   "src/app/(public)/pub/[v]/termeni/page.tsx",
   "src/app/(site)/a/[code]/page.tsx",
+  "src/app/(site)/activeaza/page.tsx",
   "src/app/(site)/admin/adn/page.tsx",
   "src/app/(site)/admin/analiza/csv/route.ts",
   "src/app/(site)/admin/analiza/page.tsx",
   "src/app/(site)/admin/autonomie/page.tsx",
   "src/app/(site)/admin/business/page.tsx",
   "src/app/(site)/admin/calendar/page.tsx",
+  "src/app/(site)/admin/carduri/lot/[id]/csv/route.ts",
+  "src/app/(site)/admin/carduri/lot/[id]/page.tsx",
+  "src/app/(site)/admin/carduri/lot/[id]/tipar/page.tsx",
+  "src/app/(site)/admin/carduri/page.tsx",
+  "src/app/(site)/admin/carduri/raport.csv/route.ts",
   "src/app/(site)/admin/control/page.tsx",
   "src/app/(site)/admin/crestere/page.tsx",
   "src/app/(site)/admin/cunostinte/arhitectura/page.tsx",
@@ -137,6 +144,7 @@
   "src/app/(site)/localitati/[judet]/[localitate]/page.tsx",
   "src/app/(site)/localitati/[judet]/page.tsx",
   "src/app/(site)/localitati/page.tsx",
+  "src/app/(site)/magazin/[token]/page.tsx",
   "src/app/(site)/mesaje/[treeId]/[userId]/page.tsx",
   "src/app/(site)/mesaje/layout.tsx",
   "src/app/(site)/mesaje/page.tsx",
@@ -180,6 +188,7 @@
   "src/app/apple-icon.png",
   "src/app/autonomie-actions.ts",
   "src/app/calatorie-actions.ts",
+  "src/app/carduri-actions.ts",
   "src/app/carte-actions.ts",
   "src/app/casa-actions.ts",
   "src/app/cont-actions.ts",
@@ -555,6 +564,7 @@
   "src/lib/cadou-sarbatori.ts",
   "src/lib/calatorie.ts",
   "src/lib/calendar-continut.ts",
+  "src/lib/carduri-cadou.ts",
   "src/lib/chat.ts",
   "src/lib/consent.ts",
   "src/lib/contact.ts",
@@ -671,6 +681,7 @@
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
   "tests/calatorie.test.ts",
+  "tests/carduri-cadou.test.ts",
   "tests/chat.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
@@ -735,6 +746,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/activeaza",
+   "kind": "pagina"
+  },
+  {
    "path": "/admin",
    "kind": "pagina"
   },
@@ -761,6 +776,26 @@
   {
    "path": "/admin/calendar",
    "kind": "pagina"
+  },
+  {
+   "path": "/admin/carduri",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/carduri/lot/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/carduri/lot/[id]/csv",
+   "kind": "api"
+  },
+  {
+   "path": "/admin/carduri/lot/[id]/tipar",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/carduri/raport.csv",
+   "kind": "api"
   },
   {
    "path": "/admin/control",
@@ -1071,6 +1106,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/magazin/[token]",
+   "kind": "pagina"
+  },
+  {
    "path": "/mesaje",
    "kind": "pagina"
   },
@@ -1136,6 +1175,7 @@
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
   "tests/calatorie.test.ts",
+  "tests/carduri-cadou.test.ts",
   "tests/chat.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
@@ -1186,5 +1226,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 28
+ "migrations": 29
 }

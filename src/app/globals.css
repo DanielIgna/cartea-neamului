@@ -1818,3 +1818,27 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 }
 /* Admin → Sănătatea afacerii: „+ în jurnal” lângă fiecare pas. */
 .health-grid .linkish,.card .linkish.small{background:none;border:0;padding:0;font:inherit;font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline}
+
+/* Carduri cadou prin magazine (Admin → Carduri cadou, /activeaza, /magazin) */
+.cc-ok{border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:8px 12px}
+.cc-code-input{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:22px;letter-spacing:.08em;text-transform:uppercase;text-align:center}
+.cc-print-tools{max-width:720px;margin:0 auto 16px}
+.cc-sheet{width:210mm;min-height:297mm;margin:0 auto 16px;padding:13.5mm 20mm;box-sizing:border-box;background:#fff;display:grid;grid-template-columns:85mm 85mm;grid-auto-rows:55mm;align-content:start;box-shadow:0 1px 6px rgba(0,0,0,.15)}
+.cc-card{box-sizing:border-box;width:85mm;height:55mm;outline:.2mm dashed #bbb;padding:4mm;display:flex;gap:3mm;color:#2a1d17;background:#fffdf8;font-family:"Alegreya Sans",system-ui,sans-serif;overflow:hidden;--accent:#2f5d8a;--ochre:#a8722f;--ink:#2a1d17}
+.cc-card-left{flex:1;display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.cc-brand{display:flex;align-items:center;gap:1.5mm;font-family:Alegreya,Georgia,serif;font-size:12pt}
+.cc-text{margin:0;font-size:7.6pt;line-height:1.25}
+.cc-scratch{border:.3mm solid #a8722f;border-radius:1.5mm;padding:.8mm 1mm;text-align:center;background:#f3ead9}
+.cc-scratch span{display:block;font-size:5.5pt;letter-spacing:.06em;text-transform:uppercase;color:#7a5520}
+.cc-scratch code{font-size:9.5pt;font-weight:700;letter-spacing:.05em;color:#2a1d17;background:none}
+.cc-url{font-size:5.6pt;color:#5b4a40}
+.cc-qr{width:24mm;height:24mm;align-self:center;flex:none}
+.cc-qr svg{width:100%;height:100%}
+@media print{
+  @page{size:A4;margin:0}
+  .cc-print-tools,header.top,.site-foot,.wa-float,.cookie-notice,.adm-side,.adm-bar,.adm-scrim,.adm-pagehead{display:none!important}
+  body:has(.cc-sheet){visibility:hidden;margin:0;padding:0;background:#fff}
+  .cc-print-wrap{visibility:visible;position:absolute;left:0;top:0;width:210mm;margin:0;padding:0}
+  .cc-sheet{margin:0;box-shadow:none;height:297mm;min-height:0;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cc-sheet:last-child{break-after:auto}
+}

@@ -200,6 +200,16 @@ export const FUNCTIONS: Fn[] = [
     tables: ["gift", "referral_bonus"],
     metric: { table: "gift", label: "cadouri" },
   },
+  {
+    key: "carduri-cadou", name: "Carduri cadou prin magazine", area: "bani", lifecycle: "live", risk: "ridicat", riskWhy: "Coduri care dau abonament fără plată în site; paza e marcarea „vândut” și limita de încercări.",
+    what: "Magazine partenere, loturi de coduri tipărite (CSV, PDF 85×55 mm cu QR), marcare vândut (admin sau magazinul cu PIN), activare pe /activeaza, raport cu comision, comutator general.",
+    engine: ["src/lib/carduri-cadou.ts", "src/app/carduri-actions.ts"],
+    pages: ["/activeaza", "/magazin/[token]", "/admin/carduri", "/admin/carduri/lot/[id]", "/admin/carduri/lot/[id]/tipar"],
+    tables: ["partners", "gift_card_batches", "gift_cards", "gift_card_attempt", "app_setting", "audit_log"],
+    metric: { table: "gift_cards", label: "carduri" },
+    dashboard: "/admin/carduri",
+    tests: ["tests/carduri-cadou.test.ts"],
+  },
   // Conturi și siguranță
   {
     key: "conturi", name: "Conturi și intrare", area: "conturi", lifecycle: "live", risk: "ridicat", riskWhy: "Intrarea în cont; o greșeală închide oamenii afară.",

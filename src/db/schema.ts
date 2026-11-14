@@ -1,5 +1,5 @@
 import {
-  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date, doublePrecision, primaryKey,
+  pgTable, text, integer, boolean, timestamp, uuid, pgEnum, jsonb, index, uniqueIndex, date, doublePrecision, primaryKey, numeric,
 } from "drizzle-orm/pg-core";
 
 /* ---------- Conturi (tabelele cerute de Better Auth) ---------- */
@@ -632,3 +632,56 @@ export const autonomySnapshot = pgTable("autonomy_snapshot", {
   parts: jsonb("parts").notNull(),
   at: timestamp("at").notNull().defaultNow(),
 });
+
+/* ---------- Carduri cadou vândute prin magazine (Admin → Carduri cadou), vezi src/lib/carduri-cadou.ts și migrația 0028 ---------- */
+// Magazinele partenere (librării, magazine de cadouri, studiouri foto). Comisionul se socotește pe cardurile vândute.
+// `portal_token` + `pin_hash`: pagina simplă /magazin/<token> unde magazinul marchează singur un card vândut, cu PIN.
+export const partners = pgTable("partners", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  numeMagazin: text("nume_magazin").notNull(),
+  oras: text("oras"),
+  adresa: text("adresa"),
+  persoanaContact: text("persoana_contact"),
+  telefon: text("telefon"),
+  email: text("email"),
+  comisionProcent: numeric("comision_procent", { precision: 5, scale: 2, mode: "number" }).notNull().default(25),
+  activ: boolean("activ").notNull().default(true),
+  note: text("note"),
+  portalToken: text("portal_token"),
+  pinHash: text("pin_hash"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("partners_portal_token_idx").on(t.portalToken)]);
+
+// Un lot de carduri tipărite pentru un magazin: planul, câte luni dă fiecare card și prețul de pe raft.
+export const giftCardBatches = pgTable("gift_card_batches", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  partnerId: uuid("partner_id").notNull().references(() => partners.id, { onDelete: "restrict" }),
+  plan: text("plan").notNull().default("basic"), // basic / familie / premium
+  durataLuni: integer("durata_luni").notNull().default(12),
+  pretRaftLei: numeric("pret_raft_lei", { precision: 10, scale: 2, mode: "number" }).notNull().default(49),
+  cantitate: integer("cantitate").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+}, (t) => [index("gift_card_batches_partner_idx").on(t.partnerId, t.createdAt)]);
+
+// Fiecare card: codul XXXX-XXXX-XXXX și drumul lui: generat → livrat_magazin → vandut_activat_de_magazin → folosit / anulat.
+export const giftCards = pgTable("gift_cards", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  batchId: uuid("batch_id").notNull().references(() => giftCardBatches.id, { onDelete: "restrict" }),
+  seq: integer("seq").notNull(), // numărul cardului în lot (1, 2, 3...), pentru marcarea pe interval
+  cod: text("cod").notNull(),
+  status: text("status").notNull().default("generat"),
+  partnerId: uuid("partner_id").notNull().references(() => partners.id, { onDelete: "restrict" }),
+  soldAt: timestamp("sold_at"),
+  redeemedAt: timestamp("redeemed_at"),
+  redeemedByUserId: text("redeemed_by_user_id").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("gift_cards_cod_idx").on(t.cod), index("gift_cards_batch_idx").on(t.batchId, t.seq), index("gift_cards_partner_idx").on(t.partnerId, t.status)]);
+
+// Încercările de cod de pe /activeaza și de PIN de pe /magazin (amprenta IP-ului sau a contului, nu IP-ul), pentru limita pe oră.
+export const giftCardAttempt = pgTable("gift_card_attempt", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  who: text("who").notNull(),
+  ok: boolean("ok").notNull().default(false),
+  at: timestamp("at").notNull().defaultNow(),
+}, (t) => [index("gift_card_attempt_idx").on(t.who, t.at)]);
