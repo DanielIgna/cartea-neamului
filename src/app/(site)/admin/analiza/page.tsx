@@ -2,7 +2,7 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import {
-  PERIODS, accountFunnel, business, change, countries, durationLabel, groupBy, isPeriod, isSearch, observations, pct, rangeOf, retention,
+  JUDETE, JUDETE_GRID, PERIODS, accountFunnel, business, change, countryName, durationLabel, flagOf, geography, judetName, groupBy, isPeriod, isSearch, observations, pct, rangeOf, retention,
   sessionsOf, sourceLabel, summary, topPages, trafficSeries, uniqueVisitors, weekHeat, type PeriodKey, type Session,
 } from "@/lib/analiza";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
@@ -16,14 +16,13 @@ export const metadata = { title: "Analiză · Admin · Cartea Neamului" };
 const TABS = [
   { key: "prezentare", label: "Prezentare" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
   { key: "bounce", label: "Bounce" }, { key: "retentie", label: "Retenție" }, { key: "pagini", label: "Pagini" },
-  { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" },
+  { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" }, { key: "tari", label: "Țări și zone" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
 const pageLabel = (p: string) => PUBLIC_PAGES.find((x) => x.path === p)?.label
   ?? ({ "/intrare": "Intrare / cont nou", "/arbore-nou": "Arbore nou", "/arbore/…": "Arborii (pagini private)", "/plata": "Plata", "/a/…": "Amintiri (private)", "/mesaje": "Mesaje", "/datele-mele": "Datele mele" } as Record<string, string>)[p]
   ?? p;
-const COUNTRY: Record<string, string> = { RO: "România", MD: "Moldova", DE: "Germania", IT: "Italia", ES: "Spania", FR: "Franța", GB: "Marea Britanie", AT: "Austria", BE: "Belgia", NL: "Țările de Jos", HU: "Ungaria", US: "SUA", CA: "Canada", IE: "Irlanda", CH: "Elveția", "?": "Necunoscut" };
 
 function Trend({ cur, prev, invert = false }: { cur: number; prev: number; invert?: boolean }) {
   const c = change(cur, prev);
@@ -72,9 +71,10 @@ export default async function Analiza({ searchParams }: { searchParams: Promise<
       {tab === "ore" && <Hours heat={heat} sessions={sessions} />}
       {tab === "bounce" && <Bounce sessions={sessions} sum={sum} prevSum={prevSum} />}
       {tab === "retentie" && await Retention()}
-      {tab === "pagini" && await Pages({ cur, sessions })}
+      {tab === "pagini" && await Pages({ cur, sessions, tariHref: href({ t: "tari" }) })}
       {tab === "seo" && <Seo sessions={sessions} prevSessions={prevSessions} />}
       {tab === "campanii" && <Campaigns sessions={sessions} />}
+      {tab === "tari" && await Places({ cur, prev, sessions })}
 
       <p className="muted" style={{ fontSize: 13 }}>
         Cum numărăm: fiecare pagină deschisă, fără cookie-uri. Vizitatorul e o amprentă care se schimbă zilnic, deci „vizitatori unici” înseamnă
@@ -278,8 +278,8 @@ async function Retention() {
   );
 }
 
-async function Pages({ cur, sessions }: { cur: ReturnType<typeof rangeOf>["cur"]; sessions: Session[] }) {
-  const [pages, where] = await Promise.all([topPages(db, cur), countries(db, cur)]);
+async function Pages({ cur, sessions, tariHref }: { cur: ReturnType<typeof rangeOf>["cur"]; sessions: Session[]; tariHref: string }) {
+  const pages = await topPages(db, cur);
   const entries = new Map(groupBy(sessions, (s) => s.entry).map((r) => [r.key, r]));
   const exits = new Map(groupBy(sessions, (s) => s.exit).map((r) => [r.key, r.count]));
   return (
@@ -299,11 +299,7 @@ async function Pages({ cur, sessions }: { cur: ReturnType<typeof rangeOf>["cur"]
           </div>
         ) : <p className="muted">Nicio pagină văzută în această perioadă.</p>}
       </div>
-      <div className="card">
-        <h2 style={{ marginTop: 0 }}>Din ce țări</h2>
-        <p className="muted" style={{ marginTop: 0 }}>După IP, doar țara (o dă Vercel; local nu există).</p>
-        <HBars label="Vizitatorii pe țări" total={where.reduce((a, b) => a + b.count, 0)} data={where.map((w) => ({ label: COUNTRY[w.label] ?? w.label, count: w.count }))} />
-      </div>
+      <p className="muted" style={{ margin: 0 }}>Țările, județele și orașele vizitatorilor sunt la <Link href={tariHref}>Țări și zone</Link>.</p>
     </>
   );
 }
@@ -357,6 +353,116 @@ function Campaigns({ sessions }: { sessions: Session[] }) {
         <h2 style={{ marginTop: 0 }}>Site-urile din care s-a apăsat</h2>
         <HBars label="Site-urile care trimit vizite" total={sessions.length} data={referrers.slice(0, 15).map((r) => ({ label: r.key, count: r.count }))} />
       </div>
+    </>
+  );
+}
+
+/* ---------- Țări și zone (Daniel, 14.11.2026): de unde vin vizitatorii, după IP, fără ca IP-ul să fie păstrat ---------- */
+async function Places({ cur, prev, sessions }: { cur: ReturnType<typeof rangeOf>["cur"]; prev: ReturnType<typeof rangeOf>["prev"]; sessions: Session[] }) {
+  const [geo, prevGeo] = await Promise.all([geography(db, cur), geography(db, prev)]);
+  const total = geo.countries.reduce((a, b) => a + b.visitors, 0);
+  const known = geo.countries.filter((c) => c.country !== "?");
+  const ro = geo.countries.find((c) => c.country === "RO")?.visitors ?? 0;
+  const abroad = known.filter((c) => c.country !== "RO").reduce((a, b) => a + b.visitors, 0);
+  const prevBy = new Map(prevGeo.countries.map((c) => [c.country, c.visitors]));
+  const prevAbroad = prevGeo.countries.filter((c) => c.country !== "RO" && c.country !== "?").reduce((a, b) => a + b.visitors, 0);
+  const byCountry = new Map(groupBy(sessions, (s) => s.country ?? "?").map((r) => [r.key, r]));
+  const roRegions = geo.regions.filter((r) => r.country === "RO" && r.region);
+  const roByCode = new Map(roRegions.map((r) => [r.region!, r.visitors]));
+  const roSessions = new Map(groupBy(sessions.filter((s) => s.country === "RO"), (s) => s.region).map((r) => [r.key, r]));
+  const roMax = Math.max(1, ...roRegions.map((r) => r.visitors));
+  const roCities = geo.cities.filter((c) => c.country === "RO" && c.city).slice(0, 20);
+  const abroadCities = geo.cities.filter((c) => c.country !== "RO" && c.country !== "?" && c.city).slice(0, 20);
+  const otherRegions = geo.regions.filter((r) => r.country !== "RO" && r.country !== "?" && r.region).slice(0, 15);
+
+  if (!total) return <div className="card"><p className="muted" style={{ margin: 0 }}>Nicio vizită în această perioadă.</p></div>;
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Țări" value={num(known.length)} hint={known[0] ? `cele mai multe: ${countryName(known[0].country)}` : "—"} />
+        <Stat label="Din România" value={`${pct(ro, total)}%`} hint={`${num(ro)} vizitatori`} />
+        <Stat label="Din afara țării" value={`${pct(abroad, total)}%`} hint={<Trend cur={abroad} prev={prevAbroad} />} />
+        <Stat label="Județe din care s-a intrat" value={`${num(roRegions.length)} din 42`} hint={roRegions[0] ? `cele mai multe: ${judetName(roRegions[0].region)}` : "—"} />
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Țările</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Vizitatori unici (pe zile, adunați), comparat cu perioada dinainte, și cât au mers mai departe cei din fiecare țară.</p>
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Țara</th><th>Vizitatori</th><th>Din total</th><th>Față de înainte</th><th>Sesiuni</th><th>Bounce</th><th>Pagina de cont</th><th>Plata</th></tr></thead>
+            <tbody>{geo.countries.slice(0, 40).map((c) => {
+              const s = byCountry.get(c.country);
+              const before = prevBy.get(c.country) ?? 0;
+              const ch = change(c.visitors, before);
+              return (
+                <tr key={c.country}>
+                  <td><span aria-hidden="true">{c.country === "?" ? "❔" : flagOf(c.country)}</span> {countryName(c.country)}</td>
+                  <td>{num(c.visitors)}</td><td>{pct(c.visitors, total)}%</td>
+                  <td>{ch == null ? <span className="muted">nou</span> : <span className={`trend ${ch === 0 ? "" : ch > 0 ? "up" : "down"}`}>{ch > 0 ? "+" : ""}{ch}%</span>}</td>
+                  <td>{num(s?.count ?? 0)}</td><td>{s ? `${s.bounceRate}%` : "—"}</td><td>{s ? `${pct(s.signup, s.count)}%` : "—"}</td><td>{s ? `${pct(s.pay, s.count)}%` : "—"}</td>
+                </tr>
+              );
+            })}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="an-grid">
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Harta județelor</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Cu cât e mai închisă culoarea, cu atât au venit mai mulți. Ține degetul sau mouse-ul pe un județ pentru cifră.</p>
+          <div className="ro-grid" role="list" aria-label="Vizitatorii pe județe">
+            {Object.entries(JUDETE_GRID).map(([code, [col, row]]) => {
+              const v = roByCode.get(code) ?? 0;
+              return (
+                <div key={code} role="listitem" className="ro-cell" title={`${JUDETE[code]}: ${num(v)} vizitatori`} aria-label={`${JUDETE[code]}: ${num(v)}`}
+                  style={{ gridColumn: col + 1, gridRow: row + 1, background: v ? `color-mix(in srgb, var(--viz-1) ${Math.round(15 + (50 * v) / roMax)}%, var(--surface-2))` : undefined }}>
+                  <b>{code}</b><small>{v ? num(v) : ""}</small>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Județele</h2>
+          {roRegions.length ? (
+            <div className="an-scroll">
+              <table className="an-table">
+                <thead><tr><th>Județul</th><th>Vizitatori</th><th>Sesiuni</th><th>Bounce</th><th>Pagina de cont</th></tr></thead>
+                <tbody>{roRegions.map((r) => {
+                  const s = roSessions.get(r.region!);
+                  return <tr key={r.region}><td>{judetName(r.region)}</td><td>{num(r.visitors)}</td><td>{num(s?.count ?? 0)}</td><td>{s ? `${s.bounceRate}%` : "—"}</td><td>{s ? `${pct(s.signup, s.count)}%` : "—"}</td></tr>;
+                })}</tbody>
+              </table>
+            </div>
+          ) : <p className="muted">Încă niciun județ: zona se numără de pe 14 noiembrie 2026, de când a fost adăugată.</p>}
+        </div>
+      </div>
+
+      <div className="an-grid">
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Orașele din România</h2>
+          {roCities.length ? <HBars label="Vizitatorii pe orașe din România" total={ro} data={roCities.map((c) => ({ label: c.city!, count: c.visitors }))} />
+            : <p className="muted">Încă niciun oraș în această perioadă.</p>}
+        </div>
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Orașele din afara țării</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Unde sunt românii plecați care caută neamul.</p>
+          {abroadCities.length ? <HBars label="Vizitatorii pe orașe din afara țării" total={abroad} data={abroadCities.map((c) => ({ label: `${flagOf(c.country)} ${c.city}, ${countryName(c.country)}`, count: c.visitors }))} />
+            : <p className="muted">Încă niciun oraș din afara țării în această perioadă.</p>}
+          {otherRegions.length > 0 && (
+            <details style={{ marginTop: 10 }}>
+              <summary>Regiunile din alte țări</summary>
+              <HBars label="Regiunile din alte țări" total={abroad} data={otherRegions.map((r) => ({ label: `${flagOf(r.country)} ${countryName(r.country)} · ${r.region}`, count: r.visitors }))} />
+            </details>
+          )}
+        </div>
+      </div>
+      <p className="muted" style={{ fontSize: 13, margin: 0 }}>
+        Locul vine de la Vercel, după adresa IP, și e aproximativ (uneori arată orașul furnizorului de internet, nu satul). Păstrăm doar numele țării,
+        județului și orașului, niciodată IP-ul. Județele și orașele se numără de pe 14 noiembrie 2026; țările, de la începutul analizei.
+      </p>
     </>
   );
 }

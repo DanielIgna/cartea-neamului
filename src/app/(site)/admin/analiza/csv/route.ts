@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { adminReady } from "@/lib/admin-access";
-import { groupBy, isPeriod, rangeOf, sessionsOf, sourceLabel, summary, topPages, trafficSeries, uniqueVisitors, business, accountFunnel } from "@/lib/analiza";
+import { countryName, geography, judetName, groupBy, isPeriod, rangeOf, sessionsOf, sourceLabel, summary, topPages, trafficSeries, uniqueVisitors, business, accountFunnel } from "@/lib/analiza";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   const p = new URL(req.url).searchParams.get("p");
   const period = isPeriod(p) ? p : "30z";
   const { cur } = rangeOf(period);
-  const [sessions, uv, biz, funnel, pages] = await Promise.all([sessionsOf(db, cur), uniqueVisitors(db, cur), business(db, cur), accountFunnel(db, cur), topPages(db, cur)]);
+  const [sessions, uv, biz, funnel, pages, geo] = await Promise.all([sessionsOf(db, cur), uniqueVisitors(db, cur), business(db, cur), accountFunnel(db, cur), topPages(db, cur), geography(db, cur)]);
   const series = await trafficSeries(db, cur, sessions);
   const sum = summary(sessions);
   const out: string[] = [];
@@ -35,6 +35,12 @@ export async function GET(req: Request) {
   for (const r of groupBy(sessions, (s) => s.campaign)) out.push(line(r.key, r.count, r.bounceRate, r.pagesPerSession, r.signup, r.tree, r.pay));
   out.push("", line("Pagina", "Vizualizări", "Vizitatori"));
   for (const r of pages) out.push(line(r.path, r.views, r.visitors));
+  out.push("", line("Țara", "Cod", "Vizitatori", "Pagini văzute"));
+  for (const r of geo.countries) out.push(line(countryName(r.country), r.country, r.visitors, r.views));
+  out.push("", line("Județul", "Vizitatori", "Pagini văzute"));
+  for (const r of geo.regions.filter((x) => x.country === "RO" && x.region)) out.push(line(judetName(r.region), r.visitors, r.views));
+  out.push("", line("Orașul", "Țara", "Vizitatori", "Pagini văzute"));
+  for (const r of geo.cities.filter((x) => x.city).slice(0, 100)) out.push(line(r.city, countryName(r.country), r.visitors, r.views));
   return new Response(`﻿${out.join("\n")}\n`, {
     headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="analiza-${cur.from}-${cur.to}.csv"`, "cache-control": "no-store" },
   });

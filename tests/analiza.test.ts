@@ -3,9 +3,9 @@ import { sql } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { payment, tree, user } from "@/db/schema";
-import { deviceOf, isBot, localDayHour, normalizePath, recordVisit, refHostOf, sourceOf } from "@/lib/vizite";
+import { cityOf, deviceOf, isBot, localDayHour, normalizePath, recordVisit, refHostOf, sourceOf } from "@/lib/vizite";
 import {
-  accountFunnel, business, groupBy, observations, rangeOf, retention, sessionsOf, summary, topPages, trafficSeries, uniqueVisitors, weekHeat,
+  accountFunnel, business, countryName, flagOf, geography, groupBy, judetName, observations, rangeOf, retention, sessionsOf, summary, topPages, trafficSeries, uniqueVisitors, weekHeat,
 } from "@/lib/analiza";
 
 describe("vizitele, numărate anonim", () => {
@@ -102,5 +102,33 @@ describe("Admin → Analiză, pe o bază adevărată", () => {
   it("sarea zilei: rămâne doar cea de azi", async () => {
     const r = await db.execute(sql`select count(*)::int as c from visit_salt`);
     expect((r.rows[0] as { c: number }).c).toBe(1);
+  });
+
+  it("țările, județele și orașele, fără IP", async () => {
+    expect(cityOf("Cluj-Napoca")).toBe("Cluj-Napoca");
+    expect(cityOf("T%C3%A2rgu%20Mure%C8%99")).toBe("Târgu Mureș");
+    expect(cityOf("<script>")).toBe("script");
+    expect(cityOf("%")).toBe(null);
+    expect(countryName("DE")).toBe("Germania");
+    expect(countryName("?")).toBe("Necunoscut");
+    expect(flagOf("RO")).toBe("🇷🇴");
+    expect(judetName("CJ")).toBe("Cluj");
+    await recordVisit(db, { path: "/" }, { ...ctx("4.4.4.4"), region: "CJ", city: "Cluj-Napoca" });
+    await recordVisit(db, { path: "/contact" }, { ...ctx("4.4.4.4"), region: "CJ", city: "Cluj-Napoca" });
+    await recordVisit(db, { path: "/" }, { ...ctx("5.5.5.5"), country: "DE", region: "BW", city: "Stuttgart" });
+    await recordVisit(db, { path: "/" }, { ...ctx("6.6.6.6"), country: null, region: "XX", city: "Nicăieri" });
+    const raw = await db.execute(sql`select country, region, city from page_view where visitor is not null order by at desc limit 1`);
+    expect(raw.rows[0]).toEqual({ country: null, region: null, city: null });
+    const cols = await db.execute(sql`select column_name from information_schema.columns where table_name = 'page_view'`);
+    expect((cols.rows as { column_name: string }[]).map((c) => c.column_name)).not.toContain("ip");
+    const { cur } = rangeOf("7z");
+    const g = await geography(db, cur);
+    expect(g.countries[0]).toMatchObject({ country: "RO", visitors: 3 });
+    expect(g.countries.find((c) => c.country === "DE")).toMatchObject({ visitors: 1, views: 1 });
+    expect(g.countries.find((c) => c.country === "?")).toMatchObject({ visitors: 1 });
+    expect(g.regions.find((r) => r.country === "RO" && r.region === "CJ")).toMatchObject({ visitors: 1, views: 2 });
+    expect(g.cities.find((r) => r.city === "Stuttgart")).toMatchObject({ country: "DE", visitors: 1 });
+    const s = await sessionsOf(db, cur);
+    expect(s.find((x) => x.region === "CJ")).toMatchObject({ country: "RO", views: 2 });
   });
 });

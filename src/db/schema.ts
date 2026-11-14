@@ -591,6 +591,9 @@ export const pageView = pgTable("page_view", {
   campaign: text("campaign"),
   device: text("device").notNull(),
   country: text("country"),
+  // Regiunea (codul ISO, la noi județul: „CJ”, „B”) și orașul aproximativ, tot după IP, de la Vercel (migrația 0031). IP-ul nu se păstrează.
+  region: text("region"),
+  city: text("city"),
   lang: text("lang"),
   logged: boolean("logged").notNull().default(false),
 }, (t) => [index("page_view_day_idx").on(t.day), index("page_view_visitor_idx").on(t.visitor, t.at)]);
