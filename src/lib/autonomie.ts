@@ -43,7 +43,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -61,6 +61,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Cu câteva zile înainte (cât ai pus în Manager control) le scrie celor al căror an se termină. O dată pe an, pentru fiecare." },
   { key: "bun-venit", label: "Email: sfaturi de bun venit", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Doar celor care au spus „Da” la „Vrei sfaturi pe email?”: 5 emailuri scurte în primele 3 săptămâni (ziua 1, 2, 4, 10, 21), câte unul pe zi, sărind ce omul a făcut deja (a invitat o rudă, a înregistrat un glas, a plătit). Fiecare are dezabonare dintr-un clic. Vezi Admin → Creștere." },
+  { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
+    what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "probleme-vechi", label: "Închide problemele lămurite", risk: "aprobare", defaultOn: false, everyDays: 1,
     what: "Problemele raportate la care ai răspuns și la care omul n-a mai scris de 21 de zile. Pregătește lista; le trece la „Rezolvată” doar după ce apeși „Aprobă”." },
 ];
@@ -291,6 +293,7 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "aminteste-an": runYearMail,
   "bun-venit": runNews,
   "probleme-vechi": runStaleProblems,
+  arhivare: runArchiveDaily,
 };
 
 /** Rulează o automatizare și o trece în jurnal. După 3 erori la rând se oprește singură și apare la recomandări. */
@@ -325,6 +328,17 @@ export async function lastRuns(db: Db) {
       (select note from automation_run b where b.automation = a.automation order by started_at desc limit 1) as note
     from automation_run a group by a.automation`);
   return new Map(r.map((x) => [x.automation, x]));
+}
+
+/** Arhiva sigilată (src/lib/arhivare.ts): anunțurile scadente, apoi mutarea sau micșorarea, câte puțin pe zi. */
+async function runArchiveDaily({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă anunțurile, deci nu se mută nimic" };
+  const { runArchive } = await import("./arhivare");
+  const r = await runArchive(db, now);
+  if (r.skipped) return { status: "sarit", observed: 0, acted: 0, note: r.skipped };
+  const acted = r.notices + r.archived + r.reduced;
+  return { status: acted ? "ok" : "nimic", observed: r.trees, acted, pending: r.waiting, details: r,
+    note: acted ? `${r.notices} anunțuri, ${r.archived} fișiere în arhivă, ${r.reduced} poze lăsate în mic` : r.trees ? `${r.trees} arbori urmăriți, nimic scadent azi` : "niciun arbore după anul plătit", verified: true };
 }
 
 /* ---------- Bucla: observă → găsește → hotărăște → face → verifică → notează → învață ---------- */

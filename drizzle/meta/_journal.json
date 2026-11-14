@@ -225,6 +225,13 @@
       "when": 1794710000000,
       "tag": "0031_vizite_regiune",
       "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1794720000000,
+      "tag": "0032_arhiva_sigilata",
+      "breakpoints": true
     }
   ]
 }

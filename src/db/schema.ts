@@ -177,7 +177,22 @@ export const document = pgTable("document", {
   place: text("place"),
   uploadedBy: text("uploaded_by").references(() => user.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  // Arhiva sigilată (src/lib/arhivare.ts): poza în mic, păstrată online; când originalul a trecut în arhivă (cheia începe cu
+  // „arhiva/”) și când a rămas doar poza în mic.
+  previewKey: text("preview_key"),
+  archivedAt: timestamp("archived_at"),
+  reducedAt: timestamp("reduced_at"),
 });
+
+/** Ce urmează pentru un arbore după anul plătit: „arhivare” sau „reducere”, cu ziua și anunțurile trimise (zile înainte → ora). */
+export const archivePlan = pgTable("archive_plan", {
+  treeId: uuid("tree_id").notNull().references(() => tree.id, { onDelete: "cascade" }),
+  event: text("event").notNull(),
+  dueAt: timestamp("due_at").notNull(),
+  notices: jsonb("notices").notNull().default({}),
+  doneAt: timestamp("done_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [primaryKey({ name: "archive_plan_pk", columns: [t.treeId, t.event] })]);
 
 export const documentLink = pgTable("document_link", {
   documentId: uuid("document_id").notNull().references(() => document.id, { onDelete: "cascade" }),

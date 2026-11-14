@@ -29,6 +29,24 @@ const s3 = () => (client ??= new S3Client({
   credentials: { accessKeyId: env("ACCESS_KEY_ID")!, secretAccessKey: env("SECRET_ACCESS_KEY")! },
 }));
 
+/**
+ * Arhiva sigilată (src/lib/arhivare.ts): cheile care încep cu „arhiva/” pot sta într-o magazie rece, ieftină, compatibilă S3
+ * (de pildă Backblaze B2, regiunea din UE), dacă sunt puse cheile ARCHIVE_S3_*. Fără ele, stau în același bucket, doar comprimate.
+ * Toate funcțiile de mai jos aleg singure locul după cheie, deci restul site-ului nu trebuie să știe unde e un fișier.
+ */
+export const ARCHIVE_PREFIX = "arhiva/";
+export const isArchiveKey = (key: string) => key.startsWith(ARCHIVE_PREFIX);
+const aenv = (name: string) => process.env[`ARCHIVE_S3_${name}`]?.trim();
+export const coldArchiveConfigured = () => Boolean(aenv("ENDPOINT") && aenv("BUCKET") && aenv("ACCESS_KEY_ID") && aenv("SECRET_ACCESS_KEY"));
+let archiveClient: S3Client | null = null;
+const cold = () => (archiveClient ??= new S3Client({
+  endpoint: aenv("ENDPOINT"),
+  region: aenv("REGION") ?? "eu-central-003",
+  credentials: { accessKeyId: aenv("ACCESS_KEY_ID")!, secretAccessKey: aenv("SECRET_ACCESS_KEY")! },
+}));
+/** Clientul și bucket-ul pentru o cheie: magazia rece pentru arhivă (dacă e pusă), altfel bucket-ul obișnuit. */
+const target = (key: string) => (isArchiveKey(key) && coldArchiveConfigured() ? { c: cold(), Bucket: aenv("BUCKET")! } : { c: s3(), Bucket: BUCKET });
+
 export async function bucketReachable() {
   await s3().send(new HeadBucketCommand({ Bucket: BUCKET }));
   return { bucket: BUCKET };
@@ -39,12 +57,14 @@ export async function putObject(key: string, body: Uint8Array, contentType: stri
     await mkdir(path.dirname(localPath(key)), { recursive: true });
     return writeFile(localPath(key), body);
   }
-  await s3().send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: body, ContentType: contentType }));
+  const { c, Bucket } = target(key);
+  await c.send(new PutObjectCommand({ Bucket, Key: key, Body: body, ContentType: contentType }));
 }
 
 export async function getObjectBytes(key: string) {
   if (localStorageMode()) return new Uint8Array(await readFile(localPath(key)));
-  const res = await s3().send(new GetObjectCommand({ Bucket: BUCKET, Key: key }));
+  const { c, Bucket } = target(key);
+  const res = await c.send(new GetObjectCommand({ Bucket, Key: key }));
   return res.Body!.transformToByteArray();
 }
 
@@ -61,7 +81,7 @@ export async function deleteObjects(keys: (string | null | undefined)[]) {
     await Promise.all(todo.slice(i, i + 5).map(async (key) => {
       try {
         if (localStorageMode()) await rm(localPath(key), { force: true });
-        else await s3().send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
+        else { const { c, Bucket } = target(key); await c.send(new DeleteObjectCommand({ Bucket, Key: key })); }
         deleted++;
       } catch (e) {
         failed++;
@@ -74,7 +94,8 @@ export async function deleteObjects(keys: (string | null | undefined)[]) {
 
 /** Link temporar (implicit 10 minute) către un obiect privat, fără să expunem cheile. */
 export function presignedGetUrl(key: string, expiresIn = 600) {
-  return getSignedUrl(s3(), new GetObjectCommand({ Bucket: BUCKET, Key: key }), { expiresIn });
+  const { c, Bucket } = target(key);
+  return getSignedUrl(c, new GetObjectCommand({ Bucket, Key: key }), { expiresIn });
 }
 
 /** Cheia obiectului: grupată pe arbore, cu un id unic ca să nu suprascriem niciodată un fișier. */

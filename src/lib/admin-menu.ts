@@ -26,6 +26,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
         id: "bani", label: "Bani și creștere", items: [
           { key: "business", href: "/admin/business", label: "Business", icon: "chart", hint: "Conturi, arbori, activitate, venituri", words: "venituri statistici" },
           { key: "control", href: "/admin/control", label: "Manager control", icon: "sliders", hint: "Planuri, prețuri, pornirea plăților", words: "planuri preturi plati stripe gratuit" },
+          { key: "arhiva", href: "/admin/arhiva", label: "Arhivă", icon: "book", hint: "Arhiva sigilată după anul plătit: termeni, ce urmează", isNew: true, words: "arhiva sigilata pastrare dupa an originale poze mici stocare rece backblaze gdpr" },
           { key: "analiza", href: "/admin/analiza", label: "Analiză", icon: "pulse", hint: "Vizite, surse, campanii, drumul spre plată", isNew: true, words: "trafic vizite analytics campanii" },
           { key: "sanatate", href: "/admin/sanatate", label: "Sănătatea afacerii", icon: "heart", hint: "Scoruri pe departamente față de ținta de 1000 de abonamente", isNew: true, words: "business health venituri crestere conversii seo scor tinta" },
           { key: "crestere", href: "/admin/crestere", label: "Creștere și recomandări", icon: "share", hint: "Invitații, rude aduse, daruri, emailuri cu acord, distribuiri", isNew: true, words: "referral invitatii viral marketing leaduri distribuire" },

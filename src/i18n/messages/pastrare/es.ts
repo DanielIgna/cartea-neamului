@@ -4,6 +4,7 @@ export const esPastrare: PastrareCatalog = {
   "Keep": {
     "title": "Conservación del árbol",
     "text": "Con la Conservación, {price} al año, toda la familia ve y escucha todo en línea: las fotos en grande, las voces, los documentos y la película de la vida. No se añade nada nuevo; para eso eliges de nuevo un plan. Una vez al año recibes por correo el enlace al archivo completo.",
+    "freeArch": "Sin Conservación, el árbol (nombres, fechas, vínculos, textos) sigue visible, y lo que subiste tú y el árbol entero (GEDCOM) los descargas siempre, gratis. Las fotos originales se quedan a tamaño completo {years, plural, one {un año} other {# años}} más tras el fin de tu año y después solo en pequeño; te avisamos por correo 90, 30 y 7 días antes.",
     "free": "Sin Conservación no se borra nada: el árbol (nombres, fechas, vínculos, textos) sigue visible, las fotos subidas por otros solo se ven en pequeño, y lo que subiste tú y el árbol entero (GEDCOM) los descargas siempre gratis.",
     "keptUntil": "Tienes la Conservación hasta el {date}: la familia ve y escucha todo. Para volver a añadir, elige un plan.",
     "extend": "Se añade otro año después del {date}.",
@@ -43,6 +44,25 @@ export const esPastrare: PastrareCatalog = {
     "myDataLink": "Mis datos",
     "noTrees": "Aún no estás en ningún árbol.",
     "owner": "tu árbol"
+  },
+  "ArchiveNote": {
+    "liber": "Las fotos originales y los documentos escaneados se quedan a tamaño completo hasta el {date}. Después solo se quedan en pequeño; las voces, los documentos PDF y los textos se quedan todos. Puedes conservarlos a tamaño completo con la Conservación ({keep} al año) o con el libro PDF ({book}), que los guarda en el archivo sellado durante {years, plural, one {un año} other {# años}}. Siempre puedes descargarlos aquí, gratis.",
+    "liberSealed": "Los originales se quedan a tamaño completo en línea hasta el {date}. Después, como tenéis el libro PDF, entran en el archivo sellado, guardado hasta el {until}.",
+    "sigilat": "Los originales están en el archivo sellado hasta el {until}. Se abren de nuevo a tamaño completo, al momento, cuando renuevas tu año o tomas la Conservación. Siempre puedes descargarlos, gratis.",
+    "redus": "Las fotos se han quedado solo en pequeño; las voces, los documentos PDF, los nombres, las fechas y los textos están todos aquí.",
+    "delete": "¿Quieres borrarlo todo, archivo incluido? Lo haces desde",
+    "banner": "Las fotos originales de «{tree}» se quedan a tamaño completo hasta el {date}.",
+    "bookSeal": "Con el libro PDF, los originales del árbol se guardan también después del año pagado, en el archivo sellado, durante {years, plural, one {un año} other {# años}}.",
+  },
+  "ArchiveMail": {
+    "arhivare": {
+      "subject": "{app}: los originales de «{tree}» entran en el archivo sellado el {date}",
+      "body": "¡Hola, {name}!\n\nEl año pagado del árbol «{tree}» ha terminado, y el tiempo en que los originales han estado a tamaño completo en línea llega a su fin. Como tenéis el libro de la familia en PDF, el {date} (dentro de {days} días) las fotos, las voces y los documentos entran en el archivo sellado: comprimidos y guardados {years, plural, one {un año} other {# años}} desde la compra del libro.\n\nEn línea se quedan el árbol (nombres, fechas, vínculos, textos) y las fotos en pequeño. Cuando renuevas tu año o tomas la Conservación ({keep} al año), todo se abre de nuevo a tamaño completo, al momento.\n\nTodo lo que es tuyo lo puedes descargar siempre, gratis: {link}\nSi quieres borrarlo todo, lo haces desde «Mis datos».\n\nNo tienes que hacer nada más.",
+    },
+    "reducere": {
+      "subject": "{app}: las fotos de «{tree}» se quedan solo en pequeño desde el {date}",
+      "body": "¡Hola, {name}!\n\nEl {date} (dentro de {days} días) termina el tiempo en que guardamos a tamaño completo las fotos originales y los documentos escaneados del árbol «{tree}». Después de ese día solo se quedan en pequeño. Las voces, los documentos PDF, los nombres, las fechas y los textos se quedan todos.\n\nPara conservar los originales tienes tres caminos:\n• descargarlos ahora, gratis: {link}\n• tomar la Conservación, {keep} al año: la familia ve y escucha todo en línea;\n• comprar el libro de la familia en PDF, {book}: los originales entran en el archivo sellado, guardados {years, plural, one {un año} other {# años}}.\n\nSi quieres borrarlo todo, lo haces desde «Mis datos».",
+    },
   },
   "KeepMail": {
     "subject": "{app}: el archivo de tu familia",

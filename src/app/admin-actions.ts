@@ -223,3 +223,15 @@ export async function markServerErrorsSeen(form: FormData): Promise<void> {
   }
   revalidatePath("/admin/infra");
 }
+
+/** Admin → Arhivă: comutatorul regulilor arhivei sigilate și cei doi termeni (anii cu originalele online, anii arhivei). */
+export async function saveArchiveRules(_: AdminFormState, form: FormData): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const { ArchiveSettings, saveArchiveSettings } = await import("@/lib/arhivare");
+  const parsed = ArchiveSettings.omit({ from: true }).safeParse({ on: form.get("on") === "on", freeYears: form.get("freeYears"), sealYears: form.get("sealYears") });
+  if (!parsed.success) return { error: "Scrie ani întregi: originalele 1–10, arhiva 1–30." };
+  const saved = await saveArchiveSettings(db, parsed.data, me.id);
+  revalidatePath("/", "layout");
+  return { ok: saved.on ? "Am salvat. Regulile arhivei sunt pornite pentru conturile făcute de azi încolo." : "Am salvat. Regulile arhivei sunt oprite: nu se mută și nu se micșorează nimic." };
+}

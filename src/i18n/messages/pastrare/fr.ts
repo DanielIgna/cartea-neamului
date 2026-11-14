@@ -4,6 +4,7 @@ export const frPastrare: PastrareCatalog = {
   "Keep": {
     "title": "Conservation de l’arbre",
     "text": "Avec la Conservation, {price} par an, toute la famille voit et écoute tout en ligne : les photos en grand, les voix, les documents et le film de la vie. Rien de nouveau ne s’ajoute ; pour cela, vous choisissez à nouveau une formule. Une fois par an, vous recevez par e-mail le lien vers l’archive complète.",
+    "freeArch": "Sans Conservation, l’arbre (noms, dates, liens, textes) reste visible, et ce que vous avez téléversé vous-même ainsi que l’arbre entier (GEDCOM) se téléchargent toujours, gratuitement. Les photos originales restent en taille réelle encore {years, plural, one {un an} other {# ans}} après la fin de votre année, puis seulement en petit ; nous vous prévenons par e-mail 90, 30 et 7 jours avant.",
     "free": "Sans Conservation, rien n’est supprimé : l’arbre (noms, dates, liens, textes) reste visible, les photos ajoutées par d’autres ne s’affichent qu’en petit, et ce que vous avez ajouté vous-même ainsi que l’arbre entier (GEDCOM) se téléchargent toujours gratuitement.",
     "keptUntil": "Vous avez la Conservation jusqu’au {date} : la famille voit et écoute tout. Pour ajouter à nouveau, choisissez une formule.",
     "extend": "Une année de plus s’ajoute après le {date}.",
@@ -43,6 +44,25 @@ export const frPastrare: PastrareCatalog = {
     "myDataLink": "Mes données",
     "noTrees": "Vous n’êtes encore dans aucun arbre.",
     "owner": "votre arbre"
+  },
+  "ArchiveNote": {
+    "liber": "Les photos originales et les documents numérisés restent en taille réelle jusqu’au {date}. Ensuite, ils ne restent qu’en petit ; les voix, les documents PDF et les textes restent tous. Vous pouvez les garder en taille réelle avec la Conservation ({keep} par an) ou avec le livre PDF ({book}), qui les garde dans l’archive scellée pendant {years, plural, one {un an} other {# ans}}. Vous pouvez toujours les télécharger ici, gratuitement.",
+    "liberSealed": "Les originaux restent en taille réelle en ligne jusqu’au {date}. Ensuite, comme vous avez le livre PDF, ils entrent dans l’archive scellée, gardée jusqu’au {until}.",
+    "sigilat": "Les originaux sont dans l’archive scellée jusqu’au {until}. Ils s’ouvrent de nouveau en taille réelle, tout de suite, quand vous renouvelez votre année ou prenez la Conservation. Vous pouvez toujours les télécharger, gratuitement.",
+    "redus": "Les photos ne restent plus qu’en petit ; les voix, les documents PDF, les noms, les dates et les textes sont tous là.",
+    "delete": "Vous voulez tout supprimer, archive comprise ? Cela se fait depuis",
+    "banner": "Les photos originales de « {tree} » restent en taille réelle jusqu’au {date}.",
+    "bookSeal": "Avec le livre PDF, les originaux de l’arbre sont gardés aussi après l’année payée, dans l’archive scellée, pendant {years, plural, one {un an} other {# ans}}.",
+  },
+  "ArchiveMail": {
+    "arhivare": {
+      "subject": "{app} : les originaux de « {tree} » entrent dans l’archive scellée le {date}",
+      "body": "Bonjour {name},\n\nL’année payée pour l’arbre « {tree} » est terminée, et la période pendant laquelle les originaux sont restés en taille réelle en ligne arrive à son terme. Comme vous avez le livre de la famille en PDF, le {date} (dans {days} jours) les photos, les voix et les documents entrent dans l’archive scellée : compressés et gardés {years, plural, one {un an} other {# ans}} à partir de l’achat du livre.\n\nEn ligne restent l’arbre (noms, dates, liens, textes) et les photos en petit. Quand vous renouvelez votre année ou prenez la Conservation ({keep} par an), tout s’ouvre de nouveau en taille réelle, tout de suite.\n\nVous pouvez toujours télécharger, gratuitement, tout ce qui est à vous : {link}\nSi vous voulez tout supprimer, cela se fait depuis « Mes données ».\n\nVous n’avez rien d’autre à faire.",
+    },
+    "reducere": {
+      "subject": "{app} : les photos de « {tree} » ne resteront qu’en petit à partir du {date}",
+      "body": "Bonjour {name},\n\nLe {date} (dans {days} jours) se termine la période pendant laquelle nous gardons en taille réelle les photos originales et les documents numérisés de l’arbre « {tree} ». Après ce jour, ils ne restent qu’en petit. Les voix, les documents PDF, les noms, les dates et les textes restent tous.\n\nPour garder les originaux, vous avez trois possibilités :\n• les télécharger maintenant, gratuitement : {link}\n• prendre la Conservation, {keep} par an : la famille voit et écoute tout en ligne ;\n• acheter le livre de la famille en PDF, {book} : les originaux entrent dans l’archive scellée, gardés {years, plural, one {un an} other {# ans}}.\n\nSi vous voulez tout supprimer, cela se fait depuis « Mes données ».",
+    },
   },
   "KeepMail": {
     "subject": "{app} : l’archive de votre famille",

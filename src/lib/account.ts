@@ -101,7 +101,7 @@ export async function deleteAccount(db: Db, userId: string, opts: { scrub: boole
     const fileKeys: string[] = [];
     // Arborii în care e singur: întâi fișierele, apoi arborele (fișele, relațiile, documentele și amintirile pleacă odată cu el).
     if (doomed.length) {
-      fileKeys.push(...(await tx.select({ k: document.fileKey }).from(document).where(inArray(document.treeId, doomed))).map((r) => r.k).filter((k): k is string => !!k));
+      fileKeys.push(...(await tx.select({ k: document.fileKey, p: document.previewKey }).from(document).where(inArray(document.treeId, doomed))).flatMap((r) => [r.k, r.p]).filter((k): k is string => !!k));
       await tx.delete(tree).where(inArray(tree.id, doomed));
     }
     // Arborii cu alți membri trec la moștenitor (dacă nu e deja proprietar și altcineva).
