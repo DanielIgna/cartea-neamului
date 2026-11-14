@@ -60,8 +60,9 @@ const UNKNOWN_PARENT: Record<string, { M: string; F: string }> = {
   ro: { M: "Tată necunoscut", F: "Mamă necunoscută" }, "en-GB": { M: "Unknown father", F: "Unknown mother" }, "en-US": { M: "Unknown father", F: "Unknown mother" },
   fr: { M: "Père inconnu", F: "Mère inconnue" }, es: { M: "Padre desconocido", F: "Madre desconocida" }, nl: { M: "Onbekende vader", F: "Onbekende moeder" },
   de: { M: "Unbekannter Vater", F: "Unbekannte Mutter" }, it: { M: "Padre sconosciuto", F: "Madre sconosciuta" }, hu: { M: "Ismeretlen apa", F: "Ismeretlen anya" },
+  he: { M: "אב לא ידוע", F: "אם לא ידועה" },
 };
-const UNKNOWN_PARENT_NAME = /^(tata|mama) necunoscut|^unknown (father|mother)|^(pere|mere) inconnu|^(padre|madre) (desconocid|sconosciut)|^onbekende (vader|moeder)|^unbekannter? (vater|mutter)|^ismeretlen (apa|anya)/;
+const UNKNOWN_PARENT_NAME = /^(tata|mama) necunoscut|^unknown (father|mother)|^(pere|mere) inconnu|^(padre|madre) (desconocid|sconosciut)|^onbekende (vader|moeder)|^unbekannter? (vater|mutter)|^ismeretlen (apa|anya)|^(אב|אם) לא ידוע/;
 
 /** Părinții fără nume puși automat („Tată necunoscut”, „Mamă necunoscută”): nu sunt dubluri unii ai altora și nu primesc fișă în carte. */
 export const isPlaceholder = (given: string) => UNKNOWN_PARENT_NAME.test(normName(given)) || /^necunoscut/.test(normName(given));

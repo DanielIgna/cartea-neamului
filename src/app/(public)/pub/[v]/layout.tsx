@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { dirOf } from "@/i18n/locales";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
 import "@fontsource/alegreya/700.css";
@@ -43,7 +44,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
   const v = await readVariant({ params });
   const [messages, t, appName] = await Promise.all([getMessages(v.locale), getT("Layout"), getAppName()]);
   return (
-    <html lang={v.locale} data-theme={v.theme === "auto" ? undefined : v.theme}>
+    <html lang={v.locale} dir={dirOf(v.locale)} data-theme={v.theme === "auto" ? undefined : v.theme}>
       <body>
         <IntlClient locale={v.locale} messages={clientMessages(messages)}>
           <PwaSetup />

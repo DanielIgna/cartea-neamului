@@ -40,6 +40,8 @@ const WANT: Record<Locale, string[]> = {
     "cugino, di una generazione precedente", "matrigna", "prima moglie del padre", "cognata", "suocera", "parente acquisita: cugina, dalla parte del marito"],
   hu: ["apa", "dédapa", "unoka", "apai féltestvér", "unokahúg", "nagyszülő testvére", "unokatestvér", "másodunokatestvér",
     "unokatestvér, egy idősebb nemzedékből", "mostohaanya", "az apa első felesége", "sógornő", "anyós", "házasság révén rokon: unokatestvér, a férj családjából"],
+  he: ["אב", "סבא רבא", "נכדה", "אח למחצה מצד האב", "אחיינית", "אח של סבא או סבתא", "בת דודה", "בת דודה שנייה",
+    "בן דוד, מדור מבוגר יותר", "אם חורגת", "בת הזוג הראשונה של האב", "גיסה", "חותנת או חמות", "קרבה מנישואין: בת דודה, מצד הבעל"],
 };
 
 describe("numele rudeniilor în fiecare limbă", () => {

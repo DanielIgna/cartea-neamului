@@ -119,7 +119,7 @@ export const ro = {
     eyebrow: "Arborele genealogic al familiei tale",
     trust1: "7 zile gratuite la început",
     trust2: "Privat: doar rudele tale îl văd",
-    trust3: "În 9 limbi, și pentru cei plecați",
+    trust3: "În 10 limbi, și pentru cei plecați",
     visualLabel: "Exemplu de arbore în evantai, cu o amintire înregistrată și cartea neamului",
     visualYou: "Tu",
     voiceTitle: "Glasul bunicii Ana",

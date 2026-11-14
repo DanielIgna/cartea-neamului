@@ -1,5 +1,6 @@
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
+import { dirOf } from "@/i18n/locales";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
 import "@fontsource/alegreya/700.css";
@@ -72,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const appName = (await getT("Meta"))("appName");
   const ask = suggest ? { s: await getT("LanguageSuggest", suggest), ro: await getT("LanguageSuggest", "ro") } : null;
   return (
-    <html lang={locale} data-theme={theme === "auto" ? undefined : theme}>
+    <html lang={locale} dir={dirOf(locale)} data-theme={theme === "auto" ? undefined : theme}>
       <body>
         <IntlClient locale={locale} messages={clientMessages(messages)}>
           <PwaSetup />
