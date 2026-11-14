@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { AdminNav } from "@/components/admin/ui";
+import PropManageAdmin from "@/components/admin/PropManageAdmin";
 import { batchList, cardLog, giftCardsEnabled, partnerList, partnerReport, pl, STATUS_LABEL, type CardStatus } from "@/lib/carduri-cadou";
 import { cardAction, createBatchAction, toggleGiftCards } from "@/app/carduri-actions";
 
@@ -170,6 +171,7 @@ export default async function AdminCarduri({ searchParams }: { searchParams: Pro
         </div>
         <p className="muted"><small>Stări: {(Object.keys(STATUS_LABEL) as CardStatus[]).map((s) => STATUS_LABEL[s]).join(" → ")}</small></p>
       </div>
+      <PropManageAdmin />
     </section>
   );
 }

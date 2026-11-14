@@ -9,6 +9,7 @@ import { CARD_ORIGIN, CATEGORIES, STAGES, STAGE_LABEL, batchList, partnerById, p
 import { CHANNELS, contactsOf, crmPartners, monthOf, monthReport, refUrl, referralTotals } from "@/lib/parteneri-crm";
 import { addContactAction, deleteContactAction, refCodeAction, saveCrmPartner, setPinCrm, setStageAction, stepDoneAction } from "@/app/parteneri-crm-actions";
 import { createBatchAction } from "@/app/carduri-actions";
+import { inviteCounts } from "@/lib/propmanage-cont";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Partener · City Partners · Admin" };
@@ -26,9 +27,9 @@ export default async function PartnerCard({ params, searchParams }: { params: Pr
   if (!isNew && !/^[0-9a-f-]{36}$/i.test(id)) notFound();
   const p = isNew ? null : await partnerById(db, id);
   if (!isNew && !p) notFound();
-  const [rows, contacts, batches, refs, month, origin] = await Promise.all([
+  const [rows, contacts, batches, refs, month, origin, pm] = await Promise.all([
     p ? crmPartners(db) : Promise.resolve([]), p ? contactsOf(db, p.id) : Promise.resolve([]), p ? batchList(db) : Promise.resolve([]),
-    referralTotals(db), p ? monthReport(db, monthOf()) : Promise.resolve([]), siteOrigin(),
+    referralTotals(db), p ? monthReport(db, monthOf()) : Promise.resolve([]), siteOrigin(), inviteCounts(db),
   ]);
   const me = rows.find((r) => r.id === id);
   const mine = batches.filter((b) => b.partnerId === id);
@@ -48,6 +49,7 @@ export default async function PartnerCard({ params, searchParams }: { params: Pr
             <div><small>Vândute</small><b>{me.vandute}</b></div>
             <div><small>Activate</small><b>{me.activate}</b></div>
             <div><small>Conturi aduse</small><b>{refs.get(p.id) ?? 0}</b></div>
+            <div><small>Clienți PropManage</small><b>{pm.partner.get(p.id) ?? 0}</b></div>
             <div><small>Comision de la început</small><b>{lei(me.comisionLei)}</b></div>
             <div><small>De plată luna asta</small><b>{lei(m?.total ?? 0)}</b></div>
             <div><small>Pornire</small><b>{me.onboarding}/5</b></div>
