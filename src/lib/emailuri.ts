@@ -27,7 +27,8 @@ export type MailBlock =
   | { p: string }
   | { rows: [label: string, value: string][] }
   | { quote: string }
-  | { button: string; href: string };
+  | { button: string; href: string }
+  | { note: string; link: string; href: string };
 
 /** Un email simplu: paragrafe, un tabel mic, un citat și un buton, cu subsolul firmei. Întoarce HTML-ul și textul simplu. */
 export function renderMail(blocks: MailBlock[], footer: string): { html: string; text: string } {
@@ -44,6 +45,9 @@ export function renderMail(blocks: MailBlock[], footer: string): { html: string;
     } else if ("quote" in b) {
       html.push(`<div style="margin:0 0 16px;padding:12px 16px;border-left:3px solid #c9a27a;background:#faf5ee;white-space:pre-wrap">${escHtml(b.quote)}</div>`);
       text.push(b.quote);
+    } else if ("note" in b) {
+      html.push(`<p style="margin:0 0 16px;font-size:13px;color:#6b5a4c">${escHtml(b.note)} <a href="${escHtml(b.href)}" style="color:#8a4b2a">${escHtml(b.link)}</a></p>`);
+      text.push(`${b.note} ${b.link}: ${b.href}`);
     } else {
       html.push(`<p style="margin:24px 0"><a href="${escHtml(b.href)}" style="background:#8a4b2a;color:#ffffff;padding:12px 20px;border-radius:8px;text-decoration:none;display:inline-block">${escHtml(b.button)}</a></p>`);
       text.push(`${b.button}: ${b.href}`);
@@ -57,7 +61,7 @@ export function renderMail(blocks: MailBlock[], footer: string): { html: string;
   };
 }
 
-async function footerFor(locale: Locale) {
+export async function footerFor(locale: Locale) {
   const t = await getT("Emails", locale);
   return t("footer", { operator: OPERATOR_SHORT, cui: operator().cui });
 }

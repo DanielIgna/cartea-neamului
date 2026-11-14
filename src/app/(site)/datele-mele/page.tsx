@@ -8,6 +8,7 @@ import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import { TERMS_DATE, operator } from "@/lib/legal";
 import { AccountDelete, FaithWithdraw, PartnerToggle, UsageToggle } from "@/components/MyDataTools";
+import { NewsToggle } from "@/components/NewsNotice";
 import { partnerState } from "@/lib/partners";
 import { usageOf } from "@/lib/usage";
 import { getFormat, getLocale, getAppName, getT } from "@/i18n/server";
@@ -44,7 +45,7 @@ export default async function MyDataPage() {
   };
   const [plan, terms, faith, usage] = await Promise.all([deletionPlan(db, me.id), consentState(db, me.id, "terms"), consentState(db, me.id, "faith"),
     consentState(db, me.id, "usage")]);
-  const partner = await partnerState(db, me.id);
+  const [partner, news, tn] = await Promise.all([partnerState(db, me.id), consentState(db, me.id, "news"), getT("News", locale)]);
   const mine = usage.granted ? await usageOf(db, me.id, 30) : null;
   const contact = operator().email;
   const consent = tp("checkbox");
@@ -99,6 +100,9 @@ export default async function MyDataPage() {
           {" "}<Link href="/parteneri">{t("consents.aboutPartners")}</Link>.
         </p>
         <PartnerToggle granted={partner.granted} demo={isDemo(me.email)} />
+        <p id="vesti" style={{ marginTop: 18 }}>{news.granted && news.at ? tn("given", { date: day(news.at) })
+          : news.at ? tn("refused", { date: day(news.at) }) : tn("none")}</p>
+        <NewsToggle granted={news.granted} demo={isDemo(me.email)} />
       </div>
 
       <div className="card my-danger">

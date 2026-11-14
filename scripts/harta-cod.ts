@@ -21,7 +21,7 @@ const walk = (dir: string): string[] => {
 export function routeOf(file: string) {
   const rel = relative("src/app", file).split(/[\\/]/);
   const last = rel.pop()!;
-  const kind = /^page\.(t|j)sx?$/.test(last) ? "pagina" : /^route\.(t|j)s$/.test(last) ? "api" : null;
+  const kind = /^page\.(t|j)sx?$/.test(last) ? "pagina" : /^route\.(t|j)sx?$/.test(last) ? "api" : null;
   if (!kind) return null;
   const parts = rel.filter((s) => !/^\(.*\)$/.test(s));
   if (parts[0] === "pub") return null; // copia publică (/pub/[v]/…) a acelorași pagini

@@ -304,6 +304,20 @@ export const DOCS: KDoc[] = [
     governs: ["conturi"],
     open: ["GOOGLE_CLIENT_ID și GOOGLE_CLIENT_SECRET în Vercel"],
   },
+  {
+    id: "D25", title: "Clienți fără reclame plătite", kind: "plan", category: "crestere", status: "activ", version: "1.0", date: "2026-11-14", reviewEveryDays: 30,
+    summary: "Cum ajungem la 1000 de abonamente noi pe lună fără Google Ads și fără reclame plătite: rudele, Google, Crăciunul, grupurile, comunitatea locală, partenerii, presa și emailurile cu acord.",
+    rules: [
+      "Basic e pe an: 1000 de abonamente noi pe lună la 49 lei = 49.000 lei pe lună în medie, 588.000 pe an; ținta realistă pentru primul an e 300–1000 pe lună până în decembrie 2027.",
+      "Fără reclame plătite. Canalul principal sunt rudele invitate.",
+      "Niciun email de marketing fără acordul omului (acordul „news”), cu dezabonare dintr-un clic.",
+      "Ton neutru față de parohii, primării și școli; fără limbaj religios.",
+      "Un canal care nu aduce nimic în 6 săptămâni se oprește (cifrele din Analiză și Sănătatea afacerii).",
+    ],
+    source: ["Firul „Adu clienți fără reclame plătite” (14 noiembrie 2026)", "docs/plan-clienti-fara-reclame.md"],
+    governs: ["invitatii-distribuite", "sfaturi-email", "carduri-distribuire", "calendar-continut", "sanatate-afacere"],
+    open: ["Search Console de legat", "Sfaturile pe email de pornit după citirea textelor", "Pragul de TVA cu contabilul"],
+  },
 ];
 
 export const docById = (id: string) => DOCS.find((d) => d.id === id);

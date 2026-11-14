@@ -11,6 +11,9 @@ import { namesInRegion, type Surname } from "@/lib/continut/nume";
 import { REGIONS, REGION_SOURCES, type RegionKey } from "@/lib/continut/regiuni";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
+import { db } from "@/db";
+import ShareCard from "@/components/continut/ShareCard";
+import { growthSettings } from "@/lib/crestere";
 
 /** Paginile /localitati (hub), /localitati/<județ> și /localitati/<județ>/<reședință>. */
 const HUB = {
@@ -68,12 +71,12 @@ const seatDesc = (c: County) => `Acte de stare civilă, registre parohiale și a
 export function countyMetadata(slug: string): Metadata {
   const c = getCounty(slug);
   if (!c) notFound();
-  return publicPageMetadata({ path: countyPath(c), title: countyTitle(c), description: countyDesc(c) });
+  return publicPageMetadata({ path: countyPath(c), title: countyTitle(c), description: countyDesc(c), image: { url: `/api/card?judet=${c.slug}`, alt: countyLabel(c) } });
 }
 export function seatMetadata(slug: string, seat: string): Metadata {
   const c = getCounty(slug);
   if (!c || !c.seatSlug || c.seatSlug !== seat) notFound();
-  return publicPageMetadata({ path: seatPath(c)!, title: seatTitle(c), description: seatDesc(c) });
+  return publicPageMetadata({ path: seatPath(c)!, title: seatTitle(c), description: seatDesc(c), image: { url: `/api/card?judet=${c.slug}&oras=${c.seatSlug}`, alt: c.seat ?? c.name } });
 }
 
 function sourcesFor(c: County) {
@@ -113,7 +116,7 @@ function Common({ c, place }: { c: County; place: string }) {
   );
 }
 
-export function CountyPage({ slug }: { slug: string }) {
+export async function CountyPage({ slug }: { slug: string }) {
   const c = getCounty(slug);
   if (!c) notFound();
   const path = countyPath(c);
@@ -151,13 +154,15 @@ export function CountyPage({ slug }: { slug: string }) {
           <p style={{ marginBottom: 0 }}><Link href={seatPath(c)!}>{c.seat}: unde cauți actele strămoșilor</Link></p>
         </div>
       )}
+      {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}`} campaign="card-localitate"
+        text={`Familia ta are rădăcini în ${isCapital(c) ? "București" : `județul ${c.name}`}? Aici scrie unde găsești actele vechi:`} />}
       <CtaArbore />
       <p className="muted small" style={{ textAlign: "center" }}><Link href="/localitati">← Toate județele</Link></p>
     </section>
   );
 }
 
-export function SeatPage({ slug, seat }: { slug: string; seat: string }) {
+export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
   const c = getCounty(slug);
   if (!c || !c.seat || c.seatSlug !== seat) notFound();
   const path = seatPath(c)!;
@@ -189,6 +194,8 @@ export function SeatPage({ slug, seat }: { slug: string; seat: string }) {
         <p>Pentru imaginea întregului județ, cu sursele lui, vezi pagina <Link href={countyPath(c)}>județului {c.name}</Link>.</p>
         <Common c={c} place={c.seat} />
       </article>
+      {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}&oras=${c.seatSlug}`} campaign="card-localitate"
+        text={`Familia ta are rădăcini în ${c.seat}? Aici scrie unde găsești actele vechi:`} />}
       <CtaArbore />
       <p className="muted small" style={{ textAlign: "center" }}><Link href={countyPath(c)}>← Județul {c.name}</Link></p>
     </section>

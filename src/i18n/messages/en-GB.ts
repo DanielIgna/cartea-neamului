@@ -10,6 +10,7 @@ import { enGBContact } from "./contact/en-GB";
 import { enGBProbleme } from "./probleme/en-GB";
 import { enGBResurse } from "./resurse/en-GB";
 import { enGBCadou } from "./cadou/en-GB";
+import { enGBCrestere } from "./crestere/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -423,6 +424,7 @@ export const enGB: Catalog = {
   ...enGBProbleme,
   ...enGBResurse,
   ...enGBCadou,
+  ...enGBCrestere,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,

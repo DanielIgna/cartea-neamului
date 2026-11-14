@@ -14,6 +14,8 @@ import { paginate, pageHref } from "@/lib/continut/paginare";
 import { REGIONS } from "@/lib/continut/regiuni";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
+import ShareCard from "@/components/continut/ShareCard";
+import { growthSettings } from "@/lib/crestere";
 
 /** Paginile /nume (hubul) și /nume/<slug>; le folosesc și variantele gata făcute din app/(public)/pub/[v]/nume. */
 const HUB = {
@@ -71,14 +73,14 @@ const descOf = (name: string) => `Ce înseamnă numele de familie ${name}, de un
 export function nameMetadata(slug: string): Metadata {
   const n = getName(slug);
   if (!n) notFound();
-  return publicPageMetadata({ path: `/nume/${n.slug}`, title: titleOf(n.name), description: descOf(n.name) });
+  return publicPageMetadata({ path: `/nume/${n.slug}`, title: titleOf(n.name), description: descOf(n.name), image: { url: `/api/card?nume=${n.slug}`, alt: `Numele de familie ${n.name}` } });
 }
 
 export async function NamePage({ slug }: { slug: string }) {
   const n = getName(slug);
   if (!n) notFound();
   const t = nameText(n);
-  const stat = await surnamePublicStat(db, n.name);
+  const [stat, growth] = await Promise.all([surnamePublicStat(db, n.name), growthSettings(db)]);
   const related = relatedNames(n);
   const guides = t.guides.map((g) => getEntry("ghid", g)).filter((g) => !!g);
   const path = `/nume/${n.slug}`;
@@ -88,7 +90,7 @@ export async function NamePage({ slug }: { slug: string }) {
         "@context": "https://schema.org", "@type": "Article", headline: `Numele de familie ${n.name}`, description: descOf(n.name),
         url: canonicalUrl(path), mainEntityOfPage: canonicalUrl(path), inLanguage: "ro", about: { "@type": "Thing", name: `${n.name} (nume de familie)` },
         author: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL }, publisher: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL },
-        image: `${SITE_URL}/opengraph-image.png`,
+        image: `${SITE_URL}/api/card?nume=${n.slug}`,
       }} />
       <Breadcrumbs items={[{ name: "Nume de familie", path: "/nume" }, { name: n.name, path }]} />
       <article className="card prose">
@@ -128,6 +130,8 @@ export async function NamePage({ slug }: { slug: string }) {
           <div className="chips">{related.map((r) => <Link key={r.slug} className="chip" href={`/nume/${r.slug}`}>{r.name}</Link>)}</div>
         </div>
       )}
+      {growth.shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?nume=${n.slug}`} campaign="card-nume"
+        text={`Știai de unde vine numele ${n.name}? Uite ce înseamnă și unde găsești actele familiei:`} />}
       <CtaArbore title={`Începe arborele familiei ${n.name}`} text="Primele 7 zile sunt gratuite, fără card. Adaugi părinții și bunicii, iar rudele pot completa ce știu ele." />
       <p className="muted small" style={{ textAlign: "center" }}><Link href="/nume">← Toate numele de familie</Link></p>
     </section>

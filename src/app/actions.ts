@@ -1,4 +1,5 @@
 "use server";
+import { growthSettings } from "@/lib/crestere";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { eq, and, inArray, or } from "drizzle-orm";
@@ -19,7 +20,7 @@ import { mergeInto } from "@/lib/merge";
 import { after } from "next/server";
 import { refreshTreePlaces } from "@/lib/shared-places";
 import { setRaised } from "@/lib/raised";
-import { getLocale, getT } from "@/i18n/server";
+import { getAppName, getLocale, getT } from "@/i18n/server";
 import { degreeWord } from "@/lib/kin-words";
 import { isPlaceholder } from "@/lib/family";
 import { buildGraph } from "@/lib/kinship";
@@ -302,7 +303,9 @@ export async function createInviteLink(_: unknown, form: FormData) {
   const { token, expiresAt } = await createInvitation(db, { treeId: parsed.data.treeId, createdBy: me.id, role: parsed.data.role, personId: parsed.data.personId || null });
   const h = await headers();
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
-  return { link: `${origin}/invitatie/${token}`, expiresAt: expiresAt.toISOString().slice(0, 10) };
+  // Butoanele WhatsApp / email / „Trimite” (Admin → Creștere): legătura lor poartă semnul „invitatie”, ca să se vadă în Analiză.
+  const share = (await growthSettings(db)).shareInvite;
+  return { link: `${origin}/invitatie/${token}`, expiresAt: expiresAt.toISOString().slice(0, 10), share, app: share ? await getAppName() : "" };
 }
 
 export async function acceptInvite(token: string) {

@@ -31,6 +31,8 @@ import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import UsageBeat from "@/components/UsageBeat";
 import UsageNotice from "@/components/UsageNotice";
+import NewsNotice from "@/components/NewsNotice";
+import { growthSettings } from "@/lib/crestere";
 import LanguagePicker from "@/components/LanguagePicker";
 import SignInLink from "@/components/SignInLink";
 import LanguageSuggest from "@/components/LanguageSuggest";
@@ -47,7 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const me = await currentUser();
   // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
   // Totul deodată, nu pe rând: fiecare întrebare la baza de date costă un drum dus-întors.
-  const [unread, myPhoto, usage, prefs, replies] = await Promise.all([
+  const [unread, myPhoto, usage, prefs, replies, news] = await Promise.all([
     me ? Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0))).then((n) => n.reduce((a, b) => a + b, 0)) : 0,
     // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
     me
@@ -59,6 +61,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     cookies().then((c) => ({ theme: parseTheme(c.get(THEME_COOKIE)?.value), cookieSeen: c.has(COOKIE_NOTICE_COOKIE), keepSeen: c.has(KEEP_NOTICE_COOKIE) })),
     // Răspunsurile noastre la problemele raportate, pe care omul nu le-a văzut încă (semnul de lângă „Raportează o problemă”).
     me ? unseenReplies(db, me.id).catch(() => 0) : 0,
+    // „Vrei sfaturi pe email?”: o singură dată, doar dacă e pornită din Admin → Creștere (src/lib/crestere.ts).
+    me && !isDemo(me.email) ? Promise.all([consentState(db, me.id, "news"), growthSettings(db)]).then(([c, g]) => (g.askNews && !c.at ? "ask" : null)).catch(() => null) : null,
   ]);
   const { theme, cookieSeen, keepSeen } = prefs;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
@@ -89,6 +93,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Anunțul despre cookie-uri vine o singură dată, dar nu peste celelalte două întrebări: așteaptă pagina următoare. */}
             {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
               && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
+            {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
             <main id="continut">{children}</main>
