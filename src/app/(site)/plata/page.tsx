@@ -12,6 +12,7 @@ import { getLocale, getT } from "@/i18n/server";
 import { giftsBy } from "@/lib/extra";
 import { siteOrigin } from "@/lib/site";
 import { contactPhone } from "@/lib/contact";
+import { archiveAppliesTo } from "@/lib/arhivare";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata() {
@@ -53,6 +54,9 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     included: bookIncluded(payAccess, s, bookTree.ownerId === me.id),
     canClaim: (await includedBooksLeft(db, me.id, payAccess, s)) === 1,
   } : null;
+
+  // Arhiva sigilată: pentru conturile făcute după pornirea regulilor, textele spun termenele noi (src/lib/arhivare.ts).
+  const [arch, tn] = await Promise.all([archiveAppliesTo(db, me.id), getT("ArchiveNote")]);
 
   const err = str("eroare");
   const notice = str("gata") === "pastrare" ? tk("thanks") : str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
@@ -179,7 +183,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         <div className="card" id="pastrare">
           <h2 style={{ marginTop: 0 }}>{tk("title")}</h2>
           <p>{tk("text", { price: money(keepPrice, locale).label })}</p>
-          <p className="muted">{tk("free")}</p>
+          <p className="muted">{arch ? tk("freeArch", { years: arch.freeYears }) : tk("free")}</p>
           {isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil && <p className="muted">{tk("extend", { date: date(payAccess.keptUntil) })}</p>}
           {open && (
             <form action="/api/plata/start" method="post" className="form pay-form">
@@ -219,6 +223,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         <div className="card">
           <h2 style={{ marginTop: 0 }}>{t("bookTitle")}</h2>
           {book.paid ? <p>{t("bookPaid")}</p> : book.included ? <p>{t("bookIncludedAll")}</p> : <p className="muted">{t("bookText", { tree: book.name })}</p>}
+          {arch && <p className="muted">{tn("bookSeal", { years: arch.sealYears })}</p>}
           {!book.paid && !book.included && book.canClaim && (
             <form action="/api/plata/start" method="post" className="form pay-form">
               <input type="hidden" name="kind" value="carte" />

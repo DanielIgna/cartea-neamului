@@ -244,6 +244,6 @@ export async function dropMemories(db: Q, ids: string[]): Promise<string[]> {
   const profile = new Set((await db.select({ id: person.photoDocumentId }).from(person).where(inArray(person.photoDocumentId, media))).map((r) => r.id));
   const orphans = media.filter((id) => !linked.has(id) && !used.has(id) && !profile.has(id));
   if (!orphans.length) return [];
-  const gone = await db.delete(document).where(inArray(document.id, orphans)).returning({ key: document.fileKey });
-  return gone.map((d) => d.key).filter((k): k is string => !!k);
+  const gone = await db.delete(document).where(inArray(document.id, orphans)).returning({ key: document.fileKey, preview: document.previewKey });
+  return gone.flatMap((d) => [d.key, d.preview]).filter((k): k is string => !!k);
 }

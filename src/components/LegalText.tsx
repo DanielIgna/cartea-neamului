@@ -8,6 +8,7 @@ import { BETA, MIN_AGE, operator } from "@/lib/legal";
 import { db } from "@/db";
 import { DEFAULT_SETTINGS, TIERS, planSettings } from "@/lib/plans";
 import { contactPhone } from "@/lib/contact";
+import { DEFAULT_ARCHIVE, archiveSettings } from "@/lib/arhivare";
 
 type Page = "Privacy" | "Terms";
 type Section = Record<string, string>;
@@ -51,7 +52,12 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
     bookLei: ps.bookLei, bookEur: ps.bookEur, keepLei: ps.keepLei, keepEur: ps.keepEur, keepBookLei: ps.keepBookLei, keepBookEur: ps.keepBookEur, familieLei: ps.familieLei, familieEur: ps.familieEur, premiumLei: ps.premiumLei, premiumEur: ps.premiumEur,
     premiumPrint: ps.premiumPrint, ...caps,
   };
-  const values = { name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, phone: contactPhone(), minAge: MIN_AGE, consent: tp("checkbox"), ...prices, ...tags };
+  // Arhiva sigilată: paragrafele „…arch” se arată doar cu regulile pornite din Admin → Arhivă; atunci cele două l6 („nu se șterge
+  // nimic”, la §2 și §5) sunt înlocuite de l6arch de la §5, care păstrează promisiunea veche pentru conturile de dinainte.
+  const ar = await archiveSettings(db).catch(() => DEFAULT_ARCHIVE);
+  const arch = ar.on && !!ar.from;
+  const archive = { archiveFrom: ar.from ? format.dateTime(new Date(ar.from), { day: "numeric", month: "long", year: "numeric" }) : "", archiveFree: ar.freeYears, archiveSeal: ar.sealYears };
+  const values = { ...archive, name: op.name, address: op.address, cui: op.cui, regCom: op.regCom, euid: op.euid, email: op.email, phone: contactPhone(), minAge: MIN_AGE, consent: tp("checkbox"), ...prices, ...tags };
   const rich = (key: string) => (t.rich as unknown as (k: string, v: typeof values) => ReactNode)(key, values);
   const sections = roLegal.Legal[page].sections as Record<string, Section>;
 
@@ -68,6 +74,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
         const flush = () => { if (list.length) blocks.push(<ul key={`ul${blocks.length}`}>{list}</ul>); list = []; };
         for (const k of Object.keys(s)) {
           if (k === "h") continue;
+          if (k.endsWith("arch") ? !arch : arch && page === "Terms" && k === "l6" && (id === "price" || id === "content")) continue;
           if (k.startsWith("l")) { list.push(<li key={k} id={ANCHORS[`${page}.${id}.${k}`]}>{rich(`${base}.${k}`)}</li>); continue; }
           flush();
           if (k === "beta") { if (BETA) blocks.push(<p key={k} className={page === "Terms" ? "confirm" : undefined}>{rich(`${base}.${k}`)}</p>); continue; }

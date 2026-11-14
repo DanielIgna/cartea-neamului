@@ -60,8 +60,8 @@ export async function dropUnusedPhotos(db: Q, ids: string[]): Promise<string[]> 
   for (const h of houses) for (const x of h.ids ?? []) used.add(x);
   const orphans = ids.filter((x) => !linked.has(x) && !profile.has(x) && !used.has(x));
   if (!orphans.length) return [];
-  const gone = await db.delete(document).where(inArray(document.id, orphans)).returning({ key: document.fileKey });
-  return gone.map((d) => d.key).filter((k): k is string => !!k);
+  const gone = await db.delete(document).where(inArray(document.id, orphans)).returning({ key: document.fileKey, preview: document.previewKey });
+  return gone.flatMap((d) => [d.key, d.preview]).filter((k): k is string => !!k);
 }
 
 /** Șterge casele date, cu pozele rămase fără rost. */

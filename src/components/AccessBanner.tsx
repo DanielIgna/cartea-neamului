@@ -2,6 +2,7 @@ import Link from "next/link";
 import { db } from "@/db";
 import { accessBanner } from "@/lib/plata";
 import { getT } from "@/i18n/server";
+import { myArchiveNotes } from "@/lib/arhivare";
 
 /**
  * Banda de sus, doar când plățile sunt pornite din Admin: câte zile gratuite mai are omul, sau că s-au terminat și arborii lui
@@ -27,6 +28,10 @@ export default async function AccessBanner({ userId, locale }: { userId: string;
       </div>
     );
   }
+  // Arhiva sigilată: cu 90 de zile înainte ca pozele unui arbore al lui să rămână doar în mic (sau să intre în arhivă), o vorbă aici.
+  const soon = ended ? (await myArchiveNotes(db, userId).catch(() => [])).find((n) => n.state.kind === "liber" && n.state.next.at.getTime() - Date.now() < 90 * 86_400_000) : undefined;
+  const archiveLine = soon && soon.state.kind === "liber"
+    ? (await getT("ArchiveNote"))("banner", { tree: soon.name, date: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(soon.state.next.at) }) : null;
   const keep = info.keep && (locale === "ro" ? info.keep.lei : info.keep.eur) > 0
     ? tk("bannerOffer", { price: locale === "ro" ? `${info.keep.lei} lei` : `${info.keep.eur} €` }) : null;
   return (
@@ -35,7 +40,8 @@ export default async function AccessBanner({ userId, locale }: { userId: string;
         ? t.rich("ended", { price, b: (c) => <b>{c}</b> })
         : t("trial", { days: info.access.kind === "proba" ? info.access.daysLeft : 0, price })}
         {last && <><br /><span className="access-plans">{t("plans", { basic: price, familie })}</span></>}
-        {ended && keep && <><br /><span className="access-plans">{keep}</span></>}</p>
+        {ended && keep && <><br /><span className="access-plans">{keep}</span></>}
+        {archiveLine && <><br /><span className="access-plans">{archiveLine} <Link href="/arhiva">{tk("archiveLink")}</Link></span></>}</p>
       <Link className={`btn${ended ? " primary" : ""}`} href="/plata">{t("pay")}</Link>
     </div>
   );
