@@ -12,6 +12,7 @@ import { authClient } from "@/lib/auth-client";
 export default function UserMenu({ name, unread = 0, replies = 0, image, admin = false, prefs }: { name: string; unread?: number; replies?: number; image?: string | null; admin?: boolean; prefs?: ReactNode }) {
   const t = useTranslations("UserMenu");
   const tp = useTranslations("Partners");
+  const ti = useTranslations("InviteShare");
   const router = useRouter();
   const path = usePathname();
   const menu = useRef<HTMLDetailsElement>(null);
@@ -47,6 +48,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
           <span className="muted">{name}</span>
         </Link>
         <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
+        <Link className="menu-quiet" href="/invitatii">{ti("menu")}</Link>
         <Link className="menu-quiet" href="/ghid">{t("guides")}</Link>
         <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
         <Link className="menu-quiet" href={report}>{t("report")}{replyBadge}</Link>
@@ -64,6 +66,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
             <Link href="/mesaje">{t("messages")}{unread ? <span className="badge">{unread}</span> : null}</Link>
             <Link href="/datele-mele">{t("account")}</Link>
             <Link href="/plata">{t("plan")}</Link>
+            <Link href="/invitatii">{ti("menu")}</Link>
             {admin && <Link href="/admin">{t("admin")}</Link>}
             <Link href="/ghid">{t("guides")}</Link>
             <Link href="/parteneri">{tp("menu")}</Link>

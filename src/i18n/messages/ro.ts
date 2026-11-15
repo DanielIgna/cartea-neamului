@@ -20,6 +20,7 @@ import { roProbleme } from "./probleme/ro";
 import { roResurse } from "./resurse/ro";
 import { roCadou } from "./cadou/ro";
 import { roCrestere } from "./crestere/ro";
+import { roInvitatii } from "./invitatii/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -257,7 +258,7 @@ export const ro = {
     editor: "Editor: corectează tot arborele",
     viewer: "Vizitator: doar vede",
     creating: "Se creează…",
-    createFor: "Creează invitație pentru {name}",
+    createFor: "Invită pe {name} să-și completeze ramura",
     create: "Creează link de invitație",
     linkLabel: "Link de invitație",
     copy: "Copiază",
@@ -440,6 +441,7 @@ export const ro = {
   ...roResurse,
   ...roCadou,
   ...roCrestere,
+  ...roInvitatii,
   ...roFilm,
   ...roLegal,
   ...roDatele,

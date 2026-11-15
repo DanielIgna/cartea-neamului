@@ -124,7 +124,7 @@ export async function trialLeads(db: Db, now = new Date()): Promise<Lead[]> {
   const trial: { id: string; until: Date }[] = [];
   for (const p of people) {
     const ap = plans.get(p.id);
-    const a = accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt,
+    const a = accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt, freeUntil: p.freeUntil,
       keepUntil: ap?.keepUntil ? new Date(ap.keepUntil) : null }, s, now);
     if (a.kind === "proba") trial.push({ id: p.id, until: a.until });
   }

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { eq, and, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
-import { tree, person, relationship, treeMember, document, documentLink, message, raisedBy } from "@/db/schema";
+import { tree, person, relationship, treeMember, document, documentLink, message, raisedBy, invitation } from "@/db/schema";
 import { canMessage } from "@/lib/chat";
 import { importGedcom } from "@/lib/gedcom-db";
 import { normalizeTypedDate, parseFuzzyDate } from "@/lib/dates";
@@ -33,6 +33,13 @@ import { fieldChanges, logChange, personName, snapshotPerson, type LogAction, ty
 import type { Role } from "@/lib/access";
 import { findChecks, stepsFor, duplicateKey } from "@/lib/verificari";
 import { loadDecisions, saveDecision } from "@/lib/verificari-db";
+import { attachReferral, checkReward, inviteSettings } from "@/lib/invitatii";
+import { hashToken } from "@/lib/invitations";
+
+/** Venit printr-o invitație? După o rudă adăugată poate e gata dovada pentru zilele gratuite (src/lib/invitatii.ts). */
+function rewardCheck(userId: string) {
+  after(() => checkReward(db, userId).then(() => undefined).catch((e) => console.error("invitatii", e)));
+}
 
 /** După o schimbare în fișe, satele pe care le văd alte neamuri („Din aceleași locuri”) se recalculează, după răspuns. */
 function placesChanged(treeId: string) {
@@ -136,6 +143,7 @@ export async function createTree(_: unknown, form: FormData) {
   if (made === NO_PEOPLE) return { error: t("gedcomEmpty") };
   if (made === TOO_MANY) return { error: t("trialGedcom", { cap: String(start.cap ?? 0) }) };
   if (!isDemo(me.email) && !isAdminUser(me)) await recordConversion(db, "arbore", { headers: await headers(), label: hasGedcom ? "din GEDCOM" : "arbore gol" });
+  if (hasGedcom) rewardCheck(me.id);
   redirect(`/arbore/${made.id}`);
 }
 
@@ -260,6 +268,7 @@ export async function addRelative(_: unknown, form: FormData) {
   });
   revalidatePath(`/arbore/${v.treeId}`);
   placesChanged(v.treeId);
+  rewardCheck(me.id);
   return { ok: true, id: p.id, message: te("added", { kind: v.kind, name: `${p.givenName} ${p.surname}`.trim() }) };
 }
 
@@ -309,7 +318,10 @@ export async function createInviteLink(_: unknown, form: FormData) {
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
   // Butoanele WhatsApp / email / „Trimite” (Admin → Creștere): legătura lor poartă semnul „invitatie”, ca să se vadă în Analiză.
   const share = (await growthSettings(db)).shareInvite;
-  return { link: `${origin}/invitatie/${token}`, expiresAt: expiresAt.toISOString().slice(0, 10), share, app: share ? await getAppName() : "" };
+  // Programul de invitații: un cont nou intrat cu linkul ăsta vă aduce amândurora zile gratuite (src/lib/invitatii.ts).
+  const inv = await inviteSettings(db);
+  const rewardDays = inv.on ? Math.min(inv.daysReferrer, inv.daysReferred) : 0;
+  return { link: `${origin}/invitatie/${token}`, expiresAt: expiresAt.toISOString().slice(0, 10), share, app: share ? await getAppName() : "", rewardDays };
 }
 
 export async function acceptInvite(token: string) {
@@ -318,6 +330,13 @@ export async function acceptInvite(token: string) {
   // Un link de scriere primit după ce s-a umplut plafonul de scriitori al planului: ruda intră doar să vadă.
   const res = await acceptInvitation(db, token, me.id, new Date(), (treeId) => canInviteWriters(db, me.id, treeId));
   if (!res.ok) return res;
+  // Un cont nou (din ultimele 2 zile) intrat cu invitația într-un arbore e trecut pe cel care a făcut invitația, ca la /i/<cod>:
+  // primesc amândoi zilele gratuite după emailul confirmat și o rudă adăugată.
+  if (Date.now() - new Date(me.createdAt).getTime() < 2 * 86_400_000) {
+    const [inv] = await db.select({ by: invitation.createdBy }).from(invitation).where(eq(invitation.tokenHash, hashToken(token)));
+    if (inv?.by) await attachReferral(db, { referredId: me.id, referrerId: inv.by, via: "arbore", email: me.email, headers: await headers() })
+      .catch((e) => console.error("invitatii: invitația în arbore", e));
+  }
   redirect(`/arbore/${res.treeId}`);
 }
 

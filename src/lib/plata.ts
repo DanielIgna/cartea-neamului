@@ -20,12 +20,12 @@ export async function userAccess(db: Db, userId: string, now = new Date()): Prom
   const settings = await settingsOnce(db);
   if (!settings.on) return { access: { kind: "deschis" }, settings, ownsTree: false };
   const [u] = await db.select({
-    email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt, plan: accountPlan.plan, paidUntil: accountPlan.paidUntil, tier: accountPlan.tier, keepUntil: accountPlan.keepUntil,
+    email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt, plan: accountPlan.plan, paidUntil: accountPlan.paidUntil, tier: accountPlan.tier, keepUntil: accountPlan.keepUntil, freeUntil: user.freeUntil,
     owns: sql<boolean>`exists (select 1 from tree t where t.owner_id = ${user.id})`,
   }).from(user).leftJoin(accountPlan, eq(accountPlan.userId, user.id)).where(eq(user.id, userId));
   if (!u) return { access: { kind: "expirat", since: now }, settings, ownsTree: false };
   const exempt = isDemo(u.email) || isAdminUser(u);
-  const access = accessFor({ createdAt: u.createdAt, plan: isPlan(u.plan) ? u.plan : null, paidUntil: u.paidUntil, tier: isTier(u.tier) ? u.tier : null, exempt, keepUntil: u.keepUntil }, settings, now);
+  const access = accessFor({ createdAt: u.createdAt, plan: isPlan(u.plan) ? u.plan : null, paidUntil: u.paidUntil, tier: isTier(u.tier) ? u.tier : null, exempt, keepUntil: u.keepUntil, freeUntil: u.freeUntil }, settings, now);
   return { access, settings, ownsTree: !!u.owns };
 }
 

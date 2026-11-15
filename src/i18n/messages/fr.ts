@@ -11,6 +11,7 @@ import { frProbleme } from "./probleme/fr";
 import { frResurse } from "./resurse/fr";
 import { frCadou } from "./cadou/fr";
 import { frCrestere } from "./crestere/fr";
+import { frInvitatii } from "./invitatii/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
@@ -426,6 +427,7 @@ export const fr: Catalog = {
   ...frResurse,
   ...frCadou,
   ...frCrestere,
+  ...frInvitatii,
   ...frFilm,
   ...frLegal,
   ...frDatele,

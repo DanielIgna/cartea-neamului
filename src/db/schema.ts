@@ -12,6 +12,7 @@ export const user = pgTable("user", {
   locale: text("locale").notNull().default("ro"),
   twoFactorEnabled: boolean("two_factor_enabled").default(false), // verificarea în 2 pași, aleasă de om (src/lib/securitate.ts)
   propmanageInvitedAt: timestamp("propmanage_invited_at"), // când a cerut contul gratuit PropManage (src/lib/propmanage-cont.ts); null = niciodată
+  freeUntil: timestamp("free_until"), // zilele gratuite câștigate prin invitații țin până atunci (src/lib/invitatii.ts); null = niciuna
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -782,3 +783,42 @@ export const propmanageInvite = pgTable("propmanage_invite", {
   error: text("error"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("propmanage_invite_user_idx").on(t.userId), index("propmanage_invite_partner_idx").on(t.partnerId, t.status), index("propmanage_invite_batch_idx").on(t.batchId, t.status)]);
+
+/* ---------- Programul de invitații (Daniel, 2026-11-14), vezi src/lib/invitatii.ts și migrația 0034 ---------- */
+// Codul personal al fiecăruia (/i/<cod>) și, cu acordul lui, arborele pe care îl vede (doar citire) cine vine prin el.
+export const inviteCode = pgTable("invite_code", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  code: text("code").notNull(),
+  shareTreeId: uuid("share_tree_id").references(() => tree.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("invite_code_code_idx").on(t.code)]);
+
+// Cine pe cine a adus (un rând pe cont nou). status: asteapta / acordat / respins; reason: de ce nu s-a dat (vezi REASONS).
+export const inviteReferral = pgTable("invite_referral", {
+  referredId: text("referred_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  referrerId: text("referrer_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  via: text("via").notNull(), // link (codul personal) / arbore (invitația într-un arbore)
+  status: text("status").notNull().default("asteapta"),
+  reason: text("reason"),
+  daysReferrer: integer("days_referrer").notNull().default(0),
+  daysReferred: integer("days_referred").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  rewardedAt: timestamp("rewarded_at"),
+}, (t) => [index("invite_referral_referrer_idx").on(t.referrerId, t.status)]);
+
+// Câte deschideri a avut legătura cuiva, pe zile (fără nimic despre cine a deschis-o).
+export const inviteClick = pgTable("invite_click", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  day: date("day").notNull(),
+  clicks: integer("clicks").notNull().default(0),
+}, (t) => [uniqueIndex("invite_click_pk").on(t.userId, t.day)]);
+
+// Vești în cont („Ai primit 7 zile gratuite pentru că Ion și-a făcut cont”), arătate sus până le închide omul.
+export const userNotice = pgTable("user_notice", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  kind: text("kind").notNull(),
+  data: jsonb("data").$type<Record<string, string | number>>(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  readAt: timestamp("read_at"),
+}, (t) => [index("user_notice_user_idx").on(t.userId, t.readAt)]);

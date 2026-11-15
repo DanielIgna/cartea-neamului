@@ -20,6 +20,7 @@ function tagged(link: string, source: string) {
 export default function InvitePanel({ treeId, personId, personName }: { treeId: string; personId?: string; personName?: string }) {
   const t = useTranslations("InvitePanel");
   const ts = useTranslations("Share");
+  const ti = useTranslations("InviteShare");
   const format = useFormatter();
   const [state, action, pending] = useActionState(createInviteLink, null);
   const [copied, setCopied] = useState("");
@@ -46,6 +47,7 @@ export default function InvitePanel({ treeId, personId, personName }: { treeId: 
           <input readOnly value={state.link} onFocus={(e) => e.currentTarget.select()} aria-label={t("linkLabel")} />
           <button type="button" className="btn" onClick={() => copy(state.link!)}>{t("copy")}</button>
           <small className="muted" style={{ width: "100%" }}>{copied || t("valid", { date: until(state.expiresAt) })}</small>
+          {"rewardDays" in state && state.rewardDays ? <small className="muted" style={{ width: "100%" }}>{ti("treeReward", { days: String(state.rewardDays) })}</small> : null}
           {"share" in state && state.share && (() => {
             const msg = (src: string) => ts("message", { app: state.app ?? "", link: tagged(state.link!, src) });
             const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";

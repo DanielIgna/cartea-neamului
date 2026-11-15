@@ -277,6 +277,7 @@ export const SOURCE_LABELS: Record<string, string> = {
   direct: "Direct (link scris, salvat sau din aplicații)", google: "Google", bing: "Bing", duckduckgo: "DuckDuckGo", yahoo: "Yahoo", yandex: "Yandex",
   ecosia: "Ecosia", brave: "Brave", facebook: "Facebook", instagram: "Instagram", whatsapp: "WhatsApp", x: "X (Twitter)", youtube: "YouTube",
   tiktok: "TikTok", linkedin: "LinkedIn", telegram: "Telegram", pinterest: "Pinterest", reddit: "Reddit", chatgpt: "ChatGPT", perplexity: "Perplexity", email: "Email",
+  invitatie: "Invitație (legătura personală a unei rude)", partener: "Partener (magazin, afiș)",
 };
 export const sourceLabel = (s: string) => SOURCE_LABELS[s] ?? s;
 
