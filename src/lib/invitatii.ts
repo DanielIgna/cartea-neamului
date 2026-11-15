@@ -212,13 +212,13 @@ export async function attachReferral(db: Db, o: {
 }
 
 /** Contul nou, la facere (src/lib/auth.ts): dacă a venit cu un cod, îl trece pe cel care l-a invitat. */
-export async function referralOnSignup(db: Db, u: { id: string; email: string }, h: Headers | null | undefined) {
+export async function referralOnSignup(db: Db, u: { id: string; email: string }, h: Headers | null | undefined, now = new Date()) {
   const code = codeFromRequest(h);
   await ensureInviteCode(db, u.id).catch((e) => console.error("invitatii: codul contului nou", e));
   if (!code) return null;
   const owner = await ownerOfCode(db, code);
   if (!owner) return null;
-  return attachReferral(db, { referredId: u.id, referrerId: owner.userId, via: "link", email: u.email, headers: h, shareTreeId: owner.shareTreeId });
+  return attachReferral(db, { referredId: u.id, referrerId: owner.userId, via: "link", email: u.email, headers: h, shareTreeId: owner.shareTreeId, now });
 }
 
 /* ------------------------------ Răsplata ------------------------------ */

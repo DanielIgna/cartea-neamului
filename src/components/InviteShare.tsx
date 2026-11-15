@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "use-intl";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
@@ -25,7 +25,9 @@ export default function InviteShare({ link, app, total }: { link: string; app: s
   const copy = async () => {
     try { await navigator.clipboard.writeText(link); setNote(t("copied")); } catch { setNote(t("copyManually")); }
   };
-  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  // Doar după încărcare (pe server nu există navigator), ca pagina să nu difere între server și telefon.
+  const [canShare, setCanShare] = useState(false);
+  useEffect(() => setCanShare(typeof navigator.share === "function"), []);
   const enc = encodeURIComponent;
   return (
     <div className="invite-share-box">

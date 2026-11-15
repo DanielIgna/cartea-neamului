@@ -34,6 +34,7 @@
   "drizzle/0031_vizite_regiune.sql",
   "drizzle/0032_arhiva_sigilata.sql",
   "drizzle/0033_conversii.sql",
+  "drizzle/0034_invitatii.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -106,6 +107,7 @@
   "src/app/(site)/admin/email/page.tsx",
   "src/app/(site)/admin/infra/page.tsx",
   "src/app/(site)/admin/invatare/page.tsx",
+  "src/app/(site)/admin/invitatii/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
   "src/app/(site)/admin/layout.tsx",
   "src/app/(site)/admin/loading.tsx",
@@ -156,8 +158,10 @@
   "src/app/(site)/intrare/page.tsx",
   "src/app/(site)/intrare/parola-noua/page.tsx",
   "src/app/(site)/intrare/parola-uitata/page.tsx",
+  "src/app/(site)/invitat/[cod]/page.tsx",
   "src/app/(site)/invitatie/[token]/not-found.tsx",
   "src/app/(site)/invitatie/[token]/page.tsx",
+  "src/app/(site)/invitatii/page.tsx",
   "src/app/(site)/istoria-umanitatii/page.tsx",
   "src/app/(site)/layout.tsx",
   "src/app/(site)/libertatea-de-a-crede/page.tsx",
@@ -226,7 +230,9 @@
   "src/app/global-not-found.tsx",
   "src/app/globals.css",
   "src/app/harta-actions.ts",
+  "src/app/i/[cod]/route.ts",
   "src/app/icon.svg",
+  "src/app/invitatii-actions.ts",
   "src/app/join-actions.ts",
   "src/app/lada-actions.ts",
   "src/app/limba-actions.ts",
@@ -275,6 +281,7 @@
   "src/components/GedcomImport.tsx",
   "src/components/InstallApp.tsx",
   "src/components/InvitePanel.tsx",
+  "src/components/InviteShare.tsx",
   "src/components/JoinTree.tsx",
   "src/components/JsonLd.tsx",
   "src/components/KeepNotice.tsx",
@@ -306,6 +313,7 @@
   "src/components/PropManageOffer.tsx",
   "src/components/RaisedBy.tsx",
   "src/components/SecuritySettings.tsx",
+  "src/components/ShareTreeForm.tsx",
   "src/components/SiblingsParents.tsx",
   "src/components/SignInLink.tsx",
   "src/components/SiteFooter.tsx",
@@ -322,6 +330,8 @@
   "src/components/UsageBeat.tsx",
   "src/components/UsageNotice.tsx",
   "src/components/UserMenu.tsx",
+  "src/components/UserNotices.tsx",
+  "src/components/VerifyEmailButton.tsx",
   "src/components/VisitBeacon.tsx",
   "src/components/VoiceNudge.tsx",
   "src/components/VoiceRecorder.tsx",
@@ -337,6 +347,7 @@
   "src/components/admin/Cunostinte.tsx",
   "src/components/admin/CunostinteHead.tsx",
   "src/components/admin/HomeImageSlot.tsx",
+  "src/components/admin/InviteSettingsForm.tsx",
   "src/components/admin/IstoricForms.tsx",
   "src/components/admin/OwnerRecovery.tsx",
   "src/components/admin/PlanForms.tsx",
@@ -520,6 +531,15 @@
   "src/i18n/messages/he.ts",
   "src/i18n/messages/hu.ts",
   "src/i18n/messages/index.ts",
+  "src/i18n/messages/invitatii/de.ts",
+  "src/i18n/messages/invitatii/en-GB.ts",
+  "src/i18n/messages/invitatii/es.ts",
+  "src/i18n/messages/invitatii/fr.ts",
+  "src/i18n/messages/invitatii/he.ts",
+  "src/i18n/messages/invitatii/hu.ts",
+  "src/i18n/messages/invitatii/it.ts",
+  "src/i18n/messages/invitatii/nl.ts",
+  "src/i18n/messages/invitatii/ro.ts",
   "src/i18n/messages/it.ts",
   "src/i18n/messages/legal/de.ts",
   "src/i18n/messages/legal/en-GB.ts",
@@ -671,6 +691,7 @@
   "src/lib/home-submissions.ts",
   "src/lib/home-variants.ts",
   "src/lib/invatare.ts",
+  "src/lib/invitatii.ts",
   "src/lib/invitations.ts",
   "src/lib/istoria-bisericii.ts",
   "src/lib/join.ts",
@@ -769,6 +790,7 @@
   "tests/gedcom.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
+  "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",
   "tests/join.test.ts",
@@ -914,6 +936,10 @@
   },
   {
    "path": "/admin/invatare",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/invitatii",
    "kind": "pagina"
   },
   {
@@ -1177,6 +1203,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/i/[cod]",
+   "kind": "api"
+  },
+  {
    "path": "/intrare",
    "kind": "pagina"
   },
@@ -1193,7 +1223,15 @@
    "kind": "pagina"
   },
   {
+   "path": "/invitat/[cod]",
+   "kind": "pagina"
+  },
+  {
    "path": "/invitatie/[token]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/invitatii",
    "kind": "pagina"
   },
   {
@@ -1309,6 +1347,7 @@
   "tests/gedcom.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
+  "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",
   "tests/join.test.ts",
@@ -1347,5 +1386,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 34
+ "migrations": 35
 }

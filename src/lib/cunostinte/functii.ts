@@ -493,6 +493,17 @@ export const FUNCTIONS: Fn[] = [
     what: "Invitații, rude aduse, daruri, acorduri pentru email și vizitele aduse de distribuiri, cu comutatoarele creșterii.",
     engine: ["src/lib/crestere.ts", "src/app/crestere-actions.ts"], pages: ["/admin/crestere"], tables: ["referral_bonus", "gift"],
   },
+  {
+    key: "program-invitatii", name: "Program de invitații (zile gratuite)", area: "bani", lifecycle: "live", risk: "mediu",
+    riskWhy: "Dă zile gratuite; paza (email, dispozitiv, IP, emailuri temporare, limita lunară) oprește invitarea propriei persoane.",
+    what: "Legătura personală /i/<cod> (cookie 30 de zile), contul nou trecut pe cel care a invitat, zilele (implicit 7 + 7) după email confirmat sau Google și o rudă în arbore, vești în cont și pe email, „Invitațiile mele”.",
+    engine: ["src/lib/invitatii.ts", "src/app/invitatii-actions.ts", "src/components/InviteShare.tsx", "src/components/UserNotices.tsx"],
+    pages: ["/invitatii", "/invitat/[cod]", "/admin/invitatii"], api: ["/i/[cod]"],
+    tables: ["invite_code", "invite_referral", "invite_click", "user_notice"],
+    metric: { table: "invite_referral", label: "conturi venite din invitații" },
+    dashboard: "/admin/invitatii", tests: ["tests/invitatii.test.ts"],
+    human: "Alege din Admin → Invitații câte zile primește fiecare parte și limita lunară.",
+  },
   // Ce se poate anticipa în drumul spre o platformă autonomă (planificat; fără cod încă)
   {
     key: "copii-siguranta", name: "Copii de siguranță verificate", area: "sistem", lifecycle: "planificat", risk: "ridicat", riskWhy: "Azi refacerea se bazează doar pe istoricul Neon (câteva zile pe planul gratuit).",
