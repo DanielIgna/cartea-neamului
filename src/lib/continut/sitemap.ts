@@ -4,7 +4,8 @@ import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
 import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
-import { nameGate } from "@/lib/continut/prag";
+import { nameGate, uatGate } from "@/lib/continut/prag";
+import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 
 /**
@@ -74,8 +75,11 @@ export function sitemapGroups(): SitemapGroup[] {
         { path: "/localitati", lastModified: COUNTIES_UPDATED, changeFrequency: "weekly", priority: 0.6 },
         ...loadCounties().flatMap((c): SitemapUrl[] => [
           { path: countyPath(c), lastModified: COUNTIES_UPDATED, changeFrequency: "monthly", priority: 0.5 },
-          ...(seatPath(c) ? [{ path: seatPath(c)!, lastModified: COUNTIES_UPDATED, changeFrequency: "monthly" as const, priority: 0.4 }] : []),
+          ...(seatPath(c) ? [{ path: seatPath(c)!, lastModified: UATS_UPDATED, changeFrequency: "monthly" as const, priority: 0.4 }] : []),
         ]),
+        // Comunele, orașele și municipiile peste prag (src/lib/continut/prag.ts); reședințele sunt deja mai sus.
+        ...loadUats().filter((u) => !uatGate(u) && uatPath(u) !== seatPath(loadCounties().find((c) => c.slug === u.countySlug)!))
+          .map((u): SitemapUrl => ({ path: uatPath(u), lastModified: UATS_UPDATED, changeFrequency: "monthly", priority: u.kind === "c" ? 0.3 : 0.4 })),
       ],
     },
   ];

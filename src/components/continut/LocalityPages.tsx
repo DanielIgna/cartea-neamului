@@ -14,6 +14,8 @@ import { SITE_URL } from "@/lib/site-url";
 import { db } from "@/db";
 import ShareCard from "@/components/continut/ShareCard";
 import { growthSettings } from "@/lib/crestere";
+import { CountyUatList, UatDetails, UatPage, uatMetadata } from "@/components/continut/UatPages";
+import { getUat } from "@/lib/continut/uat";
 
 /** Paginile /localitati (hub), /localitati/<județ> și /localitati/<județ>/<reședință>. */
 const HUB = {
@@ -148,6 +150,7 @@ export async function CountyPage({ slug }: { slug: string }) {
         </ul>
         <Common c={c} place={isCapital(c) ? "Bucureștiul" : `județul ${c.name}`} />
       </article>
+      <CountyUatList c={c} />
       {c.seat && seatPath(c) && (
         <div className="card">
           <h2 style={{ marginTop: 0 }}>Reședința județului</h2>
@@ -192,6 +195,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
           <li><b>Pentru casă și teren</b>: oficiul de cadastru al județului, pentru cartea funciară și planurile vechi.</li>
         </ul>
         <p>Pentru imaginea întregului județ, cu sursele lui, vezi pagina <Link href={countyPath(c)}>județului {c.name}</Link>.</p>
+        {getUat(c.slug, seat) && <UatDetails u={getUat(c.slug, seat)!} c={c} />}
         <Common c={c} place={c.seat} />
       </article>
       {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}&oras=${c.seatSlug}`} campaign="card-localitate"
@@ -200,4 +204,14 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
       <p className="muted small" style={{ textAlign: "center" }}><Link href={countyPath(c)}>← Județul {c.name}</Link></p>
     </section>
   );
+}
+
+/** /localitati/<județ>/<localitate>: reședința județului are pagina ei, celelalte localități pagina generală. */
+export function localityMetadata(judet: string, localitate: string): Metadata {
+  const c = getCounty(judet);
+  return c?.seatSlug === localitate ? seatMetadata(judet, localitate) : uatMetadata(judet, localitate);
+}
+export function LocalityPage({ judet, localitate }: { judet: string; localitate: string }) {
+  const c = getCounty(judet);
+  return c?.seatSlug === localitate ? <SeatPage slug={judet} seat={localitate} /> : <UatPage countySlug={judet} slug={localitate} />;
 }

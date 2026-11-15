@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SeatPage, seatMetadata } from "@/components/continut/LocalityPages";
+import { LocalityPage, localityMetadata } from "@/components/continut/LocalityPages";
 import { loadCounties } from "@/lib/continut/localitati";
 import { readVariant, sectionStaticParams } from "@/lib/public-variant-server";
 export const dynamic = "force-static";
@@ -21,11 +21,11 @@ export function generateStaticParams({ params }: { params: { v: string } }) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await readVariant({ params });
   const p = await params;
-  return seatMetadata(p.judet, p.localitate);
+  return localityMetadata(p.judet, p.localitate);
 }
 
 export default async function PublicSeat({ params }: Props) {
   await readVariant({ params });
   const p = await params;
-  return <SeatPage slug={p.judet} seat={p.localitate} />;
+  return <LocalityPage judet={p.judet} localitate={p.localitate} />;
 }

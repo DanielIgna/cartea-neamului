@@ -17,3 +17,25 @@ export function nameGate(n: Surname): string | null {
   const w = nameOwnWords(n);
   return w < NAME_MIN_WORDS ? `doar ${w} cuvinte proprii (pragul e ${NAME_MIN_WORDS}); restul paginii e text comun` : null;
 }
+
+/**
+ * Localitățile (/localitati/<județ>/<localitate>): fiecare are populația, satele, vecinii și distanțele ei, dar o comună cu un
+ * singur sat și puțini locuitori are prea puține lucruri proprii ca să merite o pagină în Google. Când va avea o istorie scrisă
+ * anume, pragul se poate coborî.
+ */
+export const UAT_MIN_POP_SINGLE_VILLAGE = 2000;
+/** Calitatea: o comună cu un singur sat și puțini locuitori nu intră niciodată (până primește text propriu). */
+export function uatThin(u: { kind: string; pop: number; villages: unknown[] }): string | null {
+  if (u.kind !== "c" || u.villages.length > 1 || u.pop >= UAT_MIN_POP_SINGLE_VILLAGE) return null;
+  return `comună cu un singur sat și ${u.pop} locuitori (pragul e ${UAT_MIN_POP_SINGLE_VILLAGE} sau mai multe sate)`;
+}
+/**
+ * Ritmul (Daniel, 14.11.2026: „începe cu 50 de pagini pe zi”): municipiile și orașele intră în Google de la început; comunele
+ * intră pe rând, prin motorul de publicare, ca Google să nu primească dintr-odată mii de pagini noi. Până atunci au noindex.
+ */
+export function uatGate(u: { kind: string; pop: number; villages: unknown[] }, published?: (u: never) => boolean): string | null {
+  const thin = uatThin(u);
+  if (thin) return thin;
+  if (u.kind !== "c") return null;
+  return published?.(u as never) ? null : "în coada de publicare (intră în Google pe rând, câteva zeci pe zi)";
+}
