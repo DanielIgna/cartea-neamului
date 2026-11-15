@@ -26,6 +26,7 @@ export const nl: Catalog = {
     description: "De stamboom van de familie, samen opgebouwd en gedrukt als een boek.",
   },
   Layout: {
+    untranslated: "Deze pagina is nog niet beschikbaar in jouw taal. Voorlopig zie je haar in het Roemeens.",
     privacy: "Privacy",
     terms: "Voorwaarden",
     myData: "Mijn gegevens",

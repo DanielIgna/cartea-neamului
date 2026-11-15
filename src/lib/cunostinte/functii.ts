@@ -376,10 +376,10 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/adam-hristos.test.ts", "tests/istoria-bisericii.test.ts"],
   },
   {
-    key: "traduceri", name: "Cele 9 limbi", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Un text lipsă dintr-o limbă strică pagina în acea limbă.",
-    what: "Traducerea întregii platforme și alegerea limbii.",
-    engine: ["src/i18n/locales.ts", "src/i18n/server.ts", "src/components/LanguagePicker.tsx"],
-    tests: ["tests/i18n.test.ts"],
+    key: "traduceri", name: "Cele 10 limbi", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Un text lipsă dintr-o limbă strică pagina în acea limbă; o regulă greșită în middleware poate trimite Google pe altă pagină.",
+    what: "Traducerea întregii platforme, alegerea limbii (steag și nume în antet), adresele pe limbă (/it/, /en/, /he/…) cu hreflang și canonical, limba ghicită la prima vizită (browserul, apoi țara; româna oriunde în browser câștigă) cu întrebarea „Vezi site-ul în …?”, roboții niciodată redirecționați, prețuri în moneda locală (comutator în Admin → Planuri).",
+    engine: ["src/i18n/locales.ts", "src/i18n/server.ts", "src/middleware.ts", "src/lib/page-metadata.ts", "src/components/LanguagePicker.tsx", "src/components/LanguageSuggest.tsx", "src/components/UntranslatedNote.tsx", "src/lib/plati.ts"],
+    tests: ["tests/i18n.test.ts", "tests/limba-detectata.test.ts"],
   },
   {
     key: "analiza", name: "Analiza traficului", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Anonim, fără cookie.",

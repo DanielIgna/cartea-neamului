@@ -127,6 +127,26 @@ export async function geography(db: Db, r: Range) {
   return out;
 }
 
+/**
+ * Limbile (Daniel, 2026-11-14): în ce limbă au văzut site-ul vizitatorii (limba paginii), câte conturi noi pe limbă (limba
+ * aleasă în cont) și pe țară (numărate la crearea contului, fără legătură cu omul), plus perechile țară + limbă.
+ */
+export type LangRow = { key: string; count: number };
+export async function languages(db: Db, r: Range) {
+  const [visitors, accountsByLang, accountsByCountry, pairs] = await Promise.all([
+    rows(db, sql`select coalesce(lang, '?') as k, count(distinct (day, visitor)) as c from page_view where day between ${r.from} and ${r.to} group by 1 order by 2 desc`),
+    rows(db, sql`select coalesce(nullif(locale, ''), 'ro') as k, count(*) as c from "user" where ${localDay(sql`created_at`)} between ${r.from} and ${r.to} group by 1 order by 2 desc`),
+    rows(db, sql`select coalesce(country, '?') as k, count(*) as c from conversion where kind = 'cont' and day between ${r.from} and ${r.to} group by 1 order by 2 desc`),
+    rows(db, sql`select coalesce(country, '?') as country, coalesce(lang, '?') as lang, count(distinct (day, visitor)) as c
+      from page_view where day between ${r.from} and ${r.to} group by 1, 2 order by 3 desc limit 40`),
+  ]);
+  const list = (x: Row[]): LangRow[] => x.map((y) => ({ key: String(y.k), count: n(y.c) }));
+  return {
+    visitors: list(visitors), accountsByLang: list(accountsByLang), accountsByCountry: list(accountsByCountry),
+    pairs: pairs.map((y) => ({ country: String(y.country), lang: String(y.lang), count: n(y.c) })),
+  };
+}
+
 const regionNames = new Intl.DisplayNames(["ro"], { type: "region" });
 /** Numele țării în română („DE” → „Germania”); „?” = necunoscut (local sau fără antet). */
 export function countryName(code: string) {

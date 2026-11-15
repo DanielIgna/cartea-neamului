@@ -5,7 +5,8 @@ import { tree, treeMember } from "@/db/schema";
 import { requireUser, roleInTree } from "@/lib/access";
 import { isAdminUser } from "@/lib/admin";
 import { operator } from "@/lib/legal";
-import { bookIncluded, bookPaid, includedBooksLeft, money, priceFor, quoteYear } from "@/lib/plati";
+import { headers } from "next/headers";
+import { bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyIn, priceFor, quoteYear } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
 import { LIMIT_KEYS, TIERS, isKept, mayKeep, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
@@ -43,6 +44,9 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const nf = new Intl.NumberFormat(locale);
   const op = operator();
   const lei = locale === "ro";
+  // Moneda: lei în română; altfel euro sau moneda locală (dacă e pornită în Admin), aceeași ca la /api/plata/start.
+  const cur = currencyFor(locale, (await headers()).get("x-vercel-ip-country"), s);
+  const money = (v: number, l: string) => moneyIn(v, l, cur, s);
   const tierName = (x: Tier) => t(`tiers.${x}.name`);
 
   const treeId = UUID.test(str("carte")) ? str("carte") : null;
@@ -100,7 +104,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
         <p className="muted plan-lead">{t(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label })}</p>
         <ul className="plan-limits">
           {LIMIT_KEYS.map((k) => <li key={k}><span>{t(`lim.${k}`)}</span><b>{limitValue(lim[k])}</b></li>)}
-          <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s).label })}</b></li>
+          <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s, "basic", cur).label })}</b></li>
           <li><span>{t("lim.print")}</span><b>{pct > 0 ? t("printOff", { pct: String(pct) }) : t("printFull")}</b></li>
         </ul>
         <p className="muted plan-writers">{x === "basic" ? t("writersPay") : t("writersFree")}</p>
@@ -238,7 +242,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
               <input type="hidden" name="kind" value="carte" />
               <input type="hidden" name="treeId" value={book.id} />
               {consent}
-              <div className="actions"><button className="btn primary">{t("pay", { price: priceFor("carte", locale, ownsTree, s).label })}</button></div>
+              <div className="actions"><button className="btn primary">{t("pay", { price: priceFor("carte", locale, ownsTree, s, "basic", cur).label })}</button></div>
             </form>
           )}
           <div className="actions"><Link className="btn" href={`/arbore/${book.id}/carte`}>{t("backToBook")}</Link></div>

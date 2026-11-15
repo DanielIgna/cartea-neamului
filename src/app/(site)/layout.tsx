@@ -7,6 +7,12 @@ import "@fontsource/alegreya/700.css";
 import "@fontsource/alegreya-sans/400.css";
 import "@fontsource/alegreya-sans/500.css";
 import "@fontsource/alegreya-sans/700.css";
+// Ebraica (Daniel, 2026-11-14): Alegreya n-are litere ebraice; aceste fonturi se descarcă doar pe paginile cu text în ebraică.
+import "@fontsource/frank-ruhl-libre/hebrew-500.css";
+import "@fontsource/frank-ruhl-libre/hebrew-700.css";
+import "@fontsource/assistant/hebrew-400.css";
+import "@fontsource/assistant/hebrew-500.css";
+import "@fontsource/assistant/hebrew-700.css";
 import "../globals.css";
 import { currentUser } from "@/lib/access";
 import UserMenu from "@/components/UserMenu";

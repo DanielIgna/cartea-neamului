@@ -26,6 +26,7 @@ export const de: Catalog = {
     description: "Der Stammbaum der Familie, gemeinsam aufgebaut und als Buch gedruckt.",
   },
   Layout: {
+    untranslated: "Diese Seite gibt es noch nicht in deiner Sprache. Vorerst siehst du sie auf Rumänisch.",
     privacy: "Datenschutz",
     terms: "Nutzungsbedingungen",
     myData: "Meine Daten",

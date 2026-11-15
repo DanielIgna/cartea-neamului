@@ -2,10 +2,11 @@ import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import {
-  JUDETE, JUDETE_GRID, PERIODS, accountFunnel, business, change, countryName, durationLabel, flagOf, geography, judetName, groupBy, isPeriod, isSearch, observations, pct, rangeOf, retention,
+  JUDETE, JUDETE_GRID, PERIODS, accountFunnel, business, change, countryName, durationLabel, flagOf, geography, judetName, groupBy, isPeriod, isSearch, languages, observations, pct, rangeOf, retention,
   sessionsOf, sourceLabel, summary, topPages, trafficSeries, uniqueVisitors, weekHeat, type PeriodKey, type Session,
 } from "@/lib/analiza";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
+import { LANGUAGE_FLAGS, LANGUAGE_NAMES, isLocale } from "@/i18n/locales";
 import { AdminNav, HBars, Stat, day, lei, num } from "@/components/admin/ui";
 import { Donut, TrafficChart, WeekHeat } from "@/components/admin/charts";
 import { CampaignLink, PrintButton } from "@/components/admin/AnalizaTools";
@@ -17,7 +18,7 @@ export const metadata = { title: "Analiză · Admin · Cartea Neamului" };
 const TABS = [
   { key: "prezentare", label: "Prezentare" }, { key: "conversii", label: "Conversii" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
   { key: "bounce", label: "Bounce" }, { key: "retentie", label: "Retenție" }, { key: "pagini", label: "Pagini" },
-  { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" }, { key: "tari", label: "Țări și zone" },
+  { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" }, { key: "tari", label: "Țări, zone și limbi" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -301,7 +302,7 @@ async function Pages({ cur, sessions, tariHref }: { cur: ReturnType<typeof range
           </div>
         ) : <p className="muted">Nicio pagină văzută în această perioadă.</p>}
       </div>
-      <p className="muted" style={{ margin: 0 }}>Țările, județele și orașele vizitatorilor sunt la <Link href={tariHref}>Țări și zone</Link>.</p>
+      <p className="muted" style={{ margin: 0 }}>Țările, județele și orașele vizitatorilor sunt la <Link href={tariHref}>Țări, zone și limbi</Link>.</p>
     </>
   );
 }
@@ -461,10 +462,59 @@ async function Places({ cur, prev, sessions }: { cur: ReturnType<typeof rangeOf>
           )}
         </div>
       </div>
+      <Languages cur={cur} />
       <p className="muted" style={{ fontSize: 13, margin: 0 }}>
         Locul vine de la Vercel, după adresa IP, și e aproximativ (uneori arată orașul furnizorului de internet, nu satul). Păstrăm doar numele țării,
         județului și orașului, niciodată IP-ul. Județele și orașele se numără de pe 14 noiembrie 2026; țările, de la începutul analizei.
       </p>
+    </>
+  );
+}
+
+/* ---------- Limbile (Daniel, 14.11.2026): vizitatori și conturi pe limbă și țară ---------- */
+const langName = (k: string) => (isLocale(k) ? `${LANGUAGE_FLAGS[k]} ${LANGUAGE_NAMES[k]}` : k === "?" ? "Necunoscută" : k);
+async function Languages({ cur }: { cur: ReturnType<typeof rangeOf>["cur"] }) {
+  const l = await languages(db, cur);
+  const tv = l.visitors.reduce((a, b) => a + b.count, 0);
+  const ta = l.accountsByLang.reduce((a, b) => a + b.count, 0);
+  const tc = l.accountsByCountry.reduce((a, b) => a + b.count, 0);
+  const notRo = l.visitors.filter((x) => x.key !== "ro" && x.key !== "?").reduce((a, b) => a + b.count, 0);
+  return (
+    <>
+      <div className="stats">
+        <Stat label="Limbi folosite" value={num(l.visitors.filter((x) => x.key !== "?").length)} hint={l.visitors[0] ? `cea mai folosită: ${langName(l.visitors[0].key)}` : "—"} />
+        <Stat label="Au văzut site-ul în altă limbă" value={`${pct(notRo, tv)}%`} hint={`${num(notRo)} vizitatori`} />
+        <Stat label="Conturi noi" value={num(ta)} hint={l.accountsByLang[0] ? `mai multe în ${langName(l.accountsByLang[0].key)}` : "—"} />
+      </div>
+      <div className="an-grid">
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Vizitatorii pe limbă</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Limba în care au văzut paginile (aleasă de ei, din adresă sau din întrebarea „Vezi site-ul în …?”).</p>
+          {tv ? <HBars label="Vizitatorii pe limba site-ului" total={tv} data={l.visitors.map((x) => ({ label: langName(x.key), count: x.count }))} />
+            : <p className="muted">Încă nimic în această perioadă.</p>}
+        </div>
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Conturile noi</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Pe limba contului și pe țara din care au fost făcute (țara se numără din 14 noiembrie 2026, fără să fie legată de cont).</p>
+          {ta ? <HBars label="Conturile noi pe limbă" total={ta} data={l.accountsByLang.map((x) => ({ label: langName(x.key), count: x.count }))} />
+            : <p className="muted">Niciun cont nou în această perioadă.</p>}
+          {tc > 0 && <HBars label="Conturile noi pe țară" total={tc} data={l.accountsByCountry.slice(0, 15).map((x) => ({ label: `${x.key === "?" ? "❔" : flagOf(x.key)} ${countryName(x.key)}`, count: x.count }))} />}
+        </div>
+      </div>
+      {l.pairs.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Țara și limba</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Din ce țară și în ce limbă: de aici se vede câți români din diaspora rămân pe română și câți străini citesc în limba lor.</p>
+          <div className="an-scroll">
+            <table className="an-table">
+              <thead><tr><th>Țara</th><th>Limba site-ului</th><th>Vizitatori</th><th>Din total</th></tr></thead>
+              <tbody>{l.pairs.map((x) => (
+                <tr key={`${x.country}.${x.lang}`}><td><span aria-hidden="true">{x.country === "?" ? "❔" : flagOf(x.country)}</span> {countryName(x.country)}</td><td>{langName(x.lang)}</td><td>{num(x.count)}</td><td>{pct(x.count, tv)}%</td></tr>
+              ))}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </>
   );
 }

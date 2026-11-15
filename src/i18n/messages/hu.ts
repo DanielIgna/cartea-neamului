@@ -26,6 +26,7 @@ export const hu: Catalog = {
     description: "A család fája, közösen építve, könyvként kinyomtatva.",
   },
   Layout: {
+    untranslated: "Ez az oldal még nem érhető el a nyelveden. Egyelőre románul látod.",
     privacy: "Adatvédelem",
     terms: "Feltételek",
     myData: "Adataim",

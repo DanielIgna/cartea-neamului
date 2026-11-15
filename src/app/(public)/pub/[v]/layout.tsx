@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { dirOf } from "@/i18n/locales";
+import { dirOf, localizedPath } from "@/i18n/locales";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
 import "@fontsource/alegreya/700.css";
 import "@fontsource/alegreya-sans/400.css";
 import "@fontsource/alegreya-sans/500.css";
 import "@fontsource/alegreya-sans/700.css";
+// Ebraica (Daniel, 2026-11-14): Alegreya n-are litere ebraice; aceste fonturi se descarcă doar pe paginile cu text în ebraică.
+import "@fontsource/frank-ruhl-libre/hebrew-500.css";
+import "@fontsource/frank-ruhl-libre/hebrew-700.css";
+import "@fontsource/assistant/hebrew-400.css";
+import "@fontsource/assistant/hebrew-500.css";
+import "@fontsource/assistant/hebrew-700.css";
 import "../../../globals.css";
 import { Logo } from "@/components/Logo";
 import ThemeSwitch from "@/components/ThemeSwitch";
@@ -50,7 +56,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
           <PwaSetup />
           <div className="wrap">
             <header className="top">
-              <div className="brand"><Link href="/" className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
+              <div className="brand"><Link href={localizedPath("/", v.locale)} className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
               <div className="prefs">
                 <ThemeSwitch />
                 <LanguagePicker />

@@ -36,6 +36,7 @@ export const ro = {
     description: "Fă online arborele genealogic al familiei, împreună cu rudele. Păstrezi poze, povești și glasul bunicilor, apoi tipărești cartea neamului.",
   },
   Layout: {
+    untranslated: "Pagina aceasta nu e încă disponibilă în limba ta. O vezi deocamdată în română.",
     privacy: "Confidențialitate",
     terms: "Termeni",
     myData: "Datele mele",
@@ -67,7 +68,7 @@ export const ro = {
     question: "Vrei să citești site-ul în română?",
     hint: "Limba se poate schimba oricând, sus, lângă temă.",
     accept: "În română",
-    stay: "Rămân la română",
+    stay: "Rămân pe română",
   },
   UserMenu: {
     plan: "Planul meu",

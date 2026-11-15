@@ -9,7 +9,8 @@ const SEO = {
   title: "Genealogii biblice, de la Adam la Isus | Cartea Neamului",
   description: "Genealogia biblică de la Adam la Noe, Avraam, David și Isus. Șase arbori interactivi, cu anii de viață din vechile texte.",
 };
-export const metadata: Metadata = publicPageMetadata(SEO);
+// O funcție, nu o constantă: adresa canonică și hreflang depind de limba paginii (/it/…), știută doar la randare.
+export const generateMetadata = (): Metadata => publicPageMetadata(SEO);
 
 /** Pagină deschisă tuturor, fără cont: genealogiile vechi după textele biblice (deocamdată doar în română, cu numele din Cornilescu). */
 export default function GenealogiiVechiPage() {

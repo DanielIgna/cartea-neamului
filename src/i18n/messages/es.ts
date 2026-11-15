@@ -26,6 +26,7 @@ export const es: Catalog = {
     description: "El árbol de la familia, construido juntos e impreso como un libro.",
   },
   Layout: {
+    untranslated: "Esta página aún no está disponible en tu idioma. Por ahora la ves en rumano.",
     privacy: "Privacidad",
     terms: "Términos",
     myData: "Mis datos",
