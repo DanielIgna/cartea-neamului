@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Page, { metadata as siteMetadata } from "@/app/(site)/genealogii-vechi/page";
+import Page, { generateMetadata as siteMetadata } from "@/app/(site)/genealogii-vechi/page";
 import { readVariant, type VariantParams } from "@/lib/public-variant-server";
 export const dynamic = "force-static";
 export const revalidate = 600;
 
 export async function generateMetadata(props: VariantParams): Promise<Metadata> {
   await readVariant(props);
-  return siteMetadata;
+  return siteMetadata();
 }
 
 /** Aceeași pagină ca /genealogii-vechi, gata făcută pentru vizitatorii fără cont (vezi ../layout.tsx). */

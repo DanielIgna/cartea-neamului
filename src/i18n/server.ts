@@ -3,17 +3,10 @@ import { cookies, headers } from "next/headers";
 import { createFormatter, createTranslator, type Messages, type NamespaceKeys, type NestedKeyOf } from "use-intl/core";
 import { currentUser } from "@/lib/access";
 import { isDemo } from "@/lib/demo";
-import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, TIME_ZONE, isLocale, localeFromAcceptLanguage, type Locale } from "./locales";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, TIME_ZONE, detectLocale, isCrawler, isLocale, type Locale } from "./locales";
 import { loadMessages } from "./messages";
-
-/**
- * Limba fixată pentru o pagină pregătită dinainte (fără cookie-uri): o pun layout-ul, pagina și generateMetadata din
- * app/(public), înainte de orice text. `cache` o ține doar pentru randarea în curs.
- */
-const staticLocale = cache((): { locale: Locale | null } => ({ locale: null }));
-export function setStaticLocale(locale: Locale) {
-  staticLocale().locale = locale;
-}
+import { setStaticLocale, staticLocaleNow } from "./static-locale";
+export { setStaticLocale, staticLocaleNow };
 
 /** Unde a găsit serverul limba: aleasă pe acest telefon (cookie), din cont sau niciuna (româna, de la sine). */
 export type LocaleSource = "cookie" | "account" | "default";
@@ -24,7 +17,7 @@ export type LocaleSource = "cookie" | "account" | "default";
  */
 export const getLocaleInfo = cache(async (): Promise<{ locale: Locale; source: LocaleSource }> => {
   // Paginile publice gata făcute pentru vizitatorii fără cont (app/(public)) au limba în adresă, nu în cookie.
-  const fixed = staticLocale().locale;
+  const fixed = staticLocaleNow();
   if (fixed) return { locale: fixed, source: "cookie" };
   const chosen = (await cookies()).get(LOCALE_COOKIE)?.value;
   if (isLocale(chosen)) return { locale: chosen, source: "cookie" };
@@ -56,16 +49,16 @@ export async function getFormat(locale?: Locale) {
 
 /**
  * Limba în care să-l întrebăm o singură dată pe om dacă vrea site-ul: doar dacă n-a ales încă nimic (nici aici, nici în cont)
- * și browserul lui e într-o limbă pe care o avem, alta decât româna.
+ * și limba ghicită (browserul, apoi țara, vezi detectLocale) e alta decât româna. Cine are româna oriunde printre limbile
+ * browserului nu e întrebat. Roboții nu sunt întrebați niciodată.
  */
 export async function suggestedLocale(): Promise<Locale | null> {
   const { locale, source } = await getLocaleInfo();
   if (source !== "default") return null;
   // Închisă o dată cu ✕: nu mai întrebăm pe acest telefon sau calculator.
   if ((await cookies()).get(SUGGEST_DISMISSED_COOKIE)?.value) return null;
-  const header = (await headers()).get("accept-language");
-  // Cine are browserul în română (prima limbă din listă) nu e întrebat, chiar dacă mai știe și alte limbi.
-  if (localeFromAcceptLanguage(header?.split(",")[0]) === DEFAULT_LOCALE) return null;
-  const l = localeFromAcceptLanguage(header);
-  return l && l !== DEFAULT_LOCALE && l !== locale ? l : null;
+  const h = await headers();
+  if (isCrawler(h.get("user-agent"))) return null;
+  const l = detectLocale({ acceptLanguage: h.get("accept-language"), country: h.get("x-vercel-ip-country") });
+  return l !== DEFAULT_LOCALE && l !== locale ? l : null;
 }

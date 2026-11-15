@@ -30,19 +30,54 @@ export const YEAR_DAYS = 365;
 
 export const stripeReady = () => !!process.env.STRIPE_SECRET_KEY?.trim();
 
-/** O sumă (în lei sau euro) cu eticheta ei, scrisă cum se scrie în limba omului. */
-export function money(v: number, locale: string) {
+/**
+ * Moneda plății (Daniel, 2026-11-14): lei pentru cine folosește site-ul în română; altfel euro sau, cu „Prețuri în moneda
+ * locală” pornit în Admin → Planuri, dolari americani sau canadieni, lire sterline ori șecheli, după țara de unde plătește omul
+ * (apoi după limbă). Prețurile se scriu în Admin în lei și euro; celelalte se socotesc din euro cu cursul din Admin, rotunjit în sus.
+ */
+export type Currency = "ron" | "eur" | "usd" | "cad" | "gbp" | "ils";
+const COUNTRY_CURRENCY: Record<string, Currency> = { US: "usd", CA: "cad", GB: "gbp", IL: "ils" };
+const LOCALE_CURRENCY: Record<string, Currency> = { "en-US": "usd", "en-GB": "gbp", he: "ils" };
+export function currencyFor(locale: string, country: string | null | undefined, s: Pick<PlanSettings, "localCurrency">): Currency {
+  if (locale === "ro") return "ron";
+  if (!s.localCurrency) return "eur";
+  const c = (country ?? "").toUpperCase();
+  // Din zona euro (sau de oriunde altundeva cu o țară știută) rămâne euro, oricare ar fi limba.
+  if (/^[A-Z]{2}$/.test(c)) return COUNTRY_CURRENCY[c] ?? "eur";
+  return LOCALE_CURRENCY[locale] ?? "eur";
+}
+/** Cursul din euro al fiecărei monede (din Admin); leul și euro nu se convertesc. */
+export function rateOf(cur: Currency, s: Partial<Pick<PlanSettings, "rateUsd" | "rateCad" | "rateGbp" | "rateIls">>): number {
+  return cur === "usd" ? s.rateUsd ?? 1 : cur === "cad" ? s.rateCad ?? 1 : cur === "gbp" ? s.rateGbp ?? 1 : cur === "ils" ? s.rateIls ?? 1 : 1;
+}
+/** Suma în euro trecută în altă monedă: prețurile întregi rămân întregi (rotunjite în sus), restul la cenți. */
+export function convertEur(v: number, rate: number): number {
+  if (rate === 1) return v;
+  const x = v * rate;
+  return Number.isInteger(v) ? Math.ceil(x - 1e-9) : Math.round(x * 100) / 100;
+}
+
+/**
+ * O sumă (în lei sau euro, cum e scrisă în Admin) cu eticheta ei, scrisă cum se scrie în limba omului. Cu `cur` (dolari, lire,
+ * șecheli), suma în euro se trece în acea monedă după cursul din `s`.
+ */
+export function money(v: number, locale: string, cur?: Currency, s?: Partial<PlanSettings>) {
   const lei = locale === "ro";
+  if (!lei && cur && cur !== "eur" && cur !== "ron") {
+    const x = convertEur(v, rateOf(cur, s ?? {}));
+    const label = new Intl.NumberFormat(locale, { style: "currency", currency: cur.toUpperCase(), maximumFractionDigits: Number.isInteger(x) ? 0 : 2 }).format(x);
+    return { amount: Math.round(x * 100), currency: cur, label };
+  }
   const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v);
   return { amount: Math.round(v * 100), currency: lei ? "ron" : "eur", label: lei ? `${n} lei` : `${n} €` };
 }
 
-/** Prețul în unitatea mică (bani / cenți): lei pentru română, euro pentru celelalte limbi. Anul, pe planul ales (implicit Basic). */
-export function priceFor(kind: PayKind, locale: string, ownsTree: boolean, s: PlanSettings, tier: Tier = "basic") {
+/** Prețul în unitatea mică (bani / cenți): lei pentru română, euro (sau moneda locală) pentru celelalte limbi. Anul, pe planul ales (implicit Basic). */
+export function priceFor(kind: PayKind, locale: string, ownsTree: boolean, s: PlanSettings, tier: Tier = "basic", cur?: Currency) {
   const lei = locale === "ro";
   const p = tierPrice(tier, ownsTree, s);
-  if (kind === "pastrare") return money(lei ? s.keepLei : s.keepEur, locale);
-  return money(kind === "carte" ? (lei ? s.bookLei : s.bookEur) : (lei ? p.lei : p.eur), locale);
+  if (kind === "pastrare") return money(lei ? s.keepLei : s.keepEur, locale, cur, s);
+  return money(kind === "carte" ? (lei ? s.bookLei : s.bookEur) : (lei ? p.lei : p.eur), locale, cur, s);
 }
 
 /**

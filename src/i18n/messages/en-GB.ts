@@ -26,6 +26,7 @@ export const enGB: Catalog = {
     description: "The family tree, built together, printed as a book.",
   },
   Layout: {
+    untranslated: "This page isn’t available in your language yet. For now, you’re seeing it in Romanian.",
     privacy: "Privacy",
     terms: "Terms",
     myData: "My data",

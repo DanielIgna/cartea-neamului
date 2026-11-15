@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { currentUser, roleInTree } from "@/lib/access";
 import { recordConsent } from "@/lib/consent";
 import { isAdminUser } from "@/lib/admin";
-import { claimIncludedBook, createCheckout, isPayKind, money, priceFor, quoteYear, stripeReady } from "@/lib/plati";
+import { claimIncludedBook, createCheckout, currencyFor, isPayKind, money, priceFor, quoteYear, stripeReady } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
 import { isTier, mayKeep, tierPrice, type Tier } from "@/lib/plans";
 import { siteOrigin } from "@/lib/site";
@@ -40,7 +40,9 @@ export async function POST(req: Request) {
   if (!settings.on && !isAdminUser(me)) return back("eroare=1");
   const locale = await getLocale();
   const t = await getT("Plata");
-  let price = priceFor(kind, locale, ownsTree, settings);
+  // Moneda: lei în română; altfel euro sau, cu moneda locală pornită în Admin, după țara de unde plătește (aceeași ca pe /plata).
+  const cur = currencyFor(locale, req.headers.get("x-vercel-ip-country"), settings);
+  let price = priceFor(kind, locale, ownsTree, settings, "basic", cur);
   let year: { tier: Tier; upgradeFrom: Tier | null; paidUntil: Date | null; extra?: "carte" | null; forName?: string | null; note?: string | null } | null = null;
   if (kind === "an") {
     const tier = form.get("tier");
@@ -51,7 +53,7 @@ export async function POST(req: Request) {
     if (!quote.ok) return back(`eroare=${quote.reason === "downgrade" ? "jos" : "1"}`);
     // Pachetul Basic + cartea PDF: doar pentru un an Basic întreg (nu la o trecere pe alt plan), cu prețul din Admin.
     const bundle = form.get("pachet") === "1" && tier === "basic" && !quote.upgradeFrom && (locale === "ro" ? settings.bundleLei : settings.bundleEur) > 0;
-    price = money(bundle ? (locale === "ro" ? settings.bundleLei : settings.bundleEur) : quote.value, locale);
+    price = money(bundle ? (locale === "ro" ? settings.bundleLei : settings.bundleEur) : quote.value, locale, cur, settings);
     year = { tier, upgradeFrom: quote.upgradeFrom, paidUntil: quote.until, extra: bundle ? "carte" : null };
   }
   if (kind === "cadou") {
@@ -59,7 +61,7 @@ export async function POST(req: Request) {
     const tier = form.get("tier");
     if (!isTier(tier)) return back("eroare=1");
     const p = tierPrice(tier, true, settings);
-    price = money(locale === "ro" ? p.lei : p.eur, locale);
+    price = money(locale === "ro" ? p.lei : p.eur, locale, cur, settings);
     year = { tier, upgradeFrom: null, paidUntil: null, forName: String(form.get("forName") ?? "").trim().slice(0, 120) || null, note: String(form.get("note") ?? "").trim().slice(0, 400) || null };
   }
   let keepTree: string | null = null;
@@ -71,7 +73,7 @@ export async function POST(req: Request) {
     if (bundle && !(await roleInTree(db, treeId, me.id))) return back("eroare=1");
     const value = bundle ? (lei ? settings.keepBookLei : settings.keepBookEur) : (lei ? settings.keepLei : settings.keepEur);
     if (value <= 0) return back("eroare=1");
-    price = money(value, locale);
+    price = money(value, locale, cur, settings);
     keepTree = bundle ? treeId : null;
     year = { tier: "basic", upgradeFrom: null, paidUntil: null, extra: bundle ? "carte" : null };
   }

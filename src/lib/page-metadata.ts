@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
+import { staticLocaleNow } from "@/i18n/static-locale";
+import { PUBLIC_PATHS } from "@/lib/public-variant";
 import { SITE_URL } from "@/lib/site-url";
 
 /** Adresa canonică a unei pagini publice, cu domeniul principal (fără www): `/` → https://carteaneamului.ro/. */
@@ -19,15 +22,40 @@ const OG_IMAGE = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "
 export const TITLE_SUFFIX = " | Cartea Neamului";
 export const fitTitle = (title: string) => (title.length > 60 && title.endsWith(TITLE_SUFFIX) ? title.slice(0, -TITLE_SUFFIX.length) : title);
 
+/** Limba din Open Graph („it_IT”) a fiecărei limbi a site-ului. */
+export const OG_LOCALE: Record<Locale, string> = {
+  ro: "ro_RO", "en-GB": "en_GB", "en-US": "en_US", fr: "fr_FR", es: "es_ES", nl: "nl_NL", de: "de_DE", it: "it_IT", hu: "hu_HU", he: "he_IL",
+};
+
+/** Paginile traduse în toate limbile (au adresă pe fiecare limbă); ghidurile, glosarul, numele și localitățile sunt încă doar în română. */
+export const isTranslatedPath = (path: string) => PUBLIC_PATHS.has(path);
+
+/**
+ * Adresa canonică și legăturile hreflang ale unei pagini în limba dată (Daniel, 2026-11-14): fiecare limbă are adresa ei
+ * (/it/contact), româna e fără prefix și e și „x-default”. O pagină netradusă, deschisă în altă limbă, trimite la adresa
+ * românească și nu intră în Google (`noindex`), ca să nu fie aceeași pagină de două ori.
+ */
+export function languageAlternates(path: string, locale: Locale): Pick<Metadata, "alternates" | "robots"> & { url: string } {
+  if (!isTranslatedPath(path)) {
+    const url = canonicalUrl(path);
+    return locale === "ro" ? { url, alternates: { canonical: url } } : { url, alternates: { canonical: url }, robots: { index: false, follow: true } };
+  }
+  const url = canonicalUrl(localizedPath(path, locale));
+  const languages: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, canonicalUrl(localizedPath(path, l))]));
+  languages["x-default"] = canonicalUrl(path);
+  return { url, alternates: { canonical: url, languages } };
+}
+
 export function publicPageMetadata({ path, title: full, description, image }: { path: string; title: string; description: string; image?: { url: string; alt: string } }): Metadata {
-  const url = canonicalUrl(path);
+  const locale = staticLocaleNow() ?? "ro";
+  const { url, ...lang } = languageAlternates(path, locale);
   const title = fitTitle(full);
   // O pagină cu cardul ei (nume, localitate) îl arată în previzualizarea linkului, în locul pozei comune.
   const img = image ? { ...image, width: 1200, height: 630 } : OG_IMAGE;
   return {
     title, description,
-    alternates: { canonical: url },
-    openGraph: { title, description, url, siteName: "Cartea Neamului", locale: "ro_RO", type: "website", images: [img] },
+    ...lang,
+    openGraph: { title, description, url, siteName: "Cartea Neamului", locale: OG_LOCALE[locale], type: "website", images: [img] },
     twitter: { card: "summary_large_image", title, description, images: [img] },
   };
 }

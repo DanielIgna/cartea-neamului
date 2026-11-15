@@ -17,7 +17,7 @@ describe("paginile publice gata făcute", () => {
   it("middleware-ul prinde exact paginile din PUBLIC_PAGES și fiecare are variantă în app/(public)", () => {
     const src = readFileSync("src/middleware.ts", "utf8");
     const list = src.slice(src.indexOf("matcher:"));
-    const matcher = [...list.matchAll(/"(\/[^"]*)"/g)].map((m) => m[1]).filter((p) => !p.startsWith("/pub") && !sectionOf(p.replace(/:\w+/g, "x")));
+    const matcher = [...list.matchAll(/"(\/[^"]*)"/g)].map((m) => m[1]).filter((p) => !p.startsWith("/pub") && !p.startsWith("/:lang(") && !sectionOf(p.replace(/:\w+/g, "x")));
     expect(new Set(matcher)).toEqual(new Set(PUBLIC_PAGES.map((p) => p.path)));
     for (const p of PUBLIC_PAGES) {
       const file = `src/app/(public)/pub/[v]${p.path === "/" ? "" : p.path}/page.tsx`;

@@ -26,6 +26,7 @@ export const fr: Catalog = {
     description: "L’arbre de la famille, construit ensemble, imprimé comme un livre.",
   },
   Layout: {
+    untranslated: "Cette page n’est pas encore disponible dans votre langue. Pour l’instant, elle s’affiche en roumain.",
     privacy: "Confidentialité",
     terms: "Conditions",
     myData: "Mes données",

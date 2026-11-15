@@ -84,6 +84,13 @@ export const PlanSettings = z.object({
   keepEur: num(0, 1000, ""),
   keepBookLei: num(0, 5000, ""),
   keepBookEur: num(0, 1000, ""),
+  // Prețurile în moneda locală (Daniel, 2026-11-14): oprit = euro pentru toți cei care nu folosesc româna. Pornit = dolari
+  // (SUA), dolari canadieni, lire (Marea Britanie), șecheli (Israel), socotiți din euro cu aceste cursuri, rotunjiți în sus.
+  localCurrency: flag,
+  rateUsd: num(0.1, 100, ""),
+  rateCad: num(0.1, 100, ""),
+  rateGbp: num(0.1, 100, ""),
+  rateIls: num(0.1, 100, ""),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
@@ -100,6 +107,7 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "toti", premiumPrint: 20,
   bundleLei: 129, bundleEur: 25, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
   keepLei: 25, keepEur: 5, keepBookLei: 109, keepBookEur: 22,
+  localCurrency: false, rateUsd: 1.1, rateCad: 1.55, rateGbp: 0.86, rateIls: 4,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
 const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;

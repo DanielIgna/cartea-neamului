@@ -83,6 +83,21 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
         {field("keepBookLei", "Păstrare + cartea PDF, lei", "pachetul la final de an (0 = fără pachet)", 0.5)}
         {field("keepBookEur", "Păstrare + cartea PDF, €", "", 0.5)}
       </div>
+      <fieldset className="tier-fields">
+        <legend><b>Moneda locală</b> <small className="muted">pentru cei care nu folosesc site-ul în română</small></legend>
+        <label className="check">
+          <input type="checkbox" name="localCurrency" defaultChecked={value.localCurrency} />{" "}
+          <b>Prețuri în moneda locală.</b> Oprit: toți plătesc în euro. Pornit: din SUA în dolari, din Canada în dolari canadieni, din
+          Marea Britanie în lire, din Israel în șecheli (după țara de unde plătesc), socotite din prețul în € cu cursurile de mai jos,
+          rotunjite în sus. În română se plătește mereu în lei.
+        </label>
+        <div className="limits-row">
+          {field("rateUsd", "1 € = … $ (USD)", "", 0.01, 0.1)}
+          {field("rateCad", "1 € = … CA$ (CAD)", "", 0.01, 0.1)}
+          {field("rateGbp", "1 € = … £ (GBP)", "", 0.01, 0.1)}
+          {field("rateIls", "1 € = … ₪ (ILS)", "", 0.01, 0.1)}
+        </div>
+      </fieldset>
       <label className="check">
         <input type="checkbox" name="on" defaultChecked={value.on} />{" "}
         <b>Pornește plățile în site.</b> Fiecare om primește zilele gratuite de azi (sau de când își face contul); după ele, arborii se pot doar vedea,
