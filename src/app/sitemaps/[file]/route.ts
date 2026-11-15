@@ -1,4 +1,6 @@
 import { sitemapGroups, urlsetXml, xmlResponse } from "@/lib/continut/sitemap";
+import { publishedMap } from "@/lib/motor-seo/motor";
+import { db } from "@/db";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
@@ -11,7 +13,7 @@ export function generateStaticParams() {
 /** O parte din harta site-ului (o secțiune), trimisă din indexul de la /sitemap.xml. */
 export async function GET(_req: Request, { params }: { params: Promise<{ file: string }> }) {
   const { file } = await params;
-  const g = sitemapGroups().find((x) => `${x.name}.xml` === file);
+  const g = sitemapGroups(await publishedMap(db)).find((x) => `${x.name}.xml` === file);
   if (!g) return new Response("Nu există", { status: 404 });
   return xmlResponse(urlsetXml(g.urls));
 }

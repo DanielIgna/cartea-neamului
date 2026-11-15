@@ -14,9 +14,11 @@ import {
   KIND_NAME, countySeatUat, direction, distanceKm, getUat, loadUats, nearestTown, neighbours, rankInCounty, uatPath, uatsOf, type Uat,
 } from "@/lib/continut/uat";
 import { areaPublicStat } from "@/lib/continut/localitati-statistici";
+import { pageData, publishedMap } from "@/lib/motor-seo/motor";
+import { hasFacts, wikiAttribution, wikiLines } from "@/lib/motor-seo/wikipedia";
 import { plainPlace } from "@/lib/place-key";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
-import { countOf, km, listRo, uatDescription, uatTitle } from "@/lib/continut/uat-text";
+import { countOf, km, uatDescription, uatIntro, uatSameName, uatTitle } from "@/lib/continut/uat-text";
 export { countOf };
 import { SITE_URL } from "@/lib/site-url";
 import { db } from "@/db";
@@ -29,65 +31,20 @@ import { growthSettings } from "@/lib/crestere";
  * Reședințele de județ își păstrează pagina lor (LocalityPages.tsx), cu blocul de aici adăugat.
  */
 
-export function uatMetadata(countySlug: string, slug: string): Metadata {
+export async function uatMetadata(countySlug: string, slug: string): Promise<Metadata> {
   const c = getCounty(countySlug);
   const u = c ? getUat(c.slug, slug) : null;
   if (!c || !u) notFound();
   const meta = publicPageMetadata({ path: uatPath(u), title: uatTitle(u, c), description: uatDescription(u, c), image: { url: `/api/card?judet=${c.slug}`, alt: `${u.name}, județul ${c.name}` } });
-  return uatGate(u) ? { ...meta, robots: { index: false, follow: true } } : meta;
-}
-
-/** Ce spun datele despre loc: mărime, sate, poziție. Propozițiile se aleg după date, nu sunt aceleași pe toate paginile. */
-function intro(u: Uat, c: County): string[] {
-  const k = KIND_NAME[u.kind];
-  const regions = c.regions.map((r) => REGIONS[r]);
-  const { rank, of } = rankInCounty(u);
-  const fem = u.kind === "c";
-  const big = fem ? `cea mai mare comună a județului` : `cel mai mare ${k.one} al județului`;
-  const nth = rank === 1 ? "" : fem ? `a ${rank}-a` : `al ${rank}-lea`;
-  const size = of < 3 ? "" : rank === 1 ? `, ${big}`
-    : rank <= Math.ceil(of / 5) ? `, ${nth} ca mărime dintre cele ${countOf(of, k.one, k.many)} ale județului`
-    : rank > of - Math.ceil(of / 5) ? `, printre cele mai mici ${k.many} ale județului (locul ${rank} din ${of})`
-    : `, pe locul ${rank} din ${countOf(of, k.one, k.many)} ale județului după numărul de locuitori`;
-  const out = [`${k.title} ${u.name} se află în județul ${c.name}, ${regions.map((r) => r.in).join(" și ")}. La recensământul din 2021 avea ${countOf(u.pop, "locuitor", "locuitori")}${size}.`];
-
-  const seat = u.villages.find((v) => v.seat) ?? u.villages[0];
-  const others = u.villages.filter((v) => v !== seat).map((v) => v.name);
-  if (u.kind === "c") {
-    if (!others.length) out.push(`Comuna are un singur sat, ${seat.name}, deci toate actele de aici poartă același nume de loc.`);
-    else {
-      const diff = plainPlace(seat.name) !== plainPlace(u.name);
-      out.push(`Comuna e formată din ${countOf(u.villages.length, "sat", "sate")}: ${seat.name}, unde e primăria, și ${listRo(others)}.`
-        + (diff ? ` Nu există un sat numit ${u.name}: în actele vechi oamenii apar cu numele satului lor (${seat.name}, ${others[0]} și celelalte), nu cu numele comunei.` : " În actele vechi oamenii apar de obicei cu numele satului, nu al comunei."));
-    }
-  } else if (others.length) {
-    out.push(`Pe lângă ${u.kind === "m" ? "municipiul" : "orașul"} propriu-zis, de ${u.name} țin ${countOf(others.length, "localitate", "localități")}: ${listRo(others)}. Unele au fost sate separate, cu parohia și registrele lor.`);
-  }
-
-  const cs = countySeatUat(c);
-  if (cs && cs !== u) {
-    const d = distanceKm(u, cs);
-    out.push(`${seat.name} e la aproximativ ${km(d)} km spre ${direction(u, cs)} de ${cs.name}, reședința județului${d > 60 ? ", destul de departe încât familiile să fi avut legături și cu orașele din județele vecine" : ""}.`);
-  }
-  if (u.kind === "c") {
-    const t = nearestTown(u);
-    if (t && t.u !== cs) out.push(`Cel mai apropiat oraș e ${t.u.name} (${km(t.km)} km, județul ${getCounty(t.u.countySlug)?.name ?? ""}): după 1950, mulți copii din comună s-au născut la spitalul de acolo, așa că actul de naștere poate fi la primăria orașului, nu a comunei.`);
-  }
-  return out;
-}
-
-/** Alte localități cu același nume (comune sau sate), ca să nu fie încurcate în acte. */
-function sameName(u: Uat) {
-  const key = plainPlace(u.name);
-  const uats = loadUats().filter((x) => x !== u && plainPlace(x.name) === key);
-  const villages = loadUats().reduce((n, x) => n + (x === u ? 0 : x.villages.filter((v) => plainPlace(v.name) === key).length), 0);
-  return { uats, villages };
+  // Comunele intră în Google când le publică motorul (src/lib/motor-seo); până atunci noindex.
+  const published = await publishedMap(db);
+  return uatGate(u, () => published.has(uatPath(u))) ? { ...meta, robots: { index: false, follow: true } } : meta;
 }
 
 /** Blocul cu datele localității, folosit și pe pagina reședinței de județ. */
 export async function UatDetails({ u, c }: { u: Uat; c: County }) {
   const near = neighbours(u, 8);
-  const same = sameName(u);
+  const same = uatSameName(u);
   const stat = await areaPublicStat(db, u.area);
   const k = KIND_NAME[u.kind];
   return (
@@ -135,7 +92,10 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
   const path = uatPath(u);
   const k = KIND_NAME[u.kind];
   const groups = [...new Set(c.regions.map((r) => REGIONS[r].group))].map((g) => REGION_SOURCES[g]);
-  const guides = [...new Set(groups.flatMap((g) => g.guides))].slice(0, 4).map((g) => getEntry("ghid", g)).filter((g) => !!g);
+  const data = await pageData(db, path);
+  const wiki = data?.wiki && hasFacts(data.wiki) ? { ...wikiLines(u, data.wiki), attr: wikiAttribution(data.wiki) } : null;
+  const guideSlugs = [...new Set([...(wiki?.guides ?? []).map((g) => g.replace("/ghid/", "")), ...groups.flatMap((g) => g.guides)])].slice(0, 5);
+  const guides = guideSlugs.map((g) => getEntry("ghid", g)).filter((g) => !!g);
   const names = [...new Map(c.regions.flatMap((r) => namesInRegion(r)).map((n) => [n.slug, n])).values()].slice(0, 12);
   const hall = u.kind === "c" ? `Primăria comunei ${u.name}` : `Primăria ${u.kind === "m" ? "municipiului" : "orașului"} ${u.name}`;
   const seatVillage = u.villages.find((v) => v.seat) ?? u.villages[0];
@@ -162,7 +122,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
         <h2>Pe scurt</h2>
-        {intro(u, c).map((p) => <p key={p}>{p}</p>)}
+        {uatIntro(u, c).map((p) => <p key={p}>{p}</p>)}
         <h2>Unde ceri actele</h2>
         <ul>
           <li><b>Acte din ultimii aproximativ 100 de ani</b> (naștere, căsătorie, deces): serviciul de stare civilă de la {hall}{u.kind === "c" && u.villages.length > 1 ? `, pentru toate satele comunei` : ""}. Vezi <Link href="/ghid/cum-ceri-un-act-de-stare-civila">cum ceri un act</Link>.</li>
@@ -170,6 +130,13 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           <li><b>Registrele bisericești</b>: {u.villages.length > 2 ? "satele mai mari aveau de obicei parohia lor, iar cele mici erau trecute la parohia unui sat vecin; află mai întâi de ce parohie ținea satul familiei." : "află de ce parohie ținea familia și ce confesiune avea; fiecare confesiune își ținea registrele separat."}</li>
         </ul>
         {groups.map((g) => <p key={g.civil}>{g.civil}</p>)}
+        {wiki && wiki.lines.length > 0 && (
+          <>
+            <h2>Oamenii locului, de-a lungul timpului</h2>
+            {wiki.lines.map((l) => <p key={l}>{l}</p>)}
+            <p className="muted small"><a href={wiki.attr.url} target="_blank" rel="noopener noreferrer">{wiki.attr.text.replace(" licență CC BY-SA 4.0.", "")}</a> Licență <a href={wiki.attr.license} target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.</p>
+          </>
+        )}
         <UatDetails u={u} c={c} />
         {names.length > 0 && (
           <>

@@ -641,6 +641,30 @@ export const conversion = pgTable("conversion", {
   attributed: boolean("attributed").notNull().default(false),
 }, (t) => [index("conversion_day_idx").on(t.day, t.kind)]);
 
+/* ---------- Motorul de publicare SEO (Admin → SEO → Motor), vezi src/lib/motor-seo și migrația 0034 ---------- */
+// Coada paginilor publice care intră în Google pe rând: fiecare pagină (o comună, mai târziu nume și diaspora) are starea ei
+// (în așteptare / generată / publicată / noindex), datele adunate la generare (rezumatul din Wikipedia) și rezultatul controlului.
+export const seoQueue = pgTable("seo_queue", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  kind: text("kind").notNull(), // localitate | nume | diaspora | ghid
+  path: text("path").notNull(),
+  lang: text("lang").notNull().default("ro"),
+  priority: integer("priority").notNull().default(0),
+  status: text("status").notNull().default("asteptare"), // asteptare | generat | publicat | noindex
+  data: jsonb("data"),
+  words: integer("words"),
+  uniqueWords: integer("unique_words"),
+  facts: integer("facts"),
+  similarity: integer("similarity"),
+  reasons: text("reasons"),
+  generatedAt: timestamp("generated_at"),
+  publishedAt: timestamp("published_at"),
+  lastmod: timestamp("lastmod"),
+  indexed: text("indexed"), // da | nu | null (neverificată)
+  inspectedAt: timestamp("inspected_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("seo_queue_path_lang").on(t.path, t.lang), index("seo_queue_status_idx").on(t.status, t.priority)]);
+
 /* ---------- Autonomia (Admin → Autonomie), vezi src/lib/autonomie.ts și migrația 0027 ---------- */
 // Fiecare rulare a unei automatizări: cine a pornit-o (ceasul zilnic, butonul din panou, o aprobare), ce a văzut, ce a făcut
 // și ce așteaptă aprobarea omului. Nimic din ce atinge bani, conturi sau texte publice nu se face fără aprobare.

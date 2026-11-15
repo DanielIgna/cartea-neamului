@@ -89,8 +89,17 @@ export function direction(a: { lat: number; lng: number }, b: { lat: number; lng
 }
 
 /** Cele mai apropiate localități (din orice județ), după satul de reședință. */
+const nearMemo = new Map<Uat, { u: Uat; km: number }[]>();
 export function neighbours(u: Uat, n = 8) {
-  return loadUats().filter((x) => x !== u).map((x) => ({ u: x, km: distanceKm(u, x) })).sort((a, b) => a.km - b.km).slice(0, n);
+  let list = nearMemo.get(u);
+  if (!list || list.length < n) {
+    // Întâi doar cele dintr-un pătrat de ~50 km (repede); dacă sunt prea puține, toate.
+    const box = loadUats().filter((x) => x !== u && Math.abs(x.lat - u.lat) < 0.45 && Math.abs(x.lng - u.lng) < 0.65);
+    const pool = box.length >= Math.max(n, 12) ? box : loadUats().filter((x) => x !== u);
+    list = pool.map((x) => ({ u: x, km: distanceKm(u, x) })).sort((a, b) => a.km - b.km).slice(0, Math.max(n, 12));
+    nearMemo.set(u, list);
+  }
+  return list.slice(0, n);
 }
 
 /** Cel mai apropiat oraș sau municipiu (pentru o comună). */

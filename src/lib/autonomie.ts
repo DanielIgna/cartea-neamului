@@ -12,6 +12,7 @@
  *   după ce apeși „Aprobă”. Nimic din ce atinge bani, datele oamenilor sau texte publice nu se aplică singur.
  */
 import { sql, type SQL } from "drizzle-orm";
+import { runDaily } from "@/lib/motor-seo/motor";
 import type { Db } from "@/db";
 import { appSetting, automationMark, automationRun, autonomySnapshot } from "@/db/schema";
 import { ENV_KEYS, OWNERS, envSet } from "./admin";
@@ -43,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -63,6 +64,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Doar celor care au spus „Da” la „Vrei sfaturi pe email?”: 5 emailuri scurte în primele 3 săptămâni (ziua 1, 2, 4, 10, 21), câte unul pe zi, sărind ce omul a făcut deja (a invitat o rudă, a înregistrat un glas, a plătit). Fiecare are dezabonare dintr-un clic. Vezi Admin → Creștere." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
+  { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
+    what: "Publică zilnic următoarele pagini de localități din coadă (50 pe zi la început, cât e pus în Admin → SEO → Motor): adună datele publice din Wikipedia (rescrise, cu atribuire), trece fiecare pagină prin controlul de calitate și o pune în Google sau o lasă noindex cu motivul. Trimite sitemap-ul la Google după lot, verifică indexarea și crește ritmul până la 200 pe zi doar dacă Google le ia." },
   { key: "probleme-vechi", label: "Închide problemele lămurite", risk: "aprobare", defaultOn: false, everyDays: 1,
     what: "Problemele raportate la care ai răspuns și la care omul n-a mai scris de 21 de zile. Pregătește lista; le trece la „Rezolvată” doar după ce apeși „Aprobă”." },
 ];
@@ -160,6 +163,11 @@ async function runSitemap({ db }: Ctx): Promise<RunResult> {
   if (!site) return { status: "eroare", observed: 1, acted: 0, note: "contul de serviciu nu are acces la nicio proprietate din Search Console" };
   await submitSitemap(sa.account, site, `${SITE_URL}/sitemap.xml`);
   return { status: "ok", observed: 1, acted: 1, note: `sitemap.xml trimis la ${site}`, verified: true };
+}
+
+async function runSeoEngine({ db, now }: Ctx): Promise<RunResult> {
+  const r = await runDaily(db, now);
+  return { status: r.published || r.held || r.enriched ? "ok" : "nimic", observed: r.published + r.held + r.waiting + r.enriched, acted: r.published, note: r.note, details: r, verified: true };
 }
 
 /** Cei cu zilele gratuite pe sfârșite (cel mult 2 zile), care n-au primit încă emailul. */
@@ -294,6 +302,7 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "bun-venit": runNews,
   "probleme-vechi": runStaleProblems,
   arhivare: runArchiveDaily,
+  "motor-seo": runSeoEngine,
 };
 
 /** Rulează o automatizare și o trece în jurnal. După 3 erori la rând se oprește singură și apare la recomandări. */

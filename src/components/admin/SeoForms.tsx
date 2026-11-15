@@ -1,6 +1,6 @@
 "use client";
 import { useActionState, useState, useTransition } from "react";
-import { saveSeoSetup, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
+import { saveSeoEngine, saveSeoSetup, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
 
 /** Setările SEO: codul de verificare Google, proprietatea, cuvintele urmărite și cheia Search Console. */
 export function SeoSetupForm({ verification, siteUrl, sites, watch, keySource, keyEmail }: {
@@ -55,5 +55,21 @@ export function SubmitSitemapButton() {
       </button>
       <span role="status" className={msg?.error ? "err" : "muted"}>{msg?.error ?? msg?.ok ?? ""}</span>
     </div>
+  );
+}
+
+/** Admin → SEO → Motor: ritmul de publicare. */
+export function SeoEngineForm({ perDay, min, max, autoRamp }: { perDay: number; min: number; max: number; autoRamp: boolean }) {
+  const [state, action, pending] = useActionState<AdminFormState, FormData>(saveSeoEngine, null);
+  return (
+    <form action={action} className="form" style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end" }}>
+      <label>Pagini pe zi<input name="perDay" type="number" min={1} max={500} defaultValue={perDay} style={{ width: 100 }} /></label>
+      <label>Cel puțin<input name="min" type="number" min={1} max={500} defaultValue={min} style={{ width: 100 }} /></label>
+      <label>Cel mult<input name="max" type="number" min={1} max={500} defaultValue={max} style={{ width: 100 }} /></label>
+      <label style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" name="autoRamp" defaultChecked={autoRamp} style={{ width: "auto" }} /> Ritmul se schimbă singur după indexare</label>
+      <button className="btn primary" disabled={pending}>{pending ? "Salvez…" : "Salvează"}</button>
+      {state?.ok && <span className="muted">{state.ok}</span>}
+      {state?.error && <span style={{ color: "var(--red)" }}>{state.error}</span>}
+    </form>
   );
 }

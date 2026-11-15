@@ -18,6 +18,7 @@ import { deleteObjects } from "@/lib/storage";
 import { markRemovedByUpload } from "@/lib/home-submissions";
 import { activeServiceAccount, listSites, parseServiceAccount, parseVerification, parseWatch, pickSite, saveSeoSettings, sealCredentials, seoSettings, submitSitemap, type SeoSettings } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site-url";
+import { engineSettings, saveEngineSettings } from "@/lib/motor-seo/motor";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -234,4 +235,18 @@ export async function saveArchiveRules(_: AdminFormState, form: FormData): Promi
   const saved = await saveArchiveSettings(db, parsed.data, me.id);
   revalidatePath("/", "layout");
   return { ok: saved.on ? "Am salvat. Regulile arhivei sunt pornite pentru conturile făcute de azi încolo." : "Am salvat. Regulile arhivei sunt oprite: nu se mută și nu se micșorează nimic." };
+}
+
+/** Admin → SEO → Motor: câte pagini pe zi publică motorul și dacă ritmul crește singur după indexare. */
+export async function saveSeoEngine(_: AdminFormState, form: FormData): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const cur = await engineSettings(db);
+  const n = (k: string, d: number) => { const v = Math.round(Number(form.get(k))); return Number.isFinite(v) && v > 0 ? v : d; };
+  const max = Math.min(500, n("max", cur.max));
+  const min = Math.min(max, n("min", cur.min));
+  const perDay = Math.min(max, Math.max(min, n("perDay", cur.perDay)));
+  await saveEngineSettings(db, { ...cur, perDay, min, max, autoRamp: form.get("autoRamp") === "on" }, me.id);
+  revalidatePath("/admin/seo");
+  return { ok: `Salvat: ${perDay} pagini pe zi (între ${min} și ${max}).` };
 }

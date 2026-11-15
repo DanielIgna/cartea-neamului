@@ -56,7 +56,11 @@ function languagesGroup(): SitemapGroup {
   };
 }
 
-export function sitemapGroups(): SitemapGroup[] {
+/**
+ * `published`: comunele publicate de motorul SEO (adresa → data ultimei schimbări), citite din bază de rutele sitemap-ului.
+ * Fără el (teste, Centrul SEO), comunele nu apar: intră doar cele publicate.
+ */
+export function sitemapGroups(published: Map<string, Date> = new Map()): SitemapGroup[] {
   return [
     { name: "pagini", label: "Paginile principale", urls: PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? BUILT_AT, changeFrequency: p.changeFrequency, priority: p.priority })) },
     collectionGroup("ghid", "Ghiduri"),
@@ -78,8 +82,8 @@ export function sitemapGroups(): SitemapGroup[] {
           ...(seatPath(c) ? [{ path: seatPath(c)!, lastModified: UATS_UPDATED, changeFrequency: "monthly" as const, priority: 0.4 }] : []),
         ]),
         // Comunele, orașele și municipiile peste prag (src/lib/continut/prag.ts); reședințele sunt deja mai sus.
-        ...loadUats().filter((u) => !uatGate(u) && uatPath(u) !== seatPath(loadCounties().find((c) => c.slug === u.countySlug)!))
-          .map((u): SitemapUrl => ({ path: uatPath(u), lastModified: UATS_UPDATED, changeFrequency: "monthly", priority: u.kind === "c" ? 0.3 : 0.4 })),
+        ...loadUats().filter((u) => !uatGate(u, () => published.has(uatPath(u))) && uatPath(u) !== seatPath(loadCounties().find((c) => c.slug === u.countySlug)!))
+          .map((u): SitemapUrl => ({ path: uatPath(u), lastModified: (u.kind === "c" ? published.get(uatPath(u)) : null) ?? UATS_UPDATED, changeFrequency: "monthly", priority: u.kind === "c" ? 0.3 : 0.4 })),
       ],
     },
   ];
@@ -103,7 +107,7 @@ export function indexXml(groups: SitemapGroup[]): string {
 }
 
 /** /sitemap.xml: un singur fișier sau indexul, după numărul de adrese. */
-export function mainSitemapXml(groups = sitemapGroups()): string {
+export function mainSitemapXml(groups: SitemapGroup[] = sitemapGroups()): string {
   const all = groups.flatMap((g) => g.urls);
   return all.length > INDEX_LIMIT ? indexXml(groups) : urlsetXml(all);
 }

@@ -25,8 +25,8 @@ export type AuditPage = {
 
 const SUFFIX = " | Cartea Neamului";
 
-export function auditPages(): AuditPage[] {
-  const inSitemap = new Set(sitemapGroups().flatMap((g) => g.urls.map((u) => u.path)));
+export function auditPages(published: Map<string, Date> = new Map()): AuditPage[] {
+  const inSitemap = new Set(sitemapGroups(published).flatMap((g) => g.urls.map((u) => u.path)));
   const out: AuditPage[] = [];
   const push = (p: Omit<AuditPage, "cluster" | "inSitemap">) => out.push({ ...p, title: fitTitle(p.title), cluster: clusterOf(p.path), inSitemap: inSitemap.has(p.path) });
 
@@ -48,7 +48,7 @@ export function auditPages(): AuditPage[] {
     const sp = seatPath(c);
     if (sp) push({ path: sp, title: `${c.seat}: unde cauți actele strămoșilor${SUFFIX}`, description: null, words: null, indexable: true, gate: null, category: "oraș" });
     for (const u of loadUats().filter((x) => x.countySlug === c.slug && uatPath(x) !== sp)) {
-      const gate = uatGate(u);
+      const gate = uatGate(u, () => published.has(uatPath(u)));
       push({ path: uatPath(u), title: uatTitle(u, c), description: uatDescription(u, c), words: null, indexable: !gate, gate, category: u.kind === "c" ? "comună" : "oraș" });
     }
   }
