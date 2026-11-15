@@ -7,6 +7,7 @@ import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
 import { nameGate, uatGate } from "@/lib/continut/prag";
 import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
+import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
  * Harta site-ului (sitemap.xml). Cât timp are câteva sute de adrese e un singur fișier; peste INDEX_LIMIT devine un index
@@ -57,6 +58,21 @@ function languagesGroup(): SitemapGroup {
 }
 
 /**
+ * Paginile pentru diaspora, câte un fișier pe limbă (Daniel, 15.11.2026: „sitemap pe limbă”): /sitemaps/diaspora-ro.xml,
+ * diaspora-en.xml, diaspora-it.xml… Fiecare pagină apare în limbile în care e scrisă, cu toate variantele ei (hreflang);
+ * statele și provinciile fără text propriu nu intră.
+ */
+function diasporaGroups(): SitemapGroup[] {
+  return HUB_LANGS.map((lang) => ({
+    name: `diaspora-${lang}`, label: `Diaspora (${lang})`,
+    urls: diasporaEntries().filter((e) => e.indexable && e.langs.includes(lang)).flatMap((e) => LOCALES_OF[lang].map((loc): SitemapUrl => ({
+      path: localizedPath(e.path, loc), lastModified: DIASPORA_UPDATED, changeFrequency: "monthly",
+      priority: e.kind === "hub" ? 0.6 : e.kind === "region" ? 0.4 : 0.5, alternates: alternatesFor(e.path, e.langs),
+    }))),
+  })).filter((g) => g.urls.length);
+}
+
+/**
  * `published`: comunele publicate de motorul SEO (adresa → data ultimei schimbări), citite din bază de rutele sitemap-ului.
  * Fără el (teste, Centrul SEO), comunele nu apar: intră doar cele publicate.
  */
@@ -86,6 +102,7 @@ export function sitemapGroups(published: Map<string, Date> = new Map()): Sitemap
           .map((u): SitemapUrl => ({ path: uatPath(u), lastModified: (u.kind === "c" ? published.get(uatPath(u)) : null) ?? UATS_UPDATED, changeFrequency: "monthly", priority: u.kind === "c" ? 0.3 : 0.4 })),
       ],
     },
+    ...diasporaGroups(),
   ];
 }
 

@@ -369,6 +369,14 @@ export const FUNCTIONS: Fn[] = [
     env: ["GSC_SERVICE_ACCOUNT_JSON"],
   },
   {
+    key: "diaspora", name: "Pagini pentru diaspora", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor; regula de ton (D06) se aplică.",
+    what: "/diaspora: 18 țări (istoria emigrației, acte din România cerute din străinătate, arhive locale, comunități), cele 50 de state SUA și 13 provincii canadiene (în Google doar cele cu text propriu), orașe mari și 4 pagini speciale (rădăcini evreiești, moldoveni în Italia și Israel, sași și șvabi, maghiari din Transilvania). Fiecare pagină e scrisă în ro, en și limba țării (it, es, de, fr, he, hu), cu hreflang și sitemap pe limbă (/sitemaps/diaspora-<limbă>.xml).",
+    engine: ["src/lib/diaspora/index.ts", "src/lib/diaspora/tari.ts", "src/lib/diaspora/america.ts", "src/lib/diaspora/teme.ts", "src/lib/diaspora/ui.ts", "src/components/diaspora/DiasporaPages.tsx"],
+    pages: ["/diaspora", "/diaspora/[a]", "/diaspora/[a]/[b]"],
+    api: ["/sitemaps/[file]"],
+    tests: ["tests/diaspora.test.ts"],
+  },
+  {
     key: "istorie", name: "Istoria umanității și paginile istorice", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Regula de ton (D06) se aplică.",
     what: "/istoria-umanitatii, /genealogii-vechi, /libertatea-de-a-crede.",
     engine: ["src/lib/firul-vremii.ts", "src/lib/adam-hristos.ts", "src/lib/istoria-bisericii.ts"],
