@@ -73,6 +73,7 @@ export const config = {
     // Secțiunile publice (src/lib/public-sections.ts): hubul și paginile din el.
     "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug", "/nume", "/nume/:slug",
     "/localitati", "/localitati/:judet", "/localitati/:judet/:localitate",
+    "/diaspora", "/diaspora/:a", "/diaspora/:a/:b",
     // Aceleași pagini, în celelalte limbi.
     "/:lang(en|en-us|fr|es|nl|de|it|hu|he)", "/:lang(en|en-us|fr|es|nl|de|it|hu|he)/:path*",
     "/pub", "/pub/:path*"],

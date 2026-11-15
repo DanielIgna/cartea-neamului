@@ -1,3 +1,4 @@
+import { LOCALES_OF as DIASPORA_LOCALES_OF, descriptionOf as diasporaDescription, entries as diasporaEntries, titleOf as diasporaTitle } from "@/lib/diaspora";
 import { LANGUAGE_NAMES, LOCALES, localizedPath } from "@/i18n/locales";
 import { PRIVATE_PREFIXES, PUBLIC_PAGES } from "./public-pages";
 import { loadCollection } from "./continut/colectii";
@@ -51,6 +52,11 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
       const gate = uatGate(u, () => published.has(uatPath(u)));
       push({ path: uatPath(u), title: uatTitle(u, c), description: uatDescription(u, c), words: null, indexable: !gate, gate, category: u.kind === "c" ? "comună" : "oraș" });
     }
+  }
+  // Diaspora: fiecare pagină în fiecare limbă în care e scrisă (src/lib/diaspora); statele fără text propriu rămân noindex.
+  for (const e of diasporaEntries()) for (const lang of e.langs) for (const loc of DIASPORA_LOCALES_OF[lang]) {
+    const gate = e.indexable ? null : "prea puțin text propriu (stat sau provincie fără informații despre români)";
+    push({ path: localizedPath(e.path, loc), title: diasporaTitle(e, lang), description: diasporaDescription(e, lang), words: null, indexable: !gate, gate, category: "diaspora" });
   }
   return out;
 }

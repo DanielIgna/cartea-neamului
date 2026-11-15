@@ -8,6 +8,7 @@ export const PUBLIC_SECTIONS = [
   { key: "glosar", hub: "/glosar", label: "Glosar de genealogie", depth: 1 },
   { key: "nume", hub: "/nume", label: "Nume de familie", depth: 1 },
   { key: "localitati", hub: "/localitati", label: "Localități", depth: 2 },
+  { key: "diaspora", hub: "/diaspora", label: "Diaspora", depth: 2 },
 ] as const;
 export type SectionKey = (typeof PUBLIC_SECTIONS)[number]["key"];
 

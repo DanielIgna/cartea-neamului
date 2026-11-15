@@ -23,6 +23,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       <Link href="/glosar">{t("glossary")}</Link>
       <Link href="/nume">{t("surnames")}</Link>
       <Link href="/localitati">{t("places")}</Link>
+      <Link href="/diaspora">{t("diaspora")}</Link>
       <Link href="/contact">{tc("menu")}</Link>
       <Link href="/istoria-umanitatii">{th("humanity")}</Link>
       <Link href="/genealogii-vechi">{th("genealogies")}</Link>

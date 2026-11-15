@@ -38,6 +38,7 @@ export const es: Catalog = {
     glossary: "Glosario",
     surnames: "Apellidos",
     places: "Archivos por provincia",
+    diaspora: "Rumanos por el mundo",
     cookieLead: "Solo cookies estrictamente necesarias.",
     cookieText: "Las usamos para mantener tu sesión iniciada y recordar el idioma y el tema elegidos. Sin publicidad ni rastreo: contamos las visitas de forma anónima, sin cookies, por eso no te pedimos el consentimiento.",
     cookieMore: "Ver la lista",
