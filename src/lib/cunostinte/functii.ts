@@ -359,13 +359,13 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "seo-pagini", name: "Pagini publice și Google", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor.",
-    what: "Nume de familie, localități, ghiduri, glosar, sitemap-uri, pragul de indexare (noindex pentru paginile subțiri) și centrul SEO pe file: Prezentare, Cuvinte cheie, Pagini, Indexare, Secțiuni, Inspector URL, Sitemap, Alerte, Setări, cu CSV.",
-    engine: ["src/lib/seo.ts", "src/lib/seo-audit.ts", "src/lib/seo-inspector.ts", "src/lib/seo-cuvinte.ts", "src/lib/seo-clustere.ts", "src/lib/continut/prag.ts", "src/lib/public-pages.ts", "src/lib/page-metadata.ts"],
+    what: "Nume de familie, localități (județe și toate cele 3.180 de comune, orașe și municipii, cu satele, populația 2021, vecinii și familiile cu rădăcini acolo de la 5 arbori), ghiduri, glosar, sitemap-uri, pragul de indexare (noindex pentru paginile subțiri) și centrul SEO pe file: Prezentare, Cuvinte cheie, Pagini, Indexare, Secțiuni, Inspector URL, Sitemap, Alerte, Setări, cu CSV.",
+    engine: ["src/lib/seo.ts", "src/lib/seo-audit.ts", "src/lib/seo-inspector.ts", "src/lib/seo-cuvinte.ts", "src/lib/seo-clustere.ts", "src/lib/continut/prag.ts", "src/lib/continut/uat.ts", "src/lib/continut/uat-text.ts", "src/lib/continut/localitati-statistici.ts", "src/lib/public-pages.ts", "src/lib/page-metadata.ts"],
     pages: ["/nume", "/nume/[slug]", "/localitati", "/localitati/[judet]", "/localitati/[judet]/[localitate]", "/ghid", "/ghid/[slug]", "/glosar", "/glosar/[slug]"],
     api: ["/sitemap.xml", "/sitemaps/[file]", "/admin/seo/csv"],
     automations: ["sitemap"],
     dashboard: "/admin/seo",
-    tests: ["tests/seo.test.ts", "tests/localitati.test.ts"],
+    tests: ["tests/seo.test.ts", "tests/localitati.test.ts", "tests/localitati-statistici.test.ts"],
     env: ["GSC_SERVICE_ACCOUNT_JSON"],
   },
   {

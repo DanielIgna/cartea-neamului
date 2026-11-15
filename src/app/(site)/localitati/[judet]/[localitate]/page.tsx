@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { SeatPage, seatMetadata } from "@/components/continut/LocalityPages";
+import { LocalityPage, localityMetadata } from "@/components/continut/LocalityPages";
 
 type Props = { params: Promise<{ judet: string; localitate: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await params;
-  return seatMetadata(p.judet, p.localitate);
+  return localityMetadata(p.judet, p.localitate);
 }
 
-/** Pagina reședinței unui județ. */
+/** Pagina unei localități (comună, oraș, municipiu); reședința județului are pagina ei. */
 export default async function Seat({ params }: Props) {
   const p = await params;
-  return <SeatPage slug={p.judet} seat={p.localitate} />;
+  return <LocalityPage judet={p.judet} localitate={p.localitate} />;
 }
