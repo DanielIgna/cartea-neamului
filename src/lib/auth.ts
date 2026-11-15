@@ -1,4 +1,5 @@
-import { recordConversion } from "./conversii";
+import { attributionOf, recordConversion } from "./conversii";
+import { checkReward, referralOnSignup } from "./invitatii";
 import { recordReferral } from "./parteneri-crm";
 import { and, eq, isNull } from "drizzle-orm";
 import { betterAuth } from "better-auth";
@@ -71,6 +72,10 @@ export const auth = betterAuth({
   // Legătura e valabilă o oră; după ea, contul are emailul confirmat.
   emailVerification: {
     expiresIn: 60 * 60,
+    // Emailul confirmat e jumătate din dovada cerută pentru zilele din invitații.
+    afterEmailVerification: async (u) => {
+      await checkReward(db, u.id).catch((e) => console.error("invitatii: după confirmare", e));
+    },
     sendVerificationEmail: async ({ user: u, url }, request) => {
       const { sendVerifyMail } = await import("./securitate-mail");
       waitUntil(sendVerifyMail(u.id, url, request?.headers.get("cookie") ?? null).catch((e) => console.error("verify mail", e)));
@@ -97,9 +102,21 @@ export const auth = betterAuth({
         },
         after: async (u, ctx) => {
           await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e));
-          // Încă un cont nou, numărat la sursa vizitei din care a venit (Admin → Analiză → Conversii); fără legătură cu contul.
           const h = ctx?.headers ?? ctx?.request?.headers;
-          if (h && !isDemo(u.email)) await recordConversion(db, "cont", { headers: h });
+          // Programul de invitații (src/lib/invitatii.ts): fiecare cont nou primește codul lui; dacă a venit prin legătura cuiva
+          // (/i/<cod>, cookie 30 de zile), e trecut pe acela. Zilele se dau după emailul confirmat și o persoană în arbore.
+          const referred = await referralOnSignup(db, u, h).catch((e) => { console.error("invitatii: contul nou", e); return null; });
+          // Încă un cont nou, numărat la sursa vizitei din care a venit (Admin → Analiză → Conversii); fără legătură cu contul.
+          // Cel venit printr-o invitație se numără la sursa „invitatie”.
+          if (h && !isDemo(u.email)) {
+            const attr = referred ? { ...(await attributionOf(db, h)), source: "invitatie", medium: referred.via, campaign: "invitatie", attributed: true } : null;
+            await recordConversion(db, "cont", { headers: h, attr });
+          }
+          // Invitatul cu email și parolă primește din prima emailul de confirmare (Google confirmă singur emailul).
+          if (referred?.status === "asteapta" && !u.emailVerified) {
+            waitUntil(auth.api.sendVerificationEmail({ body: { email: u.email, callbackURL: "/invitatii" } }).then(() => undefined)
+              .catch((e) => console.error("invitatii: emailul de confirmare", e)));
+          }
           // Bifa separată (nebifată de la sine) pentru beneficiile de la PropManage: doar dacă omul a bifat-o în formular.
           const cookie = ctx?.headers?.get?.("cookie") ?? ctx?.request?.headers?.get("cookie");
           // Venit prin legătura sau QR-ul unui magazin partener (/r/<cod>): contul e trecut pe acel partener (City Partners).

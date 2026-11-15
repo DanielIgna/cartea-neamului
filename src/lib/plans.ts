@@ -219,7 +219,11 @@ export type Access =
   | { kind: "proba"; until: Date; daysLeft: number }
   | { kind: "expirat"; since: Date; keptUntil?: Date | null; keepable?: boolean };
 
-export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; tier?: Tier | null; exempt?: boolean; keepUntil?: Date | null }, s: PlanSettings, now = new Date()): Access {
+/**
+ * `freeUntil`: zilele gratuite câștigate prin invitații (src/lib/invitatii.ts) lungesc zilele gratuite sau primul an din beta;
+ * anul plătit se lungește direct în `paidUntil`.
+ */
+export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Date | null; tier?: Tier | null; exempt?: boolean; keepUntil?: Date | null; freeUntil?: Date | null }, s: PlanSettings, now = new Date()): Access {
   const ended = (since: Date, hadYear: boolean): Access =>
     ({ kind: "expirat", since, keptUntil: a.keepUntil && a.keepUntil > now ? a.keepUntil : null, keepable: hadYear || !!(a.keepUntil) });
   if (!s.on) return { kind: "deschis" };
@@ -230,12 +234,12 @@ export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Da
   if (a.plan === "familie" && !a.paidUntil) return { kind: "platit", until: null, tier };
   const started = s.startedAt ? new Date(s.startedAt) : now;
   if (s.betaDays > 0 && a.createdAt < started) {
-    const betaEnd = new Date(started.getTime() + s.betaDays * DAY);
+    const betaEnd = new Date(Math.max(started.getTime() + s.betaDays * DAY, a.freeUntil?.getTime() ?? 0));
     if (now < betaEnd) return { kind: "beta", until: betaEnd };
     return ended(a.paidUntil && a.paidUntil > betaEnd ? a.paidUntil : betaEnd, true);
   }
   const from = Math.max(a.createdAt.getTime(), started.getTime());
-  const trialEnd = new Date(from + s.trialDays * DAY);
+  const trialEnd = new Date(Math.max(from + s.trialDays * DAY, a.freeUntil?.getTime() ?? 0));
   if (now < trialEnd) return { kind: "proba", until: trialEnd, daysLeft: Math.ceil((trialEnd.getTime() - now.getTime()) / DAY) };
   return ended(a.paidUntil && a.paidUntil > trialEnd ? a.paidUntil : trialEnd, !!a.paidUntil);
 }
@@ -358,13 +362,13 @@ export async function treeSizes(db: Db) {
 
 /** Oamenii cu ce le trebuie pentru acces: când și-au făcut contul, dacă sunt scutiți și dacă au un arbore al lor. */
 export async function accessPeople(db: Db) {
-  const r = await db.execute(sql`select u.id, u.email, u.email_verified, u.created_at,
+  const r = await db.execute(sql`select u.id, u.email, u.email_verified, u.created_at, u.free_until,
       exists (select 1 from tree t where t.owner_id = u.id) as owns
     from "user" u`);
   return ((r.rows ?? []) as Record<string, unknown>[]).map((x) => {
     const createdAt = new Date(x.created_at as string);
     const email = String(x.email ?? "");
-    return { id: String(x.id), createdAt, ownsTree: !!x.owns, exempt: isDemo(email) || isAdminUser({ email, emailVerified: !!x.email_verified, createdAt }) };
+    return { id: String(x.id), createdAt, freeUntil: x.free_until ? new Date(x.free_until as string) : null, ownsTree: !!x.owns, exempt: isDemo(email) || isAdminUser({ email, emailVerified: !!x.email_verified, createdAt }) };
   });
 }
 
@@ -382,7 +386,7 @@ export async function planOverview(db: Db, now = new Date()) {
   const access = new Map<string, Access>();
   for (const p of people) {
     const ap = plans.get(p.id);
-    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt,
+    access.set(p.id, accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt, freeUntil: p.freeUntil,
       keepUntil: ap?.keepUntil ? new Date(ap.keepUntil) : null }, sim, now));
   }
   const planOf = (uid: string | null): Plan => (uid ? plans.get(uid)?.plan ?? "gratuit" : "gratuit");

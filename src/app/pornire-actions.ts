@@ -12,6 +12,8 @@ import { treeStart } from "@/lib/plata";
 import { createFamilyTree, StartInput } from "@/lib/family-start";
 import { normalizeTypedDate } from "@/lib/dates";
 import { getLocale, getT } from "@/i18n/server";
+import { after } from "next/server";
+import { checkReward } from "@/lib/invitatii";
 
 /** „Pornește arborele pas cu pas”: face arborele cu omul, părinții și bunicii lui, apoi îl duce la pagina de bun venit. */
 export async function startFamilyTree(input: StartInput): Promise<{ error?: string }> {
@@ -31,6 +33,8 @@ export async function startFamilyTree(input: StartInput): Promise<{ error?: stri
   if (!(await treeStart(db, me.id)).ok) return { error: t("trialOneTree") };
   const r = await createFamilyTree(db, me.id, { ...v, me: fix(v.me)!, father: fix(v.father), mother: fix(v.mother), ff: fix(v.ff), fm: fix(v.fm), mf: fix(v.mf), mm: fix(v.mm) });
   if (!isDemo(me.email) && !isAdminUser(me)) await recordConversion(db, "arbore", { headers: await headers(), label: "pornire ghidată" });
+  // Venit printr-o invitație? Acum are rude în arbore: poate e gata dovada pentru zilele gratuite.
+  after(() => checkReward(db, me.id).then(() => undefined).catch((e) => console.error("invitatii", e)));
   revalidatePath("/");
   redirect(`/arbore/${r.treeId}/bun-venit`);
 }

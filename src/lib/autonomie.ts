@@ -173,7 +173,7 @@ export async function trialEnding(db: Db, now = new Date()) {
   for (const p of people) {
     if (done.has(p.id)) continue;
     const ap = plans.get(p.id);
-    const a = accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt,
+    const a = accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt, freeUntil: p.freeUntil,
       keepUntil: ap?.keepUntil ? new Date(ap.keepUntil) : null }, s, now);
     if (a.kind === "proba" && a.until.getTime() - now.getTime() <= 2 * DAY) due.push({ id: p.id, until: a.until });
   }

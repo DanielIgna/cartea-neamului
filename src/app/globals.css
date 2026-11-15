@@ -1937,3 +1937,16 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 /* Nota de pe paginile încă netraduse (UntranslatedNote.tsx). */
 .untranslated-note{margin:12px 0 4px;padding:10px 14px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;background:var(--surface);color:var(--muted);font-size:15px}
 [dir=rtl] .untranslated-note{border-left:1px solid var(--line);border-right:4px solid var(--accent)}
+/* Programul de invitații: „Invitațiile mele”, pagina celui invitat, veștile din cont (src/lib/invitatii.ts) */
+.invites label.check{display:flex;gap:8px;align-items:flex-start;margin:6px 0}
+.invite-steps{margin:8px 0 0;padding-inline-start:20px;display:grid;gap:12px}
+.invite-steps .btn{margin-top:6px}
+.invite-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.invite-list li{padding-top:10px;border-top:1px solid var(--line)}
+.invite-list li:first-child{border-top:0;padding-top:0}
+.invite-share-box .linkbox input{min-width:0;flex:1 1 220px}
+.user-notices{display:grid;gap:8px;margin:0 0 14px}
+.user-notice{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;border:1px solid var(--accent);background:var(--accent-soft);border-radius:10px;padding:10px 14px}
+.user-notice p{margin:0;flex:1 1 260px}
+.user-notice .actions{display:flex;gap:8px;flex-wrap:wrap}
+.invite-land{max-width:560px;margin:0 auto}

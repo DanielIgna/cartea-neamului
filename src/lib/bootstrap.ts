@@ -194,6 +194,8 @@ const ADDITIVE = [
   sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_user_idx" ON "propmanage_invite" ("user_id")`,
   sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_partner_idx" ON "propmanage_invite" ("partner_id","status")`,
   sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_batch_idx" ON "propmanage_invite" ("batch_id","status")`,
+  // Programul de invitații (migrația 0034): fără coloana asta, intrarea în cont ar cădea.
+  sql`ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "free_until" timestamp`,
 ];
 
 export async function applySchema(target: Db) {

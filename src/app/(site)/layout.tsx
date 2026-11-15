@@ -27,6 +27,7 @@ import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
+import UserNotices from "@/components/UserNotices";
 import KeepNotice, { KEEP_NOTICE_COOKIE } from "@/components/KeepNotice";
 import { planSettings } from "@/lib/plans";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
@@ -102,6 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
             {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
+            {me && <UserNotices userId={me.id} />}
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
