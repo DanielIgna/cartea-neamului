@@ -103,14 +103,19 @@ export function wikiLines(u: Uat, f: WikiFacts): { lines: string[]; guides: stri
   const what = u.kind === "c" ? "comuna" : u.kind === "m" ? "municipiul" : "orașul";
   if (f.census?.prevPop && f.census.prevYear) {
     const now = u.pop;
-    const trend = now < f.census.prevPop * 0.97 ? "a scăzut" : now > f.census.prevPop * 1.03 ? "a crescut" : "a rămas aproape la fel";
-    lines.push(`Populația ${trend}: ${fmt(f.census.prevPop)} de oameni în ${f.census.prevYear}, ${fmt(f.census.pop)} în ${f.census.year} și ${fmt(now)} la recensământul din 2021. ${trend === "a scăzut" ? "Mulți dintre cei plecați au rude rămase acolo, care știu încă poveștile familiei." : ""}`.trim());
+    // Articolele noi au deja recensământul din 2021 (atunci „anterior” e 2011); cele vechi se opresc la 2011.
+    const series: [number, number][] = f.census.year >= 2021 ? [[f.census.prevYear, f.census.prevPop], [2021, now]] : [[f.census.prevYear, f.census.prevPop], [f.census.year, f.census.pop], [2021, now]];
+    const first = series[0][1];
+    const trend = now < first * 0.97 ? "a scăzut" : now > first * 1.03 ? "a crescut" : "a rămas aproape la fel";
+    const change = first ? Math.round(((now - first) / first) * 100) : 0;
+    lines.push(`Populația ${trend}${Math.abs(change) >= 3 ? ` cu ${Math.abs(change)}%` : ""}: ${series.map(([y, p]) => `${fmt(p)} de oameni în ${y}`).join(", ")}. ${trend === "a scăzut" ? "Mulți dintre cei plecați au rude rămase acolo, care știu încă poveștile familiei." : trend === "a crescut" && change > 30 ? "Mulți locuitori sunt veniți de curând; familiile vechi ale locului se găsesc mai ales în registrele de dinainte de 1990." : ""}`.trim());
     facts.push("populația la recensămintele trecute");
   }
   if (f.ethnic.length) {
     const [first, ...rest] = f.ethnic.filter((x) => !/necunoscut/.test(x[0]));
     if (first) {
-      lines.push(`La recensământul din ${f.census?.year ?? 2011}, majoritatea locuitorilor din ${what} ${u.name} s-au declarat ${first[0]} (${p0(first[1])})${rest.length ? `, iar ceilalți mai ales ${rest.slice(0, 3).map(([n, v]) => `${n} (${p0(v)})`).join(", ")}` : ""}.`);
+      const known = f.ethnic.reduce((n, [, v]) => n + v, 0);
+      lines.push(`La recensământul din ${f.census?.year ?? 2011}, ${first[1] >= 50 ? "majoritatea locuitorilor" : "cei mai mulți dintre locuitorii"} din ${what} ${u.name} s-au declarat ${first[0]} (${p0(first[1])})${rest.length ? `; au mai fost ${rest.slice(0, 3).map(([n, v]) => `${n} (${p0(v)})`).join(", ")}` : ""}${known < 95 ? `, iar ceilalți nu și-au declarat etnia` : ""}.`);
       const tips = f.ethnic.filter(([, v]) => v >= 5).flatMap(([n]) => ETHNIC_TIP.filter(([re]) => re.test(n)).map(([, t]) => t));
       if (tips.length) lines.push(`Pentru cine caută acte de aici: ${[...new Set(tips)].join("; ")}.`);
       facts.push("structura etnică");

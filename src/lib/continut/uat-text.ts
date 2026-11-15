@@ -4,6 +4,13 @@ import { KIND_NAME, countySeatUat, direction, distanceKm, loadUats, nearestTown,
 import { plainPlace } from "@/lib/place-key";
 
 /** Bucățile de text ale paginilor de localități, fără server (le folosesc și Centrul SEO și testele). */
+/** Unde e un sat față de satul de reședință („ · la 3,2 km spre nord de Sâncraiu”), ca să poată fi găsit pe hartă. */
+export function villageWhere(u: Uat, v: Uat["villages"][number]) {
+  const seat = u.villages.find((x) => x.seat) ?? u.villages[0];
+  if (v === seat) return u.kind === "c" ? " · reședința comunei" : " · centrul";
+  const d = distanceKm(v, seat);
+  return d < 0.5 ? "" : ` · la ${km(d)} km spre ${direction(v, seat)} de ${seat.name}`;
+}
 /** „1 locuitor”, „19 locuitori”, „20 de locuitori”, „1.234 de locuitori”. */
 export function countOf(n: number, one: string, many: string) {
   const r = n % 100;
@@ -100,7 +107,7 @@ export function uatPageText(u: Uat, c: County, stat?: { trees: number; surnames:
     u.villages.length > 2 ? "Registrele bisericești: satele mai mari aveau de obicei parohia lor, iar cele mici erau trecute la parohia unui sat vecin; află mai întâi de ce parohie ținea satul familiei."
       : "Registrele bisericești: află de ce parohie ținea familia și ce confesiune avea; fiecare confesiune își ținea registrele separat.",
     ...groups.map((g) => g.civil),
-    ...u.villages.map((v) => `${v.name}${v.seat ? " (reședința)" : ""}`),
+    ...u.villages.map((v) => `${v.name}${villageWhere(u, v)}`),
     ...(same.uats.length || same.villages ? [`Mai există ${same.uats.length} unități și ${same.villages} sate cu numele ${u.name}: ${same.uats.slice(0, 8).map((x) => `${x.name} (${getCounty(x.countySlug)?.name})`).join(", ")}. Când un act scrie doar „${u.name}”, verifică județul.`] : []),
     ...(stat ? [`${stat.trees} arbori de familie din Cartea Neamului au strămoși de aici.`, ...stat.surnames.map((s) => s.name)] : []),
     ...near.map((x) => `${x.u.name}, ${km(x.km)} km spre ${direction(x.u, u)}`),

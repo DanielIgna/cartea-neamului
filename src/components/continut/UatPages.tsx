@@ -18,7 +18,7 @@ import { pageData, publishedMap } from "@/lib/motor-seo/motor";
 import { hasFacts, wikiAttribution, wikiLines } from "@/lib/motor-seo/wikipedia";
 import { plainPlace } from "@/lib/place-key";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
-import { countOf, km, uatDescription, uatIntro, uatSameName, uatTitle } from "@/lib/continut/uat-text";
+import { countOf, km, uatDescription, uatIntro, uatSameName, uatTitle, villageWhere } from "@/lib/continut/uat-text";
 export { countOf };
 import { SITE_URL } from "@/lib/site-url";
 import { db } from "@/db";
@@ -50,8 +50,8 @@ export async function UatDetails({ u, c }: { u: Uat; c: County }) {
   return (
     <>
       <h2>{u.kind === "c" ? "Satele comunei" : `Localitățile ${u.kind === "m" ? "municipiului" : "orașului"}`}</h2>
-      <ul className="hub-list hub-cols">
-        {u.villages.map((v) => <li key={v.siruta}>{v.name}{v.seat && <span className="muted"> · {u.kind === "c" ? "reședința comunei" : "centrul"}</span>}</li>)}
+      <ul className="hub-list">
+        {u.villages.map((v) => <li key={v.siruta}>{v.name}<span className="muted">{villageWhere(u, v)}</span></li>)}
       </ul>
       {(same.uats.length > 0 || same.villages > 0) && (
         <>
