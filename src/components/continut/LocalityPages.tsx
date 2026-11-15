@@ -207,7 +207,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
 }
 
 /** /localitati/<județ>/<localitate>: reședința județului are pagina ei, celelalte localități pagina generală. */
-export function localityMetadata(judet: string, localitate: string): Metadata {
+export async function localityMetadata(judet: string, localitate: string): Promise<Metadata> {
   const c = getCounty(judet);
   return c?.seatSlug === localitate ? seatMetadata(judet, localitate) : uatMetadata(judet, localitate);
 }

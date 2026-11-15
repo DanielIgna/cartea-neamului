@@ -4,6 +4,7 @@ import { adminReady } from "@/lib/admin-access";
 import { SITE_URL } from "@/lib/site-url";
 import { explainGscError, gscByPath, gscSnapshot, seoSettings } from "@/lib/seo";
 import { auditAlerts, auditPages } from "@/lib/seo-audit";
+import { publishedMap } from "@/lib/motor-seo/motor";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export async function GET(req: Request) {
   const s = await seoSettings(db);
   const gsc = await gscSnapshot(s, SITE_URL, 28);
   const g = gsc.state === "legat" ? gscByPath(gsc) : undefined;
-  const pages = auditPages();
+  const pages = auditPages(await publishedMap(db));
   const out: string[] = [];
   if (what === "alerte") {
     out.push(line("nivel", "cod", "titlu", "text", "ce faci", "pagini"));

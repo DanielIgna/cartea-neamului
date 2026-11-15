@@ -12,7 +12,10 @@ import { conversionsBy } from "@/lib/conversii";
 import { rangeOf } from "@/lib/analiza";
 import { sql } from "drizzle-orm";
 import { AdminNav, Stat, Status, day, num } from "@/components/admin/ui";
-import { SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { SeoEngineForm, SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { STATUS_LABEL, publishedMap, engineSettings, engineStats, runBatch, syncQueue } from "@/lib/motor-seo/motor";
+import { MAX_SIMILARITY, MIN_FACTS, MIN_UNIQUE_WORDS } from "@/lib/motor-seo/calitate";
+import { automationSwitches } from "@/lib/autonomie";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -25,7 +28,7 @@ export const metadata = { title: "SEO · Admin" };
 const TABS = [
   { key: "prezentare", label: "Prezentare" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
   { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "inspector", label: "Inspector URL" },
-  { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
+  { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 const PERIODS = [7, 28, 90] as const;
@@ -44,7 +47,7 @@ const VERDICT: Record<string, { label: string; ok: boolean; warn?: boolean }> = 
   FAIL: { label: "cu probleme", ok: false }, EROARE: { label: "nu am putut verifica", ok: false, warn: true },
 };
 
-type SP = { t?: string; zile?: string; q?: string; grupa?: string; stare?: string; url?: string };
+type SP = { t?: string; zile?: string; q?: string; grupa?: string; stare?: string; url?: string; proba?: string };
 
 export default async function AdminSeo({ searchParams }: { searchParams: Promise<SP> }) {
   await requireAdmin("/admin/seo");
@@ -56,7 +59,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
   const gsc = await gscSnapshot(s, SITE_URL, days);
   const gscErr = gsc.error ? explainGscError(gsc.error) : null;
   const gscPages = gsc.state === "legat" ? gscByPath(gsc) : undefined;
-  const pages = auditPages();
+  const pages = auditPages(await publishedMap(db));
   const alerts = auditAlerts(pages, { gscState: gsc.state, gscError: gscErr, gscPages });
   const href = (o: Partial<SP>) => {
     const q = new URLSearchParams();
@@ -96,6 +99,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} />}
       {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "inspector" && await Inspector({ sp, pages, gscOn: gsc.state === "legat" })}
+      {tab === "motor" && await Engine({ sp, href })}
       {tab === "sitemap" && await SitemapTab({ gscOn: gsc.state === "legat" })}
       {tab === "alerte" && <Alerts alerts={alerts} />}
       {tab === "setari" && <Settings gsc={gsc} gscErr={gscErr} s={s} />}
@@ -522,5 +526,74 @@ function Settings({ gsc, gscErr, s }: { gsc: Awaited<ReturnType<typeof gscSnapsh
       </div>
       <p className="muted" style={{ fontSize: 13 }}>Paginile principale: {PUBLIC_PAGES.length}. Zonele private oprite în robots.txt: {PRIVATE_PREFIXES.join(", ")}.</p>
     </>
+  );
+}
+
+/* ------------------------------ Motorul de publicare ------------------------------ */
+
+async function Engine({ sp, href }: { sp: SP; href: (o: Partial<SP>) => string }) {
+  const [settings, switches] = await Promise.all([engineSettings(db), automationSwitches(db)]);
+  let stats: Awaited<ReturnType<typeof engineStats>> | null = null, err: string | null = null;
+  try { await syncQueue(db); stats = await engineStats(db); } catch (e) { err = e instanceof Error ? e.message : String(e); }
+  const probe = sp.proba === "1" && stats ? await runBatch(db, { limit: 20, dryRun: true }) : null;
+  const count = (status: string) => stats?.byStatus.filter((r) => r.status === status).reduce((n, r) => n + Number(r.n), 0) ?? 0;
+  const idx = stats?.indexed.reduce((a, r) => ({ yes: a.yes + Number(r.yes), no: a.no + Number(r.no) }), { yes: 0, no: 0 }) ?? { yes: 0, no: 0 };
+  const rate = idx.yes + idx.no ? Math.round((idx.yes / (idx.yes + idx.no)) * 100) : null;
+  return (
+    <div className="stack">
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Motorul de publicare</h2>
+        <p className="muted">Paginile de localități sunt deja în site; motorul hotărăște când intră fiecare în Google. Zilnic ia următoarele {settings.perDay} comune (cele mai mari întâi), adună datele publice din Wikipedia (rescrise de noi, cu atribuire), le trece prin control și le publică sau le lasă noindex cu motivul. Control: cel puțin {MIN_UNIQUE_WORDS} de cuvinte unice, {MIN_FACTS} date proprii și cel mult {MAX_SIMILARITY}% asemănare cu paginile vecine.</p>
+        <p style={{ marginBottom: 0 }}>
+          <Status ok={!!switches["motor-seo"]} warn={!switches["motor-seo"]}>{switches["motor-seo"] ? "Pornit: rulează zilnic la 7:15" : "Oprit: nu publică nimic singur"}</Status>{" "}
+          <Link href="/admin/autonomie">{switches["motor-seo"] ? "Oprește-l" : "Pornește-l"} din Autonomie →</Link>
+        </p>
+        {err && <p style={{ color: "var(--red)" }}>Coada nu poate fi citită: {err}</p>}
+      </div>
+      <div className="an-stats">
+        <Stat label="Publicate" value={num(count("publicat"))} hint="în Google și în sitemap" tone="ok" />
+        <Stat label="În așteptare" value={num(count("asteptare"))} hint={`cam ${Math.ceil(count("asteptare") / Math.max(1, settings.perDay))} zile la ritmul de acum`} />
+        <Stat label="Noindex" value={num(count("noindex"))} hint="n-au trecut controlul" tone={count("noindex") ? "warn" : undefined} />
+        <Stat label="Indexate la Google" value={rate == null ? "—" : `${rate}%`} hint={rate == null ? "se verifică după 7 zile de la publicare" : `${num(idx.yes)} din ${num(idx.yes + idx.no)} verificate`} tone={rate == null ? undefined : rate < 50 ? "bad" : rate < 70 ? "warn" : "ok"} />
+      </div>
+      {rate != null && rate < 50 && <div className="card" style={{ borderColor: "var(--red)" }}><b>Google ia mai puțin de jumătate din pagini.</b> Ritmul a scăzut singur la jumătate; merită îmbogățite paginile înainte de a publica mai multe.</div>}
+      <div className="card">
+        <h3 style={{ marginTop: 0 }}>Ritmul</h3>
+        <SeoEngineForm perDay={settings.perDay} min={settings.min} max={settings.max} autoRamp={settings.autoRamp} />
+        {settings.lastRamp && <p className="muted small" style={{ marginBottom: 0 }}>Ultima schimbare: {settings.lastRamp}</p>}
+      </div>
+      {stats && stats.perDay.length > 0 && (
+        <div className="card"><h3 style={{ marginTop: 0 }}>Publicate pe zi (30 de zile)</h3>
+          <table className="table"><tbody>{stats.perDay.map((d) => <tr key={d.day}><td>{day(d.day)}</td><td>{num(Number(d.n))}</td></tr>)}</tbody></table></div>
+      )}
+      <div className="card">
+        <h3 style={{ marginTop: 0 }}>Probă pe 20 de pagini</h3>
+        <p className="muted">Generează următoarele 20 de comune din coadă exact ca motorul, dar fără să publice nimic.</p>
+        <Link className="btn" href={href({ proba: "1" })}>Rulează proba</Link>
+        {probe && <EngineTable rows={probe.map((p) => ({ path: p.path, name: `${p.name} (${p.county})`, status: p.status, words: p.quality.words, unique: p.quality.unique, facts: p.quality.facts, similarity: p.quality.similarity, reasons: p.wikiError ? `Wikipedia: ${p.wikiError}` : p.quality.reasons.join("; "), wiki: p.wiki }))} />}
+      </div>
+      {stats && stats.recent.length > 0 && (
+        <div className="card"><h3 style={{ marginTop: 0 }}>Ultimele generate</h3>
+          <EngineTable rows={stats.recent.map((r) => ({ path: r.path, name: r.path.split("/").pop()!, status: r.status, words: r.words, unique: r.uniqueWords, facts: r.facts, similarity: r.similarity, reasons: r.reasons, wiki: (r.data as { wiki?: { title?: string } } | null)?.wiki?.title ?? null }))} /></div>
+      )}
+    </div>
+  );
+}
+
+function EngineTable({ rows }: { rows: { path: string; name: string; status: string; words: number | null; unique: number | null; facts: number | null; similarity: number | null; reasons: string | null; wiki: string | null }[] }) {
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <table className="table">
+        <thead><tr><th>Pagina</th><th>Stare</th><th>Cuvinte / unice</th><th>Date proprii</th><th>Asemănare</th><th>Wikipedia</th><th>De ce</th></tr></thead>
+        <tbody>{rows.map((r) => (
+          <tr key={r.path}>
+            <td><a href={r.path} target="_blank" rel="noreferrer">{r.name}</a></td>
+            <td><Status ok={r.status === "publicat"} warn={r.status !== "publicat"}>{STATUS_LABEL[r.status] ?? r.status}</Status></td>
+            <td>{r.words ?? "—"} / {r.unique ?? "—"}</td><td>{r.facts ?? "—"}</td><td>{r.similarity == null ? "—" : `${r.similarity}%`}</td>
+            <td className="small">{r.wiki ?? "—"}</td><td className="small muted">{r.reasons ?? ""}</td>
+          </tr>
+        ))}</tbody>
+      </table>
+    </div>
   );
 }
