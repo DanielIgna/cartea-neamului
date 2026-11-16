@@ -12,6 +12,7 @@ import { enGBResurse } from "./resurse/en-GB";
 import { enGBCadou } from "./cadou/en-GB";
 import { enGBCrestere } from "./crestere/en-GB";
 import { enGBInvitatii } from "./invitatii/en-GB";
+import { enGBConversie } from "./conversie/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -179,6 +180,7 @@ export const enGB: Catalog = {
     startText: "Four short steps: you, your parents, your grandparents, and at the end the tree is ready, with everyone linked. Leave blank what you don’t know.",
   },
   AuthForm: {
+    mailNote: "During the free days we send you a few short emails about your account (at most 6, over two weeks). Unsubscribe with one click.",
     signUpTitle: "New account",
     signUpTrial: "The first 7 days are free, no card needed. During them you can start your tree, and your relatives can see it. For them to write too, you choose a plan.",
     signInTitle: "Sign in",
@@ -429,6 +431,7 @@ export const enGB: Catalog = {
   ...enGBCadou,
   ...enGBCrestere,
   ...enGBInvitatii,
+  ...enGBConversie,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,
@@ -439,7 +442,7 @@ export const enGB: Catalog = {
     trial: "{days, plural, one {You have one free day left} other {You have # free days left}}. After that, to keep adding and editing, a year costs {price}.",
     ended: "<b>Your free days are over.</b> You can still see the tree and nothing is lost, but to add or change anything, a year costs {price}.",
     pay: "I want to continue",
-    plans: "What stays free: you can see the whole tree and download it at any time. To add again: Basic {basic} a year, or Family {familie} a year, where relatives who write don’t pay separately.",
+    plans: "What stays free: you can see the whole tree, nothing is deleted, and you can always download your own data from “My data”. To add again: Basic {basic} a year, or Family {familie} a year, where relatives who write don’t pay separately.",
     voiceNudge: "Record {name}’s voice: a few stories told in their own voice stay for the grandchildren.",
     voiceNudgeAny: "Record your grandparents’ voices: a few stories told in their own voice stay for the grandchildren.",
     voiceNudgeCta: "Start “At the grandparents’”",

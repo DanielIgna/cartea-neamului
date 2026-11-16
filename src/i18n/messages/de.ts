@@ -12,6 +12,7 @@ import { deResurse } from "./resurse/de";
 import { deCadou } from "./cadou/de";
 import { deCrestere } from "./crestere/de";
 import { deInvitatii } from "./invitatii/de";
+import { deConversie } from "./conversie/de";
 import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
@@ -179,6 +180,7 @@ export const de: Catalog = {
     startText: "Vier kurze Schritte: du, deine Eltern, deine Großeltern, und am Ende ist der Stammbaum fertig, mit allen Verbindungen. Was du nicht weißt, lässt du leer.",
   },
   AuthForm: {
+    mailNote: "In den Gratistagen schicken wir dir ein paar kurze E-Mails zu deinem Konto (höchstens 6, in zwei Wochen). Abmelden mit einem Klick.",
     signUpTitle: "Neues Konto",
     signUpTrial: "Die ersten 7 Tage sind kostenlos, ohne Karte. Darin kannst du deinen Stammbaum beginnen, und deine Verwandten können ihn ansehen. Damit sie auch schreiben, wählst du einen Tarif.",
     signInTitle: "Anmelden",
@@ -429,6 +431,7 @@ export const de: Catalog = {
   ...deCadou,
   ...deCrestere,
   ...deInvitatii,
+  ...deConversie,
   ...deFilm,
   ...deLegal,
   ...deDatele,
@@ -439,7 +442,7 @@ export const de: Catalog = {
     trial: "{days, plural, one {Du hast noch einen kostenlosen Tag} other {Du hast noch # kostenlose Tage}}. Danach kostet ein Jahr {price}, um weiter hinzuzufügen und zu bearbeiten.",
     ended: "<b>Deine kostenlosen Tage sind vorbei.</b> Der Stammbaum bleibt sichtbar und nichts geht verloren, aber um etwas hinzuzufügen oder zu ändern, kostet ein Jahr {price}.",
     pay: "Ich möchte weitermachen",
-    plans: "Was kostenlos bleibt: du siehst den ganzen Stammbaum und lädst ihn jederzeit herunter. Um wieder hinzuzufügen: Basic {basic} pro Jahr oder Familie {familie} pro Jahr, wobei Verwandte, die schreiben, nicht extra zahlen.",
+    plans: "Was kostenlos bleibt: du siehst den ganzen Stammbaum, nichts wird gelöscht, und deine eigenen Daten lädst du jederzeit unter „Meine Daten“ herunter. Um wieder hinzuzufügen: Basic {basic} pro Jahr oder Familie {familie} pro Jahr, wobei Verwandte, die schreiben, nicht extra zahlen.",
     voiceNudge: "Nimm die Stimme von {name} auf: ein paar Geschichten mit der eigenen Stimme bleiben für die Enkel.",
     voiceNudgeAny: "Nimm die Stimmen deiner Großeltern auf: ein paar Geschichten mit der eigenen Stimme bleiben für die Enkel.",
     voiceNudgeCta: "„Bei den Großeltern“ beginnen",

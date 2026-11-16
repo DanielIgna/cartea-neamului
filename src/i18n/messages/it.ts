@@ -12,6 +12,7 @@ import { itResurse } from "./resurse/it";
 import { itCadou } from "./cadou/it";
 import { itCrestere } from "./crestere/it";
 import { itInvitatii } from "./invitatii/it";
+import { itConversie } from "./conversie/it";
 import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
 import { itDatele } from "./datele/it";
@@ -179,6 +180,7 @@ export const it: Catalog = {
     startText: "Quattro brevi passaggi: tu, i genitori, i nonni, e alla fine l’albero è pronto, con tutti i legami. Quello che non sai lo lasci vuoto.",
   },
   AuthForm: {
+    mailNote: "Nei giorni gratuiti ti mandiamo alcune email brevi sull’account (al massimo 6, in due settimane). Ti disiscrivi con un clic.",
     signUpTitle: "Nuovo account",
     signUpTrial: "I primi 7 giorni sono gratuiti, senza carta. In questi giorni puoi iniziare l’albero e i parenti possono vederlo. Perché scrivano anche loro, scegli un piano.",
     signInTitle: "Accedi",
@@ -429,6 +431,7 @@ export const it: Catalog = {
   ...itCadou,
   ...itCrestere,
   ...itInvitatii,
+  ...itConversie,
   ...itFilm,
   ...itLegal,
   ...itDatele,
@@ -439,7 +442,7 @@ export const it: Catalog = {
     trial: "{days, plural, one {Ti resta un giorno gratuito} other {Ti restano # giorni gratuiti}}. Dopo, per continuare ad aggiungere e modificare, un anno costa {price}.",
     ended: "<b>I tuoi giorni gratuiti sono finiti.</b> L’albero resta visibile e non si perde nulla, ma per aggiungere o cambiare qualcosa un anno costa {price}.",
     pay: "Voglio continuare",
-    plans: "Cosa resta gratis: vedi tutto l’albero e lo scarichi quando vuoi. Per aggiungere di nuovo: Basic {basic} all’anno, o Famiglia {familie} all’anno, dove i parenti che scrivono non pagano a parte.",
+    plans: "Cosa resta gratis: vedi tutto l’albero, non si cancella nulla e i tuoi dati li scarichi sempre da «I miei dati». Per aggiungere di nuovo: Basic {basic} all’anno, o Famiglia {familie} all’anno, dove i parenti che scrivono non pagano a parte.",
     voiceNudge: "Registra la voce di {name}: qualche storia raccontata con la sua voce resta per i nipoti.",
     voiceNudgeAny: "Registra la voce dei nonni: qualche storia raccontata con la loro voce resta per i nipoti.",
     voiceNudgeCta: "Inizia «Dai nonni»",

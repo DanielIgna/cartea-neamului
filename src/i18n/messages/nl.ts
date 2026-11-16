@@ -12,6 +12,7 @@ import { nlResurse } from "./resurse/nl";
 import { nlCadou } from "./cadou/nl";
 import { nlCrestere } from "./crestere/nl";
 import { nlInvitatii } from "./invitatii/nl";
+import { nlConversie } from "./conversie/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
@@ -179,6 +180,7 @@ export const nl: Catalog = {
     startText: "Vier korte stappen: jij, je ouders, je grootouders, en aan het eind is de stamboom klaar, met iedereen aan elkaar verbonden. Wat je niet weet, laat je leeg.",
   },
   AuthForm: {
+    mailNote: "Tijdens de gratis dagen sturen we je een paar korte e-mails over je account (hooguit 6, in twee weken). Afmelden met één klik.",
     signUpTitle: "Nieuw account",
     signUpTrial: "De eerste 7 dagen zijn gratis, zonder kaart. Daarin kun je je stamboom beginnen, en je familieleden kunnen hem bekijken. Om ook te schrijven, kies je een pakket.",
     signInTitle: "Inloggen",
@@ -429,6 +431,7 @@ export const nl: Catalog = {
   ...nlCadou,
   ...nlCrestere,
   ...nlInvitatii,
+  ...nlConversie,
   ...nlFilm,
   ...nlLegal,
   ...nlDatele,
@@ -439,7 +442,7 @@ export const nl: Catalog = {
     trial: "{days, plural, one {Je hebt nog één gratis dag} other {Je hebt nog # gratis dagen}}. Daarna kost een jaar {price} om verder toe te voegen en te bewerken.",
     ended: "<b>Je gratis dagen zijn voorbij.</b> Je ziet de stamboom nog en er gaat niets verloren, maar om iets toe te voegen of te wijzigen kost een jaar {price}.",
     pay: "Ik wil verder",
-    plans: "Wat gratis blijft: je ziet de hele stamboom en downloadt hem altijd. Om weer toe te voegen: Basic {basic} per jaar, of Familie {familie} per jaar, waarbij familieleden die schrijven niet apart betalen.",
+    plans: "Wat gratis blijft: je ziet de hele stamboom, er wordt niets verwijderd en je eigen gegevens download je altijd via ‘Mijn gegevens’. Om weer toe te voegen: Basic {basic} per jaar, of Familie {familie} per jaar, waarbij familieleden die schrijven niet apart betalen.",
     voiceNudge: "Neem de stem van {name} op: een paar verhalen in hun eigen stem blijven voor de kleinkinderen.",
     voiceNudgeAny: "Neem de stemmen van je grootouders op: een paar verhalen in hun eigen stem blijven voor de kleinkinderen.",
     voiceNudgeCta: "Begin ‘Bij opa en oma’",

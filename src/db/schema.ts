@@ -846,3 +846,35 @@ export const userNotice = pgTable("user_notice", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   readAt: timestamp("read_at"),
 }, (t) => [index("user_notice_user_idx").on(t.userId, t.readAt)]);
+
+/* ---------- Conversia din zilele gratuite în plătit (src/lib/conversie.ts) ---------- */
+// Fiecare email din șirul zilelor gratuite, o dată pe om și pas: când a plecat, deschideri, clicuri și plata care a urmat.
+export const conversionMail = pgTable("conversion_mail", {
+  id: uuid("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  step: text("step").notNull(),
+  locale: text("locale").notNull().default("ro"),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+  openedAt: timestamp("opened_at"),
+  opens: integer("opens").notNull().default(0),
+  clickedAt: timestamp("clicked_at"),
+  clicks: integer("clicks").notNull().default(0),
+  paidAt: timestamp("paid_at"),
+  paymentId: text("payment_id"),
+  amount: integer("amount"),
+  currency: text("currency"),
+}, (t) => [uniqueIndex("conversion_mail_user_step_idx").on(t.userId, t.step), index("conversion_mail_sent_idx").on(t.sentAt)]);
+
+// Codul unic de reducere de după zilele gratuite (un cod promoțional Stripe, o singură folosire, expiră singur).
+export const conversionOffer = pgTable("conversion_offer", {
+  code: text("code").primaryKey(),
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  percent: integer("percent").notNull(),
+  stripePromoId: text("stripe_promo_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  expiresAt: timestamp("expires_at").notNull(),
+  usedAt: timestamp("used_at"),
+  paymentId: text("payment_id"),
+  amount: integer("amount"),
+  currency: text("currency"),
+}, (t) => [uniqueIndex("conversion_offer_user_idx").on(t.userId)]);

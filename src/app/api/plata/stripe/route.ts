@@ -4,6 +4,7 @@ import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
 import { sendKeepMail } from "@/lib/pastrare";
 import { clientIp, logSecurity, stripeAlert } from "@/lib/securitate";
 import { sendPaymentMail } from "@/lib/emailuri";
+import { afterPayment } from "@/lib/conversie";
 
 /**
  * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
@@ -28,6 +29,8 @@ export async function POST(req: Request) {
   // applyPayment întoarce true o singură dată pe sesiune Stripe: dacă Stripe trimite evenimentul din nou, emailurile nu pleacă a doua oară.
   if (paid && (await applyPayment(db, paid))) {
     // Plata încheiată, numărată la sursa vizitei în care s-a deschis (Admin → Analiză → Conversii). Plățile de probă ale adminilor nu au sursă și nu se numără.
+    // Din gratuit în plătit: reducerea folosită și emailul căruia i se datorează plata (Admin → Analiză → Conversii).
+    await afterPayment(db, paid).catch((e) => console.error("conversie", e instanceof Error ? e.name : "Error"));
     if (paid.attr) await recordConversion(db, "plata", { attr: paid.attr, label: paid.kind, amount: paid.amount, currency: paid.currency });
     // Confirmarea plății (planul, suma, data, legătura spre cont). O greșeală aici nu strică plata.
     await sendPaymentMail(db, paid).catch((e) => console.error("sendPaymentMail", e instanceof Error ? e.name : "Error"));

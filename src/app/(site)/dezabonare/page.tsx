@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { unsubscribeNews } from "@/app/vesti-actions";
 import { checkUnsubscribe } from "@/lib/crestere";
+import { checkUnsub } from "@/lib/conversie";
 import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { getAppName, getT } from "@/i18n/server";
 
@@ -13,19 +14,22 @@ export const metadata = { robots: PRIVATE_ROBOTS };
  */
 export default async function Dezabonare({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const q = await searchParams;
-  const [t, app] = await Promise.all([getT("News"), getAppName()]);
-  const valid = !!q.u && !!q.t && checkUnsubscribe(q.u, q.t);
+  const [t, tc, app] = await Promise.all([getT("News"), getT("Conversion"), getAppName()]);
+  // `l=conversie`: emailurile din zilele gratuite; altfel sfaturile pe email.
+  const conv = q.l === "conversie";
+  const valid = !!q.u && !!q.t && (conv ? checkUnsub(q.u, q.t) : checkUnsubscribe(q.u, q.t));
   return (
     <section className="stack" style={{ maxWidth: 560, margin: "0 auto" }}>
       <div className="card">
         <h1 style={{ marginTop: 0 }}>{t("unsubTitle")}</h1>
-        {q.gata === "1" ? <p role="status">{t("unsubDone")}</p>
+        {q.gata === "1" ? <p role="status">{conv ? tc("unsubDone") : t("unsubDone")}</p>
           : q.gata === "0" || !valid ? <p>{t("unsubBad")}</p>
           : (
             <form action={unsubscribeNews}>
               <input type="hidden" name="u" value={q.u} />
               <input type="hidden" name="t" value={q.t} />
-              <p>{t("unsubAsk", { app })}</p>
+              {conv && <input type="hidden" name="l" value="conversie" />}
+              <p>{conv ? tc("unsubAsk", { app }) : t("unsubAsk", { app })}</p>
               <button className="btn primary">{t("unsubConfirm")}</button>
             </form>
           )}

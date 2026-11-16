@@ -12,6 +12,7 @@ import { huResurse } from "./resurse/hu";
 import { huCadou } from "./cadou/hu";
 import { huCrestere } from "./crestere/hu";
 import { huInvitatii } from "./invitatii/hu";
+import { huConversie } from "./conversie/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
@@ -179,6 +180,7 @@ export const hu: Catalog = {
     startText: "Négy rövid lépés: te, a szüleid, a nagyszüleid, és a végén kész a családfa, minden kapcsolattal. Amit nem tudsz, üresen hagyod.",
   },
   AuthForm: {
+    mailNote: "Az ingyenes napokban néhány rövid e-mailt küldünk a fiókodról (legfeljebb 6-ot, két hét alatt). Egy kattintással leiratkozhatsz.",
     signUpTitle: "Új fiók",
     signUpTrial: "Az első 7 nap ingyenes, kártya nélkül. Ezalatt elindíthatod a családfát, a rokonok pedig láthatják. Hogy ők is írjanak, választasz egy csomagot.",
     signInTitle: "Belépés",
@@ -429,6 +431,7 @@ export const hu: Catalog = {
   ...huCadou,
   ...huCrestere,
   ...huInvitatii,
+  ...huConversie,
   ...huFilm,
   ...huLegal,
   ...huDatele,
@@ -439,7 +442,7 @@ export const hu: Catalog = {
     trial: "{days, plural, one {Még egy ingyenes napod van} other {Még # ingyenes napod van}}. Utána egy év {price}, hogy tovább bővíthesd és szerkeszthesd.",
     ended: "<b>Az ingyenes napjaid lejártak.</b> A családfa továbbra is látható, és semmi sem vész el, de ahhoz, hogy bármit hozzáadj vagy módosíts, egy év {price}.",
     pay: "Folytatni szeretném",
-    plans: "Ami ingyenes marad: a teljes családfát látod, és bármikor letöltheted. Hogy újra bővíthess: Basic évi {basic}, vagy Család évi {familie}, ahol az író rokonok nem fizetnek külön.",
+    plans: "Ami ingyenes marad: a teljes családfát látod, semmi sem törlődik, a saját adataidat pedig bármikor letöltheted az „Adataim” oldalon. Hogy újra bővíthess: Basic évi {basic}, vagy Család évi {familie}, ahol az író rokonok nem fizetnek külön.",
     voiceNudge: "Rögzítsd {name} hangját: néhány saját hangján elmondott történet megmarad az unokáknak.",
     voiceNudgeAny: "Rögzítsd a nagyszülők hangját: néhány saját hangjukon elmondott történet megmarad az unokáknak.",
     voiceNudgeCta: "„A nagyszülőknél” indítása",

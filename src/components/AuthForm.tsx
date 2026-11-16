@@ -170,6 +170,8 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
           })}
         </p>
       )}
+      {/* Emailurile din zilele gratuite (src/lib/conversie.ts): spuse de la început, cu dezabonare în fiecare. */}
+      {(signUp || google) && <p className="auth-legal muted">{t("mailNote")}</p>}
       <button type="button" className="btn" onClick={() => { setSignUp(!signUp); setError(""); }}>
         {signUp ? t("haveAccount") : t("wantAccount")}
       </button>

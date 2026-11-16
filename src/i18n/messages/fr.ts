@@ -12,6 +12,7 @@ import { frResurse } from "./resurse/fr";
 import { frCadou } from "./cadou/fr";
 import { frCrestere } from "./crestere/fr";
 import { frInvitatii } from "./invitatii/fr";
+import { frConversie } from "./conversie/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
@@ -179,6 +180,7 @@ export const fr: Catalog = {
     startText: "Quatre étapes courtes : vous, vos parents, vos grands-parents, et à la fin l’arbre est prêt, avec tous les liens. Ce que vous ne savez pas, laissez-le vide.",
   },
   AuthForm: {
+    mailNote: "Pendant les jours gratuits, nous vous envoyons quelques e-mails courts sur votre compte (6 au plus, en deux semaines). Désinscription en un clic.",
     signUpTitle: "Nouveau compte",
     signUpTrial: "Les 7 premiers jours sont gratuits, sans carte. Pendant ces jours, vous pouvez commencer votre arbre, et vos proches peuvent le voir. Pour qu’ils écrivent aussi, vous choisissez une formule.",
     signInTitle: "Se connecter",
@@ -429,6 +431,7 @@ export const fr: Catalog = {
   ...frCadou,
   ...frCrestere,
   ...frInvitatii,
+  ...frConversie,
   ...frFilm,
   ...frLegal,
   ...frDatele,
@@ -439,7 +442,7 @@ export const fr: Catalog = {
     trial: "{days, plural, one {Il vous reste un jour gratuit} other {Il vous reste # jours gratuits}}. Ensuite, pour continuer à ajouter et à modifier, l’année coûte {price}.",
     ended: "<b>Vos jours gratuits sont terminés.</b> L’arbre reste visible et rien n’est perdu, mais pour ajouter ou modifier quelque chose, l’année coûte {price}.",
     pay: "Je veux continuer",
-    plans: "Ce qui reste gratuit : vous voyez tout l’arbre et le téléchargez à tout moment. Pour ajouter de nouveau : Basic {basic} par an, ou Famille {familie} par an, où les proches qui écrivent ne paient pas à part.",
+    plans: "Ce qui reste gratuit : vous voyez tout l’arbre, rien n’est supprimé et vos données restent téléchargeables depuis « Mes données ». Pour ajouter de nouveau : Basic {basic} par an, ou Famille {familie} par an, où les proches qui écrivent ne paient pas à part.",
     voiceNudge: "Enregistrez la voix de {name} : quelques histoires racontées de sa voix restent pour les petits-enfants.",
     voiceNudgeAny: "Enregistrez la voix de vos grands-parents : quelques histoires racontées de leur voix restent pour les petits-enfants.",
     voiceNudgeCta: "Commencer « Chez les grands-parents »",

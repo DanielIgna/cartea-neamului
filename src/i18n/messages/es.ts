@@ -12,6 +12,7 @@ import { esResurse } from "./resurse/es";
 import { esCadou } from "./cadou/es";
 import { esCrestere } from "./crestere/es";
 import { esInvitatii } from "./invitatii/es";
+import { esConversie } from "./conversie/es";
 import { esFilm } from "./film/es";
 import { esLegal } from "./legal/es";
 import { esDatele } from "./datele/es";
@@ -179,6 +180,7 @@ export const es: Catalog = {
     startText: "Cuatro pasos cortos: tú, tus padres, tus abuelos, y al final el árbol está listo, con todos unidos. Lo que no sepas, lo dejas en blanco.",
   },
   AuthForm: {
+    mailNote: "En los días gratuitos te enviamos algunos correos breves sobre tu cuenta (como mucho 6, en dos semanas). Te das de baja con un clic.",
     signUpTitle: "Cuenta nueva",
     signUpTrial: "Los primeros 7 días son gratis, sin tarjeta. En ellos puedes empezar el árbol y tus familiares pueden verlo. Para que también escriban, eliges un plan.",
     signInTitle: "Entrar",
@@ -429,6 +431,7 @@ export const es: Catalog = {
   ...esCadou,
   ...esCrestere,
   ...esInvitatii,
+  ...esConversie,
   ...esFilm,
   ...esLegal,
   ...esDatele,
@@ -439,7 +442,7 @@ export const es: Catalog = {
     trial: "{days, plural, one {Te queda un día gratis} other {Te quedan # días gratis}}. Después, para seguir añadiendo y editando, el año cuesta {price}.",
     ended: "<b>Tus días gratis han terminado.</b> El árbol se sigue viendo y no se pierde nada, pero para añadir o cambiar algo, el año cuesta {price}.",
     pay: "Quiero continuar",
-    plans: "Lo que sigue siendo gratis: ves todo el árbol y lo descargas cuando quieras. Para volver a añadir: Basic {basic} al año, o Familia {familie} al año, donde los familiares que escriben no pagan aparte.",
+    plans: "Lo que sigue siendo gratis: ves todo el árbol, no se borra nada y tus datos los descargas siempre desde «Mis datos». Para volver a añadir: Basic {basic} al año, o Familia {familie} al año, donde los familiares que escriben no pagan aparte.",
     voiceNudge: "Graba la voz de {name}: unas cuantas historias contadas con su voz quedan para los nietos.",
     voiceNudgeAny: "Graba la voz de tus abuelos: unas cuantas historias contadas con su voz quedan para los nietos.",
     voiceNudgeCta: "Empezar «En casa de los abuelos»",

@@ -471,6 +471,16 @@ export const FUNCTIONS: Fn[] = [
     human: "Citește textele și pornește automatizarea „Email: sfaturi de bun venit”.",
   },
   {
+    key: "conversie-gratuit-platit", name: "Din gratuit în plătit (emailuri, reducere, pop-up)", area: "bani", lifecycle: "implementat", risk: "mediu",
+    riskWhy: "Le scrie oamenilor și face coduri de reducere în Stripe; oprit până îl pornește Daniel, cu dezabonare în fiecare email.",
+    what: "Emailurile din zilele gratuite (ziua 1, 3, 5, 7, 8, 14) în limba omului, cu deschideri și clicuri; codul unic de reducere (20%, 48 h, o folosire) aplicat singur la plată; banda cu zilele, fereastra din ultima zi, „Activează un plan” și descărcarea GEDCOM închisă după expirare (fără să se șteargă nimic).",
+    engine: ["src/lib/conversie.ts", "src/lib/conversie-mail.ts", "src/components/AccessBanner.tsx", "src/components/LastDayPopup.tsx", "src/components/admin/ConversieStats.tsx"],
+    pages: ["/admin/conversie", "/dezabonare"], api: ["/api/conversie/o", "/api/conversie/c", "/api/vesti/dezabonare", "/api/plata/start", "/api/plata/stripe"],
+    tables: ["conversion_mail", "conversion_offer", "consent"], metric: { table: "conversion_mail", label: "emailuri trimise" },
+    automations: ["conversie"], dashboard: "/admin/conversie", env: ["RESEND_API_KEY", "STRIPE_SECRET_KEY"], tests: ["tests/conversie.test.ts"],
+    human: "Citește emailurile în simulator și pornește „Email: din gratuit în plătit” din Autonomie.",
+  },
+  {
     key: "carduri-distribuire", name: "Cardurile de nume și localitate", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Doar date publice din content/.",
     what: "Poza 1200×630 a fiecărui nume și județ (previzualizarea linkului) și butoanele de distribuit.",
     engine: ["src/components/continut/ShareCard.tsx"], api: ["/api/card"], dashboard: "/admin/crestere",

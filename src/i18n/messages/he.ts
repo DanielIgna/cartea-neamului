@@ -12,6 +12,7 @@ import { heResurse } from "./resurse/he";
 import { heCadou } from "./cadou/he";
 import { heCrestere } from "./crestere/he";
 import { heInvitatii } from "./invitatii/he";
+import { heConversie } from "./conversie/he";
 import { heFilm } from "./film/he";
 import { heLegal } from "./legal/he";
 import { heDatele } from "./datele/he";
@@ -183,6 +184,7 @@ export const he: Catalog = {
     startText: "ארבעה צעדים קצרים: אתם, ההורים, הסבים, ובסוף העץ מוכן, עם כל הקשרים. את מה שלא יודעים משאירים ריק.",
   },
   AuthForm: {
+    mailNote: "בימים החינמיים נשלח לך כמה מיילים קצרים על החשבון (לכל היותר 6, בשבועיים). ביטול הרשמה בלחיצה אחת.",
     signUpTitle: "חשבון חדש",
     signUpTrial: "7 הימים הראשונים בחינם, בלי כרטיס אשראי. בהם אפשר להתחיל את העץ, והקרובים יכולים לצפות בו. כדי שגם הם יכתבו, בוחרים תוכנית.",
     signInTitle: "כניסה לחשבון",
@@ -431,6 +433,7 @@ export const he: Catalog = {
   ...heCadou,
   ...heCrestere,
   ...heInvitatii,
+  ...heConversie,
   ...heFilm,
   ...heLegal,
   ...heDatele,
@@ -441,7 +444,7 @@ export const he: Catalog = {
     trial: "{days, plural, one {נותר לכם יום חינם אחד} two {נותרו לכם יומיים חינם} other {נותרו לכם # ימים בחינם}}. אחריהם, כדי להמשיך להוסיף ולשנות, השנה עולה {price}.",
     ended: "<b>הימים החינמיים הסתיימו.</b> העץ ממשיך להיות גלוי ושום דבר לא הולך לאיבוד, אבל כדי להוסיף או לשנות משהו, השנה עולה {price}.",
     pay: "אני רוצה להמשיך",
-    plans: "מה נשאר בחינם: רואים את כל העץ ומורידים אותו בכל רגע. כדי להוסיף שוב: בסיסית {basic} לשנה או משפחה {familie} לשנה, שבה קרובים שכותבים לא משלמים בנפרד.",
+    plans: "מה נשאר בחינם: רואים את כל העץ, שום דבר לא נמחק, ואת הנתונים שלך אפשר תמיד להוריד מ„הנתונים שלי”. כדי להוסיף שוב: בסיסית {basic} לשנה או משפחה {familie} לשנה, שבה קרובים שכותבים לא משלמים בנפרד.",
     voiceNudge: "הקליטו את הקול של {name}: כמה סיפורים בקולם נשארים בשביל הנכדים.",
     voiceNudgeAny: "הקליטו את הקול של סבא וסבתא: כמה סיפורים בקולם נשארים בשביל הנכדים.",
     voiceNudgeCta: "להתחיל „אצל סבא וסבתא”",

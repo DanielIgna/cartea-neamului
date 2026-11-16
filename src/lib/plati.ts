@@ -121,6 +121,8 @@ export async function createCheckout(o: {
   waiver?: string; seller?: string;
   /** Sursa vizitei (Google, o campanie…) și prima pagină, fără nimic despre om: se întoarce la confirmare (src/lib/conversii.ts). */
   attribution?: Record<string, string>;
+  /** Reducerea de după zilele gratuite (src/lib/conversie.ts): codul omului, pus pe plată din start (fără câmpul de cod). */
+  offer?: { code: string; promoId: string } | null;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
     mode: "payment",
@@ -155,6 +157,12 @@ export async function createCheckout(o: {
   if (o.forName) body.set("metadata[forName]", o.forName.slice(0, 120));
   if (o.note) body.set("metadata[note]", o.note.slice(0, 400));
   for (const [k, v] of Object.entries(o.attribution ?? {})) if (k.startsWith("metadata[a_")) body.set(k, v);
+  if (o.offer) {
+    // Stripe nu primește și reducerea pusă, și câmpul de cod în aceeași plată.
+    body.delete("allow_promotion_codes");
+    body.set("discounts[0][promotion_code]", o.offer.promoId);
+    body.set("metadata[offer]", o.offer.code);
+  }
   const r = await fetcher("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: { authorization: `Bearer ${process.env.STRIPE_SECRET_KEY}`, "content-type": "application/x-www-form-urlencoded" },
@@ -183,6 +191,8 @@ export type PaidSession = {
   extra?: "carte" | null; forName?: string | null; note?: string | null;
   /** De unde venise vizita în care s-a deschis plata (pentru Admin → Analiză → Conversii); fără date despre om. */
   attr?: Attribution | null;
+  /** Codul de reducere de după zilele gratuite (pus de site) sau codul promoțional ales pe pagina Stripe (promo_…). */
+  offer?: string | null; promo?: string | null;
 };
 
 /**
@@ -199,7 +209,9 @@ export function paidSession(event: unknown): PaidSession | null {
   if (o.payment_status !== "paid" && o.payment_status !== "no_payment_required") return null;
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
-  const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? ""), ...withAttr(md) };
+  const disc = (o.discounts as { promotion_code?: string | null }[] | undefined)?.find((d) => typeof d?.promotion_code === "string")?.promotion_code ?? null;
+  const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? ""), ...withAttr(md),
+    ...(md.offer || disc ? { offer: md.offer || null, promo: disc } : {}) };
   if (md.kind === "cadou") return { ...base, tier: isTier(md.tier) ? md.tier : "familie", forName: md.forName || null, note: md.note || null };
   if (md.kind === "pastrare") return md.extra === "carte" ? { ...base, extra: "carte" as const } : base;
   if (md.kind !== "an") return base;

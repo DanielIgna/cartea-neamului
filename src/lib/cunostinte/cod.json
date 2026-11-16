@@ -36,6 +36,7 @@
   "drizzle/0033_conversii.sql",
   "drizzle/0034_invitatii.sql",
   "drizzle/0035_motor_seo.sql",
+  "drizzle/0036_conversie.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -103,6 +104,9 @@
   "src/app/(site)/admin/carduri/page.tsx",
   "src/app/(site)/admin/carduri/raport.csv/route.ts",
   "src/app/(site)/admin/control/page.tsx",
+  "src/app/(site)/admin/conversie/actions.ts",
+  "src/app/(site)/admin/conversie/page.tsx",
+  "src/app/(site)/admin/conversie/sim.ts",
   "src/app/(site)/admin/crestere/page.tsx",
   "src/app/(site)/admin/cunostinte/arhitectura/page.tsx",
   "src/app/(site)/admin/cunostinte/dependente/page.tsx",
@@ -205,6 +209,8 @@
   "src/app/api/arbore/[id]/live/route.ts",
   "src/app/api/auth/[...all]/route.ts",
   "src/app/api/card/route.tsx",
+  "src/app/api/conversie/c/route.ts",
+  "src/app/api/conversie/o/route.ts",
   "src/app/api/cron/aminteste-plata/route.ts",
   "src/app/api/cron/autonomie/route.ts",
   "src/app/api/datele-mele/route.ts",
@@ -297,6 +303,7 @@
   "src/components/Landing.tsx",
   "src/components/LanguagePicker.tsx",
   "src/components/LanguageSuggest.tsx",
+  "src/components/LastDayPopup.tsx",
   "src/components/LegalLangNote.tsx",
   "src/components/LegalText.tsx",
   "src/components/LinkAnswer.tsx",
@@ -352,6 +359,7 @@
   "src/components/admin/ArchiveForm.tsx",
   "src/components/admin/AutonomyForms.tsx",
   "src/components/admin/BaseWordForm.tsx",
+  "src/components/admin/ConversieStats.tsx",
   "src/components/admin/Cunostinte.tsx",
   "src/components/admin/CunostinteHead.tsx",
   "src/components/admin/HomeImageSlot.tsx",
@@ -494,6 +502,15 @@
   "src/i18n/messages/contact/it.ts",
   "src/i18n/messages/contact/nl.ts",
   "src/i18n/messages/contact/ro.ts",
+  "src/i18n/messages/conversie/de.ts",
+  "src/i18n/messages/conversie/en-GB.ts",
+  "src/i18n/messages/conversie/es.ts",
+  "src/i18n/messages/conversie/fr.ts",
+  "src/i18n/messages/conversie/he.ts",
+  "src/i18n/messages/conversie/hu.ts",
+  "src/i18n/messages/conversie/it.ts",
+  "src/i18n/messages/conversie/nl.ts",
+  "src/i18n/messages/conversie/ro.ts",
   "src/i18n/messages/crestere/de.ts",
   "src/i18n/messages/crestere/en-GB.ts",
   "src/i18n/messages/crestere/es.ts",
@@ -665,6 +682,8 @@
   "src/lib/continut/sitemap.ts",
   "src/lib/continut/uat-text.ts",
   "src/lib/continut/uat.ts",
+  "src/lib/conversie-mail.ts",
+  "src/lib/conversie.ts",
   "src/lib/conversii.ts",
   "src/lib/corectura-igna-todea.ts",
   "src/lib/crestere.ts",
@@ -794,6 +813,7 @@
   "tests/chat.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
+  "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
   "tests/cunostinte.test.ts",
@@ -923,6 +943,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/admin/conversie",
+   "kind": "pagina"
+  },
+  {
    "path": "/admin/crestere",
    "kind": "pagina"
   },
@@ -1048,6 +1072,14 @@
   },
   {
    "path": "/api/card",
+   "kind": "api"
+  },
+  {
+   "path": "/api/conversie/c",
+   "kind": "api"
+  },
+  {
+   "path": "/api/conversie/o",
    "kind": "api"
   },
   {
@@ -1365,6 +1397,7 @@
   "tests/chat.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
+  "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
   "tests/cunostinte.test.ts",
@@ -1420,5 +1453,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 36
+ "migrations": 37
 }

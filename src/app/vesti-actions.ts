@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { recordConsent } from "@/lib/consent";
 import { checkUnsubscribe } from "@/lib/crestere";
+import { checkUnsub } from "@/lib/conversie";
 import { isDemo } from "@/lib/demo";
 import { getT } from "@/i18n/server";
 
@@ -24,7 +25,9 @@ export async function answerNews(granted: boolean): Promise<{ ok?: boolean; erro
 /** Dezabonarea din legătura din email: merge și fără cont deschis, cu semnătura din legătură. */
 export async function unsubscribeNews(form: FormData): Promise<void> {
   const u = String(form.get("u") ?? ""), t = String(form.get("t") ?? "");
-  const ok = !!u && !!t && checkUnsubscribe(u, t);
-  if (ok) await recordConsent(db, u, "news", false).catch(() => undefined);
-  redirect(ok ? "/dezabonare?gata=1" : "/dezabonare?gata=0");
+  // `l=conversie`: emailurile din zilele gratuite (src/lib/conversie.ts); altfel sfaturile pe email.
+  const conv = form.get("l") === "conversie";
+  const ok = !!u && !!t && (conv ? checkUnsub(u, t) : checkUnsubscribe(u, t));
+  if (ok) await recordConsent(db, u, conv ? "conversie" : "news", false).catch(() => undefined);
+  redirect(`/dezabonare?gata=${ok ? 1 : 0}${conv ? "&l=conversie" : ""}`);
 }
