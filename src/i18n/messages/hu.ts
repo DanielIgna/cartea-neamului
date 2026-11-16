@@ -441,7 +441,7 @@ export const hu: Catalog = {
     trial: "{days, plural, one {Még egy ingyenes napod van} other {Még # ingyenes napod van}}. Utána egy év {price}, hogy tovább bővíthesd és szerkeszthesd.",
     ended: "<b>Az ingyenes napjaid lejártak.</b> A családfa továbbra is látható, és semmi sem vész el, de ahhoz, hogy bármit hozzáadj vagy módosíts, egy év {price}.",
     pay: "Folytatni szeretném",
-    plans: "Ami ingyenes marad: a teljes családfát látod, és bármikor letöltheted. Hogy újra bővíthess: Basic évi {basic}, vagy Család évi {familie}, ahol az író rokonok nem fizetnek külön.",
+    plans: "Ami ingyenes marad: a teljes családfát látod, semmi sem törlődik, a saját adataidat pedig bármikor letöltheted az „Adataim” oldalon. Hogy újra bővíthess: Basic évi {basic}, vagy Család évi {familie}, ahol az író rokonok nem fizetnek külön.",
     voiceNudge: "Rögzítsd {name} hangját: néhány saját hangján elmondott történet megmarad az unokáknak.",
     voiceNudgeAny: "Rögzítsd a nagyszülők hangját: néhány saját hangjukon elmondott történet megmarad az unokáknak.",
     voiceNudgeCta: "„A nagyszülőknél” indítása",

@@ -441,7 +441,7 @@ export const nl: Catalog = {
     trial: "{days, plural, one {Je hebt nog één gratis dag} other {Je hebt nog # gratis dagen}}. Daarna kost een jaar {price} om verder toe te voegen en te bewerken.",
     ended: "<b>Je gratis dagen zijn voorbij.</b> Je ziet de stamboom nog en er gaat niets verloren, maar om iets toe te voegen of te wijzigen kost een jaar {price}.",
     pay: "Ik wil verder",
-    plans: "Wat gratis blijft: je ziet de hele stamboom en downloadt hem altijd. Om weer toe te voegen: Basic {basic} per jaar, of Familie {familie} per jaar, waarbij familieleden die schrijven niet apart betalen.",
+    plans: "Wat gratis blijft: je ziet de hele stamboom, er wordt niets verwijderd en je eigen gegevens download je altijd via ‘Mijn gegevens’. Om weer toe te voegen: Basic {basic} per jaar, of Familie {familie} per jaar, waarbij familieleden die schrijven niet apart betalen.",
     voiceNudge: "Neem de stem van {name} op: een paar verhalen in hun eigen stem blijven voor de kleinkinderen.",
     voiceNudgeAny: "Neem de stemmen van je grootouders op: een paar verhalen in hun eigen stem blijven voor de kleinkinderen.",
     voiceNudgeCta: "Begin ‘Bij opa en oma’",

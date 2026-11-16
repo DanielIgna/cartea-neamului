@@ -441,7 +441,7 @@ export const de: Catalog = {
     trial: "{days, plural, one {Du hast noch einen kostenlosen Tag} other {Du hast noch # kostenlose Tage}}. Danach kostet ein Jahr {price}, um weiter hinzuzufügen und zu bearbeiten.",
     ended: "<b>Deine kostenlosen Tage sind vorbei.</b> Der Stammbaum bleibt sichtbar und nichts geht verloren, aber um etwas hinzuzufügen oder zu ändern, kostet ein Jahr {price}.",
     pay: "Ich möchte weitermachen",
-    plans: "Was kostenlos bleibt: du siehst den ganzen Stammbaum und lädst ihn jederzeit herunter. Um wieder hinzuzufügen: Basic {basic} pro Jahr oder Familie {familie} pro Jahr, wobei Verwandte, die schreiben, nicht extra zahlen.",
+    plans: "Was kostenlos bleibt: du siehst den ganzen Stammbaum, nichts wird gelöscht, und deine eigenen Daten lädst du jederzeit unter „Meine Daten“ herunter. Um wieder hinzuzufügen: Basic {basic} pro Jahr oder Familie {familie} pro Jahr, wobei Verwandte, die schreiben, nicht extra zahlen.",
     voiceNudge: "Nimm die Stimme von {name} auf: ein paar Geschichten mit der eigenen Stimme bleiben für die Enkel.",
     voiceNudgeAny: "Nimm die Stimmen deiner Großeltern auf: ein paar Geschichten mit der eigenen Stimme bleiben für die Enkel.",
     voiceNudgeCta: "„Bei den Großeltern“ beginnen",

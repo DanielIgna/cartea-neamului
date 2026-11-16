@@ -441,7 +441,7 @@ export const it: Catalog = {
     trial: "{days, plural, one {Ti resta un giorno gratuito} other {Ti restano # giorni gratuiti}}. Dopo, per continuare ad aggiungere e modificare, un anno costa {price}.",
     ended: "<b>I tuoi giorni gratuiti sono finiti.</b> L’albero resta visibile e non si perde nulla, ma per aggiungere o cambiare qualcosa un anno costa {price}.",
     pay: "Voglio continuare",
-    plans: "Cosa resta gratis: vedi tutto l’albero e lo scarichi quando vuoi. Per aggiungere di nuovo: Basic {basic} all’anno, o Famiglia {familie} all’anno, dove i parenti che scrivono non pagano a parte.",
+    plans: "Cosa resta gratis: vedi tutto l’albero, non si cancella nulla e i tuoi dati li scarichi sempre da «I miei dati». Per aggiungere di nuovo: Basic {basic} all’anno, o Famiglia {familie} all’anno, dove i parenti che scrivono non pagano a parte.",
     voiceNudge: "Registra la voce di {name}: qualche storia raccontata con la sua voce resta per i nipoti.",
     voiceNudgeAny: "Registra la voce dei nonni: qualche storia raccontata con la loro voce resta per i nipoti.",
     voiceNudgeCta: "Inizia «Dai nonni»",
