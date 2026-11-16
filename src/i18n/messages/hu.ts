@@ -13,6 +13,7 @@ import { huCadou } from "./cadou/hu";
 import { huCrestere } from "./crestere/hu";
 import { huInvitatii } from "./invitatii/hu";
 import { huConversie } from "./conversie/hu";
+import { huSursa } from "./sursa/hu";
 import { huFilm } from "./film/hu";
 import { huLegal } from "./legal/hu";
 import { huDatele } from "./datele/hu";
@@ -40,10 +41,11 @@ export const hu: Catalog = {
     surnames: "Családnevek",
     places: "Levéltárak megyénként",
     diaspora: "Romániai gyökerek",
-    cookieLead: "Csak feltétlenül szükséges sütik.",
-    cookieText: "Arra használjuk őket, hogy bejelentkezve maradj, és megjegyezzük a választott nyelvet és témát. Nincs reklám és nincs követés: a látogatásokat névtelenül, sütik nélkül számoljuk, ezért nem kérünk hozzájárulást.",
+    cookieLead: "Sütik az oldalon.",
+    cookieText: "A szükségesek bejelentkezve tartanak, és megjegyzik a nyelvet és a témát. Ha elfogadod, két saját elemző sütit is használunk, hogy megtudjuk, honnan érkeznek a látogatók (például egy Facebook-bejegyzésből). Nincs reklám, és nincsenek más cégek.",
     cookieMore: "A teljes lista",
-    cookieOk: "Értem",
+    cookieOk: "Elfogadom",
+    cookieNecessary: "Csak a szükségesek",
   },
   ThemeSwitch: {
     label: "Színtéma",
@@ -180,6 +182,16 @@ export const hu: Catalog = {
     startText: "Négy rövid lépés: te, a szüleid, a nagyszüleid, és a végén kész a családfa, minden kapcsolattal. Amit nem tudsz, üresen hagyod.",
   },
   AuthForm: {
+    srcQuestion: "Honnan hallottál rólunk?",
+    srcOptional: "(nem kötelező)",
+    srcChoose: "Válassz, ha szeretnél",
+    srcFbGroup: "Facebook (csoport)",
+    srcFbPage: "Facebook (oldal)",
+    srcGoogle: "Google",
+    srcFriend: "Rokon vagy barát ajánlása",
+    srcGift: "Ajándékkártya",
+    srcOther: "Máshonnan",
+    srcOtherHint: "Pontosan honnan?",
     mailNote: "Az ingyenes napokban néhány rövid e-mailt küldünk a fiókodról (legfeljebb 6-ot, két hét alatt). Egy kattintással leiratkozhatsz.",
     signUpTitle: "Új fiók",
     signUpTrial: "Az első 7 nap ingyenes, kártya nélkül. Ezalatt elindíthatod a családfát, a rokonok pedig láthatják. Hogy ők is írjanak, választasz egy csomagot.",
@@ -432,6 +444,7 @@ export const hu: Catalog = {
   ...huCrestere,
   ...huInvitatii,
   ...huConversie,
+  ...huSursa,
   ...huFilm,
   ...huLegal,
   ...huDatele,

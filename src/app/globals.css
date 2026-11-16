@@ -1306,6 +1306,9 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .cookie-notice p{margin:0;flex:1 1 280px;max-width:90ch}
 .cookie-notice b{color:var(--ink)}
 .cookie-notice .btn{padding:6px 16px}
+.cookie-actions{display:flex;gap:8px;flex-wrap:wrap}
+.cookie-choice{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 14px}
+.cookie-choice .btn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 @media print{.cookie-notice{display:none}}
 @media (max-width:600px){.cookie-notice{font-size:13px;line-height:1.4;padding:8px 12px;gap:6px 10px;margin-bottom:12px}.cookie-notice p{flex-basis:200px}.cookie-notice .btn{padding:5px 12px;font-size:13px;min-height:0}}
 

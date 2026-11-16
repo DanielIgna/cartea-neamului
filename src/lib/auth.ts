@@ -1,4 +1,5 @@
 import { attributionOf, recordConversion } from "./conversii";
+import { recordAccountSource } from "./sursa";
 import { checkReward, referralOnSignup } from "./invitatii";
 import { recordReferral } from "./parteneri-crm";
 import { and, eq, isNull } from "drizzle-orm";
@@ -112,6 +113,9 @@ export const auth = betterAuth({
             const attr = referred ? { ...(await attributionOf(db, h)), source: "invitatie", medium: referred.via, campaign: "invitatie", attributed: true } : null;
             await recordConversion(db, "cont", { headers: h, attr });
           }
+          // De unde vine contul (Admin → Oameni și Analiză → Surse, src/lib/sursa.ts): sursa și drumul doar cu acordul pentru
+          // cookie-urile de analiză, răspunsul la „De unde ai aflat de noi?” mereu; cel venit printr-o invitație e „recomandare”.
+          if (!isDemo(u.email)) await recordAccountSource(db, u.id, h, !!referred);
           // Invitatul cu email și parolă primește din prima emailul de confirmare (Google confirmă singur emailul).
           if (referred?.status === "asteapta" && !u.emailVerified) {
             waitUntil(auth.api.sendVerificationEmail({ body: { email: u.email, callbackURL: "/invitatii" } }).then(() => undefined)

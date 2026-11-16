@@ -10,6 +10,7 @@
  * golește de datele lui (data și locul nașterii, unde locuiește, ocupația, biografia, poza de profil).
  */
 import { and, asc, eq, inArray, isNull, ne, notInArray, or, sql } from "drizzle-orm";
+import { sourceExport } from "./sursa";
 import { dropUserSubmissions } from "./home-submissions";
 import { userProblemKeys } from "./probleme";
 import type { Db } from "@/db";
@@ -184,6 +185,8 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
   const devices = await db.select({ label: knownDevice.label, first: knownDevice.firstSeen, last: knownDevice.lastSeen }).from(knownDevice).where(eq(knownDevice.userId, userId));
   const secEvents = await db.select().from(securityEvent).where(or(eq(securityEvent.userId, userId), eq(securityEvent.email, u.email.toLowerCase()))).orderBy(asc(securityEvent.createdAt));
   const usage = await db.select().from(usageDay).where(eq(usageDay.userId, userId)).orderBy(asc(usageDay.day), asc(usageDay.section));
+  // De unde a venit contul (src/lib/sursa.ts): sursa, referrer-ul și pagina de intrare (doar cu acordul pentru analiză) și răspunsul din formular.
+  const deUnde = await sourceExport(db, userId);
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, joinedAt: treeMember.joinedAt })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, userId)).orderBy(asc(treeMember.joinedAt));
   const claimed = await db.select().from(person).where(eq(person.claimedByUserId, userId));
@@ -223,6 +226,7 @@ export async function exportMyData(db: Db, userId: string, origin: string) {
       dispozitiveCunoscute: devices.map((d) => ({ dispozitiv: d.label, primaData: iso(d.first), ultimaData: iso(d.last) })),
       jurnal: secEvents.map((e) => ({ ce: e.kind, cand: iso(e.createdAt), ip: e.ip, dispozitiv: e.device, loc: e.place })),
     },
+    ...(deUnde ? { deUndeAiVenit: deUnde } : {}),
     sesiuni: sessions.map((s) => ({ inceput: iso(s.createdAt), expira: iso(s.expiresAt), ip: s.ip, browser: s.browser })),
     acorduri: consents.map((c) => ({ pentru: CONSENT_LABEL[c.purpose as ConsentPurpose] ?? c.purpose,
       versiune: c.textVersion, dat: c.granted, cand: iso(c.createdAt) })),

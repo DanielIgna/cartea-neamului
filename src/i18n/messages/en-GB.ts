@@ -13,6 +13,7 @@ import { enGBCadou } from "./cadou/en-GB";
 import { enGBCrestere } from "./crestere/en-GB";
 import { enGBInvitatii } from "./invitatii/en-GB";
 import { enGBConversie } from "./conversie/en-GB";
+import { enGBSursa } from "./sursa/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -40,10 +41,11 @@ export const enGB: Catalog = {
     surnames: "Romanian surnames",
     places: "Archives by county",
     diaspora: "Romanians abroad",
-    cookieLead: "Only strictly necessary cookies.",
-    cookieText: "We use them to keep you signed in and to remember your language and theme. No ads and no tracking: we count visits anonymously, without cookies, so we do not ask for your consent.",
+    cookieLead: "Cookies on this site.",
+    cookieText: "The necessary ones keep you signed in and remember your language and theme. If you accept, we also use two analytics cookies of our own, to learn where people come from (for example a Facebook post). No ads and no other companies.",
     cookieMore: "See the list",
-    cookieOk: "Got it",
+    cookieOk: "Accept",
+    cookieNecessary: "Necessary only",
   },
   ThemeSwitch: {
     label: "Colour theme",
@@ -180,6 +182,16 @@ export const enGB: Catalog = {
     startText: "Four short steps: you, your parents, your grandparents, and at the end the tree is ready, with everyone linked. Leave blank what you don’t know.",
   },
   AuthForm: {
+    srcQuestion: "How did you hear about us?",
+    srcOptional: "(optional)",
+    srcChoose: "Choose, if you like",
+    srcFbGroup: "Facebook (group)",
+    srcFbPage: "Facebook (page)",
+    srcGoogle: "Google",
+    srcFriend: "Recommended by a relative or friend",
+    srcGift: "Gift card",
+    srcOther: "Something else",
+    srcOtherHint: "Where exactly?",
     mailNote: "During the free days we send you a few short emails about your account (at most 6, over two weeks). Unsubscribe with one click.",
     signUpTitle: "New account",
     signUpTrial: "The first 7 days are free, no card needed. During them you can start your tree, and your relatives can see it. For them to write too, you choose a plan.",
@@ -432,6 +444,7 @@ export const enGB: Catalog = {
   ...enGBCrestere,
   ...enGBInvitatii,
   ...enGBConversie,
+  ...enGBSursa,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,

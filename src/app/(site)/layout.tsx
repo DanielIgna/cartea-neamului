@@ -47,6 +47,7 @@ import LanguageSuggest from "@/components/LanguageSuggest";
 import IntlClient from "@/i18n/IntlClient";
 import SiteFooter from "@/components/SiteFooter";
 import VisitBeacon from "@/components/VisitBeacon";
+import SourceTracker from "@/components/SourceTracker";
 import { clientMessages } from "@/i18n/messages";
 import { getLocaleInfo, getMessages, getT, suggestedLocale } from "@/i18n/server";
 
@@ -100,7 +101,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {usage && !usage.at && <UsageNotice />}
             {/* Anunțul despre cookie-uri vine o singură dată, dar nu peste celelalte două întrebări: așteaptă pagina următoare. */}
             {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
-              && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
+              && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} necessary={t("cookieNecessary")} />}
             {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
             {me && <UserNotices userId={me.id} />}
@@ -108,6 +109,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <main id="continut">{children}</main>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <VisitBeacon />
+            <SourceTracker />
             <SiteFooter signedIn={!!me} />
           </div>
         </IntlClient>
