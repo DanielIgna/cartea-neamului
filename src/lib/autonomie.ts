@@ -585,3 +585,19 @@ export async function autonomyPage(db: Db) {
     cron: { secret: !!process.env.CRON_SECRET?.trim(), mail: emailReady(), sales: plansNow.on },
   };
 }
+
+/**
+ * Pornirea motorului SEO (Daniel, 16.11.2026, după proba pe 20 de pagini): o singură dată, la publicare. Pune comutatorul
+ * „Motorul SEO” pe pornit și rulează imediat primul lot (trecut în jurnal ca rulare manuală), ca primele pagini să se poată
+ * verifica azi; după aceea rulează ceasul zilnic, iar comutatorul din Admin → Autonomie hotărăște.
+ */
+export async function startSeoEngineOnce(db: Db, now = new Date()): Promise<string> {
+  const MARK = "motor_seo_pornit_2026_11_16";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(sql`${appSetting.key} = ${MARK}`);
+  if (seen) return "deja";
+  const sw = await automationSwitches(db);
+  await saveSwitches(db, { ...sw, "motor-seo": true }, null, now);
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  const r = await runAutomation(db, "motor-seo", "manual", null, now);
+  return `pornit; primul lot: ${r.note}`;
+}
