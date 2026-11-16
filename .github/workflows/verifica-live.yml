@@ -5,6 +5,9 @@ on:
 jobs:
   verifica:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash --noprofile --norc {0}
     steps:
       - name: Paginile diaspora, sitemap-urile și comunele publicate de motor
         run: |
@@ -29,6 +32,6 @@ jobs:
             h=$(curl -sL -A "Googlebot" "$u")
             r=$(echo "$h" | grep -oE '<meta name="robots"[^>]*>' | head -1)
             w=$(echo "$h" | sed 's/<[^>]*>/ /g' | wc -w)
-            wiki=$(echo "$h" | grep -c "CC BY-SA")
+            wiki=$(echo "$h" | grep -c "CC BY-SA" || true)
             echo "$u | ${r:-indexabilă} | ~$w cuvinte | wikipedia: $wiki"
           done
