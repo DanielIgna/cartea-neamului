@@ -20,18 +20,21 @@ export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
 /** Sfaturile pe email de bun venit (14 noiembrie 2026), cu dezabonare dintr-un clic. */
 export const NEWS_VERSION = "2026-11-14";
+/** Emailurile din zilele gratuite (16 noiembrie 2026): fără acord cerut (interes legitim, ca client), doar dezabonarea se ține. */
+export const CONVERSION_VERSION = "2026-11-16";
 
 /**
  * Acordurile păstrate în tabelul `consent`: termenii (la crearea contului), capitolul „Credința” (date ocrotite mai strict) și
  * măsurarea timpului petrecut în site („usage”, cerută o singură dată, cu „Bine” sau „Nu vreau”).
  */
-export type ConsentPurpose = "terms" | "faith" | "usage" | "withdrawal" | "news";
+export type ConsentPurpose = "terms" | "faith" | "usage" | "withdrawal" | "news" | "conversie";
 export const WITHDRAWAL_VERSION = "2026-11-12";
-export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION, withdrawal: WITHDRAWAL_VERSION, news: NEWS_VERSION };
+export const CONSENT_VERSION: Record<ConsentPurpose, string> = { terms: TERMS_VERSION, faith: FAITH_VERSION, usage: USAGE_VERSION, withdrawal: WITHDRAWAL_VERSION, news: NEWS_VERSION, conversie: CONVERSION_VERSION };
 export const CONSENT_LABEL: Record<ConsentPurpose, string> = {
   terms: "Termenii și Politica de confidențialitate", faith: "Capitolul „Credința”", usage: "Cât timp folosesc site-ul și ce părți din el",
   withdrawal: "La plată: accesul începe imediat, fără cele 14 zile de retragere (OUG 34/2014, art. 16 lit. m)",
   news: "Sfaturi pe email în primele trei săptămâni (cu dezabonare dintr-un clic)",
+  conversie: "Emailurile din zilele gratuite (cel mult 6, ziua 1–14); se ține doar dezabonarea",
 };
 
 /** Ce află cel care ține site-ul dacă omul spune „Bine”, cum îl citește omul în anunț. */

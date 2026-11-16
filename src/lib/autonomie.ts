@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -62,6 +62,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Cu câteva zile înainte (cât ai pus în Manager control) le scrie celor al căror an se termină. O dată pe an, pentru fiecare." },
   { key: "bun-venit", label: "Email: sfaturi de bun venit", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Doar celor care au spus „Da” la „Vrei sfaturi pe email?”: 5 emailuri scurte în primele 3 săptămâni (ziua 1, 2, 4, 10, 21), câte unul pe zi, sărind ce omul a făcut deja (a invitat o rudă, a înregistrat un glas, a plătit). Fiecare are dezabonare dintr-un clic. Vezi Admin → Creștere." },
+  { key: "conversie", label: "Email: din gratuit în plătit", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY, plățile pornite și cheia Stripe (pentru codul de reducere)",
+    what: "Șase emailuri în zilele gratuite și după ele (ziua 1, 3, 5, 7, 8, 14; zilele, procentul și durata reducerii din Admin → Conversie): bun venit, câte persoane are arborele + invitație, planurile, „se încheie azi”, codul unic de reducere (Stripe, o folosire, expiră singur) și ultima reamintire. Cel mult unul pe zi, în limba omului, cu dezabonare dintr-un clic; deschiderile și clicurile se văd în Analiză → Conversii. Cât e pornită, emailul vechi „zilele gratuite se termină” nu mai pleacă, ca să nu se dubleze." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -193,6 +195,7 @@ export async function trialEnding(db: Db, now = new Date()) {
 }
 
 async function runTrialMail({ db, now }: Ctx): Promise<RunResult> {
+  if ((await automationSwitches(db)).conversie) return { status: "sarit", observed: 0, acted: 0, note: "înlocuit de „Email: din gratuit în plătit” (pasul „se încheie azi”)" };
   if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
   const list = await trialEnding(db, now);
   let sent = 0;
@@ -256,11 +259,15 @@ async function runNews({ db, now }: Ctx): Promise<RunResult> {
   const { giftSeason } = await import("./cadou-sarbatori");
   const s = await planSettings(db);
   const people = await newsCandidates(db, now);
+  const conv = (await automationSwitches(db)).conversie;
+  const convToday = new Set(conv ? (await rows<{ user_id: string }>(db, sql`select user_id from conversion_mail where sent_at > ${new Date(now.getTime() - 20 * 3_600_000).toISOString()}::timestamp`)).map((r) => r.user_id) : []);
   let due = 0, sent = 0;
   const byStep: Record<string, number> = {};
   for (const u of people) {
     const step = dueStep(new Date(u.created_at), new Set(u.sent ?? []), { invited: !!u.invited, voice: !!u.voice, paid: !!u.paid }, now);
     if (!step) continue;
+    // Cu emailurile din gratuit în plătit pornite: planurile le spun ele (fără e4) și nimeni nu primește două emailuri în aceeași zi.
+    if (conv && (step === "e4" || convToday.has(u.id))) continue;
     due++;
     const locale = isLocale(u.locale) ? u.locale : "ro";
     const [t, app] = await Promise.all([getT("NewsMail", locale), getAppName(locale)]);
@@ -293,6 +300,17 @@ async function runNews({ db, now }: Ctx): Promise<RunResult> {
     details: byStep, verified: sent === due };
 }
 
+/** Emailurile din gratuit în plătit (src/lib/conversie.ts): cel mult un email pe zi pentru fiecare om. */
+async function runConversionMail({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
+  const { runConversion } = await import("./conversie-mail");
+  const r = await runConversion(db, { now });
+  const parts = Object.entries(r.byStep).map(([k, c]) => `${c}× ${k}`).join(", ");
+  const note = r.skipped.length && !r.observed ? r.skipped[0]
+    : r.due ? `${r.sent} din ${r.due} emailuri trimise${parts ? ` (${parts})` : ""}${r.skipped.length ? ` · ${r.skipped.length} sărite` : ""}` : `${r.observed} conturi noi, niciunul nu are azi un email de primit`;
+  return { status: r.sent ? "ok" : r.failed ? "eroare" : "nimic", observed: r.observed, acted: r.sent, note, details: { byStep: r.byStep, skipped: r.skipped.slice(0, 20) }, verified: r.failed === 0 };
+}
+
 const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   sanatate: (c) => runHealth(c),
   curatenie: runCleanup,
@@ -303,6 +321,7 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "probleme-vechi": runStaleProblems,
   arhivare: runArchiveDaily,
   "motor-seo": runSeoEngine,
+  conversie: runConversionMail,
 };
 
 /** Rulează o automatizare și o trece în jurnal. După 3 erori la rând se oprește singură și apare la recomandări. */
@@ -559,7 +578,7 @@ export async function autonomyPage(db: Db) {
       sql`select id, automation, trigger, status, observed, acted, pending, note, started_at, details from automation_run where automation <> 'bucla' order by started_at desc limit 30`),
     rows(db, sql`select count(*) filter (where automation <> 'bucla') as runs, count(*) filter (where automation <> 'bucla' and status in ('ok','nimic')) as ok,
       count(*) filter (where status = 'eroare' and automation <> 'bucla') as errors, coalesce(sum(acted) filter (where automation <> 'bucla'), 0) as acted,
-      coalesce(sum(acted) filter (where automation in ('aminteste-proba','aminteste-an','bun-venit')), 0) as mails,
+      coalesce(sum(acted) filter (where automation in ('aminteste-proba','aminteste-an','bun-venit','conversie')), 0) as mails,
       count(*) filter (where trigger = 'aprobare') as approved
       from automation_run where started_at > now() - interval '7 days'`),
     rows<{ status: string; note: string | null; started_at: string; trigger: string; details: { stats?: LoopStats; ran?: { key: string; status: string; note: string }[] } | null }>(db,
