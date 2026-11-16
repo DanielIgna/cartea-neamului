@@ -180,6 +180,7 @@ export const it: Catalog = {
     startText: "Quattro brevi passaggi: tu, i genitori, i nonni, e alla fine l’albero è pronto, con tutti i legami. Quello che non sai lo lasci vuoto.",
   },
   AuthForm: {
+    mailNote: "Nei giorni gratuiti ti mandiamo alcune email brevi sull’account (al massimo 6, in due settimane). Ti disiscrivi con un clic.",
     signUpTitle: "Nuovo account",
     signUpTrial: "I primi 7 giorni sono gratuiti, senza carta. In questi giorni puoi iniziare l’albero e i parenti possono vederlo. Perché scrivano anche loro, scegli un piano.",
     signInTitle: "Accedi",

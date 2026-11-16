@@ -180,6 +180,7 @@ export const hu: Catalog = {
     startText: "Négy rövid lépés: te, a szüleid, a nagyszüleid, és a végén kész a családfa, minden kapcsolattal. Amit nem tudsz, üresen hagyod.",
   },
   AuthForm: {
+    mailNote: "Az ingyenes napokban néhány rövid e-mailt küldünk a fiókodról (legfeljebb 6-ot, két hét alatt). Egy kattintással leiratkozhatsz.",
     signUpTitle: "Új fiók",
     signUpTrial: "Az első 7 nap ingyenes, kártya nélkül. Ezalatt elindíthatod a családfát, a rokonok pedig láthatják. Hogy ők is írjanak, választasz egy csomagot.",
     signInTitle: "Belépés",

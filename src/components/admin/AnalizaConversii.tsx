@@ -6,6 +6,7 @@ import { clusterOf, pageLabel } from "@/lib/seo-clustere";
 import { gscByPath, gscSnapshot, seoSettings } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site-url";
 import { HBars, Stat, lei, num } from "@/components/admin/ui";
+import ConversieStats from "@/components/admin/ConversieStats";
 
 /**
  * Admin → Analiză → Conversii (Daniel, 14.11.2026): de unde vin cei care fac ceva pe site, nu doar cei care se uită.
@@ -56,6 +57,8 @@ export async function Conversions({ cur, sessions }: { cur: Range; sessions: Ses
         <Stat label="Plăți încheiate" value={num(total.plata)} hint={money(total)} />
         <Stat label="Cu sursa găsită" value={share.total ? `${pct(share.attributed, share.total)}%` : "—"} hint="restul: vizita începuse altă zi sau „Do Not Track”" />
       </div>
+
+      <ConversieStats from={cur.from} to={cur.to} />
 
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Pâlnia din Google, până la plată</h2>

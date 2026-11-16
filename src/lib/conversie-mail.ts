@@ -26,8 +26,9 @@ import { getAppName, getT } from "@/i18n/server";
 const DAY = 86_400_000;
 
 /** Accesul omului și unde îi încep și i se termină zilele gratuite. */
-export function trialOf(c: Candidate, ps: PlanSettings, now: Date): { access: Access; start: Date; trialEnd: Date } {
-  const exempt = isDemo(c.email) || isAdminUser({ email: c.email, emailVerified: c.emailVerified, createdAt: c.createdAt });
+export function trialOf(c: Candidate, ps: PlanSettings, now: Date, simulate = false): { access: Access; start: Date; trialEnd: Date } {
+  // În simulator, contul adminului e socotit ca al unui om obișnuit, ca să-și poată vedea șirul pe propriul cont.
+  const exempt = !simulate && (isDemo(c.email) || isAdminUser({ email: c.email, emailVerified: c.emailVerified, createdAt: c.createdAt }));
   const access = accessFor({ createdAt: c.createdAt, plan: isPlan(c.plan) ? c.plan : null, paidUntil: c.paidUntil, tier: isTier(c.tier) ? c.tier : null,
     exempt, keepUntil: c.keepUntil, freeUntil: c.freeUntil }, ps, now);
   const started = ps.startedAt ? new Date(ps.startedAt).getTime() : now.getTime();
@@ -116,18 +117,23 @@ export type ConvRun = {
  */
 export async function runConversion(db: Db, o: {
   now?: Date; onlyUserId?: string; dryRun?: boolean; localOffer?: boolean; mailer?: (m: EmailMessage) => Promise<EmailResult>; site?: string;
+  /** Simulatorul din Admin: plățile socotite pornite (și cu ele oprite) și fără să țină seama de ce a primit deja omul. */
+  simulate?: boolean;
 } = {}): Promise<ConvRun> {
   const now = o.now ?? new Date();
   const mailer = o.mailer ?? sendEmail;
-  const [ps, cs, inv] = await Promise.all([planSettings(db), convSettings(db), inviteSettings(db)]);
+  const [real, cs, inv] = await Promise.all([planSettings(db), convSettings(db), inviteSettings(db)]);
+  const ps: PlanSettings = o.simulate && !real.on ? { ...real, on: true, startedAt: new Date(0).toISOString() } : real;
   const out: ConvRun = { observed: 0, due: 0, sent: 0, failed: 0, skipped: [], byStep: {}, previews: [] };
   if (!ps.on) { out.skipped.push("plățile sunt oprite: nu există zile gratuite"); return out; }
   const people = await candidates(db, now, o.onlyUserId);
   out.observed = people.length;
-  for (const c of people) {
-    if (c.optOut) continue;
-    const { access, start, trialEnd } = trialOf(c, ps, now);
-    const step = pickStep({ access, start, trialEnd, trialDays: ps.trialDays, sent: new Set(c.sent), s: cs, now });
+  for (const real of people) {
+    // În simulator contul e luat ca al unui om nou, fără an plătit: se văd emailurile cu numele și arborele lui.
+    const c: Candidate = o.simulate ? { ...real, plan: null, paidUntil: null, tier: null, keepUntil: null } : real;
+    if (c.optOut && !o.simulate) continue;
+    const { access, start, trialEnd } = trialOf(c, ps, now, !!o.simulate);
+    const step = pickStep({ access, start, trialEnd, trialDays: ps.trialDays, sent: new Set(o.simulate ? [] : c.sent), s: cs, now });
     if (!step) continue;
     out.due++;
     const locale: Locale = isLocale(c.locale) ? c.locale : "ro";

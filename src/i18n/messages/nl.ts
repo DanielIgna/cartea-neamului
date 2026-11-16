@@ -180,6 +180,7 @@ export const nl: Catalog = {
     startText: "Vier korte stappen: jij, je ouders, je grootouders, en aan het eind is de stamboom klaar, met iedereen aan elkaar verbonden. Wat je niet weet, laat je leeg.",
   },
   AuthForm: {
+    mailNote: "Tijdens de gratis dagen sturen we je een paar korte e-mails over je account (hooguit 6, in twee weken). Afmelden met één klik.",
     signUpTitle: "Nieuw account",
     signUpTrial: "De eerste 7 dagen zijn gratis, zonder kaart. Daarin kun je je stamboom beginnen, en je familieleden kunnen hem bekijken. Om ook te schrijven, kies je een pakket.",
     signInTitle: "Inloggen",

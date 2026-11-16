@@ -190,6 +190,7 @@ export const ro = {
     startText: "Patru pași scurți: tu, părinții, bunicii, iar la sfârșit arborele e gata, cu toate legăturile. Ce nu știi lași gol.",
   },
   AuthForm: {
+    mailNote: "În zilele gratuite îți trimitem câteva emailuri scurte despre cont (cel mult 6, în două săptămâni). Te dezabonezi dintr-un clic.",
     signUpTitle: "Cont nou",
     signUpTrial: "Primele 7 zile sunt gratuite, fără card. În ele poți porni arborele, iar rudele îl pot vedea. Ca să scrie și ele, alegi un plan.",
     signInTitle: "Intră în cont",

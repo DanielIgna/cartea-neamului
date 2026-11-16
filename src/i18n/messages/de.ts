@@ -180,6 +180,7 @@ export const de: Catalog = {
     startText: "Vier kurze Schritte: du, deine Eltern, deine Großeltern, und am Ende ist der Stammbaum fertig, mit allen Verbindungen. Was du nicht weißt, lässt du leer.",
   },
   AuthForm: {
+    mailNote: "In den Gratistagen schicken wir dir ein paar kurze E-Mails zu deinem Konto (höchstens 6, in zwei Wochen). Abmelden mit einem Klick.",
     signUpTitle: "Neues Konto",
     signUpTrial: "Die ersten 7 Tage sind kostenlos, ohne Karte. Darin kannst du deinen Stammbaum beginnen, und deine Verwandten können ihn ansehen. Damit sie auch schreiben, wählst du einen Tarif.",
     signInTitle: "Anmelden",

@@ -180,6 +180,7 @@ export const enGB: Catalog = {
     startText: "Four short steps: you, your parents, your grandparents, and at the end the tree is ready, with everyone linked. Leave blank what you don’t know.",
   },
   AuthForm: {
+    mailNote: "During the free days we send you a few short emails about your account (at most 6, over two weeks). Unsubscribe with one click.",
     signUpTitle: "New account",
     signUpTrial: "The first 7 days are free, no card needed. During them you can start your tree, and your relatives can see it. For them to write too, you choose a plan.",
     signInTitle: "Sign in",
