@@ -12,6 +12,7 @@ import { nlResurse } from "./resurse/nl";
 import { nlCadou } from "./cadou/nl";
 import { nlCrestere } from "./crestere/nl";
 import { nlInvitatii } from "./invitatii/nl";
+import { nlConversie } from "./conversie/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
@@ -429,6 +430,7 @@ export const nl: Catalog = {
   ...nlCadou,
   ...nlCrestere,
   ...nlInvitatii,
+  ...nlConversie,
   ...nlFilm,
   ...nlLegal,
   ...nlDatele,

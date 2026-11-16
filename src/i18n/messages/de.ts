@@ -12,6 +12,7 @@ import { deResurse } from "./resurse/de";
 import { deCadou } from "./cadou/de";
 import { deCrestere } from "./crestere/de";
 import { deInvitatii } from "./invitatii/de";
+import { deConversie } from "./conversie/de";
 import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
@@ -429,6 +430,7 @@ export const de: Catalog = {
   ...deCadou,
   ...deCrestere,
   ...deInvitatii,
+  ...deConversie,
   ...deFilm,
   ...deLegal,
   ...deDatele,

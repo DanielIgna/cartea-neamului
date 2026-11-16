@@ -12,6 +12,7 @@ import { heResurse } from "./resurse/he";
 import { heCadou } from "./cadou/he";
 import { heCrestere } from "./crestere/he";
 import { heInvitatii } from "./invitatii/he";
+import { heConversie } from "./conversie/he";
 import { heFilm } from "./film/he";
 import { heLegal } from "./legal/he";
 import { heDatele } from "./datele/he";
@@ -431,6 +432,7 @@ export const he: Catalog = {
   ...heCadou,
   ...heCrestere,
   ...heInvitatii,
+  ...heConversie,
   ...heFilm,
   ...heLegal,
   ...heDatele,

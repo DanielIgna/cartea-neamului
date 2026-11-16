@@ -12,6 +12,7 @@ import { frResurse } from "./resurse/fr";
 import { frCadou } from "./cadou/fr";
 import { frCrestere } from "./crestere/fr";
 import { frInvitatii } from "./invitatii/fr";
+import { frConversie } from "./conversie/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
@@ -429,6 +430,7 @@ export const fr: Catalog = {
   ...frCadou,
   ...frCrestere,
   ...frInvitatii,
+  ...frConversie,
   ...frFilm,
   ...frLegal,
   ...frDatele,
