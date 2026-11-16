@@ -7,15 +7,16 @@
 /** Ziua ultimei schimbări a Termenilor (scrisă în limba cititorului pe pagină). */
 // 14 noiembrie 2026: §5 spune cum merg cardurile cadou vândute în magazine (doar informativ, fără acord nou); la prânz, §5 l11:
 // contul gratuit PropManage, dar al partenerului, separat de card.
-export const TERMS_DATE = new Date("2026-11-14T22:00:00Z");
+// 16 noiembrie 2026: §5 spune ce se închide după zilele gratuite (fără să se șteargă nimic) și reducerea trimisă o singură dată.
+export const TERMS_DATE = new Date("2026-11-16T09:00:00Z");
 /**
- * Ultima schimbare a Politicii de confidențialitate (14 noiembrie seara: conversiile numărate la sursa vizitei, fără legătură cu contul; arhiva sigilată și termenele de după anul plătit, vizibile doar cu regulile pornite; ora 13: contul gratuit PropManage, numele și emailul doar cu bifa; prânz: cardurile digitale trimise de magazin și cookie-ul cn-recomandat; dimineață: cardurile cadou din magazine, codul și amprenta IP de o zi; 13 noiembrie seara: vizitele numărate anonim, fără cookie-uri, pentru Admin → Analiză; ora 15: emailurile site-ului pleacă prin Resend, inclusiv Contactul și cererile ADN, FormSubmit rămâne doar rezervă; după-amiază: siguranța contului, adică verificarea în 2 pași, jurnalul de securitate, cookie-ul cn_dispozitiv și Cloudflare Turnstile; la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
+ * Ultima schimbare a Politicii de confidențialitate (16 noiembrie: emailurile din zilele gratuite, cu deschideri, clicuri și codul de reducere; 14 noiembrie seara: conversiile numărate la sursa vizitei, fără legătură cu contul; arhiva sigilată și termenele de după anul plătit, vizibile doar cu regulile pornite; ora 13: contul gratuit PropManage, numele și emailul doar cu bifa; prânz: cardurile digitale trimise de magazin și cookie-ul cn-recomandat; dimineață: cardurile cadou din magazine, codul și amprenta IP de o zi; 13 noiembrie seara: vizitele numărate anonim, fără cookie-uri, pentru Admin → Analiză; ora 15: emailurile site-ului pleacă prin Resend, inclusiv Contactul și cererile ADN, FormSubmit rămâne doar rezervă; după-amiază: siguranța contului, adică verificarea în 2 pași, jurnalul de securitate, cookie-ul cn_dispozitiv și Cloudflare Turnstile; la prânz: „Raportează o problemă”, cu pozele ecranului; 13 noiembrie: Păstrarea arborelui și cookie-ul anunțului ei; tot pe 13, după auditul juridic: plățile și darurile, temeiul obligației legale,
  * contabilul și ANAF, Resend, transferurile spuse exact (FormSubmit fără contract), păstrarea plăților, opoziția, copiii, cookie-urile Stripe; 12 noiembrie: operatorul e PFA-ul lui Daniel, plățile prin Stripe; 11 noiembrie:
  * pozele propuse pentru prima pagină, pagina Contact și WhatsApp, serverul din Frankfurt, istoricul schimbărilor văzut de admin,
  * lista întreagă a cookie-urilor și a ce ține browserul).
  */
-export const PRIVACY_DATE = new Date("2026-11-14T22:00:00Z");
-export const TERMS_VERSION = "2026-11-14-arhiva";
+export const PRIVACY_DATE = new Date("2026-11-16T09:00:00Z");
+export const TERMS_VERSION = "2026-11-16-conversie";
 export const FAITH_VERSION = "2026-11-06";
 export const USAGE_VERSION = "2026-11-06";
 /** Sfaturile pe email de bun venit (14 noiembrie 2026), cu dezabonare dintr-un clic. */
