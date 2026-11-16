@@ -13,6 +13,7 @@ import { heCadou } from "./cadou/he";
 import { heCrestere } from "./crestere/he";
 import { heInvitatii } from "./invitatii/he";
 import { heConversie } from "./conversie/he";
+import { heSursa } from "./sursa/he";
 import { heFilm } from "./film/he";
 import { heLegal } from "./legal/he";
 import { heDatele } from "./datele/he";
@@ -44,10 +45,11 @@ export const he: Catalog = {
     surnames: "שמות משפחה",
     places: "ארכיונים לפי מחוז",
     diaspora: "יוצאי רומניה בעולם",
-    cookieLead: "רק עוגיות הכרחיות.",
-    cookieText: "אנחנו משתמשים בהן כדי שתישארו מחוברים ושהאתר יזכור את השפה ואת ערכת הצבעים שבחרתם. בלי פרסומות ובלי מעקב: את הביקורים אנחנו סופרים באופן אנונימי, בלי עוגיות, ולכן לא מבקשים את הסכמתכם.",
+    cookieLead: "עוגיות באתר.",
+    cookieText: "העוגיות ההכרחיות שומרות אתכם מחוברים וזוכרות את השפה ואת ערכת הצבעים. אם תסכימו, נשתמש גם בשתי עוגיות ניתוח משלנו בלבד, כדי לדעת מאיפה מגיעים המבקרים (למשל מפוסט בפייסבוק). בלי פרסומות ובלי חברות אחרות.",
     cookieMore: "לרשימה המלאה",
-    cookieOk: "הבנתי",
+    cookieOk: "אישור",
+    cookieNecessary: "רק ההכרחיות",
   },
   ThemeSwitch: {
     label: "ערכת צבעים",
@@ -184,6 +186,16 @@ export const he: Catalog = {
     startText: "ארבעה צעדים קצרים: אתם, ההורים, הסבים, ובסוף העץ מוכן, עם כל הקשרים. את מה שלא יודעים משאירים ריק.",
   },
   AuthForm: {
+    srcQuestion: "איך שמעתם עלינו?",
+    srcOptional: "(לא חובה)",
+    srcChoose: "בחרו, אם תרצו",
+    srcFbGroup: "פייסבוק (קבוצה)",
+    srcFbPage: "פייסבוק (דף)",
+    srcGoogle: "גוגל",
+    srcFriend: "המלצה של קרוב משפחה או חבר",
+    srcGift: "כרטיס מתנה",
+    srcOther: "משהו אחר",
+    srcOtherHint: "מאיפה בדיוק?",
     mailNote: "בימים החינמיים נשלח לך כמה מיילים קצרים על החשבון (לכל היותר 6, בשבועיים). ביטול הרשמה בלחיצה אחת.",
     signUpTitle: "חשבון חדש",
     signUpTrial: "7 הימים הראשונים בחינם, בלי כרטיס אשראי. בהם אפשר להתחיל את העץ, והקרובים יכולים לצפות בו. כדי שגם הם יכתבו, בוחרים תוכנית.",
@@ -434,6 +446,7 @@ export const he: Catalog = {
   ...heCrestere,
   ...heInvitatii,
   ...heConversie,
+  ...heSursa,
   ...heFilm,
   ...heLegal,
   ...heDatele,

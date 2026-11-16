@@ -21,6 +21,7 @@ import LanguagePicker from "@/components/LanguagePicker";
 import SignInLink from "@/components/SignInLink";
 import SiteFooter from "@/components/SiteFooter";
 import VisitBeacon from "@/components/VisitBeacon";
+import SourceTracker from "@/components/SourceTracker";
 import IntlClient from "@/i18n/IntlClient";
 import { clientMessages } from "@/i18n/messages";
 import { getAppName, getMessages, getT } from "@/i18n/server";
@@ -63,9 +64,10 @@ export default async function PublicLayout({ children, params }: { children: Rea
                 <SignInLink label={t("signIn")} short={t("signInShort")} />
               </div>
             </header>
-            {!v.cookieSeen && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} />}
+            {!v.cookieSeen && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} necessary={t("cookieNecessary")} />}
             <main id="continut">{children}</main>
             <VisitBeacon />
+            <SourceTracker />
             <SiteFooter signedIn={false} />
           </div>
         </IntlClient>

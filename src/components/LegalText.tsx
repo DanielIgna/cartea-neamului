@@ -2,6 +2,7 @@ import { publicPageMetadata } from "@/lib/page-metadata";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import LegalLangNote from "@/components/LegalLangNote";
+import CookieChoice from "@/components/CookieChoice";
 import { getFormat, getLocale, getAppName, getT } from "@/i18n/server";
 import { roLegal } from "@/i18n/messages/legal/ro";
 import { BETA, MIN_AGE, operator } from "@/lib/legal";
@@ -24,7 +25,7 @@ const ext = (href: string) => (c: ReactNode) => <a href={href} rel="noopener nor
  */
 export default async function LegalText({ page, date }: { page: Page; date: Date }) {
   const locale = await getLocale();
-  const [t, tp, format] = await Promise.all([getT("Legal", locale), getT("Partners", locale), getFormat(locale)]);
+  const [t, tp, tc, format] = await Promise.all([getT("Legal", locale), getT("Partners", locale), getT("CookieChoice", locale), getFormat(locale)]);
   const op = operator();
   const tags = {
     b: (c: ReactNode) => <b>{c}</b>,
@@ -84,6 +85,10 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
         return (
           <div key={id}>
             {"h" in s && <h3 id={ANCHORS[`${page}.${id}`]}>{rich(`${base}.h`)}</h3>}
+            {/* Alegerea pentru cookie-urile de analiză, schimbată oricând de aici (src/lib/sursa-shared.ts). */}
+            {page === "Privacy" && id === "cookies" && (
+              <CookieChoice t={{ title: tc("title"), now: tc("now"), analytics: tc("analytics"), necessary: tc("necessary"), none: tc("none"), accept: tc("accept"), refuse: tc("refuse"), saved: tc("saved") }} />
+            )}
             {blocks}
           </div>
         );

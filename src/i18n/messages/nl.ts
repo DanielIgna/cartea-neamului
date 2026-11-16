@@ -13,6 +13,7 @@ import { nlCadou } from "./cadou/nl";
 import { nlCrestere } from "./crestere/nl";
 import { nlInvitatii } from "./invitatii/nl";
 import { nlConversie } from "./conversie/nl";
+import { nlSursa } from "./sursa/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
@@ -40,10 +41,11 @@ export const nl: Catalog = {
     surnames: "Achternamen",
     places: "Archieven per district",
     diaspora: "Roemenen in het buitenland",
-    cookieLead: "Alleen strikt noodzakelijke cookies.",
-    cookieText: "We gebruiken ze om je ingelogd te houden en je gekozen taal en thema te onthouden. Geen advertenties en geen tracking: we tellen bezoeken anoniem, zonder cookies, dus we vragen geen toestemming.",
+    cookieLead: "Cookies op deze site.",
+    cookieText: "De noodzakelijke houden je ingelogd en onthouden je taal en thema. Als je akkoord gaat, gebruiken we ook twee eigen analysecookies, om te weten waar bezoekers vandaan komen (bijvoorbeeld een Facebook-bericht). Geen advertenties en geen andere bedrijven.",
     cookieMore: "Bekijk de lijst",
-    cookieOk: "Begrepen",
+    cookieOk: "Accepteren",
+    cookieNecessary: "Alleen noodzakelijke",
   },
   ThemeSwitch: {
     label: "Kleurthema",
@@ -180,6 +182,16 @@ export const nl: Catalog = {
     startText: "Vier korte stappen: jij, je ouders, je grootouders, en aan het eind is de stamboom klaar, met iedereen aan elkaar verbonden. Wat je niet weet, laat je leeg.",
   },
   AuthForm: {
+    srcQuestion: "Hoe heb je over ons gehoord?",
+    srcOptional: "(optioneel)",
+    srcChoose: "Kies, als je wilt",
+    srcFbGroup: "Facebook (groep)",
+    srcFbPage: "Facebook (pagina)",
+    srcGoogle: "Google",
+    srcFriend: "Aanbevolen door familie of een vriend",
+    srcGift: "Cadeaukaart",
+    srcOther: "Iets anders",
+    srcOtherHint: "Waar precies?",
     mailNote: "Tijdens de gratis dagen sturen we je een paar korte e-mails over je account (hooguit 6, in twee weken). Afmelden met één klik.",
     signUpTitle: "Nieuw account",
     signUpTrial: "De eerste 7 dagen zijn gratis, zonder kaart. Daarin kun je je stamboom beginnen, en je familieleden kunnen hem bekijken. Om ook te schrijven, kies je een pakket.",
@@ -432,6 +444,7 @@ export const nl: Catalog = {
   ...nlCrestere,
   ...nlInvitatii,
   ...nlConversie,
+  ...nlSursa,
   ...nlFilm,
   ...nlLegal,
   ...nlDatele,

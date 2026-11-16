@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { adoptionOf, funnelOf, observations, peopleList, type PersonRow } from "@/lib/admin-people";
 import { duration, usageOverview } from "@/lib/usage";
+import { labelOfSource as labelOf, linkNames, sourceKeys } from "@/lib/sursa";
 import { de, oameni } from "@/lib/ro-words";
 import { AdminNav, HBars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 
@@ -22,7 +23,7 @@ const FILTERS: Record<string, { label: string; ok: (p: PersonRow) => boolean }> 
   activi: { label: "Activi în 7 zile", ok: (p) => since(lastActive(p), 7) },
   dusi: { label: "Neintrați de 14 zile", ok: (p) => !since(lastActive(p), 14) },
 };
-type Row = PersonRow & { time: number | null };
+type Row = PersonRow & { time: number | null; source: string };
 const ORDERS: Record<string, { label: string; cmp: (a: Row, b: Row) => number }> = {
   noi: { label: "cei mai noi", cmp: (a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? "") },
   activi: { label: "ultima dată activi", cmp: (a, b) => (lastActive(b) ?? "").localeCompare(lastActive(a) ?? "") },
@@ -33,17 +34,23 @@ const ORDERS: Record<string, { label: string; cmp: (a: Row, b: Row) => number }>
 const pctOf = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 
 /** Oamenii: drumul tuturor de la cont la amintiri, ce folosesc și cifrele fiecăruia. Doar cifre, niciodată ce scriu. */
-export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string }> }) {
+export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string; sursa?: string }> }) {
   await requireAdmin("/admin/oameni");
   const sp = await searchParams;
-  const [people, usage] = await Promise.all([peopleList(db), usageOverview(db, 30)]);
+  const [people, usage, sources, names] = await Promise.all([peopleList(db), usageOverview(db, 30), sourceKeys(db), linkNames(db)]);
+  const labelOfSource = (k: string) => labelOf(k, names.get(k));
   const show = FILTERS[sp.arata ?? ""] ? sp.arata! : "toti";
   const order = ORDERS[sp.ordine ?? ""] ? sp.ordine! : "noi";
-  const list: Row[] = people.filter(FILTERS[show].ok).map((p) => ({ ...p, time: usage.perUser.get(p.id)?.seconds ?? null })).sort(ORDERS[order].cmp);
+  const srcOf = (id: string) => sources.get(id) ?? "necunoscut";
+  // Filtrul după sursă (de unde vine contul, src/lib/sursa.ts): doar sursele care chiar apar, cele mai multe întâi.
+  const srcCounts = [...people.reduce((m, p) => m.set(srcOf(p.id), (m.get(srcOf(p.id)) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1]);
+  const source = sp.sursa && srcCounts.some(([k]) => k === sp.sursa) ? sp.sursa : "";
+  const list: Row[] = people.filter(FILTERS[show].ok).filter((p) => !source || srcOf(p.id) === source)
+    .map((p) => ({ ...p, time: usage.perUser.get(p.id)?.seconds ?? null, source: srcOf(p.id) })).sort(ORDERS[order].cmp);
   const top = usage.sections[0];
   const total = people.length;
   const silent = Math.max(0, total - usage.answers.yes - usage.answers.no);
-  const href = (arata: string, ordine: string) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}) })}`;
+  const href = (arata: string, ordine: string, sursa = source) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}), ...(sursa ? { sursa } : {}) })}`;
 
   return (
     <section className="stack">
@@ -119,12 +126,17 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
             <Link key={k} href={href(show, k)} aria-current={order === k ? "page" : undefined}>{o.label}</Link>
           ))}
         </nav>
+        <nav className="filters" aria-label="Sursa">
+          <span className="section-label">Sursa</span>
+          <Link href={href(show, order, "")} aria-current={!source ? "page" : undefined}>Toate</Link>
+          {srcCounts.map(([k, c]) => <Link key={k} href={href(show, order, k)} aria-current={source === k ? "page" : undefined}>{labelOfSource(k)} ({c})</Link>)}
+        </nav>
         {list.length === 0 ? <p className="muted">Nimeni, deocamdată.</p> : (
           <div className="tbl-wrap">
             <table className="tbl">
               <thead>
                 <tr>
-                  <th>Om</th><th>Unde a ajuns</th><th>Arborele lui</th><th className="n">A trecut</th><th className="n">Amintiri</th><th className="n">Poze</th>
+                  <th>Om</th><th>Sursa</th><th>Unde a ajuns</th><th>Arborele lui</th><th className="n">A trecut</th><th className="n">Amintiri</th><th className="n">Poze</th>
                   <th className="n">Rude chemate</th><th className="n">Zile active</th><th className="n">Timp</th><th>Ultima dată</th><th>Plan</th>
                 </tr>
               </thead>
@@ -132,6 +144,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
                 {list.map((p) => (
                   <tr key={p.id}>
                     <td><Link href={`/admin/oameni/${p.id}`}>{p.name}</Link><small>{p.email}</small><small>cont din {day(p.createdAt)}{p.phone ? " · telefon" : ""}</small></td>
+                    <td className="tight">{p.source === "necunoscut" ? <span className="muted">necunoscut</span> : labelOfSource(p.source)}</td>
                     <td><StagePill stage={p.stage} /></td>
                     <td>{p.mainTree ? <>{p.mainTree.name}<small>{num(p.mainTree.persons)} persoane · {p.mainTree.members} {p.mainTree.members === 1 ? "membru" : "membri"}{p.trees > 1 ? ` · în ${p.trees} arbori` : ""}</small></> : <span className="muted">—</span>}</td>
                     <td className="n">{num(p.personsAdded)}</td>
@@ -149,7 +162,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
           </div>
         )}
         <p className="muted" style={{ marginBottom: 0 }}>
-          „A trecut” = câte persoane a adăugat el în arbori. „Rude chemate” = linkuri folosite din cele trimise. „Zile active” = zilele din ultimele 30 în
+          „A trecut” = câte persoane a adăugat el în arbori. „Sursa” = de unde a venit contul (prima sursă, doar cu acordul pentru cookie-urile de analiză; conturile de dinainte de 16.11.2026 sunt „necunoscut”). „Rude chemate” = linkuri folosite din cele trimise. „Zile active” = zilele din ultimele 30 în
           care a intrat sau a adăugat ceva. „Timp” = cât a stat în site în ultimele 30 de zile, doar la cei care au spus „Bine”.
         </p>
       </div>

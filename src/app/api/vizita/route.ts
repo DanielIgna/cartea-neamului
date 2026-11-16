@@ -13,6 +13,7 @@ export const dynamic = "force-dynamic";
 const Body = z.object({
   path: z.string().max(500),
   ref: z.string().max(500).nullish(),
+  src: z.string().max(80).nullish(),
   us: z.string().max(80).nullish(),
   um: z.string().max(80).nullish(),
   uc: z.string().max(120).nullish(),
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
     return none();
   }
   try {
-    await recordVisit(db, { path: d.path, ref: d.ref, utmSource: d.us, utmMedium: d.um, utmCampaign: d.uc, width: d.w, lang: d.lang }, {
+    await recordVisit(db, { path: d.path, ref: d.ref, src: d.src, utmSource: d.us, utmMedium: d.um, utmCampaign: d.uc, width: d.w, lang: d.lang }, {
       ip: clientIp(h), ua: h.get("user-agent"), host: h.get("host"), country: h.get("x-vercel-ip-country"),
       region: h.get("x-vercel-ip-country-region"), city: h.get("x-vercel-ip-city"), logged: !!me,
     });

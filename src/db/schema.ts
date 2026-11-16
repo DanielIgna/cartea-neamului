@@ -878,3 +878,34 @@ export const conversionOffer = pgTable("conversion_offer", {
   amount: integer("amount"),
   currency: text("currency"),
 }, (t) => [uniqueIndex("conversion_offer_user_idx").on(t.userId)]);
+
+/* ---------- De unde vine fiecare cont nou (Daniel, 16.11.2026), vezi src/lib/sursa.ts și migrația 0037 ---------- */
+// Un rând pe cont nou. Sursa, referrer-ul, pagina de intrare, dispozitivul și țara se scriu DOAR dacă omul acceptase
+// cookie-urile de analiză (`analytics`); altfel rămân goale și se păstrează doar răspunsul din formular. Conturile de dinainte
+// n-au rând: sursa lor e „necunoscut”. `invite`: venit prin legătura de invitație a cuiva (se socotește recomandare).
+export const accountSource = pgTable("account_source", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  analytics: boolean("analytics").notNull().default(false),
+  source: text("source"), // sursa first-touch, cheia folosită în Analiză → Surse
+  firstSrc: text("first_src"), firstUtmSource: text("first_utm_source"), firstMedium: text("first_medium"), firstCampaign: text("first_campaign"),
+  firstReferrer: text("first_referrer"), firstLanding: text("first_landing"), firstAt: timestamp("first_at"),
+  lastSource: text("last_source"), lastSrc: text("last_src"), lastMedium: text("last_medium"), lastCampaign: text("last_campaign"),
+  lastReferrer: text("last_referrer"), lastLanding: text("last_landing"), lastAt: timestamp("last_at"),
+  device: text("device"),
+  country: text("country"),
+  answer: text("answer"), // facebook-grup / facebook-pagina / google / recomandare / card-cadou / altceva
+  answerOther: text("answer_other"),
+  answerAuto: boolean("answer_auto").notNull().default(false), // „recomandare” pus singur, la contul venit prin invitație
+  invite: boolean("invite").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("account_source_source_idx").on(t.source)]);
+
+// Linkurile făcute în Admin → Linkuri cu sursă (carteaneamului.ro/?src=<slug>): click-urile se numără din vizitele anonime
+// (page_view.source = slug), conturile din account_source.
+export const sourceLink = pgTable("source_link", {
+  slug: text("slug").primaryKey(),
+  name: text("name").notNull(),
+  page: text("page").notNull().default("/"),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

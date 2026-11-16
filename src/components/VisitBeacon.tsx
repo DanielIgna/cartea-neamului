@@ -19,7 +19,7 @@ export default function VisitBeacon() {
     const ref = first.current ? document.referrer || null : null;
     first.current = false;
     const body = JSON.stringify({
-      path: window.location.pathname, ref,
+      path: window.location.pathname, ref, src: q.get("src"),
       us: q.get("utm_source") ?? q.get("ref"), um: q.get("utm_medium"), uc: q.get("utm_campaign"),
       w: Math.round(window.innerWidth), lang: document.documentElement.lang || null,
     });

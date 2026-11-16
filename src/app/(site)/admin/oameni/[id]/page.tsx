@@ -4,6 +4,8 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { personDetail } from "@/lib/admin-people";
 import { consentState } from "@/lib/consent";
+import { answerLabel, labelOfSource, personSource } from "@/lib/sursa";
+import { countryName } from "@/lib/analiza";
 import { duration, usageOf } from "@/lib/usage";
 import { inZile } from "@/lib/ro-words";
 import { PLANS } from "@/lib/plan-names";
@@ -23,7 +25,7 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
   await requireAdmin(`/admin/oameni/${id}`);
   const d = await personDetail(db, id);
   if (!d) notFound();
-  const [answer, time] = await Promise.all([consentState(db, id, "usage"), usageOf(db, id, 30)]);
+  const [answer, time, src] = await Promise.all([consentState(db, id, "usage"), usageOf(db, id, 30), personSource(db, id)]);
   const share = (a: number) => (time.total ? `${Math.round((100 * a) / time.total)}%` : "—");
   const p = d.person;
   const done = d.weeks.map((w) => ({ key: w.week, label: label(w.week), value: w.persoane + w.amintiri + w.poze + w.altele }));
@@ -54,6 +56,8 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
           <Stat label="Zile active" value={`${p.activeDays30}/30`} hint={`${p.sessions} intrări în cont`} />
         </div>
       </div>
+
+      <SourceCard src={src} />
 
       <div className="admin-zones">
         <div className="card">
@@ -159,5 +163,54 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
         <p style={{ marginBottom: 0 }}><Link href={`/admin/istoric?om=${p.id}#limite`}>Ce a schimbat în arbori și limitele lui de editare ▸</Link></p>
       </div>
     </section>
+  );
+}
+
+/** De unde a venit: tot drumul până la cont (src/lib/sursa.ts). Sursa și drumul doar dacă omul acceptase cookie-urile de analiză. */
+function SourceCard({ src }: { src: Awaited<ReturnType<typeof personSource>> }) {
+  const r = src.row;
+  const when = (d: Date | null | undefined) => (d ? day(d.toISOString(), true) : null);
+  const touch = (o: { source: string | null; src: string | null; medium: string | null; campaign: string | null; referrer: string | null; landing: string | null; at: Date | null }) => (
+    <table className="tbl">
+      <tbody>
+        <tr><td>Sursa</td><td><b>{labelOfSource(o.source ?? "direct")}</b>{o.src ? <small>link ?src={o.src}</small> : null}</td></tr>
+        <tr><td>Campania</td><td>{[o.campaign, o.medium].filter(Boolean).join(" · ") || <span className="muted">—</span>}</td></tr>
+        <tr><td>Referrer</td><td>{o.referrer ?? <span className="muted">direct (fără site din care să fi apăsat)</span>}</td></tr>
+        <tr><td>Pagina de intrare</td><td>{o.landing ? <code>{o.landing}</code> : <span className="muted">—</span>}</td></tr>
+        <tr><td>Când</td><td>{when(o.at) ?? <span className="muted">—</span>}</td></tr>
+      </tbody>
+    </table>
+  );
+  return (
+    <div className="card">
+      <h3 style={{ marginTop: 0 }}>De unde a venit</h3>
+      {!r ? (
+        <p className="muted" style={{ marginBottom: 0 }}>Necunoscut: contul e făcut înainte să notăm sursa (16 noiembrie 2026).</p>
+      ) : (
+        <>
+          <div className="stats">
+            <Stat label="Sursa" value={<span style={{ fontSize: 20 }}>{labelOfSource(src.key, src.linkName)}</span>} />
+            <Stat label="Răspunsul lui" value={<span style={{ fontSize: 18 }}>{answerLabel(r.answer, r.answerOther) ?? "n-a răspuns"}</span>} hint={r.answerAuto ? "pus singur: a venit prin invitație" : "„De unde ai aflat de noi?”"} />
+            <Stat label="Dispozitiv și țară" value={<span style={{ fontSize: 18 }}>{r.analytics ? [r.device, r.country ? countryName(r.country) : null].filter(Boolean).join(" · ") || "—" : "—"}</span>} />
+            <Stat label="Cookie-uri de analiză" value={r.analytics ? "acceptate" : "neacceptate"} hint={`cont din ${day(r.createdAt.toISOString())}`} />
+          </div>
+          {r.invite && <p style={{ margin: "10px 0 0" }}>A venit prin legătura de invitație a unei rude sau a unui prieten (recomandare).</p>}
+          {r.analytics ? (
+            <div className="admin-zones" style={{ marginTop: 12 }}>
+              <div>
+                <div className="section-label">Prima sursă (first-touch)</div>
+                {touch({ source: r.source, src: r.firstSrc, medium: r.firstMedium, campaign: r.firstCampaign, referrer: r.firstReferrer, landing: r.firstLanding, at: r.firstAt })}
+              </div>
+              <div>
+                <div className="section-label">Ultima sursă înainte de cont (last-touch)</div>
+                {touch({ source: r.lastSource, src: r.lastSrc, medium: r.lastMedium, campaign: r.lastCampaign, referrer: r.lastReferrer, landing: r.lastLanding, at: r.lastAt })}
+              </div>
+            </div>
+          ) : (
+            <p className="muted" style={{ marginBottom: 0 }}>N-a acceptat cookie-urile de analiză, așa că păstrăm doar răspunsul lui din formular.</p>
+          )}
+        </>
+      )}
+    </div>
   );
 }

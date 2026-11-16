@@ -400,6 +400,17 @@ export const FUNCTIONS: Fn[] = [
     dashboard: "/admin/analiza",
     tests: ["tests/analiza.test.ts"],
   },
+  {
+    key: "sursa-cont", name: "De unde vine fiecare cont nou", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Date personale pe cont; cookie-urile de analiză doar cu „Accept” (GDPR).",
+    what: "Linkuri ?src= și utm_…, cookie first-touch și last-touch (30 de zile) doar cu acordul pentru analiză, sursa, referrer-ul, pagina de intrare, dispozitivul și țara puse pe cont, întrebarea „De unde ai aflat de noi?”, invitațiile ca recomandare; coloana și filtrul în Oameni, Analiză → Surse și generatorul de linkuri.",
+    engine: ["src/lib/sursa.ts", "src/lib/sursa-shared.ts", "src/components/SourceTracker.tsx", "src/components/CookieNotice.tsx", "src/components/CookieChoice.tsx", "src/components/admin/AnalizaSurse.tsx", "src/components/AuthForm.tsx"],
+    pages: ["/admin/linkuri", "/admin/analiza", "/admin/oameni", "/admin/oameni/[id]"],
+    tables: ["account_source", "source_link"],
+    metric: { table: "account_source", label: "conturi cu sursa notată" },
+    dashboard: "/admin/linkuri",
+    tests: ["tests/sursa.test.ts"],
+    human: "Daniel face linkurile pentru fiecare grup sau campanie în Admin → Linkuri cu sursă.",
+  },
   // Admin
   {
     key: "admin", name: "Panoul de admin", area: "admin", lifecycle: "live", risk: "ridicat", riskWhy: "Acces la tot; cere verificarea în 2 pași.",

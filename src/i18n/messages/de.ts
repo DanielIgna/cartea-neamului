@@ -13,6 +13,7 @@ import { deCadou } from "./cadou/de";
 import { deCrestere } from "./crestere/de";
 import { deInvitatii } from "./invitatii/de";
 import { deConversie } from "./conversie/de";
+import { deSursa } from "./sursa/de";
 import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
@@ -40,10 +41,11 @@ export const de: Catalog = {
     surnames: "Familiennamen",
     places: "Archive nach Kreisen",
     diaspora: "Rumänen in aller Welt",
-    cookieLead: "Nur unbedingt notwendige Cookies.",
-    cookieText: "Wir nutzen sie, damit du angemeldet bleibst und deine gewählte Sprache und dein Farbschema gespeichert werden. Keine Werbung und kein Tracking: Besuche zählen wir anonym, ohne Cookies, deshalb fragen wir nicht nach deiner Einwilligung.",
+    cookieLead: "Cookies auf dieser Seite.",
+    cookieText: "Die notwendigen halten dich angemeldet und merken sich Sprache und Farbschema. Wenn du zustimmst, nutzen wir außerdem zwei eigene Analyse-Cookies, um zu erfahren, woher die Besucher kommen (zum Beispiel von einem Facebook-Beitrag). Keine Werbung und keine anderen Firmen.",
     cookieMore: "Zur Liste",
-    cookieOk: "Verstanden",
+    cookieOk: "Akzeptieren",
+    cookieNecessary: "Nur notwendige",
   },
   ThemeSwitch: {
     label: "Farbschema",
@@ -180,6 +182,16 @@ export const de: Catalog = {
     startText: "Vier kurze Schritte: du, deine Eltern, deine Großeltern, und am Ende ist der Stammbaum fertig, mit allen Verbindungen. Was du nicht weißt, lässt du leer.",
   },
   AuthForm: {
+    srcQuestion: "Wie hast du von uns erfahren?",
+    srcOptional: "(freiwillig)",
+    srcChoose: "Wähle, wenn du magst",
+    srcFbGroup: "Facebook (Gruppe)",
+    srcFbPage: "Facebook (Seite)",
+    srcGoogle: "Google",
+    srcFriend: "Empfehlung von Verwandten oder Freunden",
+    srcGift: "Geschenkkarte",
+    srcOther: "Etwas anderes",
+    srcOtherHint: "Wo genau?",
     mailNote: "In den Gratistagen schicken wir dir ein paar kurze E-Mails zu deinem Konto (höchstens 6, in zwei Wochen). Abmelden mit einem Klick.",
     signUpTitle: "Neues Konto",
     signUpTrial: "Die ersten 7 Tage sind kostenlos, ohne Karte. Darin kannst du deinen Stammbaum beginnen, und deine Verwandten können ihn ansehen. Damit sie auch schreiben, wählst du einen Tarif.",
@@ -432,6 +444,7 @@ export const de: Catalog = {
   ...deCrestere,
   ...deInvitatii,
   ...deConversie,
+  ...deSursa,
   ...deFilm,
   ...deLegal,
   ...deDatele,

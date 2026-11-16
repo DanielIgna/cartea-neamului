@@ -11,14 +11,15 @@ import { AdminNav, HBars, Stat, day, lei, num } from "@/components/admin/ui";
 import { Donut, TrafficChart, WeekHeat } from "@/components/admin/charts";
 import { CampaignLink, PrintButton } from "@/components/admin/AnalizaTools";
 import { Conversions } from "@/components/admin/AnalizaConversii";
+import { Sources } from "@/components/admin/AnalizaSurse";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Analiză · Admin · Cartea Neamului" };
 
 const TABS = [
-  { key: "prezentare", label: "Prezentare" }, { key: "conversii", label: "Conversii" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
+  { key: "prezentare", label: "Prezentare" }, { key: "surse", label: "Surse" }, { key: "conversii", label: "Conversii" }, { key: "palnie", label: "Pâlnie" }, { key: "ore", label: "Zile și ore" },
   { key: "bounce", label: "Bounce" }, { key: "retentie", label: "Retenție" }, { key: "pagini", label: "Pagini" },
-  { key: "seo", label: "SEO" }, { key: "campanii", label: "Surse și campanii" }, { key: "tari", label: "Țări, zone și limbi" },
+  { key: "seo", label: "SEO" }, { key: "campanii", label: "Campanii și site-uri" }, { key: "tari", label: "Țări, zone și limbi" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -33,19 +34,32 @@ function Trend({ cur, prev, invert = false }: { cur: number; prev: number; inver
   return <span><span className={`trend ${c === 0 ? "" : good ? "up" : "down"}`}>{c > 0 ? "▲ +" : c < 0 ? "▼ " : ""}{c}%</span> <span className="muted">față de perioada dinainte</span></span>;
 }
 
-export default async function Analiza({ searchParams }: { searchParams: Promise<{ p?: string; t?: string }> }) {
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+/** Perioada personalizată (de la … până la …), cel mult 2 ani; perioada de comparat e la fel de lungă, chiar înainte. */
+function customRange(de?: string, pana?: string) {
+  if (!de || !pana || !ISO.test(de) || !ISO.test(pana)) return null;
+  const a = Date.parse(`${de}T00:00:00Z`), b = Date.parse(`${pana}T00:00:00Z`);
+  if (!Number.isFinite(a) || !Number.isFinite(b) || b < a) return null;
+  const days = Math.round((b - a) / 86_400_000) + 1;
+  if (days > 731) return null;
+  const iso = (t: number) => new Date(t).toISOString().slice(0, 10);
+  return { cur: { from: de, to: pana, days }, prev: { from: iso(a - days * 86_400_000), to: iso(a - 86_400_000), days } };
+}
+
+export default async function Analiza({ searchParams }: { searchParams: Promise<{ p?: string; t?: string; de?: string; pana?: string }> }) {
   await requireAdmin("/admin/analiza");
   const sp = await searchParams;
-  const period: PeriodKey = isPeriod(sp.p) ? sp.p : "30z";
+  const custom = sp.p === "pers" ? customRange(sp.de, sp.pana) : null;
+  const period: PeriodKey | "pers" = custom ? "pers" : isPeriod(sp.p) ? sp.p : "30z";
   const tab: Tab = TABS.some((t) => t.key === sp.t) ? (sp.t as Tab) : "prezentare";
-  const { cur, prev } = rangeOf(period);
+  const { cur, prev } = custom ?? rangeOf(period as PeriodKey);
   const [sessions, prevSessions, uv, prevUv, biz, prevBiz, funnel] = await Promise.all([
     sessionsOf(db, cur), sessionsOf(db, prev), uniqueVisitors(db, cur), uniqueVisitors(db, prev), business(db, cur), business(db, prev), accountFunnel(db, cur),
   ]);
   const sum = summary(sessions), prevSum = summary(prevSessions);
   const sources = groupBy(sessions, (s) => s.source);
   const heat = weekHeat(sessions);
-  const href = (o: { p?: string; t?: string }) => `/admin/analiza?p=${o.p ?? period}&t=${o.t ?? tab}`;
+  const href = (o: { p?: string; t?: string }) => `/admin/analiza?p=${o.p ?? period}&t=${o.t ?? tab}${(o.p ?? period) === "pers" ? `&de=${cur.from}&pana=${cur.to}` : ""}`;
 
   return (
     <section className="stack">
@@ -65,10 +79,19 @@ export default async function Analiza({ searchParams }: { searchParams: Promise<
       </nav>
       <nav className="an-periods" aria-label="Perioada">
         {PERIODS.map((p) => <Link key={p.key} className="btn" href={href({ p: p.key })} aria-current={p.key === period ? "true" : undefined}>{p.label}</Link>)}
+        {/* Personalizat: două zile alese, trimise ca adresă (p=pers&de=…&pana=…). */}
+        <form method="get" action="/admin/analiza" className="an-custom" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+          <input type="hidden" name="p" value="pers" /><input type="hidden" name="t" value={tab} />
+          <input type="date" name="de" defaultValue={cur.from} aria-label="De la" required style={{ width: "auto" }} />
+          <span className="muted">–</span>
+          <input type="date" name="pana" defaultValue={cur.to} aria-label="Până la" required style={{ width: "auto" }} />
+          <button className="btn" aria-current={period === "pers" ? "true" : undefined}>Personalizat</button>
+        </form>
         <span className="muted" style={{ alignSelf: "center", fontSize: 14 }}>{cur.days === 1 ? day(`${cur.from}T12:00:00Z`) : `${day(`${cur.from}T12:00:00Z`)} – ${day(`${cur.to}T12:00:00Z`)}`}</span>
       </nav>
 
       {tab === "prezentare" && await Overview({ cur, sessions, uv, prevUv, sum, prevSum, biz, prevBiz, sources, funnel, heat, prevAccounts: prevBiz.accounts })}
+      {tab === "surse" && await Sources({ cur })}
       {tab === "conversii" && await Conversions({ cur, sessions })}
       {tab === "palnie" && <Funnel uv={uv.visitors} sessions={sessions} funnel={funnel} biz={biz} />}
       {tab === "ore" && <Hours heat={heat} sessions={sessions} />}

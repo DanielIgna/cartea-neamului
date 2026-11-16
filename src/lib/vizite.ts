@@ -2,6 +2,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { lt, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import { pageView, visitSalt } from "@/db/schema";
+import { slugOf } from "./sursa-shared";
 
 /**
  * Vizitele, numărate anonim, pentru Admin → Analiză (cerut de Daniel pe 13.11.2026).
@@ -104,7 +105,7 @@ export async function visitorOf(db: Db, day: string, ctx: { ip: string | null; u
 }
 
 export type Visit = {
-  path: string; ref?: string | null; utmSource?: string | null; utmMedium?: string | null; utmCampaign?: string | null;
+  path: string; ref?: string | null; src?: string | null; utmSource?: string | null; utmMedium?: string | null; utmCampaign?: string | null;
   width?: number | null; lang?: string | null;
 };
 
@@ -135,7 +136,8 @@ export async function recordVisit(db: Db, v: Visit, ctx: {
   const refHost = refHostOf(v.ref, ctx.host);
   await db.insert(pageView).values({
     day, hour, visitor, path,
-    source: sourceOf(refHost, v.utmSource ?? null),
+    // ?src= (linkurile din Admin → Linkuri cu sursă) rămâne exact cum e, ca fiecare link să-și aibă click-urile lui.
+    source: slugOf(v.src) ?? sourceOf(refHost, v.utmSource ?? null),
     referrer: refHost,
     medium: clip(v.utmMedium, 40),
     campaign: clip(v.utmCampaign, 60),

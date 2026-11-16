@@ -13,6 +13,7 @@ import { itCadou } from "./cadou/it";
 import { itCrestere } from "./crestere/it";
 import { itInvitatii } from "./invitatii/it";
 import { itConversie } from "./conversie/it";
+import { itSursa } from "./sursa/it";
 import { itFilm } from "./film/it";
 import { itLegal } from "./legal/it";
 import { itDatele } from "./datele/it";
@@ -40,10 +41,11 @@ export const it: Catalog = {
     surnames: "Cognomi",
     places: "Archivi per provincia",
     diaspora: "Romeni nel mondo",
-    cookieLead: "Solo cookie strettamente necessari.",
-    cookieText: "Li usiamo per mantenerti connesso e ricordare la lingua e il tema scelti. Niente pubblicità e nessun tracciamento: contiamo le visite in forma anonima, senza cookie, per questo non ti chiediamo il consenso.",
+    cookieLead: "I cookie del sito.",
+    cookieText: "Quelli necessari ti mantengono connesso e ricordano lingua e tema. Se accetti, usiamo anche due cookie di analisi, solo nostri, per sapere da dove arrivano le persone (per esempio da un post su Facebook). Niente pubblicità e nessun’altra azienda.",
     cookieMore: "Vedi l’elenco",
-    cookieOk: "Ho capito",
+    cookieOk: "Accetto",
+    cookieNecessary: "Solo i necessari",
   },
   ThemeSwitch: {
     label: "Tema dei colori",
@@ -180,6 +182,16 @@ export const it: Catalog = {
     startText: "Quattro brevi passaggi: tu, i genitori, i nonni, e alla fine l’albero è pronto, con tutti i legami. Quello che non sai lo lasci vuoto.",
   },
   AuthForm: {
+    srcQuestion: "Come ci hai conosciuto?",
+    srcOptional: "(facoltativo)",
+    srcChoose: "Scegli, se vuoi",
+    srcFbGroup: "Facebook (gruppo)",
+    srcFbPage: "Facebook (pagina)",
+    srcGoogle: "Google",
+    srcFriend: "Consiglio di un parente o di un amico",
+    srcGift: "Carta regalo",
+    srcOther: "Altro",
+    srcOtherHint: "Dove, di preciso?",
     mailNote: "Nei giorni gratuiti ti mandiamo alcune email brevi sull’account (al massimo 6, in due settimane). Ti disiscrivi con un clic.",
     signUpTitle: "Nuovo account",
     signUpTrial: "I primi 7 giorni sono gratuiti, senza carta. In questi giorni puoi iniziare l’albero e i parenti possono vederlo. Perché scrivano anche loro, scegli un piano.",
@@ -432,6 +444,7 @@ export const it: Catalog = {
   ...itCrestere,
   ...itInvitatii,
   ...itConversie,
+  ...itSursa,
   ...itFilm,
   ...itLegal,
   ...itDatele,

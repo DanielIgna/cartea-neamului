@@ -22,6 +22,7 @@ import { roCadou } from "./cadou/ro";
 import { roCrestere } from "./crestere/ro";
 import { roInvitatii } from "./invitatii/ro";
 import { roConversie } from "./conversie/ro";
+import { roSursa } from "./sursa/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -50,10 +51,11 @@ export const ro = {
     surnames: "Nume de familie",
     places: "Arhive pe județe",
     diaspora: "Români de pretutindeni",
-    cookieLead: "Doar cookie-uri strict necesare.",
-    cookieText: "Le folosim ca să rămâi conectat și să țină minte limba și tema alese. Fără reclame și fără urmărire: vizitele le numărăm anonim, fără cookie-uri, așa că nu-ți cerem acordul.",
+    cookieLead: "Cookie-urile din Cartea Neamului.",
+    cookieText: "Cele necesare te țin conectat și țin minte limba și tema. Dacă accepți, folosim și două cookie-uri de analiză, doar ale noastre, ca să aflăm de unde vin oamenii (de pildă dintr-o postare pe Facebook). Fără reclame și fără alte firme.",
     cookieMore: "Vezi lista",
-    cookieOk: "Am înțeles",
+    cookieOk: "Accept",
+    cookieNecessary: "Doar cele necesare",
   },
   ThemeSwitch: {
     label: "Tema culorilor",
@@ -190,6 +192,16 @@ export const ro = {
     startText: "Patru pași scurți: tu, părinții, bunicii, iar la sfârșit arborele e gata, cu toate legăturile. Ce nu știi lași gol.",
   },
   AuthForm: {
+    srcQuestion: "De unde ai aflat de noi?",
+    srcOptional: "(opțional)",
+    srcChoose: "Alege, dacă vrei",
+    srcFbGroup: "Facebook (grup)",
+    srcFbPage: "Facebook (pagină)",
+    srcGoogle: "Google",
+    srcFriend: "Recomandare de la o rudă sau un prieten",
+    srcGift: "Card cadou",
+    srcOther: "Altceva",
+    srcOtherHint: "Unde anume?",
     mailNote: "În zilele gratuite îți trimitem câteva emailuri scurte despre cont (cel mult 6, în două săptămâni). Te dezabonezi dintr-un clic.",
     signUpTitle: "Cont nou",
     signUpTrial: "Primele 7 zile sunt gratuite, fără card. În ele poți porni arborele, iar rudele îl pot vedea. Ca să scrie și ele, alegi un plan.",
@@ -446,6 +458,7 @@ export const ro = {
   ...roCrestere,
   ...roInvitatii,
   ...roConversie,
+  ...roSursa,
   ...roFilm,
   ...roLegal,
   ...roDatele,

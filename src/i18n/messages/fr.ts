@@ -13,6 +13,7 @@ import { frCadou } from "./cadou/fr";
 import { frCrestere } from "./crestere/fr";
 import { frInvitatii } from "./invitatii/fr";
 import { frConversie } from "./conversie/fr";
+import { frSursa } from "./sursa/fr";
 import { frFilm } from "./film/fr";
 import { frLegal } from "./legal/fr";
 import { frDatele } from "./datele/fr";
@@ -40,10 +41,11 @@ export const fr: Catalog = {
     surnames: "Noms de famille",
     places: "Archives par département",
     diaspora: "Roumains du monde",
-    cookieLead: "Uniquement des cookies strictement nécessaires.",
-    cookieText: "Nous les utilisons pour que vous restiez connecté et pour retenir la langue et le thème choisis. Pas de publicité ni de pistage : nous comptons les visites de façon anonyme, sans cookies, donc nous ne vous demandons pas votre consentement.",
+    cookieLead: "Les cookies du site.",
+    cookieText: "Les cookies nécessaires vous gardent connecté et retiennent la langue et le thème. Si vous acceptez, nous utilisons aussi deux cookies d’analyse, uniquement les nôtres, pour savoir d’où viennent les visiteurs (par exemple d’une publication Facebook). Pas de publicité ni d’autres entreprises.",
     cookieMore: "Voir la liste",
-    cookieOk: "J’ai compris",
+    cookieOk: "Accepter",
+    cookieNecessary: "Seulement les nécessaires",
   },
   ThemeSwitch: {
     label: "Thème des couleurs",
@@ -180,6 +182,16 @@ export const fr: Catalog = {
     startText: "Quatre étapes courtes : vous, vos parents, vos grands-parents, et à la fin l’arbre est prêt, avec tous les liens. Ce que vous ne savez pas, laissez-le vide.",
   },
   AuthForm: {
+    srcQuestion: "Comment nous avez-vous connus ?",
+    srcOptional: "(facultatif)",
+    srcChoose: "Choisissez, si vous voulez",
+    srcFbGroup: "Facebook (groupe)",
+    srcFbPage: "Facebook (page)",
+    srcGoogle: "Google",
+    srcFriend: "Recommandation d’un proche ou d’un ami",
+    srcGift: "Carte cadeau",
+    srcOther: "Autre chose",
+    srcOtherHint: "Où exactement ?",
     mailNote: "Pendant les jours gratuits, nous vous envoyons quelques e-mails courts sur votre compte (6 au plus, en deux semaines). Désinscription en un clic.",
     signUpTitle: "Nouveau compte",
     signUpTrial: "Les 7 premiers jours sont gratuits, sans carte. Pendant ces jours, vous pouvez commencer votre arbre, et vos proches peuvent le voir. Pour qu’ils écrivent aussi, vous choisissez une formule.",
@@ -432,6 +444,7 @@ export const fr: Catalog = {
   ...frCrestere,
   ...frInvitatii,
   ...frConversie,
+  ...frSursa,
   ...frFilm,
   ...frLegal,
   ...frDatele,

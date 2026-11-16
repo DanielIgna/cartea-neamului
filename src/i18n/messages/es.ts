@@ -13,6 +13,7 @@ import { esCadou } from "./cadou/es";
 import { esCrestere } from "./crestere/es";
 import { esInvitatii } from "./invitatii/es";
 import { esConversie } from "./conversie/es";
+import { esSursa } from "./sursa/es";
 import { esFilm } from "./film/es";
 import { esLegal } from "./legal/es";
 import { esDatele } from "./datele/es";
@@ -40,10 +41,11 @@ export const es: Catalog = {
     surnames: "Apellidos",
     places: "Archivos por provincia",
     diaspora: "Rumanos por el mundo",
-    cookieLead: "Solo cookies estrictamente necesarias.",
-    cookieText: "Las usamos para mantener tu sesión iniciada y recordar el idioma y el tema elegidos. Sin publicidad ni rastreo: contamos las visitas de forma anónima, sin cookies, por eso no te pedimos el consentimiento.",
+    cookieLead: "Las cookies del sitio.",
+    cookieText: "Las necesarias mantienen tu sesión iniciada y recuerdan el idioma y el tema. Si aceptas, usamos también dos cookies de análisis, solo nuestras, para saber de dónde llegan las personas (por ejemplo, de una publicación en Facebook). Sin publicidad ni otras empresas.",
     cookieMore: "Ver la lista",
-    cookieOk: "Entendido",
+    cookieOk: "Aceptar",
+    cookieNecessary: "Solo las necesarias",
   },
   ThemeSwitch: {
     label: "Tema de colores",
@@ -180,6 +182,16 @@ export const es: Catalog = {
     startText: "Cuatro pasos cortos: tú, tus padres, tus abuelos, y al final el árbol está listo, con todos unidos. Lo que no sepas, lo dejas en blanco.",
   },
   AuthForm: {
+    srcQuestion: "¿Cómo nos conociste?",
+    srcOptional: "(opcional)",
+    srcChoose: "Elige, si quieres",
+    srcFbGroup: "Facebook (grupo)",
+    srcFbPage: "Facebook (página)",
+    srcGoogle: "Google",
+    srcFriend: "Recomendación de un familiar o un amigo",
+    srcGift: "Tarjeta regalo",
+    srcOther: "Otra cosa",
+    srcOtherHint: "¿Dónde exactamente?",
     mailNote: "En los días gratuitos te enviamos algunos correos breves sobre tu cuenta (como mucho 6, en dos semanas). Te das de baja con un clic.",
     signUpTitle: "Cuenta nueva",
     signUpTrial: "Los primeros 7 días son gratis, sin tarjeta. En ellos puedes empezar el árbol y tus familiares pueden verlo. Para que también escriban, eliges un plan.",
@@ -432,6 +444,7 @@ export const es: Catalog = {
   ...esCrestere,
   ...esInvitatii,
   ...esConversie,
+  ...esSursa,
   ...esFilm,
   ...esLegal,
   ...esDatele,

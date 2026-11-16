@@ -6,6 +6,7 @@ import { useTranslations } from "use-intl";
 import { authClient } from "@/lib/auth-client";
 import { MIN_AGE } from "@/lib/legal";
 import { SIGNUP_PARTNER_COOKIE } from "@/lib/partners-shared";
+import { ANSWER_COOKIE, encodeAnswer, isAnswer, type Answer } from "@/lib/sursa-shared";
 
 /**
  * Bifa pentru beneficiile de la PropManage ține minte alegerea într-un cookie scurt (30 de minute), pe care îl citește crearea
@@ -14,6 +15,19 @@ import { SIGNUP_PARTNER_COOKIE } from "@/lib/partners-shared";
 function rememberPartner(on: boolean) {
   document.cookie = on ? `${SIGNUP_PARTNER_COOKIE}=propmanage; Path=/; Max-Age=1800; SameSite=Lax` : `${SIGNUP_PARTNER_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
+
+/**
+ * Răspunsul la „De unde ai aflat de noi?” (opțional), ținut 30 de minute într-un cookie scurt, citit la crearea contului
+ * (src/lib/sursa.ts); așa ajunge și când contul e făcut cu Google. Fără răspuns, cookie-ul se șterge.
+ */
+function rememberAnswer(a: Answer | "", other: string) {
+  document.cookie = a ? `${ANSWER_COOKIE}=${encodeAnswer({ a, o: other })}; Path=/; Max-Age=1800; SameSite=Lax` : `${ANSWER_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
+
+/** Variantele întrebării, cu cheia textului din AuthForm. */
+const SOURCE_OPTIONS = [
+  ["facebook-grup", "srcFbGroup"], ["facebook-pagina", "srcFbPage"], ["google", "srcGoogle"], ["recomandare", "srcFriend"], ["card-cadou", "srcGift"], ["altceva", "srcOther"],
+] as const satisfies readonly (readonly [Answer, string])[];
 
 /** Eroarea întoarsă de server când intrarea e oprită pentru o vreme (prea multe greșeli); vezi src/app/api/auth/[...all]/route.ts. */
 const lockedFor = (e: unknown) => {
@@ -87,6 +101,8 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
   const tp = useTranslations("Partners");
   const [partner, setPartner] = useState(false);
   const [signUp, setSignUp] = useState(startWithSignUp);
+  const [heard, setHeard] = useState<Answer | "">("");
+  const [heardOther, setHeardOther] = useState("");
   const [error, setError] = useState(oauthError ? t("googleFailed") : "");
   const [pending, setPending] = useState(false);
   const router = useRouter();
@@ -99,11 +115,13 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     const robot = String(f.get("cf-turnstile-response") ?? "");
     if (signUp && turnstileKey && !robot) { setPending(false); setError(ts("robot")); return; }
     rememberPartner(signUp && partner);
+    if (signUp) rememberAnswer(heard, heardOther);
     const res = signUp
       ? await authClient.signUp.email({ email, password, name: String(f.get("name")) }, robot ? { headers: { "x-captcha-response": robot } } : undefined)
       : await authClient.signIn.email({ email, password });
     setPending(false);
     rememberPartner(false);
+    if (signUp && !res.error) rememberAnswer("", "");
     if (res.error) {
       const code = res.error.code;
       const wait = lockedFor(res.error);
@@ -127,6 +145,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
   async function withGoogle() {
     setError(""); setPending(true);
     rememberPartner(signUp && partner);
+    if (signUp) rememberAnswer(heard, heardOther);
     const res = await authClient.signIn.social({ provider: "google", callbackURL: next, errorCallbackURL: `/intrare?next=${encodeURIComponent(next)}&eroare=google` });
     if (res?.error) { setPending(false); setError(t("googleFailed")); }
   }
@@ -138,6 +157,16 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     <form onSubmit={submit} method="post" className="form">
       <h2 style={{ fontSize: 24 }}>{signUp ? t("signUpTitle") : t("signInTitle")}</h2>
       {signUp && <p className="muted" style={{ margin: 0 }}>{t("signUpTrial")}</p>}
+      {/* Opțională, deasupra lui „Continuă cu Google”, ca răspunsul să ajungă și la contul făcut cu Google (src/lib/sursa.ts). */}
+      {signUp && (
+        <label className="heard">{t("srcQuestion")} <small className="muted">{t("srcOptional")}</small>
+          <select name="heard" value={heard} onChange={(e) => setHeard(isAnswer(e.target.value) ? e.target.value : "")}>
+            <option value="">{t("srcChoose")}</option>
+            {SOURCE_OPTIONS.map(([v, k]) => <option key={v} value={v}>{t(k)}</option>)}
+          </select>
+          {heard === "altceva" && <input name="heardOther" value={heardOther} onChange={(e) => setHeardOther(e.target.value)} maxLength={120} placeholder={t("srcOtherHint")} aria-label={t("srcOtherHint")} style={{ marginTop: 6 }} />}
+        </label>
+      )}
       {google && (
         <>
           <button type="button" className="btn google-btn" disabled={pending} onClick={withGoogle}>
