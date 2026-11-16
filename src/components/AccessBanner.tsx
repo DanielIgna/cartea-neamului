@@ -3,6 +3,8 @@ import { db } from "@/db";
 import { accessBanner } from "@/lib/plata";
 import { getT } from "@/i18n/server";
 import { myArchiveNotes } from "@/lib/arhivare";
+import { activeOffer, convSettings } from "@/lib/conversie";
+import LastDayPopup from "./LastDayPopup";
 
 /**
  * Banda de sus, doar când plățile sunt pornite din Admin: câte zile gratuite mai are omul, sau că s-au terminat și arborii lui
@@ -34,15 +36,24 @@ export default async function AccessBanner({ userId, locale }: { userId: string;
     ? (await getT("ArchiveNote"))("banner", { tree: soon.name, date: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(soon.state.next.at) }) : null;
   const keep = info.keep && (locale === "ro" ? info.keep.lei : info.keep.eur) > 0
     ? tk("bannerOffer", { price: locale === "ro" ? `${info.keep.lei} lei` : `${info.keep.eur} €` }) : null;
+  // Din gratuit în plătit (src/lib/conversie.ts): după zile, „Activează un plan ca să continui” și reducerea, cât e valabilă;
+  // în ultima zi, o fereastră o dată pe zi.
+  const tc = await getT("Conversion");
+  const offer = ended ? await activeOffer(db, userId).catch(() => null) : null;
+  const fmt = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(d);
+  const lastDay = info.access.kind === "proba" && info.access.daysLeft <= 1 && (await convSettings(db)).popup;
   return (
     <div className={`access-banner${ended ? " ended" : ""}`} role="status">
       <p>{ended
         ? t.rich("ended", { price, b: (c) => <b>{c}</b> })
         : t("trial", { days: info.access.kind === "proba" ? info.access.daysLeft : 0, price })}
+        {ended && <><br /><span className="access-plans">{tc("activateText")}</span></>}
+        {offer && <><br /><b>{tc("offerBar", { percent: String(offer.percent), until: fmt(offer.expiresAt), code: offer.code })}</b></>}
         {last && <><br /><span className="access-plans">{t("plans", { basic: price, familie })}</span></>}
         {ended && keep && <><br /><span className="access-plans">{keep}</span></>}
         {archiveLine && <><br /><span className="access-plans">{archiveLine} <Link href="/arhiva">{tk("archiveLink")}</Link></span></>}</p>
-      <Link className={`btn${ended ? " primary" : ""}`} href="/plata">{t("pay")}</Link>
+      <Link className={`btn${ended ? " primary" : ""}`} href="/plata">{ended ? tc("activate") : t("pay")}</Link>
+      {lastDay && <LastDayPopup day={new Date().toISOString().slice(0, 10)} title={tc("popupTitle")} text={tc("popupText", { basic: price })} pay={tc("popupPay")} later={tc("popupLater")} />}
     </div>
   );
 }

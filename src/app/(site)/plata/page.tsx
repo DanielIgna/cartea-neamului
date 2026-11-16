@@ -10,6 +10,7 @@ import { bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyI
 import { testAccess, userAccess } from "@/lib/plata";
 import { LIMIT_KEYS, TIERS, isKept, mayKeep, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
+import { activeOffer } from "@/lib/conversie";
 import { giftsBy } from "@/lib/extra";
 import { siteOrigin } from "@/lib/site";
 import { contactPhone } from "@/lib/contact";
@@ -85,6 +86,12 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const myTrees = showKeep && keepBook > 0
     ? await db.select({ id: tree.id, name: tree.name }).from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, me.id)).orderBy(tree.name)
     : [];
+
+  // Din gratuit în plătit (src/lib/conversie.ts): reducerea valabilă acum și mesajul de la descărcarea blocată.
+  const tc = await getT("Conversion");
+  const offer = await activeOffer(db, me.id);
+  const offerLine = offer ? tc("offerPlata", { percent: String(offer.percent), code: offer.code,
+    until: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(offer.expiresAt) }) : null;
 
   const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
   const limitValue = (n: number | null) => (n === null ? t("unlimited") : nf.format(n));
@@ -173,6 +180,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     <section className="stack plata">
       <div className="card">
         <h1 style={{ marginTop: 0 }}>{t("title")}</h1>
+        {offerLine && <p role="status" className="pay-ok"><b>{offerLine}</b></p>}
+        {str("blocat") === "export" && <p role="status">{tc("exportLocked")} <Link href="/datele-mele">→</Link></p>}
         {notice && <p role="status" className={err ? "err" : "pay-ok"}>{notice}{str("gata") === "pastrare" && <> <Link href="/arhiva">{tk("archiveLink")}</Link></>}{err === "curand" && <> <Link href="/contact">{t("contact")}</Link></>}</p>}
         <h2>{t("yearTitle")}</h2>
         <p>{isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil ? tk("keptUntil", { date: date(payAccess.keptUntil) }) : status}</p>

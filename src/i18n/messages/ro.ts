@@ -455,7 +455,7 @@ export const ro = {
     trial: "{days, plural, one {Mai ai o zi gratuită} few {Mai ai # zile gratuite} other {Mai ai # de zile gratuite}}. După ele, ca să adaugi și să schimbi în continuare, anul costă {price}.",
     ended: "<b>Zilele gratuite s-au terminat.</b> Arborele se vede în continuare și nu se pierde nimic, dar ca să adaugi sau să schimbi ceva, anul costă {price}.",
     pay: "Vreau să continui",
-    plans: "Ce rămâne gratuit: vezi tot arborele și îl descarci oricând. Ca să adaugi din nou: Basic {basic} pe an sau Familie {familie} pe an, unde rudele care scriu nu plătesc separat.",
+    plans: "Ce rămâne gratuit: vezi tot arborele, nu se șterge nimic, iar datele tale le descarci oricând din „Datele mele”. Ca să adaugi din nou: Basic {basic} pe an sau Familie {familie} pe an, unde rudele care scriu nu plătesc separat.",
     voiceNudge: "Înregistrează glasul lui {name}: câteva povești spuse cu vocea lor rămân pentru nepoți.",
     voiceNudgeAny: "Înregistrează glasul bunicilor: câteva povești spuse cu vocea lor rămân pentru nepoți.",
     voiceNudgeCta: "Începe „La bunici”",

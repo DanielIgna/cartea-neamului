@@ -43,6 +43,8 @@ type Props = {
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
   /** Răspunsurile date în „De verificat” (și „nu sunt aceeași persoană”): adevărul arborelui, ținut pentru toți. */
   decisions?: Decisions;
+  /** După zilele gratuite, fără an plătit: descărcarea arborelui duce la /plata (src/lib/plata.ts, `exportLocked`). */
+  exportLocked?: boolean;
 };
 type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
@@ -425,7 +427,9 @@ export default function TreeScreen(props: Props) {
             <Link className="btn" href={`/arbore/${treeId}/cronologie`}>{t("timeline")}</Link>
             <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>{t("journey")}</Link>
             <Link className="btn" href="/istoria-umanitatii">{t("humanHistory")}</Link>
-            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>
+            {props.exportLocked
+              ? <a className="btn" href="/plata?blocat=export" title={t("exportGedcom")}>🔒 {t("exportGedcom")}</a>
+              : <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>}
           </div>
         </div>
         {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}

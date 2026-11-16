@@ -10,6 +10,7 @@ import { siteOrigin } from "@/lib/site";
 import { getLocale, getT } from "@/i18n/server";
 import { operator } from "@/lib/legal";
 import { contactPhone } from "@/lib/contact";
+import { activeOffer } from "@/lib/conversie";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
@@ -77,6 +78,8 @@ export async function POST(req: Request) {
     keepTree = bundle ? treeId : null;
     year = { tier: "basic", upgradeFrom: null, paidUntil: null, extra: bundle ? "carte" : null };
   }
+  // Reducerea de după zilele gratuite: pe anul întreg (nu pe o trecere la alt plan), cât e valabilă; codul se pune singur.
+  const offer = kind === "an" && year && !year.upgradeFrom ? await activeOffer(db, me.id) : null;
   await recordConsent(db, me.id, "withdrawal", true);
   // De unde venise vizita (Google, o campanie, o pagină de ghid…): numărăm deschiderea plății și trimitem sursa prin Stripe, ca plata
   // încheiată să se numere la aceeași sursă. Plățile de probă ale adminilor nu se numără.
@@ -95,6 +98,7 @@ export async function POST(req: Request) {
       waiver: t("waiverRecord", { url: `${origin}/termeni` }),
       seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
       ...(kind === "pastrare" ? { tier: undefined } : {}),
+      offer: offer?.stripePromoId ? { code: offer.code, promoId: offer.stripePromoId } : null,
       attribution: attr ? { ...attributionToMetadata(attr), ...(attr.attributed ? {} : { "metadata[a_src]": "necunoscut" }) } : undefined,
     });
     return Response.redirect(url, 303);

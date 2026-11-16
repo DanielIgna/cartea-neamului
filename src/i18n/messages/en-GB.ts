@@ -441,7 +441,7 @@ export const enGB: Catalog = {
     trial: "{days, plural, one {You have one free day left} other {You have # free days left}}. After that, to keep adding and editing, a year costs {price}.",
     ended: "<b>Your free days are over.</b> You can still see the tree and nothing is lost, but to add or change anything, a year costs {price}.",
     pay: "I want to continue",
-    plans: "What stays free: you can see the whole tree and download it at any time. To add again: Basic {basic} a year, or Family {familie} a year, where relatives who write don’t pay separately.",
+    plans: "What stays free: you can see the whole tree, nothing is deleted, and you can always download your own data from “My data”. To add again: Basic {basic} a year, or Family {familie} a year, where relatives who write don’t pay separately.",
     voiceNudge: "Record {name}’s voice: a few stories told in their own voice stay for the grandchildren.",
     voiceNudgeAny: "Record your grandparents’ voices: a few stories told in their own voice stay for the grandchildren.",
     voiceNudgeCta: "Start “At the grandparents’”",
