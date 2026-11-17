@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
 import { SITE_URL } from "@/lib/site-url";
 import { LINK_PAGES, linkList, linkUrl } from "@/lib/sursa";
-import { newSourceLink, removeSourceLink } from "@/app/linkuri-actions";
+import { newFacebookLinks, newSourceLink, removeSourceLink } from "@/app/linkuri-actions";
 import { AdminNav, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 
@@ -15,11 +15,14 @@ export const metadata = { title: "Linkuri cu sursă · Admin" };
  * carteaneamului.ro/?src=<eticheta>, gata de copiat. Fiecare link rămâne în listă, cu click-urile (vizitele anonime venite pe el)
  * și conturile făcute (prima sursă, doar la cei care au acceptat cookie-urile de analiză).
  */
-export default async function SourceLinks({ searchParams }: { searchParams: Promise<{ nou?: string }> }) {
+export default async function SourceLinks({ searchParams }: { searchParams: Promise<{ nou?: string; fb?: string }> }) {
   await requireAdmin("/admin/linkuri");
   const sp = await searchParams;
   const links = await linkList(db);
   const fresh = links.find((l) => l.slug === sp.nou);
+  const fbWanted = new Set((sp.fb ?? "").split(",").filter(Boolean));
+  const fbFresh = links.filter((l) => fbWanted.has(l.slug));
+  const fbText = fbFresh.map((l) => `${l.name}: ${linkUrl(SITE_URL, l.page, l.slug)}`).join("\n");
   return (
     <section className="stack">
       <AdminNav active="linkuri" />
@@ -43,6 +46,30 @@ export default async function SourceLinks({ searchParams }: { searchParams: Prom
             <div className="section-label">Linkul tău e gata</div>
             <code style={{ wordBreak: "break-all", padding: "8px 10px", background: "var(--surface-2)", border: "1px solid var(--line)", borderRadius: 8 }}>{linkUrl(SITE_URL, fresh.page, fresh.slug)}</code>
             <div><CopyLink url={linkUrl(SITE_URL, fresh.page, fresh.slug)} label="Copiază linkul" /></div>
+          </div>
+        )}
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Generează linkuri pentru grupuri Facebook</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Lipește numele grupurilor, câte unul pe rând. Fiecare primește linkul lui, <code>carteaneamului.ro/?src=fb-numele-grupului</code>, și apare în
+          lista de mai jos cu click-urile și conturile lui.
+        </p>
+        <form action={newFacebookLinks} className="form">
+          <label>Numele grupurilor (cel mult 50)
+            <textarea name="names" required rows={5} placeholder={"Români în Italia\nRomâni în Chicago\nGenealogie Maramureș"} />
+          </label>
+          <label style={{ maxWidth: 320 }}>Duc la
+            <select name="page" defaultValue="/">{LINK_PAGES.map(([p, l]) => <option key={p} value={p}>{l}</option>)}</select>
+          </label>
+          <div><button className="btn primary">Generează linkurile</button></div>
+        </form>
+        {fbFresh.length > 0 && (
+          <div className="stack" style={{ gap: 8, marginTop: 14 }}>
+            <div className="section-label">{fbFresh.length === 1 ? "Linkul e gata" : `Cele ${fbFresh.length} linkuri sunt gata`}</div>
+            <textarea readOnly rows={Math.min(12, fbFresh.length + 1)} value={fbText} style={{ fontFamily: "ui-monospace, monospace", fontSize: 13 }} aria-label="Linkurile generate" />
+            <div><CopyLink url={fbText} label="Copiază toate" /></div>
           </div>
         )}
       </div>

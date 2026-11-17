@@ -21,7 +21,7 @@ export default function ShareCard({ url, image, text, campaign }: { url: string;
       <h2 style={{ marginTop: 0 }}>Trimite-o familiei</h2>
       <p className="muted" style={{ marginTop: 0 }}>Cineva din familie știe sigur mai mult. Trimite-le pagina, cu poza ei.</p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={image} alt={text} width={1200} height={630} loading="lazy" style={{ width: "100%", height: "auto", borderRadius: 12, display: "block" }} />
+      <img src={image} alt={text} width={1200} height={630} loading="lazy" style={{ width: "100%", height: "auto", aspectRatio: "1200 / 630", objectFit: "cover", borderRadius: 12, display: "block", background: "var(--surface-2)" }} />
       <div className="actions" style={{ flexWrap: "wrap" }}>
         <a className="btn primary" href={`https://wa.me/?text=${encodeURIComponent(`${text} ${tag("whatsapp")}`)}`} target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={18} /> WhatsApp</a>
         <a className="btn" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(tag("facebook"))}`} target="_blank" rel="noopener noreferrer">Facebook</a>

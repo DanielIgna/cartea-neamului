@@ -5,7 +5,7 @@
  */
 import { sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
-import { DEMO_EMAIL } from "./demo";
+import { realAccountSql, testAccountSql } from "./conturi-test";
 import { CHAPTERS } from "./questions";
 import { accountPlans, type Plan } from "./plans";
 import { INVITE_VALID_DAYS } from "./invitations";
@@ -49,6 +49,8 @@ export type PersonRow = {
   personsAdded: number; memories: number; ownStory: number; helper: number; voices: number; voiceSeconds: number; photos: number;
   invites: number; invitesAccepted: number; messages: number; replies: number; questions: number;
   plan: Plan; planNote: string | null; stage: Stage; returned: boolean;
+  /** Cont de test (demo, @example.com, test-link-…), vezi src/lib/conturi-test.ts. */
+  test?: boolean;
 };
 
 /** Unde a ajuns omul: cine are arbore al lui urcă de la „Are arbore” la „Scrie amintiri”; cine e doar în arborii rudelor e „Intrat la rude”. */
@@ -66,11 +68,11 @@ const cameBack = (createdAt: string | null, ...later: (string | null)[]) =>
   !!createdAt && later.some((x) => !!x && new Date(x).getTime() - new Date(createdAt).getTime() >= DAY);
 
 /** Toate conturile (fără cel de probă), cu cifrele fiecăruia; cu `only`, doar contul acela. */
-export async function peopleList(db: Db, only?: string): Promise<PersonRow[]> {
+export async function peopleList(db: Db, only?: string, opts: { showTest?: boolean } = {}): Promise<PersonRow[]> {
   const list = await rows(db, sql`
     with ev as (${EVENTS}),
     act as (select uid, max(at) as last_action, count(distinct date_trunc('day', at)) filter (where at > now() - interval '30 days') as days30 from ev group by uid)
-    select u.id, u.name, u.email, u.email_verified, u.created_at,
+    select u.id, u.name, u.email, u.email_verified, u.created_at, ${testAccountSql("u")} as is_test,
       (select string_agg(distinct a.provider_id, ', ') from account a where a.user_id = u.id) as providers,
       (select max(s.updated_at) from session s where s.user_id = u.id) as last_seen,
       (select count(*) from session s where s.user_id = u.id) as sessions,
@@ -98,12 +100,12 @@ export async function peopleList(db: Db, only?: string): Promise<PersonRow[]> {
         (select count(*) from tree_member mm where mm.tree_id = t.id) as members
       from tree_member m join tree t on t.id = m.tree_id where m.user_id = u.id
       order by (t.owner_id = u.id) desc, persons desc limit 1) mt on true
-    where lower(u.email) <> ${DEMO_EMAIL} ${only ? sql`and u.id = ${only}` : sql``}
+    where ${realAccountSql("u", !!opts.showTest)} ${only ? sql`and u.id = ${only}` : sql``}
     order by u.created_at desc`);
   const plans = await accountPlans(db);
   return list.map((r) => {
     const row = {
-      id: String(r.id), name: String(r.name), email: String(r.email), verified: !!r.email_verified, createdAt: iso(r.created_at),
+      id: String(r.id), name: String(r.name), email: String(r.email), verified: !!r.email_verified, test: !!r.is_test, createdAt: iso(r.created_at),
       providers: String(r.providers ?? ""), lastSeen: iso(r.last_seen), lastAction: iso(r.last_action), sessions: n(r.sessions),
       activeDays30: n(r.days30), phone: !!r.phone, trees: n(r.trees), owned: n(r.owned),
       mainTree: r.main_id ? { id: String(r.main_id), name: String(r.main_name), persons: n(r.main_persons), members: n(r.main_members) } : null,

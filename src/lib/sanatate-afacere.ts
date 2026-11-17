@@ -13,10 +13,10 @@
  * cunoștințe (Harta funcțiilor). Istoricul zilnic stă în app_setting `sanatate_istoric` (cele mai noi 90 de zile).
  */
 import { sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
 import { autonomyScore, automationSwitches } from "./autonomie";
-import { DEMO_EMAIL } from "./demo";
 import { planSettings } from "./plans";
 import { activeServiceAccount, seoSettings } from "./seo";
 import { SEARCH_SOURCES } from "./vizite";
@@ -55,22 +55,22 @@ export async function businessHealth(db: Db, now = new Date()) {
   const [s, [b], [visits], auto, sw, seo, kc] = await Promise.all([
   planSettings(db),
   rows(db, sql`select
-      (select count(*) from account_plan p join "user" u on u.id = p.user_id where p.paid_until > now() and p.tier is not null and u.email <> ${DEMO_EMAIL}) as paid_active,
+      (select count(*) from account_plan p join "user" u on u.id = p.user_id where p.paid_until > now() and p.tier is not null and ${realAccountSql("u")}) as paid_active,
       (select count(*) from payment where created_at > now() - interval '30 days') as pay30,
       (select coalesce(sum(amount), 0) from payment where currency = 'ron' and created_at > now() - interval '30 days') as lei30,
       (select coalesce(sum(amount), 0) from payment where currency = 'eur' and created_at > now() - interval '30 days') as eur30,
       (select count(distinct user_id) from payment where created_at > now() - interval '30 days') as payers30,
-      (select count(*) from "user" where email <> ${DEMO_EMAIL} and created_at > now() - interval '30 days') as acc30,
-      (select count(*) from "user" where email <> ${DEMO_EMAIL} and created_at <= now() - interval '30 days' and created_at > now() - interval '60 days') as acc_prev,
-      (select count(*) from "user" where email <> ${DEMO_EMAIL}) as acc_all,
-      (select count(*) from "user" u where email <> ${DEMO_EMAIL} and created_at < now() - interval '8 days' and created_at > now() - interval '98 days') as cohort,
-      (select count(*) from "user" u where email <> ${DEMO_EMAIL} and created_at < now() - interval '8 days' and created_at > now() - interval '98 days'
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at > now() - interval '30 days') as acc30,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at <= now() - interval '30 days' and created_at > now() - interval '60 days') as acc_prev,
+      (select count(*) from "user" u where ${realAccountSql("u")}) as acc_all,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at < now() - interval '8 days' and created_at > now() - interval '98 days') as cohort,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at < now() - interval '8 days' and created_at > now() - interval '98 days'
          and exists (select 1 from payment p where p.user_id = u.id)) as cohort_paid,
       (select count(*) from invitation where accepted_at > now() - interval '30 days') as inv_acc30,
       (select count(*) from invitation where expires_at > now() - interval '16 days') as inv30,
       (select count(*) from (select distinct on (user_id) granted from consent where purpose = 'news' order by user_id, created_at desc) x where granted) as news_yes,
-      (select count(*) from "user" u where email <> ${DEMO_EMAIL} and created_at < now() - interval '14 days') as old_users,
-      (select count(distinct s.user_id) from session s join "user" u on u.id = s.user_id where u.email <> ${DEMO_EMAIL} and u.created_at < now() - interval '14 days' and s.updated_at > now() - interval '30 days') as old_active,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at < now() - interval '14 days') as old_users,
+      (select count(distinct s.user_id) from session s join "user" u on u.id = s.user_id where ${realAccountSql("u")} and u.created_at < now() - interval '14 days' and s.updated_at > now() - interval '30 days') as old_active,
       (select count(*) from problem_report where status = 'nou') as prob_new,
       (select count(*) from problem_report where status <> 'rezolvat' and reply is null and created_at < now() - interval '2 days') as prob_late,
       (select count(*) from problem_report where created_at > now() - interval '30 days') as prob30`).catch(() => [{} as Row]),

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { eq, and, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
+import { markBranchLink } from "@/lib/invita-ramura";
 import { tree, person, relationship, treeMember, document, documentLink, message, raisedBy, invitation } from "@/db/schema";
 import { canMessage } from "@/lib/chat";
 import { importGedcom } from "@/lib/gedcom-db";
@@ -314,6 +315,8 @@ export async function createInviteLink(_: unknown, form: FormData) {
   if (!me || !can(await roleIn(db, parsed.data.treeId, me.id), "editor")) return { error: tr("inviteNotAllowed") };
   if (parsed.data.role !== "viewer" && !(await canInviteWriters(db, me.id, parsed.data.treeId))) return { error: tr("inviteNeedsYear") };
   const { token, expiresAt } = await createInvitation(db, { treeId: parsed.data.treeId, createdBy: me.id, role: parsed.data.role, personId: parsed.data.personId || null });
+  // Linkul făcut din îndemnul „Invită-l pe … să completeze ramura lui” (src/lib/invita-ramura.ts), numărat în Admin → Creștere.
+  if (form.get("via") === "ramura" && parsed.data.personId) await markBranchLink(db, parsed.data.treeId, parsed.data.personId).catch(() => undefined);
   const h = await headers();
   const origin = process.env.BETTER_AUTH_URL ?? `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host")}`;
   // Butoanele WhatsApp / email / „Trimite” (Admin → Creștere): legătura lor poartă semnul „invitatie”, ca să se vadă în Analiză.
