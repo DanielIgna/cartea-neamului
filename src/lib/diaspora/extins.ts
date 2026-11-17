@@ -1,4 +1,5 @@
 import type { CountryExtra } from "./tipuri";
+import { EXTRA_2 } from "./extins-2";
 
 /**
  * Pasul 1 al extinderii diaspora (Daniel, 17.11.2026): cele 7 țări mari primesc text propriu mai lung (în română, plus engleza
@@ -14,7 +15,7 @@ import type { CountryExtra } from "./tipuri";
  */
 export const VERIFIED_ON = "17.11.2026";
 
-export const EXTRA: Record<string, CountryExtra> = {
+const EXTRA_1: Record<string, CountryExtra> = {
   italia: {
     stats: { name: "ISTAT – Istituto Nazionale di Statistica", url: "https://www.istat.it", note: { ro: "cetățenii străini rezidenți în Italia, pe cetățenii și regiuni", en: "foreign residents in Italy, by citizenship and region", it: "cittadini stranieri residenti, per cittadinanza e regione" } },
     missions: [
@@ -325,6 +326,9 @@ export const EXTRA: Record<string, CountryExtra> = {
     },
   },
 };
+
+/** Toate țările cu ghid propriu: cele 7 mari (pasul 1) și celelalte 11 (pasul 4, extins-2.ts). */
+export const EXTRA: Record<string, CountryExtra> = { ...EXTRA_1, ...EXTRA_2 };
 
 /** Cuvintele proprii (românești) ale unei țări: istoria, ghidul, particularitățile și întrebările (pentru prag și teste). */
 export function ownWords(parts: (string | undefined)[]): number {

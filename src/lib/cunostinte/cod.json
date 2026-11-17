@@ -752,6 +752,7 @@
   "src/lib/demo-sync.ts",
   "src/lib/demo.ts",
   "src/lib/diaspora/america.ts",
+  "src/lib/diaspora/extins-2.ts",
   "src/lib/diaspora/extins.ts",
   "src/lib/diaspora/index.ts",
   "src/lib/diaspora/orase-mai-mult.ts",
