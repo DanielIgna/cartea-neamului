@@ -92,7 +92,7 @@ describe("adresele secțiunilor și cache-ul public", () => {
   it("fiecare secțiune are paginile ei gata făcute în app/(public)", () => {
     for (const s of PUBLIC_SECTIONS) {
       expect(() => readFileSync(`src/app/(public)/pub/[v]${s.hub}/page.tsx`)).not.toThrow();
-      const param = s.key === "localitati" ? "[judet]" : s.key === "diaspora" ? "[a]" : "[slug]";
+      const param = s.key === "localitati" ? "[judet]" : s.key === "diaspora" ? "[a]" : s.key === "genealogie" ? "[oras]" : "[slug]";
       expect(() => readFileSync(`src/app/(public)/pub/[v]${s.hub}/${param}/page.tsx`)).not.toThrow();
       expect(readFileSync("src/middleware.ts", "utf8")).toContain(`"${s.hub}/:${param.slice(1, -1)}"`);
     }

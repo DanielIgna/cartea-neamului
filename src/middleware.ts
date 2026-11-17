@@ -74,6 +74,7 @@ export const config = {
     "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug", "/nume", "/nume/:slug",
     "/localitati", "/localitati/:judet", "/localitati/:judet/:localitate",
     "/diaspora", "/diaspora/:a", "/diaspora/:a/:b",
+    "/genealogie", "/genealogie/:oras", "/genealogie/:oras/:b",
     // Aceleași pagini, în celelalte limbi.
     "/:lang(en|en-us|fr|es|nl|de|it|hu|he)", "/:lang(en|en-us|fr|es|nl|de|it|hu|he)/:path*",
     "/pub", "/pub/:path*"],
