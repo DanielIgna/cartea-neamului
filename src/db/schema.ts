@@ -909,3 +909,110 @@ export const sourceLink = pgTable("source_link", {
   createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+/* ---------- CRM-ul din Admin (Daniel, 17.11.2026), vezi src/lib/crm.ts, migrația 0040 și docs/crm-inventar.md ---------- */
+// Instituții și firme (adrese oficiale publice), nu persoane fizice. `dedupe_key` (emailul sau tip|nume|localitate) face importul
+// și ingestia idempotente; `slug` dă linkul ?src=<tip>-<slug>; `partner_id` leagă un magazin/o firmă din City Partners.
+export const crmOrganizations = pgTable("crm_organizations", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tip: text("tip").notNull(),
+  nume: text("nume").notNull(),
+  localitate: text("localitate"),
+  judet: text("judet"),
+  tara: text("tara").notNull().default("RO"),
+  site: text("site"),
+  emailOficial: text("email_oficial"),
+  telefon: text("telefon"),
+  sursaDatelor: text("sursa_datelor"),
+  status: text("status").notNull().default("nou"),
+  owner: text("owner").notNull().default("Daniel"),
+  note: text("note"),
+  deSunat: boolean("de_sunat").notNull().default(false),
+  slug: text("slug"),
+  dedupeKey: text("dedupe_key").notNull(),
+  partnerId: uuid("partner_id").references(() => partners.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("crm_organizations_dedupe_idx").on(t.dedupeKey), uniqueIndex("crm_organizations_slug_idx").on(t.slug), index("crm_organizations_status_idx").on(t.tip, t.status)]);
+
+// Persoane de contact DOAR dacă și-au dat singure datele (au răspuns, au completat formularul), cu dovada consimțământului.
+export const crmContacts = pgTable("crm_contacts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  nume: text("nume"),
+  rol: text("rol"),
+  email: text("email"),
+  telefon: text("telefon"),
+  consimtamant: boolean("consimtamant").notNull().default(false),
+  sursaConsimtamant: text("sursa_consimtamant"),
+  consimtamantAt: timestamp("consimtamant_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("crm_contacts_org_idx").on(t.organizationId)]);
+
+// Tot ce s-a întâmplat cu o organizație sau un utilizator. `external_id` face importul și ingestia idempotente.
+export const crmActivities = pgTable("crm_activities", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tip: text("tip").notNull(),
+  canal: text("canal"),
+  rezumat: text("rezumat"),
+  at: timestamp("at").notNull().defaultNow(),
+  organizationId: uuid("organization_id").references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  contactId: uuid("contact_id").references(() => crmContacts.id, { onDelete: "set null" }),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  externalId: text("external_id"),
+  meta: jsonb("meta"),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+}, (t) => [uniqueIndex("crm_activities_external_idx").on(t.externalId), index("crm_activities_org_idx").on(t.organizationId, t.at), index("crm_activities_user_idx").on(t.userId, t.at)]);
+
+// Ce vindem unei organizații (coduri pentru școală/clasă, abonamente pentru firmă, carduri în magazin) și etapa discuției.
+export const crmDeals = pgTable("crm_deals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").notNull().references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  produs: text("produs").notNull(),
+  conturiEstimate: integer("conturi_estimate"),
+  valoareEstimata: integer("valoare_estimata"), // lei
+  etapa: text("etapa").notNull().default("nou"),
+  urmatorulPas: text("urmatorul_pas"),
+  dataUrmatoruluiPas: timestamp("data_urmatorului_pas"),
+  note: text("note"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [index("crm_deals_etapa_idx").on(t.etapa, t.dataUrmatoruluiPas), index("crm_deals_org_idx").on(t.organizationId)]);
+
+// Coada de aprobări: orice mesaj nou către o persoană sau organizație, în afara unei campanii aprobate, așteaptă aici.
+export const crmApprovals = pgTable("crm_approvals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  tipActiune: text("tip_actiune").notNull(),
+  payload: jsonb("payload").$type<{ destinatar?: string; subiect?: string; text?: string; [k: string]: unknown }>().notNull(),
+  motiv: text("motiv"),
+  risc: text("risc").notNull().default("MEDIUM"),
+  status: text("status").notNull().default("in_asteptare"),
+  organizationId: uuid("organization_id").references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  userId: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+  dedupeKey: text("dedupe_key"),
+  cineAAprobat: text("cine_a_aprobat").references(() => user.id, { onDelete: "set null" }),
+  cand: timestamp("cand"),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("crm_approvals_dedupe_idx").on(t.dedupeKey), index("crm_approvals_status_idx").on(t.status, t.createdAt)]);
+
+// Lista „nu contacta”: o adresă sau un domeniu întreg. Verificată înainte de orice trimitere de marketing (src/lib/crm-suppression.ts).
+export const crmSuppression = pgTable("crm_suppression", {
+  valoare: text("valoare").primaryKey(),
+  tip: text("tip").notNull().default("email"), // email / domeniu
+  motiv: text("motiv").notNull(), // dezabonat / refuz / nelivrat / nu_contacta
+  sursa: text("sursa"),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Scorul și etapa fiecărui utilizator (fără a dubla tabelul `user`), socotite din reguli scrise de mână (src/lib/crm-scor.ts).
+export const crmUserSignals = pgTable("crm_user_signals", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  sursa: text("sursa"),
+  scor: integer("scor").notNull().default(0),
+  etapa: text("etapa").notNull().default("cont"),
+  ultimaActivitate: timestamp("ultima_activitate"),
+  detalii: jsonb("detalii"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (t) => [index("crm_user_signals_etapa_idx").on(t.etapa, t.scor)]);
