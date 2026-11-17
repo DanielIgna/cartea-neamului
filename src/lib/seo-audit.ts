@@ -1,3 +1,4 @@
+import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, cityDesc, cityTitle, genCityPath, genWords } from "@/lib/genealogie-orase";
 import { LOCALES_OF as DIASPORA_LOCALES_OF, descriptionOf as diasporaDescription, entries as diasporaEntries, titleOf as diasporaTitle } from "@/lib/diaspora";
 import { LANGUAGE_NAMES, LOCALES, localizedPath } from "@/i18n/locales";
 import { PRIVATE_PREFIXES, PUBLIC_PAGES } from "./public-pages";
@@ -56,6 +57,12 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
   }
   // Pentru școli: /scoala și paginile pe clase.
   for (const p of SCHOOL_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "școli" });
+  // Genealogie pe orașe mari (src/lib/genealogie-orase.ts).
+  push({ path: GEN_HUB, title: "Genealogie în orașele mari din România", description: null, words: null, indexable: true, gate: null, category: "hub" });
+  for (const c of GEN_CITIES) {
+    const words = genWords(c), gate = words >= GEN_MIN_WORDS ? null : "prea puțin text propriu";
+    push({ path: genCityPath(c), title: cityTitle(c), description: cityDesc(c), words, indexable: !gate, gate, category: "oraș" });
+  }
   // Diaspora: fiecare pagină în fiecare limbă în care e scrisă (src/lib/diaspora); statele fără text propriu rămân noindex.
   for (const e of diasporaEntries()) for (const lang of e.langs) for (const loc of DIASPORA_LOCALES_OF[lang]) {
     const gate = e.indexable ? null : "prea puțin text propriu (stat sau provincie fără informații despre români)";
