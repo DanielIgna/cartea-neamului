@@ -70,6 +70,9 @@
   "src/app/(public)/pub/[v]/diaspora/[a]/[b]/page.tsx",
   "src/app/(public)/pub/[v]/diaspora/[a]/page.tsx",
   "src/app/(public)/pub/[v]/diaspora/page.tsx",
+  "src/app/(public)/pub/[v]/genealogie/[oras]/page.tsx",
+  "src/app/(public)/pub/[v]/genealogie/layout.tsx",
+  "src/app/(public)/pub/[v]/genealogie/page.tsx",
   "src/app/(public)/pub/[v]/genealogii-vechi/page.tsx",
   "src/app/(public)/pub/[v]/ghid/[slug]/page.tsx",
   "src/app/(public)/pub/[v]/ghid/layout.tsx",
@@ -164,6 +167,9 @@
   "src/app/(site)/diaspora/[a]/[b]/page.tsx",
   "src/app/(site)/diaspora/[a]/page.tsx",
   "src/app/(site)/diaspora/page.tsx",
+  "src/app/(site)/genealogie/[oras]/page.tsx",
+  "src/app/(site)/genealogie/layout.tsx",
+  "src/app/(site)/genealogie/page.tsx",
   "src/app/(site)/genealogii-vechi/page.tsx",
   "src/app/(site)/ghid/[slug]/page.tsx",
   "src/app/(site)/ghid/layout.tsx",
@@ -398,6 +404,7 @@
   "src/components/continut/ArticlePages.tsx",
   "src/components/continut/Breadcrumbs.tsx",
   "src/components/continut/CtaArbore.tsx",
+  "src/components/continut/GenealogieOrase.tsx",
   "src/components/continut/HubSearch.tsx",
   "src/components/continut/LocalityPages.tsx",
   "src/components/continut/NamePages.tsx",
@@ -768,6 +775,7 @@
   "src/lib/firul-vremii.ts",
   "src/lib/gedcom-db.ts",
   "src/lib/gedcom.ts",
+  "src/lib/genealogie-orase.ts",
   "src/lib/history.ts",
   "src/lib/home-images.ts",
   "src/lib/home-jsonld.ts",
@@ -883,6 +891,7 @@
   "tests/family.test.ts",
   "tests/firul-vremii.test.ts",
   "tests/gedcom.test.ts",
+  "tests/genealogie-orase.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
   "tests/invitatii.test.ts",
@@ -1320,6 +1329,14 @@
    "kind": "pagina"
   },
   {
+   "path": "/genealogie",
+   "kind": "pagina"
+  },
+  {
+   "path": "/genealogie/[oras]",
+   "kind": "pagina"
+  },
+  {
    "path": "/genealogii-vechi",
    "kind": "pagina"
   },
@@ -1500,6 +1517,7 @@
   "tests/family.test.ts",
   "tests/firul-vremii.test.ts",
   "tests/gedcom.test.ts",
+  "tests/genealogie-orase.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
   "tests/invitatii.test.ts",
