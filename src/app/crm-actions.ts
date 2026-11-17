@@ -154,3 +154,14 @@ export async function partnershipAction(_: PartnershipState, form: FormData): Pr
     message: `Cerere de parteneriat (${checked.ok.tip}): ${checked.ok.rol ?? ""} · ${checked.ok.numar ?? "?"} elevi/angajați\n\n${checked.ok.mesaj ?? ""}` }).catch(() => null);
   return { ok: true };
 }
+
+/* ---------- Scorurile ---------- */
+
+export async function recomputeAction() {
+  const me = await admin();
+  if (!me) return;
+  const { refreshSignals } = await import("@/lib/crm-scor");
+  const r = await refreshSignals(db);
+  revalidatePath("/admin/crm");
+  back("/admin/crm?t=scor", `Recalculat: ${r.users} conturi, ${r.changed} schimbate.`);
+}

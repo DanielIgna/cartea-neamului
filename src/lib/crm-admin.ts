@@ -10,6 +10,7 @@ import {
   type DealProduct, type DealStage, type OrgType, type Risk,
 } from "./crm";
 import { crmPartners, dueSteps } from "./parteneri-crm";
+import { orgPriority } from "./crm-scor";
 
 type Row = Record<string, unknown>;
 async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
@@ -38,8 +39,8 @@ export async function accountsBySrc(db: Db): Promise<Map<string, { accounts: num
 
 /* ---------- Organizațiile ---------- */
 
-export type OrgFilter = { tip?: string; status?: string; judet?: string; tara?: string; q?: string };
-export type OrgRow = typeof crmOrganizations.$inferSelect & { activities: number; lastAt: Date | null; src: string | null; accounts: number; trees: number; paid: number };
+export type OrgFilter = { tip?: string; status?: string; judet?: string; tara?: string; q?: string; sort?: string };
+export type OrgRow = typeof crmOrganizations.$inferSelect & { activities: number; lastAt: Date | null; src: string | null; accounts: number; trees: number; paid: number; prioritate: number };
 
 export async function orgList(db: Db, f: OrgFilter = {}, limit = 500): Promise<OrgRow[]> {
   const where: SQL[] = [];
@@ -51,18 +52,31 @@ export async function orgList(db: Db, f: OrgFilter = {}, limit = 500): Promise<O
     const like = `%${f.q.trim().toLowerCase()}%`;
     where.push(sql`(lower(${crmOrganizations.nume}) like ${like} or lower(coalesce(${crmOrganizations.emailOficial}, '')) like ${like} or lower(coalesce(${crmOrganizations.localitate}, '')) like ${like})`);
   }
-  const [list, counts, bySrc] = await Promise.all([
+  const [list, counts, bySrc, sizes, warm] = await Promise.all([
     db.select().from(crmOrganizations).where(where.length ? and(...where) : undefined).orderBy(desc(crmOrganizations.updatedAt)).limit(limit),
     rows<{ id: string; c: unknown; last: string | null }>(db, sql`select organization_id as id, count(*) as c, max(at) as last from crm_activities where organization_id is not null group by 1`),
     accountsBySrc(db),
+    rows<{ id: string; m: unknown }>(db, sql`select organization_id as id, max(coalesce(conturi_estimate, 0)) as m from crm_deals group by 1`),
+    warmCounties(db),
   ]);
   const cm = new Map(counts.map((c) => [c.id, c]));
-  return list.map((o) => {
+  const sm = new Map(sizes.map((x) => [x.id, n(x.m)]));
+  const out = list.map((o) => {
     const src = srcOf(o.tip, o.slug);
     const a = (src && bySrc.get(src)) || { accounts: 0, trees: 0, paid: 0 };
     const c = cm.get(o.id);
-    return { ...o, activities: n(c?.c), lastAt: c?.last ? new Date(c.last) : null, src, ...a };
+    const prioritate = orgPriority({ tip: o.tip, status: o.status, maxAccounts: sm.get(o.id) ?? 0, warmCounty: !!o.judet && warm.has(o.judet) });
+    return { ...o, activities: n(c?.c), lastAt: c?.last ? new Date(c.last) : null, src, ...a, prioritate };
   });
+  return f.sort === "prioritate" ? out.sort((x, y) => y.prioritate - x.prioritate) : out;
+}
+
+/** Județele în care au venit deja conturi (reale) pe linkurile ?src= ale organizațiilor de acolo. */
+export async function warmCounties(db: Db): Promise<Set<string>> {
+  const r = await rows<{ judet: string }>(db, sql`
+    select distinct o.judet from crm_organizations o join account_source s on coalesce(s.first_src, s.source) like '%-' || o.slug
+    join "user" u on u.id = s.user_id where o.judet is not null and o.slug is not null and ${realUserSql("u")}`);
+  return new Set(r.map((x) => x.judet));
 }
 
 export async function orgDetail(db: Db, id: string) {
