@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { COUNTRIES, REGIONS, THEMES, alternatesFor, diasporaAlternates, entries, pickLang, resolve } from "@/lib/diaspora";
+import { COUNTRIES, COUNTRY_OF, REGIONS, THEMES, alternatesFor, diasporaAlternates, entries, pickLang, resolve } from "@/lib/diaspora";
 import { regionIndexable } from "@/lib/diaspora/america";
 import { UI } from "@/lib/diaspora/ui";
 import { sitemapGroups } from "@/lib/continut/sitemap";
@@ -206,7 +206,7 @@ describe("diaspora: pasul 2 (17.11.2026) – orașele", async () => {
 
   it("consulatele arătate pe oraș există în lista verificată a țării", () => {
     for (const r of cities) for (const m of r.mission ?? []) {
-      const slug = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country];
+      const slug = COUNTRY_OF[r.country];
       expect(EXTRA[slug].missions.some((x) => x.city === m), `${r.slug} → ${m}`).toBe(true);
     }
   });
@@ -225,7 +225,7 @@ describe("diaspora: pasul 2 (17.11.2026) – orașele", async () => {
 });
 
 function regionPathOf(r: { country: string; slug: string }): [string, string] {
-  const c = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country]!;
+  const c = COUNTRY_OF[r.country as keyof typeof COUNTRY_OF];
   return [c, r.slug];
 }
 

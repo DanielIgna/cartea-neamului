@@ -1,5 +1,6 @@
 import type { CountryKey, Region } from "./tipuri";
 import { AMERICA_CITIES, EUROPE_CITIES } from "./orase";
+import { EUROPE_CITIES_2 } from "./orase-2";
 import { MORE } from "./orase-mai-mult";
 import { ownWords } from "./extins";
 
@@ -354,6 +355,7 @@ export const REGIONS: Region[] = [
   ...CITY_NOTES.map((r) => ({ ...r, notes: { ...r.notes, ro: [...(r.notes.ro ?? []), ...(MORE[r.slug] ?? [])] } })),
   ...AMERICA_CITIES,
   ...EUROPE_CITIES,
+  ...EUROPE_CITIES_2,
 ];
 
 export const regionsOf = (country: CountryKey, kind?: Region["kind"]) => REGIONS.filter((r) => r.country === country && (!kind || r.kind === kind));

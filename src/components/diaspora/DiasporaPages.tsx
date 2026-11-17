@@ -207,7 +207,7 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{u.cities}</h2>
-        {(["it", "es", "de", "gb", "il"] as const).map((k) => {
+        {(["it", "es", "de", "gb", "fr", "at", "be", "ie", "pt", "gr", "cy", "il"] as const).map((k) => {
           const c = COUNTRIES.find((x) => x.slug === COUNTRY_OF[k])!;
           return (
             <div key={k}>
