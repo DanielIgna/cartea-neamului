@@ -23,6 +23,7 @@ jobs:
           echo "--- sitemap index"
           curl -s $S/sitemap.xml | grep -oE 'sitemaps/[a-z-]+\.xml' | sort | tr '\n' ' '; echo
           for l in ro en it es de fr he hu; do echo "diaspora-$l: $(curl -s $S/sitemaps/diaspora-$l.xml | grep -c '<loc>') adrese"; done
+          echo "sitemap-diaspora.xml: $(curl -s $S/sitemap-diaspora.xml | grep -c '<loc>') adrese"
           echo "--- comunele din sitemap-ul de localități (publicate de motor)"
           curl -s $S/sitemaps/localitati.xml > loc.xml
           echo "adrese în total: $(grep -c '<loc>' loc.xml)"

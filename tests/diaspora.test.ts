@@ -107,3 +107,77 @@ describe("diaspora: adrese și limbi", () => {
     expect(new Set(all).size).toBe(all.length);
   });
 });
+
+describe("diaspora: pasul 1 (17.11.2026) – cele 7 țări mari", async () => {
+  const { EXTRA, ownWords } = await import("@/lib/diaspora/extins");
+  const { XUI } = await import("@/lib/diaspora/ui");
+  const { indexXml, diasporaSitemapUrls } = await import("@/lib/continut/sitemap");
+  const { fitTitle } = await import("@/lib/page-metadata");
+  const { titleOf, descriptionOf } = await import("@/lib/diaspora");
+  const BIG = ["italia", "spania", "germania", "marea-britanie", "statele-unite", "canada", "israel"];
+
+  it("fiecare are cel puțin 600 de cuvinte proprii în română, ambasada și 5 întrebări", () => {
+    for (const slug of BIG) {
+      const c = COUNTRIES.find((x) => x.slug === slug)!, ex = EXTRA[slug];
+      expect(ex, slug).toBeTruthy();
+      const words = ownWords([...(c.history.ro ?? []), ...(ex.guide.ro ?? []), ...(ex.specifics.ro ?? []), ...(ex.faq.ro ?? []).flatMap((f) => [f.q, f.a])]);
+      expect(words, `${slug}: ${words} cuvinte`).toBeGreaterThanOrEqual(600);
+      expect(ex.faq.ro?.length, slug).toBeGreaterThanOrEqual(5);
+      expect(ex.missions.some((m) => m.kind === "embassy"), slug).toBe(true);
+    }
+  });
+
+  it("engleza are text propriu acolo unde e limba țării", () => {
+    for (const slug of ["marea-britanie", "statele-unite", "canada"]) {
+      const ex = EXTRA[slug];
+      expect(ex.guide.en?.length && ex.specifics.en?.length && ex.faq.en?.length, slug).toBeTruthy();
+    }
+  });
+
+  it("legăturile oficiale sunt https, iar paginile misiunilor sunt pe mae.ro", () => {
+    for (const ex of Object.values(EXTRA)) {
+      for (const m of ex.missions) if (m.url) expect(m.url).toMatch(/^https:\/\/[a-z]+\.mae\.ro(\/|$)/);
+      for (const l of [ex.missionsSource, ex.stats].filter(Boolean)) expect(l!.url).toMatch(/^https:\/\//);
+    }
+  });
+
+  it("textele noi nu se repetă și nu vorbesc despre unelte", () => {
+    const seen = new Set<string>();
+    for (const ex of Object.values(EXTRA)) for (const ps of [...Object.values(ex.guide), ...Object.values(ex.specifics)]) for (const p of ps ?? []) {
+      expect(seen.has(p), p.slice(0, 60)).toBe(false);
+      seen.add(p);
+    }
+    const all = JSON.stringify([EXTRA, XUI.ro, XUI.en]);
+    for (const bad of [/\bAI\b/, /inteligen[țt]ă artificială/i, /next\.js/i, /vercel/i, /claude/i, /anthropic/i, /citește biblia/i]) expect(all).not.toMatch(bad);
+  });
+
+  it("titlurile țărilor încap în 60 de caractere, iar descrierile au 100–160", () => {
+    for (const slug of BIG) {
+      const e = resolve(slug)!;
+      for (const l of e.langs.filter((x) => x === "ro" || x === "en")) {
+        expect(fitTitle(titleOf(e, l)).length, `${slug} ${l}`).toBeLessThanOrEqual(60);
+        const d = descriptionOf(e, l).length;
+        expect(d, `${slug} ${l} descriere`).toBeGreaterThanOrEqual(100);
+        expect(d, `${slug} ${l} descriere`).toBeLessThanOrEqual(160);
+      }
+    }
+  });
+
+  it("sitemap-ul de diaspora e un singur fișier în index, fără dubluri", () => {
+    const groups = sitemapGroups();
+    const idx = indexXml(groups);
+    expect(idx).toContain("/sitemap-diaspora.xml");
+    expect(idx).not.toContain("/sitemaps/diaspora-");
+    const urls = diasporaSitemapUrls(groups).map((u) => u.path);
+    expect(new Set(urls).size).toBe(urls.length);
+    expect(urls).toContain("/diaspora/italia");
+    expect(urls).toContain("/he/diaspora/israel");
+  });
+
+  it("butonul de cont nou poartă eticheta ?src a paginii", async () => {
+    const { diasporaSrc } = await import("@/components/diaspora/DiasporaPages");
+    expect(diasporaSrc(resolve("italia")!)).toBe("diaspora-italia");
+    expect(diasporaSrc(resolve("statele-unite", "chicago")!)).toBe("diaspora-chicago");
+    expect(diasporaSrc(resolve()!)).toBe("diaspora");
+  });
+});

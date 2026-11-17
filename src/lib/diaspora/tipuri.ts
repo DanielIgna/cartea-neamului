@@ -58,3 +58,16 @@ export type Theme = {
   records: Link[];
   related: string[];
 };
+
+/** O misiune a României: ambasadă, secția ei consulară, consulat general sau consulat (doar din surse oficiale). */
+export type Mission = { kind: "embassy" | "consular" | "cg" | "consulate"; city: string; address?: string; url?: string };
+export type Faq = { q: string; a: string };
+/** Textul lărgit al unei țări (src/lib/diaspora/extins.ts): scris doar în limbile în care are rost, nu în toate. */
+export type CountryExtra = {
+  stats?: Link;
+  missions: Mission[];
+  missionsSource: Link;
+  guide: TList;
+  specifics: TList;
+  faq: Partial<Record<Lang, Faq[]>>;
+};

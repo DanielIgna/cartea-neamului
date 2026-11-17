@@ -13,7 +13,12 @@ import {
 } from "@/lib/diaspora";
 import { ROMANIA_LINKS } from "@/lib/diaspora/tari";
 import { regionsOf, regionIndexable } from "@/lib/diaspora/america";
-import { UI } from "@/lib/diaspora/ui";
+import { UI, XUI } from "@/lib/diaspora/ui";
+import { EXTRA, VERIFIED_ON } from "@/lib/diaspora/extins";
+import { unstable_cache } from "next/cache";
+import { db } from "@/db";
+import { DEFAULT_SETTINGS, PLANS_TAG, planSettings, yearPrice, type PlanSettings } from "@/lib/plans";
+import { money, type Currency } from "@/lib/plati";
 
 /** Paginile /diaspora, /diaspora/<țară sau temă> și /diaspora/<statele-unite|canada>/<stat, provincie sau oraș>. */
 
@@ -26,6 +31,18 @@ function hrefOf(e: Entry, locale: Locale) {
   return localizedPath(e.path, native ? locale : LOCALES_OF[lang][0]);
 }
 const entryOf = (path: string) => entries().find((e) => e.path === path)!;
+
+/** Prețurile din Admin → Manager control: în cache 10 minute, golit la salvare (ca pe prima pagină). */
+const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
+/** Moneda țării, pentru echivalentul aproximativ al prețului (plata rămâne cum e setată în Admin). */
+const LOCAL_CURRENCY: Record<string, Currency> = { US: "usd", CA: "cad", GB: "gbp", IL: "ils" };
+
+/** Eticheta de sursă a paginii (?src=diaspora-<țară sau oraș>), ca să se vadă în Admin de unde vin conturile. */
+export function diasporaSrc(e: Entry): string {
+  const tail = e.kind === "hub" ? "" : e.path.split("/").pop()!;
+  return tail ? `diaspora-${tail}` : "diaspora";
+}
+const countryOfEntry = (e: Entry): Country | null => (e.kind === "country" ? e.country : e.kind === "region" ? e.country : null);
 
 export async function diasporaMetadata(a?: string, b?: string): Promise<Metadata> {
   const e = resolve(a, b);
@@ -57,6 +74,12 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
     <section className="stack content-page diaspora-page" lang={lang} dir={isRtl(lang) ? "rtl" : "ltr"}>
       {!native && <p className="untranslated-note" role="note">{UI[lang].fallback}</p>}
       <JsonLd data={breadcrumbJsonLd(crumbs)} />
+      {e.kind === "country" && faqOf(e.country, lang).length > 0 && (
+        <JsonLd data={{
+          "@context": "https://schema.org", "@type": "FAQPage", inLanguage: lang,
+          mainEntity: faqOf(e.country, lang).map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        }} />
+      )}
       <JsonLd data={{
         "@context": "https://schema.org", "@type": e.kind === "hub" ? "CollectionPage" : "Article",
         [e.kind === "hub" ? "name" : "headline"]: nameOf(e, lang), description: descriptionOf(e, lang), url: canonicalUrl(href(e)), inLanguage: lang,
@@ -71,11 +94,7 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
       {e.kind === "region" && <RegionBody r={e.region} c={e.country} l={lang} href={href} />}
       {e.kind === "theme" && <ThemeBody t={e.theme} l={lang} href={href} />}
       {e.kind !== "hub" && <Steps l={lang} />}
-      <div className="card cta-card">
-        <h2 style={{ marginTop: 0 }}>{u.ctaTitle}</h2>
-        <p>{u.ctaText}</p>
-        <Link className="btn primary" href="/intrare?mod=cont-nou">{u.ctaButton}</Link>
-      </div>
+      <Cta e={e} l={lang} plans={await cachedPlans().catch(() => DEFAULT_SETTINGS)} />
       {otherLangs.length > 0 && (
         <p className="muted" style={{ fontSize: 14 }}>
           {u.otherLangs}: {otherLangs.map(([loc, p], i) => <span key={loc}>{i > 0 && " · "}<Link href={p} hrefLang={loc} lang={loc}>{LANGUAGE_NAMES[loc as Locale] ?? loc}</Link></span>)}
@@ -86,6 +105,82 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
 }
 
 type Href = (e: Entry) => string;
+
+function Cta({ e, l, plans }: { e: Entry; l: Lang; plans: PlanSettings }) {
+  const u = UI[l], x = XUI[l];
+  const src = diasporaSrc(e);
+  const c = countryOfEntry(e);
+  // Prețul se arată doar cât vânzarea e pornită (ca pe prima pagină): în lei, cu echivalentul aproximativ în moneda țării.
+  let price: string | null = null;
+  if (x && plans.on) {
+    const p = yearPrice(true, plans);
+    const lei = money(p.lei, "ro").label;
+    const cur = c ? LOCAL_CURRENCY[c.code] ?? "eur" : null;
+    price = x.price(lei, cur ? money(p.eur, "en-GB", cur, plans).label : null);
+  }
+  const share = `${SITE_URL}/?src=${src}-wa`;
+  return (
+    <div className="card cta-card">
+      <h2 style={{ marginTop: 0 }}>{u.ctaTitle}</h2>
+      <p>{u.ctaText}</p>
+      {price && <p className="muted">{price}</p>}
+      <p style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 0 }}>
+        <Link className="btn primary" href={`/intrare?mod=cont-nou&src=${src}`}>{u.ctaButton}</Link>
+        {x && <a className="btn" href={`https://wa.me/?text=${encodeURIComponent(x.whatsappText(share))}`} target="_blank" rel="noopener">{x.whatsapp}</a>}
+      </p>
+    </div>
+  );
+}
+
+/** Întrebările frecvente ale unei țări, în limba paginii (și pentru FAQPage). */
+export const faqOf = (c: Country, l: Lang) => EXTRA[c.slug]?.faq[l] ?? [];
+
+function Extra({ c, l, where, part }: { c: Country; l: Lang; where: string; part: "guide" | "after" }) {
+  const ex = EXTRA[c.slug], x = XUI[l];
+  if (!ex || !x) return null;
+  if (part === "guide") {
+    const g = ex.guide[l];
+    return g?.length ? (
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>{x.guide(where)}</h2>
+        {g.map((p) => <p key={p.slice(0, 40)}>{p}</p>)}
+      </div>
+    ) : null;
+  }
+  const sp = ex.specifics[l], faq = faqOf(c, l);
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>{x.missions}</h2>
+        <ul className="hub-list">
+          {ex.missions.map((m) => (
+            <li key={m.kind + m.city}>
+              <strong>{x.kind[m.kind]} · {m.city}</strong>
+              {m.address && <><br /><span>{m.address}</span></>}
+              {m.url && <><br /><a href={m.url} rel="noopener" target="_blank">{m.url.replace(/^https:\/\//, "")}</a></>}
+            </li>
+          ))}
+        </ul>
+        <p className="muted" style={{ marginBottom: 0 }}>
+          {x.missionsNote(VERIFIED_ON)} <a href={ex.missionsSource.url} rel="noopener" target="_blank">{ex.missionsSource.name}</a>.
+          {ex.stats && <> {x.statsNote} <a href={ex.stats.url} rel="noopener" target="_blank">{ex.stats.name}</a>.</>}
+        </p>
+      </div>
+      {sp?.length ? (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>{x.specifics}</h2>
+          {sp.map((p) => <p key={p.slice(0, 40)}>{p}</p>)}
+        </div>
+      ) : null}
+      {faq.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>{x.faq}</h2>
+          {faq.map((f) => <details key={f.q}><summary><strong>{f.q}</strong></summary><p>{f.a}</p></details>)}
+        </div>
+      )}
+    </>
+  );
+}
 
 function Hub({ l, href }: { l: Lang; href: Href }) {
   const u = UI[l];
@@ -193,7 +288,9 @@ function CountryBody({ c, l, href }: { c: Country; l: Lang; href: Href }) {
         <h2 style={{ marginTop: 0 }}>{u.history}</h2>
         {(c.history[l] ?? c.history.en ?? []).map((p) => <p key={p.slice(0, 40)}>{p}</p>)}
       </div>
+      <Extra c={c} l={l} where={where} part="guide" />
       <Docs l={l} where={where} eu={c.eu} icr={c.icr ? tx(c.icr, l) : null} />
+      <Extra c={c} l={l} where={where} part="after" />
       <Sources l={l} links={c.records} title={u.records} />
       {(regions.length > 0 || themes.length > 0) && (
         <div className="card">
