@@ -1,6 +1,7 @@
 import { attributionOf, recordConversion } from "./conversii";
 import { recordAccountSource } from "./sursa";
 import { signupNewsFromCookie } from "./activare-shared";
+import { recordSchoolSignup } from "./scoli";
 import { checkReward, referralOnSignup } from "./invitatii";
 import { recordReferral } from "./parteneri-crm";
 import { and, eq, isNull } from "drizzle-orm";
@@ -128,6 +129,8 @@ export const auth = betterAuth({
           await recordReferral(db, u.id, cookie).catch((e) => console.error("recomandare partener", e));
           // „Vreau sfaturi utile pe email”: bifa nebifată de la sine din formular; doar bifată pornește șirul de bun venit.
           if (signupNewsFromCookie(cookie) && !isDemo(u.email)) await recordConsent(db, u.id, "news", true).catch((e) => console.error("consent news", e));
+          // Venit prin linkul codului unei clase (/scoala/cod/<COD>): contul e trecut pe cod (Admin → Școli).
+          if (!isDemo(u.email)) await recordSchoolSignup(db, u.id, cookie);
           const partner = signupPartnerFromCookie(cookie);
           if (partner) {
             await setPartnerConsent(db, u.id, true, { partner, source: "cont-nou", locale: localeFromCookieHeader(cookie) ?? DEFAULT_LOCALE })

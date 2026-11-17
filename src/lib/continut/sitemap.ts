@@ -8,6 +8,7 @@ import { nameGate, uatGate } from "@/lib/continut/prag";
 import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
 import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, GEN_UPDATED, genCityPath, genWords } from "@/lib/genealogie-orase";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
+import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
@@ -88,6 +89,11 @@ export function sitemapGroups(published: Map<string, Date> = new Map()): Sitemap
         { path: "/nume", lastModified: NAMES_UPDATED, changeFrequency: "weekly", priority: 0.6 },
         ...loadNames().filter((n) => !nameGate(n)).map((n): SitemapUrl => ({ path: `/nume/${n.slug}`, lastModified: NAMES_UPDATED, changeFrequency: "monthly", priority: 0.4 })),
       ],
+    },
+    {
+      // Pentru școli (/scoala): pagina profesorilor și cele trei pe clase.
+      name: "scoala", label: "Pentru școli",
+      urls: SCHOOL_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: SCHOOL_UPDATED, changeFrequency: "monthly", priority: p.path === "/scoala" ? 0.7 : 0.6 })),
     },
     languagesGroup(),
     {

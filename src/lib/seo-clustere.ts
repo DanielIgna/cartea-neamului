@@ -12,6 +12,7 @@ export function clusterOf(path: string): Cluster {
   const sec = sectionOf(p);
   if (sec) return { key: sec, label: PUBLIC_SECTIONS.find((s) => s.key === sec)!.label, indexable: true };
   if (PUBLIC_PAGES.some((x) => x.path === p)) return { key: "pagini", label: "Paginile principale", indexable: true };
+  if (p === "/scoala" || (p.startsWith("/scoala/") && !p.startsWith("/scoala/fisa/"))) return { key: "scoala", label: "Pentru școli", indexable: true };
   if (p === "/intrare" || p.startsWith("/intrare/")) return { key: "cont", label: "Intrare / cont nou", indexable: false };
   return { key: "privat", label: "Pagini private sau fără loc în Google", indexable: false };
 }

@@ -1977,3 +1977,71 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .branch-invite .branch-later{margin-top:8px}
 .cta-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:14px 0 4px}
 .cta-top .btn{min-height:44px;display:inline-flex;align-items:center}
+/* Secțiunea pentru școli (/scoala) */
+.ok-box{border:1px solid var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface));border-radius:12px;padding:10px 14px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.sheet-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.sheet-card{display:grid;gap:6px;align-content:start;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface-2)}
+.school-form .row{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.school-page details{border-top:1px solid var(--line);padding:8px 0}
+.school-page summary{cursor:pointer;font-weight:700}
+.worksheet{display:grid;gap:14px}
+.ws-head{display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:space-between}
+.ws-head h1{font-size:26px}
+.ws-name{min-width:240px}
+.ws-row{display:grid;gap:8px}
+.ws-box{border:2px solid var(--accent);border-radius:12px;padding:8px;display:grid;gap:4px;min-width:0;background:var(--surface)}
+.ws-box small{font-weight:700;color:var(--muted)}
+.ws-box input{width:100%;min-width:0;font-size:15px}
+.ws-q{display:grid;gap:10px;padding-left:22px}
+.ws-q li{display:grid;gap:4px}
+.ws-foot{text-align:center;color:var(--muted);font-size:13px;margin:0}
+@media (max-width:700px){.ws-row{grid-template-columns:1fr 1fr !important}}
+@media print{
+  body:has(.worksheet) :is(header.top,.site-foot,.cookie-notice,.usage-notice,nav.crumbs),.no-print{display:none !important}
+  .worksheet input,.worksheet textarea{border:0;border-bottom:1px solid #999;border-radius:0;background:transparent}
+  body:has(.worksheet) .card{box-shadow:none;border:0}
+}
+
+/* Arborele pentru proiectul de la școală (/arbore/<id>/scoala): o foaie culcată, A4 sau A3, prietenoasă cu copiii. */
+.sp{max-width:1180px;margin:0 auto;padding:12px 16px;color:#3b2512}
+.sp-tools{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.sp-opts{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sp-title{font-family:var(--display);text-align:center;color:#6b3e12;font-size:clamp(22px,3vw,34px);margin:6px 0 14px}
+.sp-tree{display:flex;flex-direction:column;gap:18px}
+.sp-row{display:grid;gap:10px;justify-content:center}
+.sp-row-8{grid-template-columns:repeat(8,minmax(0,1fr))}
+.sp-row-4{grid-template-columns:repeat(4,minmax(0,1fr));padding:0 6%}
+.sp-row-2{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 24%}
+.sp-row-1{grid-template-columns:minmax(0,1fr);padding:0 38%}
+.sp-box{position:relative;border:2.5px solid #c97b2e;background:#fff8ec;border-radius:16px;padding:8px 6px;text-align:center;min-height:92px;display:flex;flex-direction:column;align-items:center;gap:3px;break-inside:avoid}
+.sp-box.sp-m{border-color:#4f8a6b;background:#f1f8f3}
+.sp-box.sp-me{border-color:#b5476b;background:#fdf0f4;border-width:3px}
+.sp-row:not(.sp-row-8) .sp-box::before{content:"";position:absolute;top:-19px;left:50%;height:16px;border-left:2px dashed #b99a76}
+.sp-rel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#8a5a2b}
+.sp-ph{width:58px;height:58px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1px #d9c4a6}
+.sp-ph-empty{background:repeating-linear-gradient(45deg,#f4e7d3,#f4e7d3 6px,#fbf3e6 6px,#fbf3e6 12px)}
+.sp-name{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.15}
+.sp-yr{font-size:13px}
+.sp-pl{font-size:11px;color:#7a6650}
+.sp-line{width:85%;border-bottom:1.5px solid #c9b291;height:16px}
+.sp-row-8 .sp-name{font-size:13px}
+.sp-row-8 .sp-ph{width:44px;height:44px}
+.sp-foot{text-align:center;font-size:11px;color:#9a8569;margin-top:14px}
+.sp-a3 .sp-name{font-size:18px}.sp-a3 .sp-row-8 .sp-name{font-size:15px}.sp-a3 .sp-ph{width:80px;height:80px}.sp-a3 .sp-row-8 .sp-ph{width:60px;height:60px}.sp-a3 .sp-box{min-height:120px}
+@media (max-width:700px){.sp-row-8{grid-template-columns:repeat(4,minmax(0,1fr))}.sp-row-4,.sp-row-2,.sp-row-1{padding:0}.sp-row-1{grid-template-columns:minmax(0,220px)}}
+@media print{
+  .no-print{display:none!important}
+  .sp{max-width:none;padding:0}
+  body:has(.sp) header.top,body:has(.sp) .site-foot,body:has(.sp) .wa-float,body:has(.sp) .access-banner{display:none!important}
+  body:has(.sp){background:#fff!important}
+  .sp-title{font-size:24px;margin:0 0 8px}
+  .sp-tree{gap:12px}
+  .sp-box{min-height:0;padding:5px 4px;gap:1px}
+  .sp-row:not(.sp-row-8) .sp-box::before{top:-13px;height:11px}
+  .sp-ph{width:40px;height:40px}.sp-row-8 .sp-ph{width:32px;height:32px}
+  .sp-a3 .sp-title{font-size:34px}.sp-a3 .sp-tree{gap:20px}.sp-a3 .sp-box{padding:8px 6px}
+  .sp-a3 .sp-ph{width:70px;height:70px}.sp-a3 .sp-row-8 .sp-ph{width:54px;height:54px}
+  .sp-foot{margin-top:8px}
+  .sp-box,.sp-ph-empty{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

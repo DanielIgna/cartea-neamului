@@ -38,6 +38,7 @@
   "drizzle/0035_motor_seo.sql",
   "drizzle/0036_conversie.sql",
   "drizzle/0037_sursa_cont.sql",
+  "drizzle/0039_scoli.sql",
   "drizzle/0040_crm.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
@@ -58,6 +59,8 @@
   "scripts/deploy-db.ts",
   "scripts/diacritice.ts",
   "scripts/e2e-neon.ts",
+  "scripts/fise-scoala-docx.py",
+  "scripts/fise-scoala.cjs",
   "scripts/harta-cod.ts",
   "scripts/masoara-viteza.ts",
   "scripts/migrate.ts",
@@ -139,6 +142,7 @@
   "src/app/(site)/admin/probleme/page.tsx",
   "src/app/(site)/admin/propuneri/page.tsx",
   "src/app/(site)/admin/sanatate/page.tsx",
+  "src/app/(site)/admin/scoli/page.tsx",
   "src/app/(site)/admin/securitate/page.tsx",
   "src/app/(site)/admin/seo/csv/route.ts",
   "src/app/(site)/admin/seo/page.tsx",
@@ -155,6 +159,7 @@
   "src/app/(site)/arbore/[id]/persoana/[pid]/la-bunici/page.tsx",
   "src/app/(site)/arbore/[id]/persoana/[pid]/page.tsx",
   "src/app/(site)/arbore/[id]/persoana/[pid]/poveste/page.tsx",
+  "src/app/(site)/arbore/[id]/scoala/page.tsx",
   "src/app/(site)/arhiva/page.tsx",
   "src/app/(site)/cadou-de-sarbatori/page.tsx",
   "src/app/(site)/cadou/[cod]/card/page.tsx",
@@ -209,6 +214,9 @@
   "src/app/(site)/primii-pasi/page.tsx",
   "src/app/(site)/problema/page.tsx",
   "src/app/(site)/resurse-genealogie/page.tsx",
+  "src/app/(site)/scoala/[slug]/page.tsx",
+  "src/app/(site)/scoala/fisa/[slug]/page.tsx",
+  "src/app/(site)/scoala/page.tsx",
   "src/app/(site)/securitate/page.tsx",
   "src/app/(site)/termeni/page.tsx",
   "src/app/.well-known/security.txt/route.ts",
@@ -277,6 +285,8 @@
   "src/app/r/[cod]/route.ts",
   "src/app/resurse-actions.ts",
   "src/app/robots.ts",
+  "src/app/scoala-actions.ts",
+  "src/app/scoala-cod/[cod]/route.ts",
   "src/app/securitate-actions.ts",
   "src/app/sitemap-diaspora.xml/route.ts",
   "src/app/sitemap.xml/route.ts",
@@ -415,6 +425,9 @@
   "src/components/diaspora/DiasporaPages.tsx",
   "src/components/family-film.css",
   "src/components/lineage-charts.tsx",
+  "src/components/scoala/SchoolPageView.tsx",
+  "src/components/scoala/SchoolRequestForm.tsx",
+  "src/components/scoala/SheetEditor.tsx",
   "src/components/time-journey.css",
   "src/data/places/README.md",
   "src/data/places/judete.json",
@@ -829,6 +842,8 @@
   "src/lib/ro-words.ts",
   "src/lib/root-metadata.ts",
   "src/lib/sanatate-afacere.ts",
+  "src/lib/scoala.ts",
+  "src/lib/scoli.ts",
   "src/lib/securitate-mail.ts",
   "src/lib/securitate.ts",
   "src/lib/seo-audit.ts",
@@ -920,6 +935,7 @@
   "tests/raised.test.ts",
   "tests/resurse.test.ts",
   "tests/rude-istoric.test.ts",
+  "tests/scoli.test.ts",
   "tests/securitate.test.ts",
   "tests/seo-centru.test.ts",
   "tests/seo.test.ts",
@@ -1109,6 +1125,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/admin/scoli",
+   "kind": "pagina"
+  },
+  {
    "path": "/admin/securitate",
    "kind": "pagina"
   },
@@ -1274,6 +1294,10 @@
   },
   {
    "path": "/arbore/[id]/persoana/[pid]/poveste",
+   "kind": "pagina"
+  },
+  {
+   "path": "/arbore/[id]/scoala",
    "kind": "pagina"
   },
   {
@@ -1461,6 +1485,22 @@
    "kind": "pagina"
   },
   {
+   "path": "/scoala",
+   "kind": "pagina"
+  },
+  {
+   "path": "/scoala-cod/[cod]",
+   "kind": "api"
+  },
+  {
+   "path": "/scoala/[slug]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/scoala/fisa/[slug]",
+   "kind": "pagina"
+  },
+  {
    "path": "/securitate",
    "kind": "pagina"
   },
@@ -1546,6 +1586,7 @@
   "tests/raised.test.ts",
   "tests/resurse.test.ts",
   "tests/rude-istoric.test.ts",
+  "tests/scoli.test.ts",
   "tests/securitate.test.ts",
   "tests/seo-centru.test.ts",
   "tests/seo.test.ts",
@@ -1561,5 +1602,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 39
+ "migrations": 40
 }

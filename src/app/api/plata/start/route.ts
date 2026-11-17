@@ -11,6 +11,7 @@ import { getLocale, getT } from "@/i18n/server";
 import { operator } from "@/lib/legal";
 import { contactPhone } from "@/lib/contact";
 import { activeOffer } from "@/lib/conversie";
+import { activeSchoolOffer } from "@/lib/scoli";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
@@ -80,6 +81,8 @@ export async function POST(req: Request) {
   }
   // Reducerea de după zilele gratuite: pe anul întreg (nu pe o trecere la alt plan), cât e valabilă; codul se pune singur.
   const offer = kind === "an" && year && !year.upgradeFrom ? await activeOffer(db, me.id) : null;
+  // Codul clasei (Admin → Școli), dacă omul a venit prin linkul lui și nu are reducerea de mai sus: se pune singur.
+  const school = kind === "an" && year && !year.upgradeFrom && !offer?.stripePromoId ? await activeSchoolOffer(db, me.id).catch(() => null) : null;
   await recordConsent(db, me.id, "withdrawal", true);
   // De unde venise vizita (Google, o campanie, o pagină de ghid…): numărăm deschiderea plății și trimitem sursa prin Stripe, ca plata
   // încheiată să se numere la aceeași sursă. Plățile de probă ale adminilor nu se numără.
@@ -98,7 +101,7 @@ export async function POST(req: Request) {
       waiver: t("waiverRecord", { url: `${origin}/termeni` }),
       seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
       ...(kind === "pastrare" ? { tier: undefined } : {}),
-      offer: offer?.stripePromoId ? { code: offer.code, promoId: offer.stripePromoId } : null,
+      offer: offer?.stripePromoId ? { code: offer.code, promoId: offer.stripePromoId } : school,
       attribution: attr ? { ...attributionToMetadata(attr), ...(attr.attributed ? {} : { "metadata[a_src]": "necunoscut" }) } : undefined,
     });
     return Response.redirect(url, 303);
