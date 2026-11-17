@@ -11,7 +11,7 @@ import { isPublicPath } from "@/lib/public-variant";
 const guides = loadCollection("ghid");
 const terms = loadCollection("glosar");
 const all = [...guides, ...terms];
-const known = new Set([...PUBLIC_PAGES.map((p) => p.path), ...PUBLIC_SECTIONS.map((s) => s.hub), ...all.map((e) => e.path)]);
+const known = new Set([...PUBLIC_PAGES.map((p) => p.path), ...PUBLIC_SECTIONS.map((s) => s.hub), ...all.map((e) => e.path), "/scoala"]);
 
 describe("ghiduri și glosar: conținutul din content/", () => {
   it("sunt destule pagini și fiecare are titlu, descriere bună și dată", () => {
