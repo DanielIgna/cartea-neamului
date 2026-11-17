@@ -41,7 +41,7 @@ export type Country = {
 };
 
 /** Țările cu pagini pe regiuni sau orașe: codul țării, cu litere mici. */
-export type CountryKey = "us" | "ca" | "it" | "es" | "de" | "gb" | "il";
+export type CountryKey = "us" | "ca" | "it" | "es" | "de" | "gb" | "il" | "fr" | "at" | "be" | "ie" | "pt" | "gr" | "cy";
 
 export type Region = {
   slug: string; country: CountryKey; kind: "state" | "province" | "city";
