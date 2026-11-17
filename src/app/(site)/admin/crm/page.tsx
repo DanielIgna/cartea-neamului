@@ -19,6 +19,10 @@ import { calledAction, decideAction, newOrgAction, suppressAction, unsuppressAct
 import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
+import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
+import { recomputeAction } from "@/app/crm-actions";
+import { crmUserSignals, user } from "@/db/schema";
+import { desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "CRM · Admin" };
@@ -26,7 +30,7 @@ export const metadata = { title: "CRM · Admin" };
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
   { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "nucontacta", label: "Nu contacta" },
-  { key: "import", label: "Import" },
+  { key: "scor", label: "Scor și etape" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -42,6 +46,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
   await requireAdmin("/admin/crm");
   const q = await searchParams;
   const tab: Tab = TABS.some((t) => t.key === q.t) ? (q.t as Tab) : "azi";
+  await refreshIfStale(db).catch((e) => console.error("crm: scorurile nu s-au recalculat", e));
   const counts = await crmCounts(db);
   return (
     <section className="stack">
@@ -64,6 +69,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "parteneri" && <Partners />}
       {tab === "aprobari" && <Approvals />}
       {tab === "nucontacta" && <Suppression />}
+      {tab === "scor" && <Scores />}
       {tab === "import" && (
         <div className="card stack">
           <h2 style={{ margin: 0 }}>Import din CSV</h2>
@@ -119,7 +125,7 @@ async function Today() {
 }
 
 async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed?: "scoala" | "firma" }) {
-  const list = await orgList(db, { tip: fixed ?? q.tip, status: q.status, judet: q.judet, tara: q.tara, q: q.q });
+  const list = await orgList(db, { tip: fixed ?? q.tip, status: q.status, judet: q.judet, tara: q.tara, q: q.q, sort: q.sort ?? "prioritate" });
   const t = fixed === "scoala" ? "scoli" : fixed === "firma" ? "firme" : "organizatii";
   return (
     <>
@@ -133,15 +139,17 @@ async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed
           <select name="judet" defaultValue={q.judet ?? ""} aria-label="Județul"><option value="">Toate județele</option>{Object.entries(COUNTIES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
           <input name="tara" defaultValue={q.tara ?? ""} placeholder="Țara (RO, IT...)" aria-label="Țara" style={{ width: 120 }} />
           <input name="q" defaultValue={q.q ?? ""} placeholder="Caută nume, email, localitate" aria-label="Caută" />
+          <select name="sort" defaultValue={q.sort ?? "prioritate"} aria-label="Ordinea"><option value="prioritate">după prioritate</option><option value="recente">cele schimbate recent</option></select>
           <button className="btn">Filtrează</button>
         </form>
         <div className="tbl-wrap">
           <table className="tbl">
-            <thead><tr><th>Organizație</th><th>Status</th><th className="n">Activități</th><th className="n">Conturi</th><th className="n">Arbori</th><th className="n">Plăți</th><th>Link</th></tr></thead>
+            <thead><tr><th>Organizație</th><th className="n" title="Vezi regulile în tabul Scor și etape">Prioritate</th><th>Status</th><th className="n">Activități</th><th className="n">Conturi</th><th className="n">Arbori</th><th className="n">Plăți</th><th>Link</th></tr></thead>
             <tbody>
               {list.map((o) => (
                 <tr key={o.id}>
                   <td><Link href={`/admin/crm/org/${o.id}`}><b>{o.nume}</b></Link><small>{[!fixed && ORG_TYPE_LABEL[o.tip as keyof typeof ORG_TYPE_LABEL], o.localitate, o.judet, o.tara !== "RO" && o.tara, o.deSunat && "de sunat"].filter(Boolean).join(" · ")}</small></td>
+                  <td className="n">{o.prioritate}</td>
                   <td className="tight"><span className={`pill ${o.status === "nu_contacta" || o.status === "nelivrat" ? "bad" : ["interesat", "in_discutie", "client", "partener"].includes(o.status) ? "ok" : ""}`}>{isOrgStatus(o.status) ? ORG_STATUS_LABEL[o.status] : o.status}</span></td>
                   <td className="n">{num(o.activities)}{o.lastAt && <small>{day(o.lastAt.toISOString())}</small>}</td>
                   <td className="n">{num(o.accounts)}</td>
@@ -334,5 +342,44 @@ async function Suppression() {
       </div>
       {!list.length && <p className="muted" style={{ margin: 0 }}>Lista e goală.</p>}
     </div>
+  );
+}
+
+async function Scores() {
+  const [stages, top] = await Promise.all([
+    stageCounts(db),
+    db.select({ s: crmUserSignals, name: user.name }).from(crmUserSignals).innerJoin(user, eq(user.id, crmUserSignals.userId)).orderBy(desc(crmUserSignals.scor)).limit(25),
+  ]);
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Etapele utilizatorilor</h2>
+        <div className="tbl-wrap">
+          <table className="tbl">
+            <thead><tr><th>Etapa</th><th>Regula</th><th className="n">Oameni</th><th className="n">Scor mediu</th></tr></thead>
+            <tbody>{LIFE_STAGES.map((k) => <tr key={k}><td><b>{LIFE_LABEL[k]}</b></td><td>{LIFE_RULE[k]}</td><td className="n"><Link href={`/admin/oameni?etapa_crm=${k}`}>{num(stages[k].count)}</Link></td><td className="n">{stages[k].avgScore}</td></tr>)}</tbody>
+          </table>
+        </div>
+        <p className="muted" style={{ marginBottom: 0 }}>Ordinea în care se aplică: pierdut, în risc, ambasador, plătitor, angajat, activat, cont. Vizitatorii fără cont se văd pe surse în Analiză (sunt anonimi). Conturile de test nu au scor.</p>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Cum se socotește scorul (0–100)</h2>
+        <ul style={{ marginTop: 0 }}>{SCORE_RULES.map((r) => <li key={r.key}>{r.label}: <b>până la {r.max}</b></li>)}</ul>
+        <h3>Prioritatea organizațiilor</h3>
+        <ul>{ORG_RULES.map((r) => <li key={r}>{r}</li>)}</ul>
+        <form action={recomputeAction}><button className="btn">Recalculează acum</button> <small className="muted">Se face singur cel mult o dată pe oră, când deschizi panoul, și zilnic din Autonomie.</small></form>
+      </div>
+      {top.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Cei mai implicați</h2>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Om</th><th className="n">Scor</th><th>Etapa</th><th>Sursa</th><th>Ultima activitate</th></tr></thead>
+              <tbody>{top.map(({ s, name }) => <tr key={s.userId}><td><Link href={`/admin/oameni/${s.userId}`}>{name}</Link></td><td className="n">{s.scor}</td><td className="tight">{LIFE_LABEL[s.etapa as keyof typeof LIFE_LABEL] ?? s.etapa}</td><td>{s.sursa ?? "—"}</td><td className="tight">{s.ultimaActivitate ? day(s.ultimaActivitate.toISOString()) : "—"}</td></tr>)}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

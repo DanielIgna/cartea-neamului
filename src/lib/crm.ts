@@ -13,6 +13,7 @@ import { and, eq, sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
 import { crmActivities, crmOrganizations, crmSuppression } from "@/db/schema";
 import { DEMO_EMAIL } from "./demo";
+import { realAccountSql } from "./conturi-test";
 
 /* ---------- Valori permise ---------- */
 
@@ -105,10 +106,7 @@ export const stableId = (...parts: (string | null | undefined)[]) => createHash(
  * user; sursa se citește din account_source. Același criteriu ca filtrul din restul panoului.
  */
 export function realUserSql(u = "u"): SQL {
-  const id = sql.raw(`${u}.id`), email = sql.raw(`${u}.email`);
-  return sql`(lower(${email}) <> ${DEMO_EMAIL} and lower(${email}) not like '%@example.com'
-    and not exists (select 1 from account_source tst where tst.user_id = ${id}
-      and (tst.source like 'test-link-%' or tst.first_src like 'test-link-%' or tst.last_src like 'test-link-%')))`;
+  return realAccountSql(u);
 }
 export const isTestEmail = (email: string | null | undefined) => {
   const e = (email ?? "").toLowerCase();

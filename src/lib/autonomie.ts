@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -66,6 +66,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Șase emailuri în zilele gratuite și după ele (ziua 1, 3, 5, 7, 8, 14; zilele, procentul și durata reducerii din Admin → Conversie): bun venit, câte persoane are arborele + invitație, planurile, „se încheie azi”, codul unic de reducere (Stripe, o folosire, expiră singur) și ultima reamintire. Cel mult unul pe zi, în limba omului, cu dezabonare dintr-un clic; deschiderile și clicurile se văd în Analiză → Conversii. Cât e pornită, emailul vechi „zilele gratuite se termină” nu mai pleacă, ca să nu se dubleze." },
   { key: "activare", label: "Email: arborele încă nefăcut (24 h)", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Un singur email, în limba omului, celor care după 24 de ore de la înscriere încă n-au niciun arbore: legătura directă la primii pași („Adaugă-te pe tine, apoi pe părinți și bunici”). Doar conturi de 24–96 de ore, nu și conturile de test; cine s-a dezabonat de la emailurile despre cont nu-l primește. Rezultatele, în Admin → Creștere." },
+  { key: "crm-scor", label: "CRM: scoruri și etape", risk: "singur", defaultOn: true, everyDays: 1,
+    what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -352,7 +354,15 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "motor-seo": runSeoEngine,
   conversie: runConversionMail,
   activare: runActivation,
+  "crm-scor": runCrmScores,
 };
+
+/** CRM: scorurile și etapele utilizatorilor (src/lib/crm-scor.ts). Nu trimite nimic. */
+async function runCrmScores({ db, now }: Ctx): Promise<RunResult> {
+  const { refreshSignals } = await import("./crm-scor");
+  const r = await refreshSignals(db, now);
+  return { status: r.changed ? "ok" : "nimic", observed: r.users, acted: r.changed, note: `${r.users} conturi, ${r.changed} scoruri schimbate`, verified: true };
+}
 
 /** Rulează o automatizare și o trece în jurnal. După 3 erori la rând se oprește singură și apare la recomandări. */
 export async function runAutomation(db: Db, key: AutoKey, trigger: "ceas" | "manual" | "aprobare", actorId: string | null = null, now = new Date()): Promise<RunResult> {

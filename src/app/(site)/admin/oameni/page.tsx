@@ -5,6 +5,7 @@ import { adoptionOf, funnelOf, observations, peopleList, type PersonRow } from "
 import { duration, usageOverview } from "@/lib/usage";
 import { labelOfSource as labelOf, linkNames, sourceKeys } from "@/lib/sursa";
 import { de, oameni } from "@/lib/ro-words";
+import { LIFE_LABEL, LIFE_STAGES, refreshIfStale, signalsMap } from "@/lib/crm-scor";
 import { AdminNav, HBars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
@@ -34,12 +35,15 @@ const ORDERS: Record<string, { label: string; cmp: (a: Row, b: Row) => number }>
 const pctOf = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 
 /** Oamenii: drumul tuturor de la cont la amintiri, ce folosesc și cifrele fiecăruia. Doar cifre, niciodată ce scriu. */
-export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string; sursa?: string; teste?: string }> }) {
+export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string; sursa?: string; teste?: string; etapa_crm?: string }> }) {
   await requireAdmin("/admin/oameni");
   const sp = await searchParams;
+  // Scorul și etapa din CRM (src/lib/crm-scor.ts): recalculate cel mult o dată pe oră.
+  await refreshIfStale(db).catch((e) => console.error("crm: scorurile nu s-au recalculat", e));
   // „Ascunde conturile de test” (demo, @example.com, test-link-…; src/lib/conturi-test.ts) e pornit de la sine, ca peste tot în Admin.
   const showTest = sp.teste === "1";
-  const [people, usage, sources, names] = await Promise.all([peopleList(db, undefined, { showTest }), usageOverview(db, 30), sourceKeys(db), linkNames(db)]);
+  const [people, usage, sources, names, signals] = await Promise.all([peopleList(db, undefined, { showTest }), usageOverview(db, 30), sourceKeys(db), linkNames(db), signalsMap(db).catch(() => new Map())]);
+  const crmStage = LIFE_STAGES.find((k) => k === sp.etapa_crm) ?? null;
   const labelOfSource = (k: string) => labelOf(k, names.get(k));
   const show = FILTERS[sp.arata ?? ""] ? sp.arata! : "toti";
   const order = ORDERS[sp.ordine ?? ""] ? sp.ordine! : "noi";
@@ -47,7 +51,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
   // Filtrul după sursă (de unde vine contul, src/lib/sursa.ts): doar sursele care chiar apar, cele mai multe întâi.
   const srcCounts = [...people.reduce((m, p) => m.set(srcOf(p.id), (m.get(srcOf(p.id)) ?? 0) + 1), new Map<string, number>())].sort((a, b) => b[1] - a[1]);
   const source = sp.sursa && srcCounts.some(([k]) => k === sp.sursa) ? sp.sursa : "";
-  const list: Row[] = people.filter(FILTERS[show].ok).filter((p) => !source || srcOf(p.id) === source)
+  const list: Row[] = people.filter(FILTERS[show].ok).filter((p) => !source || srcOf(p.id) === source).filter((p) => !crmStage || signals.get(p.id)?.etapa === crmStage)
     .map((p) => ({ ...p, time: usage.perUser.get(p.id)?.seconds ?? null, source: srcOf(p.id) })).sort(ORDERS[order].cmp);
   const top = usage.sections[0];
   const total = people.length;
@@ -145,7 +149,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
               <thead>
                 <tr>
                   <th>Om</th><th>Sursa</th><th>Unde a ajuns</th><th>Arborele lui</th><th className="n">A trecut</th><th className="n">Amintiri</th><th className="n">Poze</th>
-                  <th className="n">Rude chemate</th><th className="n">Zile active</th><th className="n">Timp</th><th>Ultima dată</th><th>Plan</th>
+                  <th className="n">Rude chemate</th><th className="n">Zile active</th><th className="n">Timp</th><th>Ultima dată</th><th>Plan</th><th className="n" title="Scorul din CRM, 0–100 (regulile în Admin → CRM → Scor și etape)">Scor</th><th>Etapă</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,6 +167,8 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
                     <td className="n tight">{p.time != null ? duration(p.time) : <span className="muted" title="n-a spus „Bine”">—</span>}</td>
                     <td className="tight">{ago(lastActive(p))}</td>
                     <td><PlanPill plan={p.plan} /></td>
+                    <td className="n">{signals.get(p.id)?.scor ?? <span className="muted">—</span>}</td>
+                    <td className="tight">{signals.get(p.id) ? LIFE_LABEL[signals.get(p.id)!.etapa as keyof typeof LIFE_LABEL] ?? signals.get(p.id)!.etapa : <span className="muted">—</span>}</td>
                   </tr>
                 ))}
               </tbody>
