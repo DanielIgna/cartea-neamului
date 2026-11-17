@@ -398,6 +398,13 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/genealogie-orase.test.ts"],
   },
   {
+    key: "genealogie-regiuni", name: "Genealogie pe regiuni istorice", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor; regula de ton (D06) se aplică.",
+    what: "/genealogie/regiune/<regiune> pentru Transilvania, Banat, Bucovina, Basarabia, Moldova, Dobrogea și Maramureș: istoria administrativă, limbile și confesiunile registrelor, unde sunt actele azi, pași de lucru, FAQPage; legături spre județe, orașe, nume și ghiduri. Paginile de județ și de oraș trimit la regiune. Butonul de cont nou poartă ?src=regiune-<regiune>.",
+    engine: ["src/lib/genealogie-regiuni.ts", "src/components/continut/GenealogieRegiuni.tsx"],
+    pages: ["/genealogie/regiune/[regiune]"],
+    tests: ["tests/genealogie-regiuni.test.ts"],
+  },
+  {
     key: "istorie", name: "Istoria umanității și paginile istorice", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Regula de ton (D06) se aplică.",
     what: "/istoria-umanitatii, /genealogii-vechi, /libertatea-de-a-crede.",
     engine: ["src/lib/firul-vremii.ts", "src/lib/adam-hristos.ts", "src/lib/istoria-bisericii.ts"],

@@ -7,6 +7,7 @@ import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
 import { nameGate, uatGate } from "@/lib/continut/prag";
 import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
 import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, GEN_UPDATED, genCityPath, genWords } from "@/lib/genealogie-orase";
+import { GEN_REGIONS, REGIONS_UPDATED, genRegionPath } from "@/lib/genealogie-regiuni";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
@@ -115,6 +116,8 @@ export function sitemapGroups(published: Map<string, Date> = new Map()): Sitemap
       urls: [
         { path: GEN_HUB, lastModified: GEN_UPDATED, changeFrequency: "monthly", priority: 0.5 },
         ...GEN_CITIES.filter((c) => genWords(c) >= GEN_MIN_WORDS).map((c): SitemapUrl => ({ path: genCityPath(c), lastModified: GEN_UPDATED, changeFrequency: "monthly", priority: 0.5 })),
+        // Regiunile istorice (src/lib/genealogie-regiuni.ts).
+        ...GEN_REGIONS.map((r): SitemapUrl => ({ path: genRegionPath(r), lastModified: REGIONS_UPDATED, changeFrequency: "monthly", priority: 0.6 })),
       ],
     },
     ...diasporaGroups(),
