@@ -56,7 +56,7 @@ Amintirile bătrânilor aduc viață: o vorbă, o glumă, o rețetă, o întâmp
 
 ## Cum folosești contextul istoric
 
-Un capitol devine mai ușor de înțeles pentru copii și nepoți dacă spui ce se întâmpla în jur: anii războiului, reforma agrară, foametea, construirea căii ferate prin sat. Pe paginile de [regiuni](/genealogie/regiune/transilvania) și în paginile despre vremurile fiecărei regiuni găsești repere pentru fiecare epocă. Păstrează însă familia în centru: istoria mare e doar fundalul.
+Un capitol devine mai ușor de înțeles pentru copii și nepoți dacă spui ce se întâmpla în jur: anii războiului, reforma agrară, foametea, construirea căii ferate prin sat. Pe [paginile de genealogie pe regiuni](/genealogie) și în paginile despre vremurile fiecărei regiuni găsești repere pentru fiecare epocă. Păstrează însă familia în centru: istoria mare e doar fundalul.
 
 ## Greșeli frecvente
 
