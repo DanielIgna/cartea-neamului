@@ -23,7 +23,7 @@ export type Entry =
   | { kind: "theme"; path: string; langs: Lang[]; indexable: true; theme: Theme };
 
 const countryPath = (c: Country) => `${HUB_PATH}/${c.slug}`;
-export const COUNTRY_OF = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" } as const;
+export const COUNTRY_OF = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel", fr: "franta", at: "austria", be: "belgia", ie: "irlanda", pt: "portugalia", gr: "grecia", cy: "cipru" } as const;
 const KEY_OF = Object.fromEntries(Object.entries(COUNTRY_OF).map(([k, v]) => [v, k])) as Record<string, keyof typeof COUNTRY_OF>;
 /** Cheia țării (pentru orașe și regiuni) după pagina ei. */
 export const keyOfCountry = (c: Country) => KEY_OF[c.slug] ?? null;

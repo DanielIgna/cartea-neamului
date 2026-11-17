@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { COUNTRIES, REGIONS, THEMES, alternatesFor, diasporaAlternates, entries, pickLang, resolve } from "@/lib/diaspora";
+import { COUNTRIES, COUNTRY_OF, REGIONS, THEMES, alternatesFor, diasporaAlternates, entries, pickLang, resolve } from "@/lib/diaspora";
 import { regionIndexable } from "@/lib/diaspora/america";
 import { UI } from "@/lib/diaspora/ui";
 import { sitemapGroups } from "@/lib/continut/sitemap";
@@ -206,7 +206,7 @@ describe("diaspora: pasul 2 (17.11.2026) – orașele", async () => {
 
   it("consulatele arătate pe oraș există în lista verificată a țării", () => {
     for (const r of cities) for (const m of r.mission ?? []) {
-      const slug = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country];
+      const slug = COUNTRY_OF[r.country];
       expect(EXTRA[slug].missions.some((x) => x.city === m), `${r.slug} → ${m}`).toBe(true);
     }
   });
@@ -225,6 +225,33 @@ describe("diaspora: pasul 2 (17.11.2026) – orașele", async () => {
 });
 
 function regionPathOf(r: { country: string; slug: string }): [string, string] {
-  const c = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country]!;
+  const c = COUNTRY_OF[r.country as keyof typeof COUNTRY_OF];
   return [c, r.slug];
 }
+
+describe("diaspora: pasul 4 (17.11.2026) – toate țările", async () => {
+  const { EXTRA, ownWords } = await import("@/lib/diaspora/extins");
+  const { fitTitle } = await import("@/lib/page-metadata");
+  const { titleOf, descriptionOf } = await import("@/lib/diaspora");
+
+  it("fiecare țară are ghid propriu, ≥600 de cuvinte în română, ambasada și 5 întrebări", () => {
+    for (const c of COUNTRIES) {
+      const ex = EXTRA[c.slug];
+      expect(ex, c.slug).toBeTruthy();
+      const words = ownWords([...(c.history.ro ?? []), ...(ex.guide.ro ?? []), ...(ex.specifics.ro ?? []), ...(ex.faq.ro ?? []).flatMap((f) => [f.q, f.a])]);
+      expect(words, `${c.slug}: ${words} cuvinte`).toBeGreaterThanOrEqual(600);
+      expect(ex.faq.ro?.length, c.slug).toBeGreaterThanOrEqual(5);
+      expect(ex.missions.some((m) => m.kind === "embassy"), c.slug).toBe(true);
+    }
+  });
+
+  it("titlurile încap în 60 de caractere și descrierile au 100–160, în română", () => {
+    for (const c of COUNTRIES) {
+      const e = resolve(c.slug)!;
+      expect(fitTitle(titleOf(e, "ro")).length, c.slug).toBeLessThanOrEqual(60);
+      const d = descriptionOf(e, "ro").length;
+      expect(d, c.slug).toBeGreaterThanOrEqual(100);
+      expect(d, c.slug).toBeLessThanOrEqual(160);
+    }
+  });
+});
