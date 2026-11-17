@@ -40,8 +40,13 @@ export type Country = {
   records: Link[];
 };
 
+/** Țările cu pagini pe regiuni sau orașe: codul țării, cu litere mici. */
+export type CountryKey = "us" | "ca" | "it" | "es" | "de" | "gb" | "il";
+
 export type Region = {
-  slug: string; country: "us" | "ca"; kind: "state" | "province" | "city";
+  slug: string; country: CountryKey; kind: "state" | "province" | "city";
+  /** Orașele misiunilor României (din extins.ts) care servesc orașul, ca să le arătăm pe pagină. */
+  mission?: string[];
   name: T;
   where: T;
   /** Pentru un oraș: statul sau provincia (slug). */

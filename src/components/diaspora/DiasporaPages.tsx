@@ -8,7 +8,7 @@ import { LANGUAGE_NAMES, localizedPath, type Locale } from "@/i18n/locales";
 import { OG_LOCALE, canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import {
-  COUNTRIES, LOCALES_OF, THEMES, alternatesFor, countryPath, descriptionOf, diasporaAlternates, entries, isRtl, nameOf, pickLang, regionPath, resolve, themePath, titleOf, tx,
+  COUNTRIES, COUNTRY_OF, LOCALES_OF, THEMES, alternatesFor, keyOfCountry, countryPath, descriptionOf, diasporaAlternates, entries, isRtl, nameOf, pickLang, regionPath, resolve, themePath, titleOf, tx,
   type Country, type Entry, type Lang, type Link as Src, type Region, type Theme,
 } from "@/lib/diaspora";
 import { ROMANIA_LINKS } from "@/lib/diaspora/tari";
@@ -206,6 +206,18 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
         </ul>
       </div>
       <div className="card">
+        <h2 style={{ marginTop: 0 }}>{u.cities}</h2>
+        {(["it", "es", "de", "gb", "il"] as const).map((k) => {
+          const c = COUNTRIES.find((x) => x.slug === COUNTRY_OF[k])!;
+          return (
+            <div key={k}>
+              <h3><span aria-hidden>{c.flag} </span><Link href={href(country(c))}>{tx(c.name, l)}</Link></h3>
+              {list(regionsOf(k, "city"))}
+            </div>
+          );
+        })}
+      </div>
+      <div className="card">
         <h2 style={{ marginTop: 0 }}>{us.flag} <Link href={href(country(us))}>{u.america}</Link></h2>
         <h3>{u.cities}</h3>
         {list(regionsOf("us", "city"))}
@@ -275,7 +287,8 @@ function CountryBody({ c, l, href }: { c: Country; l: Lang; href: Href }) {
   const u = UI[l];
   const where = tx(c.where, l);
   const cities = l === "he" && c.citiesHe ? c.citiesHe : c.cities;
-  const regions = c.code === "US" ? regionsOf("us") : c.code === "CA" ? regionsOf("ca") : [];
+  const key = keyOfCountry(c);
+  const regions = key ? regionsOf(key) : [];
   const themes = THEMES.filter((t) => t.related.includes(c.slug));
   return (
     <>
@@ -306,13 +319,19 @@ function CountryBody({ c, l, href }: { c: Country; l: Lang; href: Href }) {
 function RegionBody({ r, c, l, href }: { r: Region; c: Country; l: Lang; href: Href }) {
   const u = UI[l];
   const where = tx(r.where, l);
-  const notes = r.notes[l] ?? r.notes.en ?? [];
+  // Propozițiile scurte de la sfârșit (sub 25 de cuvinte) se lipesc de paragraful dinainte, ca textul să curgă.
+  const notes = (r.notes[l] ?? r.notes.en ?? []).reduce<string[]>((a, p) => {
+    if (a.length && p.split(/\s+/).length < 25) a[a.length - 1] += ` ${p}`; else a.push(p);
+    return a;
+  }, []);
+  const ex = EXTRA[c.slug], x = XUI[l];
+  const missions = r.mission && ex && x ? ex.missions.filter((m) => r.mission!.includes(m.city)) : [];
   const parent = r.parent ? regionsOf(r.country).find((x) => x.slug === r.parent) : null;
   const siblings = regionsOf(r.country).filter((x) => x !== r && regionIndexable(x) && (x.kind === r.kind || x.slug === r.parent || x.parent === r.slug)).slice(0, 12);
   return (
     <>
       <div className="card">
-        <h1 style={{ marginTop: 0 }}>{c.flag} {u.titleRegion(where).replace(/ \| Cartea Neamului$/, "")}</h1>
+        <h1 style={{ marginTop: 0 }}>{c.flag} {titleOf(entryOf(regionPath(r)), l).replace(/ \| Cartea Neamului$/, "")}</h1>
         {r.cities?.length ? <p>{u.citiesLine(r.cities.join(", "))}</p> : null}
         {notes.length ? notes.map((p) => <p key={p.slice(0, 40)}>{p}</p>) : <p>{u.regionThin}</p>}
         <p className="muted" style={{ marginBottom: 0 }}>
@@ -320,7 +339,22 @@ function RegionBody({ r, c, l, href }: { r: Region; c: Country; l: Lang; href: H
           {parent && <> · <Link href={href(entryOf(regionPath(parent)))}>{tx(parent.name, l)}</Link></>}
         </p>
       </div>
-      <Docs l={l} where={where} eu={false} icr={null} />
+      {missions.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>{x!.missions}</h2>
+          <ul className="hub-list">
+            {missions.map((m) => (
+              <li key={m.kind + m.city}>
+                <strong>{x!.kind[m.kind]} · {m.city}</strong>
+                {m.address && <><br /><span>{m.address}</span></>}
+                {m.url && <><br /><a href={m.url} rel="noopener" target="_blank">{m.url.replace(/^https:\/\//, "")}</a></>}
+              </li>
+            ))}
+          </ul>
+          <p className="muted" style={{ marginBottom: 0 }}>{x!.missionsNote(VERIFIED_ON)} <a href={ex!.missionsSource.url} rel="noopener" target="_blank">{ex!.missionsSource.name}</a>.</p>
+        </div>
+      )}
+      <Docs l={l} where={where} eu={c.eu} icr={null} />
       <Sources l={l} links={c.records} title={u.records} />
       {siblings.length > 0 && (
         <div className="card">
