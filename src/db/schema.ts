@@ -1016,3 +1016,63 @@ export const crmUserSignals = pgTable("crm_user_signals", {
   detalii: jsonb("detalii"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("crm_user_signals_etapa_idx").on(t.etapa, t.scor)]);
+
+/* ---------- Școli (Daniel, 17.11.2026; src/lib/scoli.ts, Admin → Școli) ---------- */
+// Cererile din formularul „Vreau coduri pentru clasa mea” de pe /scoala. Codurile se dau doar după aprobarea manuală (conducerea
+// școlii a confirmat). Datele de contact sunt ale învățătorului/profesorului, folosite doar pentru răspuns.
+export const schoolRequest = pgTable("school_request", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  school: text("school").notNull(),
+  locality: text("locality").notNull(),
+  county: text("county"),
+  classLabel: text("class_label").notNull(), // „a IV-a B”
+  students: integer("students").notNull(),
+  teacher: text("teacher"),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  message: text("message"),
+  status: text("status").notNull().default("nou"), // nou / aprobat / respins
+  schoolId: uuid("school_id"),
+  decidedBy: text("decided_by").references(() => user.id, { onDelete: "set null" }),
+  decidedAt: timestamp("decided_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [index("school_request_status_idx").on(t.status, t.createdAt)]);
+
+export const school = pgTable("school", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  locality: text("locality").notNull(),
+  county: text("county"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("school_name_locality_idx").on(t.name, t.locality)]);
+
+// Un cod de reducere Stripe pe școală sau pe clasă (cupon pe procent + cod promoțional cu folosiri limitate și expirare).
+export const schoolCode = pgTable("school_code", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  schoolId: uuid("school_id").notNull().references(() => school.id, { onDelete: "cascade" }),
+  requestId: uuid("request_id").references(() => schoolRequest.id, { onDelete: "set null" }),
+  classLabel: text("class_label"),
+  code: text("code").notNull().unique(),
+  percent: integer("percent").notNull(),
+  maxUses: integer("max_uses").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  stripePromoId: text("stripe_promo_id"),
+  active: boolean("active").notNull().default(true),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+// Contul făcut după linkul codului (/scoala/cod/<COD>) și plățile făcute cu codul: statisticile din Admin → Școli.
+export const schoolSignup = pgTable("school_signup", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  codeId: uuid("code_id").notNull().references(() => schoolCode.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+export const schoolPayment = pgTable("school_payment", {
+  paymentId: text("payment_id").primaryKey(),
+  codeId: uuid("code_id").notNull().references(() => schoolCode.id, { onDelete: "cascade" }),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  amount: integer("amount").notNull(),
+  currency: text("currency").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

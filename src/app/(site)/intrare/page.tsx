@@ -10,9 +10,9 @@ export const dynamic = "force-dynamic";
 /** Intrarea în cont nu are ce căuta în Google (pe lângă robots.txt). */
 export const metadata: Metadata = { robots: PRIVATE_ROBOTS };
 
-export default async function SignIn({ searchParams }: { searchParams: Promise<{ next?: string; mod?: string; eroare?: string; error?: string }> }) {
-  const { next, mod, eroare, error } = await searchParams;
+export default async function SignIn({ searchParams }: { searchParams: Promise<{ next?: string; mod?: string; eroare?: string; error?: string; scoala?: string }> }) {
+  const { next, mod, eroare, error, scoala } = await searchParams;
   const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
   if (await currentUser()) redirect(safeNext);
-  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}><PageIntl ns={["TwoStep"]}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} turnstileKey={turnstileSiteKey()} /></PageIntl></div>;
+  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}>{scoala && <p className="ok-box" style={{ marginTop: 0 }}>Codul clasei e ținut minte: după zilele gratuite, reducerea școlii se pune singură la plată.</p>}<PageIntl ns={["TwoStep"]}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} turnstileKey={turnstileSiteKey()} /></PageIntl></div>;
 }

@@ -436,6 +436,16 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/activare.test.ts"],
     env: ["RESEND_API_KEY"],
   },
+  {
+    key: "scoli", name: "Pentru școli: fișe gratuite, coduri pe clasă, arborele de tipărit", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Face coduri de reducere în Stripe; codurile se fac doar după aprobarea manuală din Admin.",
+    what: "/scoala cu paginile pe clase (a III-a, a IV-a, gimnaziu-istorie), fișe PDF gratuite și kitul profesorului (PDF + Word), fișele completabile pe ecran cu cont, formularul „Vreau coduri pentru clasa mea”, Admin → Școli (aprobare, cod Stripe pe clasă cu procent, folosiri și expirare, conturi și plăți pe cod), linkul /scoala-cod/<COD> care ține minte codul și îl pune singur la plată, butonul „Printează pentru proiectul de la școală” (A4/A3).",
+    engine: ["src/lib/scoli.ts", "src/lib/scoala.ts", "src/app/scoala-actions.ts", "src/components/scoala/SchoolPageView.tsx", "src/components/scoala/SchoolRequestForm.tsx", "src/components/scoala/SheetEditor.tsx", "scripts/fise-scoala.cjs", "scripts/fise-scoala-docx.py"],
+    pages: ["/scoala", "/scoala/[slug]", "/scoala/fisa/[slug]", "/scoala-cod/[cod]", "/arbore/[id]/scoala", "/admin/scoli"],
+    tables: ["school_request", "school", "school_code", "school_signup", "school_payment"],
+    dashboard: "/admin/scoli",
+    tests: ["tests/scoli.test.ts"],
+    env: ["STRIPE_SECRET_KEY"],
+  },
   // Admin
   {
     key: "admin", name: "Panoul de admin", area: "admin", lifecycle: "live", risk: "ridicat", riskWhy: "Acces la tot; cere verificarea în 2 pași.",

@@ -10,6 +10,7 @@ import { uatDescription, uatTitle } from "./continut/uat-text";
 import { INDEX_LIMIT, sitemapGroups } from "./continut/sitemap";
 import { clusterOf, type Cluster } from "./seo-clustere";
 import { fitTitle } from "./page-metadata";
+import { SCHOOL_PAGES } from "./scoala";
 
 /**
  * Admin → SEO (Daniel, 14.11.2026, după modelul din PropManage): inventarul tuturor paginilor publice cunoscute, cu titlul,
@@ -53,6 +54,8 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
       push({ path: uatPath(u), title: uatTitle(u, c), description: uatDescription(u, c), words: null, indexable: !gate, gate, category: u.kind === "c" ? "comună" : "oraș" });
     }
   }
+  // Pentru școli: /scoala și paginile pe clase.
+  for (const p of SCHOOL_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "școli" });
   // Diaspora: fiecare pagină în fiecare limbă în care e scrisă (src/lib/diaspora); statele fără text propriu rămân noindex.
   for (const e of diasporaEntries()) for (const lang of e.langs) for (const loc of DIASPORA_LOCALES_OF[lang]) {
     const gate = e.indexable ? null : "prea puțin text propriu (stat sau provincie fără informații despre români)";

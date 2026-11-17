@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { afterSchoolPayment } from "@/lib/scoli";
 import { recordConversion } from "@/lib/conversii";
 import { applyPayment, paidSession, verifyStripeSignature } from "@/lib/plati";
 import { sendKeepMail } from "@/lib/pastrare";
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
     // Plata încheiată, numărată la sursa vizitei în care s-a deschis (Admin → Analiză → Conversii). Plățile de probă ale adminilor nu au sursă și nu se numără.
     // Din gratuit în plătit: reducerea folosită și emailul căruia i se datorează plata (Admin → Analiză → Conversii).
     await afterPayment(db, paid).catch((e) => console.error("conversie", e instanceof Error ? e.name : "Error"));
+    await afterSchoolPayment(db, paid).catch((e) => console.error("scoli", e instanceof Error ? e.name : "Error"));
     if (paid.attr) await recordConversion(db, "plata", { attr: paid.attr, label: paid.kind, amount: paid.amount, currency: paid.currency });
     // Confirmarea plății (planul, suma, data, legătura spre cont). O greșeală aici nu strică plata.
     await sendPaymentMail(db, paid).catch((e) => console.error("sendPaymentMail", e instanceof Error ? e.name : "Error"));
