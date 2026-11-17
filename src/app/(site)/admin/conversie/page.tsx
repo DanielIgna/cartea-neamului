@@ -2,6 +2,7 @@ import Link from "next/link";
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
+import { realAccountSql } from "@/lib/conturi-test";
 import { automationSwitches } from "@/lib/autonomie";
 import { STEPS, STEP_LABEL, convSettings, dueAt } from "@/lib/conversie";
 import { runConversion } from "@/lib/conversie-mail";
@@ -29,7 +30,7 @@ export default async function AdminConversie({ searchParams }: { searchParams: P
   const today = new Date();
   const from = new Date(today.getTime() - 29 * DAY).toISOString().slice(0, 10), to = today.toISOString().slice(0, 10);
   // Conturile pentru simulator: cele mai noi 40 (și al adminului).
-  const recent = (await db.execute(sql`select id, name, email, created_at from "user" where email not like 'demo@%' order by (id = ${me.id}) desc, created_at desc limit 40`)).rows as { id: string; name: string; email: string; created_at: string }[];
+  const recent = (await db.execute(sql`select id, name, email, created_at from "user" u where ${realAccountSql("u")} order by (id = ${me.id}) desc, created_at desc limit 40`)).rows as { id: string; name: string; email: string; created_at: string }[];
   const simUser = q.u && recent.some((r) => r.id === q.u) ? q.u : null;
   const simDay = Math.min(Math.max(Number(q.zi) || 1, 1), 60);
   const simNow = simUser ? await simulatedNow(simUser, simDay) : null;

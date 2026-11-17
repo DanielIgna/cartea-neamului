@@ -11,6 +11,7 @@
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
 
@@ -126,7 +127,7 @@ export async function newsCandidates(db: Db, now = new Date()) {
 
 /* ---------- Panoul Admin → Creștere și recomandări ---------- */
 
-export const SHARE_CAMPAIGNS = ["invitatie", "card-nume", "card-localitate", "bun-venit", "calendar"] as const;
+export const SHARE_CAMPAIGNS = ["invitatie", "card-nume", "card-localitate", "bun-venit", "calendar", "ramura", "activare"] as const;
 
 export async function growthDashboard(db: Db) {
   const [base] = await rows(db, sql`select
@@ -135,8 +136,8 @@ export async function growthDashboard(db: Db) {
       (select count(*) from invitation where accepted_at is not null) as acc_all,
       (select count(*) from invitation where accepted_at > now() - interval '30 days') as acc_30,
       (select count(distinct created_by) from invitation) as inviters,
-      (select count(*) from "user") as users,
-      (select count(*) from "user" where created_at > now() - interval '30 days') as users_30,
+      (select count(*) from "user" u where ${realAccountSql("u")}) as users,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at > now() - interval '30 days') as users_30,
       (select count(*) from referral_bonus) as ref_all,
       (select coalesce(sum(days), 0) from referral_bonus where applied_at is not null) as ref_days,
       (select count(*) from gift) as gifts,

@@ -20,6 +20,7 @@ import { roProbleme } from "./probleme/ro";
 import { roResurse } from "./resurse/ro";
 import { roCadou } from "./cadou/ro";
 import { roCrestere } from "./crestere/ro";
+import { roActivare } from "./activare/ro";
 import { roInvitatii } from "./invitatii/ro";
 import { roConversie } from "./conversie/ro";
 import { roSursa } from "./sursa/ro";
@@ -456,6 +457,7 @@ export const ro = {
   ...roResurse,
   ...roCadou,
   ...roCrestere,
+  ...roActivare,
   ...roInvitatii,
   ...roConversie,
   ...roSursa,

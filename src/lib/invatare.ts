@@ -14,10 +14,10 @@
  *    „ipoteză” (prea puține date).
  */
 import { sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
 import { groupBy, rangeOf, sessionsOf, sourceLabel, weekHeat } from "./analiza";
-import { DEMO_EMAIL } from "./demo";
 import { accessFor, accessPeople, accountPlans, planSettings } from "./plans";
 
 type Row = Record<string, unknown>;
@@ -63,7 +63,7 @@ export async function setRecommendation(db: Db, id: string, status: LedgerStatus
 export type Window = { accounts: number; trees: number; payments: number; lei: number };
 async function windowOf(db: Db, from: Date, to: Date): Promise<Window> {
   const [x] = await rows(db, sql`select
-      (select count(*) from "user" where email <> ${DEMO_EMAIL} and created_at >= ${from.toISOString()} and created_at < ${to.toISOString()}) as accounts,
+      (select count(*) from "user" u where ${realAccountSql("u")} and created_at >= ${from.toISOString()} and created_at < ${to.toISOString()}) as accounts,
       (select count(*) from tree where created_at >= ${from.toISOString()} and created_at < ${to.toISOString()}) as trees,
       (select count(*) from payment where created_at >= ${from.toISOString()} and created_at < ${to.toISOString()}) as payments,
       (select coalesce(sum(amount), 0) from payment where currency = 'ron' and created_at >= ${from.toISOString()} and created_at < ${to.toISOString()}) as lei`);
@@ -139,7 +139,7 @@ export async function trialLeads(db: Db, now = new Date()): Promise<Lead[]> {
       (select count(*) from memory m where m.author_id = u.id) as memories,
       (select max(updated_at) from session s where s.user_id = u.id) as last,
       coalesce((select granted from last_news where user_id = u.id), false) as news
-    from "user" u where u.id in (${ids}) and u.email <> ${DEMO_EMAIL}`);
+    from "user" u where u.id in (${ids}) and ${realAccountSql("u")}`);
   const until = new Map(trial.map((t) => [t.id, t.until]));
   return info.map((u) => {
     const last = u.last ? new Date(u.last) : null;

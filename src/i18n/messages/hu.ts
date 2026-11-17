@@ -11,6 +11,7 @@ import { huProbleme } from "./probleme/hu";
 import { huResurse } from "./resurse/hu";
 import { huCadou } from "./cadou/hu";
 import { huCrestere } from "./crestere/hu";
+import { huActivare } from "./activare/hu";
 import { huInvitatii } from "./invitatii/hu";
 import { huConversie } from "./conversie/hu";
 import { huSursa } from "./sursa/hu";
@@ -442,6 +443,7 @@ export const hu: Catalog = {
   ...huResurse,
   ...huCadou,
   ...huCrestere,
+  ...huActivare,
   ...huInvitatii,
   ...huConversie,
   ...huSursa,

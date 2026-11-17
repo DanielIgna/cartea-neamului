@@ -2,6 +2,7 @@ import { sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
 import journal from "../../drizzle/meta/_journal.json";
 import { planOverview } from "./plans";
+import { realAccountSql, realUserIdSql, testAccountSql } from "./conturi-test";
 
 type Row = Record<string, unknown>;
 async function rows<T = Row>(db: Db, q: SQL): Promise<T[]> {
@@ -27,19 +28,19 @@ export async function businessStats(db: Db) {
       count(*) filter (where created_at > now() - interval '7 days') as new7,
       count(*) filter (where created_at > now() - interval '30 days') as new30,
       count(*) filter (where email_verified) as verified
-    from "user"`),
+    from "user" where ${realAccountSql('"user"')}`),
     rows(db, sql`select
       count(distinct user_id) filter (where updated_at > now() - interval '1 day') as d1,
       count(distinct user_id) filter (where updated_at > now() - interval '7 days') as d7,
       count(distinct user_id) filter (where updated_at > now() - interval '30 days') as d30
-    from session`),
-    rows(db, sql`select count(distinct user_id) as c from account where provider_id = 'google'`),
+    from session where ${realUserIdSql("user_id")}`),
+    rows(db, sql`select count(distinct user_id) as c from account where provider_id = 'google' and ${realUserIdSql("user_id")}`),
     rows<{ week: string; c: unknown }>(db, sql`select date_trunc('week', created_at) as week, count(*) as c
-    from "user" where created_at > now() - interval '12 weeks' group by 1 order by 1`),
+    from "user" where created_at > now() - interval '12 weeks' and ${realAccountSql('"user"')} group by 1 order by 1`),
     rows(db, sql`with sizes as (
       select t.id, t.discoverable, (select count(*) from person p where p.tree_id = t.id) as persons,
              (select count(*) from tree_member m where m.tree_id = t.id) as members
-      from tree t)
+      from tree t where ${realUserIdSql("t.owner_id")})
     select count(*) as total,
       count(*) filter (where discoverable) as discoverable,
       count(*) filter (where members > 1) as shared,
@@ -69,12 +70,13 @@ export async function businessStats(db: Db) {
       (select count(*) from document d where d.tree_id = t.id) as documents,
       (select max(p.updated_at) from person p where p.tree_id = t.id) as last_edit
     from tree t left join "user" o on o.id = t.owner_id
+    where o.id is null or ${realAccountSql("o")}
     order by persons desc, t.created_at desc limit 15`),
     rows(db, sql`select u.id, u.name, u.email, u.created_at,
       (select string_agg(distinct a.provider_id, ', ') from account a where a.user_id = u.id) as providers,
       (select count(*) from tree_member m where m.user_id = u.id) as trees,
       (select max(s.updated_at) from session s where s.user_id = u.id) as last_seen
-    from "user" u order by u.created_at desc limit 15`),
+    from "user" u where ${realAccountSql("u")} order by u.created_at desc limit 15`),
   ]);
   const u = uRows[0];
   const act = actRows[0];
@@ -149,7 +151,7 @@ export async function infraStats(db: Db) {
       rows(db, sql`select created_at, entity_id, action, diff from audit_log where entity = 'eroare' and created_at > ${after} order by created_at desc limit 25`),
     ]);
   });
-  const [[info], { existing, counts }, migrations, [s], [ja], seenAt, [[e], errors], [docs]] = await Promise.all([
+  const [[info], { existing, counts }, migrations, [s], [ja], seenAt, [[e], errors], [docs], [tst]] = await Promise.all([
     rows(db, sql`select version() as version, pg_database_size(current_database()) as bytes, current_database() as name`),
     tablesP,
     rows(db, sql`select count(*) as c, max(created_at) as last from drizzle.__drizzle_migrations`)
@@ -160,6 +162,7 @@ export async function infraStats(db: Db) {
     seenP,
     errorsP,
     rows(db, sql`select count(*) filter (where file_key is not null) as files from document`),
+    rows(db, sql`select count(*) as c from "user" u where ${testAccountSql("u")}`).catch(() => [{ c: 0 }]),
   ]);
   const shown = e;
   return {
@@ -174,5 +177,7 @@ export async function infraStats(db: Db) {
       recent: errors.map((r) => ({ at: iso(r.created_at), path: String(r.entity_id), kind: String(r.action), ...(r.diff as { message?: string; digest?: string; method?: string; route?: string } ?? {}) })),
     },
     storedFiles: n(docs.files),
+    /** Conturile de test din tabelul "user" (demo, @example.com, test-link-*), ca rândul tabelului să se poată citi lângă Oameni. */
+    testAccounts: n(tst?.c),
   };
 }

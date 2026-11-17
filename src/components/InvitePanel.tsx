@@ -5,19 +5,20 @@ import { createInviteLink } from "@/app/actions";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 /** Linkul cu semnele din Analiză: de unde a plecat (whatsapp, email, telefon) și campania „invitatie”. */
-function tagged(link: string, source: string) {
+function tagged(link: string, source: string, campaign = "invitatie") {
   try {
     const u = new URL(link);
     u.searchParams.set("utm_source", source);
     u.searchParams.set("utm_medium", "invitatie");
-    u.searchParams.set("utm_campaign", "invitatie");
+    u.searchParams.set("utm_campaign", campaign);
     return u.toString();
   } catch {
     return link;
   }
 }
 
-export default function InvitePanel({ treeId, personId, personName }: { treeId: string; personId?: string; personName?: string }) {
+/** `campaign`: semnul din Analiză (implicit „invitatie”; „ramura” pentru îndemnul de după 5 persoane). `defaultRole`: ce e ales la început. */
+export default function InvitePanel({ treeId, personId, personName, campaign, defaultRole = "contributor" }: { treeId: string; personId?: string; personName?: string; campaign?: string; defaultRole?: "contributor" | "editor" | "viewer" }) {
   const t = useTranslations("InvitePanel");
   const ts = useTranslations("Share");
   const ti = useTranslations("InviteShare");
@@ -33,8 +34,9 @@ export default function InvitePanel({ treeId, personId, personName }: { treeId: 
     <form action={action} className="form">
       <input type="hidden" name="treeId" value={treeId} />
       {personId && <input type="hidden" name="personId" value={personId} />}
+      {campaign && <input type="hidden" name="via" value={campaign} />}
       <label>{personName ? t("whatCan", { name: personName }) : t("whatCanRelative")}
-        <select name="role" defaultValue="contributor">
+        <select name="role" defaultValue={defaultRole}>
           <option value="contributor">{t("contributor")}</option>
           <option value="editor">{t("editor")}</option>
           <option value="viewer">{t("viewer")}</option>
@@ -49,7 +51,7 @@ export default function InvitePanel({ treeId, personId, personName }: { treeId: 
           <small className="muted" style={{ width: "100%" }}>{copied || t("valid", { date: until(state.expiresAt) })}</small>
           {"rewardDays" in state && state.rewardDays ? <small className="muted" style={{ width: "100%" }}>{ti("treeReward", { days: String(state.rewardDays) })}</small> : null}
           {"share" in state && state.share && (() => {
-            const msg = (src: string) => ts("message", { app: state.app ?? "", link: tagged(state.link!, src) });
+            const msg = (src: string) => ts("message", { app: state.app ?? "", link: tagged(state.link!, src, campaign) });
             const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
             return (
               <div className="actions invite-share" style={{ width: "100%", marginTop: 4 }}>

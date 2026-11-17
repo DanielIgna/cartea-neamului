@@ -14,6 +14,7 @@
  */
 import { randomInt } from "node:crypto";
 import { and, desc, eq, gt, gte, isNull, sql } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import { z } from "zod";
 import type { Db } from "@/db";
 import { account, accountPlan, appSetting, inviteClick, inviteCode, inviteReferral, knownDevice, person, session, tree, treeMember, user, userNotice } from "@/db/schema";
@@ -384,7 +385,7 @@ export async function adminInvites(db: Db, now = new Date()) {
       count(*) filter (where created_at >= ${month}) as accounts_month,
       coalesce(sum(days_referrer + days_referred) filter (where status = 'acordat'), 0) as days,
       count(distinct referrer_id) as inviters,
-      (select count(*) from "user") as users,
+      (select count(*) from "user" u where ${realAccountSql("u")}) as users,
       (select count(*) from invite_referral r join account_plan p on p.user_id = r.referred_id where p.paid_until is not null) as paid
     from invite_referral`)).rows ?? []) as Record<string, unknown>[];
   const list = await db.select({

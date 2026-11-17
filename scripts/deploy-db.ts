@@ -10,7 +10,7 @@ import { tree } from "../src/db/schema";
 import { basicPrice49Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
-import { startSeoEngineOnce } from "../src/lib/autonomie";
+import { startActivationOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -37,4 +37,6 @@ try { console.log(`deploy-db: carduri cadou de test: ${await testBatchOnce(db)}`
 try { console.log(`deploy-db: carduri digitale de test: ${await testDigitalOnce(db)}`); } catch (e) { console.error("deploy-db: lotul digital de test a eșuat", e); }
 // Motorul SEO (Daniel, 16.11.2026: „continuă” după proba pe 20 de pagini): pornit o singură dată, cu primul lot de 50.
 try { console.log(`deploy-db: motorul SEO: ${await startSeoEngineOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea motorului SEO a eșuat", e); }
+// Activarea (Daniel, 17.11.2026): emailul de 24 h fără arbore și sfaturile pe email (doar cu bifa omului), pornite o singură dată.
+try { console.log(`deploy-db: activarea: ${await startActivationOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea activării a eșuat", e); }
 process.exit(0);

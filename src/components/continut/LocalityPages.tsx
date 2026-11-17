@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
-import CtaArbore from "@/components/continut/CtaArbore";
+import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
 import HubSearch from "@/components/continut/HubSearch";
 import { getEntry } from "@/lib/continut/colectii";
 import { countyLabel, countyPath, getCounty, isCapital, loadCounties, seatPath, type County } from "@/lib/continut/localitati";
@@ -139,6 +139,7 @@ export async function CountyPage({ slug }: { slug: string }) {
           {c.seat && <div><b>Reședința</b>{seatPath(c) ? <Link href={seatPath(c)!}>{c.seat}</Link> : c.seat}</div>}
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
+        <CtaSus />
         <h2>Pe scurt</h2>
         <p>{c.history}</p>
         <h2>Unde sunt arhivele</h2>
@@ -185,6 +186,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
           <div><b>Regiunea istorică</b>{c.regions.map((r) => REGIONS[r].name).join(", ")}</div>
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
+        <CtaSus />
         <h2>Pe scurt</h2>
         <p>{c.seatHistory}</p>
         <h2>Unde ceri actele</h2>

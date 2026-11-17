@@ -1,6 +1,6 @@
 import { sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
-import { DEMO_EMAIL } from "./demo";
 import { localDayHour, SEARCH_SOURCES } from "./vizite";
 
 /**
@@ -178,8 +178,8 @@ export const judetName = (code: string | null) => (code && JUDETE[code]) || (cod
 
 /** Conturile, arborii și plățile din interval (din baza de date, nu din vizite). Contul de probă nu intră. */
 export async function business(db: Db, r: Range) {
-  const [u] = await rows(db, sql`select count(*) as c from "user" where email <> ${DEMO_EMAIL} and ${localDay(sql`created_at`)} between ${r.from} and ${r.to}`);
-  const [t] = await rows(db, sql`select count(*) as c from tree t join "user" u on u.id = t.owner_id where u.email <> ${DEMO_EMAIL} and ${localDay(sql`t.created_at`)} between ${r.from} and ${r.to}`);
+  const [u] = await rows(db, sql`select count(*) as c from "user" u where ${realAccountSql("u")} and ${localDay(sql`created_at`)} between ${r.from} and ${r.to}`);
+  const [t] = await rows(db, sql`select count(*) as c from tree t join "user" u on u.id = t.owner_id where ${realAccountSql("u")} and ${localDay(sql`t.created_at`)} between ${r.from} and ${r.to}`);
   const pay = await rows(db, sql`select currency, count(*) as c, sum(amount) as s from payment where ${localDay(sql`created_at`)} between ${r.from} and ${r.to} group by currency`);
   return {
     accounts: n(u?.c), trees: n(t?.c),
@@ -191,7 +191,7 @@ export async function business(db: Db, r: Range) {
 
 /** Drumul conturilor făcute în interval: câte au pornit un arbore, câte au adăugat rude, câte au plătit (oricând după). */
 export async function accountFunnel(db: Db, r: Range) {
-  const [x] = await rows(db, sql`with u as (select id from "user" where email <> ${DEMO_EMAIL} and ${localDay(sql`created_at`)} between ${r.from} and ${r.to})
+  const [x] = await rows(db, sql`with u as (select uu.id from "user" uu where ${realAccountSql("uu")} and ${localDay(sql`created_at`)} between ${r.from} and ${r.to})
     select count(*) as accounts,
       count(*) filter (where exists (select 1 from tree t where t.owner_id = u.id) or exists (select 1 from tree_member m where m.user_id = u.id)) as trees,
       count(*) filter (where exists (select 1 from tree t where t.owner_id = u.id and (select count(*) from person p where p.tree_id = t.id) >= 5)) as grown,
@@ -206,7 +206,7 @@ export async function accountFunnel(db: Db, r: Range) {
  * Vizitatorii fără cont nu pot fi urmăriți de la o zi la alta (amprenta lor se schimbă zilnic), cu bună știință.
  */
 export async function retention(db: Db, weeks = 10) {
-  const list = await rows(db, sql`with u as (select id, created_at from "user" where email <> ${DEMO_EMAIL} and created_at > now() - make_interval(weeks => ${weeks})),
+  const list = await rows(db, sql`with u as (select uu.id, uu.created_at from "user" uu where ${realAccountSql("uu")} and created_at > now() - make_interval(weeks => ${weeks})),
     act as (
       select user_id, created_at as t from session union all select user_id, updated_at from session
       union all select actor_id, created_at from audit_log where actor_id is not null
