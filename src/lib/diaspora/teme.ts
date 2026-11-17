@@ -10,8 +10,8 @@ export const THEMES: Theme[] = [
     name: { ro: "Rădăcini evreiești în România", en: "Jewish roots in Romania", he: "שורשים יהודיים ברומניה" },
     description: {
       ro: "Cum îți cauți strămoșii evrei din România: istoria comunităților, registrele de stare civilă, actele comunităților și bazele de date.",
-      en: "How to trace Jewish ancestors from Romania: community history, civil registers, community records and databases.",
-      he: "איך מתחקים אחר אבות יהודים מרומניה: תולדות הקהילות, ספרי המרשם האזרחי, רשומות הקהילות ומאגרי מידע.",
+      en: "How to trace Jewish ancestors from Romania: community history, civil registers, community records, Holocaust-era sources and searchable databases.",
+      he: "איך מתחקים אחר אבות יהודים מרומניה: תולדות הקהילות, ספרי המרשם האזרחי, רשומות הקהילות, מאגרי מידע ואיך בונים את אילן היוחסין.",
     },
     body: {
       en: [
@@ -68,7 +68,7 @@ export const THEMES: Theme[] = [
       ro: "Pentru cei plecați din Republica Moldova: acte de la Chișinău cerute din străinătate, cetățenia română pe baza strămoșilor și arborele familiei.",
       en: "For people from the Republic of Moldova: documents from Chișinău requested from abroad, Romanian citizenship through ancestors, and the family tree.",
       it: "Per chi viene dalla Repubblica di Moldova: documenti da Chișinău richiesti dall'estero, cittadinanza romena tramite gli antenati e albero di famiglia.",
-      he: "ליוצאי הרפובליקה של מולדובה: מסמכים מקישינב מחו\"ל, אזרחות רומנית דרך אבות המשפחה, ואילן היוחסין.",
+      he: "ליוצאי הרפובליקה של מולדובה: מסמכים מקישינב מחו\"ל, אזרחות רומנית דרך אבות המשפחה, ארכיונים ואיך בונים יחד את אילן היוחסין.",
     },
     body: {
       ro: [
