@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getT, getAppName } from "@/i18n/server";
+import { getT, getAppName, getLocale } from "@/i18n/server";
 import { operator } from "@/lib/legal";
 import { FACEBOOK_URL } from "@/lib/contact";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
@@ -9,6 +9,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
   const [t, tp, tc, th, tr, appName] = await Promise.all([getT("Layout"), getT("Partners"), getT("ContactPage"), getT("Church"), getT("Resources"), getAppName()]);
   const tg = await getT("GiftPage");
   const seller = operator();
+  const ro = (await getLocale()) === "ro";
   return (
     <footer className="site-foot">
       <span>© {new Date().getFullYear()} {appName}</span>
@@ -25,6 +26,10 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       <Link href="/localitati">{t("places")}</Link>
       <Link href="/diaspora">{t("diaspora")}</Link>
       <Link href="/contact">{tc("menu")}</Link>
+      {/* Paginile doar în română: școli, presă și widgetul „Arborele meu” (Etapa 5). */}
+      {ro && <Link href="/scoala">Pentru școli</Link>}
+      {ro && <Link href="/presa">Presă</Link>}
+      {ro && <Link href="/arborele-meu">Widget pentru blog</Link>}
       <Link href="/istoria-umanitatii">{th("humanity")}</Link>
       <Link href="/genealogii-vechi">{th("genealogies")}</Link>
       <Link href="/libertatea-de-a-crede">{th("label")}</Link>

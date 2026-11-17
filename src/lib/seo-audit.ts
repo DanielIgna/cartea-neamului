@@ -13,6 +13,7 @@ import { INDEX_LIMIT, sitemapGroups } from "./continut/sitemap";
 import { clusterOf, type Cluster } from "./seo-clustere";
 import { fitTitle } from "./page-metadata";
 import { SCHOOL_PAGES } from "./scoala";
+import { AUTHORITY_PAGES } from "./autoritate";
 
 /**
  * Admin → SEO (Daniel, 14.11.2026, după modelul din PropManage): inventarul tuturor paginilor publice cunoscute, cu titlul,
@@ -58,6 +59,8 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
   }
   // Pentru școli: /scoala și paginile pe clase.
   for (const p of SCHOOL_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "școli" });
+  // Presă și widgetul „Arborele meu” (src/lib/autoritate.ts).
+  for (const p of AUTHORITY_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "autoritate" });
   // Genealogie pe orașe mari (src/lib/genealogie-orase.ts).
   push({ path: GEN_HUB, title: "Genealogie în orașele mari din România", description: null, words: null, indexable: true, gate: null, category: "hub" });
   for (const c of GEN_CITIES) {

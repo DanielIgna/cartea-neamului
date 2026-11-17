@@ -18,6 +18,8 @@ import { MAX_SIMILARITY, MIN_FACTS, MIN_UNIQUE_WORDS } from "@/lib/motor-seo/cal
 import { automationSwitches } from "@/lib/autonomie";
 import { COUNTRIES, entries as diasporaEntries, type Entry as DiasporaEntry } from "@/lib/diaspora";
 import { DEMO_EMAIL } from "@/lib/demo";
+import { buildWeeklyReport, reportHistory, saveWeek, type WeekTotals } from "@/lib/seo-raport";
+import { seoQueue } from "@/db/schema";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -28,7 +30,7 @@ export const metadata = { title: "SEO · Admin" };
  * și conversii, din Analiză). Partea din Google Search Console se aprinde singură după ce cheia e pusă în Setări.
  */
 const TABS = [
-  { key: "prezentare", label: "Prezentare" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
+  { key: "prezentare", label: "Prezentare" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
   { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "diaspora", label: "Diaspora" }, { key: "inspector", label: "Inspector URL" },
   { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
@@ -96,6 +98,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       )}
 
       {tab === "prezentare" && await Overview({ pages, gsc, gscErr, alerts, days, href })}
+      {tab === "raport" && await WeeklyTab({ s, pages })}
       {tab === "cuvinte" && <Keywords gsc={gsc} watch={s.watch} pages={pages} />}
       {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
       {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} />}
@@ -171,6 +174,83 @@ function GscState({ gsc, gscErr }: { gsc: Awaited<ReturnType<typeof gscSnapshot>
   </>);
   if (gsc.state === "fara-acces") return <p style={{ margin: 0 }}><Status ok={false} warn>fără acces</Status> Adaugă <b>{gsc.email}</b> ca utilizator în Search Console (Setări → Utilizatori și permisiuni → Complet).</p>;
   return <p style={{ margin: 0 }}><Status ok={false} warn>nelegat</Status> Sitemap-ul e deja trimis din contul tău Google, dar panoul nu are încă cheia. Pașii sunt în <Link href="/admin/seo?t=setari">Setări</Link>; după aceea, cuvintele, afișările și indexarea apar singure aici și în Analiză.</p>;
+}
+
+/* ---------------------------------- Raport săptămânal ---------------------------------- */
+
+async function WeeklyTab({ s, pages }: { s: Awaited<ReturnType<typeof seoSettings>>; pages: AuditPage[] }) {
+  const gsc = await gscSnapshot(s, SITE_URL, 7);
+  const [pub] = await db.select({ n: sql<number>`count(*)::int` }).from(seoQueue)
+    .where(sql`${seoQueue.status} = 'publicat' and ${seoQueue.publishedAt} > now() - interval '7 days'`).catch(() => [{ n: 0 }]);
+  const published = Number(pub?.n ?? 0);
+  if (gsc.state !== "legat") {
+    return (
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Raportul săptămânal</h2>
+        <p style={{ margin: 0 }}>Raportul se face din datele Google Search Console, care nu e încă legat la panou (pașii sunt în <Link href="/admin/seo?t=setari">Setări</Link>). Până atunci: motorul a publicat <b>{num(published)}</b> pagini noi în ultimele 7 zile.</p>
+      </div>
+    );
+  }
+  const r = buildWeeklyReport(gsc, new Set(pages.map((p) => p.path)));
+  const history = await saveWeek(db, r, published).catch(() => reportHistory(db));
+  const change = (a: number, b: number) => (b > 0 ? `${a >= b ? "+" : ""}${Math.round(((a - b) / b) * 100)}% față de săptămâna dinainte` : "prima săptămână cu date");
+  const posHint = (c: WeekTotals, p: WeekTotals) => (c.position != null && p.position != null ? `${c.position <= p.position ? "mai bine" : "mai slab"} cu ${pos(Math.abs(c.position - p.position))} locuri` : undefined);
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Săptămâna în Google (ultimele 7 zile)</h2>
+        <div className="stats">
+          <Stat label="Clicuri" value={num(r.cur.clicks)} hint={change(r.cur.clicks, r.prev.clicks)} tone={r.cur.clicks >= r.prev.clicks ? "ok" : "warn"} />
+          <Stat label="Afișări" value={num(r.cur.impressions)} hint={change(r.cur.impressions, r.prev.impressions)} />
+          <Stat label="CTR" value={pctF(r.cur.ctr)} hint={`înainte ${pctF(r.prev.ctr)}`} />
+          <Stat label="Locul mediu" value={r.cur.position != null ? pos(r.cur.position) : "—"} hint={posHint(r.cur, r.prev)} />
+          <Stat label="Cuvinte țintă pe prima pagină" value={`${r.targets.top10} din ${r.targets.total}`} hint={`${r.targets.top3} în primele 3 · ${r.targets.seen} apar deloc`} />
+          <Stat label="Pagini noi publicate" value={num(published)} hint="de motorul SEO, în 7 zile" />
+        </div>
+        <p className="muted" style={{ margin: "10px 0 0", fontSize: 13 }}>Google arată datele cu 2–3 zile întârziere. Cifrele principale se păstrează în istoricul de mai jos o dată pe săptămână.</p>
+      </div>
+      {r.todo.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>De făcut săptămâna asta</h2>
+          <ol style={{ paddingLeft: 20, lineHeight: 1.6, margin: 0 }}>{r.todo.map((t) => <li key={t}>{t}</li>)}</ol>
+        </div>
+      )}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Pe secțiuni</h2>
+        <div className="an-scroll"><table className="an-table">
+          <thead><tr><th>Secțiunea</th><th>Pagini văzute</th><th>Afișări</th><th>Clicuri</th></tr></thead>
+          <tbody>{r.sections.map((x) => <tr key={x.key}><td>{x.label}</td><td>{num(x.pages)}</td><td>{num(x.impressions)}</td><td>{num(x.clicks)}</td></tr>)}</tbody>
+        </table></div>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Căutările care aduc cele mai multe clicuri</h2>
+        <div className="an-scroll"><table className="an-table">
+          <thead><tr><th>Căutare</th><th>Locul</th><th>Schimbare</th><th>Afișări</th><th>Clicuri</th></tr></thead>
+          <tbody>{r.topQueries.map((k) => <tr key={k.query}><td>{k.query}</td><td>{pos(k.position)}</td><td><Trend now={k.position} before={k.prevPosition} /></td><td>{num(k.impressions)}</td><td>{num(k.clicks)}</td></tr>)}</tbody>
+        </table></div>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ce a urcat și ce a coborât</h2>
+        {r.up.length + r.down.length === 0 ? <p className="muted" style={{ margin: 0 }}>Nicio mișcare de cel puțin un loc la căutările cu minim 5 afișări.</p> : (
+          <div className="an-scroll"><table className="an-table">
+            <thead><tr><th>Căutare</th><th>Acum</th><th>Înainte</th><th>Afișări</th></tr></thead>
+            <tbody>
+              {r.up.map((m) => <tr key={`u${m.query}`}><td>▲ {m.query}</td><td>{pos(m.position)}</td><td>{pos(m.before)}</td><td>{num(m.impressions)}</td></tr>)}
+              {r.down.map((m) => <tr key={`d${m.query}`}><td>▼ {m.query}</td><td>{pos(m.position)}</td><td>{pos(m.before)}</td><td>{num(m.impressions)}</td></tr>)}
+            </tbody>
+          </table></div>
+        )}
+        {r.fresh.length > 0 && <p style={{ marginBottom: 0 }}><b>Căutări noi:</b> {r.fresh.map((k) => `„${k.query}”`).join(", ")}.</p>}
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Istoricul săptămânilor</h2>
+        <div className="an-scroll"><table className="an-table">
+          <thead><tr><th>Săptămâna (luni)</th><th>Clicuri</th><th>Afișări</th><th>Locul mediu</th><th>Cuvinte țintă în top 10</th><th>Pagini publicate</th></tr></thead>
+          <tbody>{[...history].reverse().map((h) => <tr key={h.week}><td>{h.week}</td><td>{num(h.clicks)}</td><td>{num(h.impressions)}</td><td>{h.position != null ? pos(h.position) : "—"}</td><td>{h.top10}</td><td>{num(h.published)}</td></tr>)}</tbody>
+        </table></div>
+      </div>
+    </>
+  );
 }
 
 /* ---------------------------------- Cuvinte cheie ---------------------------------- */

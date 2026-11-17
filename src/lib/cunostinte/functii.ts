@@ -460,6 +460,17 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/scoli.test.ts"],
     env: ["STRIPE_SECRET_KEY"],
   },
+  {
+    key: "autoritate", name: "Autoritate: presă, widgetul „Arborele meu”, raportul SEO săptămânal", area: "public", lifecycle: "live", risk: "scazut",
+    riskWhy: "Widgetul arată doar cifre (persoane, generații, cel mai vechi an, locuri), fără nume și fără cei în viață; îl pornește doar proprietarul sau un editor.",
+    what: "/presa (kit de presă cu cifre din conținut, unghiuri de articol, sigla, contact), /arborele-meu (prezentarea widgetului cu exemplu), /arbore/<id>/widget (pornire, titlu, cod de pus pe blog), /widget/arbore/<cod> (fișa din iframe, singura adresă care se poate pune pe alte site-uri), Admin → SEO → Raport săptămânal (7 zile față de 7, secțiuni, mișcări, de făcut, istoric 26 de săptămâni salvat lunea de ceasul zilnic) și cuvintele țintă noi.",
+    engine: ["src/lib/autoritate.ts", "src/lib/widget-arbore.ts", "src/lib/seo-raport.ts", "src/lib/seo-cuvinte.ts"],
+    pages: ["/presa", "/arborele-meu", "/arbore/[id]/widget", "/admin/seo"],
+    api: ["/widget/arbore/[token]", "/api/cron/autonomie"],
+    tables: ["app_setting"],
+    dashboard: "/admin/seo",
+    tests: ["tests/autoritate.test.ts"],
+  },
   // Admin
   {
     key: "admin", name: "Panoul de admin", area: "admin", lifecycle: "live", risk: "ridicat", riskWhy: "Acces la tot; cere verificarea în 2 pași.",

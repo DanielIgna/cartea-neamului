@@ -88,7 +88,8 @@ const config: NextConfig = {
     ];
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    // Fișa „Arborele meu” (/widget/arbore/…) e făcută să stea pe alte site-uri: își pune singură regulile (fără scripturi).
+    return [{ source: "/:path((?!widget/arbore/).*)", headers: securityHeaders }];
   },
 };
 export default config;

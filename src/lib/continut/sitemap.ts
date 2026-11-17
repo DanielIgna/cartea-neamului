@@ -10,6 +10,7 @@ import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, GEN_UPDATED, genCityPath, genWords 
 import { GEN_REGIONS, REGIONS_UPDATED, genRegionPath } from "@/lib/genealogie-regiuni";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
+import { AUTHORITY_PAGES, AUTHORITY_UPDATED } from "@/lib/autoritate";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
@@ -95,6 +96,11 @@ export function sitemapGroups(published: Map<string, Date> = new Map()): Sitemap
       // Pentru școli (/scoala): pagina profesorilor și cele trei pe clase.
       name: "scoala", label: "Pentru școli",
       urls: SCHOOL_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: SCHOOL_UPDATED, changeFrequency: "monthly", priority: p.path === "/scoala" ? 0.7 : 0.6 })),
+    },
+    {
+      // Presă și widgetul gratuit (src/lib/autoritate.ts).
+      name: "autoritate", label: "Presă și widget",
+      urls: AUTHORITY_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: AUTHORITY_UPDATED, changeFrequency: "monthly", priority: 0.5 })),
     },
     languagesGroup(),
     {
