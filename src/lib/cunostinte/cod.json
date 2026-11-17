@@ -110,6 +110,8 @@
   "src/app/(site)/admin/conversie/page.tsx",
   "src/app/(site)/admin/conversie/sim.ts",
   "src/app/(site)/admin/crestere/page.tsx",
+  "src/app/(site)/admin/crm/org/[id]/page.tsx",
+  "src/app/(site)/admin/crm/page.tsx",
   "src/app/(site)/admin/cunostinte/arhitectura/page.tsx",
   "src/app/(site)/admin/cunostinte/dependente/page.tsx",
   "src/app/(site)/admin/cunostinte/export/route.ts",
@@ -196,6 +198,7 @@
   "src/app/(site)/page.tsx",
   "src/app/(site)/parteneri/dezabonare/page.tsx",
   "src/app/(site)/parteneri/page.tsx",
+  "src/app/(site)/parteneriate/page.tsx",
   "src/app/(site)/plata/page.tsx",
   "src/app/(site)/problema/page.tsx",
   "src/app/(site)/resurse-genealogie/page.tsx",
@@ -241,6 +244,7 @@
   "src/app/cont-actions.ts",
   "src/app/contact-actions.ts",
   "src/app/crestere-actions.ts",
+  "src/app/crm-actions.ts",
   "src/app/cunostinte-actions.ts",
   "src/app/favicon.ico",
   "src/app/film-actions.ts",
@@ -323,6 +327,7 @@
   "src/components/OldHouse.tsx",
   "src/components/ParentChange.tsx",
   "src/components/PartnersView.tsx",
+  "src/components/PartnershipForm.tsx",
   "src/components/PasswordReset.tsx",
   "src/components/PersonForm.tsx",
   "src/components/PersonTools.tsx",
@@ -369,6 +374,7 @@
   "src/components/admin/BaseWordForm.tsx",
   "src/components/admin/ConversieStats.tsx",
   "src/components/admin/CopyLink.tsx",
+  "src/components/admin/CrmImport.tsx",
   "src/components/admin/Cunostinte.tsx",
   "src/components/admin/CunostinteHead.tsx",
   "src/components/admin/HomeImageSlot.tsx",
@@ -705,6 +711,7 @@
   "src/lib/conversii.ts",
   "src/lib/corectura-igna-todea.ts",
   "src/lib/crestere.ts",
+  "src/lib/crm-admin.ts",
   "src/lib/crm-import.ts",
   "src/lib/crm-ingest.ts",
   "src/lib/crm.ts",
@@ -839,6 +846,7 @@
   "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
+  "tests/crm-admin.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
   "tests/dates.test.ts",
@@ -973,6 +981,14 @@
   },
   {
    "path": "/admin/crestere",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/crm",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/crm/org/[id]",
    "kind": "pagina"
   },
   {
@@ -1380,6 +1396,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/parteneriate",
+   "kind": "pagina"
+  },
+  {
    "path": "/plata",
    "kind": "pagina"
   },
@@ -1433,6 +1453,7 @@
   "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
+  "tests/crm-admin.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
   "tests/dates.test.ts",
