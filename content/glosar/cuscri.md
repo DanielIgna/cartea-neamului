@@ -1,6 +1,6 @@
 ---
 title: Cuscri
-description: Cine sunt cuscrii: părinții mirelui și ai miresei. De ce cuscria leagă două neamuri și cum apare în actele vechi.
+description: Cine sunt cuscrii: părinții mirelui și ai miresei. De ce cuscria leagă două neamuri și cum apare în actele vechi. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: cuscru, cuscră, cuscrie
 terms: afinitate, cununie, nas

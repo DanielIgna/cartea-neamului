@@ -6,7 +6,7 @@ export const enGBContact: ContactCatalog = {
     "seller": "The Family Book is provided by {name}, tax ID (CUI) {cui}, Trade Register no. {regCom}, registered office {address}.",
     "printRequest": "Hello! I would like a quote for the printed family book: {pages} pages, {format} format. Hardcover or paperback: … How many copies: … Phone: …",
     "metaTitle": "Contact",
-    "metaDescription": "Message us on WhatsApp or send us a note about the Family Book.",
+    "metaDescription": "Message us on WhatsApp or send us a note about your family tree, the printed family book, a gift or a school project. We usually reply the same day.",
     "menu": "Contact",
     "label": "Contact",
     "title": "Something to tell us?",

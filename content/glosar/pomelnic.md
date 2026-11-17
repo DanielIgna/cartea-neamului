@@ -1,6 +1,6 @@
 ---
 title: Pomelnic
-description: Pomelnicul: lista de nume ale celor vii și morți ai unei familii. De ce poate fi o sursă genealogică neașteptată.
+description: Pomelnicul: lista de nume ale celor vii și morți ai unei familii. De ce poate fi o sursă genealogică neașteptată. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: pomelnice, listă de pomenire
 terms: sursa-secundara, piatra-funerara

@@ -1,6 +1,6 @@
 ---
 title: Plasă (unitate administrativă)
-description: Plasa: subdiviziunea județului în România interbelică. Cum o folosești când cauți acte din acea perioadă.
+description: Plasa: subdiviziunea județului în România interbelică. Cum o folosești când cauți acte din acea perioadă. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: plăși, pretură
 terms: comitat, tinut

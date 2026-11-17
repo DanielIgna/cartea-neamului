@@ -27,7 +27,7 @@ export const enGB: Catalog = {
   Meta: {
     appName: "The Family Book",
     homeTitle: "Online family tree | The Family Book",
-    description: "The family tree, built together, printed as a book.",
+    description: "Build your family tree online with your relatives. Keep old photos, stories and your grandparents’ voices, then print it all as your family book.",
   },
   Layout: {
     untranslated: "This page isn’t available in your language yet. For now, you’re seeing it in Romanian.",

@@ -7,7 +7,7 @@ export const enGBLegal: LegalCatalog = {
     contactLine: "{name}, registered office {address} (tax ID CUI {cui}, Trade Register no. {regCom}, EUID {euid}). Email: <mail>{email}</mail>. Phone and WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Privacy policy",
-      metaDescription: "What data we keep, why, who sees it and how you download or delete it.",
+      metaDescription: "What data we keep in your family tree, why, who sees it and how you download or delete it. No adverts, and you can delete your account at any time.",
       label: "Privacy policy",
       title: "How we look after your family’s data",
       sections: {
@@ -155,7 +155,7 @@ export const enGBLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Terms of use",
-      metaDescription: "What it means to have an account in the Family Book: what you can add, whose it is and what we promise.",
+      metaDescription: "What it means to have an account in the Family Book: what you can add, whose it is and what we promise. The rules in plain words, with no small print.",
       label: "Terms of use",
       title: "What it means to have an account in the Family Book",
       sections: {

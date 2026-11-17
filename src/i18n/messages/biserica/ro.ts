@@ -10,7 +10,7 @@ export const roBiserica = {
   Church: {
     meta: {
       title: "Libertatea de a crede | Istoria creștinismului",
-      description: "Două mii de ani de creștinism: martirii Romei, Reforma, primele cărți românești și cei închiși pentru credința lor.",
+      description: "Două mii de ani de creștinism: martirii Romei, Reforma, primele cărți românești și cei închiși pentru credința lor, spuși ca parte a istoriei.",
     },
     label: "Libertatea de a crede",
     title: "Două mii de ani de creștinism și oamenii care au plătit pentru credința lor",

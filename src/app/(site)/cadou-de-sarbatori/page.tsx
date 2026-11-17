@@ -24,7 +24,7 @@ async function texts() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const { title, description } = await texts();
-  return publicPageMetadata({ path: GIFT_PATH, title, description });
+  return publicPageMetadata({ path: GIFT_PATH, title, description, locale: await getLocale() });
 }
 
 /**

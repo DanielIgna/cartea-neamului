@@ -165,6 +165,7 @@
   "src/app/(site)/cadou/[cod]/card/page.tsx",
   "src/app/(site)/cadou/[cod]/page.tsx",
   "src/app/(site)/card/[token]/page.tsx",
+  "src/app/(site)/cauta/page.tsx",
   "src/app/(site)/confidentialitate/page.tsx",
   "src/app/(site)/contact/page.tsx",
   "src/app/(site)/datele-mele/page.tsx",
@@ -421,6 +422,7 @@
   "src/components/continut/Pager.tsx",
   "src/components/continut/Prose.tsx",
   "src/components/continut/ShareCard.tsx",
+  "src/components/continut/SiteSearch.tsx",
   "src/components/continut/UatPages.tsx",
   "src/components/diaspora/DiasporaPages.tsx",
   "src/components/family-film.css",
@@ -730,6 +732,7 @@
   "src/lib/chat.ts",
   "src/lib/consent.ts",
   "src/lib/contact.ts",
+  "src/lib/continut/cautare.ts",
   "src/lib/continut/colectii.ts",
   "src/lib/continut/localitati-statistici.ts",
   "src/lib/continut/localitati.ts",
@@ -938,6 +941,7 @@
   "tests/scoli.test.ts",
   "tests/securitate.test.ts",
   "tests/seo-centru.test.ts",
+  "tests/seo-titluri.test.ts",
   "tests/seo.test.ts",
   "tests/shared-places.test.ts",
   "tests/spite.test.ts",
@@ -1325,6 +1329,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/cauta",
+   "kind": "pagina"
+  },
+  {
    "path": "/confidentialitate",
    "kind": "pagina"
   },
@@ -1589,6 +1597,7 @@
   "tests/scoli.test.ts",
   "tests/securitate.test.ts",
   "tests/seo-centru.test.ts",
+  "tests/seo-titluri.test.ts",
   "tests/seo.test.ts",
   "tests/shared-places.test.ts",
   "tests/spite.test.ts",

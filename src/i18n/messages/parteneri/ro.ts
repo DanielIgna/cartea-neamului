@@ -20,7 +20,7 @@ export const roParteneri = {
   },
   PartnersPage: {
     metaTitle: "Parteneri | Cartea Neamului",
-    metaDescription: "Partenerii Cartea Neamului și ce oferă familiilor care își construiesc arborele și cartea neamului.",
+    metaDescription: "Partenerii Cartea Neamului și ce oferă familiilor care își construiesc arborele: servicii pentru casa bătrânească și oferte pentru cei cu cont.",
     label: "Parteneri",
     title: "Partenerii Cartea Neamului",
     lead: "Arborele, amintirile și cartea rămân doar ale familiei, fără reclame. Aici, într-o singură pagină, sunt partenerii în care avem încredere.",

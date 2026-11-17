@@ -15,7 +15,7 @@ export const huParteneri: ParteneriCatalog = {
   },
   PartnersPage: {
     metaTitle: "Partnerek | A Család Könyve",
-    metaDescription: "A Család Könyve partnerei, és amit a családoknak kínálnak.",
+    metaDescription: "A Család Könyve partnerei, és amit a családfát építő családoknak kínálnak: segítség a régi családi házzal és ajánlatok a fiókkal rendelkezőknek.",
     label: "Partnerek",
     title: "A Család Könyve partnerei",
     lead: "A családfa, az emlékek és a könyv csak a családé, reklámok nélkül. Itt, egyetlen oldalon, azok a partnerek vannak, akikben megbízunk.",

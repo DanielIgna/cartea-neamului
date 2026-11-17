@@ -1,6 +1,6 @@
 ---
 title: Registrele greco-catolice din Transilvania
-seo: Registre greco-catolice vechi: unde le găsești în Transilvania
+seo: Registre greco-catolice vechi: unde le găsești
 description: Registrele parohiale greco-catolice din Transilvania, Banat, Crișana și Maramureș: ce conțin, în ce limbă sunt și unde au ajuns după 1948.
 category: Registre și arhive
 updated: 2026-11-13

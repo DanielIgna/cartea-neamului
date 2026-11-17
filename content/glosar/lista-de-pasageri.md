@@ -1,6 +1,6 @@
 ---
 title: Listă de pasageri
-description: Listele de pasageri ale vapoarelor: cum găsești un strămoș plecat în America și ce date despre familie ai în ele.
+description: Listele de pasageri ale vapoarelor: cum găsești un strămoș plecat în America și ce date despre familie ai în ele. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: manifest de pasageri, Ellis Island
 terms: sursa-primara, act-de-nastere

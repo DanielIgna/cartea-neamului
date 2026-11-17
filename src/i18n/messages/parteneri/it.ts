@@ -15,7 +15,7 @@ export const itParteneri: ParteneriCatalog = {
   },
   PartnersPage: {
     metaTitle: "Partner | Il Libro della Famiglia",
-    metaDescription: "I partner del Libro della Famiglia e cosa offrono alle famiglie.",
+    metaDescription: "I partner del Libro della Famiglia e cosa offrono alle famiglie che costruiscono l’albero: aiuto per la casa di famiglia e offerte per chi ha un account.",
     label: "Partner",
     title: "I partner del Libro della Famiglia",
     lead: "L’albero, i ricordi e il libro sono solo della famiglia, senza pubblicità. Qui, in un’unica pagina, ci sono i partner di cui ci fidiamo.",

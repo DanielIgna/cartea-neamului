@@ -27,7 +27,7 @@ export const de: Catalog = {
   Meta: {
     appName: "Das Familienbuch",
     homeTitle: "Stammbaum online | Das Familienbuch",
-    description: "Der Stammbaum der Familie, gemeinsam aufgebaut und als Buch gedruckt.",
+    description: "Baue deinen Stammbaum online gemeinsam mit deiner Familie. Bewahre alte Fotos, Geschichten und die Stimmen der Großeltern und drucke alles als Buch.",
   },
   Layout: {
     untranslated: "Diese Seite gibt es noch nicht in deiner Sprache. Vorerst siehst du sie auf Rumänisch.",

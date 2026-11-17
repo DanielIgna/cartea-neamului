@@ -5,7 +5,7 @@ export const nlBiserica: BisericaCatalog = {
   Church: {
     meta: {
       title: "De vrijheid om te geloven | Geschiedenis van het christendom",
-      description: "Tweeduizend jaar geschiedenis van het christendom: de martelaren van Rome, de Reformatie, de eerste boeken in het Roemeens en de mensen die om hun geloof in de communistische gevangenissen zaten.",
+      description: "Tweeduizend jaar geschiedenis van het christendom: de martelaren van Rome, de Reformatie, de eerste Roemeense boeken en wie om zijn geloof vastzat.",
     },
     label: "De vrijheid om te geloven",
     title: "Tweeduizend jaar christendom en de mensen die voor hun geloof betaalden",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteSearch from "@/components/continut/SiteSearch";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
@@ -69,6 +70,7 @@ export function HubPage({ c, page }: { c: Collection; page: number }) {
         <h1 style={{ marginTop: 0 }}>{h.h1}</h1>
         <p>{h.intro}</p>
         <p className="muted" style={{ marginBottom: 0 }}>{all.length} {c === "ghid" ? "ghiduri" : "termeni"} · vezi și {c === "ghid" ? <Link href="/glosar">glosarul</Link> : <Link href="/ghid">ghidurile</Link>}, <Link href="/resurse-genealogie">resursele gratuite</Link></p>
+        <SiteSearch />
       </div>
       <HubSearch items={all.map((e) => ({ href: e.path, title: e.title, text: c === "glosar" ? e.alt.join(", ") : undefined }))} label={h.search} placeholder={`${h.search}…`}>
         {groups.map((g) => (

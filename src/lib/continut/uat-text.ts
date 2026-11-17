@@ -19,7 +19,12 @@ export function countOf(n: number, one: string, many: string) {
 export const km = (x: number) => (x < 10 ? x.toFixed(1).replace(".", ",") : String(Math.round(x)));
 export const listRo = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} și ${xs[xs.length - 1]}`);
 
-export const uatTitle = (u: Uat, c: County) => `${KIND_NAME[u.kind].title} ${u.name} (${c.name}): acte vechi, arhive, sate | Cartea Neamului`;
+/** Titlul paginii unei localități, cel mult 60 de semne fără „| Cartea Neamului” (numele lungi pierd întâi „sate”, apoi județul). */
+export function uatTitle(u: Uat, c: County) {
+  const k = KIND_NAME[u.kind].title;
+  const tries = [`${k} ${u.name} (${c.name}): acte vechi, arhive, sate`, `${k} ${u.name} (${c.name}): acte vechi, arhive`, `${k} ${u.name}, ${c.name}: acte vechi`, `${u.name} (${c.name}): acte vechi, arhive`];
+  return `${tries.find((t) => t.length <= 60) ?? tries[tries.length - 1]} | Cartea Neamului`;
+}
 export function uatDescription(u: Uat, c: County) {
   const others = u.villages.filter((v) => !v.seat).map((v) => v.name);
   const what = u.kind === "c"

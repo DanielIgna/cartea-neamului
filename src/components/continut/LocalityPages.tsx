@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SiteSearch from "@/components/continut/SiteSearch";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
@@ -47,6 +48,7 @@ export function LocalitiesHub() {
         <h1 style={{ marginTop: 0 }}>Arhive și registre pe județe</h1>
         <p>Unde îți cauți strămoșii, județ cu județ: ce serviciu al Arhivelor Naționale păstrează registrele vechi, de când există registre de stare civilă în regiune, ce alte surse merită căutate și ce nume de familie sunt des întâlnite.</p>
         <p className="muted" style={{ marginBottom: 0 }}>41 de județe și Bucureștiul, cu reședințele lor · vezi și <Link href="/ghid/registrele-de-stare-civila">registrele de stare civilă</Link>, <Link href="/nume">numele de familie</Link></p>
+        <SiteSearch placeholder="Caută o comună, un oraș sau un sat" />
       </div>
       <HubSearch items={items} label="Caută un județ sau un oraș" placeholder="Caută un județ sau un oraș…">
         {groups.map((g) => (

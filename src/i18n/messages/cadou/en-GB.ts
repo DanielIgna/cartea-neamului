@@ -2,8 +2,8 @@ import type { CadouCatalog } from "./ro";
 
 export const enGBCadou: CadouCatalog = {
   GiftPage: {
-    metaTitle: "Christmas gift for parents and grandparents – the family tree, {price}",
-    metaDescription: "Give your parents or grandparents a year in The Family Book for {price}: the family tree, old photos and their voices, all in one place. You get a link or a card to print.",
+    metaTitle: "Christmas gift for parents and grandparents, {price}",
+    metaDescription: "Give your parents or grandparents a year in The Family Book for {price}: the family tree, old photos and their voices. You get a link or a card to print.",
     home: "Home",
     label: "Holiday gift",
     title: "The most affordable holiday gift: The Family Book, from just {price}",

@@ -2,10 +2,11 @@
  * Paginile publice pe care le vrem în Google: din ele se fac sitemap.xml, robots.txt și lista din Admin → SEO.
  * (Fără importuri de pe server, ca să poată fi folosit oriunde.)
  */
-export const PUBLIC_PAGES: { path: string; label: string; priority: number; changeFrequency: "weekly" | "monthly" | "yearly" }[] = [
+/** `roOnly`: conținutul e doar în română; adresele pe limbi (/it/…) trimit canonic la cea românească și nu intră în sitemap. */
+export const PUBLIC_PAGES: { path: string; label: string; priority: number; changeFrequency: "weekly" | "monthly" | "yearly"; roOnly?: boolean }[] = [
   { path: "/", label: "Prima pagină", priority: 1, changeFrequency: "weekly" },
-  { path: "/istoria-umanitatii", label: "Istoria umanității", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/istoria-umanitatii", label: "Istoria umanității", priority: 0.7, changeFrequency: "monthly", roOnly: true },
+  { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly", roOnly: true },
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
   { path: "/cadou-de-sarbatori", label: "Cadou de sărbători", priority: 0.7, changeFrequency: "monthly" },
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
@@ -17,3 +18,6 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
 
 /** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
 export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/"];
+
+/** Paginile din PUBLIC_PAGES care au text în toate limbile site-ului. */
+export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);

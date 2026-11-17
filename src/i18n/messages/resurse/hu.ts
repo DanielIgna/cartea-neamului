@@ -3,7 +3,7 @@ import type { ResurseCatalog } from "./ro";
 export const huResurse: ResurseCatalog = {
   Resources: {
     metaTitle: "Ingyenes családfakutatási források",
-    metaDescription: "Levéltárak, egyházi anyakönyvek, népszámlálások, a Román Nemzeti Levéltár, digitális könyvtárak és régi újságok: hol keresheted ingyen a családodat. Családfakutatás mindenkinek.",
+    metaDescription: "Levéltárak, egyházi anyakönyvek, népszámlálások, a Román Nemzeti Levéltár, digitális könyvtárak és régi újságok: hol keresheted ingyen a családodat.",
     label: "Források",
     title: "Ingyenes családfakutatási források",
     intro: "Itt ingyenes levéltárak, könyvtárak és adatbázisok linkjeit találod, ahol a családodat keresheted: egyházi anyakönyvek, népszámlálások, régi újságok és katalógusok. A Család Könyve nem őrzi ezeket a gyűjteményeket, és nem vesz át onnan adatot; minden link a saját oldalukon nyílik meg. Némelyikhez ingyenes fiók kell.",

@@ -1,6 +1,6 @@
 ---
 title: Protopopiat
-description: Protopopiatul: unitatea care grupa mai multe parohii. De ce îl cauți când vrei registrele parohiale ale unui sat.
+description: Protopopiatul: unitatea care grupa mai multe parohii. De ce îl cauți când vrei registrele parohiale ale unui sat. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: protopopiate, protopop, protoierie, decanat
 terms: parohie, filie, episcopie, registru-parohial

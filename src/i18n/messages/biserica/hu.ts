@@ -5,7 +5,7 @@ export const huBiserica: BisericaCatalog = {
   Church: {
     meta: {
       title: "A hit szabadsága | A kereszténység története",
-      description: "A kereszténység kétezer éves története: Róma vértanúi, a reformáció, az első román nyelvű könyvek és azok, akiket hitük miatt bebörtönöztek a kommunista börtönökben.",
+      description: "A kereszténység kétezer éve: Róma vértanúi, a reformáció, az első román nyelvű könyvek és azok, akiket a hitük miatt börtönbe zártak.",
     },
     label: "A hit szabadsága",
     title: "Kétezer év kereszténység és azok, akik megfizettek a hitükért",

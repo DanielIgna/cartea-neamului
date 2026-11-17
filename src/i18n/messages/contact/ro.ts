@@ -9,7 +9,7 @@ export const roContact = {
     seller: "Cartea Neamului e oferită de {name}, CUI {cui}, Nr. ORC {regCom}, cu sediul în {address}.",
     printRequest: "Bună ziua! Aș vrea o ofertă pentru Cartea neamului tipărită. Pagini: {pages}, format {format}. Copertă tare sau moale: … Câte exemplare: … Telefon: …",
     metaTitle: "Contact",
-    metaDescription: "Scrie-ne pe WhatsApp sau trimite un mesaj despre arborele genealogic și cartea neamului familiei tale.",
+    metaDescription: "Scrie-ne pe WhatsApp sau trimite un mesaj despre arborele genealogic și cartea neamului familiei tale. Răspundem de obicei în aceeași zi.",
     menu: "Contact",
     label: "Contact",
     title: "Vrei să ne spui ceva?",

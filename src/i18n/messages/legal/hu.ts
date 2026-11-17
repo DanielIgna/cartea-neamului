@@ -7,7 +7,7 @@ export const huLegal: LegalCatalog = {
     contactLine: "{name} (székhely: {address}; CUI {cui}, cégjegyzékszám {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>. Telefon és WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Adatvédelmi tájékoztató",
-      metaDescription: "Milyen adatokat őrzünk, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket.",
+      metaDescription: "Milyen adatokat őrzünk a családfádban, miért, ki látja őket, és hogyan töltheted le vagy törölheted őket. Reklám nélkül; a fiókod bármikor törölheted.",
       label: "Adatvédelmi tájékoztató",
       title: "Hogyan vigyázunk a családod adataira",
       sections: {
@@ -155,7 +155,7 @@ export const huLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Felhasználási feltételek",
-      metaDescription: "Mit jelent fiókkal rendelkezni a Család Könyvében: mit tehetsz fel, kié, és mit ígérünk.",
+      metaDescription: "Mit jelent fiókkal rendelkezni a Család Könyvében: mit tehetsz fel, kié, és mit ígérünk. A szabályok egyszerű szavakkal, apró betűs rész nélkül.",
       label: "Felhasználási feltételek",
       title: "Mit jelent fiókkal rendelkezni a Család Könyvében",
       sections: {

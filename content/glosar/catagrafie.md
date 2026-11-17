@@ -1,6 +1,6 @@
 ---
 title: Catagrafie
-description: Catagrafiile din Moldova și Țara Românească: listele de locuitori și gospodării de dinainte de recensămintele moderne.
+description: Catagrafiile din Moldova și Țara Românească: listele de locuitori și gospodării de dinainte de recensămintele moderne. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: catagrafii, catastih
 terms: conscriptie, recensamant, razes, mosnean, clacas

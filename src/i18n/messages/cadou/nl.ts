@@ -2,8 +2,8 @@ import type { CadouCatalog } from "./ro";
 
 export const nlCadou: CadouCatalog = {
   GiftPage: {
-    metaTitle: "Kerstcadeau voor ouders en grootouders – de stamboom van de familie, {price}",
-    metaDescription: "Geef je ouders of grootouders een jaar in Het Familieboek voor {price}: de stamboom, oude foto’s en hun stemmen, op één plek. Je krijgt een link of een kaart om af te drukken.",
+    metaTitle: "Kerstcadeau voor ouders en grootouders: de stamboom, {price}",
+    metaDescription: "Geef je ouders of grootouders een jaar in Het Familieboek voor {price}: de stamboom, oude foto’s en hun stemmen. Je krijgt een link of een printbare kaart.",
     home: "Home",
     label: "Feestdagencadeau",
     title: "Het voordeligste cadeau voor de feestdagen: Het Familieboek, al vanaf {price}",

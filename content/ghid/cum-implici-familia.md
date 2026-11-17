@@ -1,6 +1,6 @@
 ---
 title: Cum implici familia în arborele genealogic
-seo: Arbore genealogic împreună cu familia: cum îi implici pe toți
+seo: Arborele genealogic cu toată familia: cum îi implici
 description: Cum aduni rudele în jurul arborelui: cine completează ce ramură, întâlniri de familie, poze comune și grija pentru datele celor în viață.
 category: Primii pași
 updated: 2026-11-13

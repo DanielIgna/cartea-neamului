@@ -1,7 +1,7 @@
 ---
 title: Copil nelegitim
 seo: Copil nelegitim în registrele vechi: ce înseamnă
-description: Copiii din afara căsătoriei în registrele vechi: cum sunt notați, de ce lipsește tatăl și cum îl poți totuși găsi.
+description: Copiii din afara căsătoriei în registrele vechi: cum sunt notați, de ce lipsește tatăl și cum îl poți totuși găsi. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: illegitimus, copil natural, legitimare
 terms: botez, act-de-nastere

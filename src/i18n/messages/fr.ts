@@ -27,7 +27,7 @@ export const fr: Catalog = {
   Meta: {
     appName: "Le Livre de la Famille",
     homeTitle: "Arbre généalogique en ligne | Le Livre de la Famille",
-    description: "L’arbre de la famille, construit ensemble, imprimé comme un livre.",
+    description: "Construisez votre arbre généalogique en ligne avec vos proches. Gardez photos anciennes, histoires et voix des grands-parents, puis imprimez le livre.",
   },
   Layout: {
     untranslated: "Cette page n’est pas encore disponible dans votre langue. Pour l’instant, elle s’affiche en roumain.",

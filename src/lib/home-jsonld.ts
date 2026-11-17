@@ -6,7 +6,9 @@ const DESCRIPTION = "Fă online arborele genealogic al familiei, împreună cu r
 export const HOME_JSON_LD = {
   "@context": "https://schema.org",
   "@graph": [
-    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Cartea Neamului", url: SITE_URL, inLanguage: "ro", description: DESCRIPTION, publisher: { "@id": `${SITE_URL}/#organization` } },
+    { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Cartea Neamului", url: SITE_URL, inLanguage: "ro", description: DESCRIPTION, publisher: { "@id": `${SITE_URL}/#organization` },
+      // Caseta de căutare din rezultatele Google trimite la /cauta (src/lib/continut/cautare.ts).
+      potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/cauta?q={search_term_string}` }, "query-input": "required name=search_term_string" } },
     { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/apple-icon.png`, sameAs: [FACEBOOK_URL] },
     {
       "@type": "SoftwareApplication", "@id": `${SITE_URL}/#app`, name: "Cartea Neamului", url: SITE_URL, description: DESCRIPTION,

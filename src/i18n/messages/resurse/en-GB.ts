@@ -3,7 +3,7 @@ import type { ResurseCatalog } from "./ro";
 export const enGBResurse: ResurseCatalog = {
   Resources: {
     metaTitle: "Free genealogy resources",
-    metaDescription: "Archives, parish registers, censuses, the Romanian National Archives, digital libraries and old newspapers: where to search for your family for free. Genealogy for everyone.",
+    metaDescription: "Archives, parish registers, censuses, the Romanian National Archives, digital libraries and old newspapers: where to search for your family for free.",
     label: "Resources",
     title: "Free genealogy resources",
     intro: "Here you will find links to free archives, libraries and databases where you can search for your family: parish registers, censuses, old newspapers and catalogues. The Family Book does not hold these collections and does not take data from them; each link opens on their own site. Some require a free account.",

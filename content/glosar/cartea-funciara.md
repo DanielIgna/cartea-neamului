@@ -1,6 +1,6 @@
 ---
 title: Carte funciară
-description: Cartea funciară: registrul proprietăților imobiliare. Cum îți arată casa și pământul familiei și pe cine le-a moștenit.
+description: Cartea funciară: registrul proprietăților imobiliare. Cum îți arată casa și pământul familiei și pe cine le-a moștenit. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: CF, carte funciară veche, Grundbuch, telekkönyv
 terms: cadastru, urbariu, testament, certificat-de-mostenitor

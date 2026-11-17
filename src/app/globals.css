@@ -2045,3 +2045,5 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
   .sp-foot{margin-top:8px}
   .sp-box,.sp-ph-empty{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+.search-hits{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}.search-hits li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.site-search{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.site-search input{flex:1 1 220px}

@@ -7,7 +7,7 @@ export const nlLegal: LegalCatalog = {
     contactLine: "{name}, gevestigd te {address} (CUI {cui}, handelsregisternr. {regCom}, EUID {euid}). E-mail: <mail>{email}</mail>. Telefoon en WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Privacybeleid",
-      metaDescription: "Welke gegevens we bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert.",
+      metaDescription: "Welke gegevens we in je stamboom bewaren, waarom, wie ze ziet en hoe je ze downloadt of verwijdert. Zonder advertenties; je account wis je wanneer je wilt.",
       label: "Privacybeleid",
       title: "Hoe we zorgen voor de gegevens van je familie",
       sections: {
@@ -155,7 +155,7 @@ export const nlLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Gebruiksvoorwaarden",
-      metaDescription: "Wat het betekent om een account te hebben bij het Familieboek: wat je erop mag zetten, van wie het is en wat we beloven.",
+      metaDescription: "Wat een account bij Het Familieboek betekent: wat je kunt toevoegen, van wie het is en wat we beloven. De regels in gewone woorden, zonder kleine letters.",
       label: "Gebruiksvoorwaarden",
       title: "Wat het betekent om een account te hebben bij het Familieboek",
       sections: {

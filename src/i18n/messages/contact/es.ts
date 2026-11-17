@@ -6,7 +6,7 @@ export const esContact: ContactCatalog = {
     "seller": "El Libro de la Familia lo ofrece {name}, CUI {cui}, n.º de registro mercantil {regCom}, con domicilio en {address}.",
     "printRequest": "¡Hola! Quisiera un presupuesto para el libro de la familia impreso: {pages} páginas, formato {format}. Tapa dura o blanda: … Cuántos ejemplares: … Teléfono: …",
     "metaTitle": "Contacto",
-    "metaDescription": "Escríbenos por WhatsApp o envíanos un mensaje sobre El Libro de la Familia.",
+    "metaDescription": "Escríbenos por WhatsApp o envíanos un mensaje sobre tu árbol familiar, el libro impreso, un regalo o un proyecto escolar. Solemos responder el mismo día.",
     "menu": "Contacto",
     "label": "Contacto",
     "title": "¿Quieres decirnos algo?",

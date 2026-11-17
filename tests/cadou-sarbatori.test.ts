@@ -38,7 +38,7 @@ describe("Cadou de sărbători", () => {
       expect(others, l).not.toContain(g.metaTitle);
     }
     const ro = (await loadMessages("ro")) as unknown as Record<string, Record<string, string>>;
-    expect(ro.GiftPage.metaTitle).toBe("Cadou de Crăciun pentru părinți și bunici – arborele familiei, {price}");
+    expect(ro.GiftPage.metaTitle).toBe("Cadou de Crăciun pentru părinți și bunici: arborele, {price}");
   });
 
   it("datele structurate: WebPage, BreadcrumbList și FAQPage cu toate întrebările", () => {
