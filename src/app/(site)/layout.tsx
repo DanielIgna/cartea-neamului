@@ -31,7 +31,7 @@ import UserNotices from "@/components/UserNotices";
 import KeepNotice, { KEEP_NOTICE_COOKIE } from "@/components/KeepNotice";
 import { planSettings } from "@/lib/plans";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
-import { and, eq, isNotNull } from "drizzle-orm";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminUser } from "@/lib/admin";
@@ -71,7 +71,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     // Răspunsurile noastre la problemele raportate, pe care omul nu le-a văzut încă (semnul de lângă „Raportează o problemă”).
     me ? unseenReplies(db, me.id).catch(() => 0) : 0,
     // „Vrei sfaturi pe email?”: o singură dată, doar dacă e pornită din Admin → Creștere (src/lib/crestere.ts).
-    me && !isDemo(me.email) ? Promise.all([consentState(db, me.id, "news"), growthSettings(db)]).then(([c, g]) => (g.askNews && !c.at ? "ask" : null)).catch(() => null) : null,
+    // Al doilea prilej (17.11.2026), după bifa de la înscriere: doar după primul arbore (măcar 2 persoane într-un arbore al omului).
+    me && !isDemo(me.email) ? Promise.all([consentState(db, me.id, "news"), growthSettings(db)]).then(async ([c, g]) => {
+      if (!g.askNews || c.at) return null;
+      const r = await db.execute(sql`select 1 from tree t where t.owner_id = ${me.id} and (select count(*) from person p where p.tree_id = t.id) >= 2 limit 1`);
+      return (r.rows?.length ?? 0) > 0 ? "ask" : null;
+    }).catch(() => null) : null,
   ]);
   const { theme, cookieSeen, keepSeen } = prefs;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
@@ -102,7 +107,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {/* Anunțul despre cookie-uri vine o singură dată, dar nu peste celelalte două întrebări: așteaptă pagina următoare. */}
             {!cookieSeen && !(ask && suggest) && !(usage && !usage.at)
               && <CookieNotice lead={t("cookieLead")} text={t("cookieText")} more={t("cookieMore")} ok={t("cookieOk")} necessary={t("cookieNecessary")} />}
-            {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice />}
+            {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice afterTree />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
             {me && <UserNotices userId={me.id} />}
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}

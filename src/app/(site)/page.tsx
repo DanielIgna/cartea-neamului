@@ -3,7 +3,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { person, tree, treeMember } from "@/db/schema";
 import { currentUser } from "@/lib/access";
-import FamilyStart from "@/components/FamilyStart";
+import QuickStart from "@/components/QuickStart";
 import GedcomImport from "@/components/GedcomImport";
 import InstallApp from "@/components/InstallApp";
 import JoinTree from "@/components/JoinTree";
@@ -45,14 +45,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const requests = (await myJoinRequests(db, me.id)).map((j) => ({ ...j, at: j.at.toISOString() }));
   const t = await getT("Home");
 
-  // Fără niciun arbore: întâi pornirea pas cu pas; alături, căutarea în arborii rudelor și aducerea unui fișier GEDCOM.
+  // Fără niciun arbore (și imediat după înscriere): primii pași, 3 câmpuri pe ecran (src/components/QuickStart.tsx); alături,
+  // căutarea în arborii rudelor și aducerea unui fișier GEDCOM.
   if (trees.length === 0) {
+    const tq = await getT("QuickStart");
     return (
       <div className="layout">
         <section className="card start-card">
-          <h2>{t("startTitle")}</h2>
-          <p className="muted">{t("startText")}</p>
-          <FamilyStart />
+          <h2>{tq("title")}</h2>
+          <p className="muted">{tq("lead")}</p>
+          <QuickStart />
+          <p className="muted qs-note">{tq("otherWays")}</p>
         </section>
         <aside className="stack">
           <JoinTree compact={false} requests={requests} />

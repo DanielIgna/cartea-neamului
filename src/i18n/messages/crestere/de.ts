@@ -3,6 +3,9 @@ import type { CrestereCatalog } from "./ro";
 export const deCrestere: CrestereCatalog = {
   News: {
     label: "Tipps per E-Mail",
+    signupOptIn: "Ich möchte nützliche Tipps per E-Mail, ich kann mich jederzeit abmelden",
+    signupOptInHint: "Ein paar kurze E-Mails in den ersten Wochen: wie du den Stammbaum beginnst, wie du Verwandte einlädst. Wir geben sie an niemanden weiter.",
+    afterTreeLead: "Dein Stammbaum ist gestartet! Möchtest du Tipps per E-Mail?",
     lead: "Möchtest du Tipps per E-Mail?",
     text: "In deinen ersten drei Wochen können wir dir 4–5 kurze E-Mails mit einfachen Schritten schicken: wie du den Stammbaum beginnst, wie du Verwandte einlädst, wie du die Stimmen deiner Großeltern aufnimmst. Abmelden jederzeit mit einem Klick.",
     yes: "Ja, gerne",

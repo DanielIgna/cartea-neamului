@@ -4,9 +4,9 @@
  * păstrează adresa paginii (cu arborele sau persoana din ea), ce scrie omul sau pe ce apasă: doar numele părții din site.
  */
 import { and, desc, eq, gte, lt, sql } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
 import { consent, usageDay } from "@/db/schema";
-import { DEMO_EMAIL } from "./demo";
 
 export const SECTIONS = {
   acasa: "Prima pagină",
@@ -147,7 +147,7 @@ export async function usageOf(db: Pick<Db, "select">, userId: string, days = 30,
 export async function usageAnswers(db: Db) {
   const r = await db.execute(sql`select granted, count(*) as c from (
       select distinct on (c.user_id) c.user_id, c.granted from ${consent} c join "user" u on u.id = c.user_id
-      where c.purpose = 'usage' and lower(u.email) <> ${DEMO_EMAIL} order by c.user_id, c.created_at desc) last
+      where c.purpose = 'usage' and ${realAccountSql("u")} order by c.user_id, c.created_at desc) last
     group by granted`);
   const rows = (r.rows ?? []) as { granted: boolean; c: unknown }[];
   return { yes: n(rows.find((x) => x.granted)?.c), no: n(rows.find((x) => !x.granted)?.c) };

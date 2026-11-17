@@ -4,12 +4,14 @@ import { requireAdmin } from "@/lib/admin-access";
 import { automationSwitches } from "@/lib/autonomie";
 import { GROWTH_LABELS, NEWS_STEPS, growthDashboard, growthSettings, type GrowthSettings } from "@/lib/crestere";
 import { toggleGrowth } from "@/app/crestere-actions";
+import { activationStats } from "@/lib/activare";
+import { branchStats } from "@/lib/invita-ramura";
 import { AdminNav, Stat, num } from "@/components/admin/ui";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Creștere și recomandări · Admin" };
 
-const CAMPAIGN: Record<string, string> = { invitatie: "Invitații de la rude", "card-nume": "Carduri de nume", "card-localitate": "Carduri de localitate", "bun-venit": "Sfaturi pe email", calendar: "Calendarul de conținut" };
+const CAMPAIGN: Record<string, string> = { invitatie: "Invitații de la rude", "card-nume": "Carduri de nume", "card-localitate": "Carduri de localitate", "bun-venit": "Sfaturi pe email", calendar: "Calendarul de conținut", ramura: "Invită-l să-și completeze ramura", activare: "Emailul „arborele te așteaptă”" };
 const STEP: Record<string, string> = { e1: "Ziua 1 · primii 3 pași", e2: "Ziua 2 · cheamă o rudă", e3: "Ziua 4 · glasul bunicilor", e4: "Ziua 10 · cartea și planurile", e5: "Ziua 21 · ce ai aflat / darul" };
 
 /**
@@ -18,7 +20,7 @@ const STEP: Record<string, string> = { e1: "Ziua 1 · primii 3 pași", e2: "Ziua
  */
 export default async function Crestere() {
   await requireAdmin("/admin/crestere");
-  const [d, g, sw] = await Promise.all([growthDashboard(db), growthSettings(db), automationSwitches(db)]);
+  const [d, g, sw, act, br] = await Promise.all([growthDashboard(db), growthSettings(db), automationSwitches(db), activationStats(db), branchStats(db)]);
   const accRate = d.invitations.all ? Math.round((100 * d.invitations.accepted) / d.invitations.all) : 0;
   return (
     <section className="stack">
@@ -31,6 +33,22 @@ export default async function Crestere() {
         <Stat label="Rude care și-au plătit anul" value={num(d.referrals.all)} hint={`${num(d.referrals.days)} zile în plus date celor care le-au adus`} />
         <Stat label="Ani dăruiți" value={num(d.gifts.all)} hint={`${num(d.gifts.used)} primiți`} />
         <Stat label="„Da” la sfaturi pe email" value={num(d.news.yes)} hint={`${num(d.news.no)} au spus „Nu”`} />
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Activare și invitațiile pe ramură</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          După înscriere, omul ajunge direct la primii pași (3 câmpuri pe ecran). Cine n-are arbore după 24 de ore primește o dată emailul cu legătura
+          la acești pași (automatizarea „activare” din <Link href="/admin/autonomie#automatizari">Autonomie</Link>, {sw.activare ? "pornită" : "oprită"}).
+          După 5 persoane, pe arbore apare „Invită-l pe … să completeze ramura lui”. Conturile de test nu sunt numărate.
+        </p>
+        <div className="stats">
+          <Stat label="Conturi fără arbore" value={`${num(act.noTree)} din ${num(act.users)}`} hint="ținta: sub 1 din 5" tone={act.users && act.noTree * 5 > act.users ? "warn" : "ok"} />
+          <Stat label="Emailuri „arborele te așteaptă”" value={num(act.sent)} hint={`${num(act.started)} și-au făcut arborele după el`} />
+          <Stat label="Îndemnuri „invită-l pe …” arătate" value={num(br.shown)} hint={`la ${num(br.users)} oameni`} />
+          <Stat label="Linkuri făcute din îndemn" value={num(br.links)} hint={`${br.shown ? Math.round((100 * br.links) / br.shown) : 0}% din cei care l-au văzut`} />
+          <Stat label="Rude intrate prin îndemn" value={num(br.accepted)} hint={`${num(br.visitors30)} vizitatori pe linkurile lui în 30 de zile`} />
+        </div>
       </div>
 
       <div className="card">
@@ -48,7 +66,7 @@ export default async function Crestere() {
           ))}
           <li style={{ display: "flex", gap: 12, padding: "10px 0", borderTop: "1px solid var(--line, #e6dccf)" }}>
             <div><b>Emailurile de bun venit</b> <span className={`pill ${sw["bun-venit"] ? "ok" : "warn"}`}>{sw["bun-venit"] ? "pornite" : "oprite"}</span><br />
-              <span className="muted small">Se pornesc din <Link href="/admin/autonomie#automatizari">Autonomie</Link> („Email: sfaturi de bun venit”), după ce citești textele. Pleacă doar celor care au spus „Da”.</span></div>
+              <span className="muted small">Se pornesc din <Link href="/admin/autonomie#automatizari">Autonomie</Link> („Email: sfaturi de bun venit”), după ce citești textele. Pleacă doar celor care au bifat „Vreau sfaturi utile pe email” la înscriere sau au spus „Da” după primul arbore.</span></div>
           </li>
         </ul>
       </div>

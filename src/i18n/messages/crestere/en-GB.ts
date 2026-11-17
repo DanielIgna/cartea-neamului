@@ -3,6 +3,9 @@ import type { CrestereCatalog } from "./ro";
 export const enGBCrestere: CrestereCatalog = {
   News: {
     label: "Tips by email",
+    signupOptIn: "I’d like useful tips by email, I can unsubscribe any time",
+    signupOptInHint: "A few short emails in the first weeks: how to start your tree, how to bring in your relatives. We never share them.",
+    afterTreeLead: "Your tree is up and running! Would you like tips by email?",
     lead: "Would you like tips by email?",
     text: "In your first three weeks we can send you 4–5 short emails with simple steps: how to start your tree, how to bring in your relatives, how to record your grandparents’ voices. Unsubscribe any time, in one click.",
     yes: "Yes, send them",

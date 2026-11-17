@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import { db } from "@/db";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
-import CtaArbore from "@/components/continut/CtaArbore";
+import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
 import HubSearch from "@/components/continut/HubSearch";
 import Pager from "@/components/continut/Pager";
 import { getEntry } from "@/lib/continut/colectii";
@@ -49,6 +49,7 @@ export function NamesHub({ page }: { page: number }) {
         <h1 style={{ marginTop: 0 }}>Nume de familie românești</h1>
         <p>De unde vin numele noastre de familie, ce înseamnă, unde sunt mai des întâlnite și cum le cauți în arhive. Multe s-au născut din prenumele unui strămoș, dintr-o meserie, dintr-o poreclă sau din locul de unde a venit familia.</p>
         <p className="muted" style={{ marginBottom: 0 }}>{all.length} de nume · vezi și <Link href="/ghid/nume-schimbate-si-variante">variantele de scriere în acte</Link>, <Link href="/glosar/patronimic">patronimicul</Link>, <Link href="/localitati">arhivele pe județe</Link></p>
+        <CtaSus />
       </div>
       <HubSearch items={all.map((n) => ({ href: `/nume/${n.slug}`, title: n.name, text: n.variants.join(", ") }))} label="Caută un nume" placeholder="Caută un nume de familie…">
         <div className="card">
@@ -104,6 +105,7 @@ export async function NamePage({ slug }: { slug: string }) {
           <div><b>Se mai scrie</b>{n.variants.length ? n.variants.join(", ") : "—"}</div>
           {stat && <div><b>În Cartea Neamului</b>peste {stat.personsAtLeast} de persoane, în {stat.trees} arbori</div>}
         </div>
+        <CtaSus label={`Începe arborele familiei ${n.name}`} />
         <h2>Originea și semnificația</h2>
         <p>{renderEm(t.origin)}</p>
         <p>{t.kindText}</p>

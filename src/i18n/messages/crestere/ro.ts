@@ -10,6 +10,9 @@ import type { Widen } from "../types";
 export const roCrestere = {
   News: {
     label: "Sfaturi pe email",
+    signupOptIn: "Vreau sfaturi utile pe email, mă pot dezabona oricând",
+    signupOptInHint: "Câteva emailuri scurte în primele săptămâni: cum începi arborele, cum îți chemi rudele. Nu le dăm nimănui.",
+    afterTreeLead: "Arborele tău a pornit! Vrei sfaturi pe email?",
     lead: "Vrei sfaturi pe email?",
     text: "În primele trei săptămâni îți putem trimite 4–5 emailuri scurte, cu pași simpli: cum începi arborele, cum îți chemi rudele, cum înregistrezi glasul bunicilor. Te dezabonezi oricând, dintr-un clic.",
     yes: "Da, trimite-mi",
