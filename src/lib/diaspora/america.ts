@@ -1,4 +1,7 @@
-import type { Region } from "./tipuri";
+import type { CountryKey, Region } from "./tipuri";
+import { AMERICA_CITIES, EUROPE_CITIES } from "./orase";
+import { MORE } from "./orase-mai-mult";
+import { ownWords } from "./extins";
 
 /**
  * Statele SUA, provinciile Canadei și câteva orașe mari. Toate au pagină (Daniel: „toate statele, toate provinciile”), dar
@@ -348,10 +351,15 @@ export const REGIONS: Region[] = [
     const langs: Region["langs"] = slug === "quebec" ? ["fr", "en", "ro"] : ["en", "ro"];
     return { slug, country: "ca", kind: "province", name: { ro, en, fr }, where: { ro: `în ${ro}`, en: `in ${en}`, fr: FR_WHERE[slug] ?? `en ${fr}` }, langs, notes: n ? { ro: n.ro, en: n.en, fr: n.fr } : {}, cities: n?.cities };
   }),
-  ...CITY_NOTES,
+  ...CITY_NOTES.map((r) => ({ ...r, notes: { ...r.notes, ro: [...(r.notes.ro ?? []), ...(MORE[r.slug] ?? [])] } })),
+  ...AMERICA_CITIES,
+  ...EUROPE_CITIES,
 ];
 
-export const regionsOf = (country: "us" | "ca", kind?: Region["kind"]) => REGIONS.filter((r) => r.country === country && (!kind || r.kind === kind));
-export const getRegion = (country: "us" | "ca", slug: string) => REGIONS.find((r) => r.country === country && r.slug === slug) ?? null;
+export const regionsOf = (country: CountryKey, kind?: Region["kind"]) => REGIONS.filter((r) => r.country === country && (!kind || r.kind === kind));
+export const getRegion = (country: CountryKey, slug: string) => REGIONS.find((r) => r.country === country && r.slug === slug) ?? null;
 /** O pagină de stat sau provincie intră în Google doar dacă are text propriu. */
-export const regionIndexable = (r: Region) => (r.notes.ro?.length ?? 0) > 0;
+/** Pragul unei pagini de oraș (Daniel, 17.11.2026: „300–600 de cuvinte pe oraș”); sub el, pagina rămâne în afara Google. */
+export const CITY_MIN_WORDS = 300;
+export const regionIndexable = (r: Region) =>
+  r.kind === "city" ? ownWords(r.notes.ro ?? []) >= CITY_MIN_WORDS : (r.notes.ro?.length ?? 0) > 0;

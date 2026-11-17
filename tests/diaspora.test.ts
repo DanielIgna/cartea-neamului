@@ -181,3 +181,50 @@ describe("diaspora: pasul 1 (17.11.2026) – cele 7 țări mari", async () => {
     expect(diasporaSrc(resolve()!)).toBe("diaspora");
   });
 });
+
+describe("diaspora: pasul 2 (17.11.2026) – orașele", async () => {
+  const { ownWords, EXTRA } = await import("@/lib/diaspora/extins");
+  const { CITY_MIN_WORDS } = await import("@/lib/diaspora/america");
+  const { fitTitle } = await import("@/lib/page-metadata");
+  const { titleOf, descriptionOf } = await import("@/lib/diaspora");
+  const cities = REGIONS.filter((r) => r.kind === "city");
+
+  it("are cel puțin 30 de orașe, cele cerute de Daniel printre ele", () => {
+    expect(cities.length).toBeGreaterThanOrEqual(30);
+    for (const [a, b] of [["italia", "roma"], ["spania", "madrid"], ["spania", "castellon"], ["germania", "munchen"], ["marea-britanie", "londra"],
+      ["statele-unite", "chicago"], ["statele-unite", "new-york-city"], ["statele-unite", "los-angeles"], ["statele-unite", "sacramento"],
+      ["canada", "toronto"], ["canada", "montreal"], ["israel", "tel-aviv"], ["israel", "haifa"]]) expect(resolve(a, b), `${a}/${b}`).toBeTruthy();
+  });
+
+  it("fiecare oraș are peste 300 de cuvinte proprii în română și intră în Google", () => {
+    for (const r of cities) {
+      const w = ownWords(r.notes.ro ?? []);
+      expect(w, `${r.slug}: ${w}`).toBeGreaterThanOrEqual(CITY_MIN_WORDS);
+      expect(resolve(...(regionPathOf(r)))!.indexable, r.slug).toBe(true);
+    }
+  });
+
+  it("consulatele arătate pe oraș există în lista verificată a țării", () => {
+    for (const r of cities) for (const m of r.mission ?? []) {
+      const slug = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country];
+      expect(EXTRA[slug].missions.some((x) => x.city === m), `${r.slug} → ${m}`).toBe(true);
+    }
+  });
+
+  it("titluri sub 60 de caractere, descrieri 100–160, fără paragrafe lungi repetate", () => {
+    const seen = new Set<string>();
+    for (const r of cities) {
+      const e = resolve(...regionPathOf(r))!;
+      expect(fitTitle(titleOf(e, "ro")).length, r.slug).toBeLessThanOrEqual(60);
+      const d = descriptionOf(e, "ro").length;
+      expect(d, r.slug).toBeGreaterThanOrEqual(100);
+      expect(d, r.slug).toBeLessThanOrEqual(160);
+      for (const p of r.notes.ro ?? []) if (p.split(/\s+/).length >= 25) { expect(seen.has(p), p.slice(0, 60)).toBe(false); seen.add(p); }
+    }
+  });
+});
+
+function regionPathOf(r: { country: string; slug: string }): [string, string] {
+  const c = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" }[r.country]!;
+  return [c, r.slug];
+}

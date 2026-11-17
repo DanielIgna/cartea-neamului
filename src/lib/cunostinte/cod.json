@@ -723,6 +723,8 @@
   "src/lib/diaspora/america.ts",
   "src/lib/diaspora/extins.ts",
   "src/lib/diaspora/index.ts",
+  "src/lib/diaspora/orase-mai-mult.ts",
+  "src/lib/diaspora/orase.ts",
   "src/lib/diaspora/tari.ts",
   "src/lib/diaspora/teme.ts",
   "src/lib/diaspora/tipuri.ts",

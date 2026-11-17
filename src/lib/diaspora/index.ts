@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
-import { canonicalUrl } from "@/lib/page-metadata";
+import { canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { COUNTRIES, getCountry } from "./tari";
 import { REGIONS, getRegion, regionIndexable } from "./america";
 import { THEMES, getTheme } from "./teme";
@@ -23,7 +23,10 @@ export type Entry =
   | { kind: "theme"; path: string; langs: Lang[]; indexable: true; theme: Theme };
 
 const countryPath = (c: Country) => `${HUB_PATH}/${c.slug}`;
-const COUNTRY_OF = { us: "statele-unite", ca: "canada" } as const;
+export const COUNTRY_OF = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel" } as const;
+const KEY_OF = Object.fromEntries(Object.entries(COUNTRY_OF).map(([k, v]) => [v, k])) as Record<string, keyof typeof COUNTRY_OF>;
+/** Cheia țării (pentru orașe și regiuni) după pagina ei. */
+export const keyOfCountry = (c: Country) => KEY_OF[c.slug] ?? null;
 export const regionPath = (r: Region) => `${HUB_PATH}/${COUNTRY_OF[r.country]}/${r.slug}`;
 export const themePath = (t: Theme) => `${HUB_PATH}/${t.slug}`;
 export { countryPath };
@@ -44,7 +47,7 @@ export function entries(): Entry[] {
 export function resolve(a?: string, b?: string): Entry | null {
   if (!a) return entries()[0];
   if (b) {
-    const country = a === "statele-unite" ? "us" : a === "canada" ? "ca" : null;
+    const country = KEY_OF[a] ?? null;
     const r = country ? getRegion(country, b) : null;
     return r ? entries().find((e) => e.kind === "region" && e.region === r) ?? null : null;
   }
@@ -102,7 +105,10 @@ export function titleOf(e: Entry, l: Lang) {
   switch (e.kind) {
     case "hub": return `${u.hubTitle} | Cartea Neamului`;
     case "country": return u.titleCountry(tx(e.country.where, l));
-    case "region": return u.titleRegion(tx(e.region.where, l));
+    case "region": {
+      const t = u.titleRegion(tx(e.region.where, l));
+      return fitTitle(t).length <= 60 || !u.titleRegionShort ? t : u.titleRegionShort(tx(e.region.where, l));
+    }
     case "theme": return `${tx(e.theme.name, l)} | Cartea Neamului`;
   }
 }

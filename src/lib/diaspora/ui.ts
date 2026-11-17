@@ -12,6 +12,8 @@ type Ui = {
   history: string; where: string; docs: string; records: string; community: string; steps: string; related: string; otherLangs: string;
   titleCountry: (where: string) => string; descCountry: (where: string) => string;
   titleRegion: (where: string) => string; descRegion: (where: string, c: string) => string;
+  /** Titlul scurt, când cel obișnuit nu încape în 60 de caractere (orașe cu nume lung). */
+  titleRegionShort?: (where: string) => string;
   citiesLine: (list: string) => string;
   docsSteps: (x: Ctx) => string[];
   communityText: (x: Ctx) => string[];
@@ -30,8 +32,9 @@ const ro: Ui = {
   community: "Comunități și asociații", steps: "Pas cu pas: arborele familiei, de departe", related: "Vezi și", otherLangs: "Pagina în alte limbi",
   titleCountry: (w) => `Români ${w} – află-ți rădăcinile din România | Cartea Neamului`,
   descCountry: (w) => `Cum au ajuns românii ${w}, cum ceri acte din România de acolo, ce arhive există și cum faci arborele familiei cu rudele de acasă.`,
-  titleRegion: (w) => `Români ${w}: comunitate, acte din România, genealogie | Cartea Neamului`,
-  descRegion: (w, c) => `Românii ${w} (${c}): istoria comunității, acte din România cerute de acolo și arborele familiei.`,
+  titleRegion: (w) => `Români ${w} – află-ți rădăcinile din România | Cartea Neamului`,
+  titleRegionShort: (w) => `Români ${w} – rădăcini și acte | Cartea Neamului`,
+  descRegion: (w, c) => `Românii ${w} (${c}): comunitatea, consulatul României, unde ceri actele de acolo și din România și cum faci arborele familiei.`,
   citiesLine: (l) => `Cele mai multe familii de români sunt în ${l}.`,
   docsSteps: ({ where, eu }) => [
     "Află întâi ce act îți trebuie și unde e: certificatele de naștere, căsătorie sau deces se eliberează de starea civilă a primăriei unde au fost înregistrate; registrele mai vechi de 100 de ani sunt de obicei la Arhivele Naționale, la serviciul județean.",
