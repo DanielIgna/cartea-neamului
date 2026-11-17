@@ -11,6 +11,7 @@ import { enGBProbleme } from "./probleme/en-GB";
 import { enGBResurse } from "./resurse/en-GB";
 import { enGBCadou } from "./cadou/en-GB";
 import { enGBCrestere } from "./crestere/en-GB";
+import { enGBActivare } from "./activare/en-GB";
 import { enGBInvitatii } from "./invitatii/en-GB";
 import { enGBConversie } from "./conversie/en-GB";
 import { enGBSursa } from "./sursa/en-GB";
@@ -442,6 +443,7 @@ export const enGB: Catalog = {
   ...enGBResurse,
   ...enGBCadou,
   ...enGBCrestere,
+  ...enGBActivare,
   ...enGBInvitatii,
   ...enGBConversie,
   ...enGBSursa,

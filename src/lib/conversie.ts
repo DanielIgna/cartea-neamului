@@ -18,6 +18,7 @@
  */
 import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
 import { and, desc, eq, isNull, sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import { z } from "zod";
 import type { Db } from "@/db";
 import { appSetting, conversionMail, conversionOffer } from "@/db/schema";
@@ -286,7 +287,7 @@ const minorToMain = (v: unknown) => n(v) / 100;
  */
 export async function conversionStats(db: Db, range: { from: string; to: string }) {
   const [cohort] = await rows(db, sql`
-    with c as (select u.id from "user" u where u.created_at::date between ${range.from}::date and ${range.to}::date and u.email not like 'demo@%')
+    with c as (select u.id from "user" u where u.created_at::date between ${range.from}::date and ${range.to}::date and ${realAccountSql("u")})
     select count(*) as accounts,
       count(*) filter (where exists (select 1 from payment p where p.user_id = c.id and p.kind = 'an')) as paid,
       count(*) filter (where exists (select 1 from conversion_mail m where m.user_id = c.id)) as mailed

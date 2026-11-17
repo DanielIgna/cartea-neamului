@@ -423,7 +423,18 @@ export const FUNCTIONS: Fn[] = [
     metric: { table: "account_source", label: "conturi cu sursa notată" },
     dashboard: "/admin/linkuri",
     tests: ["tests/sursa.test.ts"],
-    human: "Daniel face linkurile pentru fiecare grup sau campanie în Admin → Linkuri cu sursă.",
+    human: "Daniel face linkurile pentru fiecare grup sau campanie în Admin → Linkuri cu sursă (și „Generează linkuri pentru grupuri Facebook”).",
+  },
+  {
+    key: "activare", name: "Activarea: primii pași, emailul de 24 h și invitația pe ramură", area: "comunicare", lifecycle: "live", risk: "mediu", riskWhy: "Scrie oamenilor (email) și le arată un îndemn în arbore; doar conturi reale, cu dezabonare.",
+    what: "După înscriere omul ajunge direct la primii pași (3 câmpuri pe ecran); cine n-are arbore după 24 h primește o dată un email cu legătura; după 5 persoane, pe arbore apare „Invită-l pe … să completeze ramura lui”; bifa „Vreau sfaturi utile pe email” la înscriere și al doilea prilej după primul arbore; conturile de test (demo, @example.com, test-link-…) ascunse din toate cifrele.",
+    engine: ["src/lib/activare.ts", "src/lib/activare-shared.ts", "src/lib/invita-ramura.ts", "src/lib/conturi-test.ts", "src/components/QuickStart.tsx", "src/components/BranchInvite.tsx", "src/components/BranchInviteBox.tsx", "src/components/NewsNotice.tsx"],
+    pages: ["/", "/primii-pasi", "/arbore/[id]", "/admin/crestere"],
+    tables: ["automation_mark", "consent", "invitation"],
+    automations: ["activare", "bun-venit"],
+    dashboard: "/admin/crestere",
+    tests: ["tests/activare.test.ts"],
+    env: ["RESEND_API_KEY"],
   },
   // Admin
   {

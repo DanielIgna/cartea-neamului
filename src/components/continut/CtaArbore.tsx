@@ -10,3 +10,15 @@ export default function CtaArbore({ title = "Începe arborele familiei tale", te
     </div>
   );
 }
+
+/**
+ * Îndemnul de sus (17.11.2026, mobil): butonul principal vizibil fără derulare, imediat sub datele paginii. Cel de jos rămâne.
+ */
+export function CtaSus({ label = "Începe arborele gratuit" }: { label?: string }) {
+  return (
+    <p className="cta-top">
+      <Link className="btn primary" href="/intrare?mod=cont-nou">{label} →</Link>
+      <small className="muted">7 zile gratuite, fără card</small>
+    </p>
+  );
+}

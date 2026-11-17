@@ -3,6 +3,9 @@ import type { CrestereCatalog } from "./ro";
 export const esCrestere: CrestereCatalog = {
   News: {
     label: "Consejos por correo",
+    signupOptIn: "Quiero consejos útiles por correo, puedo darme de baja cuando quiera",
+    signupOptInHint: "Unos pocos correos breves las primeras semanas: cómo empezar el árbol, cómo invitar a tus familiares. No los compartimos con nadie.",
+    afterTreeLead: "¡Tu árbol ya está en marcha! ¿Quieres consejos por correo?",
     lead: "¿Quieres consejos por correo?",
     text: "En tus tres primeras semanas podemos enviarte 4 o 5 correos breves con pasos sencillos: cómo empezar el árbol, cómo invitar a tus familiares, cómo grabar la voz de tus abuelos. Puedes darte de baja cuando quieras, con un clic.",
     yes: "Sí, envíamelos",

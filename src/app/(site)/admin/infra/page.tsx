@@ -128,7 +128,7 @@ export default async function AdminInfra() {
             <thead><tr><th>Tabel</th><th className="n">Rânduri</th><th className="n">Mărime</th></tr></thead>
             <tbody>
               {i.tables.map((t) => (
-                <tr key={t.name}><td>{t.name}</td><td className="n">{num(t.rows)}</td><td className="n">{bytes(t.bytes)}</td></tr>
+                <tr key={t.name}><td>{t.name}{t.name === "user" && i.testAccounts > 0 && <small>{num(t.rows - i.testAccounts)} conturi reale, {num(i.testAccounts)} de test (demo, @example.com, test-link-…)</small>}</td><td className="n">{num(t.rows)}</td><td className="n">{bytes(t.bytes)}</td></tr>
               ))}
             </tbody>
           </table>

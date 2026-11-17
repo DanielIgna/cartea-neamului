@@ -3,6 +3,9 @@ import type { CrestereCatalog } from "./ro";
 export const huCrestere: CrestereCatalog = {
   News: {
     label: "Tanácsok e-mailben",
+    signupOptIn: "Hasznos tippeket kérek e-mailben, bármikor leiratkozhatok",
+    signupOptInHint: "Néhány rövid e-mail az első hetekben: hogyan kezdd a családfát, hogyan hívd meg a rokonaidat. Senkinek nem adjuk tovább.",
+    afterTreeLead: "Elindult a családfád! Kérsz tippeket e-mailben?",
     lead: "Kérsz tanácsokat e-mailben?",
     text: "Az első három hétben 4–5 rövid e-mailt küldhetünk egyszerű lépésekkel: hogyan kezdd el a családfát, hogyan hívd meg a rokonaidat, hogyan rögzítsd a nagyszüleid hangját. Bármikor leiratkozhatsz, egy kattintással.",
     yes: "Igen, kérem",

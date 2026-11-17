@@ -11,6 +11,7 @@ import { itProbleme } from "./probleme/it";
 import { itResurse } from "./resurse/it";
 import { itCadou } from "./cadou/it";
 import { itCrestere } from "./crestere/it";
+import { itActivare } from "./activare/it";
 import { itInvitatii } from "./invitatii/it";
 import { itConversie } from "./conversie/it";
 import { itSursa } from "./sursa/it";
@@ -442,6 +443,7 @@ export const it: Catalog = {
   ...itResurse,
   ...itCadou,
   ...itCrestere,
+  ...itActivare,
   ...itInvitatii,
   ...itConversie,
   ...itSursa,

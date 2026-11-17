@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
-import CtaArbore from "@/components/continut/CtaArbore";
+import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
 import ShareCard from "@/components/continut/ShareCard";
 import { getEntry } from "@/lib/continut/colectii";
 import { countyPath, getCounty, type County } from "@/lib/continut/localitati";
@@ -121,6 +121,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           <div><b>Locuitori (2021)</b>{u.pop.toLocaleString("ro-RO")}</div>
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
+        <CtaSus label={`Începe arborele familiei din ${u.name}`} />
         <h2>Pe scurt</h2>
         {uatIntro(u, c).map((p) => <p key={p}>{p}</p>)}
         <h2>Unde ceri actele</h2>

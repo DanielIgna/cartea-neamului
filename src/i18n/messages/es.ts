@@ -11,6 +11,7 @@ import { esProbleme } from "./probleme/es";
 import { esResurse } from "./resurse/es";
 import { esCadou } from "./cadou/es";
 import { esCrestere } from "./crestere/es";
+import { esActivare } from "./activare/es";
 import { esInvitatii } from "./invitatii/es";
 import { esConversie } from "./conversie/es";
 import { esSursa } from "./sursa/es";
@@ -442,6 +443,7 @@ export const es: Catalog = {
   ...esResurse,
   ...esCadou,
   ...esCrestere,
+  ...esActivare,
   ...esInvitatii,
   ...esConversie,
   ...esSursa,

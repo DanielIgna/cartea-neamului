@@ -3,6 +3,9 @@ import type { CrestereCatalog } from "./ro";
 export const nlCrestere: CrestereCatalog = {
   News: {
     label: "Tips per e-mail",
+    signupOptIn: "Ik wil nuttige tips per e-mail, ik kan me altijd afmelden",
+    signupOptInHint: "Een paar korte e-mails in de eerste weken: hoe je je stamboom begint, hoe je familie uitnodigt. We delen ze met niemand.",
+    afterTreeLead: "Je stamboom is begonnen! Wil je tips per e-mail?",
     lead: "Wil je tips per e-mail?",
     text: "In je eerste drie weken kunnen we je 4 à 5 korte e-mails sturen met eenvoudige stappen: hoe je de stamboom begint, hoe je familie uitnodigt, hoe je de stem van je grootouders opneemt. Afmelden kan altijd, met één klik.",
     yes: "Ja, stuur maar",

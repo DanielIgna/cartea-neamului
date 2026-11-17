@@ -35,12 +35,14 @@ const ORDERS: Record<string, { label: string; cmp: (a: Row, b: Row) => number }>
 const pctOf = (a: number, b: number) => (b ? Math.round((100 * a) / b) : 0);
 
 /** Oamenii: drumul tuturor de la cont la amintiri, ce folosesc și cifrele fiecăruia. Doar cifre, niciodată ce scriu. */
-export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string; sursa?: string; etapa_crm?: string }> }) {
+export default async function AdminPeople({ searchParams }: { searchParams: Promise<{ arata?: string; ordine?: string; sursa?: string; teste?: string; etapa_crm?: string }> }) {
   await requireAdmin("/admin/oameni");
   const sp = await searchParams;
   // Scorul și etapa din CRM (src/lib/crm-scor.ts): recalculate cel mult o dată pe oră.
   await refreshIfStale(db).catch((e) => console.error("crm: scorurile nu s-au recalculat", e));
-  const [people, usage, sources, names, signals] = await Promise.all([peopleList(db), usageOverview(db, 30), sourceKeys(db), linkNames(db), signalsMap(db).catch(() => new Map())]);
+  // „Ascunde conturile de test” (demo, @example.com, test-link-…; src/lib/conturi-test.ts) e pornit de la sine, ca peste tot în Admin.
+  const showTest = sp.teste === "1";
+  const [people, usage, sources, names, signals] = await Promise.all([peopleList(db, undefined, { showTest }), usageOverview(db, 30), sourceKeys(db), linkNames(db), signalsMap(db).catch(() => new Map())]);
   const crmStage = LIFE_STAGES.find((k) => k === sp.etapa_crm) ?? null;
   const labelOfSource = (k: string) => labelOf(k, names.get(k));
   const show = FILTERS[sp.arata ?? ""] ? sp.arata! : "toti";
@@ -54,7 +56,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
   const top = usage.sections[0];
   const total = people.length;
   const silent = Math.max(0, total - usage.answers.yes - usage.answers.no);
-  const href = (arata: string, ordine: string, sursa = source) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}), ...(sursa ? { sursa } : {}) })}`;
+  const href = (arata: string, ordine: string, sursa = source, teste = showTest) => `/admin/oameni?${new URLSearchParams({ ...(arata !== "toti" ? { arata } : {}), ...(ordine !== "noi" ? { ordine } : {}), ...(sursa ? { sursa } : {}), ...(teste ? { teste: "1" } : {}) })}`;
 
   return (
     <section className="stack">
@@ -65,6 +67,12 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
         <p className="muted" style={{ marginTop: 0 }}>
           Toți cei care și-au făcut cont, în afară de contul de probă. Aici sunt doar cifre: ce scriu oamenii în amintiri și în mesaje nu se vede, iar
           capitolul „Credința” nu e numărat deloc.
+        </p>
+        <p style={{ marginTop: 0 }}>
+          <Link href={href(show, order, source, !showTest)} className="radio" role="switch" aria-checked={!showTest}>
+            <input type="checkbox" readOnly checked={!showTest} tabIndex={-1} /> Ascunde conturile de test
+          </Link>{" "}
+          <small className="muted">(contul de probă, adresele @example.com și cele venite prin linkuri test-link-…; ascunse la fel în Business, Infra, Creștere și Analiză)</small>
         </p>
         <div className="stats">
           <Stat label="Conturi" value={num(total)} hint={`${people.filter((p) => since(p.createdAt, 7)).length} noi în 7 zile`} />
@@ -147,7 +155,7 @@ export default async function AdminPeople({ searchParams }: { searchParams: Prom
               <tbody>
                 {list.map((p) => (
                   <tr key={p.id}>
-                    <td><Link href={`/admin/oameni/${p.id}`}>{p.name}</Link><small>{p.email}</small><small>cont din {day(p.createdAt)}{p.phone ? " · telefon" : ""}</small></td>
+                    <td><Link href={`/admin/oameni/${p.id}`}>{p.name}</Link>{p.test && <> <span className="pill">test</span></>}<small>{p.email}</small><small>cont din {day(p.createdAt)}{p.phone ? " · telefon" : ""}</small></td>
                     <td className="tight">{p.source === "necunoscut" ? <span className="muted">necunoscut</span> : labelOfSource(p.source)}</td>
                     <td><StagePill stage={p.stage} /></td>
                     <td>{p.mainTree ? <>{p.mainTree.name}<small>{num(p.mainTree.persons)} persoane · {p.mainTree.members} {p.mainTree.members === 1 ? "membru" : "membri"}{p.trees > 1 ? ` · în ${p.trees} arbori` : ""}</small></> : <span className="muted">—</span>}</td>

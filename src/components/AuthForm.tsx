@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import { MIN_AGE } from "@/lib/legal";
 import { SIGNUP_PARTNER_COOKIE } from "@/lib/partners-shared";
 import { ANSWER_COOKIE, encodeAnswer, isAnswer, type Answer } from "@/lib/sursa-shared";
+import { SIGNUP_NEWS_COOKIE } from "@/lib/activare-shared";
 
 /**
  * Bifa pentru beneficiile de la PropManage ține minte alegerea într-un cookie scurt (30 de minute), pe care îl citește crearea
@@ -14,6 +15,11 @@ import { ANSWER_COOKIE, encodeAnswer, isAnswer, type Answer } from "@/lib/sursa-
  */
 function rememberPartner(on: boolean) {
   document.cookie = on ? `${SIGNUP_PARTNER_COOKIE}=propmanage; Path=/; Max-Age=1800; SameSite=Lax` : `${SIGNUP_PARTNER_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
+
+/** Bifa „Vreau sfaturi utile pe email” (nebifată de la sine), citită la crearea contului, și cu Google (src/lib/activare-shared.ts). */
+function rememberNews(on: boolean) {
+  document.cookie = on ? `${SIGNUP_NEWS_COOKIE}=1; Path=/; Max-Age=1800; SameSite=Lax` : `${SIGNUP_NEWS_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
 }
 
 /**
@@ -100,6 +106,8 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
   const [secondStep, setSecondStep] = useState(false);
   const tp = useTranslations("Partners");
   const [partner, setPartner] = useState(false);
+  const tn = useTranslations("News");
+  const [news, setNews] = useState(false);
   const [signUp, setSignUp] = useState(startWithSignUp);
   const [heard, setHeard] = useState<Answer | "">("");
   const [heardOther, setHeardOther] = useState("");
@@ -115,12 +123,14 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
     const robot = String(f.get("cf-turnstile-response") ?? "");
     if (signUp && turnstileKey && !robot) { setPending(false); setError(ts("robot")); return; }
     rememberPartner(signUp && partner);
+    rememberNews(signUp && news);
     if (signUp) rememberAnswer(heard, heardOther);
     const res = signUp
       ? await authClient.signUp.email({ email, password, name: String(f.get("name")) }, robot ? { headers: { "x-captcha-response": robot } } : undefined)
       : await authClient.signIn.email({ email, password });
     setPending(false);
     rememberPartner(false);
+    rememberNews(false);
     if (signUp && !res.error) rememberAnswer("", "");
     if (res.error) {
       const code = res.error.code;
@@ -145,6 +155,7 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
   async function withGoogle() {
     setError(""); setPending(true);
     rememberPartner(signUp && partner);
+    rememberNews(signUp && news);
     if (signUp) rememberAnswer(heard, heardOther);
     const res = await authClient.signIn.social({ provider: "google", callbackURL: next, errorCallbackURL: `/intrare?next=${encodeURIComponent(next)}&eroare=google` });
     if (res?.error) { setPending(false); setError(t("googleFailed")); }
@@ -165,6 +176,14 @@ export default function AuthForm({ next, startWithSignUp, google = false, oauthE
             {SOURCE_OPTIONS.map(([v, k]) => <option key={v} value={v}>{t(k)}</option>)}
           </select>
           {heard === "altceva" && <input name="heardOther" value={heardOther} onChange={(e) => setHeardOther(e.target.value)} maxLength={120} placeholder={t("srcOtherHint")} aria-label={t("srcOtherHint")} style={{ marginTop: 6 }} />}
+        </label>
+      )}
+      {signUp && (
+        // Sfaturile pe email (acordul `news`): bifă vizibilă, nebifată de la sine, separată de Termeni; deasupra lui „Continuă cu Google”, ca
+        // să ajungă și la contul făcut cu Google. Fără ea nu pleacă niciun sfat.
+        <label className="radio partner-optin news-optin">
+          <input type="checkbox" name="news" checked={news} onChange={(e) => setNews(e.target.checked)} />
+          <span>{tn("signupOptIn")}<small className="muted">{tn("signupOptInHint")}</small></span>
         </label>
       )}
       {google && (

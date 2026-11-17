@@ -11,6 +11,7 @@ import { deProbleme } from "./probleme/de";
 import { deResurse } from "./resurse/de";
 import { deCadou } from "./cadou/de";
 import { deCrestere } from "./crestere/de";
+import { deActivare } from "./activare/de";
 import { deInvitatii } from "./invitatii/de";
 import { deConversie } from "./conversie/de";
 import { deSursa } from "./sursa/de";
@@ -442,6 +443,7 @@ export const de: Catalog = {
   ...deResurse,
   ...deCadou,
   ...deCrestere,
+  ...deActivare,
   ...deInvitatii,
   ...deConversie,
   ...deSursa,

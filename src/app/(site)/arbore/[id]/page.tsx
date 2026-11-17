@@ -10,6 +10,7 @@ import { storageConfigured } from "@/lib/storage";
 import TreeScreen from "@/components/TreeScreen";
 import TreeLimits from "@/components/TreeLimits";
 import VoiceNudge from "@/components/VoiceNudge";
+import BranchInvite from "@/components/BranchInvite";
 import { loadDecisions } from "@/lib/verificari-db";
 import { exportLocked } from "@/lib/plata";
 import PageIntl from "@/i18n/PageIntl";
@@ -36,6 +37,7 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   const home = start ?? data.rootId;
   return (
     <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations"]}>
+      {can(role, "editor") && !p && <BranchInvite treeId={id} userId={me.id} />}
       {can(role, "contributor") && <TreeLimits treeId={id} />}
       {can(role, "contributor") && <VoiceNudge treeId={id} />}
       <TreeScreen treeId={id} treeName={data.tree.name} slots={data.slots} people={data.people} rels={data.rels} raised={data.raised} centerId={data.centerId} generations={generations}

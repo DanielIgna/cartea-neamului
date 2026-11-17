@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "crm-scor"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -64,6 +64,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Doar celor care au spus „Da” la „Vrei sfaturi pe email?”: 5 emailuri scurte în primele 3 săptămâni (ziua 1, 2, 4, 10, 21), câte unul pe zi, sărind ce omul a făcut deja (a invitat o rudă, a înregistrat un glas, a plătit). Fiecare are dezabonare dintr-un clic. Vezi Admin → Creștere." },
   { key: "conversie", label: "Email: din gratuit în plătit", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY, plățile pornite și cheia Stripe (pentru codul de reducere)",
     what: "Șase emailuri în zilele gratuite și după ele (ziua 1, 3, 5, 7, 8, 14; zilele, procentul și durata reducerii din Admin → Conversie): bun venit, câte persoane are arborele + invitație, planurile, „se încheie azi”, codul unic de reducere (Stripe, o folosire, expiră singur) și ultima reamintire. Cel mult unul pe zi, în limba omului, cu dezabonare dintr-un clic; deschiderile și clicurile se văd în Analiză → Conversii. Cât e pornită, emailul vechi „zilele gratuite se termină” nu mai pleacă, ca să nu se dubleze." },
+  { key: "activare", label: "Email: arborele încă nefăcut (24 h)", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
+    what: "Un singur email, în limba omului, celor care după 24 de ore de la înscriere încă n-au niciun arbore: legătura directă la primii pași („Adaugă-te pe tine, apoi pe părinți și bunici”). Doar conturi de 24–96 de ore, nu și conturile de test; cine s-a dezabonat de la emailurile despre cont nu-l primește. Rezultatele, în Admin → Creștere." },
   { key: "crm-scor", label: "CRM: scoruri și etape", risk: "singur", defaultOn: true, everyDays: 1,
     what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
@@ -302,6 +304,33 @@ async function runNews({ db, now }: Ctx): Promise<RunResult> {
     details: byStep, verified: sent === due };
 }
 
+/** Emailul de activare (src/lib/activare.ts): cine n-are arbore după 24 de ore primește o dată legătura la primii pași. */
+async function runActivation({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
+  const { ACTIVATION_PATH, activationCandidates, markActivationSent } = await import("./activare");
+  const { unsubUrl, unsubPostUrl } = await import("./conversie");
+  const { footerFor, renderMail } = await import("./emailuri");
+  const { sendEmail, emailSent } = await import("./email");
+  const people = await activationCandidates(db, now);
+  let sent = 0;
+  for (const u of people) {
+    const locale = isLocale(u.locale) ? u.locale : "ro";
+    const [t, app] = await Promise.all([getT("ActivationMail", locale), getAppName(locale)]);
+    const name = (u.name ?? "").split(" ")[0] || u.name || "";
+    const href = `${SITE_URL}${ACTIVATION_PATH}?utm_source=email&utm_medium=email&utm_campaign=activare`;
+    const { html, text } = renderMail([
+      ...t("body", { name, app }).split("\n\n").map((p) => ({ p })),
+      { button: t("button"), href },
+      { note: t("why", { app }), link: t("unsubscribe"), href: unsubUrl(SITE_URL, u.id) },
+    ], await footerFor(locale));
+    const r = await sendEmail({ to: u.email, subject: t("subject", { app }), html, text, tag: "activare", idempotencyKey: `activare-${u.id}`,
+      headers: { "List-Unsubscribe": `<${unsubPostUrl(SITE_URL, u.id)}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } });
+    if (emailSent(r)) { await markActivationSent(db, u.id, now); sent++; }
+  }
+  return { status: sent ? "ok" : people.length ? "eroare" : "nimic", observed: people.length, acted: sent,
+    note: people.length ? `${sent} din ${people.length} emailuri trimise` : "niciun cont nou fără arbore în fereastra de 24–96 de ore", verified: sent === people.length };
+}
+
 /** Emailurile din gratuit în plătit (src/lib/conversie.ts): cel mult un email pe zi pentru fiecare om. */
 async function runConversionMail({ db, now }: Ctx): Promise<RunResult> {
   if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
@@ -324,6 +353,7 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   arhivare: runArchiveDaily,
   "motor-seo": runSeoEngine,
   conversie: runConversionMail,
+  activare: runActivation,
   "crm-scor": runCrmScores,
 };
 
@@ -620,6 +650,21 @@ export async function autonomyPage(db: Db) {
  * „Motorul SEO” pe pornit și rulează imediat primul lot (trecut în jurnal ca rulare manuală), ca primele pagini să se poată
  * verifica azi; după aceea rulează ceasul zilnic, iar comutatorul din Admin → Autonomie hotărăște.
  */
+/**
+ * Activarea și sfaturile pe email (Daniel, 17.11.2026: „sfaturile de bun venit au 0 trimise”): o singură dată, la publicare,
+ * pornește emailul de activare (24 h fără arbore) și șirul de bun venit, care pleacă doar celor care au bifat „Vreau sfaturi”.
+ * După aceea comutatoarele din Admin → Autonomie hotărăsc.
+ */
+export async function startActivationOnce(db: Db, now = new Date()): Promise<string> {
+  const MARK = "activare_pornita_2026_11_17";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(sql`${appSetting.key} = ${MARK}`);
+  if (seen) return "deja";
+  const sw = await automationSwitches(db);
+  await saveSwitches(db, { ...sw, activare: true, "bun-venit": true }, null, now);
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  return "pornite: activare + bun-venit";
+}
+
 export async function startSeoEngineOnce(db: Db, now = new Date()): Promise<string> {
   const MARK = "motor_seo_pornit_2026_11_16";
   const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(sql`${appSetting.key} = ${MARK}`);

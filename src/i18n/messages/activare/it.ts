@@ -1,0 +1,32 @@
+import type { ActivareCatalog } from "./ro";
+
+export const itActivare: ActivareCatalog = {
+  QuickStart: {
+    title: "Aggiungi te stesso, poi i genitori e i nonni",
+    lead: "Ci vuole un minuto. Lascia vuoto ciò che non sai: lo aggiungi dopo, o ti aiutano i parenti.",
+    progress: "Passo {n} di {total}",
+    fatherSide: "Nonni da parte di padre",
+    motherSide: "Nonni da parte di madre",
+    grandfatherGiven: "Nome del nonno",
+    grandmotherGiven: "Nome della nonna",
+    grandmotherMaiden: "Cognome da nubile della nonna",
+    dontKnow: "Non lo so, avanti",
+    finish: "Fatto, crea l’albero",
+    later: "Date esatte, foto e luoghi li aggiungi dopo, dall’albero.",
+    otherWays: "Hai ricevuto un link da un parente o hai già un file GEDCOM? Trovi le opzioni qui sotto.",
+  },
+  BranchInvite: {
+    titleM: "Invita {name} a completare il suo ramo",
+    titleF: "Invita {name} a completare il suo ramo",
+    text: "Il tuo albero ha già {count} persone. {name} conosce nomi e storie che nessun altro conosce: manda il link su WhatsApp, per email o copialo.",
+    later: "Più tardi",
+    viewOnly: "Nei giorni gratuiti il link mostra l’albero; perché anche {name} possa scrivere serve un anno pagato.",
+  },
+  ActivationMail: {
+    subject: "Il tuo albero ti aspetta su {app}",
+    body: "Ciao {name}!\n\nHai creato un account su {app}, ma il tuo albero non è ancora partito. Il primo passo è breve: chi sei, poi i genitori e i nonni, tre righe per schermata. Lascia vuoto ciò che non sai.\n\nDa lì puoi invitare i parenti a completare ciascuno il proprio ramo.",
+    button: "Inizia l’albero",
+    why: "Ricevi questa email una sola volta, perché hai creato un account su {app}.",
+    unsubscribe: "Non voglio più email sull’account",
+  },
+};

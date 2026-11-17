@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { adminReady } from "@/lib/admin-access";
-import { createLink, deleteLink } from "@/lib/sursa";
+import { createLink, deleteLink, facebookSlugBase, groupNames } from "@/lib/sursa";
 
 async function admin() {
   const me = await currentUser();
@@ -29,4 +29,23 @@ export async function removeSourceLink(form: FormData): Promise<void> {
   const slug = String(form.get("slug") ?? "").slice(0, 60);
   if (slug) await deleteLink(db, slug);
   revalidatePath("/admin/linkuri");
+}
+
+/**
+ * „Generează linkuri pentru grupuri Facebook”: o listă de nume de grupuri (unul pe rând) devine câte un link ?src=fb-<grup>,
+ * fiecare în listă cu click-urile și conturile lui. Pagina se întoarce cu toate, gata de copiat.
+ */
+export async function newFacebookLinks(form: FormData): Promise<void> {
+  const me = await admin();
+  if (!me) return;
+  const names = groupNames(String(form.get("names") ?? ""));
+  if (!names.length) return;
+  const page = String(form.get("page") ?? "/");
+  const slugs: string[] = [];
+  for (const name of names) {
+    const label = /^fb\b/i.test(name) ? name : `FB ${name}`;
+    slugs.push(await createLink(db, label, page, me.id, facebookSlugBase(name)));
+  }
+  revalidatePath("/admin/linkuri");
+  redirect(`/admin/linkuri?fb=${encodeURIComponent(slugs.join(","))}`);
 }

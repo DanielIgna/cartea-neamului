@@ -10,9 +10,9 @@
  * Fluxul de plată (Stripe) nu e atins: veniturile se citesc doar din tabelul `payment`.
  */
 import { desc, eq, sql, type SQL } from "drizzle-orm";
+import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
 import { accountSource, sourceLink } from "@/db/schema";
-import { DEMO_EMAIL } from "./demo";
 import { deviceOf, sourceOf } from "./vizite";
 import { sourceLabel } from "./analiza";
 import {
@@ -121,7 +121,7 @@ export async function sourcesReport(db: Db, r: Range): Promise<SourceStat[]> {
       select source as k, count(*) as c from f group by source`),
     db.execute(sql`with u as (
         select u.id, ${KEY_SQL} as k from "user" u left join account_source s on s.user_id = u.id
-        where lower(u.email) <> ${DEMO_EMAIL} and ${localDay(sql`u.created_at`)} between ${r.from} and ${r.to})
+        where ${realAccountSql("u")} and ${localDay(sql`u.created_at`)} between ${r.from} and ${r.to})
       select k, count(*) as accounts,
         count(*) filter (where exists (select 1 from tree t where t.owner_id = u.id) or exists (select 1 from tree_member m where m.user_id = u.id)) as trees,
         count(*) filter (where exists (select 1 from payment p where p.user_id = u.id)) as paid,
@@ -143,7 +143,7 @@ export async function sourcesReport(db: Db, r: Range): Promise<SourceStat[]> {
 /** Răspunsurile la „De unde ai aflat de noi?” pentru conturile din perioadă (cu cele scrise la „Altceva”). */
 export async function answersReport(db: Db, r: Range) {
   const res = await db.execute(sql`select s.answer as a, s.answer_other as o, s.answer_auto as auto from account_source s join "user" u on u.id = s.user_id
-    where lower(u.email) <> ${DEMO_EMAIL} and ${localDay(sql`u.created_at`)} between ${r.from} and ${r.to}`);
+    where ${realAccountSql("u")} and ${localDay(sql`u.created_at`)} between ${r.from} and ${r.to}`);
   const rows = (res.rows ?? []) as { a: string | null; o: string | null; auto: boolean }[];
   const counts = new Map<string, number>();
   const others: string[] = [];
@@ -189,8 +189,8 @@ export async function linkList(db: Db): Promise<LinkStat[]> {
 }
 
 /** Un link nou: eticheta din nume (unică: dacă e luată, primește „-2”, „-3”…). Întoarce eticheta. */
-export async function createLink(db: Db, name: string, page: string, by: string | null): Promise<string> {
-  const base = slugOf(name) ?? "link";
+export async function createLink(db: Db, name: string, page: string, by: string | null, slugBase?: string): Promise<string> {
+  const base = (slugBase && slugOf(slugBase)) || slugOf(name) || "link";
   for (let i = 1; i < 50; i++) {
     const slug = i === 1 ? base : `${base.slice(0, 36)}-${i}`;
     const r = await db.insert(sourceLink).values({ slug, name: name.trim().slice(0, 80), page: isLinkPage(page) ? page : "/", createdBy: by })
@@ -198,6 +198,27 @@ export async function createLink(db: Db, name: string, page: string, by: string 
     if (r.length) return slug;
   }
   throw new Error("sursa: nu am găsit o etichetă liberă");
+}
+
+/** Eticheta unui grup de Facebook: `fb-<numele grupului>` (fără un „fb” dublat dacă numele începe deja cu el). */
+export function facebookSlugBase(name: string): string {
+  const s = slugOf(name, 37) ?? "grup";
+  return s.startsWith("fb-") || s === "fb" ? s : `fb-${s}`;
+}
+
+/** Numele de grupuri dintr-o listă lipită (unul pe rând sau despărțite prin virgulă/punct și virgulă), fără dubluri, cel mult 50. */
+export function groupNames(raw: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const x of raw.split(/[\n;,]+/)) {
+    const name = x.replace(/\s+/g, " ").trim().slice(0, 76);
+    const key = slugOf(name);
+    if (!name || !key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(name);
+    if (out.length >= 50) break;
+  }
+  return out;
 }
 
 export async function deleteLink(db: Db, slug: string) {

@@ -6,7 +6,7 @@ import { useTranslations } from "use-intl";
 import { answerNews } from "@/app/vesti-actions";
 
 /** Întrebarea „Vrei sfaturi pe email?”, pusă o singură dată (după celelalte întrebări). Fără „Da” nu pleacă niciun sfat. */
-export default function NewsNotice() {
+export default function NewsNotice({ afterTree = false }: { afterTree?: boolean }) {
   const t = useTranslations("News");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
@@ -21,7 +21,7 @@ export default function NewsNotice() {
   });
   return (
     <aside className="usage-notice" aria-label={t("label")}>
-      <p><b>{t("lead")}</b> {t("text")}</p>
+      <p><b>{afterTree ? t("afterTreeLead") : t("lead")}</b> {t("text")}</p>
       <div className="usage-actions">
         <button type="button" className="btn primary" disabled={pending} onClick={() => answer(true)}>{t("yes")}</button>
         <button type="button" className="btn" disabled={pending} onClick={() => answer(false)}>{t("no")}</button>
