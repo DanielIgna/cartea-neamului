@@ -47,10 +47,14 @@ export async function syncQueue(db: Db, now = new Date()) {
   const add = loadUats().filter((u) => !have.has(uatPath(u))).map((u) => {
     const thin = uatThin(u);
     const town = u.kind !== "c";
-    return { kind: "localitate", path: uatPath(u), priority: (town ? 10_000_000 : 0) + u.pop, status: town ? "publicat" : thin ? "noindex" : "asteptare",
+    // Comunele mici cu un singur sat intră și ele în așteptare (ultimele, după populație); le judecă controlul de calitate.
+    return { kind: "localitate", path: uatPath(u), priority: (town ? 10_000_000 : 0) + u.pop, status: town ? "publicat" : "asteptare",
       reasons: thin, publishedAt: town ? now : null, lastmod: town ? now : null };
   });
   for (let i = 0; i < add.length; i += 500) await db.insert(seoQueue).values(add.slice(i, i + 500)).onConflictDoNothing();
+  // Cele puse „noindex” doar pentru că erau mici, fără să fi fost judecate vreodată, trec în așteptare (o singură dată, idempotent).
+  await db.update(seoQueue).set({ status: "asteptare" })
+    .where(and(eq(seoQueue.kind, "localitate"), eq(seoQueue.status, "noindex"), isNull(seoQueue.generatedAt)));
   return add.length;
 }
 

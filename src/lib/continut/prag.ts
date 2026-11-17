@@ -1,4 +1,5 @@
 import type { Surname } from "./nume";
+import { profileWords } from "./nume-profil";
 
 /**
  * Pragul de indexare (Daniel, 14.11.2026, „vreau să fie corect indexată”): o pagină intră în Google doar dacă are destul conținut
@@ -9,8 +10,8 @@ export const NAME_MIN_WORDS = 8;
 
 const words = (s: string | undefined) => (s ? s.replace(/[*_]/g, "").split(/\s+/).filter(Boolean).length : 0);
 
-/** Cuvintele scrise anume pentru acest nume (sensul și nota), fără textul comun tuturor paginilor de nume. */
-export const nameOwnWords = (n: Surname) => words(n.meaning) + words(n.note);
+/** Cuvintele proprii ale paginii: sensul, nota și „ce spun datele” (src/lib/continut/nume-profil.ts), fără textul comun tuturor paginilor de nume. */
+export const nameOwnWords = (n: Surname) => words(n.meaning) + words(n.note) + profileWords(n);
 
 /** null = indexabilă; altfel motivul. */
 export function nameGate(n: Surname): string | null {
@@ -34,8 +35,9 @@ export function uatThin(u: { kind: string; pop: number; villages: unknown[] }): 
  * intră pe rând, prin motorul de publicare, ca Google să nu primească dintr-odată mii de pagini noi. Până atunci au noindex.
  */
 export function uatGate(u: { kind: string; pop: number; villages: unknown[] }, published?: (u: never) => boolean): string | null {
-  const thin = uatThin(u);
-  if (thin) return thin;
   if (u.kind !== "c") return null;
-  return published?.(u as never) ? null : "în coada de publicare (intră în Google pe rând, câteva zeci pe zi)";
+  // Etapa 3 (17.11.2026): și comunele mici cu un singur sat intră în coadă; le publică motorul doar dacă trec controlul de
+  // calitate (cuvinte unice, date proprii, asemănare cu vecinii), deci rămân noindex cât timp n-au destul text propriu.
+  if (published?.(u as never)) return null;
+  return uatThin(u) ?? "în coada de publicare (intră în Google pe rând, câteva zeci pe zi)";
 }

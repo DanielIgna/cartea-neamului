@@ -11,6 +11,7 @@ import HubSearch from "@/components/continut/HubSearch";
 import Pager from "@/components/continut/Pager";
 import { getEntry } from "@/lib/continut/colectii";
 import { KIND_LABEL, getName, loadNames, nameText, relatedNames } from "@/lib/continut/nume";
+import { nameProfile } from "@/lib/continut/nume-profil";
 import { MIN_TREES, surnamePublicStat } from "@/lib/continut/nume-statistici";
 import { paginate, pageHref } from "@/lib/continut/paginare";
 import { REGIONS } from "@/lib/continut/regiuni";
@@ -112,6 +113,8 @@ export async function NamePage({ slug }: { slug: string }) {
         <p>{renderEm(t.origin)}</p>
         <p>{t.kindText}</p>
         {t.note && <p className="prose-note">{renderEm(t.note)}</p>}
+        <h2>Ce spun datele despre numele {n.name}</h2>
+        {nameProfile(n).map((p) => <p key={p.slice(0, 50)}>{renderEm(p)}</p>)}
         <h2>Unde e mai des întâlnit</h2>
         <p>{t.where}</p>
         {n.variants.length > 0 && (

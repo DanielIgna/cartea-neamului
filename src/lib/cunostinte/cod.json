@@ -740,6 +740,7 @@
   "src/lib/continut/localitati-statistici.ts",
   "src/lib/continut/localitati.ts",
   "src/lib/continut/markdown.ts",
+  "src/lib/continut/nume-profil.ts",
   "src/lib/continut/nume-statistici.ts",
   "src/lib/continut/nume.ts",
   "src/lib/continut/paginare.ts",
