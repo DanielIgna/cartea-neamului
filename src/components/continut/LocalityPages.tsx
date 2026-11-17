@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteSearch from "@/components/continut/SiteSearch";
+import { getGenRegion, genRegionPath } from "@/lib/genealogie-regiuni";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
@@ -137,7 +138,7 @@ export async function CountyPage({ slug }: { slug: string }) {
         <div className="section-label" style={{ marginTop: 0 }}>{c.regions.map((r) => REGIONS[r].name).join(" · ")}</div>
         <h1>{isCapital(c) ? "Arhive și registre în București" : `Arhive și registre în județul ${c.name}`}</h1>
         <div className="facts">
-          <div><b>Regiunea istorică</b>{c.regions.map((r) => REGIONS[r].name).join(", ")}</div>
+          <div><b>Regiunea istorică</b><RegionLinks regions={c.regions} /></div>
           {c.seat && <div><b>Reședința</b>{seatPath(c) ? <Link href={seatPath(c)!}>{c.seat}</Link> : c.seat}</div>}
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
@@ -185,7 +186,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
         <h1>Acte și registre vechi în {c.seat}</h1>
         <div className="facts">
           <div><b>Județul</b><Link href={countyPath(c)}>{c.name}</Link></div>
-          <div><b>Regiunea istorică</b>{c.regions.map((r) => REGIONS[r].name).join(", ")}</div>
+          <div><b>Regiunea istorică</b><RegionLinks regions={c.regions} /></div>
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
         <CtaSus />
@@ -218,4 +219,12 @@ export async function localityMetadata(judet: string, localitate: string): Promi
 export function LocalityPage({ judet, localitate }: { judet: string; localitate: string }) {
   const c = getCounty(judet);
   return c?.seatSlug === localitate ? <SeatPage slug={judet} seat={localitate} /> : <UatPage countySlug={judet} slug={localitate} />;
+}
+
+/** Regiunile istorice ale județului, cu legătură spre pagina regiunii unde există (/genealogie/regiune/<slug>). */
+function RegionLinks({ regions }: { regions: (keyof typeof REGIONS)[] }) {
+  return <>{regions.map((r, i) => {
+    const g = getGenRegion(r);
+    return <span key={r}>{i ? ", " : ""}{g ? <Link href={genRegionPath(g)}>{REGIONS[r].name}</Link> : REGIONS[r].name}</span>;
+  })}</>;
 }

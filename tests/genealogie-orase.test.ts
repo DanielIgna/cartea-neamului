@@ -40,6 +40,6 @@ describe("genealogie pe orașe", () => {
     const paths = sitemapGroups().flatMap((g) => g.urls.map((u) => u.path));
     for (const c of GEN_CITIES) expect(paths).toContain(genCityPath(c));
     expect(paths).toContain("/genealogie");
-    expect(REGION_PAGES_LIVE).toBe(false);
+    expect(REGION_PAGES_LIVE).toBe(true);
   });
 });

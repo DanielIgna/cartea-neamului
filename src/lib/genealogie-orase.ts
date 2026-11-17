@@ -15,9 +15,11 @@ export type GenCity = {
 };
 
 /** Paginile regionale, de la firul de SEO (confirmat 17.11.2026): /genealogie/regiune/<slug>. Devine `true` când sunt publicate. */
-export const REGION_PAGES_LIVE = false;
+export const REGION_PAGES_LIVE = true;
 export const regionPagePath = (slug: string) => `/genealogie/regiune/${slug}`;
-export const REGION_LABEL: Record<string, string> = { transilvania: "Transilvania", banat: "Banat", moldova: "Moldova", dobrogea: "Dobrogea" };
+export const REGION_LABEL: Record<string, string> = {
+  transilvania: "Transilvania", banat: "Banat", bucovina: "Bucovina", basarabia: "Basarabia", moldova: "Moldova", dobrogea: "Dobrogea", maramures: "Maramureș",
+};
 export const GEN_HUB = "/genealogie";
 export const genCityPath = (c: GenCity) => `${GEN_HUB}/${c.slug}`;
 export const GEN_UPDATED = new Date("2026-11-17T00:00:00Z");
