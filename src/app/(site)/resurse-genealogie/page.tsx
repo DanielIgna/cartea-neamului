@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { db } from "@/db";
 import DnaForm from "@/components/DnaForm";
 import PageIntl from "@/i18n/PageIntl";
-import { getAppName, getT } from "@/i18n/server";
+import { getAppName, getLocale, getT } from "@/i18n/server";
 import { SOURCES, SOURCE_GROUPS, publicDnaLabs } from "@/lib/resurse";
 import { SITE_URL } from "@/lib/site-url";
+import { languageAlternates, webPageJsonLd } from "@/lib/page-metadata";
 
 export const dynamic = "force-dynamic";
 const PATH = "/resurse-genealogie";
@@ -14,10 +15,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("Resources");
   const title = `${t("metaTitle")} | ${await getAppName()}`;
   const description = t("metaDescription");
+  // Adresa canonică și hreflang pe limba paginii (/it/resurse-genealogie are textul în italiană), ca la celelalte pagini traduse.
+  const { url, ...lang } = languageAlternates(PATH, await getLocale());
   return {
-    title: { absolute: title }, description, alternates: { canonical: PATH },
+    title: { absolute: title }, description, ...lang,
     // Poza pentru linkuri pusă de mână: o pagină cu openGraph propriu nu o moștenește singură (auditul din 14.11.2026).
-    openGraph: { title, description, url: `${SITE_URL}${PATH}`, type: "website", images: [OG] },
+    openGraph: { title, description, url, type: "website", images: [OG] },
     twitter: { card: "summary_large_image", title, description, images: [OG] },
   };
 }
@@ -28,12 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
  * Nu se vinde nimic, nu există afiliere și nu se păstrează date genetice.
  */
 export default async function ResursePage() {
-  const [t, appName, labs] = await Promise.all([getT("Resources"), getAppName(), publicDnaLabs(db).catch(() => [])]);
+  const [t, labs] = await Promise.all([getT("Resources"), publicDnaLabs(db).catch(() => [])]);
   const out = (href: string, label: string) => <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>;
-  const jsonLd = {
-    "@context": "https://schema.org", "@type": "WebPage", name: t("title"), description: t("metaDescription"), url: `${SITE_URL}${PATH}`,
-    isPartOf: { "@type": "WebSite", name: appName, url: SITE_URL },
-  };
+  const jsonLd = webPageJsonLd({ path: PATH, title: t("title"), description: t("metaDescription"), locale: await getLocale() });
   return (
     <section className="stack resurse" style={{ maxWidth: 860, margin: "0 auto" }}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

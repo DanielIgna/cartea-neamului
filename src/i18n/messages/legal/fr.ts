@@ -7,7 +7,7 @@ export const frLegal: LegalCatalog = {
     contactLine: "{name}, sise {address} (CUI {cui}, n° au registre du commerce {regCom}, EUID {euid}). E-mail : <mail>{email}</mail>. Téléphone et WhatsApp : {phone}.",
     Privacy: {
       metaTitle: "Politique de confidentialité",
-      metaDescription: "Quelles données nous gardons, pourquoi, qui les voit et comment vous les téléchargez ou les supprimez.",
+      metaDescription: "Quelles données nous gardons dans votre arbre, pourquoi, qui les voit et comment les télécharger ou les supprimer. Sans publicité.",
       label: "Politique de confidentialité",
       title: "Comment nous prenons soin des données de votre famille",
       sections: {
@@ -155,7 +155,7 @@ export const frLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Conditions d’utilisation",
-      metaDescription: "Ce que signifie avoir un compte sur le Livre de la Famille : ce que vous pouvez y mettre, à qui cela appartient et ce que nous promettons.",
+      metaDescription: "Ce que signifie un compte dans Le Livre de la Famille : ce que vous pouvez ajouter, à qui il appartient et ce que nous promettons, en mots simples.",
       label: "Conditions d’utilisation",
       title: "Ce que signifie avoir un compte sur le Livre de la Famille",
       sections: {

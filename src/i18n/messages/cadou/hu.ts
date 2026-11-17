@@ -2,8 +2,8 @@ import type { CadouCatalog } from "./ro";
 
 export const huCadou: CadouCatalog = {
   GiftPage: {
-    metaTitle: "Karácsonyi ajándék szülőknek és nagyszülőknek – a család fája, {price}",
-    metaDescription: "Ajándékozz a szüleidnek vagy nagyszüleidnek egy évet A Család Könyvében {price} áron: a családfát, a régi fényképeket és a hangjukat, egy helyen. Kapsz egy linket vagy egy nyomtatható kártyát.",
+    metaTitle: "Karácsonyi ajándék szülőknek és nagyszülőknek, {price}",
+    metaDescription: "Adj a szüleidnek vagy nagyszüleidnek egy évet A Család Könyvében {price} áron: családfa, régi fotók és a hangjuk. Linket vagy nyomtatható kártyát kapsz.",
     home: "Kezdőlap",
     label: "Ünnepi ajándék",
     title: "A legkedvezőbb ünnepi ajándék: A Család Könyve, már {price}-tól",

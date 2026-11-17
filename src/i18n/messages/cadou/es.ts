@@ -2,8 +2,8 @@ import type { CadouCatalog } from "./ro";
 
 export const esCadou: CadouCatalog = {
   GiftPage: {
-    metaTitle: "Regalo de Navidad para padres y abuelos – el árbol de la familia, {price}",
-    metaDescription: "Regala a tus padres o abuelos un año en El Libro de la Familia por {price}: el árbol familiar, las fotos antiguas y sus voces, en un solo lugar. Recibes un enlace o una tarjeta para imprimir.",
+    metaTitle: "Regalo de Navidad para padres y abuelos: el árbol, {price}",
+    metaDescription: "Regala a tus padres o abuelos un año en El Libro de la Familia por {price}: el árbol, las fotos antiguas y sus voces. Recibes un enlace o una tarjeta.",
     home: "Inicio",
     label: "Regalo de fiestas",
     title: "El regalo de fiestas más económico: El Libro de la Familia, desde solo {price}",

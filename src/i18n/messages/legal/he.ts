@@ -8,7 +8,7 @@ export const heLegal: LegalCatalog = {
     contactLine: "{name}, שמשרדה ב־{address} (CUI {cui}, מספר רישום {regCom}, EUID {euid}). אימייל: <mail>{email}</mail>. טלפון ווואטסאפ: {phone}.",
     Privacy: {
       metaTitle: "מדיניות הפרטיות",
-      metaDescription: "אילו נתונים אנחנו שומרים בעץ המשפחה, למה, מי רואה אותם ואיך מורידים או מוחקים אותם.",
+      metaDescription: "אילו נתונים אנחנו שומרים בעץ המשפחה, למה, מי רואה אותם ואיך מורידים או מוחקים אותם. בלי פרסומות, ואפשר למחוק את החשבון בכל עת שתרצו.",
       label: "מדיניות הפרטיות",
       title: "איך אנחנו שומרים על הנתונים של המשפחה שלכם",
       sections: {
@@ -156,7 +156,7 @@ export const heLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "תנאי שימוש",
-      metaDescription: "מה המשמעות של חשבון ב־Cartea Neamului: מה אפשר להוסיף לעץ, של מי זה ומה אנחנו מבטיחים.",
+      metaDescription: "מה המשמעות של חשבון ב־Cartea Neamului: מה אפשר להוסיף לעץ, של מי זה ומה אנחנו מבטיחים. הכללים במילים פשוטות, בלי אותיות קטנות בסוף.",
       label: "תנאי שימוש",
       title: "מה המשמעות של חשבון ב־Cartea Neamului",
       sections: {

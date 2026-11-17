@@ -1,6 +1,6 @@
 ---
 title: Nașii și rudenia spirituală în cercetarea genealogică
-seo: Nașii în registrele vechi: cum te ajută la arborele genealogic
+seo: Nașii în registrele vechi: cum te ajută la arbore
 description: De ce nașii din registrele de botez și cununie sunt un indiciu prețios: rude, vecini, familii legate de generații și satul de origine.
 category: Registre și arhive
 updated: 2026-11-13

@@ -5,7 +5,7 @@ export const frBiserica: BisericaCatalog = {
   Church: {
     meta: {
       title: "La liberté de croire | Histoire du christianisme",
-      description: "Deux mille ans d’histoire du christianisme : les martyrs de Rome, la Réforme, les premiers livres en roumain et les personnes emprisonnées pour leur foi dans les prisons communistes.",
+      description: "Deux mille ans d’histoire du christianisme : les martyrs de Rome, la Réforme, les premiers livres en roumain et ceux emprisonnés pour leur foi.",
     },
     label: "La liberté de croire",
     title: "Deux mille ans de christianisme et ceux qui ont payé pour leur foi",

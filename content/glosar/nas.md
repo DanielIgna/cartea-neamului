@@ -1,6 +1,6 @@
 ---
 title: Naș
-description: Nașii în genealogie: de ce apar în registrele de botez și cununie și cum te ajută să găsești rude și satul de origine.
+description: Nașii în genealogie: de ce apar în registrele de botez și cununie și cum te ajută să găsești rude și satul de origine. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: nași, nănaș, cumătru, patrini
 terms: botez, cununie, rudenie-spirituala

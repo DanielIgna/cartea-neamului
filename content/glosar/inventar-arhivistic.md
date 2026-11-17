@@ -1,6 +1,6 @@
 ---
 title: Inventar arhivistic
-description: Inventarul arhivistic: lista dosarelor dintr-un fond. Cum îl folosești ca să găsești registrele și actele unei familii.
+description: Inventarul arhivistic: lista dosarelor dintr-un fond. Cum îl folosești ca să găsești registrele și actele unei familii. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: inventare, opis
 terms: fond-arhivistic, cota-arhivistica, arhivele-nationale, sala-de-studiu

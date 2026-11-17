@@ -6,8 +6,8 @@ import type { Widen } from "../types";
 
 export const roCadou = {
   GiftPage: {
-    metaTitle: "Cadou de Crăciun pentru părinți și bunici – arborele familiei, {price}",
-    metaDescription: "Dăruiește părinților sau bunicilor un an în Cartea Neamului, {price}: arborele familiei, pozele vechi și glasurile bunicilor, într-un singur loc. Primești o legătură sau un card de tipărit.",
+    metaTitle: "Cadou de Crăciun pentru părinți și bunici: arborele, {price}",
+    metaDescription: "Dăruiește părinților sau bunicilor un an în Cartea Neamului, {price}: arborele, pozele vechi și glasurile lor. Primești un link sau un card de tipărit.",
     home: "Prima pagină",
     label: "Cadou de sărbători",
     title: "Cel mai ieftin cadou de sărbători: Cartea Neamului, de la doar {price}",

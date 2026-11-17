@@ -15,7 +15,7 @@ export const deParteneri: ParteneriCatalog = {
   },
   PartnersPage: {
     metaTitle: "Partner | Das Familienbuch",
-    metaDescription: "Die Partner des Familienbuchs und was sie Familien bieten.",
+    metaDescription: "Die Partner des Familienbuchs und was sie Familien bieten, die ihren Stammbaum aufbauen: Hilfe beim alten Elternhaus und Angebote für Kontoinhaber.",
     label: "Partner",
     title: "Die Partner des Familienbuchs",
     lead: "Der Stammbaum, die Erinnerungen und das Buch gehören nur der Familie, ohne Werbung. Hier, auf einer einzigen Seite, stehen die Partner, denen wir vertrauen.",

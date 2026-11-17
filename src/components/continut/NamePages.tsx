@@ -1,4 +1,5 @@
 import { nameGate } from "@/lib/continut/prag";
+import SiteSearch from "@/components/continut/SiteSearch";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -49,6 +50,7 @@ export function NamesHub({ page }: { page: number }) {
         <h1 style={{ marginTop: 0 }}>Nume de familie românești</h1>
         <p>De unde vin numele noastre de familie, ce înseamnă, unde sunt mai des întâlnite și cum le cauți în arhive. Multe s-au născut din prenumele unui strămoș, dintr-o meserie, dintr-o poreclă sau din locul de unde a venit familia.</p>
         <p className="muted" style={{ marginBottom: 0 }}>{all.length} de nume · vezi și <Link href="/ghid/nume-schimbate-si-variante">variantele de scriere în acte</Link>, <Link href="/glosar/patronimic">patronimicul</Link>, <Link href="/localitati">arhivele pe județe</Link></p>
+        <SiteSearch placeholder="Caută un nume de familie" />
         <CtaSus />
       </div>
       <HubSearch items={all.map((n) => ({ href: `/nume/${n.slug}`, title: n.name, text: n.variants.join(", ") }))} label="Caută un nume" placeholder="Caută un nume de familie…">

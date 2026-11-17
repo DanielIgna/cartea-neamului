@@ -1,6 +1,6 @@
 ---
 title: Testamente și acte de moștenire în genealogie
-seo: Testamente vechi și acte de moștenire: ce afli despre familie
+seo: Testamente și acte de moștenire: ce afli despre familie
 description: Cum folosești testamentele, actele de succesiune, foile de zestre și procesele de moștenire ca să legi generații și să găsești rude.
 category: Registre și arhive
 updated: 2026-11-13

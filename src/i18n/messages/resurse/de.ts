@@ -3,7 +3,7 @@ import type { ResurseCatalog } from "./ro";
 export const deResurse: ResurseCatalog = {
   Resources: {
     metaTitle: "Kostenlose Quellen für die Ahnenforschung",
-    metaDescription: "Archive, Kirchenbücher, Volkszählungen, das Rumänische Nationalarchiv, digitale Bibliotheken und alte Zeitungen: wo du kostenlos nach deiner Familie suchst. Genealogie für alle.",
+    metaDescription: "Archive, Kirchenbücher, Volkszählungen, das Rumänische Nationalarchiv, digitale Bibliotheken und alte Zeitungen: wo du gratis nach deiner Familie suchst.",
     label: "Quellen",
     title: "Kostenlose Quellen für die Ahnenforschung",
     intro: "Hier findest du Links zu kostenlosen Archiven, Bibliotheken und Datenbanken, in denen du nach deiner Familie suchen kannst: Kirchenbücher, Volkszählungen, alte Zeitungen und Kataloge. Das Familienbuch bewahrt diese Bestände nicht auf und übernimmt keine Daten von dort; jeder Link öffnet sich auf der jeweiligen Seite. Manche verlangen ein kostenloses Konto.",

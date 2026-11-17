@@ -1,6 +1,6 @@
 ---
 title: GEDCOM
-description: GEDCOM: formatul standard pentru arbori genealogici. Ce conține un fișier .ged și cum muți arborele între programe.
+description: GEDCOM: formatul standard pentru arbori genealogici. Ce conține un fișier .ged și cum muți arborele între programe. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: fișier .ged, Genealogical Data Communication
 terms: arbore-genealogic, genealogie

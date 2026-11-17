@@ -1,6 +1,6 @@
 ---
 title: Eparhie (episcopie)
-description: Eparhia sau episcopia: unitatea care grupa protopopiatele. Ce documente pentru genealogie se păstrează în arhivele ei.
+description: Eparhia sau episcopia: unitatea care grupa protopopiatele. Ce documente pentru genealogie se păstrează în arhivele ei. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: eparhii, episcopie, dieceză, mitropolie
 terms: protopopiat, parohie, confesiune

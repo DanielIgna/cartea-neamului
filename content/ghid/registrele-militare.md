@@ -1,6 +1,6 @@
 ---
 title: Registrele militare și soldații din familie
-seo: Cum afli date despre un bunic soldat: arhive militare și liste
+seo: Bunicul soldat: arhive militare și liste de pierderi
 description: Unde cauți date despre strămoșii care au făcut armata sau au fost pe front: livrete, matricole militare, arhive militare și listele de pierderi.
 category: Registre și arhive
 updated: 2026-11-13

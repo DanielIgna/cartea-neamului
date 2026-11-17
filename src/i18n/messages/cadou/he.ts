@@ -4,7 +4,7 @@ import type { CadouCatalog } from "./ro";
 export const heCadou: CadouCatalog = {
   GiftPage: {
     metaTitle: "מתנה לחגים להורים ולסבים – עץ המשפחה, {price}",
-    metaDescription: "העניקו להורים או לסבים שנה ב־Cartea Neamului, {price}: עץ המשפחה, התמונות הישנות והקולות של הסבים, במקום אחד. מקבלים קישור או כרטיס להדפסה.",
+    metaDescription: "העניקו להורים או לסבים שנה ב־Cartea Neamului, {price}: עץ המשפחה, התמונות הישנות והקולות של הסבים, הכול במקום אחד. מקבלים קישור או כרטיס להדפסה.",
     home: "דף הבית",
     label: "מתנה לחגים",
     title: "מתנת החג המשתלמת ביותר: Cartea Neamului, החל מ־{price} בלבד",

@@ -27,7 +27,7 @@ export const it: Catalog = {
   Meta: {
     appName: "Il Libro della Famiglia",
     homeTitle: "Albero genealogico online | Il Libro della Famiglia",
-    description: "L’albero della famiglia, costruito insieme e stampato come un libro.",
+    description: "Costruisci online l’albero genealogico con i tuoi parenti. Conserva foto antiche, storie e la voce dei nonni, poi stampa tutto come libro di famiglia.",
   },
   Layout: {
     untranslated: "Questa pagina non è ancora disponibile nella tua lingua. Per ora la vedi in rumeno.",

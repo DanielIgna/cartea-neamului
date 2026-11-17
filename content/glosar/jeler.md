@@ -1,6 +1,6 @@
 ---
 title: Jeler
-description: Jelerul: țăranul fără pământ propriu din Transilvania, diferit de iobag. Ce înseamnă când îl găsești în conscripții.
+description: Jelerul: țăranul fără pământ propriu din Transilvania, diferit de iobag. Ce înseamnă când îl găsești în conscripții. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: jeleri, inquilinus, zsellér
 terms: iobag, urbariu, conscriptie

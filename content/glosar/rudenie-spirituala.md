@@ -1,6 +1,6 @@
 ---
 title: Rudenie spirituală
-description: Rudenia spirituală dintre nași, fini și cumetri: ce înseamnă, cum apare în registre și de ce ajută în genealogie.
+description: Rudenia spirituală dintre nași, fini și cumetri: ce înseamnă, cum apare în registre și de ce ajută în genealogie. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: cumetrie, fini, cumătru
 terms: nas, botez, cununie, afinitate

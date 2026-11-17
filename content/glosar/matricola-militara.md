@@ -1,6 +1,6 @@
 ---
 title: Matricolă militară
-description: Matricolele militare: registrele cu serviciul fiecărui soldat. Unde se păstrează în România și ce informații conțin.
+description: Matricolele militare: registrele cu serviciul fiecărui soldat. Unde se păstrează în România și ce informații conțin. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: registru matricol, foi matricole
 terms: livret-militar, arhivele-nationale

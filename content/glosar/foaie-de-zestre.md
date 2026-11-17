@@ -1,6 +1,6 @@
 ---
 title: Foaie de zestre
-description: Foaia de zestre: lista bunurilor date miresei la căsătorie. Ce spune despre familii, sate și legăturile dintre neamuri.
+description: Foaia de zestre: lista bunurilor date miresei la căsătorie. Ce spune despre familii, sate și legăturile dintre neamuri. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: zestre, izvod de zestre
 terms: cununie, testament, cartea-funciara

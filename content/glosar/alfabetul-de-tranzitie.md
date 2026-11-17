@@ -1,6 +1,6 @@
 ---
 title: Alfabetul de tranziție
-description: Alfabetul de tranziție: amestecul de litere chirilice și latine folosit în actele românești din anii 1830–1860.
+description: Alfabetul de tranziție: amestecul de litere chirilice și latine folosit în actele românești din anii 1830–1860. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: alfabet mixt
 terms: chirilica-romaneasca, paleografie

@@ -1,6 +1,6 @@
 ---
 title: Confesiune
-description: Confesiunea în genealogie: de ce trebuie să știi religia unei familii ca să găsești registrele potrivite.
+description: Confesiunea în genealogie: de ce trebuie să știi religia unei familii ca să găsești registrele potrivite. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: religie, cult, rit
 terms: registru-parohial, parohie, matricola

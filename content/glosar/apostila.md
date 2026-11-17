@@ -1,6 +1,6 @@
 ---
 title: Apostilă
-description: Apostila: certificarea unui act românesc pentru folosire în altă țară. Când îți trebuie pentru acte de familie.
+description: Apostila: certificarea unui act românesc pentru folosire în altă țară. Când îți trebuie pentru acte de familie. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: apostilare, Convenția de la Haga
 terms: extras-multilingv, act-de-nastere

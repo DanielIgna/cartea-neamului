@@ -1,6 +1,6 @@
 ---
 title: Catagrafiile din Moldova și Țara Românească
-seo: Catagrafiile: liste vechi de locuitori din Moldova și Muntenia
+seo: Catagrafii: liste vechi de locuitori din Moldova și Muntenia
 description: Ce sunt catagrafiile din Moldova și Țara Românească, ce date au despre familii, ce s-a publicat și cum le folosești pentru arbore.
 category: Registre și arhive
 updated: 2026-11-13

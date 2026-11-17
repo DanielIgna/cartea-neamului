@@ -1,6 +1,6 @@
 ---
 title: Paleografie
-description: Paleografia: citirea scrisului de mână vechi. Ce probleme ridică registrele vechi și cum înveți să le descifrezi.
+description: Paleografia: citirea scrisului de mână vechi. Ce probleme ridică registrele vechi și cum înveți să le descifrezi. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: citirea scrisului vechi
 terms: chirilica-romaneasca, alfabetul-de-tranzitie

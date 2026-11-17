@@ -4,7 +4,7 @@ import type { Widen } from "../types";
 export const roResurse = {
   Resources: {
     metaTitle: "Resurse gratuite pentru genealogie",
-    metaDescription: "Arhive, registre parohiale, recensăminte, Arhivele Naționale, biblioteci digitale și ziare vechi: unde îți cauți gratuit neamul. Genealogie pe înțelesul tuturor.",
+    metaDescription: "Arhive, registre parohiale, recensăminte, Arhivele Naționale, biblioteci digitale și ziare vechi: unde îți cauți gratuit neamul, pe înțelesul tuturor.",
     label: "Resurse",
     title: "Resurse gratuite pentru genealogie",
     intro: "Aici găsești legături spre arhive, biblioteci și baze de date gratuite unde îți poți căuta neamul: registre parohiale, recensăminte, ziare vechi și cataloage. Cartea Neamului nu păstrează aceste fonduri și nu preia date de acolo; fiecare legătură se deschide pe site-ul lor. Unele cer un cont gratuit.",

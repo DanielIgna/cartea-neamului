@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
 import { staticLocaleNow } from "@/i18n/static-locale";
-import { PUBLIC_PATHS } from "@/lib/public-variant";
+import { TRANSLATED_PAGES } from "@/lib/public-pages";
 import { SITE_URL } from "@/lib/site-url";
 
 /** Adresa canonică a unei pagini publice, cu domeniul principal (fără www): `/` → https://carteaneamului.ro/. */
@@ -28,7 +28,8 @@ export const OG_LOCALE: Record<Locale, string> = {
 };
 
 /** Paginile traduse în toate limbile (au adresă pe fiecare limbă); ghidurile, glosarul, numele și localitățile sunt încă doar în română. */
-export const isTranslatedPath = (path: string) => PUBLIC_PATHS.has(path);
+const TRANSLATED = new Set(TRANSLATED_PAGES.map((p) => p.path));
+export const isTranslatedPath = (path: string) => TRANSLATED.has(path);
 
 /**
  * Adresa canonică și legăturile hreflang ale unei pagini în limba dată (Daniel, 2026-11-14): fiecare limbă are adresa ei
@@ -46,8 +47,12 @@ export function languageAlternates(path: string, locale: Locale): Pick<Metadata,
   return { url, alternates: { canonical: url, languages } };
 }
 
-export function publicPageMetadata({ path, title: full, description, image }: { path: string; title: string; description: string; image?: { url: string; alt: string } }): Metadata {
-  const locale = staticLocaleNow() ?? "ro";
+/**
+ * `locale`: limba paginii când nu e o pagină pregătită dinainte (de pildă /it/contact?src=fb, randată pe loc); fără ea,
+ * pagina randată pe loc ar primi adresa canonică românească, deși textul e în italiană.
+ */
+export function publicPageMetadata({ path, title: full, description, image, locale: asked }: { path: string; title: string; description: string; image?: { url: string; alt: string }; locale?: Locale }): Metadata {
+  const locale = staticLocaleNow() ?? asked ?? "ro";
   const { url, ...lang } = languageAlternates(path, locale);
   const title = fitTitle(full);
   // O pagină cu cardul ei (nume, localitate) îl arată în previzualizarea linkului, în locul pozei comune.
@@ -63,10 +68,34 @@ export function publicPageMetadata({ path, title: full, description, image }: { 
 /** Paginile private (cont, mesaje, admin): nici în Google, nici legăturile din ele urmărite. Pe lângă robots.txt. */
 export const PRIVATE_ROBOTS: Metadata["robots"] = { index: false, follow: false };
 
-/** Datele WebPage pentru motoarele de căutare (JSON-LD), cu aceeași adresă canonică, același nume și aceeași descriere. */
-export function webPageJsonLd({ path, title, description }: { path: string; title: string; description: string }) {
+/** „Acasă” în fiecare limbă, pentru firul de navigare (BreadcrumbList) al paginilor simple. */
+const HOME_LABEL: Record<Locale, string> = {
+  ro: "Acasă", "en-GB": "Home", "en-US": "Home", fr: "Accueil", es: "Inicio", nl: "Home", de: "Startseite", it: "Home", hu: "Kezdőlap", he: "דף הבית",
+};
+
+/**
+ * Datele pentru motoarele de căutare (JSON-LD) ale unei pagini simple: WebPage, cu aceeași adresă canonică, același nume și
+ * aceeași descriere, plus firul de navigare Acasă → pagina (BreadcrumbList). Limba e cea a paginii (/it/contact → it).
+ */
+export function webPageJsonLd({ path, title, description, crumb, locale }: { path: string; title: string; description: string; crumb?: string; locale?: Locale }) {
+  const loc = locale ?? staticLocaleNow() ?? "ro";
+  const own = isTranslatedPath(path) ? localizedPath(path, loc) : path;
+  const url = canonicalUrl(own);
+  const home = canonicalUrl(isTranslatedPath("/") ? localizedPath("/", loc) : "/");
+  const name = crumb ?? fitTitle(title).replace(/ \| .*$/, "");
   return {
-    "@context": "https://schema.org", "@type": "WebPage", url: canonicalUrl(path), name: title, description, inLanguage: "ro",
-    isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage", "@id": `${url}#page`, url, name: title, description, inLanguage: isTranslatedPath(path) ? loc : "ro",
+        isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL }, breadcrumb: { "@id": `${url}#crumbs` },
+      },
+      {
+        "@type": "BreadcrumbList", "@id": `${url}#crumbs`, itemListElement: [
+          { "@type": "ListItem", position: 1, name: HOME_LABEL[loc], item: home },
+          { "@type": "ListItem", position: 2, name, item: url },
+        ],
+      },
+    ],
   };
 }

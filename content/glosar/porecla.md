@@ -1,6 +1,6 @@
 ---
 title: Poreclă (supranume)
-description: Poreclele și supranumele din sat: cum deosebeau familii cu același nume și de ce merită notate în arbore.
+description: Poreclele și supranumele din sat: cum deosebeau familii cu același nume și de ce merită notate în arbore. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: supranume, nume de casă, poreclă de neam
 terms: patronimic, prenume

@@ -14,7 +14,7 @@ export const heParteneri: ParteneriCatalog = {
   },
   PartnersPage: {
     metaTitle: "שותפים | Cartea Neamului",
-    metaDescription: "השותפים של Cartea Neamului ומה הם מציעים למשפחות שבונות את העץ ואת ספר המשפחה שלהן.",
+    metaDescription: "השותפים של Cartea Neamului ומה הם מציעים למשפחות שבונות את העץ ואת ספר המשפחה שלהן: עזרה עם בית המשפחה הישן והטבות למי שיש לו חשבון.",
     label: "שותפים",
     title: "השותפים של Cartea Neamului",
     lead: "העץ, הזיכרונות והספר נשארים של המשפחה בלבד, בלי פרסומות. כאן, בעמוד אחד, נמצאים השותפים שאנחנו סומכים עליהם.",

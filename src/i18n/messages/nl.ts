@@ -27,7 +27,7 @@ export const nl: Catalog = {
   Meta: {
     appName: "Het Familieboek",
     homeTitle: "Stamboom online | Het Familieboek",
-    description: "De stamboom van de familie, samen opgebouwd en gedrukt als een boek.",
+    description: "Bouw je stamboom online samen met je familie. Bewaar oude foto’s, verhalen en de stemmen van je grootouders, en druk alles af als je familieboek.",
   },
   Layout: {
     untranslated: "Deze pagina is nog niet beschikbaar in jouw taal. Voorlopig zie je haar in het Roemeens.",

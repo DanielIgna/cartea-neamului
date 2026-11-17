@@ -1,6 +1,6 @@
 ---
 title: Grad de rudenie
-description: Cum se numără gradele de rudenie: linie dreaptă și colaterală, câte grade sunt între frați, veri primari și unchi.
+description: Cum se numără gradele de rudenie: linie dreaptă și colaterală, câte grade sunt între frați, veri primari și unchi. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: grade de rudenie, gradul de rudenie
 terms: rudenie-colaterala, ascendent, descendent, afinitate

@@ -1,6 +1,6 @@
 ---
 title: Ținut
-description: Ținutul: unitatea administrativă a Moldovei istorice, asemănătoare județului. De ce apare în actele vechi.
+description: Ținutul: unitatea administrativă a Moldovei istorice, asemănătoare județului. De ce apare în actele vechi. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: ținuturi
 terms: plasa, comitat, catagrafie

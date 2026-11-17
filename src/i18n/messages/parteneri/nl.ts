@@ -15,7 +15,7 @@ export const nlParteneri: ParteneriCatalog = {
   },
   PartnersPage: {
     metaTitle: "Partners | Het Familieboek",
-    metaDescription: "De partners van het Familieboek en wat ze families bieden.",
+    metaDescription: "De partners van Het Familieboek en wat ze families bieden die hun stamboom bouwen: hulp bij het oude ouderlijk huis en aanbiedingen voor accounthouders.",
     label: "Partners",
     title: "De partners van het Familieboek",
     lead: "De stamboom, de herinneringen en het boek zijn alleen van de familie, zonder reclame. Hier, op één pagina, staan de partners die we vertrouwen.",

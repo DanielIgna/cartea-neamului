@@ -7,7 +7,7 @@ export const deLegal: LegalCatalog = {
     contactLine: "{name} mit Sitz in {address} (CUI {cui}, Handelsregisternr. {regCom}, EUID {euid}). E-Mail: <mail>{email}</mail>. Telefon und WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Datenschutzerklärung",
-      metaDescription: "Welche Daten wir speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst.",
+      metaDescription: "Welche Daten wir in deinem Stammbaum speichern, warum, wer sie sieht und wie du sie herunterlädst oder löschst. Ohne Werbung; Konto jederzeit löschbar.",
       label: "Datenschutzerklärung",
       title: "Wie wir mit den Daten deiner Familie umgehen",
       sections: {
@@ -155,7 +155,7 @@ export const deLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Nutzungsbedingungen",
-      metaDescription: "Was es heißt, ein Konto beim Familienbuch zu haben: was du hinzufügen kannst, wem es gehört und was wir versprechen.",
+      metaDescription: "Was es heißt, ein Konto beim Familienbuch zu haben: was du hinzufügen kannst, wem es gehört und was wir versprechen. Die Regeln in einfachen Worten.",
       label: "Nutzungsbedingungen",
       title: "Was es heißt, ein Konto beim Familienbuch zu haben",
       sections: {

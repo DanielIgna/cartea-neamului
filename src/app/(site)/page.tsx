@@ -29,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("Meta");
   const code = process.env.GOOGLE_SITE_VERIFICATION?.trim() || (await cachedVerification());
   return {
-    ...publicPageMetadata({ path: "/", title: t("homeTitle"), description: t("description") }),
+    ...publicPageMetadata({ path: "/", title: t("homeTitle"), description: t("description"), locale: await getLocale() }),
     ...(code ? { verification: { google: code } } : {}),
   };
 }

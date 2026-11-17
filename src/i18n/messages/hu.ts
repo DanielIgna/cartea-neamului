@@ -27,7 +27,7 @@ export const hu: Catalog = {
   Meta: {
     appName: "A Család Könyve",
     homeTitle: "Online családfa | A Család Könyve",
-    description: "A család fája, közösen építve, könyvként kinyomtatva.",
+    description: "Építsd fel online a családfádat a rokonaiddal. Őrizd meg a régi fotókat, történeteket és a nagyszülők hangját, majd nyomtasd ki családi könyvként.",
   },
   Layout: {
     untranslated: "Ez az oldal még nem érhető el a nyelveden. Egyelőre románul látod.",

@@ -7,7 +7,7 @@ export const esLegal: LegalCatalog = {
     contactLine: "{name}, con domicilio social en {address} (CUI {cui}, n.º de registro mercantil {regCom}, EUID {euid}). Correo electrónico: <mail>{email}</mail>. Teléfono y WhatsApp: {phone}.",
     Privacy: {
       metaTitle: "Política de privacidad",
-      metaDescription: "Qué datos guardamos, por qué, quién los ve y cómo los descargas o los borras.",
+      metaDescription: "Qué datos guardamos en tu árbol familiar, por qué, quién los ve y cómo los descargas o los borras. Sin anuncios; puedes borrar tu cuenta cuando quieras.",
       label: "Política de privacidad",
       title: "Cómo cuidamos los datos de tu familia",
       sections: {
@@ -155,7 +155,7 @@ export const esLegal: LegalCatalog = {
     },
     Terms: {
       metaTitle: "Condiciones de uso",
-      metaDescription: "Qué significa tener una cuenta en el Libro de la Familia: qué puedes poner, de quién es y qué prometemos.",
+      metaDescription: "Qué significa tener una cuenta en el Libro de la Familia: qué puedes poner, de quién es y qué prometemos. Las reglas en palabras sencillas.",
       label: "Condiciones de uso",
       title: "Qué significa tener una cuenta en el Libro de la Familia",
       sections: {

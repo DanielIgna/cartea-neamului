@@ -3,7 +3,7 @@ import type { ResurseCatalog } from "./ro";
 export const esResurse: ResurseCatalog = {
   Resources: {
     metaTitle: "Recursos gratuitos de genealogía",
-    metaDescription: "Archivos, registros parroquiales, censos, los Archivos Nacionales de Rumanía, bibliotecas digitales y periódicos antiguos: dónde buscar gratis a tu familia. Genealogía para todos.",
+    metaDescription: "Archivos, registros parroquiales, censos, los Archivos Nacionales de Rumanía, bibliotecas digitales y prensa antigua: dónde buscar gratis a tu familia.",
     label: "Recursos",
     title: "Recursos gratuitos de genealogía",
     intro: "Aquí encontrarás enlaces a archivos, bibliotecas y bases de datos gratuitas donde buscar a tu familia: registros parroquiales, censos, periódicos antiguos y catálogos. El Libro de la Familia no guarda estos fondos ni toma datos de ellos; cada enlace se abre en su propio sitio. Algunos piden una cuenta gratuita.",

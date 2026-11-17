@@ -1,14 +1,15 @@
-import { publicPageMetadata } from "@/lib/page-metadata";
+import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
+import JsonLd from "@/components/JsonLd";
 import type { Metadata } from "next";
 import { db } from "@/db";
 import { currentUser } from "@/lib/access";
 import { partnerState } from "@/lib/partners";
 import PartnersView from "@/components/PartnersView";
-import { getT } from "@/i18n/server";
+import { getLocale, getT } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("PartnersPage");
-  return publicPageMetadata({ path: "/parteneri", title: t("metaTitle"), description: t("metaDescription") });
+  return publicPageMetadata({ path: "/parteneri", title: t("metaTitle"), description: t("metaDescription"), locale: await getLocale() });
 }
 
 /**
@@ -17,6 +18,6 @@ export async function generateMetadata(): Promise<Metadata> {
  * pusă la noi (public/parteneri), ca browserul să nu ceară nimic de la partener până nu apasă omul pe legătură.
  */
 export default async function PartnersPage() {
-  const me = await currentUser();
-  return <PartnersView state={me ? await partnerState(db, me.id).catch(() => null) : null} />;
+  const [me, t, locale] = await Promise.all([currentUser(), getT("PartnersPage"), getLocale()]);
+  return <><JsonLd data={webPageJsonLd({ path: "/parteneri", title: t("metaTitle"), description: t("metaDescription"), locale })} /><PartnersView state={me ? await partnerState(db, me.id).catch(() => null) : null} /></>;
 }

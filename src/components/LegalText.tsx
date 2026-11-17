@@ -1,4 +1,5 @@
-import { publicPageMetadata } from "@/lib/page-metadata";
+import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
+import JsonLd from "@/components/JsonLd";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import LegalLangNote from "@/components/LegalLangNote";
@@ -64,6 +65,7 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
 
   return (
     <article className="card legal" lang={locale}>
+      <JsonLd data={webPageJsonLd({ path: page === "Privacy" ? "/confidentialitate" : "/termeni", title: t(`${page}.metaTitle`), description: t(`${page}.metaDescription`), crumb: t(`${page}.label`), locale })} />
       <LegalLangNote />
       <h1 className="section-label" style={{ marginTop: 0 }}>{t(`${page}.label`)}</h1>
       <h2>{t(`${page}.title`)}</h2>
@@ -102,5 +104,5 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
 /** Titlul și descrierea paginii, în limba cititorului. */
 export async function legalMetadata(page: Page) {
   const t = await getT("Legal");
-  return publicPageMetadata({ path: page === "Privacy" ? "/confidentialitate" : "/termeni", title: `${t(`${page}.metaTitle`)} | ${await getAppName()}`, description: t(`${page}.metaDescription`) });
+  return publicPageMetadata({ path: page === "Privacy" ? "/confidentialitate" : "/termeni", title: `${t(`${page}.metaTitle`)} | ${await getAppName()}`, description: t(`${page}.metaDescription`), locale: await getLocale() });
 }

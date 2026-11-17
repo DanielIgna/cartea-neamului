@@ -1,6 +1,6 @@
 ---
 title: Scaun (unitate administrativă)
-description: Scaunele săsești și secuiești din Transilvania: ce erau, ce arhive au lăsat și cum te ajută la căutarea strămoșilor.
+description: Scaunele săsești și secuiești din Transilvania: ce erau, ce arhive au lăsat și cum te ajută la căutarea strămoșilor. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: scaune săsești, scaune secuiești, Stuhl, szék
 terms: comitat, conscriptie

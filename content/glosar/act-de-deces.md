@@ -1,6 +1,6 @@
 ---
 title: Act de deces
-description: Actul de deces: ce date conține, cât de sigure sunt și cum te ajută să găsești nașterea și părinții unui strămoș.
+description: Actul de deces: ce date conține, cât de sigure sunt și cum te ajută să găsești nașterea și părinții unui strămoș. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: certificat de deces
 terms: stare-civila, registru-de-stare-civila, piatra-funerara, certificat-de-mostenitor

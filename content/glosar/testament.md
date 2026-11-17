@@ -1,6 +1,6 @@
 ---
 title: Testament
-description: Testamentele și actele de moștenire în genealogie: cum numesc copii, nepoți și bunuri și unde se păstrează.
+description: Testamentele și actele de moștenire în genealogie: cum numesc copii, nepoți și bunuri și unde se păstrează. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: diată, testamente
 terms: certificat-de-mostenitor, cartea-funciara, foaie-de-zestre

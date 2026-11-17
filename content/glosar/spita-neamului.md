@@ -1,6 +1,6 @@
 ---
 title: Spița neamului
-description: Ce înseamnă spița neamului: linia de strămoși a unei familii, cum se folosea în acte vechi și cum o urmărești azi.
+description: Ce înseamnă spița neamului: linia de strămoși a unei familii, cum se folosea în acte vechi și cum o urmărești azi. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: spiță de neam, spiță
 terms: arbore-genealogic, razes, mosnean, ascendent, grad-de-rudenie

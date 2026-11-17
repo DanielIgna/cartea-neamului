@@ -1,16 +1,17 @@
-import { publicPageMetadata } from "@/lib/page-metadata";
+import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
+import JsonLd from "@/components/JsonLd";
 import type { Metadata } from "next";
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import PageIntl from "@/i18n/PageIntl";
-import { getAppName, getT } from "@/i18n/server";
+import { getAppName, getT, getLocale } from "@/i18n/server";
 import { FACEBOOK_URL, whatsappUrl } from "@/lib/contact";
 import { operator } from "@/lib/legal";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT("ContactPage");
-  return publicPageMetadata({ path: "/contact", title: `${t("metaTitle")} | ${await getAppName()}`, description: t("metaDescription") });
+  return publicPageMetadata({ path: "/contact", title: `${t("metaTitle")} | ${await getAppName()}`, description: t("metaDescription"), locale: await getLocale() });
 }
 
 /**
@@ -27,6 +28,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
   const prefill = pages ? t("printRequest", { pages: String(pages), format }) : undefined;
   return (
     <section className="stack contact" style={{ maxWidth: 760, margin: "0 auto" }}>
+      <JsonLd data={webPageJsonLd({ path: "/contact", title: t("metaTitle"), description: t("metaDescription"), locale: await getLocale() })} />
       <div className="card">
         <h1 className="section-label" style={{ marginTop: 0 }}>{t("label")}</h1>
         <h2>{t("title")}</h2>

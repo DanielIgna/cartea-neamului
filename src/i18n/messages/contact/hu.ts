@@ -6,7 +6,7 @@ export const huContact: ContactCatalog = {
     "seller": "A Család Könyvét kínálja: {name}, CUI {cui}, cégjegyzékszám {regCom}, székhely: {address}.",
     "printRequest": "Jó napot! Árajánlatot szeretnék a nyomtatott családkönyvre: {pages} oldal, {format} formátum. Kemény vagy puha borító: … Hány példány: … Telefon: …",
     "metaTitle": "Kapcsolat",
-    "metaDescription": "Írj nekünk WhatsAppon, vagy küldj üzenetet A Család Könyvéről.",
+    "metaDescription": "Írj nekünk WhatsAppon, vagy küldj üzenetet a családfádról, a nyomtatott könyvről, egy ajándékról vagy iskolai projektről. Általában aznap válaszolunk.",
     "menu": "Kapcsolat",
     "label": "Kapcsolat",
     "title": "Szeretnél üzenni nekünk?",

@@ -1,6 +1,6 @@
 ---
 title: Piatră funerară
-description: Pietrele funerare și crucile din cimitir ca sursă genealogică: ce date au, cum le fotografiezi și cum le citești.
+description: Pietrele funerare și crucile din cimitir ca sursă genealogică: ce date au, cum le fotografiezi și cum le citești. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: cruce de mormânt, monument funerar, cimitir
 terms: act-de-deces, sursa-secundara

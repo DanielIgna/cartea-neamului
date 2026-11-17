@@ -1,6 +1,6 @@
 ---
 title: Certificat de moștenitor
-description: Certificatul de moștenitor: actul notarial care arată cine a moștenit pe cineva. Ce informații de familie conține.
+description: Certificatul de moștenitor: actul notarial care arată cine a moștenit pe cineva. Ce informații de familie conține. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: succesiune, dezbatere succesorală
 terms: testament, act-de-deces, cartea-funciara

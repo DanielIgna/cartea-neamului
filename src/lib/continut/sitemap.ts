@@ -1,5 +1,5 @@
 import { LOCALES, localizedPath } from "@/i18n/locales";
-import { PUBLIC_PAGES } from "@/lib/public-pages";
+import { PUBLIC_PAGES, TRANSLATED_PAGES } from "@/lib/public-pages";
 import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
@@ -52,7 +52,7 @@ function languagesGroup(): SitemapGroup {
   };
   return {
     name: "limbi", label: "Paginile principale în celelalte limbi",
-    urls: LOCALES.filter((l) => l !== "ro").flatMap((l) => PUBLIC_PAGES.map((p): SitemapUrl => ({
+    urls: LOCALES.filter((l) => l !== "ro").flatMap((l) => TRANSLATED_PAGES.map((p): SitemapUrl => ({
       path: localizedPath(p.path, l), lastModified: LAST_MODIFIED[p.path] ?? BUILT_AT, changeFrequency: p.changeFrequency,
       priority: Math.round(p.priority * 8) / 10, alternates: alt(p.path),
     }))),

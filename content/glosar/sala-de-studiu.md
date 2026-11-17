@@ -1,6 +1,6 @@
 ---
 title: Sală de studiu
-description: Sala de studiu a arhivei: cum ceri acces, ce iei cu tine și cum consulți registrele vechi în persoană.
+description: Sala de studiu a arhivei: cum ceri acces, ce iei cu tine și cum consulți registrele vechi în persoană. Explicat pe scurt, pentru cercetarea familiei.
 updated: 2026-11-13
 alt: sala de lectură, studiul la arhivă
 terms: arhivele-nationale, inventar-arhivistic, cota-arhivistica

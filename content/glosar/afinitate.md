@@ -1,6 +1,6 @@
 ---
 title: Afinitate (rudenie prin alianță)
-description: Afinitatea sau rudenia prin alianță: socrii, cumnații, nora și ginerele. Cum o deosebești de rudenia de sânge.
+description: Afinitatea sau rudenia prin alianță: socrii, cumnații, nora și ginerele. Cum o deosebești de rudenia de sânge. Explicat pe scurt, pentru arbore.
 updated: 2026-11-13
 alt: rudenie prin alianță, afini, cuscrie
 terms: grad-de-rudenie, cuscri, rudenie-spirituala

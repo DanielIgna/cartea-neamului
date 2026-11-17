@@ -3,7 +3,7 @@ import type { ResurseCatalog } from "./ro";
 export const nlResurse: ResurseCatalog = {
   Resources: {
     metaTitle: "Gratis bronnen voor genealogie",
-    metaDescription: "Archieven, parochieregisters, volkstellingen, het Roemeense Nationaal Archief, digitale bibliotheken en oude kranten: waar je gratis naar je familie zoekt. Genealogie voor iedereen.",
+    metaDescription: "Archieven, parochieregisters, volkstellingen, het Roemeense Nationaal Archief, digitale bibliotheken en oude kranten: waar je gratis naar je familie zoekt.",
     label: "Bronnen",
     title: "Gratis bronnen voor genealogie",
     intro: "Hier vind je links naar gratis archieven, bibliotheken en databanken waar je naar je familie kunt zoeken: parochieregisters, volkstellingen, oude kranten en catalogi. Het Familieboek bewaart deze collecties niet en neemt er geen gegevens uit over; elke link opent op hun eigen site. Sommige vragen om een gratis account.",

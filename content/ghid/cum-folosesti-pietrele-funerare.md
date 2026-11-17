@@ -1,6 +1,6 @@
 ---
 title: Cum folosești pietrele funerare în cercetarea familiei
-seo: Pietre funerare și cimitire: cum le fotografiezi pentru arbore
+seo: Pietre funerare și cimitire: cum le folosești în arbore
 description: Cum cauți, fotografiezi și citești pietrele funerare și crucile din cimitirele satelor și ce informații de familie îți pot da.
 category: Poze, documente și amintiri
 updated: 2026-11-13

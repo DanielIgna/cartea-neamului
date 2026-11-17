@@ -5,7 +5,7 @@ export const deBiserica: BisericaCatalog = {
   Church: {
     meta: {
       title: "Die Freiheit zu glauben | Geschichte des Christentums",
-      description: "Zweitausend Jahre Geschichte des Christentums: die Märtyrer Roms, die Reformation, die ersten Bücher auf Rumänisch und die Menschen, die für ihren Glauben in kommunistischen Gefängnissen saßen.",
+      description: "Zweitausend Jahre Christentum: die Märtyrer Roms, die Reformation, die ersten Bücher auf Rumänisch und jene, die für ihren Glauben im Gefängnis saßen.",
     },
     label: "Die Freiheit zu glauben",
     title: "Zweitausend Jahre Christentum und die Menschen, die für ihren Glauben bezahlten",
