@@ -161,6 +161,9 @@
   "src/app/(site)/arbore/[id]/persoana/[pid]/page.tsx",
   "src/app/(site)/arbore/[id]/persoana/[pid]/poveste/page.tsx",
   "src/app/(site)/arbore/[id]/scoala/page.tsx",
+  "src/app/(site)/arbore/[id]/widget/actions.ts",
+  "src/app/(site)/arbore/[id]/widget/page.tsx",
+  "src/app/(site)/arborele-meu/page.tsx",
   "src/app/(site)/arhiva/page.tsx",
   "src/app/(site)/cadou-de-sarbatori/page.tsx",
   "src/app/(site)/cadou/[cod]/card/page.tsx",
@@ -214,6 +217,7 @@
   "src/app/(site)/parteneri/page.tsx",
   "src/app/(site)/parteneriate/page.tsx",
   "src/app/(site)/plata/page.tsx",
+  "src/app/(site)/presa/page.tsx",
   "src/app/(site)/primii-pasi/page.tsx",
   "src/app/(site)/problema/page.tsx",
   "src/app/(site)/resurse-genealogie/page.tsx",
@@ -296,6 +300,7 @@
   "src/app/sitemaps/[file]/route.ts",
   "src/app/vesti-actions.ts",
   "src/app/vremuri-actions.ts",
+  "src/app/widget/arbore/[token]/route.ts",
   "src/components/AccessBanner.tsx",
   "src/components/AdamHristos.tsx",
   "src/components/Album.tsx",
@@ -725,6 +730,7 @@
   "src/lib/auth.ts",
   "src/lib/autobiografie.ts",
   "src/lib/autonomie.ts",
+  "src/lib/autoritate.ts",
   "src/lib/book-css.ts",
   "src/lib/book.ts",
   "src/lib/bootstrap.ts",
@@ -860,6 +866,7 @@
   "src/lib/seo-clustere.ts",
   "src/lib/seo-cuvinte.ts",
   "src/lib/seo-inspector.ts",
+  "src/lib/seo-raport.ts",
   "src/lib/seo.ts",
   "src/lib/shared-places.ts",
   "src/lib/short-link.ts",
@@ -879,6 +886,7 @@
   "src/lib/verificari.ts",
   "src/lib/vizite.ts",
   "src/lib/vremuri.ts",
+  "src/lib/widget-arbore.ts",
   "src/middleware.ts",
   "src/types/pagedjs.d.ts",
   "tests/account-image.test.ts",
@@ -892,6 +900,7 @@
   "tests/arhivare.test.ts",
   "tests/autobiografie.test.ts",
   "tests/autonomie.test.ts",
+  "tests/autoritate.test.ts",
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
   "tests/calatorie.test.ts",
@@ -1314,6 +1323,14 @@
    "kind": "pagina"
   },
   {
+   "path": "/arbore/[id]/widget",
+   "kind": "pagina"
+  },
+  {
+   "path": "/arborele-meu",
+   "kind": "pagina"
+  },
+  {
    "path": "/arhiva",
    "kind": "pagina"
   },
@@ -1490,6 +1507,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/presa",
+   "kind": "pagina"
+  },
+  {
    "path": "/primii-pasi",
    "kind": "pagina"
   },
@@ -1540,6 +1561,10 @@
   {
    "path": "/termeni",
    "kind": "pagina"
+  },
+  {
+   "path": "/widget/arbore/[token]",
+   "kind": "api"
   }
  ],
  "tests": [
@@ -1554,6 +1579,7 @@
   "tests/arhivare.test.ts",
   "tests/autobiografie.test.ts",
   "tests/autonomie.test.ts",
+  "tests/autoritate.test.ts",
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
   "tests/calatorie.test.ts",

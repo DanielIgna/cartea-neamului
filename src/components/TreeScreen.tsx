@@ -429,6 +429,7 @@ export default function TreeScreen(props: Props) {
             <Link className="btn" href="/istoria-umanitatii">{t("humanHistory")}</Link>
             {/* Proiectul de la școală (/scoala): fișa e în română, ca programa școlilor din România. */}
             {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/scoala?p=${centerId}`}>🎒 Printează pentru proiectul de la școală</Link>}
+            {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/widget`}>🌳 Widget pentru blog sau site</Link>}
             {props.exportLocked
               ? <a className="btn" href="/plata?blocat=export" title={t("exportGedcom")}>🔒 {t("exportGedcom")}</a>
               : <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>}
