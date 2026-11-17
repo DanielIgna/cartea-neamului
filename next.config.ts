@@ -82,6 +82,9 @@ const config: NextConfig = {
       // Cine scrie de mână /preturi sau /planuri ajunge la prețurile de pe prima pagină (Daniel, 13 noiembrie 2026).
       { source: "/preturi", destination: "https://www.carteaneamului.ro/#preturi", statusCode: 301 },
       { source: "/planuri", destination: "https://www.carteaneamului.ro/#preturi", statusCode: 301 },
+      // Adresa scurtă a paginii despre românii din SUA (Daniel, 17.11.2026) duce la cea existentă, cu statele și orașele ei.
+      { source: "/diaspora/sua", destination: "/diaspora/statele-unite", permanent: true },
+      { source: "/diaspora/sua/:b", destination: "/diaspora/statele-unite/:b", permanent: true },
     ];
   },
   async headers() {

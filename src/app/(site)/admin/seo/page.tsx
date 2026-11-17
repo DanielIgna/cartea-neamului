@@ -16,6 +16,8 @@ import { SeoEngineForm, SeoSetupForm, SubmitSitemapButton } from "@/components/a
 import { STATUS_LABEL, publishedMap, engineSettings, engineStats, runBatch, syncQueue } from "@/lib/motor-seo/motor";
 import { MAX_SIMILARITY, MIN_FACTS, MIN_UNIQUE_WORDS } from "@/lib/motor-seo/calitate";
 import { automationSwitches } from "@/lib/autonomie";
+import { COUNTRIES, entries as diasporaEntries, type Entry as DiasporaEntry } from "@/lib/diaspora";
+import { DEMO_EMAIL } from "@/lib/demo";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -27,7 +29,7 @@ export const metadata = { title: "SEO · Admin" };
  */
 const TABS = [
   { key: "prezentare", label: "Prezentare" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
-  { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "inspector", label: "Inspector URL" },
+  { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "diaspora", label: "Diaspora" }, { key: "inspector", label: "Inspector URL" },
   { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
@@ -86,7 +88,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
           {t.label}{t.key === "alerte" && alerts.some((a) => a.level !== "info") ? ` (${alerts.filter((a) => a.level !== "info").length})` : ""}
         </Link>)}
       </nav>
-      {["prezentare", "cuvinte", "pagini", "sectiuni"].includes(tab) && gsc.state === "legat" && (
+      {["prezentare", "cuvinte", "pagini", "sectiuni", "diaspora"].includes(tab) && gsc.state === "legat" && (
         <nav className="an-periods" aria-label="Perioada din Google">
           {PERIODS.map((d) => <Link key={d} className="btn" href={href({ zile: d === 28 ? undefined : String(d) })} aria-current={d === days ? "true" : undefined}>{d} zile</Link>)}
           <span className="muted" style={{ alignSelf: "center", fontSize: 14 }}>Google arată datele cu 2–3 zile întârziere.</span>
@@ -98,6 +100,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
       {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} />}
       {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
+      {tab === "diaspora" && await Diaspora({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "inspector" && await Inspector({ sp, pages, gscOn: gsc.state === "legat" })}
       {tab === "motor" && await Engine({ sp, href })}
       {tab === "sitemap" && await SitemapTab({ gscOn: gsc.state === "legat" })}
@@ -367,6 +370,75 @@ async function Sections({ pages, gscPages, gscOn, days }: { pages: AuditPage[]; 
           <thead><tr><th>Secțiunea</th><th>Pagini</th><th>Indexabile</th><th>Văzute în Google</th><th>Afișări</th><th>Clicuri</th><th>Vizite din căutări</th><th>Conturi</th><th>Plăți</th></tr></thead>
           <tbody>
             {clusters.map((c) => <tr key={c.k}><td>{c.label}</td><td>{num(c.total)}</td><td>{num(c.index)}</td><td>{gscOn ? num(c.seen) : "—"}</td><td>{gscOn ? num(c.impressions) : "—"}</td><td>{gscOn ? num(c.clicks) : "—"}</td><td>{num(c.org)}</td><td>{num(c.cont)}</td><td>{num(c.plata)}</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------- Diaspora ---------------------------------- */
+
+/**
+ * Filtrul „Diaspora” (Daniel, 17.11.2026): pe fiecare țară și pe fiecare stat, provincie sau oraș, afișările, clicurile și poziția
+ * din Google (toate limbile paginii la un loc), vizitele din căutări și conturile: cele venite pe pagină și cele cu eticheta
+ * ?src=diaspora-<pagină> (butonul de cont nou și linkul de WhatsApp). Conturile de test și cel demo nu se numără.
+ */
+async function Diaspora({ pages, gscPages, gscOn, days }: { pages: AuditPage[]; gscPages?: ReturnType<typeof gscByPath>; gscOn: boolean; days: number }) {
+  const { cur } = rangeOf(days <= 7 ? "7z" : days <= 30 ? "30z" : "90z");
+  const dia = pages.filter((p) => p.path === "/diaspora" || p.path.includes("/diaspora/") || p.path.endsWith("/diaspora"));
+  const base = (path: string) => path.slice(path.indexOf("/diaspora"));
+  const [orgRows, srcRows] = await Promise.all([
+    db.execute(sql`select path, count(*) as s from page_view where day between ${cur.from} and ${cur.to} and path like '%/diaspora%' and source in ('google','bing','duckduckgo','yahoo','yandex','ecosia','brave') group by path`),
+    db.execute(sql`select coalesce(s.first_src, s.last_src) as k, count(*) as c from account_source s join "user" u on u.id = s.user_id
+      where s.analytics and (s.first_src like 'diaspora%' or s.last_src like 'diaspora%') and u.email not like '%@example.com' and u.email <> ${DEMO_EMAIL}
+        and coalesce(s.first_at, u.created_at) >= ${cur.from}::date group by 1`),
+  ]);
+  const org = new Map<string, number>();
+  for (const r of (orgRows.rows ?? []) as { path: string; s: number }[]) org.set(base(r.path), (org.get(base(r.path)) ?? 0) + Number(r.s));
+  const src = new Map(((srcRows.rows ?? []) as { k: string; c: number }[]).map((r) => [String(r.k), Number(r.c)]));
+  const conv = await conversionsBy(db, cur, "landing");
+  type Row = { key: string; label: string; depth: number; total: number; index: number; imp: number; clk: number; posW: number; org: number; cont: number; src: number };
+  const rowOf = (key: string, label: string, depth: number, es: DiasporaEntry[]): Row => {
+    const paths = new Set(es.map((e) => e.path));
+    const ps = dia.filter((p) => paths.has(base(p.path)));
+    const g = ps.map((p) => gscPages?.get(p.path)).filter((x) => !!x);
+    const imp = g.reduce((a, b) => a + b!.impressions, 0);
+    return {
+      key, label, depth, total: ps.length, index: ps.filter((p) => p.indexable).length, imp, clk: g.reduce((a, b) => a + b!.clicks, 0),
+      posW: imp ? g.reduce((a, b) => a + b!.position * b!.impressions, 0) / imp : 0,
+      org: [...paths].reduce((a, p) => a + (org.get(p) ?? 0), 0),
+      cont: ps.reduce((a, p) => a + (conv.get(p.path)?.cont ?? 0), 0),
+      src: [...paths].reduce((a, p) => a + (src.get(p === "/diaspora" ? "diaspora" : `diaspora-${p.split("/").pop()}`) ?? 0), 0),
+    };
+  };
+  const all = diasporaEntries();
+  const rows: Row[] = [rowOf("hub", "Pagina principală /diaspora", 0, all.filter((e) => e.kind === "hub"))];
+  for (const c of COUNTRIES) {
+    const own = all.filter((e) => (e.kind === "country" && e.country === c) || (e.kind === "region" && e.country === c));
+    rows.push(rowOf(c.slug, `${c.flag} ${c.name.ro ?? c.slug}`, 0, own));
+    for (const e of own) if (e.kind === "region") {
+      const r = rowOf(e.path, e.region.name.ro ?? e.region.slug, 1, [e]);
+      if (r.imp || r.org || r.cont || r.src || e.indexable) rows.push(r);
+    }
+  }
+  rows.push(rowOf("teme", "Paginile speciale", 0, all.filter((e) => e.kind === "theme")));
+  const totalSrc = [...src.values()].reduce((a, b) => a + b, 0);
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Diaspora: țări și orașe</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Toate limbile unei pagini sunt adunate. „Conturi (?src)” = conturi noi cu eticheta diaspora-… în ultimele {days} zile (doar cine a acceptat cookie-urile de analiză; fără conturile de test și demo). În total: {num(totalSrc)}.</p>
+      <div className="an-scroll">
+        <table className="an-table">
+          <thead><tr><th>Țara / orașul</th><th>Pagini</th><th>Indexabile</th><th>Afișări</th><th>Clicuri</th><th>Poziția medie</th><th>Vizite din căutări</th><th>Conturi (pagina de intrare)</th><th>Conturi (?src)</th></tr></thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key}>
+                <td style={r.depth ? { paddingLeft: 24 } : { fontWeight: 600 }}>{r.label}</td><td>{num(r.total)}</td><td>{num(r.index)}</td>
+                <td>{gscOn ? num(r.imp) : "—"}</td><td>{gscOn ? num(r.clk) : "—"}</td><td>{gscOn && r.imp ? pos(r.posW) : "—"}</td>
+                <td>{num(r.org)}</td><td>{num(r.cont)}</td><td>{num(r.src)}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

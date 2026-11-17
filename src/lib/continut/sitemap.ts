@@ -118,9 +118,22 @@ export function urlsetXml(urls: SitemapUrl[]): string {
     `<url>\n<loc>${esc(abs(u.path))}</loc>\n${links(u)}<lastmod>${iso(u.lastModified)}</lastmod>\n<changefreq>${u.changeFrequency}</changefreq>\n<priority>${u.priority}</priority>\n</url>`).join("\n")}\n</urlset>\n`;
 }
 
+/** Grupele de diaspora (câte una pe limbă) intră în index ca un singur fișier, /sitemap-diaspora.xml (Daniel, 17.11.2026). */
+export const isDiasporaGroup = (g: SitemapGroup) => g.name.startsWith("diaspora-");
+export const DIASPORA_SITEMAP = "/sitemap-diaspora.xml";
+/** Toate adresele de diaspora, din toate limbile, fără dubluri (pentru /sitemap-diaspora.xml). */
+export function diasporaSitemapUrls(groups: SitemapGroup[] = sitemapGroups()): SitemapUrl[] {
+  const seen = new Set<string>();
+  return groups.filter(isDiasporaGroup).flatMap((g) => g.urls).filter((u) => !seen.has(u.path) && !!seen.add(u.path));
+}
+
 export function indexXml(groups: SitemapGroup[]): string {
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${groups.map((g) =>
-    `<sitemap>\n<loc>${esc(`${SITE_URL}/sitemaps/${g.name}.xml`)}</loc>\n<lastmod>${iso(lastUpdated(g.urls.map((u) => ({ updated: u.lastModified }))))}</lastmod>\n</sitemap>`).join("\n")}\n</sitemapindex>\n`;
+  const lastmod = (urls: SitemapUrl[]) => iso(lastUpdated(urls.map((u) => ({ updated: u.lastModified }))));
+  const items = groups.filter((g) => !isDiasporaGroup(g)).map((g) => ({ loc: `${SITE_URL}/sitemaps/${g.name}.xml`, lastmod: lastmod(g.urls) }));
+  const dia = diasporaSitemapUrls(groups);
+  if (dia.length) items.push({ loc: `${SITE_URL}${DIASPORA_SITEMAP}`, lastmod: lastmod(dia) });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items.map((x) =>
+    `<sitemap>\n<loc>${esc(x.loc)}</loc>\n<lastmod>${x.lastmod}</lastmod>\n</sitemap>`).join("\n")}\n</sitemapindex>\n`;
 }
 
 /** /sitemap.xml: un singur fișier sau indexul, după numărul de adrese. */

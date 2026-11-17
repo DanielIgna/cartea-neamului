@@ -271,6 +271,7 @@
   "src/app/resurse-actions.ts",
   "src/app/robots.ts",
   "src/app/securitate-actions.ts",
+  "src/app/sitemap-diaspora.xml/route.ts",
   "src/app/sitemap.xml/route.ts",
   "src/app/sitemaps/[file]/route.ts",
   "src/app/vesti-actions.ts",
@@ -727,6 +728,7 @@
   "src/lib/demo-sync.ts",
   "src/lib/demo.ts",
   "src/lib/diaspora/america.ts",
+  "src/lib/diaspora/extins.ts",
   "src/lib/diaspora/index.ts",
   "src/lib/diaspora/tari.ts",
   "src/lib/diaspora/teme.ts",
@@ -1418,6 +1420,10 @@
   {
    "path": "/securitate",
    "kind": "pagina"
+  },
+  {
+   "path": "/sitemap-diaspora.xml",
+   "kind": "api"
   },
   {
    "path": "/sitemap.xml",

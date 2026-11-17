@@ -28,7 +28,7 @@ const ro: Ui = {
   countries: "Europa și Israel", america: "Statele Unite", canada: "Canada", themes: "Pagini speciale", states: "Statele", provinces: "Provinciile și teritoriile", cities: "Orașele mari",
   history: "Cum au ajuns românii aici", where: "Unde trăiesc", docs: "Acte din România, cerute de aici", records: "Arhivele și registrele de aici",
   community: "Comunități și asociații", steps: "Pas cu pas: arborele familiei, de departe", related: "Vezi și", otherLangs: "Pagina în alte limbi",
-  titleCountry: (w) => `Români ${w}: istorie, acte din România, arbore genealogic | Cartea Neamului`,
+  titleCountry: (w) => `Români ${w} – află-ți rădăcinile din România | Cartea Neamului`,
   descCountry: (w) => `Cum au ajuns românii ${w}, cum ceri acte din România de acolo, ce arhive există și cum faci arborele familiei cu rudele de acasă.`,
   titleRegion: (w) => `Români ${w}: comunitate, acte din România, genealogie | Cartea Neamului`,
   descRegion: (w, c) => `Românii ${w} (${c}): istoria comunității, acte din România cerute de acolo și arborele familiei.`,
@@ -66,7 +66,7 @@ const en: Ui = {
   countries: "Europe and Israel", america: "United States", canada: "Canada", themes: "Special pages", states: "States", provinces: "Provinces and territories", cities: "Major cities",
   history: "How Romanians came here", where: "Where they live", docs: "Romanian documents, requested from here", records: "Local archives and records",
   community: "Communities and associations", steps: "Step by step: your family tree, from far away", related: "See also", otherLangs: "This page in other languages",
-  titleCountry: (w) => `Romanians ${w}: history, Romanian records, family tree | Cartea Neamului`,
+  titleCountry: (w) => `Romanian roots ${w}: records and family tree | Cartea Neamului`,
   descCountry: (w) => `How Romanians settled ${w}, how to request Romanian documents from there, which archives to use and how to build your family tree.`,
   titleRegion: (w) => `Romanian roots ${w}: community, records, genealogy | Cartea Neamului`,
   descRegion: (w, c) => `Romanians ${w} (${c}): community history, Romanian documents requested from abroad and your family tree.`,
@@ -326,3 +326,31 @@ const hu: Ui = {
 };
 
 export const UI: Record<Lang, Ui> = { ro, en, it, es, de, fr, he, hu };
+
+/** Titlurile secțiunilor noi (ambasade, ghid, particularități, întrebări) și îndemnul cu prețul și WhatsApp, pe limbi. */
+type XUi = {
+  guide: (where: string) => string; specifics: string; missions: string; faq: string;
+  kind: Record<"embassy" | "consular" | "cg" | "consulate", string>;
+  missionsNote: (date: string) => string; statsNote: string;
+  price: (lei: string, local: string | null) => string;
+  whatsapp: string; whatsappText: (url: string) => string;
+};
+const xro: XUi = {
+  guide: (w) => `Cum îți găsești strămoșii din România când locuiești ${w}`, specifics: "De știut", missions: "Ambasada și consulatele României", faq: "Întrebări frecvente",
+  kind: { embassy: "Ambasada", consular: "Secția consulară", cg: "Consulatul general", consulate: "Consulatul" },
+  missionsNote: (d) => `Verificate în surse oficiale la ${d}. Zona de care răspunde fiecare consulat și programul sunt pe pagina oficială:`,
+  statsNote: "Cifrele despre comunitate sunt rotunjite; datele exacte sunt la",
+  price: (lei, local) => `După cele 7 zile gratuite, planul Basic costă ${lei} pe an${local ? ` (cam ${local})` : ""}.`,
+  whatsapp: "Trimite-l bunicilor din România pe WhatsApp",
+  whatsappText: (u) => `Fac arborele familiei noastre și am nevoie de voi: cum îi chema pe părinții și pe bunicii voștri și din ce sat erau? Îl completăm împreună aici: ${u}`,
+};
+const xen: XUi = {
+  guide: (w) => `How to trace your Romanian ancestors when you live ${w}`, specifics: "Good to know", missions: "Romanian embassy and consulates", faq: "Frequently asked questions",
+  kind: { embassy: "Embassy", consular: "Consular section", cg: "Consulate General", consulate: "Consulate" },
+  missionsNote: (d) => `Checked against official sources on ${d}. The area each consulate covers and its opening hours are on the official page:`,
+  statsNote: "Community figures are rounded; exact data is published by",
+  price: (lei, local) => `After the 7 free days, the Basic plan costs ${local ?? lei} a year${local ? ` (${lei})` : ""}.`,
+  whatsapp: "Send it to your grandparents in Romania on WhatsApp",
+  whatsappText: (u) => `I'm building our family tree and need your help: what were your parents' and grandparents' names, and which village were they from? Let's fill it in together here: ${u}`,
+};
+export const XUI: Partial<Record<Lang, XUi>> = { ro: xro, en: xen };
