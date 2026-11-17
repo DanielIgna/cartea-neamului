@@ -7,7 +7,7 @@ import { HOME_JSON_LD } from "@/lib/home-jsonld";
 import { TRANSLATED_PAGES, PUBLIC_PAGES } from "@/lib/public-pages";
 
 /** Etapa 2 (Daniel, 17.11.2026): titluri unice de cel mult 60 de semne, descrieri de 120–155, canonical curat, noindex în afara sitemap-ului. */
-const pages = auditPages().filter((p) => p.indexable && p.category !== "diaspora" && !p.path.startsWith("/diaspora"));
+const pages = auditPages().filter((p) => p.indexable);
 
 describe("titlurile și descrierile paginilor publice", () => {
   it("niciun titlu peste 60 de semne", () => {
@@ -15,7 +15,8 @@ describe("titlurile și descrierile paginilor publice", () => {
     expect(long).toEqual([]);
   });
   it("titlurile paginilor în română sunt unice", () => {
-    const ro = pages.filter((p) => p.category !== "limbă");
+    // /en-us/… are aceleași titluri ca /en/… (aceeași pagină, alt hreflang), deci nu intră la numărat dublurile.
+    const ro = pages.filter((p) => p.category !== "limbă" && !p.path.startsWith("/en-us/"));
     const seen = new Map<string, string>();
     const dup: string[] = [];
     for (const p of ro) { const k = p.title.replace(/ \| Cartea Neamului$/, ""); if (seen.has(k)) dup.push(`${p.path} = ${seen.get(k)}`); else seen.set(k, p.path); }
