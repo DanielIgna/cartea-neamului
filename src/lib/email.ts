@@ -32,7 +32,24 @@ export type EmailMessage = {
   tag?: string;
   /** Antete în plus (de pildă List-Unsubscribe la sfaturile pe email). */
   headers?: Record<string, string>;
+  /** Email de marketing: nu pleacă la cine e pe lista „nu contacta” din CRM. Implicit după `tag` (vezi MARKETING_TAG). */
+  marketing?: boolean;
 };
+
+/** Emailurile de marketing (sfaturi, conversie, CRM, reactivare): verificate cu lista „nu contacta” înainte de trimitere. */
+export const MARKETING_TAG = /^(bun-venit|conversie|crm|reactivare|ambasador|aproape-plata)/;
+
+/** Destinatarii de pe lista „nu contacta” (src/lib/crm.ts). Dacă lista nu se poate citi, emailul de marketing nu pleacă. */
+async function suppressedAny(to: string | string[]): Promise<boolean> {
+  try {
+    const [{ db }, { isSuppressed }] = await Promise.all([import("@/db"), import("./crm")]);
+    for (const e of Array.isArray(to) ? to : [to]) if (await isSuppressed(db, e)) return true;
+    return false;
+  } catch (e) {
+    console.error("[email] lista „nu contacta” nu s-a putut citi; emailul de marketing nu pleacă", { name: e instanceof Error ? e.name : "Error" });
+    return true;
+  }
+}
 
 export type EmailResult = { ok: true; id: string | null } | { skipped: true } | { ok: false };
 
@@ -47,6 +64,10 @@ export async function sendEmail(m: EmailMessage): Promise<EmailResult> {
   const tag = m.tag ?? "email";
   if (!key) {
     console.info(`[email] ${tag}: sărit, RESEND_API_KEY lipsește`);
+    return { skipped: true };
+  }
+  if ((m.marketing ?? MARKETING_TAG.test(tag)) && (await suppressedAny(m.to))) {
+    console.info(`[email] ${tag}: sărit, destinatarul e pe lista „nu contacta”`);
     return { skipped: true };
   }
   try {

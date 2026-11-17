@@ -233,6 +233,17 @@ export const FUNCTIONS: Fn[] = [
     dashboard: "/admin/parteneri",
     tests: ["tests/carduri-cadou.test.ts"],
   },
+  {
+    key: "crm", name: "CRM (școli, firme, parteneri)", area: "admin", lifecycle: "implementat", risk: "mediu", riskWhy: "Ține adrese de instituții și lista „nu contacta”; o greșeală ar putea scrie cuiva care a refuzat.",
+    what: "Organizații (doar adrese oficiale publice), activități, deal-uri, coada de aprobări și lista „nu contacta” (verificată înainte de orice email de marketing). Import idempotent din CSV și ingestie cu token pentru emailurile trimise din afară; aplicația nu trimite prospectare.",
+    engine: ["src/lib/crm.ts", "src/lib/crm-import.ts", "src/lib/crm-ingest.ts"],
+    api: ["/api/admin/crm/ingest"],
+    tables: ["crm_organizations", "crm_contacts", "crm_activities", "crm_deals", "crm_approvals", "crm_suppression", "crm_user_signals"],
+    metric: { table: "crm_organizations", label: "organizații" },
+    tests: ["tests/crm.test.ts"],
+    env: ["CRM_INGEST_TOKEN"],
+    human: "Pune CRM_INGEST_TOKEN în Vercel (cel puțin 16 semne) și dă-l asistentului care trimite emailurile.",
+  },
   // Conturi și siguranță
   {
     key: "conturi", name: "Conturi și intrare", area: "conturi", lifecycle: "live", risk: "ridicat", riskWhy: "Intrarea în cont; o greșeală închide oamenii afară.",
