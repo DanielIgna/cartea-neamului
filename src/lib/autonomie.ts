@@ -67,7 +67,7 @@ export const AUTOMATIONS: AutoDef[] = [
   { key: "activare", label: "Email: arborele încă nefăcut (24 h)", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Un singur email, în limba omului, celor care după 24 de ore de la înscriere încă n-au niciun arbore: legătura directă la primii pași („Adaugă-te pe tine, apoi pe părinți și bunici”). Doar conturi de 24–96 de ore, nu și conturile de test; cine s-a dezabonat de la emailurile despre cont nu-l primește. Rezultatele, în Admin → Creștere." },
   { key: "crm-scor", label: "CRM: scoruri și etape", risk: "singur", defaultOn: true, everyDays: 1,
-    what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
+    what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape) și leagă conturile noi și plățile lor de organizațiile care le-au adus (linkul ?src=, codul NEAM-XXXX, codul școlii). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
   { key: "crm-reactivare", label: "CRM: un email util celor „în risc”", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Doar celor din etapa „în risc” (Admin → CRM → Scor și etape) care au spus „Da” la sfaturile pe email: UN email cu o idee concretă (bunicii, întrebări pentru bunici sau o rudă care completează), cel mult unul la 30 de zile, cu dezabonare dintr-un clic. Sare peste lista „Nu contacta” și conturile de test. Limita pe zi, în Admin → CRM → Automatizări." },
   { key: "crm-ambasador", label: "CRM: mulțumire ambasadorilor", risk: "acord", defaultOn: false, everyDays: 1,
@@ -412,7 +412,8 @@ async function runCrmDrafts({ db, now }: Ctx): Promise<RunResult> {
 async function runCrmScores({ db, now }: Ctx): Promise<RunResult> {
   const { refreshSignals } = await import("./crm-scor");
   const r = await refreshSignals(db, now);
-  return { status: r.changed ? "ok" : "nimic", observed: r.users, acted: r.changed, note: `${r.users} conturi, ${r.changed} scoruri schimbate`, verified: true };
+  const m = await (await import("./crm-bani")).refreshOrgAccounts(db, now);
+  return { status: r.changed || m.added || m.payments ? "ok" : "nimic", observed: r.users, acted: r.changed + m.added + m.payments, note: `${r.users} conturi, ${r.changed} scoruri schimbate · ${m.added} conturi noi aduse de organizații, ${m.payments} plăți trecute la organizații`, verified: true };
 }
 
 /** Rulează o automatizare și o trece în jurnal. După 3 erori la rând se oprește singură și apare la recomandări. */

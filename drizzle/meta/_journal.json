@@ -288,6 +288,13 @@
       "when": 1795000000000,
       "tag": "0041_crm_campanii",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1795000100000,
+      "tag": "0042_crm_bani",
+      "breakpoints": true
     }
   ]
 }
