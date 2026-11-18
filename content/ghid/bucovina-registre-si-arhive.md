@@ -3,7 +3,7 @@ title: Bucovina: registre și arhive de o parte și de alta a graniței
 seo: Bucovina: registre și arhive, în România și Ucraina
 description: Cum cauți strămoși din Bucovina: registrele din perioada austriacă, arhivele de la Suceava și Cernăuți, comunitățile regiunii și ce s-a schimbat după 1940.
 category: Comunități și regiuni
-cuvant: Bucovina genealogie registre
+updated: 2026-11-18
 related: registrele-ortodoxe, registrele-catolice-si-protestante, registrele-evreiesti, documente-in-maghiara-si-germana, scrierea-chirilica-romaneasca, recensamintele-vechi
 terms: registru-parohial, confesiune, parohie, conscriptie, recensamant, cota-arhivistica
 ---

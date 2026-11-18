@@ -3,7 +3,7 @@ title: Sașii din Transilvania: registre și surse
 seo: Sașii din Transilvania: registre și surse pentru arbore
 description: Cum cauți strămoși sași din Transilvania: registrele bisericii evanghelice, arhiva centrală de la Sibiu, scaunele săsești, deportarea și emigrarea.
 category: Comunități și regiuni
-cuvant: sașii din Transilvania genealogie
+updated: 2026-11-18
 related: registrele-catolice-si-protestante, documente-in-maghiara-si-germana, documente-in-latina, conscriptiile-din-transilvania, cum-citesti-scrisul-de-mana-vechi, nume-schimbate-si-variante
 terms: confesiune, scaun, comitat, registru-parohial, parohie, conscriptie
 ---
