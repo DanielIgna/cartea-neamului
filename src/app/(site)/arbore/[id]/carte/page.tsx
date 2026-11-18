@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
 import QRCode from "qrcode";
 import { db } from "@/db";
-import { bookExport, person } from "@/db/schema";
+import { bookExport, person, tree } from "@/db/schema";
 import { loadTreeView } from "@/lib/tree-data";
 import { requireUser, roleIn, can } from "@/lib/access";
 import { bookOptions, bookWords, buildBook, cleanText, type BookModel, type BookOptions, type BookText, type BookUnion, type Entry, type Ref } from "@/lib/book";
@@ -22,7 +22,9 @@ import { getLocale, getT } from "@/i18n/server";
 import { dirOf, isLocale, type Locale } from "@/i18n/locales";
 import BookView from "@/components/BookView";
 import { userAccess } from "@/lib/plata";
-import { bookIncluded, bookPaid, money, priceFor } from "@/lib/plati";
+import { bookAccess, priceFor } from "@/lib/plati";
+import { isOwnerUser } from "@/lib/admin";
+import { sampleFamily } from "@/lib/carte-model";
 import BookFan from "@/components/BookFan";
 import BookTree from "@/components/BookTree";
 import PageIntl from "@/i18n/PageIntl";
@@ -216,9 +218,13 @@ function Voices({ voices, options, w }: { voices: Voice[]; options: BookOptions;
 /** Câți oameni are arborele și de ce nu sunt toți în carte (aceeași cifră ca pe prima pagină și în arbore). */
 type Census = { all: number; livingHidden: number; other: number };
 
-function Book({ model, options, text, title, subtitle, author, treeName, when, voices, oldestSex, census, w }: {
+function Book({ model, options, text, title, subtitle, author, treeName, when, voices, oldestSex, census, w, copy, sampleMark }: {
   model: BookModel; options: BookOptions; text: BookText; title: string; subtitle: string; author: string; treeName: string; when: string;
   voices: Voice[]; oldestSex: Sex; census: Census; w: Words;
+  /** „Exemplar pentru familia X, anul”: un rând discret pe copertă și în colofon. */
+  copy: string;
+  /** Doar la model: „MODEL” pe copertă (pe fiecare pagină îl pune BookView, după așezare). */
+  sampleMark?: string;
 }) {
   const { t } = w;
   const { stats, centerName, trunk } = model;
@@ -243,12 +249,12 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
     <div className={`bk bk-${options.format}`} lang={w.locale} dir={dirOf(w.locale)}>
       <section className="bk-cover">
         <div className="bk-frame" aria-hidden><i /><i /><i /><i /></div>
-        <div className="bk-kicker">{t("cover.kicker")}</div>
+        <div className="bk-kicker">{sampleMark ?? t("cover.kicker")}</div>
         <h1 className="bk-title">{title}</h1>
         <div className="bk-rule" aria-hidden />
         {subtitle && <p className="bk-subtitle">{subtitle}</p>}
         <div className="bk-cover-mark"><Logo size={60} /></div>
-        <div className="bk-cover-foot">{t("cover.by", { author })}<br />{when}</div>
+        <div className="bk-cover-foot">{t("cover.by", { author })}<br />{when}<br /><span className="bk-copy">{copy}</span></div>
       </section>
 
       <section className="bk-exlibris">
@@ -379,6 +385,7 @@ function Book({ model, options, text, title, subtitle, author, treeName, when, v
         <p>{t("colophon.made", { author, when, tree: treeName, count: stats.people })}</p>
         <p>{privacy}</p>
         <p>{t("colophon.redo")}</p>
+        <p className="bk-copy">{copy}</p>
         <p className="bk-site">Cartea Neamului · carteaneamului.ro</p>
       </section>
     </div>
@@ -407,6 +414,12 @@ export default async function BookPage({ params, searchParams }: { params: Promi
     list: new Intl.ListFormat(locale, { style: "long", type: "conjunction" }),
     chapter: (c) => tl(`chapters.${chapterKey(c)}`),
   };
+  // Oferta din 18.11.2026: cartea arborelui se face doar după plată sau cu acces gratuit. Până atunci nu se citește nimic din
+  // arbore: se arată doar modelul, cu o familie închipuită (src/lib/carte-model.ts).
+  const { access, settings, ownsTree } = await userAccess(db, me.id);
+  const [tr] = await db.select({ ownerId: tree.ownerId }).from(tree).where(eq(tree.id, id));
+  const why = await bookAccess(db, { userId: me.id, treeId: id, access, settings, ownsThisTree: tr?.ownerId === me.id, owner: isOwnerUser(me) });
+  if (!why) return <SampleBook treeId={id} locale={locale} w={w} price={priceFor("carte", uiLocale, ownsTree, settings).label} />;
   const want = typeof q.p === "string" && UUID.test(q.p) ? q.p : undefined;
   const [mine] = await db.select({ id: person.id }).from(person).where(and(eq(person.treeId, id), eq(person.claimedByUserId, me.id))).limit(1);
   const data = await loadTreeView(db, id, want ?? mine?.id, 6);
@@ -452,16 +465,7 @@ export default async function BookPage({ params, searchParams }: { params: Promi
     .sort((a, b) => a.name.localeCompare(b.name, uiLocale))
     .map((p) => ({ id: p.id, label: `${p.name}${p.birthYear ? ` (${p.birthYear})` : ""}` }));
   const oldestSex: Sex = (stats.oldest?.id && data.people[stats.oldest.id]?.sex) || "U";
-  // Cartea PDF se plătește separat (când plățile sunt pornite din Admin): fără plată, previzualizare cu semn pe pagini.
-  const { access, settings, ownsTree } = await userAccess(db, me.id);
-  // Cei cu cont dinainte de pornirea plăților au și cartea gratuită în primul lor an (Daniel, 2026-11-13).
-  // Premium (sau orice plan cu „inclusă la toți arborii”): cartea arborilor titularului e inclusă cât are anul plătit.
-  const locked = access.kind !== "deschis" && access.kind !== "mereu" && access.kind !== "beta"
-    && !bookIncluded(access, settings, data.tree.ownerId === me.id) && !(await bookPaid(db, me.id, id))
-    ? { buyHref: `/plata?carte=${id}`, price: priceFor("carte", uiLocale, ownsTree, settings).label } : null;
-  // „de la X lei” la cartea tipărită, după ofertele tipografiilor (pus în Admin; 0 = nu se arată).
-  const printFromValue = uiLocale === "ro" ? settings.printFromLei : settings.printFromEur;
-  const printFrom = printFromValue > 0 ? money(printFromValue, uiLocale).label : null;
+  const copy = tb("colophon.copy", { family: stats.surnames[0]?.[0] ?? data.tree.name, year: new Date().getFullYear().toString() });
   const renderKey = hash(JSON.stringify({ options, text, title, subtitle, author, model, memories, origin, locale }));
   return (
     <section className="stack book-root">
@@ -487,11 +491,56 @@ export default async function BookPage({ params, searchParams }: { params: Promi
         {stats.people === 0 ? (
           <div className="card"><p style={{ margin: 0 }}>{t("page.empty")}</p></div>
         ) : (
-          <BookView format={options.format} renderKey={renderKey} fileName={title} locked={locked} printFrom={printFrom}>
+          <BookView format={options.format} renderKey={renderKey} fileName={title}>
             <Book model={model} options={options} text={text} title={title} subtitle={subtitle} author={author} treeName={data.tree.name} when={when}
-              voices={voices} oldestSex={oldestSex} census={census} w={w} />
+              voices={voices} oldestSex={oldestSex} census={census} w={w} copy={copy} />
           </BookView>
         )}
+      </PageIntl>
+    </section>
+  );
+}
+
+/**
+ * Modelul cărții, pentru cine n-a cumpărat cartea PDF a arborelui: aceeași carte, făcută din familia închipuită Florescu,
+ * cu „MODEL” pe copertă și pe fiecare pagină (pus în paginile cărții, deci și în PDF-ul salvat), textul de lămurire și butonul
+ * de cumpărare cu prețul din Admin. Nu primește nimic din arborele omului: doar adresa arborelui, pentru plată.
+ */
+async function SampleBook({ treeId, locale, w, price }: { treeId: string; locale: Locale; w: Words; price: string }) {
+  const tb = w.t;
+  const [t, tu] = await Promise.all([getT("Book"), getT("BookUi")]);
+  const fam = sampleFamily({
+    occ1: tb("sampleOcc1"), occ2: tb("sampleOcc2"), occ3: tb("sampleOcc3"), occ4: tb("sampleOcc4"), bio1: tb("sampleBio1"), bio2: tb("sampleBio2"),
+    memTitle: tb("sampleMemTitle"), memQuestion: tb("sampleMemQuestion"), memBody: tb("sampleMemBody"),
+  });
+  const options: BookOptions = { living: "tot", photos: true, format: "A4" };
+  const model = buildBook({ people: fam.people, rels: fam.rels, raised: fam.raised, centerId: fam.centerId, slots: fam.slots, options, words: bookWords(locale, tb) });
+  // Exemplul de cod QR duce la prima pagină a site-ului, nu la o înregistrare.
+  const url = await siteOrigin();
+  const qr = await QRCode.toString(url, { type: "svg", margin: 0, errorCorrectionLevel: "M", color: { dark: "#1b2430", light: "#ffffff" } });
+  const ana = model.generations.flatMap((g) => g.entries).find((e) => e.id === fam.memory.personId);
+  const voices: Voice[] = ana ? [{ id: ana.id, name: ana.name, sex: ana.sex, dates: ana.dates, memories: [{ ...fam.memory, url, qr }] }] : [];
+  const title = tb("sampleTree"), mark = tu("view.sampleMark");
+  const text = cleanText({ preface: tb("samplePreface") });
+  const when = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "Europe/Bucharest" }).format(new Date());
+  const all = Object.keys(fam.people).length;
+  const buyHref = `/plata?carte=${treeId}`;
+  return (
+    <section className="stack book-root">
+      <PageIntl ns={["BookUi"]}>
+        <div className="card book-chrome book-sample">
+          <div className="toolbar" style={{ marginBottom: 4 }}>
+            <div className="title">{t("page.title")}</div>
+            <Link className="btn" href={`/arbore/${treeId}`}>{t("page.back")}</Link>
+          </div>
+          <p style={{ margin: "0 0 10px" }}><b>{tu("view.sampleNote")}</b></p>
+          <div className="actions" style={{ marginTop: 0 }}><a className="btn primary" href={buyHref}>{tu("view.buy", { price })}</a></div>
+        </div>
+        <BookView format="A4" renderKey={hash(JSON.stringify({ sample: true, locale, title }))} fileName={`${title} (${mark})`} sample={{ buyHref, price, mark }}>
+          <Book model={model} options={options} text={text} title={title} subtitle={tb("sampleSubtitle")} author={tb("sampleAuthor")} treeName={title} when={when}
+            voices={voices} oldestSex="M" census={{ all, livingHidden: 0, other: Math.max(0, all - model.stats.people) }} w={w}
+            copy={tb("colophon.copy", { family: "Florescu", year: new Date().getFullYear().toString() })} sampleMark={mark} />
+        </BookView>
       </PageIntl>
     </section>
   );

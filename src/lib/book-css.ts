@@ -186,6 +186,7 @@ export function bookCss(format: BookFormat) {
 .bk-colophon .bk-colophon-mark { width: ${small ? 16 : 20}mm; height: auto; margin-bottom: 4mm; }
 .bk-colophon .bk-colophon-title { font-family: "Alegreya", serif; font-style: italic; font-size: ${s + 2}pt; color: ${INK}; margin-bottom: 1mm; }
 .bk-colophon .bk-rule { width: 30mm; height: 3mm; margin: 2mm auto 4mm; background: ${FLEURON(GOLD)} center / contain no-repeat; }
+.bk-copy { font-size: ${s - 2.5}pt; font-style: italic; opacity: .8; }
 .bk-colophon .bk-site { letter-spacing: .3em; text-transform: uppercase; color: ${GOLD}; font-weight: 700; font-size: ${s - 2.5}pt; margin-top: 3mm; padding-left: .3em; }
 `;
 }
