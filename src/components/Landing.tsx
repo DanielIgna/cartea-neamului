@@ -1,6 +1,7 @@
 import JsonLd from "@/components/JsonLd";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
+import { getEntry } from "@/lib/continut/colectii";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import { whatsappUrl } from "@/lib/contact";
 import { getAppName, getT } from "@/i18n/server";
@@ -90,6 +91,16 @@ const GENS = [["gen1", "50% 30%"], ["gen2", "50% 40%"], ["gen3", "50% 35%"], ["g
 const cachedHomeImages = unstable_cache(() => homeImages(db), ["home-images"], { tags: [HOME_IMAGES_TAG], revalidate: 600 });
 /** Prețurile și plafoanele planurilor, din Admin → Manager control: în cache 10 minute, golit pe loc la salvare. */
 const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
+
+/** Huburile și cele 6 ghiduri de pornire din „Începe de aici”. */
+const START_HUBS: [string, string][] = [
+  ["/genealogie", "Genealogie pe regiuni, județe și orașe"], ["/nume", "Nume de familie explicate"], ["/localitati", "Arhive și registre pe județe"],
+  ["/ghid", "Toate ghidurile"], ["/glosar", "Glosarul cuvintelor din acte"], ["/surse-publice", "Surse publice de genealogie"], ["/cadouri", "Idei de cadou pentru familie"],
+];
+const START_GUIDES = [
+  "cum-incepi-arborele-genealogic", "intrebari-pentru-bunici", "cum-ceri-un-act-de-stare-civila",
+  "registrele-de-stare-civila", "cum-citesti-un-registru-parohial", "familysearch-pentru-romania",
+];
 
 export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
   const [t, tc, th, tp, tg, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), cachedHomeImages(),
@@ -238,6 +249,26 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
           </nav>
         </div>
       </section>
+
+      {/* „Începe de aici” (planul SEO, etapa 3): paginile-hub și primele ghiduri, doar în română, unde există conținutul. */}
+      {lei && (
+        <section className="lp-band lp-paper lp-what" aria-labelledby="lp-start">
+          <div className="lp-in lp-what-in">
+            <div>
+              <h2 id="lp-start">Începe de aici</h2>
+              <p>Nu știi de unde să pornești? Află unde sunt actele locului din care se trage familia, ce înseamnă numele vostru și cum îi întrebi pe bunici. Totul e gratuit de citit, fără cont.</p>
+            </div>
+            <nav className="lp-history" aria-label="Pagini de pornire">
+              <h3>Caută după loc și nume</h3>
+              <ul>{START_HUBS.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+            </nav>
+            <nav className="lp-history" aria-label="Primele ghiduri">
+              <h3>Primele ghiduri</h3>
+              <ul>{START_GUIDES.map((g) => getEntry("ghid", g)).filter((g) => !!g).map((g) => <li key={g!.path}><Link href={g!.path}>{g!.title}</Link></li>)}</ul>
+            </nav>
+          </div>
+        </section>
+      )}
 
       {/* Prețurile: cele trei planuri pe un an, cu plafoanele lor, citite din Admin (Daniel, 13 noiembrie 2026). */}
       {sales && (

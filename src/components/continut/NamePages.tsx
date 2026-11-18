@@ -15,6 +15,8 @@ import { nameProfile } from "@/lib/continut/nume-profil";
 import { MIN_TREES, surnamePublicStat } from "@/lib/continut/nume-statistici";
 import { paginate, pageHref } from "@/lib/continut/paginare";
 import { REGIONS } from "@/lib/continut/regiuni";
+import { countyPath, isCapital, loadCounties } from "@/lib/continut/localitati";
+import { genRegionPath, getGenRegion } from "@/lib/genealogie-regiuni";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import ShareCard from "@/components/continut/ShareCard";
@@ -104,7 +106,7 @@ export async function NamePage({ slug }: { slug: string }) {
         <div className="section-label" style={{ marginTop: 0 }}>{KIND_LABEL[n.kind]}</div>
         <h1>Numele de familie {n.name}</h1>
         <div className="facts">
-          <div><b>Regiuni</b>{n.regions.length ? n.regions.map((r) => REGIONS[r].name).join(", ") : "toată țara"}</div>
+          <div><b>Regiuni</b>{n.regions.length ? <RegionLinks regions={n.regions} /> : "toată țara"}</div>
           <div><b>Se mai scrie</b>{n.variants.length ? n.variants.join(", ") : "—"}</div>
           {stat && <div><b>În Cartea Neamului</b>peste {stat.personsAtLeast} de persoane, în {stat.trees} arbori</div>}
         </div>
@@ -117,6 +119,7 @@ export async function NamePage({ slug }: { slug: string }) {
         {nameProfile(n).map((p) => <p key={p.slice(0, 50)}>{renderEm(p)}</p>)}
         <h2>Unde e mai des întâlnit</h2>
         <p>{t.where}</p>
+        <WhereLinks regions={n.regions} />
         {n.variants.length > 0 && (
           <>
             <h2>Variante de scriere</h2>
@@ -151,4 +154,24 @@ export async function NamePage({ slug }: { slug: string }) {
 /** *cuvânt* → cursiv, ca în fișierul de date. */
 function renderEm(s: string) {
   return s.split(/(\*[^*]+\*)/g).map((part, i) => (part.startsWith("*") && part.endsWith("*") && part.length > 2 ? <i key={i}>{part.slice(1, -1)}</i> : part));
+}
+
+/** Regiunile unui nume, fiecare cu legătură spre ghidul regiunii (/genealogie/regiune/<slug>). */
+function RegionLinks({ regions }: { regions: (keyof typeof REGIONS)[] }) {
+  return <>{regions.map((r, i) => {
+    const g = getGenRegion(r);
+    return <span key={r}>{i ? ", " : ""}{g ? <Link href={genRegionPath(g)}>{REGIONS[r].name}</Link> : REGIONS[r].name}</span>;
+  })}</>;
+}
+
+/** Unde cauți mai departe: ghidul fiecărei regiuni și pagina fiecărui județ din ele (arhiva, registrele, localitățile). */
+function WhereLinks({ regions }: { regions: (keyof typeof REGIONS)[] }) {
+  if (!regions.length) return <p>Vezi <Link href="/genealogie">genealogia pe regiuni, județe și orașe</Link> ca să afli unde sunt actele locului din care se trage familia ta.</p>;
+  const counties = loadCounties().filter((c) => c.regions.some((r) => regions.includes(r)));
+  return (
+    <>
+      <p>Cum se caută strămoșii în fiecare regiune: <RegionLinks regions={regions} />. Arhiva și registrele fiecărui județ din aceste regiuni sunt pe pagina județului:</p>
+      <div className="chips">{counties.map((c) => <Link key={c.slug} className="chip" href={countyPath(c)}>{isCapital(c) ? "București" : c.name}</Link>)}</div>
+    </>
+  );
 }

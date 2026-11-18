@@ -4,22 +4,24 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
-import { countyPath, getCounty, isCapital, seatPath, type County } from "@/lib/continut/localitati";
+import { countyPath, getCounty, isCapital, loadCounties, seatPath, type County } from "@/lib/continut/localitati";
+import { GEN_REGIONS, genRegionPath, getGenRegion } from "@/lib/genealogie-regiuni";
 import { namesInRegion } from "@/lib/continut/nume";
 import { REGIONS } from "@/lib/continut/regiuni";
 import { distanceKm, getUat, loadUats, neighbours, uatPath, type Uat } from "@/lib/continut/uat";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import {
-  GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, cityDesc, cityTitle, REGION_LABEL, REGION_PAGES_LIVE, genCityPath, genWords, getGenCity, regionPagePath, type GenCity,
+  GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, cityDesc, cityTitle, REGION_PAGES_LIVE, genCityPath, genWords, getGenCity, type GenCity,
 } from "@/lib/genealogie-orase";
 
 /** Paginile /genealogie (hub) și /genealogie/<oraș>: cum îți cauți strămoșii dintr-un oraș mare din România. */
 const HUB = {
   path: GEN_HUB,
-  title: "Genealogie în orașele mari din România | Cartea Neamului",
-  description: "Cum îți cauți strămoșii din București, Cluj-Napoca, Iași, Timișoara și alte orașe mari: numele vechi, confesiunile, registrele și arhivele lor.",
+  title: "Genealogie pe regiuni, județe și orașe | Cartea Neamului",
+  description: "Cum îți cauți strămoșii în fiecare regiune istorică a României, în fiecare județ și în orașele mari: registrele, confesiunile, numele vechi și arhivele lor.",
 };
+export const HUB_H1 = "Genealogie pe regiuni, județe și orașe";
 const BUCHAREST = { lat: 44.4268, lng: 26.1025 };
 
 export const genSrc = (c: GenCity) => `genealogie-${c.slug}`;
@@ -49,30 +51,51 @@ function faqOf(c: GenCity, county: County) {
 }
 
 export function GenealogieHub() {
+  const counties = loadCounties();
+  const name = (c: County) => (isCapital(c) ? "București" : c.name);
   return (
     <section className="stack content-page" lang="ro">
       <JsonLd data={{
-        "@context": "https://schema.org", "@type": "CollectionPage", name: "Genealogie în orașele mari din România", description: HUB.description, url: canonicalUrl(HUB.path), inLanguage: "ro",
+        "@context": "https://schema.org", "@type": "CollectionPage", name: HUB_H1, description: HUB.description, url: canonicalUrl(HUB.path), inLanguage: "ro",
         isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
-        mainEntity: { "@type": "ItemList", numberOfItems: GEN_CITIES.length, itemListElement: GEN_CITIES.map((c, i) => ({ "@type": "ListItem", position: i + 1, url: canonicalUrl(genCityPath(c)), name: c.name })) },
+        mainEntity: { "@type": "ItemList", numberOfItems: GEN_REGIONS.length + GEN_CITIES.length, itemListElement: [
+          ...GEN_REGIONS.map((r) => ({ url: canonicalUrl(genRegionPath(r)), name: r.name })),
+          ...GEN_CITIES.map((c) => ({ url: canonicalUrl(genCityPath(c)), name: c.name })),
+        ].map((x, i) => ({ "@type": "ListItem", position: i + 1, ...x })) },
       }} />
       <Breadcrumbs items={[{ name: "Genealogie", path: HUB.path }]} />
       <div className="card">
-        <h1 style={{ marginTop: 0 }}>Genealogie în orașele mari din România</h1>
-        <p>Fiecare oraș mare are povestea lui: alte nume în actele vechi, alte confesiuni, alte registre. Aici afli, oraș cu oraș, de unde începi căutarea strămoșilor și unde sunt actele lor.</p>
-        <p className="muted" style={{ marginBottom: 0 }}>Vezi și <Link href="/localitati">arhivele pe județe</Link>, <Link href="/nume">numele de familie</Link> și <Link href="/diaspora">românii din străinătate</Link>.</p>
+        <h1 style={{ marginTop: 0 }}>{HUB_H1}</h1>
+        <p>Unde sunt actele strămoșilor depinde de locul în care au trăit: fiecare regiune istorică a avut alte stăpâniri, alte confesiuni și alte registre, iar fiecare județ își are arhiva lui. Alege regiunea, județul sau orașul familiei și afli de unde începi căutarea.</p>
+        <p className="muted" style={{ marginBottom: 0 }}>Vezi și <Link href="/nume">numele de familie</Link>, <Link href="/ghid">ghidurile de genealogie</Link>, <Link href="/surse-publice">sursele publice</Link> și <Link href="/diaspora">românii din străinătate</Link>.</p>
       </div>
       <div className="card">
+        <h2 style={{ marginTop: 0 }}>Pe regiuni istorice</h2>
+        <ul className="hub-list">
+          {GEN_REGIONS.map((r) => {
+            const cs = r.counties.map((x) => getCounty(x)).filter((x) => !!x);
+            return (
+              <li key={r.slug}>
+                <Link href={genRegionPath(r)}><b>{r.name}</b></Link>
+                {cs.length > 0 && <span className="muted small"> · {cs.map((c, i) => <span key={c.slug}>{i ? ", " : ""}<Link href={countyPath(c)}>{name(c)}</Link></span>)}</span>}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>În orașele mari</h2>
         <ul className="hub-list hub-cols">
           {GEN_CITIES.map((c) => <li key={c.slug}><Link href={genCityPath(c)}>{c.name}</Link></li>)}
         </ul>
       </div>
-      {REGION_PAGES_LIVE && (
-        <div className="card">
-          <h2 style={{ marginTop: 0 }}>Pe regiuni istorice</h2>
-          <div className="chips">{Object.entries(REGION_LABEL).map(([k, v]) => <Link key={k} className="chip" href={regionPagePath(k)}>{v}</Link>)}</div>
-        </div>
-      )}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Pe județe</h2>
+        <p>Fiecare județ are pagina lui, cu arhiva, registrele și toate comunele și orașele.</p>
+        <ul className="hub-list hub-cols">
+          {counties.map((c) => <li key={c.slug}><Link href={countyPath(c)}>{name(c)}</Link></li>)}
+        </ul>
+      </div>
       <CtaArbore src="genealogie" />
     </section>
   );
@@ -85,6 +108,7 @@ export function GenealogieCity({ slug }: { slug: string }) {
   if (!county) notFound();
   const path = genCityPath(c);
   const regions = county.regions.map((r) => REGIONS[r].name);
+  const mainRegion = getGenRegion(c.region ?? county.regions[0] ?? "");
   const names = [...new Map(county.regions.flatMap((r) => namesInRegion(r)).map((n) => [n.slug, n])).values()].slice(0, 18);
   const near = nearby(c, county);
   const faq = faqOf(c, county);
@@ -103,13 +127,13 @@ export function GenealogieCity({ slug }: { slug: string }) {
         "@context": "https://schema.org", "@type": "FAQPage",
         mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
       }} />
-      <Breadcrumbs items={[{ name: "Genealogie", path: GEN_HUB }, { name: c.name, path }]} />
+      <Breadcrumbs items={[{ name: "Genealogie", path: GEN_HUB }, ...(mainRegion ? [{ name: mainRegion.name, path: genRegionPath(mainRegion) }] : []), { name: c.name, path }]} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>{regions.join(" · ")}</div>
         <h1>Genealogie în {c.name}: cum îți cauți strămoșii</h1>
         <div className="facts">
           <div><b>{isCapital(county) ? "Municipiul" : "Județul"}</b><Link href={countyPath(county)}>{isCapital(county) ? "București" : county.name}</Link></div>
-          <div><b>Regiunea istorică</b>{c.region && REGION_PAGES_LIVE ? <Link href={regionPagePath(c.region)}>{regions.join(", ")}</Link> : regions.join(", ")}</div>
+          <div><b>Regiunea istorică</b>{county.regions.map((r, i) => { const g = REGION_PAGES_LIVE ? getGenRegion(r) : null; return <span key={r}>{i ? ", " : ""}{g ? <Link href={genRegionPath(g)}>{REGIONS[r].name}</Link> : REGIONS[r].name}</span>; })}</div>
           <div><b>Arhiva</b>{county.archive}</div>
           {c.oldNames.length > 0 && <div><b>În actele vechi</b>{c.oldNames.join(" · ")}</div>}
         </div>
@@ -151,7 +175,7 @@ export function GenealogieCity({ slug }: { slug: string }) {
         <a className="btn" href={share} target="_blank" rel="noopener noreferrer">Trimite pe WhatsApp</a>
       </div>
       <CtaArbore title="Fă-ți arborele familiei gratuit 7 zile, fără card" text="Adaugi părinții și bunicii, iar rudele pot completa ce știu ele." src={src} />
-      <p className="muted small" style={{ textAlign: "center" }}><Link href={GEN_HUB}>← Toate orașele</Link></p>
+      <p className="muted small" style={{ textAlign: "center" }}><Link href={GEN_HUB}>← Toate regiunile, județele și orașele</Link></p>
     </section>
   );
 }

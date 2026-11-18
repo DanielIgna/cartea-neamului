@@ -405,7 +405,7 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "genealogie-orase", name: "Genealogie pe orașe mari", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor; regula de ton (D06) se aplică.",
-    what: "/genealogie și /genealogie/<oraș> pentru 10 orașe mari (București, Cluj-Napoca, Iași, Timișoara, Brașov, Constanța, Craiova, Oradea, Sibiu, Galați): numele vechi ale orașului, confesiunile și registrele lor, arhiva județeană, numele frecvente din regiune, comunele din jur, întrebări frecvente (FAQPage), buton WhatsApp. Sub 300 de cuvinte proprii pagina e noindex. Legăturile spre paginile regionale (/genealogie/regiune/<regiune>) apar când REGION_PAGES_LIVE devine true. Butonul de cont nou poartă ?src=genealogie-<oraș>.",
+    what: "/genealogie și /genealogie/<oraș> pentru 10 orașe mari (București, Cluj-Napoca, Iași, Timișoara, Brașov, Constanța, Craiova, Oradea, Sibiu, Galați): numele vechi ale orașului, confesiunile și registrele lor, arhiva județeană, numele frecvente din regiune, comunele din jur, întrebări frecvente (FAQPage), buton WhatsApp. Sub 300 de cuvinte proprii pagina e noindex. Hubul /genealogie („Genealogie pe regiuni, județe și orașe”) are 10 regiuni istorice (inclusiv Crișana, Muntenia, Oltenia, 18.11.2026), orașele și toate județele; firul de pagini al județelor și localităților e Acasă › Genealogie › Regiune › Județ › Localitate; paginile de nume leagă regiunile și județele; acasă are secțiunea „Începe de aici” (doar în română). Butonul de cont nou poartă ?src=genealogie-<oraș>.",
     engine: ["src/lib/genealogie-orase.ts", "src/components/continut/GenealogieOrase.tsx"],
     pages: ["/genealogie", "/genealogie/[oras]"],
     tests: ["tests/genealogie-orase.test.ts"],

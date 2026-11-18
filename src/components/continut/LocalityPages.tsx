@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
+import { countyCrumbs, placeCrumbs } from "@/lib/seo/firimituri";
+import { GEN_CITIES, genCityPath } from "@/lib/genealogie-orase";
 import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
 import HubSearch from "@/components/continut/HubSearch";
 import { getEntry } from "@/lib/continut/colectii";
@@ -94,6 +96,22 @@ function namesFor(c: County, max = 24): Surname[] {
   return [...new Map(c.regions.flatMap((r) => namesInRegion(r)).map((n) => [n.slug, n])).values()].slice(0, max);
 }
 
+/** Ghidul regiunii (sau al regiunilor) și orașele mari ale județului care au pagina lor de genealogie. */
+function RegionGuide({ c }: { c: County }) {
+  const regions = c.regions.map((r) => getGenRegion(r)).filter((r) => !!r);
+  const cities = GEN_CITIES.filter((x) => x.county === c.slug);
+  if (!regions.length && !cities.length) return null;
+  return (
+    <>
+      <h2>Genealogie în regiune</h2>
+      <p>
+        {regions.map((r, i) => <span key={r.slug}>{i ? " " : ""}Despre registrele, confesiunile și arhivele din toată regiunea, vezi <Link href={genRegionPath(r)}>ghidul de genealogie pentru {r.name}</Link>.</span>)}
+        {cities.map((x) => <span key={x.slug}> Pentru oraș, vezi și <Link href={genCityPath(x)}>genealogia în {x.name}</Link>.</span>)}
+      </p>
+    </>
+  );
+}
+
 function Common({ c, place }: { c: County; place: string }) {
   const src = sourcesFor(c);
   const names = namesFor(c);
@@ -111,6 +129,7 @@ function Common({ c, place }: { c: County; place: string }) {
           <div className="chips">{names.map((n) => <Link key={n.slug} className="chip" href={`/nume/${n.slug}`}>{n.name}</Link>)}</div>
         </>
       )}
+      <RegionGuide c={c} />
       {guides.length > 0 && (
         <>
           <h2>Ghiduri utile</h2>
@@ -133,7 +152,7 @@ export async function CountyPage({ slug }: { slug: string }) {
         about: { "@type": "AdministrativeArea", name: label, containedInPlace: { "@type": "Country", name: "România" } },
         isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
       }} />
-      <Breadcrumbs items={[{ name: "Localități", path: "/localitati" }, { name: label, path }]} />
+      <Breadcrumbs items={countyCrumbs(c)} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>{c.regions.map((r) => REGIONS[r].name).join(" · ")}</div>
         <h1>{isCapital(c) ? "Arhive și registre în București" : `Arhive și registre în județul ${c.name}`}</h1>
@@ -180,7 +199,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
         about: { "@type": "City", name: c.seat, containedInPlace: { "@type": "AdministrativeArea", name: `Județul ${c.name}` } },
         isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
       }} />
-      <Breadcrumbs items={[{ name: "Localități", path: "/localitati" }, { name: `Județul ${c.name}`, path: countyPath(c) }, { name: c.seat, path }]} />
+      <Breadcrumbs items={placeCrumbs(c, { name: c.seat, path })} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>Reședința județului {c.name}</div>
         <h1>Acte și registre vechi în {c.seat}</h1>
