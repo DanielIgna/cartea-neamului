@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -68,6 +68,12 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Un singur email, în limba omului, celor care după 24 de ore de la înscriere încă n-au niciun arbore: legătura directă la primii pași („Adaugă-te pe tine, apoi pe părinți și bunici”). Doar conturi de 24–96 de ore, nu și conturile de test; cine s-a dezabonat de la emailurile despre cont nu-l primește. Rezultatele, în Admin → Creștere." },
   { key: "crm-scor", label: "CRM: scoruri și etape", risk: "singur", defaultOn: true, everyDays: 1,
     what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
+  { key: "crm-reactivare", label: "CRM: un email util celor „în risc”", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
+    what: "Doar celor din etapa „în risc” (Admin → CRM → Scor și etape) care au spus „Da” la sfaturile pe email: UN email cu o idee concretă (bunicii, întrebări pentru bunici sau o rudă care completează), cel mult unul la 30 de zile, cu dezabonare dintr-un clic. Sare peste lista „Nu contacta” și conturile de test. Limita pe zi, în Admin → CRM → Automatizări." },
+  { key: "crm-ambasador", label: "CRM: mulțumire ambasadorilor", risk: "acord", defaultOn: false, everyDays: 1,
+    what: "Celor care au adus cel puțin 2 conturi le pregătește un mesaj de mulțumire + propunerea de partener local. Nu trimite nimic: mesajul intră în Admin → CRM → Aprobări și pleacă doar după „Aprob”. O singură dată pentru fiecare om." },
+  { key: "crm-ciorne", label: "CRM: ciorne de răspuns", risk: "acord", defaultOn: false, everyDays: 1,
+    what: "La răspunsurile „interesat” sau „întrebare” de la școli și firme pregătește o ciornă de răspuns în Admin → CRM → Aprobări (o poți edita). Nimic nu pleacă fără „Aprob”. Refuzurile și dezabonările merg direct pe lista „Nu contacta”, fără să fie nevoie de pornire." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -355,7 +361,28 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   conversie: runConversionMail,
   activare: runActivation,
   "crm-scor": runCrmScores,
+  "crm-reactivare": runCrmReactivation,
+  "crm-ambasador": runCrmAmbassadors,
+  "crm-ciorne": runCrmDrafts,
 };
+
+/** CRM Etapa 4 (src/lib/crm-auto.ts): reactivarea celor „în risc”, mulțumirea ambasadorilor, ciornele de răspuns. */
+async function runCrmReactivation({ db, now }: Ctx): Promise<RunResult> {
+  if (!process.env.RESEND_API_KEY) return { status: "sarit", observed: 0, acted: 0, note: "Lipsește RESEND_API_KEY" };
+  const { runReactivation } = await import("./crm-auto");
+  const r = await runReactivation(db, { now });
+  return { status: r.sent ? "ok" : r.failed ? "eroare" : "nimic", observed: r.candidates, acted: r.sent, note: `${r.candidates} în risc cu acord, ${r.sent} emailuri trimise${r.suppressed ? `, ${r.suppressed} pe „Nu contacta”` : ""}${r.failed ? `, ${r.failed} eșuate` : ""}`, verified: r.failed === 0 };
+}
+async function runCrmAmbassadors({ db, now }: Ctx): Promise<RunResult> {
+  const { queueAmbassadors } = await import("./crm-auto");
+  const r = await queueAmbassadors(db, { now });
+  return { status: r.queued ? "ok" : "nimic", observed: r.candidates, acted: r.queued, pending: r.queued, note: `${r.queued} mesaje de mulțumire puse în Aprobări`, verified: true };
+}
+async function runCrmDrafts({ db, now }: Ctx): Promise<RunResult> {
+  const { queueReplyDrafts } = await import("./crm-auto");
+  const r = await queueReplyDrafts(db, { now });
+  return { status: r.queued ? "ok" : "nimic", observed: r.candidates, acted: r.queued, pending: r.queued, note: `${r.queued} ciorne de răspuns puse în Aprobări`, verified: true };
+}
 
 /** CRM: scorurile și etapele utilizatorilor (src/lib/crm-scor.ts). Nu trimite nimic. */
 async function runCrmScores({ db, now }: Ctx): Promise<RunResult> {

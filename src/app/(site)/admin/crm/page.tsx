@@ -20,9 +20,11 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
-import { recomputeAction } from "@/app/crm-actions";
+import { limitsAction, recomputeAction } from "@/app/crm-actions";
+import { AUTOMATIONS, automationSwitches } from "@/lib/autonomie";
+import { ambassadorDraft, automationStats, crmLimits, reactivationText, replyDraft } from "@/lib/crm-auto";
 import { crmUserSignals, user } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "CRM · Admin" };
@@ -30,7 +32,7 @@ export const metadata = { title: "CRM · Admin" };
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
   { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "nucontacta", label: "Nu contacta" },
-  { key: "scor", label: "Scor și etape" }, { key: "import", label: "Import" },
+  { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -70,6 +72,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "aprobari" && <Approvals />}
       {tab === "nucontacta" && <Suppression />}
       {tab === "scor" && <Scores />}
+      {tab === "automatizari" && <Automations />}
       {tab === "import" && (
         <div className="card stack">
           <h2 style={{ margin: 0 }}>Import din CSV</h2>
@@ -376,6 +379,74 @@ async function Scores() {
             <table className="tbl">
               <thead><tr><th>Om</th><th className="n">Scor</th><th>Etapa</th><th>Sursa</th><th>Ultima activitate</th></tr></thead>
               <tbody>{top.map(({ s, name }) => <tr key={s.userId}><td><Link href={`/admin/oameni/${s.userId}`}>{name}</Link></td><td className="n">{s.scor}</td><td className="tight">{LIFE_LABEL[s.etapa as keyof typeof LIFE_LABEL] ?? s.etapa}</td><td>{s.sursa ?? "—"}</td><td className="tight">{s.ultimaActivitate ? day(s.ultimaActivitate.toISOString()) : "—"}</td></tr>)}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne"] as const;
+const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "—");
+
+/** Etapa 4: ce automatizări lucrează pentru CRM, dacă sunt pornite, limitele pe zi, textele și cifrele. Pornirea se face în Autonomie. */
+async function Automations() {
+  const [sw, limits, st, runs] = await Promise.all([
+    automationSwitches(db), crmLimits(db), automationStats(db),
+    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
+  ]);
+  const t = reactivationText("ro");
+  const amb = ambassadorDraft("Maria Pop", 3);
+  const rep = replyDraft("interesat", "Școala Gimnazială nr. 1");
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ce rulează pentru CRM</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Toate sunt oprite până le pornești tu în <Link href="/admin/autonomie">Admin → Autonomie</Link>. Fiecare are jurnal acolo. Nimic nu pleacă la cine e pe „Nu contacta” sau la conturile de test; ambasadorii și răspunsurile trec prin Aprobări.</p>
+        <div className="tbl-wrap">
+          <table className="tbl">
+            <thead><tr><th>Automatizarea</th><th>Stare</th><th>Ce face</th></tr></thead>
+            <tbody>{CRM_AUTO.map((k) => { const a = AUTOMATIONS.find((x) => x.key === k)!; return <tr key={k}><td><b>{a.label}</b></td><td className="tight"><span className="pill">{sw.paused?.[k] ? "oprită singură" : sw[k] ? "pornită" : "oprită"}</span></td><td>{a.what}</td></tr>; })}</tbody>
+          </table>
+        </div>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Cifrele de urmărit</h2>
+        <div className="stats">
+          <Stat label="Emailul de 24 h → și-au făcut arbore" value={`${num(st.activare_arbore)} din ${num(st.activare)}`} hint={pct(st.activare_arbore, st.activare)} />
+          <Stat label="Emailuri din zilele gratuite → plătit" value={`${num(st.conversie_platit)} din ${num(st.conversie)}`} hint="vezi și Admin → Conversie" />
+          <Stat label="„Invită o rudă” arătat → invitații acceptate" value={`${num(st.ramura_acceptate)} din ${num(st.ramura_afisata)}`} />
+          <Stat label="Reactivări → au revenit pe site" value={`${num(st.revenit)} din ${num(st.reactivari)}`} hint={pct(st.revenit, st.reactivari)} />
+          <Stat label="Ambasadori: trimise / pregătite" value={`${num(st.ambasadori_trimisi)} / ${num(st.ambasadori)}`} />
+          <Stat label="Ciorne de răspuns: trimise / pregătite" value={`${num(st.ciorne_trimise)} / ${num(st.ciorne)}`} />
+        </div>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Limitele pe zi</h2>
+        <form action={limitsAction} className="crm-filters">
+          <label>Reactivare (emailuri) <input name="reactivare" type="number" min={0} max={200} defaultValue={limits.reactivare} /></label>
+          <label>Ambasadori (în Aprobări) <input name="ambasador" type="number" min={0} max={50} defaultValue={limits.ambasador} /></label>
+          <label>Ciorne de răspuns <input name="ciorne" type="number" min={0} max={100} defaultValue={limits.ciorne} /></label>
+          <button className="btn">Salvează</button>
+        </form>
+        <p className="muted" style={{ marginBottom: 0 }}>Reactivarea: cel mult un email la 30 de zile pentru fiecare om, doar cu „Da” la sfaturile pe email.</p>
+      </div>
+      <div className="card stack">
+        <h2 style={{ margin: 0 }}>Textele</h2>
+        <details><summary>Reactivare (3 variante, după cum arată arborele omului)</summary>
+          {(["bunici", "intrebari", "ruda"] as const).map((k) => <div key={k}><p><b>{t.subject[k]}</b></p><p style={{ whiteSpace: "pre-line" }}>{t.body[k].replace("{name}", "Maria")}</p><p className="muted">Buton: {t.button[k]} · {t.why}</p></div>)}
+        </details>
+        <details><summary>Mulțumire ambasador (o poți edita în Aprobări)</summary><p><b>{amb.subiect}</b></p><p style={{ whiteSpace: "pre-line" }}>{amb.text}</p></details>
+        <details><summary>Ciornă de răspuns la „interesat” (o poți edita în Aprobări)</summary><p><b>{rep.subiect}</b></p><p style={{ whiteSpace: "pre-line" }}>{rep.text}</p></details>
+      </div>
+      {runs.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Ultimele rulări</h2>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Când</th><th>Automatizarea</th><th>Rezultat</th></tr></thead>
+              <tbody>{runs.map((r, i) => <tr key={i}><td className="tight">{day(new Date(r.ran_at).toISOString())}</td><td>{AUTOMATIONS.find((a) => a.key === r.automation)?.label ?? r.automation}</td><td>{r.note}</td></tr>)}</tbody>
             </table>
           </div>
         </div>

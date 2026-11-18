@@ -110,5 +110,15 @@ export async function ingest(db: Db, body: unknown, now = new Date()): Promise<{
     }
     results.push(await ingestOne(db, p.data, now));
   }
+  // Ciornele de răspuns apar imediat în Aprobări, dacă Daniel a pornit „CRM: ciorne de răspuns” (altfel, nimic).
+  if (results.some((r) => r.nou && (r.clasificare === "interesat" || r.clasificare === "intrebare"))) {
+    try {
+      const { automationSwitches } = await import("./autonomie");
+      const sw = await automationSwitches(db);
+      if (sw["crm-ciorne"] && !sw.paused?.["crm-ciorne"]) await (await import("./crm-auto")).queueReplyDrafts(db, { now });
+    } catch (e) {
+      console.error("[crm] ciorne", e instanceof Error ? e.message : e);
+    }
+  }
   return { ok: results.every((r) => r.ok), results };
 }

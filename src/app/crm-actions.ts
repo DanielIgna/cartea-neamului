@@ -165,3 +165,18 @@ export async function recomputeAction() {
   revalidatePath("/admin/crm");
   back("/admin/crm?t=scor", `Recalculat: ${r.users} conturi, ${r.changed} schimbate.`);
 }
+
+/* ---------- Automatizările (Etapa 4) ---------- */
+
+export async function limitsAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { CrmLimits, saveCrmLimits } = await import("@/lib/crm-auto");
+  const p = CrmLimits.safeParse({ reactivare: s(form, "reactivare"), ambasador: s(form, "ambasador"), ciorne: s(form, "ciorne") });
+  if (!p.success) back("/admin/crm?t=automatizari", `Nesalvat: ${p.error.issues[0]?.message ?? "valori greșite"}`);
+  else {
+    await saveCrmLimits(db, p.data, me.id);
+    revalidatePath("/admin/crm");
+    back("/admin/crm?t=automatizari", "Limitele pe zi au fost salvate.");
+  }
+}
