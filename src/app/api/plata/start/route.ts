@@ -80,15 +80,18 @@ export async function POST(req: Request) {
     keepTree = bundle ? treeId : null;
     year = { tier: "basic", upgradeFrom: null, paidUntil: null, extra: bundle ? "carte" : null };
   }
+  // Codurile de reducere (scrise sau din link) merg doar la planul Basic.
+  const basicYear = kind === "an" && year?.tier === "basic";
   // Reducerea de după zilele gratuite: pe anul întreg (nu pe o trecere la alt plan), cât e valabilă; codul se pune singur.
   const offer = kind === "an" && year && !year.upgradeFrom ? await activeOffer(db, me.id) : null;
   // Codul clasei (Admin → Școli), dacă omul a venit prin linkul lui și nu are reducerea de mai sus: se pune singur.
   const school = kind === "an" && year && !year.upgradeFrom && !offer?.stripePromoId ? await activeSchoolOffer(db, me.id).catch(() => null) : null;
   // NEAM90 sau codul unei organizații, venit prin linkul /cod/<COD>: doar pe primul an întreg (nu pe pachet), dacă n-are altă reducere.
   const linked = await linkCodeOffer(db, { userId: me.id, cookie: req.headers.get("cookie"),
-    fullFirstYear: kind === "an" && !!year && !year.upgradeFrom && !year.extra, other: !!offer?.stripePromoId || !!school }).catch(() => null);
+    fullFirstYear: basicYear && !!year && !year.upgradeFrom && !year.extra, other: !!offer?.stripePromoId || !!school }).catch(() => null);
   // Codul scris de om în câmpul de pe /plata: dacă e bun, el e singura reducere; dacă nu, omul se întoarce cu mesajul potrivit.
   const typedRaw = cleanTypedCode(form.get("cod"));
+  if (typedRaw && kind === "an" && !basicYear) return back(`eroare=codplan${tq}`);
   const typed = typedRaw ? await typedCodeOffer(db, { userId: me.id, code: typedRaw,
     fullFirstYear: kind === "an" && !!year && !year.upgradeFrom && !year.extra }) : null;
   if (typed && !typed.ok) return back(`eroare=${typed.reason === "year" ? "codan" : "cod"}${tq}`);
