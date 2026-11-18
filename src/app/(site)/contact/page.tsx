@@ -49,6 +49,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         </div>
       </div>
       <p className="muted" style={{ fontSize: 14, margin: 0 }}><Link href="/resurse-genealogie">{(await getT("Resources"))("contactLink")}</Link></p>
+      {(await getLocale()) === "ro" && <p className="muted" style={{ fontSize: 14, margin: 0 }}>Scrieți despre familie sau istorie locală? Pe <Link href="/presa">pagina pentru presă</Link> găsiți pe scurt ce este Cartea Neamului și cum ne puteți scrie.</p>}
       <p className="muted" style={{ fontSize: 14, margin: 0 }}>{t("seller", { name: op.name, cui: op.cui, regCom: op.regCom, address: op.address })}</p>
     </section>
   );
