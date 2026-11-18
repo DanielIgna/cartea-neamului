@@ -25,6 +25,7 @@ import { ambLink, ambassadorList, rewardRules } from "@/lib/crm-ambasadori";
 import { crmOrganizations, school as schoolT, schoolCode as schoolCodeT } from "@/db/schema";
 import { ignoreDupAction, mergeAction } from "@/app/crm-actions";
 import { DUP_LABEL, EXPORTS, auditList, findDuplicates, mergePreview } from "@/lib/crm-curatenie";
+import { alertsFor, crmHealth } from "@/lib/crm-sanatate";
 import { contactMonths, funnel, templateStats } from "@/lib/crm-rapoarte";
 import { closeTaskAction, gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
 import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
@@ -404,14 +405,14 @@ async function Scores() {
   );
 }
 
-const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail"] as const;
+const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte"] as const;
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "—");
 
 /** Etapa 4: ce automatizări lucrează pentru CRM, dacă sunt pornite, limitele pe zi, textele și cifrele. Pornirea se face în Autonomie. */
 async function Automations() {
   const [sw, limits, st, runs] = await Promise.all([
     automationSwitches(db), crmLimits(db), automationStats(db),
-    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne','crm-campanii','crm-gmail') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
+    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne','crm-campanii','crm-gmail','crm-dimineata','crm-alerte') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
   ]);
   const t = reactivationText("ro");
   const amb = ambassadorDraft("Maria Pop", 3);
@@ -575,27 +576,59 @@ function TemplateForm({ t }: { t?: { id: string; nume: string; tipOrg: string | 
   );
 }
 
-/** Sănătatea CRM: legătura cu Gmail (și, în etapa de monitorizare, rulările, erorile, limitele și alertele). */
+/** Sănătatea CRM: rulările automatizărilor, erorile, limitele, nelivratele, răspunsurile necitite, „nu contacta”, Gmail. */
 async function Health() {
-  const st = await gmailState(db);
+  const [st, h] = await Promise.all([gmailState(db), crmHealth(db)]);
   const linked = !!st.sealed;
   const client = !!gmailClient();
+  const alerts = alertsFor(h);
+  const STAT: Record<string, string> = { ok: "ok", nimic: "nimic de făcut", sarit: "sărită", eroare: "eroare", asteapta: "așteaptă" };
   return (
-    <div className="card stack">
-      <h2 style={{ margin: 0 }}>Gmail ({GMAIL_INBOX})</h2>
-      <p style={{ margin: 0 }}>
-        {linked ? <>Legat (doar citire) din {st.linkedAt ? day(st.linkedAt, true) : "—"}.</> : <>Nelegat.</>}{" "}
-        Ultima sincronizare: {st.lastSync ? day(st.lastSync, true) : "niciodată"}{st.lastError ? <> · <b>eroare:</b> {st.lastError}</> : null}
-        {st.read ? <> · în total {num(st.read)} mesaje citite, {num(st.matched ?? 0)} de la organizații din CRM</> : null}
-      </p>
-      {!client && <p className="muted" style={{ margin: 0 }}>Lipsesc cheile Google: pune GMAIL_CLIENT_ID și GMAIL_CLIENT_SECRET în Vercel (sau se folosesc cele de la intrarea cu Google), cu adresa de întoarcere <code>{SITE_URL}{GMAIL_CALLBACK}</code> în Google Cloud.</p>}
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <a className="btn primary" href="/api/admin/crm/gmail/start">{linked ? "Leagă din nou" : "Leagă Gmail"}</a>
-        {linked && <form action={gmailSyncAction}><button className="btn">Citește acum</button></form>}
-        {linked && <form action={gmailUnlinkAction}><button className="btn">Dezleagă</button></form>}
+    <>
+      {alerts.length > 0 && <div className="card" style={{ borderColor: "var(--warn, #b45309)" }}><b>De văzut:</b><ul style={{ marginBottom: 0 }}>{alerts.map((a) => <li key={a.key}>{a.text}</li>)}</ul></div>}
+      <div className="card">
+        <div className="stats">
+          <Stat label="Emailuri de campanie azi" value={`${num(h.sentToday)} / ${num(h.cap)}`} tone={h.sentToday >= h.cap ? "warn" : undefined} />
+          <Stat label="Nelivrate (30 de zile)" value={`${h.bounce.rate}%`} hint={`${h.bounce.bounced} din ${h.bounce.sent}`} tone={h.bounce.high ? "bad" : undefined} />
+          <Stat label="Răspunsuri necitite" value={num(h.unread)} hint="fără nimic făcut după ele" tone={h.unread ? "warn" : undefined} />
+          <Stat label="Opriri „nu contacta” (24 h)" value={num(h.blocked)} tone={h.blocked ? "warn" : undefined} />
+          <Stat label="Erori (24 h)" value={num(h.errors.length)} tone={h.errors.length ? "bad" : undefined} />
+        </div>
       </div>
-      <p className="muted" style={{ margin: 0 }}>Se citesc doar mesajele de la organizațiile din CRM (adresa exactă sau domeniul lor propriu). Restul inbox-ului nu se păstrează nicăieri. Nu se trimite nimic din Gmail.</p>
-    </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Automatizările CRM</h2>
+        <div className="tbl-wrap">
+          <table className="tbl">
+            <thead><tr><th>Automatizarea</th><th>Stare</th><th>Ultima rulare</th><th>Rezultat</th></tr></thead>
+            <tbody>{h.runs.map((r) => (
+              <tr key={r.key}>
+                <td><b>{r.label}</b></td>
+                <td className="tight"><span className={`pill ${r.paused ? "bad" : r.on ? "ok" : ""}`}>{r.paused ? "oprită singură" : r.on ? "pornită" : "oprită"}</span></td>
+                <td className="tight">{r.last ? day(r.last, true) : "niciodată"}</td>
+                <td>{r.status ? <><span className={`pill ${r.status === "eroare" ? "bad" : ""}`}>{STAT[r.status] ?? r.status}</span> {r.note}</> : "—"}</td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+        <p className="muted" style={{ marginBottom: 0 }}>Le pornești sau oprești din <Link href="/admin/autonomie">Autonomie</Link>. Alertele pe email: „CRM: alerte pe email”.</p>
+        {h.errors.length > 0 && <ul>{h.errors.map((e, i) => <li key={i}><small>{day(e.at, true)}</small> {AUTOMATIONS.find((a) => a.key === e.key)?.label ?? e.key}: {e.note}</li>)}</ul>}
+      </div>
+      <div className="card stack">
+        <h2 style={{ margin: 0 }}>Gmail ({GMAIL_INBOX})</h2>
+        <p style={{ margin: 0 }}>
+          {linked ? <>Legat (doar citire) din {st.linkedAt ? day(st.linkedAt, true) : "—"}.</> : <>Nelegat.</>}{" "}
+          Ultima sincronizare: {st.lastSync ? day(st.lastSync, true) : "niciodată"}{st.lastError ? <> · <b>eroare:</b> {st.lastError}</> : null}
+          {st.read ? <> · în total {num(st.read)} mesaje citite, {num(st.matched ?? 0)} de la organizații din CRM</> : null}
+        </p>
+        {!client && <p className="muted" style={{ margin: 0 }}>Lipsesc cheile Google: pune GMAIL_CLIENT_ID și GMAIL_CLIENT_SECRET în Vercel (sau se folosesc cele de la intrarea cu Google), cu adresa de întoarcere <code>{SITE_URL}{GMAIL_CALLBACK}</code> în Google Cloud.</p>}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <a className="btn primary" href="/api/admin/crm/gmail/start">{linked ? "Leagă din nou" : "Leagă Gmail"}</a>
+          {linked && <form action={gmailSyncAction}><button className="btn">Citește acum</button></form>}
+          {linked && <form action={gmailUnlinkAction}><button className="btn">Dezleagă</button></form>}
+        </div>
+        <p className="muted" style={{ margin: 0 }}>Se citesc doar mesajele de la organizațiile din CRM (adresa exactă sau domeniul lor propriu). Restul inbox-ului nu se păstrează nicăieri. Nu se trimite nimic din Gmail.</p>
+      </div>
+    </>
   );
 }
 

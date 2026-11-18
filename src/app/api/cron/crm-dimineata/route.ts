@@ -14,5 +14,7 @@ export async function GET(req: Request) {
   const sw = await automationSwitches(db);
   const out: Record<string, string> = {};
   if (sw["crm-dimineata"] && !sw.paused?.["crm-dimineata"]) out["crm-dimineata"] = (await runAutomation(db, "crm-dimineata", "ceas")).status;
+  // După lot: alertele CRM (eroare de 2 ori la rând, nelivrate peste 5%, „nu contacta”), dacă sunt pornite.
+  if (sw["crm-alerte"] && !sw.paused?.["crm-alerte"]) out["crm-alerte"] = (await runAutomation(db, "crm-alerte", "ceas")).status;
   return Response.json({ ok: true, ...out });
 }
