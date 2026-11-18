@@ -488,6 +488,8 @@ export const ro = {
     bookPaid: "Ai cartea plătită. O poți descărca din pagina cărții.",
     bookFree: "Contul tău are cartea PDF fără plată. O poți descărca din pagina cărții.",
     bookNote: "Cartea familiei în PDF se cumpără separat: {price} pentru un arbore. După plată o faci din datele voastre și o poți reface și descărca timp de 12 luni. Dacă vrei, o poți tipări și singur, acasă sau la o tipografie.",
+    discountNote: "Reducerile (codul clasei sau linkul unei organizații) se pun singure la plată, doar pentru primul an; reînnoirea e la prețul întreg. La o plată se pune o singură reducere.",
+    linkCode: "Codul {code} e ținut minte: dacă e încă valabil, se pune singur la plata primului an.",
     backToBook: "Înapoi la carte",
     consent: "Vreau să încep imediat și înțeleg că, primind conținutul digital pe loc, pierd dreptul de retragere de 14 zile.",
     pay: "Plătește {price} cu cardul",

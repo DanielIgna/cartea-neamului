@@ -474,6 +474,8 @@ export const hu: Catalog = {
     bookPaid: "A könyvet kifizetted. A könyv oldaláról töltheted le.",
     bookFree: "A fiókodhoz fizetés nélkül jár a PDF-könyv. A könyv oldaláról töltheted le.",
     bookNote: "A család PDF-könyve külön vásárolható: {price} egy családfához. Fizetés után a ti adataitokból készül, és 12 hónapig újrakészítheted és letöltheted. Ha szeretnéd, magad is kinyomtathatod, otthon vagy nyomdában.",
+    discountNote: "A kedvezmények (egy osztálykód vagy egy szervezet linkje) fizetéskor maguktól érvényesülnek, csak az első évre; a megújítás teljes áron történik. Egy fizetésre csak egy kedvezmény jár.",
+    linkCode: "A(z) {code} kódot megjegyeztük: ha még érvényes, az első év fizetésekor magától érvényesül.",
     backToBook: "Vissza a könyvhöz",
     consent: "Azonnal kezdeni szeretném, és tudomásul veszem, hogy a digitális tartalom azonnali megkapásával elveszítem a 14 napos elállási jogot.",
     pay: "{price} fizetése kártyával",

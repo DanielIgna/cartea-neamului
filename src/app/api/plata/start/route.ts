@@ -12,6 +12,7 @@ import { operator } from "@/lib/legal";
 import { contactPhone } from "@/lib/contact";
 import { activeOffer } from "@/lib/conversie";
 import { activeSchoolOffer } from "@/lib/scoli";
+import { linkCodeOffer } from "@/lib/cod-link";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
@@ -83,6 +84,9 @@ export async function POST(req: Request) {
   const offer = kind === "an" && year && !year.upgradeFrom ? await activeOffer(db, me.id) : null;
   // Codul clasei (Admin → Școli), dacă omul a venit prin linkul lui și nu are reducerea de mai sus: se pune singur.
   const school = kind === "an" && year && !year.upgradeFrom && !offer?.stripePromoId ? await activeSchoolOffer(db, me.id).catch(() => null) : null;
+  // NEAM90 sau codul unei organizații, venit prin linkul /cod/<COD>: doar pe primul an întreg (nu pe pachet), dacă n-are altă reducere.
+  const linked = await linkCodeOffer(db, { userId: me.id, cookie: req.headers.get("cookie"),
+    fullFirstYear: kind === "an" && !!year && !year.upgradeFrom && !year.extra, other: !!offer?.stripePromoId || !!school }).catch(() => null);
   await recordConsent(db, me.id, "withdrawal", true);
   // De unde venise vizita (Google, o campanie, o pagină de ghid…): numărăm deschiderea plății și trimitem sursa prin Stripe, ca plata
   // încheiată să se numere la aceeași sursă. Plățile de probă ale adminilor nu se numără.
@@ -101,7 +105,9 @@ export async function POST(req: Request) {
       waiver: t("waiverRecord", { url: `${origin}/termeni` }),
       seller: `${operator().name}, CUI ${operator().cui}, ${operator().regCom}, ${operator().address}. ${operator().email}, ${contactPhone()}`,
       ...(kind === "pastrare" ? { tier: undefined } : {}),
-      offer: offer?.stripePromoId ? { code: offer.code, promoId: offer.stripePromoId } : school,
+      // O singură reducere pe plată: cea de după zilele gratuite, altfel codul clasei, altfel codul din link.
+      offer: offer?.stripePromoId ? { code: offer.code, promoId: offer.stripePromoId } : school ?? linked,
+      promoField: isAdminUser(me),
       attribution: attr ? { ...attributionToMetadata(attr), ...(attr.attributed ? {} : { "metadata[a_src]": "necunoscut" }) } : undefined,
     });
     return Response.redirect(url, 303);

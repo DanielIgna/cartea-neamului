@@ -9,6 +9,7 @@
  * pozele și actele lui. Fișa lui din arbori rămâne, ca să nu se rupă arborele, dar fără legătura cu contul; dacă vrea, se
  * golește de datele lui (data și locul nașterii, unde locuiește, ocupația, biografia, poza de profil).
  */
+import { markTrialUsed } from "./proba-email";
 import { and, asc, eq, inArray, isNull, ne, notInArray, or, sql } from "drizzle-orm";
 import { sourceExport } from "./sursa";
 import { dropUserSubmissions } from "./home-submissions";
@@ -98,6 +99,8 @@ export async function deleteAccount(db: Db, userId: string, opts: { scrub: boole
   if (!u) return { fileKeys: [] as string[], deletedTrees: 0 };
   const plan = await deletionPlan(db, userId);
   const doomed = plan.owned.filter((t) => !t.heir).map((t) => t.id);
+  // Un email = o singură perioadă de zile gratuite: rămâne doar amprenta emailului (src/lib/proba-email.ts), nu emailul.
+  await markTrialUsed(db, u.email);
   return db.transaction(async (tx) => {
     const fileKeys: string[] = [];
     // Arborii în care e singur: întâi fișierele, apoi arborele (fișele, relațiile, documentele și amintirile pleacă odată cu el).

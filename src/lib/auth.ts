@@ -1,4 +1,5 @@
 import { attributionOf, recordConversion } from "./conversii";
+import { applyUsedTrial } from "./proba-email";
 import { recordAccountSource } from "./sursa";
 import { signupNewsFromCookie } from "./activare-shared";
 import { recordSchoolSignup } from "./scoli";
@@ -105,6 +106,8 @@ export const auth = betterAuth({
         },
         after: async (u, ctx) => {
           await recordConsent(db, u.id, "terms", true).catch((e) => console.error("consent terms", e));
+          // Un email = o singură perioadă de zile gratuite: contul refăcut cu un email folosit pornește fără ele (src/lib/proba-email.ts).
+          if (!isDemo(u.email)) await applyUsedTrial(db, u.id, u.email).catch((e) => console.error("proba folosita", e));
           const h = ctx?.headers ?? ctx?.request?.headers;
           // Programul de invitații (src/lib/invitatii.ts): fiecare cont nou primește codul lui; dacă a venit prin legătura cuiva
           // (/i/<cod>, cookie 30 de zile), e trecut pe acela. Zilele se dau după emailul confirmat și o persoană în arbore.

@@ -474,6 +474,8 @@ export const nl: Catalog = {
     bookPaid: "Je hebt het boek betaald. Je kunt het downloaden op de boekpagina.",
     bookFree: "Je account heeft het pdf-boek zonder te betalen. Je kunt het downloaden op de pagina van het boek.",
     bookNote: "Het familieboek als pdf koop je apart: {price} voor één stamboom. Na betaling wordt het gemaakt uit jullie gegevens en kun je het 12 maanden lang opnieuw maken en downloaden. Als je wilt, kun je het zelf afdrukken, thuis of bij een drukkerij.",
+    discountNote: "Kortingen (een klascode of de link van een organisatie) worden bij de betaling vanzelf toegepast, alleen voor het eerste jaar; verlengen gaat tegen de volle prijs. Per betaling geldt maar één korting.",
+    linkCode: "De code {code} is onthouden: als hij nog geldig is, wordt hij vanzelf toegepast bij de betaling van je eerste jaar.",
     backToBook: "Terug naar het boek",
     consent: "Ik wil meteen beginnen en begrijp dat ik, doordat ik de digitale inhoud direct ontvang, het herroepingsrecht van 14 dagen verlies.",
     pay: "Betaal {price} met je kaart",
