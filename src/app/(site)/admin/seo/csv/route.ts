@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/site-url";
 import { explainGscError, gscByPath, gscSnapshot, seoSettings } from "@/lib/seo";
 import { auditAlerts, auditPages } from "@/lib/seo-audit";
 import { publishedMap } from "@/lib/motor-seo/motor";
+import { seoKeywords, toCsv } from "@/data/seo-keywords";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ export async function GET(req: Request) {
   const me = await currentUser();
   if (!(await adminReady(me))) return new Response("Nu există.", { status: 404 });
   const what = new URL(req.url).searchParams.get("ce");
+  if (what === "cuvinte") return new Response(`\ufeff${toCsv(seoKeywords())}`, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="seo-cuvinte-cheie-ciorna.csv"` } });
   const s = await seoSettings(db);
   const gsc = await gscSnapshot(s, SITE_URL, 28);
   const g = gsc.state === "legat" ? gscByPath(gsc) : undefined;

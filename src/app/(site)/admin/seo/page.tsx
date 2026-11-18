@@ -7,6 +7,7 @@ import { explainGscError, gscByPath, gscSnapshot, inspectUrl, listSitemaps, matc
 import { auditAlerts, auditPages, sitemapCheck, type AuditPage } from "@/lib/seo-audit";
 import { inspectOwnPage, ownPath } from "@/lib/seo-inspector";
 import { TARGET_KEYWORDS, matchTarget } from "@/lib/seo-cuvinte";
+import { KEYWORDS_APPROVED, seoKeywords } from "@/data/seo-keywords";
 import { NAME_MIN_WORDS } from "@/lib/continut/prag";
 import { TARGET_MAX_COMMON, TARGET_OWN_WORDS } from "@/lib/seo/quality";
 import { conversionsBy } from "@/lib/conversii";
@@ -286,6 +287,7 @@ function Keywords({ gsc, watch, pages }: { gsc: Awaited<ReturnType<typeof gscSna
           </table>
         </div>
       </div>
+      <KeywordDraft />
       {watch.length > 0 && on && (
         <div className="card">
           <h2 style={{ marginTop: 0 }}>Cuvintele urmărite (din Setări)</h2>
@@ -749,6 +751,23 @@ function EngineTable({ rows }: { rows: { path: string; name: string; status: str
           </tr>
         ))}</tbody>
       </table>
+    </div>
+  );
+}
+
+/** Lista mare de cuvinte cheie (src/data/seo-keywords.ts): ciornă de aprobat, cu numărătoarea pe grupe și stări. */
+function KeywordDraft() {
+  const rows = seoKeywords();
+  const count = <T extends string>(f: (r: (typeof rows)[number]) => T) => [...rows.reduce((m, r) => m.set(f(r), (m.get(f(r)) ?? 0) + 1), new Map<T, number>())].sort((a, b) => b[1] - a[1]);
+  const todo = rows.filter((r) => r.status === "de-creat" && r.prioritate === 1);
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Lista mare de cuvinte cheie {KEYWORDS_APPROVED ? "" : <small className="muted" style={{ fontWeight: 400, fontSize: 13 }}>· ciornă, de aprobat</small>}</h2>
+      <p className="muted" style={{ marginTop: 0 }}>{rows.length} căutări, fiecare cu pagina care îi răspunde. Nu schimbă nimic pe site până nu o aprobi; tabelul de mai sus rămâne lista urmărită. Fără volume inventate: prioritatea e 1 (cumpărare sau sezon apropiat), 2 (școală, cum faci) sau 3 (informare).</p>
+      <p style={{ margin: "4px 0" }}><b>Pe grupe:</b> {count((r) => r.cluster).map(([k, n]) => `${k} ${n}`).join(" · ")}</p>
+      <p style={{ margin: "4px 0" }}><b>Pe stări:</b> {count((r) => r.status).map(([k, n]) => `${k === "exista" ? "pagina există" : k === "de-creat" ? "pagină de scris" : "pagină de îmbogățit"} ${n}`).join(" · ")}</p>
+      {todo.length > 0 && <p style={{ margin: "4px 0" }}><b>Pagini de scris cu prioritate 1:</b> {[...new Set(todo.map((r) => r.targetUrl))].join(", ")}</p>}
+      <p style={{ marginBottom: 0 }}><a className="btn ghost" href="/admin/seo/csv?ce=cuvinte">Descarcă lista (CSV)</a></p>
     </div>
   );
 }
