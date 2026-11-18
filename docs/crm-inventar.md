@@ -94,3 +94,9 @@ Se construiesc în alte fire și se refolosesc aici: filtrul de conturi de test 
 
 Rapoarte AI nocturne, bucle de autoreparare la câteva minute, scoruri de sănătate multiple, date demo în producție. Nimic pe site nu
 pomenește uneltele de construcție.
+
+## 7. Setări în Vercel (18 noiembrie 2026)
+
+Puse în producție: CRM_INGEST_TOKEN (ingestia CRM), NEXT_PUBLIC_TURNSTILE_SITE_KEY și TURNSTILE_SECRET_KEY („nu sunt robot” la
+contul nou), BETTER_AUTH_URL=https://carteaneamului.ro. Cheia Turnstile intră și în CSP la build, deci orice schimbare a ei cere o
+publicare nouă.
