@@ -172,11 +172,82 @@ export async function limitsAction(form: FormData) {
   const me = await admin();
   if (!me) return;
   const { CrmLimits, saveCrmLimits } = await import("@/lib/crm-auto");
-  const p = CrmLimits.safeParse({ reactivare: s(form, "reactivare"), ambasador: s(form, "ambasador"), ciorne: s(form, "ciorne") });
+  const p = CrmLimits.safeParse({ reactivare: s(form, "reactivare"), ambasador: s(form, "ambasador"), ciorne: s(form, "ciorne"), campanii: s(form, "campanii") });
   if (!p.success) back("/admin/crm?t=automatizari", `Nesalvat: ${p.error.issues[0]?.message ?? "valori greșite"}`);
   else {
     await saveCrmLimits(db, p.data, me.id);
     revalidatePath("/admin/crm");
     back("/admin/crm?t=automatizari", "Limitele pe zi au fost salvate.");
+  }
+}
+
+/* ---------- Campaniile (Etapa 5) ---------- */
+
+const CAMP = "/admin/crm?t=campanii";
+
+export async function saveTemplateAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { TemplateInput, saveTemplate } = await import("@/lib/crm-campanii");
+  const p = TemplateInput.safeParse({ nume: s(form, "nume"), tipOrg: s(form, "tipOrg"), subiect: s(form, "subiect"), corp: s(form, "corp"), butonText: s(form, "butonText"), butonCale: s(form, "butonCale") });
+  if (!p.success) back(CAMP, `Nesalvat: ${p.error.issues[0]?.message ?? "date greșite"}`);
+  else {
+    const id = s(form, "id");
+    await saveTemplate(db, p.data, me.id, /^[0-9a-f-]{36}$/i.test(id) ? id : null);
+    revalidatePath("/admin/crm");
+    back(CAMP, "Șablonul a fost salvat.");
+  }
+}
+
+export async function newCampaignAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { CampaignInput, createCampaign } = await import("@/lib/crm-campanii");
+  const fu = s(form, "followUpZile");
+  const p = CampaignInput.safeParse({
+    nume: s(form, "nume"), templateId: s(form, "templateId"), tip: s(form, "tip"), judet: s(form, "judet"), localitate: s(form, "localitate"),
+    statusuri: form.getAll("statusuri").map(String), includeContactati: form.get("includeContactati") === "on",
+    limitaZi: s(form, "limitaZi") || 20, oraStart: s(form, "oraStart") || 9, oraSfarsit: s(form, "oraSfarsit") || 16,
+    followUpZile: fu ? fu : null, followUpTemplateId: s(form, "followUpTemplateId") || null,
+  });
+  if (!p.success) back(CAMP, `Nesalvat: ${p.error.issues[0]?.message ?? "date greșite"}`);
+  else {
+    await createCampaign(db, p.data, me.id);
+    revalidatePath("/admin/crm");
+    back(CAMP, "Campania e salvată ca ciornă. Verifică destinatarii, trimite-ți o probă, apoi pornește-o.");
+  }
+}
+
+export async function campaignStatusAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { isCampaignStatus, setCampaignStatus } = await import("@/lib/crm-campanii");
+  const id = s(form, "id"), st = s(form, "status");
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !isCampaignStatus(st)) return;
+  await setCampaignStatus(db, id, st);
+  revalidatePath("/admin/crm");
+  back(CAMP, st === "pornita" ? "Campania e pornită. Pleacă doar dacă „CRM: campanii către organizații” e pornită în Autonomie." : "Gata.");
+}
+
+export async function testMailAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { sendTestMail } = await import("@/lib/crm-campanii");
+  const id = s(form, "templateId");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const r = await sendTestMail(db, id, me.email);
+  back(CAMP, "ok" in r && r.ok ? `Proba a plecat la ${me.email}.` : "Proba nu a plecat (verifică RESEND_API_KEY).");
+}
+
+export async function batchNowAction() {
+  const me = await admin();
+  if (!me) return;
+  const { automationSwitches, runAutomation } = await import("@/lib/autonomie");
+  const sw = await automationSwitches(db);
+  if (!sw["crm-campanii"]) back(CAMP, "Pornește întâi „CRM: campanii către organizații” în Admin → Autonomie.");
+  else {
+    const r = await runAutomation(db, "crm-campanii", "manual", me.id);
+    revalidatePath("/admin/crm");
+    back(CAMP, r.note);
   }
 }

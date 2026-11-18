@@ -40,6 +40,7 @@
   "drizzle/0037_sursa_cont.sql",
   "drizzle/0039_scoli.sql",
   "drizzle/0040_crm.sql",
+  "drizzle/0041_crm_campanii.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -173,6 +174,7 @@
   "src/app/(site)/confidentialitate/page.tsx",
   "src/app/(site)/contact/page.tsx",
   "src/app/(site)/datele-mele/page.tsx",
+  "src/app/(site)/dezabonare-organizatie/page.tsx",
   "src/app/(site)/dezabonare/page.tsx",
   "src/app/(site)/diaspora/[a]/[b]/page.tsx",
   "src/app/(site)/diaspora/[a]/page.tsx",
@@ -240,8 +242,13 @@
   "src/app/api/card/route.tsx",
   "src/app/api/conversie/c/route.ts",
   "src/app/api/conversie/o/route.ts",
+  "src/app/api/crm/c/route.ts",
+  "src/app/api/crm/dezabonare/route.ts",
+  "src/app/api/crm/o/route.ts",
+  "src/app/api/crm/resend/route.ts",
   "src/app/api/cron/aminteste-plata/route.ts",
   "src/app/api/cron/autonomie/route.ts",
+  "src/app/api/cron/crm/route.ts",
   "src/app/api/datele-mele/route.ts",
   "src/app/api/document/[docId]/route.ts",
   "src/app/api/folosire/route.ts",
@@ -267,6 +274,7 @@
   "src/app/contact-actions.ts",
   "src/app/crestere-actions.ts",
   "src/app/crm-actions.ts",
+  "src/app/crm-public-actions.ts",
   "src/app/cunostinte-actions.ts",
   "src/app/favicon.ico",
   "src/app/film-actions.ts",
@@ -763,6 +771,7 @@
   "src/lib/crestere.ts",
   "src/lib/crm-admin.ts",
   "src/lib/crm-auto.ts",
+  "src/lib/crm-campanii.ts",
   "src/lib/crm-import.ts",
   "src/lib/crm-ingest.ts",
   "src/lib/crm-scor.ts",
@@ -914,6 +923,7 @@
   "tests/crestere.test.ts",
   "tests/crm-admin.test.ts",
   "tests/crm-auto.test.ts",
+  "tests/crm-campanii.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
@@ -1209,11 +1219,31 @@
    "kind": "api"
   },
   {
+   "path": "/api/crm/c",
+   "kind": "api"
+  },
+  {
+   "path": "/api/crm/dezabonare",
+   "kind": "api"
+  },
+  {
+   "path": "/api/crm/o",
+   "kind": "api"
+  },
+  {
+   "path": "/api/crm/resend",
+   "kind": "api"
+  },
+  {
    "path": "/api/cron/aminteste-plata",
    "kind": "api"
   },
   {
    "path": "/api/cron/autonomie",
+   "kind": "api"
+  },
+  {
+   "path": "/api/cron/crm",
    "kind": "api"
   },
   {
@@ -1374,6 +1404,10 @@
   },
   {
    "path": "/dezabonare",
+   "kind": "pagina"
+  },
+  {
+   "path": "/dezabonare-organizatie",
    "kind": "pagina"
   },
   {
@@ -1594,6 +1628,7 @@
   "tests/crestere.test.ts",
   "tests/crm-admin.test.ts",
   "tests/crm-auto.test.ts",
+  "tests/crm-campanii.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
@@ -1655,5 +1690,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 40
+ "migrations": 41
 }

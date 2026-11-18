@@ -9,6 +9,10 @@ import {
   isActivityType, isOrgType,
 } from "@/lib/crm";
 import { orgDetail, whatsappLink } from "@/lib/crm-admin";
+import { orgSends } from "@/lib/crm-campanii";
+
+const AUTO_ACTIVITIES = new Set<string>(["email_livrat", "email_deschis", "email_click", "dezabonat"]);
+const SEND_LABEL: Record<string, string> = { trimis: "Trimis", livrat: "Livrat", deschis: "Deschis", click: "Click", nelivrat: "Nelivrat", dezabonat: "Dezabonat", blocat: "Oprit (nu contacta)", eroare: "Eroare" };
 import { addActivityAction, newDealAction, updateDealAction, updateOrgAction } from "@/app/crm-actions";
 import { AdminNav, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
@@ -24,7 +28,7 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
   await requireAdmin(`/admin/crm/org/${id}`);
   const sp = await searchParams;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
-  const d = await orgDetail(db, id);
+  const [d, sends] = await Promise.all([orgDetail(db, id), orgSends(db, id)]);
   if (!d) notFound();
   const { org } = d;
   const link = d.src ? `${SITE_URL}/?src=${d.src}` : null;
@@ -94,7 +98,7 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
         <h2 style={{ marginTop: 0 }}>Istoric</h2>
         <form action={addActivityAction} className="form" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "flex-end", marginBottom: 12 }}>
           <input type="hidden" name="id" value={org.id} />
-          <label>Ce<select name="tip" defaultValue="nota">{ACTIVITY_TYPES.map((t) => <option key={t} value={t}>{ACTIVITY_LABEL[t]}</option>)}</select></label>
+          <label>Ce<select name="tip" defaultValue="nota">{ACTIVITY_TYPES.filter((t) => !AUTO_ACTIVITIES.has(t)).map((t) => <option key={t} value={t}>{ACTIVITY_LABEL[t]}</option>)}</select></label>
           <label style={{ flex: "1 1 260px" }}>Pe scurt<input name="rezumat" maxLength={2000} required /></label>
           <button className="btn primary">Trece în istoric</button>
         </form>
@@ -113,6 +117,27 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
         </div>
         {!d.activities.length && <p className="muted">Nimic încă.</p>}
       </div>
+
+      {sends.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Emailuri de campanie</h2>
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Trimis</th><th>Campania</th><th>Stare</th><th>Deschis</th><th>Click</th><th>Răspuns</th></tr></thead>
+              <tbody>{sends.map(({ s, campanie }) => (
+                <tr key={s.id}>
+                  <td className="tight">{day(s.sentAt.toISOString(), true)}{s.pas === 2 && <small> follow-up</small>}</td>
+                  <td>{campanie}</td>
+                  <td className="tight"><span className="pill">{SEND_LABEL[s.status] ?? s.status}</span>{s.motiv && <small> {s.motiv}</small>}</td>
+                  <td className="tight">{s.openedAt ? day(s.openedAt.toISOString(), true) : "—"}</td>
+                  <td className="tight">{s.clicks ? num(s.clicks) : "—"}</td>
+                  <td className="tight">{s.repliedAt ? day(s.repliedAt.toISOString(), true) : "—"}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {d.contacts.length > 0 && (
         <div className="card">

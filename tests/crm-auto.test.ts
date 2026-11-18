@@ -109,8 +109,8 @@ describe("limitele", () => {
     const db = createDb();
     await runMigrations(db);
     expect(await crmLimits(db)).toEqual(DEFAULT_LIMITS);
-    await saveCrmLimits(db, { reactivare: 5, ambasador: 2, ciorne: 10 }, null, now);
-    expect(await crmLimits(db)).toEqual({ reactivare: 5, ambasador: 2, ciorne: 10 });
+    await saveCrmLimits(db, { reactivare: 5, ambasador: 2, ciorne: 10, campanii: 20 }, null, now);
+    expect(await crmLimits(db)).toEqual({ reactivare: 5, ambasador: 2, ciorne: 10, campanii: 20 });
     expect((await db.select().from(automationMark))).toHaveLength(0);
   });
 });

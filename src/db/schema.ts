@@ -1017,6 +1017,56 @@ export const crmUserSignals = pgTable("crm_user_signals", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (t) => [index("crm_user_signals_etapa_idx").on(t.etapa, t.scor)]);
 
+// CRM Etapa 5 (Daniel, 18.11.2026; src/lib/crm-campanii.ts): șabloanele, campaniile și fiecare email trimis unei organizații.
+export const crmTemplates = pgTable("crm_templates", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nume: text("nume").notNull(),
+  tipOrg: text("tip_org"),
+  subiect: text("subiect").notNull(),
+  corp: text("corp").notNull(),
+  butonText: text("buton_text"),
+  butonCale: text("buton_cale"),
+  activ: boolean("activ").notNull().default(true),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const crmCampaigns = pgTable("crm_campaigns", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nume: text("nume").notNull(),
+  templateId: uuid("template_id").notNull().references(() => crmTemplates.id, { onDelete: "restrict" }),
+  filtru: jsonb("filtru"),
+  status: text("status").notNull().default("ciorna"), // ciorna / pornita / oprita / terminata
+  limitaZi: integer("limita_zi").notNull().default(20),
+  oraStart: integer("ora_start").notNull().default(9),
+  oraSfarsit: integer("ora_sfarsit").notNull().default(16),
+  followUpZile: integer("follow_up_zile"),
+  followUpTemplateId: uuid("follow_up_template_id").references(() => crmTemplates.id, { onDelete: "set null" }),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  startedAt: timestamp("started_at"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+export const crmSends = pgTable("crm_sends", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  campaignId: uuid("campaign_id").notNull().references(() => crmCampaigns.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id").notNull().references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  templateId: uuid("template_id").references(() => crmTemplates.id, { onDelete: "set null" }),
+  pas: integer("pas").notNull().default(1), // 1 = primul email, 2 = follow-up (doar dacă e setat)
+  email: text("email").notNull(),
+  status: text("status").notNull().default("trimis"), // trimis / livrat / deschis / click / nelivrat / dezabonat / blocat / eroare
+  motiv: text("motiv"),
+  resendId: text("resend_id"),
+  sentAt: timestamp("sent_at").notNull().defaultNow(),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  clickedAt: timestamp("clicked_at"),
+  clicks: integer("clicks").notNull().default(0),
+  bouncedAt: timestamp("bounced_at"),
+  unsubscribedAt: timestamp("unsubscribed_at"),
+  repliedAt: timestamp("replied_at"),
+}, (t) => [uniqueIndex("crm_sends_once_idx").on(t.campaignId, t.organizationId, t.pas), index("crm_sends_org_idx").on(t.organizationId, t.sentAt), index("crm_sends_resend_idx").on(t.resendId), index("crm_sends_day_idx").on(t.sentAt)]);
+
 /* ---------- Școli (Daniel, 17.11.2026; src/lib/scoli.ts, Admin → Școli) ---------- */
 // Cererile din formularul „Vreau coduri pentru clasa mea” de pe /scoala. Codurile se dau doar după aprobarea manuală (conducerea
 // școlii a confirmat). Datele de contact sunt ale învățătorului/profesorului, folosite doar pentru răspuns.

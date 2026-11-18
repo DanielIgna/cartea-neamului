@@ -281,6 +281,13 @@
       "when": 1794934172845,
       "tag": "0039_scoli",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1795000000000,
+      "tag": "0041_crm_campanii",
+      "breakpoints": true
     }
   ]
 }

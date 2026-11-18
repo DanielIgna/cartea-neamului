@@ -31,9 +31,9 @@ const DAY = 86_400_000;
 
 export const LIMITS_KEY = "crm_limite";
 const lim = (max: number) => z.coerce.number({ invalid_type_error: "Scrie un număr." }).int("Scrie un număr întreg.").min(0, "Cel puțin 0.").max(max, `Cel mult ${max}.`);
-export const CrmLimits = z.object({ reactivare: lim(200), ambasador: lim(50), ciorne: lim(100) });
+export const CrmLimits = z.object({ reactivare: lim(200), ambasador: lim(50), ciorne: lim(100), campanii: lim(200) });
 export type CrmLimits = z.infer<typeof CrmLimits>;
-export const DEFAULT_LIMITS: CrmLimits = { reactivare: 20, ambasador: 5, ciorne: 30 };
+export const DEFAULT_LIMITS: CrmLimits = { reactivare: 20, ambasador: 5, ciorne: 30, campanii: 20 };
 export const REACTIVATION_GAP_DAYS = 30;
 
 export async function crmLimits(db: Pick<Db, "select">): Promise<CrmLimits> {

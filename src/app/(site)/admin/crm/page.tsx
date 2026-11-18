@@ -20,7 +20,8 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
-import { limitsAction, recomputeAction } from "@/app/crm-actions";
+import { batchNowAction, campaignStatusAction, limitsAction, newCampaignAction, recomputeAction, saveTemplateAction, testMailAction } from "@/app/crm-actions";
+import { CAMPAIGN_LABEL, PLACEHOLDERS, campaignList, isCampaignStatus, sentToday, templateList } from "@/lib/crm-campanii";
 import { AUTOMATIONS, automationSwitches } from "@/lib/autonomie";
 import { ambassadorDraft, automationStats, crmLimits, reactivationText, replyDraft } from "@/lib/crm-auto";
 import { crmUserSignals, user } from "@/db/schema";
@@ -31,7 +32,7 @@ export const metadata = { title: "CRM · Admin" };
 
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
-  { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "nucontacta", label: "Nu contacta" },
+  { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
   { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
@@ -70,6 +71,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "firme" && <Firms q={q} />}
       {tab === "parteneri" && <Partners />}
       {tab === "aprobari" && <Approvals />}
+      {tab === "campanii" && <Campaigns />}
       {tab === "nucontacta" && <Suppression />}
       {tab === "scor" && <Scores />}
       {tab === "automatizari" && <Automations />}
@@ -387,14 +389,14 @@ async function Scores() {
   );
 }
 
-const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne"] as const;
+const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii"] as const;
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "—");
 
 /** Etapa 4: ce automatizări lucrează pentru CRM, dacă sunt pornite, limitele pe zi, textele și cifrele. Pornirea se face în Autonomie. */
 async function Automations() {
   const [sw, limits, st, runs] = await Promise.all([
     automationSwitches(db), crmLimits(db), automationStats(db),
-    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
+    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne','crm-campanii') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
   ]);
   const t = reactivationText("ro");
   const amb = ambassadorDraft("Maria Pop", 3);
@@ -428,6 +430,7 @@ async function Automations() {
           <label>Reactivare (emailuri) <input name="reactivare" type="number" min={0} max={200} defaultValue={limits.reactivare} /></label>
           <label>Ambasadori (în Aprobări) <input name="ambasador" type="number" min={0} max={50} defaultValue={limits.ambasador} /></label>
           <label>Ciorne de răspuns <input name="ciorne" type="number" min={0} max={100} defaultValue={limits.ciorne} /></label>
+          <label>Campanii (emailuri în total) <input name="campanii" type="number" min={0} max={200} defaultValue={limits.campanii} /></label>
           <button className="btn">Salvează</button>
         </form>
         <p className="muted" style={{ marginBottom: 0 }}>Reactivarea: cel mult un email la 30 de zile pentru fiecare om, doar cu „Da” la sfaturile pe email.</p>
@@ -452,5 +455,107 @@ async function Automations() {
         </div>
       )}
     </>
+  );
+}
+
+const SELECTABLE_STATUSES = ["nou", "contactat", "a_raspuns", "interesat", "in_discutie"] as const;
+
+/** Etapa 5: șabloanele și campaniile către organizații. Totul pornește oprit; trimiterea cere și comutatorul din Autonomie. */
+async function Campaigns() {
+  const [templates, camps, sw, limits, today] = await Promise.all([templateList(db), campaignList(db), automationSwitches(db), crmLimits(db), sentToday(db)]);
+  const on = !!sw["crm-campanii"];
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Campanii</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Emailurile pleacă doar luni–vineri, în fereastra orară a campaniei, cel mult {limits.campanii} pe zi în total (azi: {today}), câte unul pe organizație,
+          doar la adresa oficială. „Nu contacta” se verifică la alegere și la trimitere. Trimiterea automată: {on ? <b>pornită</b> : <b>oprită</b>} (<Link href="/admin/autonomie">Autonomie</Link>).
+        </p>
+        <form action={batchNowAction}><button className="btn">Trimite lotul de azi acum</button> <small className="muted">Doar dacă e pornită în Autonomie; respectă zilele, ora și limitele.</small></form>
+      </div>
+      {camps.length > 0 && (
+        <div className="card">
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Campania</th><th>Stare</th><th className="n">Trimise</th><th className="n">Livrate</th><th className="n">Deschise</th><th className="n">Click</th><th className="n">Răspunsuri</th><th className="n">Nelivrate</th><th className="n">Dezabonări</th><th className="n">Rămase</th><th></th></tr></thead>
+              <tbody>{camps.map((c) => (
+                <tr key={c.id}>
+                  <td><b>{c.nume}</b><small>{c.template} · {c.limitaZi}/zi · ora {c.ore}{c.followUp ? ` · follow-up după ${c.followUp} zile` : ""}</small></td>
+                  <td className="tight"><span className="pill">{isCampaignStatus(c.status) ? CAMPAIGN_LABEL[c.status] : c.status}</span></td>
+                  <td className="n">{num(c.trimise)}</td><td className="n">{num(c.livrate)}</td><td className="n">{num(c.deschise)}</td><td className="n">{num(c.clickuri)}</td>
+                  <td className="n">{num(c.raspunsuri)}</td><td className="n">{num(c.nelivrate)}</td><td className="n">{num(c.dezabonate)}</td><td className="n">{num(c.ramase)}</td>
+                  <td className="tight">
+                    <form action={campaignStatusAction} style={{ display: "inline" }}>
+                      <input type="hidden" name="id" value={c.id} />
+                      {c.status === "pornita" ? <button className="btn" name="status" value="oprita">Oprește</button>
+                        : c.status !== "terminata" ? <button className="btn primary" name="status" value="pornita">Pornește</button> : null}
+                    </form>
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+          <p className="muted" style={{ marginBottom: 0 }}>„Rămase” = organizații care se potrivesc filtrului și n-au primit încă nimic. Livrat/nelivrat apar doar cu webhook-ul Resend pus.</p>
+        </div>
+      )}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Campanie nouă</h2>
+        {!templates.length ? <p className="muted">Fă întâi un șablon (mai jos).</p> : (
+          <form action={newCampaignAction} className="form stack">
+            <label>Numele<input name="nume" required maxLength={120} placeholder="Școli Cluj, noiembrie" /></label>
+            <label>Șablonul<select name="templateId" required>{templates.filter((t) => t.activ).map((t) => <option key={t.id} value={t.id}>{t.nume}</option>)}</select></label>
+            <div className="crm-filters">
+              <label>Tipul<select name="tip" defaultValue="scoala"><option value="">Toate</option>{ORG_TYPES.map((k) => <option key={k} value={k}>{ORG_TYPE_LABEL[k]}</option>)}</select></label>
+              <label>Județul<select name="judet" defaultValue=""><option value="">Toate</option>{Object.entries(COUNTIES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></label>
+              <label>Localitatea<input name="localitate" maxLength={120} /></label>
+            </div>
+            <fieldset><legend>Doar organizațiile cu statusul</legend>
+              {SELECTABLE_STATUSES.map((k) => <label key={k} style={{ marginRight: 12 }}><input type="checkbox" name="statusuri" value={k} defaultChecked={k === "nou"} /> {ORG_STATUS_LABEL[k]}</label>)}
+            </fieldset>
+            <label><input type="checkbox" name="includeContactati" /> Include și organizațiile cărora le-ai scris deja din afară (import/ingestie)</label>
+            <div className="crm-filters">
+              <label>Limită pe zi<input name="limitaZi" type="number" min={1} max={100} defaultValue={20} /></label>
+              <label>De la ora<input name="oraStart" type="number" min={7} max={20} defaultValue={9} /></label>
+              <label>Până la ora<input name="oraSfarsit" type="number" min={8} max={21} defaultValue={16} /></label>
+            </div>
+            <div className="crm-filters">
+              <label>Follow-up după (zile; gol = fără)<input name="followUpZile" type="number" min={3} max={60} /></label>
+              <label>Șablonul follow-up<select name="followUpTemplateId" defaultValue=""><option value="">—</option>{templates.map((t) => <option key={t.id} value={t.id}>{t.nume}</option>)}</select></label>
+            </div>
+            <button className="btn primary">Salvează ca ciornă</button>
+          </form>
+        )}
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Șabloane</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Poți folosi {PLACEHOLDERS.join(", ")}. Paragrafele se despart cu un rând gol. La sfârșit se adaugă singure datele firmei și legătura de dezabonare.</p>
+        {templates.map((t) => (
+          <details key={t.id} style={{ marginBottom: 8 }}>
+            <summary><b>{t.nume}</b> · {t.subiect}</summary>
+            <TemplateForm t={t} />
+            <form action={testMailAction}><input type="hidden" name="templateId" value={t.id} /><button className="btn">Trimite-mi o probă</button> <small className="muted">Doar la adresa ta de admin.</small></form>
+          </details>
+        ))}
+        <details open={!templates.length}><summary><b>Șablon nou</b></summary><TemplateForm /></details>
+      </div>
+    </>
+  );
+}
+
+function TemplateForm({ t }: { t?: { id: string; nume: string; tipOrg: string | null; subiect: string; corp: string; butonText: string | null; butonCale: string | null } }) {
+  return (
+    <form action={saveTemplateAction} className="form stack">
+      {t && <input type="hidden" name="id" value={t.id} />}
+      <label>Numele<input name="nume" required maxLength={120} defaultValue={t?.nume} /></label>
+      <label>Pentru<select name="tipOrg" defaultValue={t?.tipOrg ?? ""}><option value="">Oricine</option>{ORG_TYPES.map((k) => <option key={k} value={k}>{ORG_TYPE_LABEL[k]}</option>)}</select></label>
+      <label>Subiectul<input name="subiect" required maxLength={160} defaultValue={t?.subiect} /></label>
+      <label>Textul<textarea name="corp" required rows={10} maxLength={5000} defaultValue={t?.corp} /></label>
+      <div className="crm-filters">
+        <label>Textul butonului (opțional)<input name="butonText" maxLength={60} defaultValue={t?.butonText ?? ""} placeholder="Vedeți fișele pentru clasă" /></label>
+        <label>Pagina din site<input name="butonCale" maxLength={200} defaultValue={t?.butonCale ?? ""} placeholder="/scoala" /></label>
+      </div>
+      <button className="btn primary">Salvează șablonul</button>
+    </form>
   );
 }

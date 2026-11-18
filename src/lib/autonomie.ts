@@ -44,11 +44,11 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
-export type AutoDef = { key: AutoKey; label: string; what: string; everyDays: number; risk: Risk; defaultOn: boolean; needs?: string };
+export type AutoDef = { key: AutoKey; label: string; what: string; everyDays: number; risk: Risk; defaultOn: boolean; needs?: string; /** are ceasul ei (vercel.json); bucla zilnică o sare */ ownClock?: string };
 export const AUTOMATIONS: AutoDef[] = [
   { key: "sanatate", label: "Verificarea sănătății", risk: "singur", defaultOn: true, everyDays: 1,
     what: "Baza de date, migrațiile, stocarea pozelor și erorile de pe server. Dacă ceva pică, mai verifică o dată; îți scrie doar dacă se confirmă, și o singură dată până se repară." },
@@ -74,6 +74,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Celor care au adus cel puțin 2 conturi le pregătește un mesaj de mulțumire + propunerea de partener local. Nu trimite nimic: mesajul intră în Admin → CRM → Aprobări și pleacă doar după „Aprob”. O singură dată pentru fiecare om." },
   { key: "crm-ciorne", label: "CRM: ciorne de răspuns", risk: "acord", defaultOn: false, everyDays: 1,
     what: "La răspunsurile „interesat” sau „întrebare” de la școli și firme pregătește o ciornă de răspuns în Admin → CRM → Aprobări (o poți edita). Nimic nu pleacă fără „Aprob”. Refuzurile și dezabonările merg direct pe lista „Nu contacta”, fără să fie nevoie de pornire." },
+  { key: "crm-campanii", label: "CRM: campanii către organizații", risk: "acord", defaultOn: false, everyDays: 1, ownClock: "luni–vineri, 10:00 (ora României; 11:00 vara)", needs: "RESEND_API_KEY; pentru livrat/nelivrat și RESEND_WEBHOOK_SECRET",
+    what: "Trimite lotul zilnic al campaniilor pe care le-ai pornit în Admin → CRM → Campanii: doar luni–vineri, în fereastra orară a fiecăreia, cel mult limita pe zi (implicit 20 în total), câte un singur email pe organizație, doar la adresele oficiale. Sare peste „Nu contacta” (verificat și la trimitere). Fiecare email are dezabonare; adresele inexistente trec pe „Nu contacta” și la „de sunat”." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -364,7 +366,17 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "crm-reactivare": runCrmReactivation,
   "crm-ambasador": runCrmAmbassadors,
   "crm-ciorne": runCrmDrafts,
+  "crm-campanii": runCrmCampaigns,
 };
+
+async function runCrmCampaigns({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "Lipsește RESEND_API_KEY" };
+  const { runCampaignBatch } = await import("./crm-campanii");
+  const r = await runCampaignBatch(db, { now });
+  if (r.skipped) return { status: "sarit", observed: 0, acted: 0, note: r.skipped };
+  const parts = Object.entries(r.byCampaign).map(([k, v]) => `${k}: ${v}`).join(", ");
+  return { status: r.sent ? "ok" : r.failed ? "eroare" : "nimic", observed: r.campaigns, acted: r.sent, note: r.campaigns ? `${r.sent} emailuri trimise${parts ? ` (${parts})` : ""}${r.followUps ? `, din care ${r.followUps} follow-up` : ""}${r.blocked ? ` · ${r.blocked} oprite de „Nu contacta”` : ""}${r.failed ? ` · ${r.failed} eșuate` : ""}${r.finished ? ` · ${r.finished} campanii terminate` : ""}` : "nicio campanie pornită în fereastra de acum", details: r, verified: r.failed === 0 };
+}
 
 /** CRM Etapa 4 (src/lib/crm-auto.ts): reactivarea celor „în risc”, mulțumirea ambasadorilor, ciornele de răspuns. */
 async function runCrmReactivation({ db, now }: Ctx): Promise<RunResult> {
@@ -449,6 +461,7 @@ export async function runLoop(db: Db, trigger: "ceas" | "manual", actorId: strin
   const ran: { key: AutoKey; status: string; note: string }[] = [];
   for (const a of AUTOMATIONS) {
     if (!sw[a.key]) continue;
+    if (a.ownClock && trigger === "ceas") continue;
     const prev = last.get(a.key)?.last;
     // Manual rulează tot ce e pornit; ceasul doar ce e scadent (sitemap-ul o dată pe săptămână).
     if (trigger === "ceas" && prev && now.getTime() - new Date(prev).getTime() < a.everyDays * DAY - 2 * 3600_000) continue;
@@ -565,7 +578,7 @@ export async function autonomyScore(db: Db, now = new Date()): Promise<Score> {
   for (const a of AUTOMATIONS) {
     const on = sw[a.key];
     const l = last.get(a.key);
-    const fresh = !!l?.last && now.getTime() - new Date(l.last).getTime() < (a.everyDays + 1.5) * DAY;
+    const fresh = !!l?.last && now.getTime() - new Date(l.last).getTime() < (a.everyDays + (a.ownClock ? 3.5 : 1.5)) * DAY; // cu ceasul ei: și peste weekend
     const healthy = on && fresh && (l?.status === "ok" || l?.status === "nimic" || l?.status === "asteapta");
     const paused = sw.paused?.[a.key];
     const note = !on ? (paused ?? "oprită") : !l?.last ? "pornită, n-a rulat încă" : `${l.status === "eroare" ? "ultima rulare a dat eroare" : "ultima rulare"}: ${l.note ?? ""}`;

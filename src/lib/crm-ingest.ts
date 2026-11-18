@@ -1,13 +1,13 @@
 /**
  * Ingestia CRM (POST /api/admin/crm/ingest, cu token): evenimentele trimise de asistentul care scrie școlilor și firmelor din
- * contact.carteaneamului@gmail.com. Aplicația nu trimite ea emailurile de prospectare; doar le înregistrează.
+ * contact.carteaneamului@gmail.com. Emailurile trimise din afară se înregistrează aici; cele din campaniile CRM (src/lib/crm-campanii.ts) se scriu singure.
  *
  * Evenimente: email_trimis, email_nelivrat, raspuns, organizatie_noua. Fiecare are un `id` unic (al expeditorului), deci același
  * eveniment trimis de două ori se scrie o singură dată. Un refuz sau o dezabonare pune adresa imediat pe lista „nu contacta”;
  * un email nelivrat trece organizația la „nelivrat” și o pune la „de sunat”. Nicio replică nu pleacă de aici.
  */
 import { timingSafeEqual } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import type { Db } from "@/db";
 import { crmOrganizations } from "@/db/schema";
@@ -60,6 +60,12 @@ async function orgFor(db: Db, ev: IngestEvent, now: Date) {
   return r.id;
 }
 
+/** Ultimul email de campanie trimis organizației primește „a răspuns” (fără follow-up după asta). */
+export async function markReplied(db: Db, orgId: string, at: Date) {
+  await db.execute(sql`update crm_sends set replied_at = ${at.toISOString()} where id = (select id from crm_sends where organization_id = ${orgId}
+    and replied_at is null and sent_at <= ${at.toISOString()} order by sent_at desc limit 1)`);
+}
+
 export async function ingestOne(db: Db, ev: IngestEvent, now = new Date()): Promise<IngestResult> {
   const at = ev.at ? new Date(ev.at) : now;
   const orgId = await orgFor(db, ev, now);
@@ -81,11 +87,14 @@ export async function ingestOne(db: Db, ev: IngestEvent, now = new Date()): Prom
       await setOrgStatus(db, orgId, "nelivrat", { now });
       await db.update(crmOrganizations).set({ deSunat: true, updatedAt: now }).where(eq(crmOrganizations.id, orgId));
     }
+    // Daniel, 18.11.2026: adresa care nu există intră pe „nu contacta” cu motivul „nelivrat” (organizația rămâne „de sunat”).
+    if (email) await suppress(db, email, "nelivrat", { sursa: "ingestie", now });
     return { id: ev.id, ok: true, nou };
   }
   // raspuns
   const kind: ReplyKind = isReplyKind(ev.clasificare) ? ev.clasificare : classifyReply(`${ev.subiect ?? ""}\n${ev.rezumat ?? ""}`);
   const nou = await addActivity(db, { tip: "raspuns", canal: "email", rezumat: ev.rezumat ?? ev.subiect ?? "Răspuns", at, organizationId: orgId, externalId: ext, meta: { clasificare: kind, subiect: ev.subiect ?? null } });
+  if (nou && kind !== "automat") await markReplied(db, orgId, at);
   if (kind === "refuz" || kind === "dezabonare") {
     // Lista „nu contacta” se pune chiar dacă evenimentul vine a doua oară: e partea care protejează omul.
     if (email) await suppress(db, email, kind === "refuz" ? "refuz" : "dezabonat", { sursa: "ingestie", now });
