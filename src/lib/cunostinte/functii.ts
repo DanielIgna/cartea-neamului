@@ -362,6 +362,19 @@ export const FUNCTIONS: Fn[] = [
     dashboard: "/admin/adn",
     tests: ["tests/resurse.test.ts"],
   },
+  {
+    key: "surse-publice", name: "Surse publice (arhive gratuite)", area: "familie", lifecycle: "live", risk: "scazut",
+    riskWhy: "Doar linkuri ieșite, fără date preluate de pe alte site-uri și fără date din arbore în adresă; emailul e oprit implicit.",
+    what: "Ghidul /surse-publice, cardul „Caută în arhive publice” din fișa strămoșilor de dinainte de 1930 cu date lipsă (Copiază datele, Am găsit ceva, Nu mai arăta), câmpul „Sursa informației” și emailul unic.",
+    engine: ["src/lib/surse-publice.ts", "src/lib/surse-publice-db.ts", "src/components/ArchiveHint.tsx", "src/components/InfoSource.tsx"],
+    pages: ["/surse-publice", "/arbore/[id]"],
+    tables: ["archive_hint_dismissal", "person"],
+    automations: ["surse-publice"],
+    dashboard: "/admin/surse-publice",
+    tests: ["tests/surse-publice.test.ts"],
+    env: ["RESEND_API_KEY"],
+    human: "Daniel pornește emailul din Admin → Autonomie și verifică linkurile surselor.",
+  },
   // Site public
   {
     key: "home", name: "Prima pagină", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Prima impresie; pozele familiilor doar cu acord.",

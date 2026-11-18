@@ -10,6 +10,7 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
   { path: "/cadou-de-sarbatori", label: "Cadou de sărbători", priority: 0.7, changeFrequency: "monthly" },
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/surse-publice", label: "Unde îți cauți strămoșii gratuit (surse publice)", priority: 0.7, changeFrequency: "monthly", roOnly: true },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },
   { path: "/parteneri", label: "Parteneri", priority: 0.3, changeFrequency: "yearly" },
   { path: "/confidentialitate", label: "Confidențialitate", priority: 0.3, changeFrequency: "yearly" },

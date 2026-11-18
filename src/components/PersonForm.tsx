@@ -24,11 +24,12 @@ type Props =
       lookalikes?: PersonView[]; useExisting?: (x: PersonView) => Promise<string | null>;
       onDone: (msg?: string) => void; onCancel?: () => void;
     }
-  | { mode: "edit"; treeId: string; person: PersonView; onDone: () => void; onCancel?: () => void };
+  | { mode: "edit"; treeId: string; person: PersonView; onDone: () => void; onCancel?: () => void; /** deschis din „Am găsit ceva”: cursorul la „Sursa informației” */ focusSource?: boolean };
 
 /** Un singur formular pentru „adaugă o rudă” și „editează fișa”: date, locuri, ce se știe despre persoană și note. */
 export default function PersonForm(props: Props) {
-  const t = useTranslations("PersonForm"), locale = useLocale();
+  const t = useTranslations("PersonForm"), ta = useTranslations("Archives"), locale = useLocale();
+  const focusSource = props.mode === "edit" && !!props.focusSource;
   // Țările din care vin cel mai des familiile din România, scrise în limba omului; se poate scrie oricare alta.
   const countries = Object.keys(COUNTRY_NAMES).map((cc) => countryName(cc, locale)), romania = countryName("RO", locale);
   const [state, action, pending] = useActionState(props.mode === "add" ? addRelative : updatePerson, null);
@@ -58,8 +59,9 @@ export default function PersonForm(props: Props) {
     const f = formRef.current;
     if (!f) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    f.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    f.querySelector<HTMLInputElement>("input:not([type=hidden]), select, textarea")?.focus({ preventScroll: true });
+    const src = focusSource ? f.querySelector<HTMLInputElement>("input[name=infoSource]") : null;
+    (src ?? f).scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: src ? "center" : "start" });
+    (src ?? f.querySelector<HTMLInputElement>("input:not([type=hidden]), select, textarea"))?.focus({ preventScroll: true });
   }, []);
   return (
     <form ref={formRef} action={action} className="form person-form" style={{ marginTop: 10 }}>
@@ -138,6 +140,13 @@ export default function PersonForm(props: Props) {
       <label>{t("notes")}
         <textarea name="notes" defaultValue={p?.notes ?? ""} placeholder={t("notesPlaceholder")} style={{ minHeight: 60 }} />
       </label>
+      {p && (
+        <div className="row info-source-field">
+          <label>{ta("sourceLabel")}<input name="infoSource" maxLength={500} defaultValue={p.infoSource ?? ""} placeholder={ta("sourcePlaceholder")} /></label>
+          <label>{ta("sourceLink")}<input name="infoSourceUrl" inputMode="url" maxLength={500} defaultValue={p.infoSourceUrl ?? ""} placeholder="https://" /></label>
+        </div>
+      )}
+      {p && <small className="muted" style={{ marginTop: -6 }}>{ta("sourceHint")}</small>}
       {props.mode === "add" && matches.length > 0 && (
         <div className="confirm">
           {matches.map((x) => (

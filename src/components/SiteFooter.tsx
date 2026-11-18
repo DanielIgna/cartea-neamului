@@ -7,7 +7,7 @@ import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 /** Subsolul tuturor paginilor (și al celor gata făcute pentru vizitatori): paginile legale, contact, istorie, Facebook, cine vinde. */
 export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
   const [t, tp, tc, th, tr, appName] = await Promise.all([getT("Layout"), getT("Partners"), getT("ContactPage"), getT("Church"), getT("Resources"), getAppName()]);
-  const tg = await getT("GiftPage");
+  const [tg, ta] = await Promise.all([getT("GiftPage"), getT("Archives")]);
   const seller = operator();
   const ro = (await getLocale()) === "ro";
   return (
@@ -19,6 +19,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       {signedIn && <Link href="/datele-mele">{t("myData")}</Link>}
       <Link href="/parteneri">{tp("menu")}</Link>
       <Link href="/resurse-genealogie">{tr("footer")}</Link>
+      <Link href="/surse-publice">{ta("footer")}</Link>
       {giftSeason() && <Link href={GIFT_PATH}>{tg("footer")}</Link>}
       <Link href="/ghid">{t("guides")}</Link>
       <Link href="/glosar">{t("glossary")}</Link>

@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte", "surse-publice"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -66,6 +66,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Șase emailuri în zilele gratuite și după ele (ziua 1, 3, 5, 7, 8, 14; zilele, procentul și durata reducerii din Admin → Conversie): bun venit, câte persoane are arborele + invitație, planurile, „se încheie azi”, codul unic de reducere (Stripe, o folosire, expiră singur) și ultima reamintire. Cel mult unul pe zi, în limba omului, cu dezabonare dintr-un clic; deschiderile și clicurile se văd în Analiză → Conversii. Cât e pornită, emailul vechi „zilele gratuite se termină” nu mai pleacă, ca să nu se dubleze." },
   { key: "activare", label: "Email: arborele încă nefăcut (24 h)", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Un singur email, în limba omului, celor care după 24 de ore de la înscriere încă n-au niciun arbore: legătura directă la primii pași („Adaugă-te pe tine, apoi pe părinți și bunici”). Doar conturi de 24–96 de ore, nu și conturile de test; cine s-a dezabonat de la emailurile despre cont nu-l primește. Rezultatele, în Admin → Creștere." },
+  { key: "surse-publice", label: "Email: strămoși înainte de 1930 (surse publice)", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
+    what: "Un singur email pe cont, în limba omului: „Ai strămoși înainte de 1930? Iată unde poți căuta gratuit”, cu legătura la /surse-publice. Doar celor cu un arbore al lor de cel puțin 5 persoane și cel puțin un strămoș născut înainte de 1930 (sau fără an) căruia îi lipsesc date. Nu pleacă celor care s-au dezabonat de la emailurile despre cont sau au spus „Nu” la sfaturile pe email, nici conturilor de test; cel mult 100 pe zi. Sursele, în Admin → Surse publice." },
   { key: "crm-scor", label: "CRM: scoruri și etape", risk: "singur", defaultOn: true, everyDays: 1,
     what: "Recalculează scorul (0–100) și etapa fiecărui utilizator din reguli scrise (Admin → CRM → Scor și etape) și leagă conturile noi și plățile lor de organizațiile care le-au adus (linkul ?src=, codul NEAM-XXXX, codul școlii). Doar citește și scrie în CRM; nu trimite nimic nimănui. Se face și la deschiderea panoului, cel mult o dată pe oră." },
   { key: "crm-reactivare", label: "CRM: un email util celor „în risc”", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
@@ -345,6 +347,33 @@ async function runActivation({ db, now }: Ctx): Promise<RunResult> {
     note: people.length ? `${sent} din ${people.length} emailuri trimise` : "niciun cont nou fără arbore în fereastra de 24–96 de ore", verified: sent === people.length };
 }
 
+/** Emailul unic despre arhivele publice (src/lib/surse-publice-db.ts): o dată pe cont, celor cu strămoși înainte de 1930 cu date lipsă. */
+async function runArchivesMail({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
+  const { candidatiEmail, marcheazaEmail, EMAIL_CHEIE } = await import("./surse-publice-db");
+  const { unsubUrl, unsubPostUrl } = await import("./conversie");
+  const { footerFor, renderMail } = await import("./emailuri");
+  const { sendEmail, emailSent } = await import("./email");
+  const people = await candidatiEmail(db);
+  let sent = 0;
+  for (const u of people) {
+    const locale = isLocale(u.locale) ? u.locale : "ro";
+    const [t, app] = await Promise.all([getT("ArchivesMail", locale), getAppName(locale)]);
+    const name = (u.name ?? "").split(" ")[0] || u.name || "";
+    const href = `${SITE_URL}/surse-publice?utm_source=email&utm_medium=email&utm_campaign=${EMAIL_CHEIE}`;
+    const { html, text } = renderMail([
+      ...t("body", { name }).split("\n\n").map((p) => ({ p })),
+      { button: t("button"), href },
+      { note: t("why", { app }), link: t("unsubscribe"), href: unsubUrl(SITE_URL, u.id) },
+    ], await footerFor(locale));
+    const r = await sendEmail({ to: u.email, subject: t("subject"), html, text, tag: EMAIL_CHEIE, idempotencyKey: `${EMAIL_CHEIE}-${u.id}`,
+      headers: { "List-Unsubscribe": `<${unsubPostUrl(SITE_URL, u.id)}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } });
+    if (emailSent(r)) { await marcheazaEmail(db, u.id, now); sent++; }
+  }
+  return { status: sent ? "ok" : people.length ? "eroare" : "nimic", observed: people.length, acted: sent,
+    note: people.length ? `${sent} din ${people.length} emailuri trimise` : "nimeni nou cu strămoși înainte de 1930 și date lipsă", verified: sent === people.length };
+}
+
 /** Emailurile din gratuit în plătit (src/lib/conversie.ts): cel mult un email pe zi pentru fiecare om. */
 async function runConversionMail({ db, now }: Ctx): Promise<RunResult> {
   if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
@@ -376,6 +405,7 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "crm-gmail": runCrmGmail,
   "crm-dimineata": runCrmMorning,
   "crm-alerte": runCrmAlerts,
+  "surse-publice": runArchivesMail,
 };
 
 async function runCrmAlerts({ db, now }: Ctx): Promise<RunResult> {

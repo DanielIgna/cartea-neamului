@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const huArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Nyilvános levéltárak",
+    title: "Keresés nyilvános levéltárakban",
+    intro: "{name} adataiból hiányzik: {missing}. Néhány ingyenes nyilvános levéltár segíthet.",
+    missing: { an: "a születési év", loc: "a születési hely", parinti: "a szülők", casatorie: "a házasság", deces: "a halál dátuma" },
+    whatToSearch: "Mit keress",
+    surname: "Vezetéknév",
+    given: "Keresztnév",
+    place: "Település",
+    year: "Év",
+    copy: "Adatok másolása",
+    copied: "Az adatokat kimásoltuk. Beillesztheted őket a levéltár keresőjébe.",
+    copyFailed: "Nem sikerült másolni; kijelölheted őket a fenti mezőben.",
+    where: "Hol keress",
+    newTab: "új lapon nyílik meg",
+    account: "ingyenes fiók",
+    found: "Találtam valamit",
+    hide: "Ne mutasd többet",
+    hidden: "Rendben, {name} esetében nem mutatjuk többet ezt a javaslatot.",
+    privacy: "A linkek a levéltárak saját oldalaira vezetnek. Semmit sem küldünk oda a családfádból: az adatokat te másolod.",
+    allSources: "Minden forrás és tanács",
+    textsInRo: "A források leírása román nyelvű.",
+    sourceLabel: "Az információ forrása",
+    sourcePlaceholder: "pl. a bánffyhunyadi keresztelési anyakönyv, 1885",
+    sourceLink: "Link a forráshoz (nem kötelező)",
+    sourceHint: "Hogy a család tudja, honnan származik az adat.",
+  },
+  ArchivesMail: {
+    subject: "1930 előtt született ősök? Itt kereshetsz ingyen",
+    body: "Kedves {name}!\n\nA családfádban vannak 1930 előtt született ősök, akiknek néhány adata hiányzik: a születési év vagy hely, a szülők, a házasság. Sok ilyen adat megtalálható ingyenes nyilvános levéltárakban: egyházi anyakönyvekben, állami anyakönyvekben, népszámlálásokban.\n\nEgy oldalon összegyűjtöttük, hol és hogyan kereshetsz. A családfádban mindegyiküknél ott van a „Keresés nyilvános levéltárakban” kártya is, a névvel, hellyel és évvel, másolásra készen.",
+    button: "Nézd meg, hol kereshetsz",
+    why: "Ezt az e-mailt csak egyszer kapod meg, mert van egy családfád itt: {app}.",
+    unsubscribe: "Nem kérek több e-mailt a fiókomról",
+  },
+};

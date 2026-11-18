@@ -15,6 +15,7 @@ import { esActivare } from "./activare/es";
 import { esInvitatii } from "./invitatii/es";
 import { esConversie } from "./conversie/es";
 import { esSursa } from "./sursa/es";
+import { esArhive } from "./arhive/es";
 import { esFilm } from "./film/es";
 import { esLegal } from "./legal/es";
 import { esDatele } from "./datele/es";
@@ -447,6 +448,7 @@ export const es: Catalog = {
   ...esInvitatii,
   ...esConversie,
   ...esSursa,
+  ...esArhive,
   ...esFilm,
   ...esLegal,
   ...esDatele,

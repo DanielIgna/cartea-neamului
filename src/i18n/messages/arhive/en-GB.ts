@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const enGBArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Public archives",
+    title: "Search public archives",
+    intro: "{name} is missing: {missing}. Some free public archives can help.",
+    missing: { an: "year of birth", loc: "place of birth", parinti: "parents", casatorie: "marriage", deces: "date of death" },
+    whatToSearch: "What to search for",
+    surname: "Surname",
+    given: "First name",
+    place: "Place",
+    year: "Year",
+    copy: "Copy the details",
+    copied: "Details copied. You can paste them into the archive’s search.",
+    copyFailed: "Could not copy; you can select them in the box above.",
+    where: "Where to search",
+    newTab: "opens in a new tab",
+    account: "free account",
+    found: "I found something",
+    hide: "Don’t show again",
+    hidden: "All right, we won’t show this suggestion for {name} again.",
+    privacy: "The links go to the archives’ own websites. We send nothing from your tree there: you copy the details yourself.",
+    allSources: "All sources and tips",
+    textsInRo: "The source descriptions are in Romanian.",
+    sourceLabel: "Source of information",
+    sourcePlaceholder: "e.g. Huedin baptism register, 1885",
+    sourceLink: "Link to the source (optional)",
+    sourceHint: "So the family knows where this information comes from.",
+  },
+  ArchivesMail: {
+    subject: "Ancestors born before 1930? Here is where to search for free",
+    body: "Hello {name},\n\nYour tree has ancestors born before 1930 who are missing a few details: the year or place of birth, parents, marriage. Many of these can be found in free public archives: parish registers, civil records, censuses.\n\nWe have gathered on one page where you can search and how. In your tree, each of them also has a \"Search public archives\" card with the name, place and year ready to copy.",
+    button: "See where to search",
+    why: "You are receiving this email only once, because you have a tree on {app}.",
+    unsubscribe: "No more emails about my account",
+  },
+};

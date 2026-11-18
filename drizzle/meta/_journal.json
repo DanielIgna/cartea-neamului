@@ -309,6 +309,13 @@
       "when": 1795000300000,
       "tag": "0044_crm_ambasadori",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1795000400000,
+      "tag": "0045_surse_publice",
+      "breakpoints": true
     }
   ]
 }
