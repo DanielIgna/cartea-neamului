@@ -1,9 +1,9 @@
 ---
 title: Registre parohiale online: unde le găsești gratuit
 seo: Registre parohiale online gratuite pentru România
-description: Unde cauți online registrele parohiale ale strămoșilor din România: ce colecții gratuite există, ce acoperă pe regiuni și ce faci când registrul tău nu e online.
+description: Unde cauți online registrele parohiale ale strămoșilor din România: colecțiile gratuite, ce acoperă pe regiuni și ce faci când registrul nu e online.
 category: Registre și arhive
-cuvant: registre parohiale online
+updated: 2026-11-18
 related: familysearch-pentru-romania, cum-citesti-un-registru-parohial, registrele-ortodoxe, registrele-greco-catolice, registrele-catolice-si-protestante, cum-ceri-copii-de-la-arhive
 terms: registru-parohial, matricola, parohie, filie, cota-arhivistica, confesiune
 ---

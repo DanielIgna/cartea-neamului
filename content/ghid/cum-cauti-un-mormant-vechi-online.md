@@ -3,7 +3,7 @@ title: Cum cauți un mormânt vechi online
 seo: Cum cauți un mormânt vechi online și la fața locului
 description: Unde cauți mormântul unui strămoș: baze de date online cu morminte, registrele cimitirelor, cimitirele satului și ce afli de pe o piatră funerară veche.
 category: Poze, documente și amintiri
-cuvant: cum cauți un mormânt
+updated: 2026-11-18
 related: cum-folosesti-pietrele-funerare, listele-eroilor-si-monumentele, registrele-ortodoxe, documente-de-familie-din-casa, cum-datezi-o-fotografie-veche, emigrarea-in-america
 terms: piatra-funerara, act-de-deces, registru-parohial, pomelnic, parohie
 ---

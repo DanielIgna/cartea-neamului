@@ -3,7 +3,7 @@ title: Cum organizezi o reuniune de familie, cu arborele ca temă
 seo: Cum organizezi o reuniune de familie: pași și idei
 description: Pașii pentru o reuniune de familie reușită: lista rudelor, data și locul, invitațiile, programul zilei și arborele familiei ca temă care îi adună pe toți.
 category: Poze, documente și amintiri
-cuvant: reuniune de familie
+updated: 2026-11-18
 related: cum-implici-familia, intrebari-pentru-bunici, cum-intervievezi-bunicii, cum-scanezi-poze-si-documente, cum-scrii-povestea-familiei
 terms: arbore-genealogic, spita-neamului, rudenie-colaterala, grad-de-rudenie
 ---

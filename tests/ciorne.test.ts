@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { loadDrafts } from "@/lib/continut/ciorne";
-import { PLANNED_GUIDES } from "@/data/seo-keywords";
+import { PLANNED_GUIDES, PUBLISHED_GUIDES } from "@/data/seo-keywords";
 import versiuni from "@/data/seo-versiuni.json";
 
 /** Ciornele de ghiduri: rămân nepublicate până le aprobă Daniel, dar trebuie să fie gata de publicat (planul SEO, secțiunea 11). */
@@ -12,10 +12,11 @@ const PRINT = /carte tipărită|cartea tipărită|gata de tipărit|livrare/i;
 const SENSITIVE = /\bAI\b|inteligență artificială|ChatGPT|Claude/;
 
 describe("ciornele de ghiduri", () => {
-  it("există primele 6 și fiecare e în lista de ghiduri planificate", () => {
-    expect(drafts.length).toBeGreaterThanOrEqual(6);
+  it("fiecare ciornă e în lista de ghiduri planificate; cele publicate nu mai sunt ciorne", () => {
     const planned = new Set(PLANNED_GUIDES.map((g) => g.slug));
     expect(drafts.map((d) => d.slug).filter((s) => !planned.has(s))).toEqual([]);
+    expect(drafts.filter((d) => PUBLISHED_GUIDES.has(d.slug)).map((d) => d.slug)).toEqual([]);
+    for (const s of PUBLISHED_GUIDES) expect(() => readFileSync(`content/ghid/${s}.md`), s).not.toThrow();
   });
   it("nu sunt publice: nu apar în sitemap și nici în content/ghid", () => {
     for (const d of drafts) {

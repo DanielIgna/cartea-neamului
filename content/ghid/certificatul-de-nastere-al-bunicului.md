@@ -1,9 +1,9 @@
 ---
 title: Cum găsești certificatul de naștere al bunicului
 seo: Certificatul de naștere al bunicului: unde îl găsești
-description: Unde cauți actul de naștere al unui bunic sau străbunic: în casă, la primărie sau la Arhivele Naționale, ce scrii în cerere și ce faci când actul nu se găsește.
+description: Unde cauți actul de naștere al bunicului: în casă, la primărie sau la Arhivele Naționale, ce scrii în cerere și ce faci când actul nu se găsește.
 category: Acte și stare civilă
-cuvant: certificat de naștere bunic
+updated: 2026-11-18
 related: cum-ceri-un-act-de-stare-civila, registrele-de-stare-civila, cum-ceri-copii-de-la-arhive, documente-de-familie-din-casa, cum-gasesti-numele-de-fata-al-bunicii, registrele-ortodoxe
 terms: act-de-nastere, registru-de-stare-civila, stare-civila, extras-multilingv, apostila, arhivele-nationale
 ---

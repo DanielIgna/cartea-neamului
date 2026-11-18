@@ -1,3 +1,4 @@
+import versiuni from "@/data/seo-versiuni.json";
 import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { loadCollection } from "@/lib/continut/colectii";
@@ -11,7 +12,7 @@ import { isPublicPath } from "@/lib/public-variant";
 const guides = loadCollection("ghid");
 const terms = loadCollection("glosar");
 const all = [...guides, ...terms];
-const known = new Set([...PUBLIC_PAGES.map((p) => p.path), ...PUBLIC_SECTIONS.map((s) => s.hub), ...all.map((e) => e.path), "/scoala"]);
+const known = new Set([...PUBLIC_PAGES.map((p) => p.path), ...PUBLIC_SECTIONS.map((s) => s.hub), ...all.map((e) => e.path), "/scoala", ...Object.keys(versiuni)]); // și orice pagină din sitemap (unelte, cadouri, nume)
 
 describe("ghiduri și glosar: conținutul din content/", () => {
   it("sunt destule pagini și fiecare are titlu, descriere bună și dată", () => {

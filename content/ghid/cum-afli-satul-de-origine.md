@@ -3,7 +3,7 @@ title: Cum afli satul de origine al familiei
 seo: Cum afli satul de origine al familiei tale
 description: Pașii prin care afli din ce sat vine familia: ce întrebi acasă, ce acte arată locul nașterii, cum folosești recensămintele, armata și listele de emigranți.
 category: Primii pași
-cuvant: satul de origine al familiei
+updated: 2026-11-18
 related: cum-incepi-arborele-genealogic, cum-ceri-un-act-de-stare-civila, documente-de-familie-din-casa, recensamintele-vechi, emigrarea-in-america, registrele-militare
 terms: act-de-nastere, act-de-casatorie, parohie, filie, comitat, tinut, plasa
 ---
