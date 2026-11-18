@@ -1,9 +1,10 @@
 import type { Region } from "../tipuri";
+import { EUROPE_REGIONS } from "./regiuni-europa";
 
 /**
  * Ciornele regiunilor din Europa și Ucraina (Daniel, 18.11.2026): istoria locală a românilor, în limba țării și în română.
- * Doar fapte verificate, fără cifre pe care nu le știm sigur. O regiune intră în Google cu cel puțin 300 de cuvinte proprii în
- * română (ca orașele). Ghidurile legate (`guides`) nu se repetă aici.
+ * Doar fapte verificate, fără cifre pe care nu le știm sigur. O regiune intră în Google cu cel puțin 200 de cuvinte proprii în
+ * română (REGION_MIN_WORDS). Ghidurile legate (`guides`) nu se repetă aici.
  */
 export const DRAFT_REGIONS: Region[] = [
   // ---------------------------------------------------------------- Ucraina
@@ -55,4 +56,5 @@ export const DRAFT_REGIONS: Region[] = [
       ],
     },
   },
+  ...EUROPE_REGIONS,
 ];

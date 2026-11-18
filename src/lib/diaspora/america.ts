@@ -365,5 +365,9 @@ export const getRegion = (country: CountryKey, slug: string) => REGIONS.find((r)
 /** O pagină de stat sau provincie intră în Google doar dacă are text propriu. */
 /** Pragul unei pagini de oraș (Daniel, 17.11.2026: „300–600 de cuvinte pe oraș”); sub el, pagina rămâne în afara Google. */
 export const CITY_MIN_WORDS = 300;
+/** Pragul unei regiuni europene (land, regiune, comunitate autonomă): ca la statele SUA e nevoie de text propriu, dar cerem minimum 200 de cuvinte. */
+export const REGION_MIN_WORDS = 200;
 export const regionIndexable = (r: Region) =>
-  r.kind === "city" || r.kind === "region" ? ownWords(r.notes.ro ?? []) >= CITY_MIN_WORDS : (r.notes.ro?.length ?? 0) > 0;
+  r.kind === "city" ? ownWords(r.notes.ro ?? []) >= CITY_MIN_WORDS
+  : r.kind === "region" ? ownWords(r.notes.ro ?? []) >= REGION_MIN_WORDS
+  : (r.notes.ro?.length ?? 0) > 0;

@@ -854,6 +854,7 @@
   "src/lib/diaspora/america.ts",
   "src/lib/diaspora/ciorne/aprobate.ts",
   "src/lib/diaspora/ciorne/index.ts",
+  "src/lib/diaspora/ciorne/regiuni-europa.ts",
   "src/lib/diaspora/ciorne/regiuni.ts",
   "src/lib/diaspora/ciorne/tari.ts",
   "src/lib/diaspora/ciorne/teme-1.ts",

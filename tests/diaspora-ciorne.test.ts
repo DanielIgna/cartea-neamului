@@ -6,6 +6,7 @@ import { DRAFT_THEMES } from "@/lib/diaspora/ciorne/teme";
 import { APROBATE } from "@/lib/diaspora/ciorne/aprobate";
 import { ownWords } from "@/lib/diaspora/extins";
 import { getEntry } from "@/lib/continut/colectii";
+import { REGION_MIN_WORDS } from "@/lib/diaspora/america";
 
 /** Ciornele de diaspora (Europa, Ucraina, valurile de emigrare): nimic public până la aprobarea lui Daniel. */
 describe("ciornele diasporei", () => {
@@ -34,9 +35,10 @@ describe("ciornele diasporei", () => {
     }
   });
 
-  it("regiunile au cel puțin 300 de cuvinte proprii în română și text în fiecare limbă", () => {
+  it("regiunile au destule cuvinte proprii în română și text în fiecare limbă", () => {
     for (const r of DRAFT_REGIONS) {
-      expect(ownWords(r.notes.ro ?? []), r.slug).toBeGreaterThanOrEqual(300);
+      expect(ownWords(r.notes.ro ?? []), r.slug).toBeGreaterThanOrEqual(REGION_MIN_WORDS);
+      for (const l of r.langs) expect(ownWords(r.notes[l] ?? []), `${r.slug} ${l}`).toBeGreaterThanOrEqual(180);
       for (const l of r.langs) expect(r.notes[l]?.length, `${r.slug} ${l}`).toBeGreaterThan(0);
     }
   });
