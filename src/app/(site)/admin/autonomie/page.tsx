@@ -174,7 +174,7 @@ export default async function AdminAutonomie() {
                   <small className="muted">{a.what}</small>
                   {a.needs && <small className="muted">Are nevoie de: {a.needs}.</small>}
                   {paused && !on && <small className="err">{paused}</small>}
-                  <small>{a.everyDays === 1 ? "zilnic" : `o dată la ${a.everyDays} zile`} · ultima rulare: {l?.last ? `${ago(new Date(l.last).toISOString())} (${STATUS[l.status ?? ""]?.label ?? l.status})` : "niciodată"}</small>
+                  <small>{a.ownClock ?? (a.everyDays === 1 ? "zilnic" : `o dată la ${a.everyDays} zile`)} · ultima rulare: {l?.last ? `${ago(new Date(l.last).toISOString())} (${STATUS[l.status ?? ""]?.label ?? l.status})` : "niciodată"}</small>
                 </div>
                 <AutoRun k={a.key} />
               </div>

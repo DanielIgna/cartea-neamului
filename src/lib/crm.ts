@@ -40,12 +40,13 @@ export function advanceStatus(cur: OrgStatus, next: OrgStatus): OrgStatus {
   return STATUS_RANK[next] > STATUS_RANK[cur] ? next : cur;
 }
 
-export const ACTIVITY_TYPES = ["email_trimis", "email_nelivrat", "raspuns", "apel", "whatsapp", "nota", "formular", "cont_creat", "plata", "cod_folosit"] as const;
+export const ACTIVITY_TYPES = ["email_trimis", "email_nelivrat", "raspuns", "apel", "whatsapp", "nota", "formular", "cont_creat", "plata", "cod_folosit", "email_livrat", "email_deschis", "email_click", "dezabonat", "sarcina"] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 export const isActivityType = (v: unknown): v is ActivityType => typeof v === "string" && (ACTIVITY_TYPES as readonly string[]).includes(v);
 export const ACTIVITY_LABEL: Record<ActivityType, string> = {
   email_trimis: "Email trimis", email_nelivrat: "Email nelivrat", raspuns: "Răspuns", apel: "Apel", whatsapp: "WhatsApp", nota: "Notă",
   formular: "Formular", cont_creat: "Cont creat", plata: "Plată", cod_folosit: "Cod folosit",
+  email_livrat: "Email livrat", email_deschis: "Email deschis", email_click: "Click în email", dezabonat: "Dezabonat", sarcina: "Sarcină",
 };
 
 export const DEAL_STAGES = ["nou", "contactat", "interesat", "oferta_trimisa", "aprobat", "coduri_emise", "activ", "reinnoire"] as const;
