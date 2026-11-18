@@ -46,6 +46,9 @@ export default async function GiftSeasonPage() {
     { h: t("get4Title"), p: t("get4", { audio: n(lim.audio) }) },
   ];
   const steps = [1, 2, 3] as const;
+  // Toate cele trei planuri, cu prețul din Admin, ca darul să se poată face și pe Familie sau Premium.
+  const tierLabel = (x: "familie" | "premium") => money(locale === "ro" ? tierPrice(x, true, s).lei : tierPrice(x, true, s).eur, locale).label;
+  const note = t("ctaNote", { familie: tierLabel("familie"), premium: tierLabel("premium") });
   return (
     <section className="stack gift-season" style={{ maxWidth: 860, margin: "0 auto" }}>
       <JsonLd data={giftJsonLd({ title, description, home: t("home"), crumb: t("label"), faq, lang: locale })} />
@@ -54,7 +57,7 @@ export default async function GiftSeasonPage() {
         <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
         <h1>{t("title", { price })}</h1>
         <p className="gift-lead">{t("lead")}</p>
-        <GiftCta on={s.on} cta={t("cta")} note={t("ctaNote")} soon={t("soon")} soonLink={t("soonLink")} />
+        <GiftCta on={s.on} cta={t("cta")} note={note} soon={t("soon")} soonLink={t("soonLink")} />
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{t("getTitle")}</h2>

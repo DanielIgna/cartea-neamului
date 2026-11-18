@@ -25,7 +25,7 @@ export const huCadou: CadouCatalog = {
     step3Title: "Odaadod a karácsonyi vacsoránál",
     step3: "Aki kapja, megnyitja a linket vagy beolvassa a kódot, belép, és megnyomja az „Az év átvétele” gombot. Attól a pillanattól az év az övé.",
     cta: "Ajándékozom most",
-    ctaNote: "Egyszer fizetsz, kártyával, a Stripe-on keresztül. A Család vagy a Prémium csomagot is választhatod.",
+    ctaNote: "Egyszer fizetsz, kártyával, a Stripe-on keresztül. Ajándékozhatod a Család csomagot is, évi {familie}, vagy a Prémiumot, évi {premium}.",
     soon: "Az ajándékokat hamarosan meg lehet vásárolni. Ha már most szeretnél egyet, írj nekünk.",
     soonLink: "Írj nekünk",
     faqTitle: "Gyakori kérdések",

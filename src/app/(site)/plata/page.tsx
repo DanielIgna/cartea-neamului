@@ -3,12 +3,12 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { tree, treeMember } from "@/db/schema";
 import { requireUser, roleInTree } from "@/lib/access";
-import { isAdminUser } from "@/lib/admin";
+import { isAdminUser, isOwnerUser } from "@/lib/admin";
 import { operator } from "@/lib/legal";
 import { headers } from "next/headers";
-import { bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyIn, priceFor, quoteYear } from "@/lib/plati";
+import { bookAccess, bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyIn, priceFor, quoteYear } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { LIMIT_KEYS, TIERS, isKept, mayKeep, tierBook, tierLimits, tierPrint, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
+import { LIMIT_KEYS, TIERS, isKept, mayKeep, tierBook, tierLimits, tierPrice, trialLimits, type Access, type Tier } from "@/lib/plans";
 import { getLocale, getT } from "@/i18n/server";
 import { activeOffer } from "@/lib/conversie";
 import { giftsBy } from "@/lib/extra";
@@ -57,6 +57,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     ...bookTree,
     paid: await bookPaid(db, me.id, bookTree.id),
     included: bookIncluded(payAccess, s, bookTree.ownerId === me.id),
+    // „Acces gratuit” (Admin → Oameni), proprietarii site-ului, primul an din beta: cartea fără plată.
+    free: ["gratuit", "beta"].includes((await bookAccess(db, { userId: me.id, treeId: bookTree.id, access: payAccess, settings: s, ownsThisTree: bookTree.ownerId === me.id, owner: isOwnerUser(me) })) ?? ""),
     canClaim: (await includedBooksLeft(db, me.id, payAccess, s)) === 1,
   } : null;
 
@@ -101,18 +103,17 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     const p = tierPrice(x, ownsTree, s);
     const full = money(lei ? p.lei : p.eur, locale).label;
     const quote = quoteYear(x, payAccess, ownsTree, locale, s);
-    const mode = tierBook(x, s), pct = tierPrint(x, s);
+    const mode = tierBook(x, s);
     const paying = open && quote.ok;
     return (
       <div key={x} className={`plan-card${x === "familie" ? " recommended" : ""}${currentTier === x ? " current" : ""}`}>
         {x === "familie" && <span className="plan-badge">{t("recommended")}</span>}
         <h3>{tierName(x)}</h3>
         <p className="plan-price">{t("perYear", { price: full })}</p>
-        <p className="muted plan-lead">{t(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label })}</p>
+        <p className="muted plan-lead">{t(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label, writers: String(lim.writers ?? "∞"), trees: lim.trees ?? 0 })}</p>
         <ul className="plan-limits">
           {LIMIT_KEYS.map((k) => <li key={k}><span>{t(`lim.${k}`)}</span><b>{limitValue(lim[k])}</b></li>)}
           <li><span>{t("lim.book")}</span><b>{mode === "toti" ? t("bookAll") : mode === "una" ? t("bookOne") : t("bookSeparate", { price: priceFor("carte", locale, ownsTree, s, "basic", cur).label })}</b></li>
-          <li><span>{t("lim.print")}</span><b>{pct > 0 ? t("printOff", { pct: String(pct) }) : t("printFull")}</b></li>
         </ul>
         <p className="muted plan-writers">{x === "basic" ? t("writersPay") : t("writersFree")}</p>
         {currentTier === x && <p className="plan-now">{t("yourPlan")}</p>}
@@ -191,6 +192,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
       {dar && giftCard}
 
       <div className="plan-cards">{TIERS.map(card)}</div>
+      <p className="muted plan-book-note">{t("bookNote", { price: priceFor("carte", locale, ownsTree, s, "basic", cur).label })}</p>
 
       {showKeep && (
         <div className="card" id="pastrare">
@@ -235,9 +237,9 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
       {book && (
         <div className="card">
           <h2 style={{ marginTop: 0 }}>{t("bookTitle")}</h2>
-          {book.paid ? <p>{t("bookPaid")}</p> : book.included ? <p>{t("bookIncludedAll")}</p> : <p className="muted">{t("bookText", { tree: book.name })}</p>}
+          {book.free ? <p>{t("bookFree")}</p> : book.paid ? <p>{t("bookPaid")}</p> : book.included ? <p>{t("bookIncludedAll")}</p> : <p className="muted">{t("bookText", { tree: book.name })}</p>}
           {arch && <p className="muted">{tn("bookSeal", { years: arch.sealYears })}</p>}
-          {!book.paid && !book.included && book.canClaim && (
+          {!book.free && !book.paid && !book.included && book.canClaim && (
             <form action="/api/plata/start" method="post" className="form pay-form">
               <input type="hidden" name="kind" value="carte" />
               <input type="hidden" name="inclus" value="1" />
@@ -246,7 +248,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
               <div className="actions"><button className="btn primary">{t("bookIncludedBtn")}</button></div>
             </form>
           )}
-          {!book.paid && !book.included && !book.canClaim && open && (
+          {!book.free && !book.paid && !book.included && !book.canClaim && open && (
             <form action="/api/plata/start" method="post" className="form pay-form">
               <input type="hidden" name="kind" value="carte" />
               <input type="hidden" name="treeId" value={book.id} />

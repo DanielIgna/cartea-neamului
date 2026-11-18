@@ -9,6 +9,7 @@ import { countryName } from "@/lib/analiza";
 import { duration, usageOf } from "@/lib/usage";
 import { inZile } from "@/lib/ro-words";
 import { PLANS } from "@/lib/plan-names";
+import { isOwnerEmail } from "@/lib/admin";
 import { AdminNav, Bars, PlanPill, Stat, StagePill, ago, day, num } from "@/components/admin/ui";
 import { AccountPlanForm } from "@/components/admin/PlanForms";
 
@@ -158,7 +159,11 @@ export default async function AdminPerson({ params }: { params: Promise<{ id: st
 
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Planul lui</h3>
-        <p className="muted" style={{ marginTop: 0 }}>{PLANS[p.plan].label}: {PLANS[p.plan].hint}. Nu se vede nicăieri în site cât timp plățile nu sunt pornite.</p>
+        {(p.plan === "mereu" || isOwnerEmail(p.email)) && (
+          <p style={{ marginTop: 0 }}><span className="pill ok">✓ Acces gratuit</span>{" "}
+            {isOwnerEmail(p.email) ? "Proprietar al site-ului: toate planurile și cartea PDF, din cod." : `Toate planurile și cartea PDF, fără termen.${p.planNote ? ` Nota: ${p.planNote}` : ""}`}</p>
+        )}
+        <p className="muted" style={{ marginTop: 0 }}>{PLANS[p.plan].label}: {PLANS[p.plan].hint}. Pentru „Acces gratuit”, alege-l în prima listă și scrie în notă de ce (de ex. „fratele meu”).</p>
         <AccountPlanForm userId={p.id} plan={p.plan} note={p.planNote} />
         <p style={{ marginBottom: 0 }}><Link href={`/admin/istoric?om=${p.id}#limite`}>Ce a schimbat în arbori și limitele lui de editare ▸</Link></p>
       </div>

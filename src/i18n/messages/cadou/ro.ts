@@ -29,7 +29,7 @@ export const roCadou = {
     step3Title: "Îl dai la masa de Crăciun",
     step3: "Cel care primește deschide legătura sau scanează codul, intră în cont și apasă „Primește anul”. Din clipa aceea anul este al lui.",
     cta: "Dăruiește acum",
-    ctaNote: "Plătești o singură dată, cu cardul, prin Stripe. Poți alege și planurile Familie sau Premium.",
+    ctaNote: "Plătești o singură dată, cu cardul, prin Stripe. Poți dărui și planul Familie, {familie} pe an, sau Premium, {premium} pe an.",
     soon: "Darurile se pot cumpăra în curând. Dacă vrei unul acum, scrie-ne.",
     soonLink: "Scrie-ne",
     faqTitle: "Întrebări frecvente",

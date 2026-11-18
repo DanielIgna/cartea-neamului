@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { applySchema } from "../src/lib/bootstrap";
 import { tree } from "../src/db/schema";
-import { basicPrice49Once, startSalesOnce } from "../src/lib/plans";
+import { basicPrice49Once, offerNov18Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { startActivationOnce, startSeoEngineOnce } from "../src/lib/autonomie";
@@ -31,6 +31,8 @@ try { console.log(`deploy-db: Anca și Simona la Iosif fiul: ${await fixAncaSimo
 try { console.log(`deploy-db: pornirea vânzării: ${await startSalesOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea vânzării a eșuat", e); }
 // Basic 49 lei în loc de 50 (Daniel, 13.11.2026): o singură dată; după aceea prețul se schimbă din Admin.
 try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
+// Oferta din 18.11.2026: cartea PDF separată, 39 lei / 8 €, „separat” la toate planurile, fără tipar. O singură dată.
+try { console.log(`deploy-db: oferta din 18 noiembrie: ${await offerNov18Once(db)}`); } catch (e) { console.error("deploy-db: oferta din 18 noiembrie a eșuat", e); }
 // Carduri cadou (Daniel, 14.11.2026): o singură dată, magazinul „Test Magazin” cu un lot de 5 coduri de verificat.
 try { console.log(`deploy-db: carduri cadou de test: ${await testBatchOnce(db)}`); } catch (e) { console.error("deploy-db: lotul de test a eșuat", e); }
 // Carduri digitale (Daniel, 14.11.2026): o singură dată, un lot digital de 5 carduri pentru „Test Magazin”.

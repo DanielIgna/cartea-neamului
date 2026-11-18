@@ -27,7 +27,9 @@ describe("plata cu cardul", () => {
     expect(priceFor("an", "ro", true, s)).toEqual({ amount: 4900, currency: "ron", label: "49 lei" });
     expect(priceFor("an", "ro", false, s)).toMatchObject({ amount: 3000 });
     expect(priceFor("an", "de", true, s)).toEqual({ amount: 1000, currency: "eur", label: "10 €" });
-    expect(priceFor("carte", "ro", false, s)).toEqual({ amount: 9900, currency: "ron", label: "99 lei" });
+    // Cartea PDF, produs separat din 18.11.2026: 39 lei / 8 €.
+    expect(priceFor("carte", "ro", false, s)).toEqual({ amount: 3900, currency: "ron", label: "39 lei" });
+    expect(priceFor("carte", "de", false, s)).toEqual({ amount: 800, currency: "eur", label: "8 €" });
   });
 
   it("pagina de plată din Stripe se cere cu suma, limba și cine plătește", async () => {
@@ -104,8 +106,13 @@ describe("plata cu cardul", () => {
     expect(sent!.get("allow_promotion_codes")).toBe("true");
   });
 
-  it("cartea PDF: inclusă la toți arborii titularului doar pe Premium plătit", () => {
-    const s = DEFAULT_SETTINGS, until = new Date("2030-01-01");
+  it("cartea PDF: implicit separată la toate planurile (18.11.2026)", () => {
+    const until = new Date("2030-01-01");
+    for (const tier of ["basic", "familie", "premium"] as const) expect(bookIncluded({ kind: "platit", until, tier }, DEFAULT_SETTINGS, true)).toBe(false);
+  });
+
+  it("cartea PDF: „inclusă” din Admin = la toți arborii titularului, cât are anul plătit", () => {
+    const s = { ...DEFAULT_SETTINGS, premiumBook: "toti" as const }, until = new Date("2030-01-01");
     expect(bookIncluded({ kind: "platit", until, tier: "premium" }, s, true)).toBe(true);
     expect(bookIncluded({ kind: "platit", until, tier: "premium" }, s, false)).toBe(false);
     expect(bookIncluded({ kind: "platit", until, tier: "familie" }, s, true)).toBe(false);
@@ -194,7 +201,9 @@ describe("plata cu cardul", () => {
       await db.insert(user).values({ id: "f1", name: "Familie", email: "f1@test.ro" });
       const [{ id: a }] = await db.insert(tree).values({ name: "A", ownerId: "f1" }).returning({ id: tree.id });
       const [{ id: b }] = await db.insert(tree).values({ name: "B", ownerId: "f1" }).returning({ id: tree.id });
-      const now = new Date("2027-05-01T00:00:00Z"), s = DEFAULT_SETTINGS;
+      // Setările vechi („una pe an” la Familie, „toți” la Premium) se citesc încă; noile implicite sunt „separat”.
+      const now = new Date("2027-05-01T00:00:00Z"), s = { ...DEFAULT_SETTINGS, familieBook: "una" as const, premiumBook: "toti" as const };
+      expect(await includedBooksLeft(db, "f1", { kind: "platit", until: new Date("2027-12-01T00:00:00Z"), tier: "familie" }, DEFAULT_SETTINGS, now)).toBe(0);
       const fam: Access = { kind: "platit", until: new Date("2027-12-01T00:00:00Z"), tier: "familie" };
       expect(await includedBooksLeft(db, "f1", { ...fam, tier: "basic" }, s, now)).toBe(0);
       expect(await includedBooksLeft(db, "f1", { ...fam, tier: "premium" }, s, now)).toBeNull();
