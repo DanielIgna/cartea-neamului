@@ -1,0 +1,17 @@
+# Verifică pe site-ul live webhook-ul de evenimente email al CRM (/api/crm/resend). Pornit manual.
+name: verifica-resend
+on:
+  workflow_dispatch:
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Secretul e pus și cererile nesemnate sunt refuzate
+        run: |
+          S=https://carteaneamului.ro
+          echo "GET:  $(curl -s $S/api/crm/resend)"
+          code=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H "content-type: application/json" -d '{"type":"email.delivered","data":{"email_id":"proba"}}' $S/api/crm/resend)
+          echo "POST nesemnat: $code (trebuie 401)"
+          curl -s $S/api/crm/resend | grep -q '"secret":true' || { echo "secretul NU e văzut de site"; exit 1; }
+          [ "$code" = "401" ] || exit 1
+          echo "OK"

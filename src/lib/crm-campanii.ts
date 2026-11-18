@@ -352,6 +352,9 @@ export function verifyResendWebhook(body: string, h: { id: string | null; timest
   });
 }
 
+/** Cheia app_setting cu ultimul eveniment Resend semnat primit ({ at, type }). */
+export const RESEND_LAST_KEY = "crm_resend_ultim";
+
 /** Un eveniment Resend → evenimentul nostru (sau null dacă nu ne privește). */
 export function resendEvent(p: { type?: string; data?: { email_id?: string; bounce?: { type?: string } } }): { resendId: string; ev: SendEvent; soft?: boolean } | null {
   const id = p.data?.email_id;

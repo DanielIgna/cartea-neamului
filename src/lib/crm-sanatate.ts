@@ -10,7 +10,7 @@ import type { Db } from "@/db";
 import { appSetting } from "@/db/schema";
 import { AUTOMATIONS, automationSwitches, type AutoKey } from "./autonomie";
 import { crmLimits } from "./crm-auto";
-import { sentToday } from "./crm-campanii";
+import { RESEND_LAST_KEY, sentToday } from "./crm-campanii";
 import { gmailState } from "./crm-gmail";
 import { SITE_URL } from "./site-url";
 
@@ -28,7 +28,7 @@ export const BOUNCE_MIN_SAMPLE = 20;
 export async function crmHealth(db: Db, now = new Date()) {
   const since24 = new Date(now.getTime() - DAY).toISOString(), since30 = new Date(now.getTime() - 30 * DAY).toISOString();
   const keys = sql.join(CRM_KEYS.map((k) => sql`${k}`), sql`, `);
-  const [sw, limits, today, gmail, runs, errors, [b], [u]] = await Promise.all([
+  const [sw, limits, today, gmail, runs, errors, [b], [u], [rl]] = await Promise.all([
     automationSwitches(db), crmLimits(db), sentToday(db, now), gmailState(db),
     rows<{ automation: string; started_at: string; status: string; note: string | null; prev_status: string | null }>(db, sql`
       select distinct on (automation) automation, started_at, status, note,
@@ -42,6 +42,7 @@ export async function crmHealth(db: Db, now = new Date()) {
         and not exists (select 1 from crm_activities x where x.organization_id = a.organization_id and x.at > a.at and x.tip in ('email_trimis','apel','whatsapp','nota','sarcina'))) as unread,
       (select count(*) from audit_log where entity = 'crm' and action = 'trimitere oprită (nu contacta)' and created_at > ${since24}) as blocked_mail,
       (select count(*) from crm_sends where status = 'blocat' and sent_at > ${since24}) as blocked_sends`),
+    rows<{ value: { at?: string; type?: string } | null }>(db, sql`select value from app_setting where key = ${RESEND_LAST_KEY}`),
   ]);
   const byKey = new Map(runs.map((r) => [r.automation, r]));
   const sent30 = n(b?.sent), bounced30 = n(b?.bounced);
@@ -57,6 +58,7 @@ export async function crmHealth(db: Db, now = new Date()) {
     sentToday: today, cap: limits.campanii,
     bounce: { sent: sent30, bounced: bounced30, rate: bounceRate, high: sent30 >= BOUNCE_MIN_SAMPLE && bounceRate > BOUNCE_LIMIT },
     unread: n(u?.unread), blocked: n(u?.blocked_mail) + n(u?.blocked_sends),
+    resend: { secret: !!process.env.RESEND_WEBHOOK_SECRET?.trim(), lastAt: rl?.value?.at ?? null, lastType: rl?.value?.type ?? null },
     gmail: { linked: !!gmail.sealed, lastSync: gmail.lastSync ?? null, lastOk: gmail.lastOk ?? null, error: gmail.lastError ?? null },
   };
 }
