@@ -131,6 +131,8 @@ export const auth = betterAuth({
           if (signupNewsFromCookie(cookie) && !isDemo(u.email)) await recordConsent(db, u.id, "news", true).catch((e) => console.error("consent news", e));
           // Venit prin linkul codului unei clase (/scoala/cod/<COD>): contul e trecut pe cod (Admin → Școli).
           if (!isDemo(u.email)) await recordSchoolSignup(db, u.id, cookie);
+          // CRM: contul venit pe linkul unei organizații sau cu codul școlii ei → „conturi aduse” pe fișa ei (testele se filtrează la cifre).
+          if (!isDemo(u.email)) await import("./crm-bani").then((m) => m.attributeNewAccount(db, u.id)).catch((e) => console.error("crm cont", e));
           const partner = signupPartnerFromCookie(cookie);
           if (partner) {
             await setPartnerConsent(db, u.id, true, { partner, source: "cont-nou", locale: localeFromCookieHeader(cookie) ?? DEFAULT_LOCALE })

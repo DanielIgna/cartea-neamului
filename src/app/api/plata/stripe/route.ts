@@ -6,6 +6,7 @@ import { sendKeepMail } from "@/lib/pastrare";
 import { clientIp, logSecurity, stripeAlert } from "@/lib/securitate";
 import { sendPaymentMail } from "@/lib/emailuri";
 import { afterPayment } from "@/lib/conversie";
+import { afterCrmPayment } from "@/lib/crm-bani";
 
 /**
  * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
@@ -33,6 +34,8 @@ export async function POST(req: Request) {
     // Din gratuit în plătit: reducerea folosită și emailul căruia i se datorează plata (Admin → Analiză → Conversii).
     await afterPayment(db, paid).catch((e) => console.error("conversie", e instanceof Error ? e.name : "Error"));
     await afterSchoolPayment(db, paid).catch((e) => console.error("scoli", e instanceof Error ? e.name : "Error"));
+    // CRM: plata contului adus de o organizație (codul ei NEAM-XXXX, linkul ei sau codul școlii) → venitul ei și „client”.
+    await afterCrmPayment(db, paid).catch((e) => console.error("crm", e instanceof Error ? e.name : "Error"));
     if (paid.attr) await recordConversion(db, "plata", { attr: paid.attr, label: paid.kind, amount: paid.amount, currency: paid.currency });
     // Confirmarea plății (planul, suma, data, legătura spre cont). O greșeală aici nu strică plata.
     await sendPaymentMail(db, paid).catch((e) => console.error("sendPaymentMail", e instanceof Error ? e.name : "Error"));

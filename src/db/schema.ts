@@ -931,9 +931,12 @@ export const crmOrganizations = pgTable("crm_organizations", {
   slug: text("slug"),
   dedupeKey: text("dedupe_key").notNull(),
   partnerId: uuid("partner_id").references(() => partners.id, { onDelete: "set null" }),
+  cod: text("cod"), // NEAM-XXXX: aceeași reducere ca NEAM90, legată de organizație (Etapa 7)
+  stripePromoId: text("stripe_promo_id"),
+  schoolId: uuid("school_id").references(() => school.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-}, (t) => [uniqueIndex("crm_organizations_dedupe_idx").on(t.dedupeKey), uniqueIndex("crm_organizations_slug_idx").on(t.slug), index("crm_organizations_status_idx").on(t.tip, t.status)]);
+}, (t) => [uniqueIndex("crm_organizations_dedupe_idx").on(t.dedupeKey), uniqueIndex("crm_organizations_slug_idx").on(t.slug), uniqueIndex("crm_organizations_cod_idx").on(t.cod), index("crm_organizations_status_idx").on(t.tip, t.status)]);
 
 // Persoane de contact DOAR dacă și-au dat singure datele (au răspuns, au completat formularul), cu dovada consimțământului.
 export const crmContacts = pgTable("crm_contacts", {
@@ -1066,6 +1069,14 @@ export const crmSends = pgTable("crm_sends", {
   unsubscribedAt: timestamp("unsubscribed_at"),
   repliedAt: timestamp("replied_at"),
 }, (t) => [uniqueIndex("crm_sends_once_idx").on(t.campaignId, t.organizationId, t.pas), index("crm_sends_org_idx").on(t.organizationId, t.sentAt), index("crm_sends_resend_idx").on(t.resendId), index("crm_sends_day_idx").on(t.sentAt)]);
+
+// CRM Etapa 7: contul adus de o organizație (prin ?src=, codul NEAM-XXXX sau codul școlii), câte unul pe cont.
+export const crmOrgAccounts = pgTable("crm_org_accounts", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  organizationId: uuid("organization_id").notNull().references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  via: text("via").notNull(), // src / cod / scoala / manual
+  at: timestamp("at").notNull().defaultNow(),
+}, (t) => [index("crm_org_accounts_org_idx").on(t.organizationId)]);
 
 /* ---------- Școli (Daniel, 17.11.2026; src/lib/scoli.ts, Admin → Școli) ---------- */
 // Cererile din formularul „Vreau coduri pentru clasa mea” de pe /scoala. Codurile se dau doar după aprobarea manuală (conducerea

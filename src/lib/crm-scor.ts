@@ -148,7 +148,9 @@ export async function refreshIfStale(db: Db, now = new Date()) {
   const [r] = await db.select({ v: appSetting.value }).from(appSetting).where(sql`${appSetting.key} = ${REFRESH_KEY}`);
   const at = (r?.v as { at?: string } | undefined)?.at;
   if (at && now.getTime() - new Date(at).getTime() < 3600_000) return null;
-  return refreshSignals(db, now);
+  const out = await refreshSignals(db, now);
+  await (await import("./crm-bani")).refreshOrgAccounts(db, now).catch((e) => console.error("crm: conturi aduse", e));
+  return out;
 }
 
 export async function signalsMap(db: Pick<Db, "select">) {

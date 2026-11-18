@@ -272,3 +272,33 @@ export async function gmailUnlinkAction() {
   revalidatePath("/admin/crm");
   back("/admin/crm?t=sanatate", "Gmail a fost dezlegat. Poți scoate și accesul din contul Google (Securitate → Aplicații terțe).");
 }
+
+/* ---------- Banii (Etapa 7) ---------- */
+
+export async function orgCodeAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const { createOrgCode } = await import("@/lib/crm-bani");
+  let msg: string;
+  try {
+    msg = `Codul organizației: ${await createOrgCode(db, id)} (aceeași reducere ca NEAM90).`;
+  } catch (e) {
+    msg = `Codul nu s-a făcut: ${e instanceof Error ? e.message : "eroare"}`;
+  }
+  revalidatePath(`/admin/crm/org/${id}`);
+  back(`/admin/crm/org/${id}`, msg);
+}
+
+export async function linkSchoolAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id"), school = s(form, "schoolId");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const { linkSchool, refreshOrgAccounts } = await import("@/lib/crm-bani");
+  await linkSchool(db, id, /^[0-9a-f-]{36}$/i.test(school) ? school : null);
+  await refreshOrgAccounts(db);
+  revalidatePath(`/admin/crm/org/${id}`);
+  back(`/admin/crm/org/${id}`, "Școala a fost legată.");
+}

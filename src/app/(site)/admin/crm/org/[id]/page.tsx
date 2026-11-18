@@ -10,11 +10,14 @@ import {
 } from "@/lib/crm";
 import { orgDetail, whatsappLink } from "@/lib/crm-admin";
 import { orgSends } from "@/lib/crm-campanii";
+import { VIA_LABEL, moneyByOrg, orgAccountsList } from "@/lib/crm-bani";
+import { school } from "@/db/schema";
+import { linkSchoolAction, orgCodeAction } from "@/app/crm-actions";
 
 const AUTO_ACTIVITIES = new Set<string>(["email_livrat", "email_deschis", "email_click", "dezabonat"]);
 const SEND_LABEL: Record<string, string> = { trimis: "Trimis", livrat: "Livrat", deschis: "Deschis", click: "Click", nelivrat: "Nelivrat", dezabonat: "Dezabonat", blocat: "Oprit (nu contacta)", eroare: "Eroare" };
 import { addActivityAction, newDealAction, updateDealAction, updateOrgAction } from "@/app/crm-actions";
-import { AdminNav, day, num } from "@/components/admin/ui";
+import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 
 export const dynamic = "force-dynamic";
@@ -28,7 +31,8 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
   await requireAdmin(`/admin/crm/org/${id}`);
   const sp = await searchParams;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
-  const [d, sends] = await Promise.all([orgDetail(db, id), orgSends(db, id)]);
+  const [d, sends, money, brought, schools] = await Promise.all([orgDetail(db, id), orgSends(db, id), moneyByOrg(db, id), orgAccountsList(db, id), db.select({ id: school.id, name: school.name, locality: school.locality }).from(school).orderBy(school.name).limit(500)]);
+  const m = money.get(id) ?? { accounts: 0, paidAccounts: 0, ron: 0, eur: 0, firstPaid: null };
   if (!d) notFound();
   const { org } = d;
   const link = d.src ? `${SITE_URL}/?src=${d.src}` : null;
@@ -148,16 +152,34 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
       )}
 
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Conturi venite pe linkul ei</h2>
-        {d.src ? <p className="muted" style={{ marginTop: 0 }}>Linkul <code>?src={d.src}</code>. Se văd doar conturile celor care au acceptat cookie-urile de analiză; conturile de test nu apar.</p> : null}
-        {d.accounts.length ? (
+        <h2 style={{ marginTop: 0 }}>Bani: conturi aduse și venit</h2>
+        <div className="stats">
+          <Stat label="Conturi aduse" value={num(m.accounts)} />
+          <Stat label="Conturi plătite" value={num(m.paidAccounts)} />
+          <Stat label="Venit total" value={`${num(m.ron)} lei${m.eur ? ` + ${num(m.eur)} €` : ""}`} hint={m.firstPaid ? `prima plată: ${day(m.firstPaid)}` : undefined} />
+        </div>
+        <ul style={{ marginTop: 12 }}>
+          <li>Linkul: {link ? <CopyLink url={link} /> : "—"}</li>
+          <li>Codul: {org.cod ? <b>{org.cod}</b> : (
+            <form action={orgCodeAction} style={{ display: "inline" }}><input type="hidden" name="id" value={org.id} /><button className="btn">Fă codul NEAM-XXXX</button> <small className="muted">aceeași reducere ca NEAM90, în Stripe</small></form>
+          )}</li>
+          <li>
+            <form action={linkSchoolAction} style={{ display: "inline-flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <input type="hidden" name="id" value={org.id} />
+              Școala din Admin → Școli (pentru codurile pe clasă):
+              <select name="schoolId" defaultValue={org.schoolId ?? ""}><option value="">—</option>{schools.map((x) => <option key={x.id} value={x.id}>{x.name}, {x.locality}</option>)}</select>
+              <button className="btn">Leagă</button>
+            </form>
+          </li>
+        </ul>
+        {brought.length ? (
           <div className="tbl-wrap">
             <table className="tbl">
-              <thead><tr><th>Cont</th><th className="n">Arbori</th><th className="n">Plăți</th></tr></thead>
-              <tbody>{d.accounts.map((a) => <tr key={a.id}><td><Link href={`/admin/oameni/${a.id}`}>{a.name}</Link><small>{day(new Date(a.created_at).toISOString())}</small></td><td className="n">{num(a.trees)}</td><td className="n">{num(a.paid)}</td></tr>)}</tbody>
+              <thead><tr><th>Cont</th><th>Prin</th><th className="n">Plătit</th></tr></thead>
+              <tbody>{brought.map((a) => <tr key={a.user_id}><td><Link href={`/admin/oameni/${a.user_id}`}>{a.name}</Link><small>{day(new Date(a.at).toISOString())}</small></td><td>{VIA_LABEL[a.via] ?? a.via}</td><td className="n">{num(Number(a.paid) / 100)}</td></tr>)}</tbody>
             </table>
           </div>
-        ) : <p className="muted" style={{ marginBottom: 0 }}>Niciun cont încă.</p>}
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Niciun cont adus încă. Conturile se leagă la fiecare oră când deschizi CRM-ul și zilnic din Autonomie; conturile de test nu contează.</p>}
       </div>
     </section>
   );
