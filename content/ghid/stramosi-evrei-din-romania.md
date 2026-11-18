@@ -3,7 +3,7 @@ title: Strămoși evrei din România: de unde începi
 seo: Strămoși evrei din România: de unde începi cercetarea
 description: Primii pași spre strămoșii evrei din România: actele de stare civilă, registrele comunităților, listele de emigranți și bazele de date ale Holocaustului.
 category: Comunități și regiuni
-cuvant: strămoși evrei din România
+updated: 2026-11-18
 related: registrele-evreiesti, registrele-de-stare-civila, emigrarea-in-america, nume-schimbate-si-variante, recensamintele-vechi, cum-ceri-copii-de-la-arhive
 terms: registru-de-stare-civila, act-de-nastere, recensamant, comitat, tinut, lista-de-pasageri
 ---

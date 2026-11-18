@@ -62,12 +62,13 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "oltenia-si-muntenia-condici-catagrafii", title: "Oltenia și Muntenia: condici, catagrafii, registre", order: 30 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
-/** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în două tranșe): rândurile lor devin „exista”. */
+/** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */
 export const PUBLISHED_GUIDES = new Set([
   "arbore-genealogic-gratuit-online-pas-cu-pas", "cadou-pentru-bunicii-care-au-tot", "cate-generatii-poti-afla", "certificatul-de-nastere-al-bunicului",
   "confesiunea-stramosilor", "cum-afli-satul-de-origine", "cum-cauti-un-mormant-vechi-online", "de-unde-vine-numele-tau-de-familie",
   "greseli-frecvente-arbore-genealogic", "registre-parohiale-online", "reuniune-de-familie", "rude-in-viata-si-viata-privata",
   "harti-vechi-ridicarile-austriece", "razesi-mosneni-clacasi-iobagi", "svabii-banateni-genealogie",
+  "sasii-din-transilvania-registre", "stramosi-evrei-din-romania", "bucovina-registre-si-arhive", "deportati-in-baragan-si-siberia",
 ]);
 
 /** Rândurile scrise de mână, pentru intențiile principale. */

@@ -3,7 +3,7 @@ title: Strămoși deportați în Bărăgan sau în Siberia: unde cauți
 seo: Strămoși deportați în Bărăgan sau Siberia: unde cauți
 description: Unde găsești urme ale strămoșilor deportați: Bărăganul, deportările sovietice din Basarabia și Bucovina, munca forțată din 1945 și dosarele CNSAS.
 category: Istorie și context
-cuvant: deportați în Bărăgan Siberia
+updated: 2026-11-18
 related: colectivizarea-si-registrele-agricole, registrele-militare, cum-ceri-copii-de-la-arhive, cum-intervievezi-bunicii, documente-de-familie-din-casa, recensamintele-vechi
 terms: arhivele-nationale, registrul-agricol, fond-arhivistic, cota-arhivistica, inventar-arhivistic
 ---
