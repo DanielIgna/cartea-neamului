@@ -1,0 +1,58 @@
+# Verifică pe site-ul live: „nu sunt robot” la contul nou, că serverul cere verificarea, intrarea cu Google și câteva pagini.
+# (Din containerul de lucru site-ul nu se poate deschide.) Pornit manual.
+name: verifica-inscriere
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/project-thread-jr1hna]
+    paths: [.github/workflows/verifica-inscriere.yml]
+jobs:
+  verifica:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash --noprofile --norc {0}
+    steps:
+      - name: Pagina de cont nou, CSP, server, Google
+        run: |
+          S=https://carteaneamului.ro
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+          echo "--- antete /intrare?mod=cont-nou"
+          curl -sSI -A "$UA" "$S/intrare?mod=cont-nou" | grep -iE '^HTTP|^x-vercel-id|^age|^location'
+          csp=$(curl -sSI -A "$UA" "$S/intrare?mod=cont-nou" | grep -i '^content-security-policy')
+          echo "CSP cu challenges.cloudflare.com: $(echo "$csp" | grep -o 'challenges.cloudflare.com' | wc -l) ori"
+          h=$(curl -sSL -A "$UA" "$S/intrare?mod=cont-nou")
+          echo "cf-turnstile în pagină: $(echo "$h" | grep -o 'cf-turnstile' | wc -l)"
+          echo "sitekey: $(echo "$h" | grep -oE 'data-sitekey="[^"]{0,8}' | head -1)…"
+          echo "buton Google (text): $(echo "$h" | grep -oiE 'Google' | wc -l)"
+          echo "--- cont nou FĂRĂ verificare (trebuie refuzat)"
+          curl -sS -A "$UA" -H "Origin: $S" -H "Content-Type: application/json" -X POST "$S/api/auth/sign-up/email" \
+            -d '{"email":"verificare-robot-'$RANDOM'@example.com","password":"Proba-fara-robot-2026!","name":"Proba Robot"}' -w "\nHTTP %{http_code}\n"
+          echo "--- Google: adresa de întoarcere"
+          r=$(curl -sS -A "$UA" -H "Origin: $S" -H "Content-Type: application/json" -X POST "$S/api/auth/sign-in/social" -d '{"provider":"google","callbackURL":"/"}' -w "\nHTTP %{http_code}")
+          echo "$r" | tail -1
+          echo "$r" | grep -oE 'redirect_uri=[^&"]*' | head -1 | python3 -c "import sys,urllib.parse;print(urllib.parse.unquote(sys.stdin.read()))"
+          echo "$r" | grep -oE 'https://accounts.google.com[^?]*' | head -1
+          echo "--- sesiune (fără cont): $(curl -sS -A "$UA" "$S/api/auth/get-session" -w ' HTTP %{http_code}')"
+          echo "--- pagini"
+          for p in / /intrare /plata /contact /scoala /cadou-de-sarbatori /istoria-umanitatii /cauta /presa /diaspora /en /parteneriate /confidentialitate /termeni; do
+            echo "$(curl -s -o /dev/null -w '%{http_code} %{time_total}s' -A "$UA" "$S$p") $p"
+          done
+      - name: Captură de ecran a formularului
+        run: |
+          npm i -s playwright@1.49.1 >/dev/null 2>&1 && npx -y playwright@1.49.1 install --with-deps chromium >/dev/null 2>&1
+          cat > s.cjs <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 520, height: 1100 } });
+            const errs = []; p.on('console', m => m.type() === 'error' && errs.push(m.text()));
+            await p.goto('https://carteaneamului.ro/intrare?mod=cont-nou', { waitUntil: 'networkidle' });
+            await p.waitForTimeout(6000);
+            console.log('iframe Turnstile:', await p.locator('iframe[src*="challenges.cloudflare.com"]').count());
+            console.log('erori consolă:', JSON.stringify(errs.slice(0, 5)));
+            await p.screenshot({ path: 'cont-nou.png', fullPage: true }); await b.close();
+          })();
+          JS
+          node s.cjs
+      - uses: actions/upload-artifact@v4
+        with: { name: captura, path: cont-nou.png }
