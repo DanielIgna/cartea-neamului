@@ -3,14 +3,16 @@ import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
 import { staticLocaleNow } from "@/i18n/static-locale";
 import { TRANSLATED_PAGES } from "@/lib/public-pages";
 import { SITE_URL } from "@/lib/site-url";
+import { pageCardUrl } from "@/lib/seo/organizatie";
 
 /** Adresa canonică a unei pagini publice, cu domeniul principal (fără www): `/` → https://carteaneamului.ro/. */
 export const canonicalUrl = (path: string) => `${SITE_URL}${path === "/" ? "/" : path}`;
 
 /**
  * Titlul, descrierea, adresa canonică și previzualizarea linkului (Open Graph și Twitter) pentru o pagină publică, toate
- * la fel: ce trimite cineva pe WhatsApp sau Facebook arată exact pagina trimisă, nu prima pagină. Poza e aceeași peste tot
- * (app/opengraph-image.png), pusă aici de mână: o pagină cu openGraph propriu n-o mai moștenește singură.
+ * la fel: ce trimite cineva pe WhatsApp sau Facebook arată exact pagina trimisă, nu prima pagină. Poza: cardul paginii
+ * (/api/card, din 18.11.2026) pentru paginile din sitemap, altfel cea comună (app/opengraph-image.png), pusă aici de mână:
+ * o pagină cu openGraph propriu n-o mai moștenește singură.
  */
 const OG_IMAGE = { url: "/opengraph-image.png", width: 1200, height: 630, alt: "Cartea Neamului: arborele familiei, construit împreună" };
 
@@ -56,7 +58,9 @@ export function publicPageMetadata({ path, title: full, description, image, loca
   const { url, ...lang } = languageAlternates(path, locale);
   const title = fitTitle(full);
   // O pagină cu cardul ei (nume, localitate) îl arată în previzualizarea linkului, în locul pozei comune.
-  const img = image ? { ...image, width: 1200, height: 630 } : OG_IMAGE;
+  // Celelalte pagini din sitemap au cardul lor, desenat din titlu și descriere (/api/card?pagina=…); restul, poza comună.
+  const card = image ? null : pageCardUrl(new URL(url).pathname.replace(/(.)\/$/, "$1"));
+  const img = image ? { ...image, width: 1200, height: 630 } : card ? { url: card, width: 1200, height: 630, alt: title } : OG_IMAGE;
   return {
     title, description,
     ...lang,

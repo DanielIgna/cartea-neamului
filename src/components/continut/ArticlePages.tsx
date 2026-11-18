@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteSearch from "@/components/continut/SiteSearch";
+import { BYLINE, ORG, pageCardUrl } from "@/lib/seo/organizatie";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
@@ -38,7 +39,7 @@ const HUB = {
 } as const;
 
 const DAY = (d: Date) => d.toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-const PUBLISHER = { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` } };
+const PUBLISHER = ORG;
 
 export function hubMetadata(c: Collection, page: number): Metadata {
   const h = HUB[c];
@@ -113,7 +114,7 @@ function entryJsonLd(e: Entry) {
   return {
     "@context": "https://schema.org", "@type": "Article", headline: e.title, description: e.description, url, inLanguage: "ro",
     mainEntityOfPage: url, datePublished: e.published.toISOString().slice(0, 10), dateModified: e.updated.toISOString().slice(0, 10),
-    wordCount: e.words, image: `${SITE_URL}/opengraph-image.png`, author: PUBLISHER, publisher: PUBLISHER,
+    wordCount: e.words, image: `${SITE_URL}${pageCardUrl(e.path) ?? "/opengraph-image.png"}`, author: PUBLISHER, publisher: PUBLISHER,
     isPartOf: { "@type": "CollectionPage", name: HUB.ghid.h1, url: canonicalUrl(HUB.ghid.path) },
   };
 }
@@ -146,7 +147,7 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
         <h1>{e.title}</h1>
         {c === "glosar" && e.alt.length > 0 && <p className="muted">Se mai spune: {e.alt.join(", ")}</p>}
         <p className="lead">{e.description}</p>
-        {c === "ghid" && <p className="muted small">Actualizat la {DAY(e.updated)} · cam {minutes} {minutes === 1 ? "minut" : "minute"} de citit</p>}
+        {c === "ghid" && <p className="muted small">De {BYLINE} · actualizat la {DAY(e.updated)} · cam {minutes} {minutes === 1 ? "minut" : "minute"} de citit</p>}
         {c === "ghid" && toc.length >= 3 && (
           <nav className="toc" aria-label="Cuprins">
             <b>Cuprins</b>

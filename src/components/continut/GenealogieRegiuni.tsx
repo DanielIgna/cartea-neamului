@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ORG } from "@/lib/seo/organizatie";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
@@ -35,7 +36,7 @@ export function GenealogieRegion({ slug }: { slug: string }) {
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "Article", headline: r.title, description: r.description,
         url: canonicalUrl(path), inLanguage: "ro", dateModified: "2026-11-17",
-        author: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL }, publisher: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL },
+        author: ORG, publisher: ORG,
         about: { "@type": "Place", name: r.name, alternateName: r.oldNames.map((n) => n.replace(/\s*\(.*\)$/, "")) },
       }} />
       <JsonLd data={{

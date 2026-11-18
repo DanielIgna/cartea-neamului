@@ -1,5 +1,6 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { ORG } from "@/lib/seo/organizatie";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import { CtaSus } from "@/components/continut/CtaArbore";
 import SchoolRequestForm from "./SchoolRequestForm";
@@ -15,7 +16,7 @@ export default function SchoolPageView({ page }: { page: SchoolPage }) {
     <section className="stack content-page school-page" lang="ro">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: page.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Article", headline: page.h1, description: page.description, inLanguage: "ro", url: canonicalUrl(page.path),
-        author: { "@type": "Organization", name: "Cartea Neamului" }, publisher: { "@type": "Organization", name: "Cartea Neamului" }, datePublished: "2026-11-17", dateModified: "2026-11-17" }} />
+        author: ORG, publisher: ORG, datePublished: "2026-11-17", dateModified: "2026-11-17" }} />
       <Breadcrumbs items={hub ? [{ name: "Pentru școală", path: "/scoala" }] : [{ name: "Pentru școală", path: "/scoala" }, { name: page.h1.split(" – ")[1] ?? page.h1, path: page.path }]} />
       <article className="card prose">
         <h1>{page.h1}</h1>
