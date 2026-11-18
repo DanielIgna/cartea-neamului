@@ -40,7 +40,7 @@ export const enGBCrestere: CrestereCatalog = {
     e3Body: "Hello {name}! A grandparent’s voice is one of the most precious memories you can keep.\n\nAsk them: What was the house you grew up in like? How did you meet? What did your parents do for a living? Which day from your childhood do you remember best? What would you tell your grandchildren?\n\nRecord straight from your phone, on their profile in the tree.",
     e3Button: "More questions",
     e4Subject: "Your tree, as a book",
-    e4Body: "Hello {name}! Everything you gather in the tree (people, photos, stories) can become a book: download it as a PDF or print it for the whole family.\n\nTo keep the tree open for writing after the free days, choose a plan from {price} a year. Nothing is charged automatically and nothing is deleted.",
+    e4Body: "Hello {name}! Everything you gather in the tree (people, photos, stories) can become a PDF book, which you buy separately and, if you like, print yourself.\n\nTo keep the tree open for writing after the free days, choose a plan from {price} a year. Nothing is charged automatically and nothing is deleted.",
     e4Button: "See the plans",
     e5Subject: "What else have you found out about your family?",
     e5Body: "Hello {name}! It’s been three weeks since you started. Every name, date or photo you add now is a piece of history your children won’t lose.\n\nIf you’ve heard something new from relatives, put it in the tree while it’s fresh.",

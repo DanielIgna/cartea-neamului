@@ -40,7 +40,7 @@ export const huCrestere: CrestereCatalog = {
     e3Body: "Szia, {name}! Egy nagyszülő hangja az egyik legszebb emlék, amit megőrizhetsz.\n\nKérdezd meg őket: Milyen volt a ház, ahol felnőttél? Hogyan ismerkedtetek meg? Mivel foglalkoztak a szüleid? Melyik gyerekkori napra emlékszel a legjobban? Mit mondanál az unokáidnak?\n\nRögzítsd közvetlenül a telefonnal, az adatlapjukon a családfában.",
     e3Button: "További kérdések",
     e4Subject: "A családfád, könyvként",
-    e4Body: "Szia, {name}! Minden, amit a családfában összegyűjtötök (emberek, fényképek, történetek), könyv lehet: PDF-ben vagy kinyomtatva az egész családnak.\n\nHogy a családfa az ingyenes napok után is írható maradjon, válassz csomagot évi {price}-tól. Semmit nem vonunk le automatikusan, és semmi nem törlődik.",
+    e4Body: "Szia, {name}! Minden, amit a családfában összegyűjtötök (emberek, fényképek, történetek), PDF-könyv lehet, amelyet külön vásárolsz meg, és ha szeretnéd, magad nyomtatsz ki.\n\nHogy a családfa az ingyenes napok után is írható maradjon, válassz csomagot évi {price}-tól. Semmit nem vonunk le automatikusan, és semmi nem törlődik.",
     e4Button: "A csomagok megtekintése",
     e5Subject: "Mi újat tudtál meg a családodról?",
     e5Body: "Szia, {name}! Három hét telt el, mióta elkezdted. Minden név, dátum vagy fénykép, amit most hozzáadsz, egy darab történelem, amit a gyerekeid már nem veszítenek el.\n\nHa valami újat hallottál a rokonoktól, írd be a családfába, amíg friss.",

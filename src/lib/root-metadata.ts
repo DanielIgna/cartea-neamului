@@ -8,7 +8,7 @@ import { SITE_URL } from "@/lib/site-url";
  */
 const SHARE = {
   title: "Cartea Neamului",
-  description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului gata de tipărit.",
+  description: "Arborele familiei, construit împreună, cu amintirile celor dragi și cartea neamului în PDF.",
 } as const;
 
 export async function rootMetadata(): Promise<Metadata> {

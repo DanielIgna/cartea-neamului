@@ -9,7 +9,7 @@ export async function generateMetadata(props: VariantParams): Promise<Metadata> 
   return siteMetadata();
 }
 
-/** Contactul gata făcut pentru vizitatori; cererile cu ?tipar=… (din pagina cărții) merg la pagina obișnuită. */
+/** Contactul gata făcut pentru vizitatori; identic pentru toți. */
 export default async function PublicContact(props: VariantParams) {
   await readVariant(props);
   return <ContactPage searchParams={Promise.resolve({})} />;

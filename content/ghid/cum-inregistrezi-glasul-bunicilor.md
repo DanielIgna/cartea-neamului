@@ -56,7 +56,7 @@ Video păstrează și chipul, gesturile, casa. Dar unii oameni se simt stânjeni
 
 ## Cum păstrezi și cum folosești înregistrările
 
-În Cartea Neamului, înregistrările pot fi puse în Lada cu amintiri, la persoana care vorbește, iar în cartea tipărită, un cod QR duce la vocea ei. Scrie și o transcriere a părților importante: textul se poate căuta, citi și cita în povestea familiei. Notează la fiecare înregistrare cine vorbește, cine întreabă, data și locul.
+În Cartea Neamului, înregistrările pot fi puse în Lada cu amintiri, la persoana care vorbește, iar în cartea familiei, un cod QR duce la vocea ei. Scrie și o transcriere a părților importante: textul se poate căuta, citi și cita în povestea familiei. Notează la fiecare înregistrare cine vorbește, cine întreabă, data și locul.
 
 ## Greșeli frecvente
 

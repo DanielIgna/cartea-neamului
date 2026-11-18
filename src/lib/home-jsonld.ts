@@ -1,7 +1,7 @@
 import { FACEBOOK_URL } from "@/lib/contact";
 import { SITE_URL } from "@/lib/site-url";
 
-const DESCRIPTION = "Fă online arborele genealogic al familiei, împreună cu rudele. Păstrezi poze, povești și glasul bunicilor, apoi tipărești cartea neamului.";
+const DESCRIPTION = "Fă online arborele genealogic al familiei, împreună cu rudele. Păstrezi poze, povești și glasul bunicilor, iar din ele îți poți face cartea neamului în PDF.";
 /** Datele pentru motoarele de căutare: site-ul, cine îl face și ce este (o aplicație web). Fără note sau recenzii. */
 export const HOME_JSON_LD = {
   "@context": "https://schema.org",

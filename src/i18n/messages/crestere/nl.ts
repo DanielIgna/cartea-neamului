@@ -40,7 +40,7 @@ export const nlCrestere: CrestereCatalog = {
     e3Body: "Hallo {name}! De stem van een grootouder is een van de mooiste herinneringen die je kunt bewaren.\n\nVraag hen: Hoe zag het huis eruit waarin je opgroeide? Hoe hebben jullie elkaar ontmoet? Wat deden je ouders voor werk? Welke dag uit je jeugd herinner je je het best? Wat zou je je kleinkinderen zeggen?\n\nNeem op met je telefoon, direct bij hun profiel in de stamboom.",
     e3Button: "Meer vragen",
     e4Subject: "Je stamboom als boek",
-    e4Body: "Hallo {name}! Alles wat jullie verzamelen (mensen, foto’s, verhalen) kan een boek worden: als pdf of gedrukt voor de hele familie.\n\nOm de stamboom na de gratis dagen open te houden om te schrijven, kies je een abonnement vanaf {price} per jaar. Er wordt niets automatisch afgeschreven en niets verwijderd.",
+    e4Body: "Hallo {name}! Alles wat jullie verzamelen (mensen, foto’s, verhalen) kan een pdf-boek worden, dat je apart koopt en, als je wilt, zelf afdrukt.\n\nOm de stamboom na de gratis dagen open te houden om te schrijven, kies je een abonnement vanaf {price} per jaar. Er wordt niets automatisch afgeschreven en niets verwijderd.",
     e4Button: "Bekijk de abonnementen",
     e5Subject: "Wat heb je nog meer ontdekt over je familie?",
     e5Body: "Hallo {name}! Het is drie weken geleden dat je begon. Elke naam, datum of foto die je nu toevoegt, is een stukje geschiedenis dat je kinderen niet meer kwijtraken.\n\nHeb je iets nieuws gehoord van familie? Zet het in de stamboom zolang het vers is.",
