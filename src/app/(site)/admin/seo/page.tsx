@@ -14,7 +14,8 @@ import { conversionsBy } from "@/lib/conversii";
 import { rangeOf } from "@/lib/analiza";
 import { sql } from "drizzle-orm";
 import { AdminNav, Stat, Status, day, num } from "@/components/admin/ui";
-import { SeoEngineForm, SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { IndexNowButton, SeoEngineForm, SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { currentVersions, indexNowKey, indexNowState, pendingPaths } from "@/lib/seo/indexnow";
 import { STATUS_LABEL, publishedMap, engineSettings, engineStats, runBatch, syncQueue } from "@/lib/motor-seo/motor";
 import { MAX_SIMILARITY, MIN_FACTS, MIN_UNIQUE_WORDS } from "@/lib/motor-seo/calitate";
 import { automationSwitches } from "@/lib/autonomie";
@@ -622,7 +623,32 @@ async function SitemapTab({ gscOn }: { gscOn: boolean }) {
           )}
         {gscOn && <SubmitSitemapButton />}
       </div>
+      <IndexNowCard />
     </>
+  );
+}
+
+/** IndexNow: anunță Bing și Yandex când se schimbă pagini (src/lib/seo/indexnow.ts). */
+async function IndexNowCard() {
+  const key = indexNowKey();
+  const st = await indexNowState(db);
+  const pending = pendingPaths(currentVersions(await publishedMap(db)), st.sent, new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Bucharest" }).format(new Date()));
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>IndexNow (Bing, Yandex și alții)</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Când se schimbă o pagină, o anunțăm singuri motoarelor care folosesc IndexNow (Bing, Yandex, Seznam, Naver), o dată pe zi, din ceasul zilnic. Google nu folosește IndexNow: la Google rămân sitemap-ul și „De cerut indexare”.</p>
+      {!key ? <p style={{ margin: 0 }}><Status ok={false} warn>oprit</Status> Lipsește cheia. În Vercel → Settings → Environment Variables adaugă <code>INDEXNOW_KEY</code> cu un șir de 32 de litere și cifre (de pildă dintr-un generator de parole, fără semne), apoi Redeploy.</p>
+        : <p style={{ margin: 0 }}><Status ok>pornit</Status> Fișierul cheii: <a href={`/${key}.txt`} target="_blank">{SITE_URL}/{key.slice(0, 4)}….txt</a> · {num(pending.length)} pagini de anunțat la următoarea trimitere.</p>}
+      {st.log.length > 0 && (
+        <div className="an-scroll" style={{ marginTop: 10 }}>
+          <table className="an-table">
+            <thead><tr><th>Când</th><th>Pagini</th><th>Răspuns</th><th>Cine</th></tr></thead>
+            <tbody>{st.log.slice(0, 10).map((l) => <tr key={l.at}><td>{l.at.slice(0, 16).replace("T", " ")}</td><td>{num(l.count)}</td><td>{l.error ?? (l.status === 202 ? "primit (202)" : `${l.status}`)}</td><td>{l.by}</td></tr>)}</tbody>
+          </table>
+        </div>
+      )}
+      {key && <IndexNowButton />}
+    </div>
   );
 }
 

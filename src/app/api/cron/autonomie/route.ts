@@ -8,6 +8,7 @@ import { gscSnapshot, seoSettings } from "@/lib/seo";
 import { auditPages } from "@/lib/seo-audit";
 import { publishedMap } from "@/lib/motor-seo/motor";
 import { buildWeeklyReport, saveWeek } from "@/lib/seo-raport";
+import { runIndexNow } from "@/lib/seo/indexnow";
 
 /** Lunea, cifrele săptămânii din Search Console intră în istoricul raportului SEO (Admin → SEO → Raport săptămânal). */
 async function weeklySeo(now = new Date()) {
@@ -34,5 +35,7 @@ export async function GET(req: Request) {
   // Invitațiile care încă așteaptă dovada (email confirmat + o rudă în arbore): dacă au primit-o între timp, se dau zilele.
   const invites = await sweepRewards(db).catch((e) => { console.error("invitatii: verificarea zilnică", e); return null; });
   const seo = await weeklySeo().catch((e) => { console.error("raport seo săptămânal", e); return null; });
-  return Response.json({ ok: true, stats, invites, seo, ran: ran.map((r) => ({ key: r.key, status: r.status })) });
+  // IndexNow: paginile schimbate de ieri încoace, anunțate Bing și Yandex (doar dacă e pusă cheia INDEXNOW_KEY).
+  const indexNow = await runIndexNow(db, { by: "ceas", published: await publishedMap(db) }).catch((e) => { console.error("indexnow", e); return null; });
+  return Response.json({ ok: true, stats, invites, seo, indexNow, ran: ran.map((r) => ({ key: r.key, status: r.status })) });
 }
