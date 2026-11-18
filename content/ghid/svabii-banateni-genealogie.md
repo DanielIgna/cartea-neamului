@@ -1,9 +1,9 @@
 ---
 title: Șvabii bănățeni: genealogie pas cu pas
 seo: Șvabii bănățeni: cum le faci arborele genealogic
-description: Cum cauți strămoși șvabi din Banat: colonizările din secolul al XVIII-lea, registrele catolice, cărțile de familie ale satelor și ce s-a întâmplat după 1945.
+description: Cum cauți strămoși șvabi din Banat: colonizările din secolul al XVIII-lea, registrele catolice, cărțile de familie ale satelor și anii de după 1945.
 category: Comunități și regiuni
-cuvant: șvabi bănățeni genealogie
+updated: 2026-11-18
 related: registrele-catolice-si-protestante, documente-in-maghiara-si-germana, documente-in-latina, conscriptiile-din-transilvania, emigrarea-in-america, nume-schimbate-si-variante
 terms: confesiune, registru-parohial, comitat, conscriptie, matricola, cota-arhivistica
 ---

@@ -3,7 +3,7 @@ title: Răzeși, moșneni, clăcași, iobagi: ce statut aveau strămoșii
 seo: Răzeși, moșneni, clăcași, iobagi: statutul strămoșilor
 description: Ce însemnau răzeș, moșnean, clăcaș, iobag sau jeler, cum afli statutul strămoșilor din acte și ce surse folosești pentru fiecare categorie de țărani.
 category: Istorie și context
-cuvant: răzeși moșneni clăcași iobagi
+updated: 2026-11-18
 related: catagrafiile-din-moldova-si-tara-romaneasca, conscriptiile-din-transilvania, urbariile-si-documentele-mosiilor, ce-este-spita-neamului, cartea-funciara-si-cadastrul-vechi, testamente-si-acte-de-mostenire
 terms: razes, mosnean, clacas, iobag, jeler, urbariu
 ---

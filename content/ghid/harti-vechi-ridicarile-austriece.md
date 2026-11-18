@@ -1,9 +1,9 @@
 ---
 title: Hărți vechi: satul pe ridicările topografice austriece
 seo: Hărți vechi: satul strămoșilor pe hărțile austriece
-description: Cum găsești satul strămoșilor pe hărțile vechi: ridicările topografice austriece, hărțile Principatelor și ce afli din ele despre numele vechi, ulițe și biserici.
+description: Cum găsești satul strămoșilor pe hărțile vechi: ridicările topografice austriece, hărțile Principatelor și ce afli din ele despre numele vechi.
 category: Istorie și context
-cuvant: hărți vechi ridicările austriece
+updated: 2026-11-18
 related: cum-incepi-arborele-genealogic, conscriptiile-din-transilvania, cartea-funciara-si-cadastrul-vechi, documente-in-maghiara-si-germana, urbariile-si-documentele-mosiilor, recensamintele-vechi
 terms: comitat, scaun, tinut, plasa, cadastru, conscriptie
 ---
