@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * Nu se vinde nimic, nu există afiliere și nu se păstrează date genetice.
  */
 export default async function ResursePage() {
-  const [t, labs] = await Promise.all([getT("Resources"), publicDnaLabs(db).catch(() => [])]);
+  const [t, labs, ta] = await Promise.all([getT("Resources"), publicDnaLabs(db).catch(() => []), getT("Archives")]);
   const out = (href: string, label: string) => <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>;
   const jsonLd = webPageJsonLd({ path: PATH, title: t("title"), description: t("metaDescription"), locale: await getLocale() });
   return (
@@ -41,6 +41,8 @@ export default async function ResursePage() {
         <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
         <h1>{t("title")}</h1>
         <p>{t("intro")}</p>
+        {/* Ghidul complet al arhivelor publice e /surse-publice (aceeași listă ca în arbore); aici rămân lista scurtă și testul ADN. */}
+        <p><a className="btn" href="/surse-publice">{ta("allSources")} →</a></p>
       </div>
       {SOURCE_GROUPS.map((g) => (
         <div className="card" key={g}>

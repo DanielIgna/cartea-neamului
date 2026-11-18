@@ -36,6 +36,7 @@ import { findChecks, stepsFor, duplicateKey } from "@/lib/verificari";
 import { loadDecisions, saveDecision } from "@/lib/verificari-db";
 import { attachReferral, checkReward, inviteSettings } from "@/lib/invitatii";
 import { hashToken } from "@/lib/invitations";
+import { sursaInformatiei } from "@/lib/surse-publice";
 
 /** Venit printr-o invitație? După o rudă adăugată poate e gata dovada pentru zilele gratuite (src/lib/invitatii.ts). */
 function rewardCheck(userId: string) {
@@ -156,6 +157,8 @@ const Fields = {
   residencePlace: z.string().trim().max(160).optional(), residenceCountry: z.string().trim().max(80).optional(),
   sex: z.enum(["M", "F", "U"]).optional(), occupation: z.string().trim().max(160).optional(),
   biography: z.string().trim().max(8000).optional(), notes: z.string().trim().max(8000).optional(), discreet: z.string().optional(),
+  // „Sursa informației” (Surse publice): trimisă doar de formularul de editare; lipsă = rămâne cum era.
+  infoSource: z.string().trim().max(500).optional(), infoSourceUrl: z.string().trim().max(500).optional(),
 };
 const Relative = z.object({
   treeId: z.string().uuid(), anchorId: z.string().uuid(), kind: z.enum(["father", "mother", "child", "spouse", "sibling"]),
@@ -178,6 +181,7 @@ const personValues = (v: z.infer<typeof Relative> | z.infer<typeof Edit>, locale
     residencePlace: v.living === "on" ? v.residencePlace || null : null, residenceCountry: v.living === "on" ? v.residenceCountry || null : null,
     living: v.living === "on", occupation: v.occupation || null, biography: v.biography || null, notes: v.notes || null,
     discreet: v.discreet === "on",
+    ...(v.infoSource !== undefined || v.infoSourceUrl !== undefined ? sursaInformatiei(v.infoSource, v.infoSourceUrl) : {}),
   };
 };
 

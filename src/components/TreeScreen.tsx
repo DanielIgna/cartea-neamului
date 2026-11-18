@@ -15,6 +15,9 @@ import { buildGraph, family, kinship, halfBy, relativesByDegree, oldestAncestor,
 import InvitePanel from "./InvitePanel";
 import LiveTree from "./LiveTree";
 import PersonForm, { type RelKind } from "./PersonForm";
+import ArchiveHint from "./ArchiveHint";
+import InfoSource from "./InfoSource";
+import type { Sursa } from "@/lib/surse-publice";
 import { DocumentUpload, BiographySuggest } from "./PersonTools";
 import { Album } from "./Album";
 import { Avatar } from "./Avatar";
@@ -43,6 +46,8 @@ type Props = {
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
   /** Răspunsurile date în „De verificat” (și „nu sunt aceeași persoană”): adevărul arborelui, ținut pentru toți. */
   decisions?: Decisions;
+  /** Surse publice: lista (cu schimbările din Admin) și persoanele la care omul a apăsat „Nu mai arăta”. */
+  archiveSources?: Sursa[]; archiveDismissed?: string[];
 };
 type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
@@ -475,10 +480,12 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
     .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }
 
-function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, checks, onChecked, origin, originsLoading, onSelect, onCenter, onChanged, onMerged }: PanelProps) {
-  const t = useTranslations("Person");
+function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, checks, onChecked, origin, originsLoading, onSelect, onCenter, onChanged, onMerged, archiveSources, archiveDismissed }: PanelProps) {
+  const t = useTranslations("Person"), tArch = useTranslations("Archives");
   const locale = useLocale();
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
+  // „Am găsit ceva” din cardul arhivelor deschide editarea cu câmpul „Sursa informației” în față.
+  const [toSource, setToSource] = useState(false);
   const [done, setDone] = useState<string | null>(null);
   const [toggling, startToggle] = useTransition();
   const fam = family(graph, p.id);
@@ -539,7 +546,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
 
   if (form) {
     return form === "edit"
-      ? <PersonForm mode="edit" treeId={treeId} person={p} onDone={() => finished(t("saved"))} onCancel={() => setForm(null)} />
+      ? <PersonForm mode="edit" treeId={treeId} person={p} focusSource={toSource} onDone={() => { setToSource(false); finished(t("saved")); }} onCancel={() => { setToSource(false); setForm(null); }} />
       : <PersonForm mode="add" kind={form} treeId={treeId} anchor={p} partners={childPartners} shareWith={shareFor(graph, people, p.id, form)} discreet={discreetFor(form)}
           lookalikes={lookalikesFor(form)} useExisting={useExistingFor(form)}
           onDone={(msg) => finished(msg ?? t("added"))} onCancel={() => setForm(null)} />;
@@ -610,7 +617,13 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
       <div className="section-label">{t("whatWeKnow", { name: p.givenName })}</div>
       {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted" style={{ margin: 0, fontSize: 14 }}>{canEdit ? t("nothingYetEdit") : t("nothingYet")}</p>}
       {p.notes && <><div className="section-label">{t("notes")}</div><p className="notes">{p.notes}</p></>}
+      <InfoSource label={tArch("sourceLabel")} text={p.infoSource} url={p.infoSourceUrl} />
       <TimesStory p={p} origin={origin} loading={originsLoading} />
+      {archiveSources && archiveSources.length > 0 && (
+        <ArchiveHint key={`ah${p.id}`} treeId={treeId} p={p} parents={fam.parents.length} partners={fam.partners.length} origin={origin} loading={originsLoading}
+          sources={archiveSources} canEdit={canEdit} dismissed={(archiveDismissed ?? []).includes(p.id)}
+          onFound={() => { setToSource(true); setForm("edit"); }} />
+      )}
       <div className="actions">
         {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>{t("edit")}</button>}
         {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>{t("putInCentre")}</button>}

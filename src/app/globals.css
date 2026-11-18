@@ -2047,3 +2047,20 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 }
 .search-hits{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:8px}.search-hits li{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
 .site-search{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.site-search input{flex:1 1 220px}
+
+/* Surse publice: cardul „Caută în arhive publice” din fișă și pagina /surse-publice */
+.archive-hint{margin-top:14px;padding:12px 14px;border:1px dashed var(--line);border-radius:12px;background:var(--surface-2);display:grid;gap:8px;font-size:14px}
+.archive-hint-intro{margin:0}
+.archive-hint-what pre{margin:6px 0;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;font:inherit;white-space:pre-wrap;user-select:all}
+.archive-hint-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.archive-hint-list li{display:grid;gap:2px}
+.archive-hint .btn.small,.btn.small{padding:4px 12px;font-size:14px}
+.archive-hint .actions{margin-top:2px}
+.archive-hint-note{font-size:14px;margin:10px 0 0}
+.archive-cite{font-size:12px;color:var(--muted);font-style:italic}
+.info-source{font-size:14px;margin-top:8px}
+.surse-grup ul{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+.surse-grup li h3{margin:0 0 2px;font-size:18px}
+.surse-grup li p{margin:4px 0}
+.surse-meta{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
+.surse-toc{display:flex;flex-wrap:wrap;gap:8px}

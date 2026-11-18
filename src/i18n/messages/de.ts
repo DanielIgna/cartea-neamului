@@ -15,6 +15,7 @@ import { deActivare } from "./activare/de";
 import { deInvitatii } from "./invitatii/de";
 import { deConversie } from "./conversie/de";
 import { deSursa } from "./sursa/de";
+import { deArhive } from "./arhive/de";
 import { deFilm } from "./film/de";
 import { deLegal } from "./legal/de";
 import { deDatele } from "./datele/de";
@@ -447,6 +448,7 @@ export const de: Catalog = {
   ...deInvitatii,
   ...deConversie,
   ...deSursa,
+  ...deArhive,
   ...deFilm,
   ...deLegal,
   ...deDatele,

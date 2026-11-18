@@ -3,7 +3,7 @@ title: Cum începi arborele genealogic, pas cu pas
 seo: Cum faci un arbore genealogic: primii pași, pas cu pas
 description: De unde începi un arbore genealogic: ce știi deja, ce întrebi în familie, ce acte cauți întâi și cum notezi sursele, pas cu pas.
 category: Primii pași
-updated: 2026-11-17
+updated: 2026-11-18
 related: cum-intervievezi-bunicii, documente-de-familie-din-casa, cum-ceri-un-act-de-stare-civila, cum-verifici-informatiile
 terms: arbore-genealogic, genealogie, sursa-primara, ascendent
 ---
@@ -70,7 +70,7 @@ Arborele crește în ritmul întrebărilor, nu al orelor petrecute. O întrebare
 1. **Săptămâna 1:** scrie tot ce știi și fă lista de întrebări.
 2. **Săptămâna 2:** vorbește cu cel mai bătrân membru al familiei și strânge actele din casă.
 3. **Săptămâna 3:** cere de la primărie actul de căsătorie al bunicilor sau certificatul de deces al unui străbunic.
-4. **Săptămâna 4:** află ce registre are arhiva județului pentru satul familiei și pregătește prima cerere.
+4. **Săptămâna 4:** află ce registre are arhiva județului pentru satul familiei și pregătește prima cerere. Multe registre vechi sunt deja online, gratuit: vezi [unde îți cauți strămoșii gratuit](/surse-publice).
 
 La sfârșitul lunii ai, de obicei, trei generații sigure și o idee clară despre unde e a patra.
 

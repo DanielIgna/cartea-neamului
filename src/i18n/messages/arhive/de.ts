@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const deArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Öffentliche Archive",
+    title: "In öffentlichen Archiven suchen",
+    intro: "Bei {name} fehlt: {missing}. Einige kostenlose öffentliche Archive können helfen.",
+    missing: { an: "das Geburtsjahr", loc: "der Geburtsort", parinti: "die Eltern", casatorie: "die Heirat", deces: "das Sterbedatum" },
+    whatToSearch: "Wonach du suchst",
+    surname: "Nachname",
+    given: "Vorname",
+    place: "Ort",
+    year: "Jahr",
+    copy: "Daten kopieren",
+    copied: "Daten kopiert. Du kannst sie in die Suche des Archivs einfügen.",
+    copyFailed: "Kopieren ging nicht; du kannst sie im Feld oben markieren.",
+    where: "Wo suchen",
+    newTab: "öffnet sich in einem neuen Tab",
+    account: "kostenloses Konto",
+    found: "Ich habe etwas gefunden",
+    hide: "Nicht mehr anzeigen",
+    hidden: "In Ordnung, wir zeigen diesen Vorschlag für {name} nicht mehr.",
+    privacy: "Die Links führen zu den Websites der Archive. Wir schicken nichts aus deinem Stammbaum dorthin: Die Daten kopierst du selbst.",
+    allSources: "Alle Quellen und Tipps",
+    textsInRo: "Die Beschreibungen der Quellen sind auf Rumänisch.",
+    sourceLabel: "Quelle der Information",
+    sourcePlaceholder: "z. B. Taufregister Huedin, 1885",
+    sourceLink: "Link zur Quelle (optional)",
+    sourceHint: "Damit die Familie weiß, woher die Angabe stammt.",
+  },
+  ArchivesMail: {
+    subject: "Vorfahren vor 1930 geboren? Hier kannst du kostenlos suchen",
+    body: "Hallo {name},\n\nIn deinem Stammbaum gibt es Vorfahren, die vor 1930 geboren sind und bei denen einige Angaben fehlen: Geburtsjahr oder Geburtsort, Eltern, Heirat. Vieles davon findet sich in kostenlosen öffentlichen Archiven: Kirchenbücher, Standesamtsregister, Volkszählungen.\n\nWir haben auf einer Seite gesammelt, wo und wie du suchen kannst. In deinem Stammbaum hat jede dieser Personen auch eine Karte „In öffentlichen Archiven suchen“ mit Name, Ort und Jahr zum Kopieren.",
+    button: "Sieh dir an, wo du suchen kannst",
+    why: "Du bekommst diese E-Mail nur einmal, weil du einen Stammbaum bei {app} hast.",
+    unsubscribe: "Keine E-Mails mehr zu meinem Konto",
+  },
+};

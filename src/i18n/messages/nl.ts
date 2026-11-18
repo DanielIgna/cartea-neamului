@@ -15,6 +15,7 @@ import { nlActivare } from "./activare/nl";
 import { nlInvitatii } from "./invitatii/nl";
 import { nlConversie } from "./conversie/nl";
 import { nlSursa } from "./sursa/nl";
+import { nlArhive } from "./arhive/nl";
 import { nlFilm } from "./film/nl";
 import { nlLegal } from "./legal/nl";
 import { nlDatele } from "./datele/nl";
@@ -447,6 +448,7 @@ export const nl: Catalog = {
   ...nlInvitatii,
   ...nlConversie,
   ...nlSursa,
+  ...nlArhive,
   ...nlFilm,
   ...nlLegal,
   ...nlDatele,

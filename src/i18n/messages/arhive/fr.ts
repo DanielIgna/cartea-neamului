@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const frArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Archives publiques",
+    title: "Chercher dans les archives publiques",
+    intro: "Pour {name}, il manque : {missing}. Certaines archives publiques et gratuites peuvent aider.",
+    missing: { an: "l’année de naissance", loc: "le lieu de naissance", parinti: "les parents", casatorie: "le mariage", deces: "la date du décès" },
+    whatToSearch: "Quoi chercher",
+    surname: "Nom",
+    given: "Prénom",
+    place: "Localité",
+    year: "Année",
+    copy: "Copier les données",
+    copied: "Données copiées. Vous pouvez les coller dans la recherche de l’archive.",
+    copyFailed: "Impossible de copier ; vous pouvez les sélectionner dans la case ci-dessus.",
+    where: "Où chercher",
+    newTab: "s’ouvre dans un nouvel onglet",
+    account: "compte gratuit",
+    found: "J’ai trouvé quelque chose",
+    hide: "Ne plus afficher",
+    hidden: "D’accord, nous n’afficherons plus cette suggestion pour {name}.",
+    privacy: "Les liens mènent aux sites des archives. Nous n’y envoyons rien de votre arbre : vous copiez les données vous-même.",
+    allSources: "Toutes les sources et conseils",
+    textsInRo: "Les descriptions des sources sont en roumain.",
+    sourceLabel: "Source de l’information",
+    sourcePlaceholder: "par ex. registre des baptêmes de Huedin, 1885",
+    sourceLink: "Lien vers la source (facultatif)",
+    sourceHint: "Pour que la famille sache d’où vient l’information.",
+  },
+  ArchivesMail: {
+    subject: "Des ancêtres nés avant 1930 ? Voici où chercher gratuitement",
+    body: "Bonjour {name},\n\nVotre arbre compte des ancêtres nés avant 1930 à qui il manque quelques données : l’année ou le lieu de naissance, les parents, le mariage. Beaucoup se trouvent dans des archives publiques et gratuites : registres paroissiaux, état civil, recensements.\n\nNous avons réuni sur une seule page où et comment chercher. Dans votre arbre, chacun d’eux a aussi une carte « Chercher dans les archives publiques » avec le nom, le lieu et l’année prêts à copier.",
+    button: "Voir où chercher",
+    why: "Vous recevez cet e-mail une seule fois, parce que vous avez un arbre sur {app}.",
+    unsubscribe: "Je ne veux plus d’e-mails sur mon compte",
+  },
+};

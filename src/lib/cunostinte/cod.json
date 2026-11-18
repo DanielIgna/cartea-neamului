@@ -44,6 +44,7 @@
   "drizzle/0042_crm_bani.sql",
   "drizzle/0043_crm_sarcini.sql",
   "drizzle/0044_crm_ambasadori.sql",
+  "drizzle/0045_surse_publice.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -102,6 +103,7 @@
   "src/app/(public)/pub/[v]/page.tsx",
   "src/app/(public)/pub/[v]/parteneri/page.tsx",
   "src/app/(public)/pub/[v]/resurse-genealogie/page.tsx",
+  "src/app/(public)/pub/[v]/surse-publice/page.tsx",
   "src/app/(public)/pub/[v]/termeni/page.tsx",
   "src/app/(site)/a/[code]/page.tsx",
   "src/app/(site)/activeaza/page.tsx",
@@ -152,6 +154,7 @@
   "src/app/(site)/admin/securitate/page.tsx",
   "src/app/(site)/admin/seo/csv/route.ts",
   "src/app/(site)/admin/seo/page.tsx",
+  "src/app/(site)/admin/surse-publice/page.tsx",
   "src/app/(site)/admin/texte/page.tsx",
   "src/app/(site)/arbore-nou/page.tsx",
   "src/app/(site)/arbore/[id]/bun-venit/page.tsx",
@@ -231,6 +234,7 @@
   "src/app/(site)/scoala/fisa/[slug]/page.tsx",
   "src/app/(site)/scoala/page.tsx",
   "src/app/(site)/securitate/page.tsx",
+  "src/app/(site)/surse-publice/page.tsx",
   "src/app/(site)/termeni/page.tsx",
   "src/app/.well-known/security.txt/route.ts",
   "src/app/actions.ts",
@@ -315,12 +319,14 @@
   "src/app/sitemap-diaspora.xml/route.ts",
   "src/app/sitemap.xml/route.ts",
   "src/app/sitemaps/[file]/route.ts",
+  "src/app/surse-actions.ts",
   "src/app/vesti-actions.ts",
   "src/app/vremuri-actions.ts",
   "src/app/widget/arbore/[token]/route.ts",
   "src/components/AccessBanner.tsx",
   "src/components/AdamHristos.tsx",
   "src/components/Album.tsx",
+  "src/components/ArchiveHint.tsx",
   "src/components/AuthForm.tsx",
   "src/components/AutoBook.tsx",
   "src/components/Avatar.tsx",
@@ -348,6 +354,7 @@
   "src/components/FamilyStart.tsx",
   "src/components/FirulVremii.tsx",
   "src/components/GedcomImport.tsx",
+  "src/components/InfoSource.tsx",
   "src/components/InstallApp.tsx",
   "src/components/InvitePanel.tsx",
   "src/components/InviteShare.tsx",
@@ -530,6 +537,15 @@
   "src/i18n/messages/arbore/it.ts",
   "src/i18n/messages/arbore/nl.ts",
   "src/i18n/messages/arbore/ro.ts",
+  "src/i18n/messages/arhive/de.ts",
+  "src/i18n/messages/arhive/en-GB.ts",
+  "src/i18n/messages/arhive/es.ts",
+  "src/i18n/messages/arhive/fr.ts",
+  "src/i18n/messages/arhive/he.ts",
+  "src/i18n/messages/arhive/hu.ts",
+  "src/i18n/messages/arhive/it.ts",
+  "src/i18n/messages/arhive/nl.ts",
+  "src/i18n/messages/arhive/ro.ts",
   "src/i18n/messages/biserica/de.ts",
   "src/i18n/messages/biserica/en-GB.ts",
   "src/i18n/messages/biserica/en-US.ts",
@@ -905,6 +921,8 @@
   "src/lib/storage.ts",
   "src/lib/sursa-shared.ts",
   "src/lib/sursa.ts",
+  "src/lib/surse-publice-db.ts",
+  "src/lib/surse-publice.ts",
   "src/lib/texte.ts",
   "src/lib/theme.ts",
   "src/lib/tree-data.ts",
@@ -1006,6 +1024,7 @@
   "tests/shared-places.test.ts",
   "tests/spite.test.ts",
   "tests/sursa.test.ts",
+  "tests/surse-publice.test.ts",
   "tests/texte.test.ts",
   "tests/tree-fold.test.ts",
   "tests/tree-layout.test.ts",
@@ -1203,6 +1222,10 @@
   {
    "path": "/admin/seo/csv",
    "kind": "api"
+  },
+  {
+   "path": "/admin/surse-publice",
+   "kind": "pagina"
   },
   {
    "path": "/admin/texte",
@@ -1645,6 +1668,10 @@
    "kind": "api"
   },
   {
+   "path": "/surse-publice",
+   "kind": "pagina"
+  },
+  {
    "path": "/termeni",
    "kind": "pagina"
   },
@@ -1742,6 +1769,7 @@
   "tests/shared-places.test.ts",
   "tests/spite.test.ts",
   "tests/sursa.test.ts",
+  "tests/surse-publice.test.ts",
   "tests/texte.test.ts",
   "tests/tree-fold.test.ts",
   "tests/tree-layout.test.ts",
@@ -1751,5 +1779,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 44
+ "migrations": 45
 }

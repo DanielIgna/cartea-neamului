@@ -69,7 +69,7 @@ function liveIn(req: NextRequest, path: string, locale: Locale) {
 // Prefixele de limbă trebuie scrise de mână aici (Next citește lista la build); testul din tests/limba-detectata.test.ts verifică
 // că sunt aceleași ca URL_PREFIX din src/i18n/locales.ts.
 export const config = {
-  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie", "/cadou-de-sarbatori",
+  matcher: ["/", "/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede", "/contact", "/parteneri", "/confidentialitate", "/termeni", "/resurse-genealogie", "/cadou-de-sarbatori", "/surse-publice",
     // Secțiunile publice (src/lib/public-sections.ts): hubul și paginile din el.
     "/ghid", "/ghid/:slug", "/glosar", "/glosar/:slug", "/nume", "/nume/:slug",
     "/localitati", "/localitati/:judet", "/localitati/:judet/:localitate",

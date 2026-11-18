@@ -21,6 +21,7 @@ export const FIELD_LABELS: Record<string, string> = {
   deathDateText: "Decedat(ă)", deathPlace: "Locul morții", deathCountry: "Țara morții",
   residencePlace: "Locuiește în", residenceCountry: "Țara în care locuiește", living: "În viață", discreet: "Discret(ă)",
   occupation: "Ocupația", biography: "Ce se știe despre persoană", notes: "Note", photoDocumentId: "Poza de profil",
+  infoSource: "Sursa informației", infoSourceUrl: "Linkul sursei",
 };
 /** Și câmpurile calculate din ele (intervalele datelor), ca anularea să pună totul exact cum era. */
 const TRACKED = [...Object.keys(FIELD_LABELS), "birthFrom", "birthTo", "deathFrom", "deathTo"] as const;
