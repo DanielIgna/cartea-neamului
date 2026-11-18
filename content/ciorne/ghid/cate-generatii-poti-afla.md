@@ -29,7 +29,7 @@ Pe scurt, dacă tu te-ai născut în jurul anului 1990:
 
 ### După 1865 (Vechiul Regat) și după 1895 (Transilvania): starea civilă
 
-Actele de naștere, căsătorie și deces ținute de primării sunt cea mai sigură sursă. Ele acoperă, de obicei, generațiile 3–5. Actele recente se cer de la primării, cele mai vechi de 100 de ani (nașterile) și de 75 de ani (căsătoriile și decesele) sunt la Arhivele Naționale. Vezi [Registrele de stare civilă](/ghid/registrele-de-stare-civila).
+Actele de naștere, căsătorie și deces ținute de primării sunt cea mai sigură sursă. Ele acoperă, de obicei, generațiile 3–5. Actele din ultimii aproximativ 100 de ani se cer de la primării, iar cele mai vechi sunt la Arhivele Naționale. Vezi [Registrele de stare civilă](/ghid/registrele-de-stare-civila).
 
 ### 1831–1865 în Moldova și Țara Românească: condicile parohiale
 
