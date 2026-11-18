@@ -11,6 +11,7 @@ import { GEN_REGIONS, REGIONS_UPDATED, genRegionPath } from "@/lib/genealogie-re
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
 import { AUTHORITY_PAGES, AUTHORITY_UPDATED } from "@/lib/autoritate";
+import { lastmodOf } from "@/lib/seo/versiuni";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
@@ -20,15 +21,22 @@ import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as dias
  */
 export const INDEX_LIMIT = 300;
 
+/**
+ * `lastModified`: data ultimei schimbări reale (src/lib/seo/versiuni.ts). `changeFrequency` și `priority` rămân doar pentru
+ * ordinea din Admin; nu mai intră în XML, Google nu le folosește (planul SEO, 18.11.2026).
+ */
 export type SitemapUrl = {
-  path: string; lastModified: Date; changeFrequency: "weekly" | "monthly" | "yearly"; priority: number;
+  path: string; lastModified: Date; changeFrequency?: "weekly" | "monthly" | "yearly"; priority?: number;
   /** Aceeași pagină în celelalte limbi (hreflang → adresă), pentru paginile traduse. */
   alternates?: Record<string, string>;
 };
 export type SitemapGroup = { name: string; label: string; urls: SitemapUrl[] };
 
-/** Când s-a publicat ultima versiune a site-ului; textele legale au data lor. */
-const BUILT_AT = new Date();
+/**
+ * Data de rezervă a paginilor principale, doar pentru o adresă care încă nu e în src/data/seo-versiuni.json (nu ora generării,
+ * care se schimba la fiecare cerere); textele legale au data lor.
+ */
+const PAGES_FALLBACK = new Date("2026-11-18T00:00:00Z");
 const LAST_MODIFIED: Record<string, Date> = { "/confidentialitate": PRIVACY_DATE, "/termeni": TERMS_DATE };
 
 function collectionGroup(c: "ghid" | "glosar", label: string): SitemapGroup {
@@ -55,7 +63,7 @@ function languagesGroup(): SitemapGroup {
   return {
     name: "limbi", label: "Paginile principale în celelalte limbi",
     urls: LOCALES.filter((l) => l !== "ro").flatMap((l) => TRANSLATED_PAGES.map((p): SitemapUrl => ({
-      path: localizedPath(p.path, l), lastModified: LAST_MODIFIED[p.path] ?? BUILT_AT, changeFrequency: p.changeFrequency,
+      path: localizedPath(p.path, l), lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency,
       priority: Math.round(p.priority * 8) / 10, alternates: alt(p.path),
     }))),
   };
@@ -81,8 +89,14 @@ function diasporaGroups(): SitemapGroup[] {
  * Fără el (teste, Centrul SEO), comunele nu apar: intră doar cele publicate.
  */
 export function sitemapGroups(published: Map<string, Date> = new Map()): SitemapGroup[] {
+  // Comunele publicate de motorul SEO au data lor din bază; restul, data din src/data/seo-versiuni.json.
+  return rawGroups(published).map((g) => ({ ...g, urls: g.urls.map((u) => (published.has(u.path) ? u : { ...u, lastModified: lastmodOf(u.path, u.lastModified) })) }));
+}
+
+/** Grupele, cu datele de rezervă (fără src/data/seo-versiuni.json); scripts/seo-versiuni.ts pornește de la ele. */
+export function rawGroups(published: Map<string, Date> = new Map()): SitemapGroup[] {
   return [
-    { name: "pagini", label: "Paginile principale", urls: PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? BUILT_AT, changeFrequency: p.changeFrequency, priority: p.priority })) },
+    { name: "pagini", label: "Paginile principale", urls: PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency, priority: p.priority })) },
     collectionGroup("ghid", "Ghiduri"),
     collectionGroup("glosar", "Glosar"),
     {
@@ -139,7 +153,7 @@ export function urlsetXml(urls: SitemapUrl[]): string {
   const xhtml = urls.some((u) => u.alternates) ? ` xmlns:xhtml="http://www.w3.org/1999/xhtml"` : "";
   const links = (u: SitemapUrl) => Object.entries(u.alternates ?? {}).map(([l, p]) => `<xhtml:link rel="alternate" hreflang="${l}" href="${esc(abs(p))}"/>\n`).join("");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${xhtml}>\n${urls.map((u) =>
-    `<url>\n<loc>${esc(abs(u.path))}</loc>\n${links(u)}<lastmod>${iso(u.lastModified)}</lastmod>\n<changefreq>${u.changeFrequency}</changefreq>\n<priority>${u.priority}</priority>\n</url>`).join("\n")}\n</urlset>\n`;
+    `<url>\n<loc>${esc(abs(u.path))}</loc>\n${links(u)}<lastmod>${iso(u.lastModified)}</lastmod>\n</url>`).join("\n")}\n</urlset>\n`;
 }
 
 /** Grupele de diaspora (câte una pe limbă) intră în index ca un singur fișier, /sitemap-diaspora.xml (Daniel, 17.11.2026). */

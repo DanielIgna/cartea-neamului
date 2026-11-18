@@ -373,13 +373,13 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "seo-pagini", name: "Pagini publice și Google", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor.",
-    what: "Nume de familie, localități (județe și toate cele 3.180 de comune, orașe și municipii, cu satele, populația 2021, vecinii și familiile cu rădăcini acolo de la 5 arbori), ghiduri, glosar, sitemap-uri, pragul de indexare (noindex pentru paginile subțiri) motorul de publicare (coadă seo_queue, control de calitate, Wikipedia rescris cu atribuire, ritm 50→200 pe zi) și centrul SEO pe file: Prezentare, Cuvinte cheie, Pagini, Indexare, Secțiuni, Inspector URL, Sitemap, Alerte, Setări, cu CSV.",
-    engine: ["src/lib/seo.ts", "src/lib/seo-audit.ts", "src/lib/seo-inspector.ts", "src/lib/seo-cuvinte.ts", "src/lib/seo-clustere.ts", "src/lib/continut/prag.ts", "src/lib/continut/uat.ts", "src/lib/continut/uat-text.ts", "src/lib/continut/localitati-statistici.ts", "src/lib/motor-seo/motor.ts", "src/lib/motor-seo/calitate.ts", "src/lib/motor-seo/wikipedia.ts", "src/lib/public-pages.ts", "src/lib/page-metadata.ts"],
+    what: "Nume de familie, localități (județe și toate cele 3.180 de comune, orașe și municipii, cu satele, populația 2021, vecinii și familiile cu rădăcini acolo de la 5 arbori), ghiduri, glosar, sitemap-uri, pragul de indexare (noindex pentru paginile subțiri) motorul de publicare (coadă seo_queue, control de calitate, Wikipedia rescris cu atribuire, ritm 50→200 pe zi) și centrul SEO pe file: Prezentare, Cuvinte cheie, Pagini, Indexare, Secțiuni, Inspector URL, Sitemap, Alerte, Setări, cu CSV. Din 18.11.2026: data din sitemap („lastmod”) e ziua în care s-a schimbat cu adevărat fiecare pagină (amprenta conținutului în src/data/seo-versiuni.json, actualizată cu npx tsx scripts/seo-versiuni.ts), fără changefreq/priority; adresele pe limbi fără traducere (/en/nume…) trimit cu 308 la pagina în română; robots.txt fără Host și cu /cauta?, ?src=, ?utm_ oprite; flux RSS al ghidurilor la /ghid/feed.xml.",
+    engine: ["src/lib/seo.ts", "src/lib/seo-audit.ts", "src/lib/seo-inspector.ts", "src/lib/seo-cuvinte.ts", "src/lib/seo-clustere.ts", "src/lib/continut/prag.ts", "src/lib/continut/uat.ts", "src/lib/continut/uat-text.ts", "src/lib/continut/localitati-statistici.ts", "src/lib/motor-seo/motor.ts", "src/lib/motor-seo/calitate.ts", "src/lib/motor-seo/wikipedia.ts", "src/lib/public-pages.ts", "src/lib/page-metadata.ts", "src/lib/seo/versiuni.ts", "src/lib/seo/amprente.ts", "src/lib/traduceri-reale.ts", "src/lib/continut/rss.ts"],
     pages: ["/nume", "/nume/[slug]", "/localitati", "/localitati/[judet]", "/localitati/[judet]/[localitate]", "/ghid", "/ghid/[slug]", "/glosar", "/glosar/[slug]"],
-    api: ["/sitemap.xml", "/sitemaps/[file]", "/admin/seo/csv"],
+    api: ["/sitemap.xml", "/sitemaps/[file]", "/admin/seo/csv", "/ghid/feed.xml"],
     automations: ["sitemap", "motor-seo"],
     dashboard: "/admin/seo",
-    tests: ["tests/seo.test.ts", "tests/localitati.test.ts", "tests/localitati-statistici.test.ts", "tests/motor-seo.test.ts"],
+    tests: ["tests/seo.test.ts", "tests/localitati.test.ts", "tests/localitati-statistici.test.ts", "tests/motor-seo.test.ts", "tests/seo-etapa1.test.ts"],
     env: ["GSC_SERVICE_ACCOUNT_JSON"],
   },
   {

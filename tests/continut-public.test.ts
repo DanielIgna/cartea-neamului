@@ -112,10 +112,11 @@ describe("sitemap.xml", () => {
     expect(paths).toContain("/glosar");
   });
 
-  it("data ultimei schimbări vine din fișier, iar hubul are data celei mai noi pagini", () => {
+  it("data ultimei schimbări vine din fișier, iar hubul nu e mai vechi decât cea mai nouă pagină", () => {
+    // Din 18.11.2026 datele vin din src/data/seo-versiuni.json (amprenta conținutului); hubul se schimbă și când i se schimbă șablonul.
     const g = groups.find((x) => x.name === "ghid")!;
     const newest = Math.max(...guides.map((e) => e.updated.getTime()));
-    expect(g.urls[0].lastModified.getTime()).toBe(newest);
+    expect(g.urls[0].lastModified.getTime()).toBeGreaterThanOrEqual(newest);
     expect(g.urls.find((u) => u.path === guides[0].path)?.lastModified.getTime()).toBe(guides[0].updated.getTime());
   });
 

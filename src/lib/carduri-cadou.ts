@@ -60,8 +60,11 @@ export function normalizeCode(input: unknown): string | null {
   return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`;
 }
 
-/** Adresa tipărită pe carduri (cerută de Daniel): mereu site-ul de producție, cu www, oricare ar fi mediul în care se generează. */
-export const CARD_ORIGIN = "https://www.carteaneamului.ro";
+/**
+ * Adresa tipărită pe carduri: mereu site-ul de producție, oricare ar fi mediul în care se generează. Fără www (18.11.2026, planul SEO):
+ * adresa principală e carteaneamului.ro; cardurile tipărite înainte, cu www, merg mai departe (www trimite la ea).
+ */
+export const CARD_ORIGIN = "https://carteaneamului.ro";
 export function activationUrl(origin: string, cod: string) {
   return `${origin.replace(/\/$/, "")}/activeaza?cod=${encodeURIComponent(cod)}`;
 }

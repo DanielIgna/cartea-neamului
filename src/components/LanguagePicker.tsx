@@ -3,8 +3,9 @@ import { useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "use-intl";
 import { chooseLanguage } from "@/app/limba-actions";
-import { LANGUAGE_FLAGS, LANGUAGE_NAMES, LOCALES, LOCALE_COOKIE, localizedPath, splitLocalePath, type Locale } from "@/i18n/locales";
+import { LANGUAGE_FLAGS, LANGUAGE_NAMES, LOCALES, LOCALE_COOKIE, splitLocalePath, type Locale } from "@/i18n/locales";
 import { isPublicPath } from "@/lib/public-variant";
+import { pathForLocale } from "@/lib/traduceri-reale";
 
 /**
  * Lista limbilor, sus lângă temă, pe toate paginile: steagul și numele limbii (pe telefon steagul și codul scurt). Fiecare limbă e
@@ -24,7 +25,7 @@ export default function LanguagePicker({ remember = false }: { remember?: boolea
     const r = await chooseLanguage(l);
     if (!r.ok) return;
     const { path } = splitLocalePath(location.pathname);
-    if (isPublicPath(path)) location.assign(localizedPath(path, l) + location.search);
+    if (isPublicPath(path)) location.assign(pathForLocale(path, l) + location.search);
     else router.refresh();
   });
   return (

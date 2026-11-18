@@ -144,9 +144,9 @@ describe("adresele pe limbă", () => {
     expect(visit("/it", { cookie: "limba=ro" }).setCookie).toBeNull();
   });
 
-  it("o pagină netradusă (ghiduri) în altă limbă: aceeași pagină în română, cu notă, nu o pagină goală", () => {
-    expect(visit("/it/ghid").to).toBe("/pub/it.auto.0/ghid");
-    expect(visit("/de/localitati/cluj").to).toBe("/pub/de.auto.0/localitati/cluj");
+  it("o pagină netradusă (ghiduri) în altă limbă: 308 spre pagina românească (planul SEO, 18.11.2026)", () => {
+    expect(visit("/it/ghid")).toMatchObject({ status: 308, location: "https://carteaneamului.ro/ghid" });
+    expect(visit("/de/localitati/cluj")).toMatchObject({ status: 308, location: "https://carteaneamului.ro/localitati/cluj" });
   });
 
   it("cu cont: pagina făcută pe loc, cu limba din adresă trimisă serverului", () => {

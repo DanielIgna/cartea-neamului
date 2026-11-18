@@ -11,6 +11,7 @@ import Prose from "@/components/continut/Prose";
 import { backlinks, getEntry, loadCollection, type Collection, type Entry } from "@/lib/continut/colectii";
 import { paginate, pageHref } from "@/lib/continut/paginare";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
+import { GUIDE_FEED_PATH } from "@/lib/continut/rss";
 import { SITE_URL } from "@/lib/site-url";
 
 /**
@@ -44,8 +45,12 @@ export function hubMetadata(c: Collection, page: number): Metadata {
   const pages = paginate(loadCollection(c), page).pages;
   // O pagină de listă care nu există dă 404 încă de aici, ca răspunsul să aibă codul corect (nu 200 cu „nu există”).
   if (page > pages) notFound();
-  if (page <= 1) return publicPageMetadata({ path: h.path, title: h.title, description: h.description });
-  return publicPageMetadata({ path: pageHref(h.path, page), title: h.title.replace(" | ", ` – pagina ${page} | `), description: `${h.description} Pagina ${page} din ${pages}.` });
+  const base = page <= 1
+    ? publicPageMetadata({ path: h.path, title: h.title, description: h.description })
+    : publicPageMetadata({ path: pageHref(h.path, page), title: h.title.replace(" | ", ` – pagina ${page} | `), description: `${h.description} Pagina ${page} din ${pages}.` });
+  // Ghidurile au flux RSS (/ghid/feed.xml), anunțat în <head> ca cititoarele de știri să-l găsească singure.
+  if (c !== "ghid") return base;
+  return { ...base, alternates: { ...base.alternates, types: { "application/rss+xml": [{ url: GUIDE_FEED_PATH, title: "Ghiduri de genealogie – Cartea Neamului" }] } } };
 }
 
 export function HubPage({ c, page }: { c: Collection; page: number }) {
