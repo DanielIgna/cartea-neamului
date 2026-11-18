@@ -1,0 +1,25 @@
+# Proba de viteză (src/lib/seo/bugete.ts): LCP, CLS, TBT și mărimea HTML pe paginile tipice ale site-ului live, ca pe un
+# telefon. Rulează lunea dimineața și la cerere (Actions → bugete-viteza → Run workflow); tabelul apare în sumarul rulării.
+name: bugete-viteza
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "Adresa site-ului"
+        default: "https://carteaneamului.ro"
+  schedule:
+    - cron: "30 6 * * 1"
+jobs:
+  proba:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm i --no-save playwright@1.56.1 && npx playwright install --with-deps chromium
+      - run: npx tsx scripts/bugete-viteza.ts "$GITHUB_STEP_SUMMARY"
+        env:
+          BASE: ${{ inputs.base || 'https://carteaneamului.ro' }}

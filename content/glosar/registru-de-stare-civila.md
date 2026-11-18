@@ -1,7 +1,7 @@
 ---
 title: Registru de stare civilă
 description: Registrul de stare civilă: nașteri, căsătorii și decese notate de stat. Cum arată, unde se păstrează și cum îl cercetezi.
-updated: 2026-11-13
+updated: 2026-11-18
 alt: registre de stare civilă, registrul de nașteri
 terms: stare-civila, act-de-nastere, act-de-casatorie, act-de-deces, arhivele-nationale
 related: registrele-de-stare-civila, cum-ceri-un-act-de-stare-civila, cum-ceri-copii-de-la-arhive
@@ -15,3 +15,11 @@ Registrele vechi sunt tabele cu rubrici tipărite, completate de mână. Limba d
 ## Unde se păstrează
 
 Un exemplar rămâne la primărie aproximativ 100 de ani, apoi ajunge la serviciul județean al [Arhivelor Naționale](/glosar/arhivele-nationale). Un al doilea exemplar a fost trimis, în multe perioade, la tribunal sau la o altă autoritate, așa că poate exista o copie chiar dacă originalul s-a pierdut.
+
+## Cum apare într-un act
+
+Un registru de stare civilă are pagini tipărite, cu rubrici fixe pentru naștere, căsătorie sau deces, completate de ofițerul stării civile (de obicei primarul sau notarul). În Transilvania, între 1895 și 1906 rubricile sunt în maghiară, uneori cu text bilingv; pe margine apar mențiunile adăugate mai târziu.
+
+## Unde și când
+
+Registrele civile încep în 1865 în Moldova și Țara Românească, în 1895 în Transilvania, Banat, Crișana și Maramureș, iar în Bucovina sunt preluate de stat după 1918. Cele mai noi de 100 de ani (nașteri) sau 75 de ani (căsătorii, decese) sunt la primării.

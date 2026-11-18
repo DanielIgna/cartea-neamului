@@ -1,7 +1,7 @@
 ---
 title: Protopopiat
 description: Protopopiatul: unitatea care grupa mai multe parohii. De ce îl cauți când vrei registrele parohiale ale unui sat. Explicat pe scurt, pentru arbore.
-updated: 2026-11-13
+updated: 2026-11-18
 alt: protopopiate, protopop, protoierie, decanat
 terms: parohie, filie, episcopie, registru-parohial
 related: cum-citesti-un-registru-parohial, cum-cercetezi-la-arhive
@@ -11,3 +11,11 @@ related: cum-citesti-un-registru-parohial, cum-cercetezi-la-arhive
 ## De ce îl cauți
 
 Protopopiatul primea rapoarte și copii ale registrelor de la parohii, iar unele liste (de preoți, de credincioși, de școli) se păstrează doar la acest nivel. În arhive, fondurile bisericești sunt adesea ordonate pe [eparhii](/glosar/episcopie) și protopopiate, așa că trebuie să știi din ce protopopiat ținea satul în epoca respectivă. Granițele lor s-au schimbat de mai multe ori, deci verifică pentru anul care te interesează.
+
+## Cum apare într-un act
+
+Protopopiatul apare în antetul registrelor sau în schematismele eparhiilor: „Protopopiatul Ortodox Român al Clujului”, „Districtul protopopesc X”. Când un registru parohial s-a pierdut, protopopiatul poate avea copii (dublete) trimise anual de parohii.
+
+## Unde și când
+
+Protopopiatele grupau parohiile ortodoxe și greco-catolice din toate regiunile. Arhivele lor, unde s-au păstrat, sunt la arhivele eparhiale sau la serviciile județene ale Arhivelor Naționale.
