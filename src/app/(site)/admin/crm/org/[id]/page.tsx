@@ -12,7 +12,8 @@ import { orgDetail, whatsappLink } from "@/lib/crm-admin";
 import { orgSends } from "@/lib/crm-campanii";
 import { VIA_LABEL, moneyByOrg, orgAccountsList } from "@/lib/crm-bani";
 import { school } from "@/db/schema";
-import { linkSchoolAction, orgCodeAction } from "@/app/crm-actions";
+import { closeTaskAction, linkSchoolAction, newTaskAction, orgCodeAction } from "@/app/crm-actions";
+import { DUE_CHOICES, orgTasks } from "@/lib/crm-sarcini";
 
 const AUTO_ACTIVITIES = new Set<string>(["email_livrat", "email_deschis", "email_click", "dezabonat"]);
 const SEND_LABEL: Record<string, string> = { trimis: "Trimis", livrat: "Livrat", deschis: "Deschis", click: "Click", nelivrat: "Nelivrat", dezabonat: "Dezabonat", blocat: "Oprit (nu contacta)", eroare: "Eroare" };
@@ -31,7 +32,7 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
   await requireAdmin(`/admin/crm/org/${id}`);
   const sp = await searchParams;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
-  const [d, sends, money, brought, schools] = await Promise.all([orgDetail(db, id), orgSends(db, id), moneyByOrg(db, id), orgAccountsList(db, id), db.select({ id: school.id, name: school.name, locality: school.locality }).from(school).orderBy(school.name).limit(500)]);
+  const [d, sends, money, brought, tasks, schools] = await Promise.all([orgDetail(db, id), orgSends(db, id), moneyByOrg(db, id), orgAccountsList(db, id), orgTasks(db, id), db.select({ id: school.id, name: school.name, locality: school.locality }).from(school).orderBy(school.name).limit(500)]);
   const m = money.get(id) ?? { accounts: 0, paidAccounts: 0, ron: 0, eur: 0, firstPaid: null };
   if (!d) notFound();
   const { org } = d;
@@ -96,6 +97,35 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
           <label>Până la<input name="dataUrmatoruluiPas" type="date" /></label>
           <button className="btn primary">Adaugă</button>
         </form>
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Sarcini</h2>
+        <form action={newTaskAction} className="form" style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "flex-end", marginBottom: 12 }}>
+          <input type="hidden" name="id" value={org.id} />
+          <label style={{ flex: "1 1 240px" }}>Ce e de făcut<input name="titlu" maxLength={300} required placeholder="Sună la secretariat" /></label>
+          <label>Când<select name="cand" defaultValue="maine">{DUE_CHOICES.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select></label>
+          <label>sau data<input type="date" name="data" /></label>
+          <button className="btn primary">Pune sarcina</button>
+        </form>
+        {tasks.length ? (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <tbody>{tasks.map((t) => (
+                <tr key={t.id}>
+                  <td className="tight">{day(t.scadenta.toISOString())}</td>
+                  <td>{t.titlu}{t.sursa !== "manual" && <small> automat</small>}</td>
+                  <td className="tight">{t.status === "deschisa" ? (
+                    <form action={closeTaskAction} style={{ display: "flex", gap: 6 }}>
+                      <input type="hidden" name="id" value={t.id} /><input type="hidden" name="back" value={`/admin/crm/org/${org.id}`} />
+                      <button className="btn primary" name="status" value="facuta">Făcut</button><button className="btn" name="status" value="anulata">Anulează</button>
+                    </form>
+                  ) : <span className="pill">{t.status === "facuta" ? "făcută" : "anulată"}</span>}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Nicio sarcină.</p>}
       </div>
 
       <div className="card">

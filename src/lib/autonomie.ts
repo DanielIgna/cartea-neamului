@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -78,6 +78,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Trimite lotul zilnic al campaniilor pe care le-ai pornit în Admin → CRM → Campanii: doar luni–vineri, în fereastra orară a fiecăreia, cel mult limita pe zi (implicit 20 în total), câte un singur email pe organizație, doar la adresele oficiale. Sare peste „Nu contacta” (verificat și la trimitere). Fiecare email are dezabonare; adresele inexistente trec pe „Nu contacta” și la „de sunat”." },
   { key: "crm-gmail", label: "CRM: răspunsuri din Gmail", risk: "acord", defaultOn: false, everyDays: 1, needs: "Gmail legat în Admin → CRM → Sănătate (GMAIL_CLIENT_ID/SECRET sau cheile Google)",
     what: "Citește (doar citire) inbox-ul contact.carteaneamului@gmail.com: doar mesajele de la organizațiile din CRM (adresa sau domeniul lor), cel mult 100 pe zi. Le clasifică (pozitiv, neutru, negativ, dezabonare, auto-reply): negativ și dezabonare → „Nu contacta”, pozitiv → „interesat” și în „Azi”. Notificările „nelivrat” trec organizația la „de sunat”. Nu trimite nimic; ciornele de răspuns intră în Aprobări doar dacă e pornită și „ciorne de răspuns”." },
+  { key: "crm-dimineata", label: "CRM: rezumatul de dimineață", risk: "acord", defaultOn: false, everyDays: 1, ownClock: "zilnic, 08:00 (ora României; 09:00 vara)", needs: "RESEND_API_KEY",
+    what: "Îți scrie dimineața, doar ție, ce e de făcut azi în CRM: sarcinile cu termen (și restantele), răspunsurile noi, mesajele de aprobat, organizațiile de sunat, emailurile trimise ieri și plățile venite prin organizații. O dată pe zi și doar dacă e ceva de făcut." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -370,7 +372,15 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "crm-ciorne": runCrmDrafts,
   "crm-campanii": runCrmCampaigns,
   "crm-gmail": runCrmGmail,
+  "crm-dimineata": runCrmMorning,
 };
+
+async function runCrmMorning({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "Lipsește RESEND_API_KEY" };
+  const { runMorningDigest } = await import("./crm-sarcini");
+  const r = await runMorningDigest(db, { now, to: admins()[0], send: sendMail });
+  return { status: r.error ? "eroare" : r.sent ? "ok" : "nimic", observed: 1, acted: r.sent ? 1 : 0, note: r.note, verified: !r.error };
+}
 
 async function runCrmGmail({ db, now }: Ctx): Promise<RunResult> {
   const { syncGmail } = await import("./crm-gmail");

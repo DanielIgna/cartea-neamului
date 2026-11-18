@@ -20,7 +20,7 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
-import { gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
+import { closeTaskAction, gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
 import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
 import { batchNowAction, campaignStatusAction, limitsAction, newCampaignAction, recomputeAction, saveTemplateAction, testMailAction } from "@/app/crm-actions";
 import { CAMPAIGN_LABEL, PLACEHOLDERS, campaignList, isCampaignStatus, sentToday, templateList } from "@/lib/crm-campanii";
@@ -39,7 +39,7 @@ const TABS = [
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
-const KIND: Record<TodayItem["kind"], string> = { raspuns: "Răspuns nou", aprobare: "De aprobat", de_sunat: "De sunat", deal: "Pasul următor", partener: "Partener" };
+const KIND: Record<TodayItem["kind"], string> = { sarcina: "Sarcină", raspuns: "Răspuns nou", aprobare: "De aprobat", de_sunat: "De sunat", deal: "Pasul următor", partener: "Partener" };
 const srcUrl = (src: string | null) => (src ? `${SITE_URL}/?src=${src}` : null);
 
 /**
@@ -98,7 +98,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
 
 async function Today() {
   const items = await todayList(db);
-  if (!items.length) return <div className="card"><p className="muted" style={{ margin: 0 }}>Nimic de făcut azi. Răspunsurile noi, aprobările, școlile de sunat și pașii cu termen apar aici.</p></div>;
+  if (!items.length) return <div className="card"><p className="muted" style={{ margin: 0 }}>Nimic de făcut azi. Sarcinile cu termen, răspunsurile noi, aprobările, școlile de sunat și pașii cu termen apar aici.</p></div>;
   return (
     <div className="card">
       <div className="tbl-wrap">
@@ -109,13 +109,16 @@ async function Today() {
               const wa = whatsappLink(it.phone, `Bună ziua! Vă scriu de la Cartea Neamului (carteaneamului.ro), în legătură cu ${it.title}.`);
               return (
                 <tr key={`${it.kind}-${i}`}>
-                  <td className="tight"><span className={`pill ${it.kind === "aprobare" ? "warn" : it.kind === "raspuns" ? "ok" : ""}`}>{KIND[it.kind]}</span></td>
+                  <td className="tight"><span className={`pill ${it.kind === "aprobare" || it.late ? "warn" : it.kind === "raspuns" ? "ok" : ""}`}>{it.late ? "Restantă" : KIND[it.kind]}</span></td>
                   <td><Link href={it.href}><b>{it.title}</b></Link>{it.at && <small>{day(it.at.toISOString())}</small>}</td>
                   <td>{it.detail}</td>
                   <td className="tight" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {it.phone && <a className="btn" href={`tel:${it.phone.replace(/\s/g, "")}`}>Sună</a>}
                     {wa && <a className="btn" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
                     {it.email && it.kind === "raspuns" && <a className="btn" href={`mailto:${it.email}`}>Răspunde</a>}
+                    {it.kind === "sarcina" && it.id && (
+                      <form action={closeTaskAction}><input type="hidden" name="id" value={it.id} /><input type="hidden" name="back" value="/admin/crm" /><button className="btn primary">Făcut</button></form>
+                    )}
                     {it.kind === "aprobare" && <Link className="btn primary" href="/admin/crm?t=aprobari">Aprob / Resping</Link>}
                     {it.kind === "de_sunat" && it.href.startsWith("/admin/crm/org/") && (
                       <form action={calledAction}><input type="hidden" name="id" value={it.href.split("/").pop()} /><button className="btn">Am sunat</button></form>

@@ -208,12 +208,13 @@ export const suppressionList = (db: Db, limit = 1000) => db.select().from(crmSup
 
 /* ---------- Azi ---------- */
 
-export type TodayItem = { kind: "raspuns" | "aprobare" | "de_sunat" | "deal" | "partener"; title: string; detail: string; href: string; phone?: string | null; email?: string | null; site?: string | null; at: Date | null; id?: string };
+export type TodayItem = { kind: "sarcina" | "raspuns" | "aprobare" | "de_sunat" | "deal" | "partener"; late?: boolean; title: string; detail: string; href: string; phone?: string | null; email?: string | null; site?: string | null; at: Date | null; id?: string };
 
 export async function todayList(db: Db, now = new Date()): Promise<TodayItem[]> {
   const end = endOfDay(now);
   const since = new Date(now.getTime() - 14 * DAY);
-  const [replies, approvals, calls, deals, partners] = await Promise.all([
+  const [tasks, replies, approvals, calls, deals, partners] = await Promise.all([
+    import("./crm-sarcini").then((m) => m.dueTasks(db, now)),
     // Răspunsurile din ultimele 14 zile la care n-am mai făcut nimic după ele.
     rows<{ org: string; nume: string; rezumat: string | null; at: string; email: string | null; telefon: string | null; clasificare: string | null }>(db, sql`
       select a.organization_id as org, o.nume, a.rezumat, a.at, o.email_oficial as email, o.telefon, a.meta->>'clasificare' as clasificare
@@ -230,9 +231,11 @@ export async function todayList(db: Db, now = new Date()): Promise<TodayItem[]> 
     crmPartners(db).then((p) => dueSteps(p, now)),
   ]);
   const out: TodayItem[] = [];
+  const callTask = new Set(tasks.filter((t) => t.sursa === "nelivrat" && t.org).map((t) => t.org));
+  for (const t of tasks) out.push({ kind: "sarcina", title: t.nume ?? t.titlu, detail: t.titlu, href: t.org ? `/admin/crm/org/${t.org}` : "/admin/crm", phone: t.telefon, email: t.email, at: t.scadenta, id: t.id, late: t.restanta });
   for (const r of replies) out.push({ kind: "raspuns", title: r.nume, detail: `${r.clasificare ? `${r.clasificare}: ` : ""}${(r.rezumat ?? "").slice(0, 220)}`, href: `/admin/crm/org/${r.org}`, email: r.email, phone: r.telefon, at: new Date(r.at) });
   for (const { a, orgNume } of approvals) out.push({ kind: "aprobare", title: orgNume ?? a.payload.destinatar ?? a.tipActiune, detail: `${a.risc} · ${a.motiv ?? a.tipActiune}`, href: "/admin/crm?t=aprobari", at: a.createdAt, id: a.id });
-  for (const o of calls) out.push({ kind: "de_sunat", title: o.nume, detail: [o.status === "nelivrat" ? "emailul n-a ajuns" : "de sunat", o.localitate, o.judet].filter(Boolean).join(" · "), href: `/admin/crm/org/${o.id}`, phone: o.telefon, site: o.site, email: o.emailOficial, at: o.updatedAt });
+  for (const o of calls.filter((x) => !callTask.has(x.id))) out.push({ kind: "de_sunat", title: o.nume, detail: [o.status === "nelivrat" ? "emailul n-a ajuns" : "de sunat", o.localitate, o.judet].filter(Boolean).join(" · "), href: `/admin/crm/org/${o.id}`, phone: o.telefon, site: o.site, email: o.emailOficial, at: o.updatedAt });
   for (const { d, nume, telefon, email } of deals) out.push({ kind: "deal", title: nume, detail: d.urmatorulPas ?? "pasul următor", href: `/admin/crm/org/${d.organizationId}`, phone: telefon, email, at: d.dataUrmatoruluiPas });
   for (const p of partners) out.push({ kind: "partener", title: p.numeMagazin, detail: p.urmatorulPas ?? "pasul următor", href: `/admin/parteneri/${p.id}`, phone: p.telefon, email: p.email, at: p.urmatorulPasLa });
   return out;
