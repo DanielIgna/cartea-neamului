@@ -207,12 +207,21 @@ export async function addActivity(db: Pick<Db, "insert">, a: ActivityInput): Pro
 }
 
 /** Organizația după email oficial (sau după domeniul site-ului, dacă emailul e de pe domeniul ei). */
+/** Domeniile de email gratuite: acolo legăm doar adresa exactă, nu tot domeniul (multe școli au adrese pe yahoo/gmail). */
+export const FREE_MAIL_DOMAINS = new Set(["gmail.com", "googlemail.com", "yahoo.com", "yahoo.ro", "ymail.com", "hotmail.com", "outlook.com", "live.com", "msn.com", "icloud.com", "me.com", "aol.com", "gmx.com", "gmx.net", "mail.com", "protonmail.com", "proton.me"]);
+
+/** Organizația după adresa exactă; altfel după domeniu (doar domenii proprii, nu gratuite, și doar dacă e una singură). */
 export async function orgByEmail(db: Pick<Db, "select">, email: string) {
   const e = cleanEmail(email);
   if (!e) return null;
   const [r] = await db.select({ id: crmOrganizations.id, status: crmOrganizations.status }).from(crmOrganizations)
     .where(and(sql`lower(${crmOrganizations.emailOficial}) = ${e}`)).limit(1);
-  return r ?? null;
+  if (r) return r;
+  const domain = e.split("@")[1];
+  if (!domain || FREE_MAIL_DOMAINS.has(domain)) return null;
+  const list = await db.select({ id: crmOrganizations.id, status: crmOrganizations.status }).from(crmOrganizations)
+    .where(sql`split_part(lower(${crmOrganizations.emailOficial}), '@', 2) = ${domain} or lower(${crmOrganizations.site}) ~ ${`(^|[/.])${domain.replace(/[.]/g, "\\.")}(/|$)`}`).limit(2);
+  return list.length === 1 ? list[0] : null;
 }
 
 /* ---------- Răspunsurile: clasificare simplă, după cuvinte (fără nimic ascuns) ---------- */
@@ -220,12 +229,12 @@ export async function orgByEmail(db: Pick<Db, "select">, email: string) {
 export const REPLY_KINDS = ["interesat", "intrebare", "refuz", "dezabonare", "automat"] as const;
 export type ReplyKind = (typeof REPLY_KINDS)[number];
 export const isReplyKind = (v: unknown): v is ReplyKind => typeof v === "string" && (REPLY_KINDS as readonly string[]).includes(v);
-export const REPLY_LABEL: Record<ReplyKind, string> = { interesat: "Interesat", intrebare: "Întrebare", refuz: "Refuz", dezabonare: "Dezabonare", automat: "Automat / absent" };
+export const REPLY_LABEL: Record<ReplyKind, string> = { interesat: "Pozitiv (interesat)", intrebare: "Neutru (întrebare)", refuz: "Negativ (refuz)", dezabonare: "Dezabonare", automat: "Auto-reply / absent" };
 
 const RULES: [ReplyKind, RegExp][] = [
   ["automat", /(out of office|auto[- ]?reply|automatic reply|raspuns automat|sunt in concediu|absent (din birou|pana)|nu sunt la birou|mailer-daemon|delivery status)/],
-  ["dezabonare", /(dezabon|unsubscribe|stergeti[- ]?(ne|ma)|scoateti[- ]?(ne|ma)|nu (ne|mai) (mai )?trimiteti|nu ne mai contactati|nu doresc sa (mai )?primesc|eliminati adresa)/],
-  ["refuz", /(nu (suntem|sunt) interesat|nu ne intereseaza|nu este cazul|nu dorim|nu avem nevoie|multumim,? dar nu|refuz)/],
+  ["dezabonare", /(dezabon|unsubscribe|stergeti[- ]?(ne|ma)|scoateti[- ]?(ne|ma)|(ne|ma) (scoateti|stergeti|eliminati) din|nu (ne|mai) (mai )?trimiteti|nu ne mai contactati|nu doresc sa (mai )?primesc|eliminati adresa)/],
+  ["refuz", /(nu (suntem|sunt) interesat|nu ne intereseaza|nu este cazul|nu dorim|nu avem nevoie|multumim,? dar nu|refuz|nu (avem|dispunem de) (buget|fonduri)|nu putem (participa|colabora)|not interested|no,? thank)/],
   ["interesat", /(suntem interesat|sunt interesat|ne intereseaza|da,? (va rog|dorim)|dorim (sa|coduri|detalii)|trimiteti[- ]?ne (oferta|detalii|codurile)|vrem (sa|coduri)|cum procedam|ne-ar interesa)/],
   ["intrebare", /\?|(cat costa|ce presupune|cum functioneaza|puteti detalia|as dori (sa stiu|informatii))/],
 ];

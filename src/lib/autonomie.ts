@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -76,6 +76,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "La răspunsurile „interesat” sau „întrebare” de la școli și firme pregătește o ciornă de răspuns în Admin → CRM → Aprobări (o poți edita). Nimic nu pleacă fără „Aprob”. Refuzurile și dezabonările merg direct pe lista „Nu contacta”, fără să fie nevoie de pornire." },
   { key: "crm-campanii", label: "CRM: campanii către organizații", risk: "acord", defaultOn: false, everyDays: 1, ownClock: "luni–vineri, 10:00 (ora României; 11:00 vara)", needs: "RESEND_API_KEY; pentru livrat/nelivrat și RESEND_WEBHOOK_SECRET",
     what: "Trimite lotul zilnic al campaniilor pe care le-ai pornit în Admin → CRM → Campanii: doar luni–vineri, în fereastra orară a fiecăreia, cel mult limita pe zi (implicit 20 în total), câte un singur email pe organizație, doar la adresele oficiale. Sare peste „Nu contacta” (verificat și la trimitere). Fiecare email are dezabonare; adresele inexistente trec pe „Nu contacta” și la „de sunat”." },
+  { key: "crm-gmail", label: "CRM: răspunsuri din Gmail", risk: "acord", defaultOn: false, everyDays: 1, needs: "Gmail legat în Admin → CRM → Sănătate (GMAIL_CLIENT_ID/SECRET sau cheile Google)",
+    what: "Citește (doar citire) inbox-ul contact.carteaneamului@gmail.com: doar mesajele de la organizațiile din CRM (adresa sau domeniul lor), cel mult 100 pe zi. Le clasifică (pozitiv, neutru, negativ, dezabonare, auto-reply): negativ și dezabonare → „Nu contacta”, pozitiv → „interesat” și în „Azi”. Notificările „nelivrat” trec organizația la „de sunat”. Nu trimite nimic; ciornele de răspuns intră în Aprobări doar dacă e pornită și „ciorne de răspuns”." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -367,7 +369,17 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "crm-ambasador": runCrmAmbassadors,
   "crm-ciorne": runCrmDrafts,
   "crm-campanii": runCrmCampaigns,
+  "crm-gmail": runCrmGmail,
 };
+
+async function runCrmGmail({ db, now }: Ctx): Promise<RunResult> {
+  const { syncGmail } = await import("./crm-gmail");
+  const r = await syncGmail(db, { now });
+  if (r.skipped) return { status: "sarit", observed: 0, acted: 0, note: r.skipped };
+  if (r.error) return { status: "eroare", observed: r.read, acted: 0, note: r.error };
+  const kinds = Object.entries(r.byKind).map(([k, v]) => `${k}: ${v}`).join(", ");
+  return { status: r.replies || r.bounces ? "ok" : "nimic", observed: r.read, acted: r.replies + r.bounces, note: `${r.read} mesaje noi, ${r.matched} de la organizații din CRM, ${r.replies} răspunsuri${kinds ? ` (${kinds})` : ""}${r.bounces ? `, ${r.bounces} nelivrate` : ""}`, details: r, verified: true };
+}
 
 async function runCrmCampaigns({ db, now }: Ctx): Promise<RunResult> {
   if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "Lipsește RESEND_API_KEY" };

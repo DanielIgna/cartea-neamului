@@ -232,6 +232,8 @@
   "src/app/actions.ts",
   "src/app/admin-actions.ts",
   "src/app/adn-admin-actions.ts",
+  "src/app/api/admin/crm/gmail/callback/route.ts",
+  "src/app/api/admin/crm/gmail/start/route.ts",
   "src/app/api/admin/crm/ingest/route.ts",
   "src/app/api/admin/poze/route.ts",
   "src/app/api/admin/propunere/[id]/route.ts",
@@ -772,6 +774,7 @@
   "src/lib/crm-admin.ts",
   "src/lib/crm-auto.ts",
   "src/lib/crm-campanii.ts",
+  "src/lib/crm-gmail.ts",
   "src/lib/crm-import.ts",
   "src/lib/crm-ingest.ts",
   "src/lib/crm-scor.ts",
@@ -924,6 +927,7 @@
   "tests/crm-admin.test.ts",
   "tests/crm-auto.test.ts",
   "tests/crm-campanii.test.ts",
+  "tests/crm-gmail.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
@@ -1177,6 +1181,14 @@
   {
    "path": "/admin/texte",
    "kind": "pagina"
+  },
+  {
+   "path": "/api/admin/crm/gmail/callback",
+   "kind": "api"
+  },
+  {
+   "path": "/api/admin/crm/gmail/start",
+   "kind": "api"
   },
   {
    "path": "/api/admin/crm/ingest",
@@ -1629,6 +1641,7 @@
   "tests/crm-admin.test.ts",
   "tests/crm-auto.test.ts",
   "tests/crm-campanii.test.ts",
+  "tests/crm-gmail.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
