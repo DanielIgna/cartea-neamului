@@ -320,6 +320,38 @@ export async function bookPaid(db: Pick<Db, "select">, userId: string, treeId: s
 const INCLUDED = "inclus";
 
 /**
+ * De ce are omul cartea PDF a unui arbore (oferta din 18 noiembrie 2026: cartea e un produs separat, plătit):
+ * - „deschis”: plățile sunt oprite din Admin, deci nu e oprit nimeni (ca restul site-ului);
+ * - „gratuit”: „Acces gratuit” din Admin → Oameni (planul „mereu”), proprietarii site-ului (Daniel și Cristina, `OWNERS`) și
+ *   contul demo: toate planurile și cartea, fără plată și fără termen;
+ * - „beta”: contul era făcut înainte de pornirea plăților; are cartea doar în primul an, cum scrie în Termeni, până expiră;
+ * - „inclus”: planul titularului are cartea „inclusă” din Admin (implicit, la niciun plan);
+ * - „platit”: a cumpărat cartea acestui arbore în ultimele 12 luni.
+ * Altfel (`null`): nu are cartea; vede doar modelul cu familia închipuită.
+ */
+export type BookWhy = "deschis" | "gratuit" | "beta" | "inclus" | "platit";
+export async function bookAccess(db: Pick<Db, "select">, o: { userId: string; treeId: string; access: Access; settings: PlanSettings; ownsThisTree: boolean; owner?: boolean }, now = new Date()): Promise<BookWhy | null> {
+  if (o.owner) return "gratuit";
+  const a = o.access;
+  if (a.kind === "deschis") return "deschis";
+  if (a.kind === "mereu") return "gratuit";
+  if (a.kind === "beta") return "beta";
+  if (bookIncluded(a, o.settings, o.ownsThisTree)) return "inclus";
+  if (await bookPaid(db, o.userId, o.treeId, now)) return "platit";
+  if (a.kind === "platit" && a.tier !== "basic" && o.ownsThisTree && (await boughtBeforeOffer(db, o.userId, now))) return "inclus";
+  return null;
+}
+
+/** Ziua schimbării de ofertă: cine a plătit Familie sau Premium înainte avea cartea PDF inclusă și o păstrează până la capătul anului acela. */
+export const OFFER_NOV18 = new Date("2026-11-18T00:00:00+02:00");
+async function boughtBeforeOffer(db: Pick<Db, "select">, userId: string, now: Date) {
+  const since = new Date(now.getTime() - YEAR_DAYS * DAY);
+  const [r] = await db.select({ id: payment.id }).from(payment)
+    .where(and(eq(payment.userId, userId), eq(payment.kind, "an"), gt(payment.createdAt, since), sql`${payment.createdAt} < ${OFFER_NOV18}`, sql`${payment.amount} > 0`)).limit(1);
+  return !!r;
+}
+
+/**
  * Cartea PDF inclusă în plan, pentru un arbore anume: la „toți arborii titularului”, cartea oricărui arbore al lui, cât are
  * anul plătit. La „una pe an”, nu e automată: o alege din /plata (`claimIncludedBook`).
  */

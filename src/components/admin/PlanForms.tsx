@@ -39,13 +39,12 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
         </div>
         <div className="limits-row">
           <label>Cartea PDF
-            <select name={`${t}Book`} defaultValue={value[`${t}Book`]}>
-              <option value="separat">separat (se plătește)</option>
-              <option value="una">una inclusă pe an (un arbore la alegere)</option>
-              <option value="toti">inclusă la toți arborii titularului</option>
+            <select name={`${t}Book`} defaultValue={value[`${t}Book`] === "una" ? "separat" : value[`${t}Book`]}>
+              <option value="separat">separat: se cumpără (implicit)</option>
+              <option value="toti">inclusă: cartea arborilor titularului, cât are anul</option>
             </select>
+            <small className="muted">„Inclusă” se schimbă și pe prima pagină, pe /plata și în Termeni.</small>
           </label>
-          {field(`${t}Print`, "Reducere la cartea tipărită, %", "0 = preț întreg")}
         </div>
       </fieldset>
     );
@@ -63,15 +62,13 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
       <div className="limits-row">
         {field("invitePriceLei", "Anul pentru o rudă invitată, lei", "la Basic: cei care scriu în arborele altcuiva", 0.5)}
         {field("invitePriceEur", "Anul pentru o rudă invitată, €", "", 0.5)}
-        {field("bookLei", "Cartea PDF, lei", "când nu e inclusă în plan", 0.5)}
+        {field("bookLei", "Cartea PDF, lei", "un arbore, 12 luni; când nu e inclusă în plan", 0.5)}
         {field("bookEur", "Cartea PDF, €", "", 0.5)}
         {field("betaDays", "Zile gratuite pentru cei din beta", "cei cu cont dinainte de pornire (365 = primul an; au plafoanele Familie); 0 = fără")}
       </div>
       <div className="limits-row">
         {field("bundleLei", "Pachet Basic + cartea PDF, lei", "un an Basic cu o carte PDF inclusă (0 = fără pachet)", 0.5)}
         {field("bundleEur", "Pachet Basic + cartea PDF, €", "", 0.5)}
-        {field("printFromLei", "Cartea tipărită „de la”, lei", "după ofertele tipografiilor; 0 = nu se arată", 1)}
-        {field("printFromEur", "Cartea tipărită „de la”, €", "", 1)}
       </div>
       <div className="limits-row">
         {field("referralDays", "Zile în plus pentru o rudă adusă", "când o rudă invitată își deschide arborele și plătește primul an (0 = fără)")}

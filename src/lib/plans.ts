@@ -24,7 +24,11 @@ export const TIERS = ["basic", "familie", "premium"] as const;
 export type Tier = (typeof TIERS)[number];
 export const isTier = (v: unknown): v is Tier => typeof v === "string" && (TIERS as readonly string[]).includes(v);
 export const tierRank = (t: Tier) => TIERS.indexOf(t);
-/** Cartea PDF la un plan: plătită separat, una inclusă pe an (un arbore la alegere) sau inclusă la toți arborii titularului. */
+/**
+ * Cartea PDF la un plan. Din 18 noiembrie 2026 cartea e un produs separat, plătit (Daniel): în Admin se alege doar „separat”
+ * sau „inclusă” (= `toti`, cartea arborilor titularului cât are anul). `una` (o carte aleasă pe an) rămâne doar ca să se
+ * citească setările vechi; la publicare se trece pe „separat” (`offerNov18Once`).
+ */
 export const BOOK_MODES = ["separat", "una", "toti"] as const;
 export type BookMode = (typeof BOOK_MODES)[number];
 /** Ce se numără într-un arbore: persoane, poze, înregistrări cu glasul, acte și documente, cine scrie și câți arbori are titularul. */
@@ -94,7 +98,7 @@ export const PlanSettings = z.object({
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
-  on: false, startedAt: null, trialDays: 7, priceLei: 49, priceEur: 10, invitePriceLei: 49, invitePriceEur: 10, bookLei: 99, bookEur: 20,
+  on: false, startedAt: null, trialDays: 7, priceLei: 49, priceEur: 10, invitePriceLei: 49, invitePriceEur: 10, bookLei: 39, bookEur: 8,
   // Cei care au testat site-ul înainte de pornirea plăților au primul an gratuit (alegerea lui Daniel, 2026-11-12).
   betaDays: 365,
   // Cât încape familia apropiată (părinți, bunici, soț/soție, copii, frați, nepoți): în zilele gratuite, un arbore al cuiva
@@ -102,11 +106,11 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   trialPersons: 30, trialPhotos: 40, trialAudio: 10, trialDocs: 10,
   basicPersons: 100, basicPhotos: 200, basicAudio: 20, basicDocs: 40, basicWriters: 2, basicTrees: 1, basicBook: "separat", basicPrint: 0,
   familieLei: 149, familieEur: 30,
-  familiePersons: 400, familiePhotos: 800, familieAudio: 80, familieDocs: 150, familieWriters: 8, familieTrees: 2, familieBook: "una", familiePrint: 0,
+  familiePersons: 400, familiePhotos: 800, familieAudio: 80, familieDocs: 150, familieWriters: 8, familieTrees: 2, familieBook: "separat", familiePrint: 0,
   premiumLei: 249, premiumEur: 50,
-  premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "toti", premiumPrint: 20,
-  bundleLei: 129, bundleEur: 25, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
-  keepLei: 25, keepEur: 5, keepBookLei: 109, keepBookEur: 22,
+  premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "separat", premiumPrint: 0,
+  bundleLei: 79, bundleEur: 16, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
+  keepLei: 25, keepEur: 5, keepBookLei: 59, keepBookEur: 12,
   localCurrency: false, rateUsd: 1.1, rateCad: 1.55, rateGbp: 0.86, rateIls: 4,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
@@ -173,6 +177,38 @@ export async function basicPrice49Once(db: Pick<Db, "insert" | "select">, now = 
     await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
   }
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  return "schimbat";
+}
+
+/**
+ * Schimbarea de ofertă din 18 noiembrie 2026 (Daniel), o singură dată, la publicare: cartea PDF devine produs separat.
+ * - prețul cărții 39 lei / 8 € (doar dacă era încă cel vechi, 99 / 20);
+ * - cartea „separat” la toate planurile (Daniel o poate pune „inclusă” din Admin, dar nu se pornește singură);
+ * - pachetele recalculate după noul preț: Basic + cartea 79 lei / 16 € (în loc de 88 / 18), Păstrare + cartea 59 lei / 12 €
+ *   (în loc de 64 / 13), doar dacă erau încă cele vechi;
+ * - fără reducere la cartea tipărită și fără „de la X lei” (site-ul nu mai vinde și nu mai promite tipar).
+ * Anii și cărțile deja plătite nu se ating.
+ */
+export async function offerNov18Once(db: Pick<Db, "insert" | "select">, now = new Date()): Promise<"schimbat" | "deja"> {
+  const MARK = "oferta_2026_11_18";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const [row] = await db.select({ value: appSetting.value }).from(appSetting).where(eq(appSetting.key, KEY));
+  if (row) {
+    const b = await planSettings(db);
+    const was = (v: number, old: number, next: number) => (v === old ? next : v);
+    const value: PlanSettings = {
+      ...b,
+      bookLei: was(b.bookLei, 99, 39), bookEur: was(b.bookEur, 20, 8),
+      basicBook: "separat", familieBook: "separat", premiumBook: "separat",
+      basicPrint: 0, familiePrint: 0, premiumPrint: 0, printFromLei: 0, printFromEur: 0,
+      bundleLei: was(b.bundleLei, 129, 79), bundleEur: was(b.bundleEur, 25, 16),
+      keepBookLei: was(b.keepBookLei, 109, 59), keepBookEur: was(b.keepBookEur, 22, 12),
+    };
+    await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  try { revalidateTag(PLANS_TAG); } catch { /* în afara unei cereri Next */ }
   return "schimbat";
 }
 

@@ -25,7 +25,7 @@ export const nlCadou: CadouCatalog = {
     step3Title: "Je geeft het aan het kerstdiner",
     step3: "Wie het krijgt opent de link of scant de code, logt in en drukt op ‘Ontvang het jaar’. Vanaf dat moment is het jaar van hem of haar.",
     cta: "Nu cadeau doen",
-    ctaNote: "Je betaalt één keer, met je kaart, via Stripe. Je kunt ook het Familie- of Premium-abonnement kiezen.",
+    ctaNote: "Je betaalt één keer, met je kaart, via Stripe. Je kunt ook het Familie-abonnement geven, {familie} per jaar, of Premium, {premium} per jaar.",
     soon: "Cadeaus kunnen binnenkort gekocht worden. Wil je er nu al een, schrijf ons dan.",
     soonLink: "Schrijf ons",
     faqTitle: "Veelgestelde vragen",

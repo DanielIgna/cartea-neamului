@@ -9,7 +9,7 @@ import { exportMyData } from "@/lib/account";
 import { roleIn, roleInTree } from "@/lib/access";
 import { userAccess } from "@/lib/plata";
 import {
-  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, basicPrice49Once, accessFor, holdsYear, limitsFor, room, tierPrice, tierBook, tierPrint, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
+  DEFAULT_SETTINGS, PlanSettings, startSalesOnce, basicPrice49Once, offerNov18Once, accessFor, holdsYear, limitsFor, room, tierPrice, tierBook, tierPrint, mayInviteWriters, mayStartTree, personRoom, writesInTree, accountPlans, isPlan, mayWrite, planOverview, planSettings, revenue, savePlanSettings, setAccountPlan, yearPrice,
 } from "@/lib/plans";
 
 describe("cine intră în panou", () => {
@@ -209,7 +209,7 @@ describe("Oamenii și Manager control", () => {
     expect((await peopleList(db)).find((p) => p.id === "ana")).toMatchObject({ plan: "mereu", planNote: "sora mea" });
 
     const data = (await exportMyData(db, "ana", "https://exemplu.ro"))!;
-    expect(data.notaNoastra).toMatchObject({ plan: "Gratuit mereu", nota: "sora mea" });
+    expect(data.notaNoastra).toMatchObject({ plan: "Acces gratuit", nota: "sora mea" });
     expect((await exportMyData(db, "gol", "https://exemplu.ro"))!.notaNoastra).toBeUndefined();
 
     await setAccountPlan(db, "ion", "gratuit", " ", "ana");
@@ -321,9 +321,10 @@ describe("plata nu se ocolește invitându-se unii pe alții", () => {
     expect(tierPrice("familie", true, s)).toEqual({ lei: 149, eur: 30 });
     expect(tierPrice("premium", false, s)).toEqual({ lei: 249, eur: 50 });
     expect(tierBook("basic", s)).toBe("separat");
-    expect(tierBook("familie", s)).toBe("una");
-    expect(tierBook("premium", s)).toBe("toti");
-    expect(tierPrint("premium", s)).toBe(20);
+    // Din 18.11.2026 cartea PDF e separată la toate planurile și nu mai e nicio reducere la tipar.
+    expect(tierBook("familie", s)).toBe("separat");
+    expect(tierBook("premium", s)).toBe("separat");
+    expect(tierPrint("premium", s)).toBe(0);
     expect(tierPrint("familie", s)).toBe(0);
   });
 

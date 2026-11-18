@@ -25,7 +25,7 @@ export const frCadou: CadouCatalog = {
     step3Title: "Vous l’offrez au repas de Noël",
     step3: "La personne ouvre le lien ou scanne le code, se connecte et appuie sur « Recevoir l’année ». Dès cet instant, l’année est à elle.",
     cta: "Offrir maintenant",
-    ctaNote: "Vous payez une seule fois, par carte, via Stripe. Vous pouvez aussi choisir les formules Famille ou Premium.",
+    ctaNote: "Vous payez une seule fois, par carte, via Stripe. Vous pouvez aussi offrir la formule Famille, {familie} par an, ou Premium, {premium} par an.",
     soon: "Les cadeaux seront bientôt disponibles. Si vous en voulez un dès maintenant, écrivez-nous.",
     soonLink: "Écrivez-nous",
     faqTitle: "Questions fréquentes",

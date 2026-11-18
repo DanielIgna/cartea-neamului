@@ -57,7 +57,7 @@ export default async function AdminBusiness() {
         </p>
         <div className="stats">
           <Stat label="Plătit" value={num(b.revenue.paying)} hint={`≈ ${lei(b.revenue.paidLeiYear)}/an`} />
-          <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} hint="familia, prietenii" />
+          <Stat label="Acces gratuit" value={num(b.plans.counts.mereu)} hint="toate planurile + cartea PDF" />
           <Stat label="În zilele gratuite" value={num(b.plans.counts.proba)} />
           <Stat label="Doar citire" value={num(b.plans.counts.expirat)} hint="ar trebui să plătească" tone={b.plans.counts.expirat ? "warn" : undefined} />
           <Stat label="Venit posibil pe an" value={lei(b.revenue.potentialLeiYear)} hint={`dacă plătesc și cei ${b.plans.wouldPay} în probă sau doar citire`} />

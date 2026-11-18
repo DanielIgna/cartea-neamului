@@ -25,7 +25,7 @@ export const esCadou: CadouCatalog = {
     step3Title: "Lo entregas en la cena de Navidad",
     step3: "Quien lo recibe abre el enlace o escanea el código, inicia sesión y pulsa «Recibir el año». Desde ese momento el año es suyo.",
     cta: "Regalar ahora",
-    ctaNote: "Pagas una sola vez, con tarjeta, a través de Stripe. También puedes elegir los planes Familia o Premium.",
+    ctaNote: "Pagas una sola vez, con tarjeta, a través de Stripe. También puedes regalar el plan Familia, {familie} al año, o Premium, {premium} al año.",
     soon: "Pronto se podrán comprar regalos. Si quieres uno ya, escríbenos.",
     soonLink: "Escríbenos",
     faqTitle: "Preguntas frecuentes",

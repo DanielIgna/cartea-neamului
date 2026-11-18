@@ -71,9 +71,9 @@ export default async function AdminHome() {
         <Link href="/admin/control" className="zone-link">
           <div className="card">
             <h2 style={{ marginTop: 0 }}>Manager control</h2>
-            <p className="muted" style={{ marginTop: 0 }}>Zilele gratuite, prețurile, pornirea plăților și cine e gratuit mereu sau a plătit.</p>
+            <p className="muted" style={{ marginTop: 0 }}>Zilele gratuite, prețurile, pornirea plăților și cine are „Acces gratuit” sau a plătit.</p>
             <div className="stats">
-              <Stat label="Gratuit mereu" value={num(b.plans.counts.mereu)} />
+              <Stat label="Acces gratuit" value={num(b.plans.counts.mereu)} />
               <Stat label="Plătit" value={num(b.revenue.paying)} hint={b.plans.settings.on ? "plățile sunt pornite" : "plățile nu sunt pornite"} />
               <Stat label="Doar citire" value={num(b.plans.counts.expirat)} hint={b.plans.settings.on ? "zilele gratuite s-au terminat" : "dacă porneai azi"} />
               <Stat label="Venit posibil pe an" value={lei(b.revenue.potentialLeiYear)} />

@@ -25,7 +25,7 @@ export const enGBCadou: CadouCatalog = {
     step3Title: "You hand it over at Christmas dinner",
     step3: "The person receiving it opens the link or scans the code, signs in and presses “Receive the year”. From that moment the year is theirs.",
     cta: "Give it now",
-    ctaNote: "You pay once, by card, through Stripe. You can also choose the Family or Premium plans.",
+    ctaNote: "You pay once, by card, through Stripe. You can also give the Family plan, {familie} a year, or Premium, {premium} a year.",
     soon: "Gifts can be bought soon. If you want one now, write to us.",
     soonLink: "Write to us",
     faqTitle: "Frequently asked questions",

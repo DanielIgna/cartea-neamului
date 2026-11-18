@@ -25,7 +25,7 @@ export const deCadou: CadouCatalog = {
     step3Title: "Sie überreichen es beim Weihnachtsessen",
     step3: "Der Beschenkte öffnet den Link oder scannt den Code, meldet sich an und tippt auf „Jahr annehmen“. Ab diesem Moment gehört das Jahr ihm.",
     cta: "Jetzt verschenken",
-    ctaNote: "Sie zahlen einmal, mit Karte, über Stripe. Sie können auch die Tarife Familie oder Premium wählen.",
+    ctaNote: "Sie zahlen einmal, mit Karte, über Stripe. Sie können auch den Tarif Familie verschenken, {familie} pro Jahr, oder Premium, {premium} pro Jahr.",
     soon: "Geschenke können bald gekauft werden. Wenn Sie schon jetzt eines möchten, schreiben Sie uns.",
     soonLink: "Schreiben Sie uns",
     faqTitle: "Häufige Fragen",

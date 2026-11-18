@@ -16,7 +16,7 @@ describe("îmbunătățirile de după planuri", () => {
     expect(paidSession(ev({ kind: "an", userId: "u", tier: "basic", extra: "carte" }))).toMatchObject({ kind: "an", tier: "basic", extra: "carte" });
     expect(paidSession(ev({ kind: "cadou", userId: "u", tier: "premium", forName: "Mama", note: "Cu drag" }))).toMatchObject({ kind: "cadou", tier: "premium", forName: "Mama", note: "Cu drag" });
     expect(paidSession(ev({ kind: "cadou", userId: "u" }))).toMatchObject({ tier: "familie" });
-    expect(DEFAULT_SETTINGS).toMatchObject({ bundleLei: 129, referralDays: 30, reminderDays: 14, printFromLei: 0 });
+    expect(DEFAULT_SETTINGS).toMatchObject({ bundleLei: 79, bundleEur: 16, keepBookLei: 59, keepBookEur: 12, bookLei: 39, bookEur: 8, referralDays: 30, reminderDays: 14, printFromLei: 0 });
   });
 
   describe("în baza de date", () => {

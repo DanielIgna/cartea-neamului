@@ -45,13 +45,14 @@ export default async function AdminControl() {
           (persoane, poze, glasuri, acte, cine scrie, arbori); peste plafon nu se șterge nimic, doar nu se mai adaugă. La Familie și Premium, rudele care scriu
           nu plătesc separat; la Basic își plătesc anul lor ({lei(s.invitePriceLei)} / {eur(s.invitePriceEur)}). Trecerea pe un plan mai scump costă doar
           diferența pe zilele rămase. Cei care aveau cont înainte de pornire au primul an gratuit ({count(s.betaDays, "zile")}), cu plafoanele planului Familie.
-          Nu se șterge nimic, iar descărcarea datelor rămâne gratuită. Pe cei apropiați îi pui „Gratuit mereu” (fără limite).
+          Nu se șterge nimic, iar descărcarea datelor rămâne gratuită. Pe cei apropiați îi pui „Acces gratuit” (toate planurile și cartea PDF, fără limite și fără termen).
+          {" "}Cartea PDF se plătește separat ({lei(s.bookLei)} / {eur(s.bookEur)}, un arbore, 12 luni), dacă nu e pusă „inclusă” la un plan, mai jos.
           {" "}În zilele gratuite: un arbore de cel mult {count(s.trialPersons, "persoane")}, {count(s.trialPhotos, "poze")}, {count(s.trialAudio, "înregistrări")},
           {" "}{count(s.trialDocs, "acte")}, iar rudele se pot invita doar să vadă.
           Până merg plățile cu cardul, cine plătește altfel (de pildă prin transfer) primește aici „plătit până la”.
         </p>
         <div className="stats">
-          <Stat label="Gratuit mereu" value={num(ov.counts.mereu)} />
+          <Stat label="Acces gratuit" value={num(ov.counts.mereu)} hint="toate planurile + cartea PDF" />
           <Stat label="Primul an gratuit" value={num(ov.counts.beta)} hint="aveau cont înainte de pornire" />
           <Stat label="Plătit" value={num(ov.counts.platit)} hint={`≈ ${lei(ov.revenue.leiYearNow)} pe an · Basic ${ov.counts.basic}, Familie ${ov.counts.familie}, Premium ${ov.counts.premium}`} />
           <Stat label="Păstrare" value={num(ov.counts.pastrare)} hint="după anul plătit: văd tot, fără adăugări" />
@@ -106,7 +107,8 @@ export default async function AdminControl() {
       <div className="card">
         <h3 style={{ marginTop: 0 }}>Planul fiecărui cont</h3>
         <p className="muted" style={{ marginTop: 0 }}>
-          „Gratuit” e ca la toți: zilele gratuite, apoi plătește. „Gratuit mereu” e pentru familie, prieteni și cei care ajută. „Plătit până la” ține
+          „Gratuit” e ca la toți: zilele gratuite, apoi plătește. „Acces gratuit” e pentru familie și cei care ajută: toate planurile și cartea PDF, fără termen și fără plată; scrie în notă de ce.
+          Daniel și Cristina au acces gratuit oricum, din cod. „Plătit până la” ține
           minte până când are omul anul plătit, iar „planul anului” spune pe ce plan (Basic, Familie, Premium); fără plan ales, e Basic.
           Nota e doar pentru tine; omul o poate vedea numai dacă își descarcă datele din „Datele mele”, cum cere legea.
         </p>

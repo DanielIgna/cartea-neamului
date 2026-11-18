@@ -49,7 +49,7 @@ export function AdminNav({ active, heading = true }: { active: string; heading?:
 
 /** Planul unui cont și ce poate face acum (sau ce ar putea, dacă plățile ar fi pornite azi). */
 export function PlanPill({ plan, access }: { plan: Plan; access?: Access | null }) {
-  if (plan === "mereu" || access?.kind === "mereu") return <span className="pill ok">gratuit mereu</span>;
+  if (plan === "mereu" || access?.kind === "mereu") return <span className="pill ok" title="toate planurile și cartea PDF, fără termen">acces gratuit</span>;
   if (access?.kind === "platit") return <span className="pill ok">plătit{access.until ? ` până la ${day(access.until.toISOString())}` : ""}</span>;
   if (plan === "familie" && !access) return <span className="pill ok">plătit</span>;
   if (access?.kind === "beta") return <span className="pill ok">primul an gratuit, până la {day(access.until.toISOString())}</span>;
