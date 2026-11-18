@@ -1,5 +1,6 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { ORG } from "@/lib/seo/organizatie";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import CtaArbore from "@/components/continut/CtaArbore";
 import { CHRISTMAS, GIFTS_DESCRIPTION as HUB_DESCRIPTION, GIFTS_TITLE as HUB_TITLE, GIFTS_HUB, GIFT_PAGES, giftPage, giftPath, type GiftPage, type GiftTier } from "@/lib/cadouri";
@@ -58,7 +59,7 @@ function webPageJsonLd(path: string, name: string, description: string) {
     "@context": "https://schema.org", "@type": "WebPage", "@id": `${url}#page`, url, name, description, inLanguage: "ro",
     dateModified: lastmodOf(path, new Date("2026-11-18T00:00:00Z")).toISOString().slice(0, 10),
     isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
-    publisher: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL },
+    publisher: ORG,
   };
 }
 

@@ -4,6 +4,8 @@ import { ImageResponse } from "next/og";
 import { getName, KIND_LABEL } from "@/lib/continut/nume";
 import { getCounty } from "@/lib/continut/localitati";
 import { REGIONS } from "@/lib/continut/regiuni";
+import { auditPages, type AuditPage } from "@/lib/seo-audit";
+import { pageCardUrl } from "@/lib/seo/organizatie";
 
 export const runtime = "nodejs";
 
@@ -12,15 +14,29 @@ export const runtime = "nodejs";
  * previzualizarea linkului pe WhatsApp și Facebook și care se poate descărca pentru o postare. Doar date din fișierele
  * publice (content/nume, content/localitati), niciun om anume.
  *   /api/card?nume=<slug>   /api/card?judet=<slug>[&oras=<slug>]
+ * Din 18.11.2026 (planul SEO), orice pagină publică din sitemap: /api/card?pagina=<adresa>&v=<amprentă> (ghiduri, glosar,
+ * regiuni, orașe, diaspora, cadouri, unelte, școală), cu titlul, descrierea și grupa paginii (vezi pageCardUrl).
  */
-const FONTS = path.join(process.cwd(), "node_modules", "@fontsource");
+let pages: Map<string, AuditPage> | null = null;
+const pageOf = (p: string) => (pages ??= new Map(auditPages().map((x) => [x.path, x]))).get(p) ?? null;
+const clip = (s: string, n: number) => (s.length <= n ? s : `${s.slice(0, s.lastIndexOf(" ", n - 1))}…`);
+// Alegreya cu literele românești (latin + latin-ext lipite într-un singur fișier, src/assets/fonturi): cu două fișiere separate,
+// ș, ț și ă ieșeau cu altă formă decât restul literelor.
+const FONTS = path.join(process.cwd(), "src", "assets", "fonturi");
 let fonts: Promise<{ name: string; data: Buffer; weight: 400 | 700 }[]> | null = null;
 const loadFonts = () => (fonts ??= Promise.all([
-  ["alegreya", "alegreya-latin-700-normal.woff", 700], ["alegreya", "alegreya-latin-ext-700-normal.woff", 700],
-  ["alegreya", "alegreya-latin-500-normal.woff", 400], ["alegreya", "alegreya-latin-ext-500-normal.woff", 400],
-].map(async ([dir, file, weight]) => ({ name: "Alegreya", data: await readFile(path.join(FONTS, dir as string, "files", file as string)), weight: weight as 400 | 700 }))));
+  ["alegreya-ro-700.woff", 700], ["alegreya-ro-500.woff", 400],
+].map(async ([file, weight]) => ({ name: "Alegreya", data: await readFile(path.join(FONTS, file as string)), weight: weight as 400 | 700 }))));
 
 function cardFor(q: URLSearchParams) {
+  const pagina = q.get("pagina");
+  if (pagina) {
+    const p = pageCardUrl(pagina) ? pageOf(pagina) : null;
+    if (!p) return null;
+    if (p.category === "diaspora") return { eyebrow: "Diaspora", title: clip(p.title.replace(/ \| Cartea Neamului$/, ""), 70), sub: clip(p.description ?? "", 150), foot: "" };
+    return { eyebrow: p.category && !["hub", "limbă"].includes(p.category) && p.cluster.label !== p.category ? `${p.cluster.label} · ${p.category}` : p.cluster.label,
+      title: clip(p.title.replace(/ \| Cartea Neamului$/, ""), 70), sub: clip(p.description ?? "", 150), foot: "" };
+  }
   const nume = q.get("nume");
   if (nume) {
     const n = getName(nume);
@@ -40,9 +56,10 @@ function cardFor(q: URLSearchParams) {
 }
 
 export async function GET(req: Request) {
-  const card = cardFor(new URL(req.url).searchParams);
+  const q = new URL(req.url).searchParams;
+  const card = cardFor(q);
   if (!card) return new Response("not found", { status: 404 });
-  const size = card.title.length > 18 ? 84 : 112;
+  const size = card.title.length > 48 ? 60 : card.title.length > 18 ? 76 : 112;
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "64px 72px",
@@ -58,6 +75,6 @@ export async function GET(req: Request) {
         </div>
       </div>
     ),
-    { width: 1200, height: 630, fonts: await loadFonts(), headers: { "Cache-Control": "public, max-age=86400, s-maxage=604800" } },
+    { width: 1200, height: 630, fonts: await loadFonts(), headers: { "Cache-Control": q.get("v") ? "public, max-age=31536000, immutable" : "public, max-age=86400, s-maxage=604800" } },
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ORG, pageCardUrl } from "@/lib/seo/organizatie";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, type Crumb } from "@/components/continut/Breadcrumbs";
@@ -51,10 +52,12 @@ export async function diasporaMetadata(a?: string, b?: string): Promise<Metadata
   const { url, lang, ...alt } = diasporaAlternates(e, locale);
   const title = fitTitle(titleOf(e, lang));
   const description = descriptionOf(e, lang);
+  const card = pageCardUrl(new URL(url).pathname);
+  const img = card ? { url: card, width: 1200, height: 630, alt: title } : OG_IMAGE;
   return {
     title, description, ...alt,
-    openGraph: { title, description, url, siteName: "Cartea Neamului", locale: OG_LOCALE[LOCALES_OF[lang][0]], type: "article", images: [OG_IMAGE] },
-    twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
+    openGraph: { title, description, url, siteName: "Cartea Neamului", locale: OG_LOCALE[LOCALES_OF[lang][0]], type: "article", images: [img] },
+    twitter: { card: "summary_large_image", title, description, images: [img] },
   };
 }
 
@@ -84,7 +87,7 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
         "@context": "https://schema.org", "@type": e.kind === "hub" ? "CollectionPage" : "Article",
         [e.kind === "hub" ? "name" : "headline"]: nameOf(e, lang), description: descriptionOf(e, lang), url: canonicalUrl(href(e)), inLanguage: lang,
         isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL },
-        ...(e.kind === "hub" ? {} : { dateModified: "2026-11-15", author: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL } }),
+        ...(e.kind === "hub" ? {} : { dateModified: "2026-11-15", author: ORG }),
       }} />
       <nav className="crumbs" aria-label="›">
         <ol>{crumbs.map((c, i) => <li key={c.path}>{i < crumbs.length - 1 ? <Link href={c.path}>{c.name}</Link> : <span aria-current="page">{c.name}</span>}</li>)}</ol>

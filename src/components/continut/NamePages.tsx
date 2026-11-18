@@ -1,5 +1,6 @@
 import { nameGate } from "@/lib/continut/prag";
 import SiteSearch from "@/components/continut/SiteSearch";
+import { ORG } from "@/lib/seo/organizatie";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -98,7 +99,7 @@ export async function NamePage({ slug }: { slug: string }) {
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "Article", headline: `Numele de familie ${n.name}`, description: nameDescription(n),
         url: canonicalUrl(path), mainEntityOfPage: canonicalUrl(path), inLanguage: "ro", about: { "@type": "Thing", name: `${n.name} (nume de familie)` },
-        author: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL }, publisher: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL },
+        author: ORG, publisher: ORG,
         image: `${SITE_URL}/api/card?nume=${n.slug}`,
       }} />
       <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }} />

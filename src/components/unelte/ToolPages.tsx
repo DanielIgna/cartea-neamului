@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ORG } from "@/lib/seo/organizatie";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import CtaArbore from "@/components/continut/CtaArbore";
@@ -17,7 +18,7 @@ import { TOOLS, TOOLS_DESCRIPTION, TOOLS_TITLE, getTool, toolPath, type Tool } f
 
 /** Secțiunea /unelte: hubul, cele 4 unelte și paginile despre relațiile de rudenie. Doar în română, fără cont. */
 const day = (path: string) => lastmodOf(path, TOOLS_UPDATED).toISOString().slice(0, 10);
-const org = { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL };
+const org = ORG;
 const faqLd = (faq: { q: string; a: string }[]) => ({
   "@context": "https://schema.org", "@type": "FAQPage",
   mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
