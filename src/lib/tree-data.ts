@@ -16,6 +16,8 @@ export type PersonView = {
   birthYear: number | null; deathYear: number | null; approx: boolean;
   living: boolean; discreet: boolean; claimed: boolean; occupation: string | null; biography: string | null; notes: string | null;
   createdBy: string | null; claimedBy: string | null; photoId: string | null;
+  /** „Sursa informației”: de unde știe familia ce a scris (text liber + link), src/lib/surse-publice.ts. */
+  infoSource?: string | null; infoSourceUrl?: string | null;
   /** Poza din contul celui care și-a revendicat fișa (de pildă din Google), folosită când fișa nu are o poză încărcată. */
   accountImage?: string | null;
   documents: { id: string; title: string; kind: string; dateText: string | null; hasFile: boolean; description?: string | null; mimeType?: string | null }[];
@@ -31,6 +33,7 @@ export function toView(p: typeof person.$inferSelect, docs: PersonView["document
     birthCountry: p.birthCountry, deathCountry: p.deathCountry, residencePlace: p.residencePlace, residenceCountry: p.residenceCountry,
     birthYear: b.year, deathYear: d.year, approx: b.approx, living: p.living, discreet: p.discreet, claimed: !!p.claimedByUserId,
     occupation: p.occupation, biography: p.biography, notes: p.notes, createdBy: p.createdBy, claimedBy: p.claimedByUserId, photoId: p.photoDocumentId, accountImage, documents: docs,
+    infoSource: p.infoSource ?? null, infoSourceUrl: p.infoSourceUrl ?? null,
   };
 }
 

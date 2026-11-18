@@ -125,6 +125,9 @@ export const person = pgTable("person", {
   notes: text("notes"),
   photoDocumentId: uuid("photo_document_id"), // poza de profil: o fotografie din albumul persoanei // note suplimentare: surse, întrebări deschise, ce mai trebuie verificat
   occupation: text("occupation"),
+  // „Sursa informației” (Surse publice, 18.11.2026): de unde știe familia ce a scris (o arhivă, un registru), text liber + link.
+  infoSource: text("info_source"),
+  infoSourceUrl: text("info_source_url"),
   claimedByUserId: text("claimed_by_user_id").references(() => user.id, { onDelete: "set null" }),
   privacy: privacyLevel("privacy").notNull().default("private_tree"),
   gedcomXref: text("gedcom_xref"),
@@ -1185,3 +1188,11 @@ export const crmAmbassadorPayouts = pgTable("crm_ambassador_payouts", {
   at: timestamp("at").notNull().defaultNow(),
   createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
 });
+
+/* ---------- Surse publice: „Nu mai arăta” la cardul „Caută în arhive publice” ---------- */
+// Pentru fiecare om și fiecare persoană din arbore: cine l-a închis nu-l mai vede la acea persoană (src/lib/surse-publice-db.ts).
+export const archiveHintDismissal = pgTable("archive_hint_dismissal", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [primaryKey({ name: "archive_hint_dismissal_pk", columns: [t.userId, t.personId] })]);

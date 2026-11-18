@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const nlArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Openbare archieven",
+    title: "Zoeken in openbare archieven",
+    intro: "Bij {name} ontbreekt: {missing}. Sommige gratis openbare archieven kunnen helpen.",
+    missing: { an: "het geboortejaar", loc: "de geboorteplaats", parinti: "de ouders", casatorie: "het huwelijk", deces: "de overlijdensdatum" },
+    whatToSearch: "Waar je naar zoekt",
+    surname: "Achternaam",
+    given: "Voornaam",
+    place: "Plaats",
+    year: "Jaar",
+    copy: "Gegevens kopiëren",
+    copied: "Gegevens gekopieerd. Je kunt ze plakken in de zoekfunctie van het archief.",
+    copyFailed: "Kopiëren lukte niet; je kunt ze selecteren in het vak hierboven.",
+    where: "Waar zoeken",
+    newTab: "opent in een nieuw tabblad",
+    account: "gratis account",
+    found: "Ik heb iets gevonden",
+    hide: "Niet meer tonen",
+    hidden: "Goed, we tonen deze suggestie voor {name} niet meer.",
+    privacy: "De links gaan naar de websites van de archieven. We sturen daar niets uit je stamboom: je kopieert de gegevens zelf.",
+    allSources: "Alle bronnen en tips",
+    textsInRo: "De beschrijvingen van de bronnen zijn in het Roemeens.",
+    sourceLabel: "Bron van de informatie",
+    sourcePlaceholder: "bijv. doopregister van Huedin, 1885",
+    sourceLink: "Link naar de bron (optioneel)",
+    sourceHint: "Zodat de familie weet waar de informatie vandaan komt.",
+  },
+  ArchivesMail: {
+    subject: "Voorouders geboren vóór 1930? Hier kun je gratis zoeken",
+    body: "Hallo {name},\n\nIn je stamboom staan voorouders die vóór 1930 zijn geboren en bij wie een paar gegevens ontbreken: het geboortejaar of de geboorteplaats, de ouders, het huwelijk. Veel daarvan staat in gratis openbare archieven: parochieregisters, burgerlijke stand, volkstellingen.\n\nWe hebben op één pagina gezet waar en hoe je kunt zoeken. In je stamboom heeft ieder van hen ook een kaart \"Zoeken in openbare archieven\" met naam, plaats en jaar klaar om te kopiëren.",
+    button: "Bekijk waar je kunt zoeken",
+    why: "Je krijgt deze e-mail maar één keer, omdat je een stamboom hebt op {app}.",
+    unsubscribe: "Geen e-mails meer over mijn account",
+  },
+};

@@ -24,6 +24,7 @@ import { roActivare } from "./activare/ro";
 import { roInvitatii } from "./invitatii/ro";
 import { roConversie } from "./conversie/ro";
 import { roSursa } from "./sursa/ro";
+import { roArhive } from "./arhive/ro";
 import { roFilm } from "./film/ro";
 import { roLegal } from "./legal/ro";
 import { roDatele } from "./datele/ro";
@@ -461,6 +462,7 @@ export const ro = {
   ...roInvitatii,
   ...roConversie,
   ...roSursa,
+  ...roArhive,
   ...roFilm,
   ...roLegal,
   ...roDatele,

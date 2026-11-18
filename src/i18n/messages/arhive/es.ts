@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const esArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Archivos públicos",
+    title: "Buscar en archivos públicos",
+    intro: "A {name} le falta: {missing}. Algunos archivos públicos y gratuitos pueden ayudar.",
+    missing: { an: "el año de nacimiento", loc: "el lugar de nacimiento", parinti: "los padres", casatorie: "el matrimonio", deces: "la fecha de defunción" },
+    whatToSearch: "Qué buscar",
+    surname: "Apellido",
+    given: "Nombre",
+    place: "Localidad",
+    year: "Año",
+    copy: "Copiar los datos",
+    copied: "Datos copiados. Puedes pegarlos en la búsqueda del archivo.",
+    copyFailed: "No se pudieron copiar; puedes seleccionarlos en el recuadro de arriba.",
+    where: "Dónde buscar",
+    newTab: "se abre en una pestaña nueva",
+    account: "cuenta gratuita",
+    found: "He encontrado algo",
+    hide: "No mostrar más",
+    hidden: "De acuerdo, no volveremos a mostrar esta sugerencia para {name}.",
+    privacy: "Los enlaces llevan a las webs de los archivos. No enviamos allí nada de tu árbol: tú copias los datos.",
+    allSources: "Todas las fuentes y consejos",
+    textsInRo: "Las descripciones de las fuentes están en rumano.",
+    sourceLabel: "Fuente de la información",
+    sourcePlaceholder: "p. ej. registro de bautismos de Huedin, 1885",
+    sourceLink: "Enlace a la fuente (opcional)",
+    sourceHint: "Para que la familia sepa de dónde viene la información.",
+  },
+  ArchivesMail: {
+    subject: "¿Antepasados nacidos antes de 1930? Aquí puedes buscar gratis",
+    body: "Hola, {name}:\n\nEn tu árbol hay antepasados nacidos antes de 1930 a los que les faltan algunos datos: el año o el lugar de nacimiento, los padres, el matrimonio. Muchos se encuentran en archivos públicos y gratuitos: registros parroquiales, registro civil, censos.\n\nHemos reunido en una sola página dónde y cómo buscar. En tu árbol, cada uno de ellos tiene también una tarjeta «Buscar en archivos públicos» con el nombre, el lugar y el año listos para copiar.",
+    button: "Ver dónde buscar",
+    why: "Recibes este correo una sola vez, porque tienes un árbol en {app}.",
+    unsubscribe: "No quiero más correos sobre mi cuenta",
+  },
+};

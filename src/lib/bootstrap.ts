@@ -196,6 +196,12 @@ const ADDITIVE = [
   sql`CREATE INDEX IF NOT EXISTS "propmanage_invite_batch_idx" ON "propmanage_invite" ("batch_id","status")`,
   // Programul de invitații (migrația 0034): fără coloana asta, intrarea în cont ar cădea.
   sql`ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "free_until" timestamp`,
+  // „Surse publice” (migrația 0045): fișa persoanei citește coloanele astea la fiecare deschidere.
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "info_source" text`,
+  sql`ALTER TABLE "person" ADD COLUMN IF NOT EXISTS "info_source_url" text`,
+  sql`CREATE TABLE IF NOT EXISTS "archive_hint_dismissal" (
+    "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE, "person_id" uuid NOT NULL REFERENCES "person"("id") ON DELETE CASCADE,
+    "created_at" timestamp DEFAULT now() NOT NULL, CONSTRAINT "archive_hint_dismissal_pk" PRIMARY KEY ("user_id", "person_id"))`,
 ];
 
 export async function applySchema(target: Db) {

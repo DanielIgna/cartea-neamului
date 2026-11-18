@@ -14,6 +14,7 @@ import BranchInvite from "@/components/BranchInvite";
 import { loadDecisions } from "@/lib/verificari-db";
 import PageIntl from "@/i18n/PageIntl";
 import { getLocale } from "@/i18n/server";
+import { inchise, surse } from "@/lib/surse-publice-db";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -34,15 +35,17 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   const [data, live] = await Promise.all([loadTreeView(db, id, p && UUID.test(p) ? p : start, generations, await getLocale()), loadTreeLive(db, me.id, id)]);
   if (!data || !data.centerId || !data.slots[1]) notFound();
   const home = start ?? data.rootId;
+  // Surse publice: lista pornită din Admin și persoanele la care omul a închis cardul „Caută în arhive publice”.
+  const [archiveSources, archiveDismissed] = await Promise.all([surse(db).then((l) => l.filter((x) => x.activ)), inchise(db, me.id, id)]);
   return (
-    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations"]}>
+    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations", "Archives"]}>
       {can(role, "editor") && !p && <BranchInvite treeId={id} userId={me.id} />}
       {can(role, "contributor") && <TreeLimits treeId={id} />}
       {can(role, "contributor") && <VoiceNudge treeId={id} />}
       <TreeScreen treeId={id} treeName={data.tree.name} slots={data.slots} people={data.people} rels={data.rels} raised={data.raised} centerId={data.centerId} generations={generations}
         meId={me.id} isEditor={can(role, "editor")} isRoot={data.centerId === home} canAdd={can(role, "contributor")} canInvite={can(role, "editor")}
         live={live && { ...live, url: process.env.NEON_REALTIME_URL!, userId: me.id }} aiEnabled={aiConfigured()} storageEnabled={storageConfigured()}
-        decisions={can(role, "editor") ? await loadDecisions(db, id) : {}} />
+        decisions={can(role, "editor") ? await loadDecisions(db, id) : {}} archiveSources={archiveSources} archiveDismissed={archiveDismissed} />
     </PageIntl>
   );
 }

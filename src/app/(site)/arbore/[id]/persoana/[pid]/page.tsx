@@ -30,6 +30,7 @@ import OldHouse from "@/components/OldHouse";
 import FamilyFilm from "@/components/FamilyFilm";
 import { buildFilm } from "@/lib/family-film";
 import { mySubmissions } from "@/lib/home-submissions";
+import InfoSource from "@/components/InfoSource";
 
 export const dynamic = "force-dynamic";
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -116,7 +117,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     </>
   );
   return (
-    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse", "Film"]}>
+    <PageIntl ns={["Media", "Lada", "MemoryForm", "Voice", "PersonForm", "Relatives", "OldHouse", "Film", "Archives"]}>
     <section className="stack" style={{ maxWidth: 980, margin: "0 auto" }}>
       {/* Coperta profilului: aceeași bandă maro, cu fir de film vechi și auriu, ca bannerul de pe prima pagină. */}
       <header className="pf-cover">
@@ -155,6 +156,7 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         <div className="section-label" style={{ marginTop: 0 }}>{p.living ? t("about", { name: p.givenName }) : tp("whatWeKnow", { name: p.givenName })}</div>
         {p.biography ? <p className="bio">{p.biography}</p> : <p className="muted">{canEdit ? t("nothingEdit") : tp("nothingYet")}</p>}
         {p.notes && <><div className="section-label">{tp("notes")}</div><p className="notes">{p.notes}</p></>}
+        <InfoSource label={(await getT("Archives", locale))("sourceLabel")} text={p.infoSource} url={p.infoSourceUrl} />
       </div>
       <div className="pf-sec">
         <FamilyFilm treeId={id} name={p.givenName} film={film} canPropose={can(role, "contributor") && storageConfigured()}

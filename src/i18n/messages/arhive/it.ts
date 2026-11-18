@@ -1,0 +1,38 @@
+import type { ArhiveCatalog } from "./ro";
+
+export const itArhive: ArhiveCatalog = {
+  Archives: {
+    footer: "Archivi pubblici",
+    title: "Cerca negli archivi pubblici",
+    intro: "Per {name} mancano: {missing}. Alcuni archivi pubblici e gratuiti possono aiutare.",
+    missing: { an: "l’anno di nascita", loc: "il luogo di nascita", parinti: "i genitori", casatorie: "il matrimonio", deces: "la data di morte" },
+    whatToSearch: "Cosa cercare",
+    surname: "Cognome",
+    given: "Nome",
+    place: "Località",
+    year: "Anno",
+    copy: "Copia i dati",
+    copied: "Dati copiati. Puoi incollarli nella ricerca dell’archivio.",
+    copyFailed: "Non è stato possibile copiarli; puoi selezionarli nel riquadro sopra.",
+    where: "Dove cercare",
+    newTab: "si apre in una nuova scheda",
+    account: "account gratuito",
+    found: "Ho trovato qualcosa",
+    hide: "Non mostrare più",
+    hidden: "Va bene, non mostreremo più questo suggerimento per {name}.",
+    privacy: "I link portano ai siti degli archivi. Non inviamo lì nulla del tuo albero: i dati li copi tu.",
+    allSources: "Tutte le fonti e i consigli",
+    textsInRo: "Le descrizioni delle fonti sono in rumeno.",
+    sourceLabel: "Fonte dell’informazione",
+    sourcePlaceholder: "ad es. registro dei battesimi di Huedin, 1885",
+    sourceLink: "Link alla fonte (facoltativo)",
+    sourceHint: "Così la famiglia sa da dove viene l’informazione.",
+  },
+  ArchivesMail: {
+    subject: "Antenati nati prima del 1930? Ecco dove cercare gratis",
+    body: "Ciao {name},\n\nnel tuo albero ci sono antenati nati prima del 1930 a cui mancano alcuni dati: l’anno o il luogo di nascita, i genitori, il matrimonio. Molti si trovano in archivi pubblici e gratuiti: registri parrocchiali, stato civile, censimenti.\n\nAbbiamo raccolto in una sola pagina dove e come cercare. Nel tuo albero, ognuno di loro ha anche una scheda «Cerca negli archivi pubblici» con nome, luogo e anno pronti da copiare.",
+    button: "Vedi dove cercare",
+    why: "Ricevi questa email una sola volta, perché hai un albero su {app}.",
+    unsubscribe: "Non voglio più email sul mio account",
+  },
+};

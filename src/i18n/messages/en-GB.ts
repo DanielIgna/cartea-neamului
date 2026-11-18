@@ -15,6 +15,7 @@ import { enGBActivare } from "./activare/en-GB";
 import { enGBInvitatii } from "./invitatii/en-GB";
 import { enGBConversie } from "./conversie/en-GB";
 import { enGBSursa } from "./sursa/en-GB";
+import { enGBArhive } from "./arhive/en-GB";
 import { enGBFilm } from "./film/en-GB";
 import { enGBLegal } from "./legal/en-GB";
 import { enGBDatele } from "./datele/en-GB";
@@ -447,6 +448,7 @@ export const enGB: Catalog = {
   ...enGBInvitatii,
   ...enGBConversie,
   ...enGBSursa,
+  ...enGBArhive,
   ...enGBFilm,
   ...enGBLegal,
   ...enGBDatele,
