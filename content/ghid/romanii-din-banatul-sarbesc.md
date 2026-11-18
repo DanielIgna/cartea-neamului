@@ -3,7 +3,7 @@ title: Românii din Banatul sârbesc: cum îți cauți strămoșii
 seo: Românii din Banatul sârbesc: registre, arhive, strămoși
 description: Cum cauți strămoși români din Banatul sârbesc (Voivodina): ce s-a schimbat după 1918, registrele bisericești și de stare civilă și unde le găsești azi.
 category: Comunități și regiuni
-cuvant: românii din Banatul sârbesc strămoși
+updated: 2026-11-18
 related: svabii-banateni-genealogie, documente-in-maghiara-si-germana, registrele-ortodoxe, registrele-de-stare-civila, nume-schimbate-si-variante, calendarul-iulian-si-gregorian
 terms: comitat, parohie, registru-parohial, registru-de-stare-civila, calendarul-iulian, confesiune
 ---

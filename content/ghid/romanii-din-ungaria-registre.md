@@ -1,9 +1,9 @@
 ---
 title: Românii din Ungaria: Jula, Micherechi, Chitighaz, Bătania
 seo: Românii din Ungaria: registre și strămoși din Jula și Bichiș
-description: Cum cauți strămoși români din Ungaria de azi, din satele de lângă Crișana: Jula, Micherechi, Chitighaz, Bătania. Registre bisericești, stare civilă, arhive.
+description: Cum cauți strămoși români din Ungaria, din satele de lângă Crișana: Jula, Micherechi, Chitighaz, Bătania. Registre bisericești, stare civilă, arhive.
 category: Comunități și regiuni
-cuvant: românii din Ungaria strămoși
+updated: 2026-11-18
 related: documente-in-maghiara-si-germana, registrele-ortodoxe, registrele-greco-catolice, nume-schimbate-si-variante, familysearch-pentru-romania, cum-ceri-copii-de-la-arhive
 terms: comitat, parohie, registru-parohial, registru-de-stare-civila, confesiune, nume-de-fata
 ---

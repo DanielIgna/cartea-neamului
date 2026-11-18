@@ -3,7 +3,7 @@ title: Ardealul de Nord, 1940–1944: acte, refugiați și urme ale familiei
 seo: Ardealul de Nord 1940–1944: acte și refugiați
 description: Ce acte au lăsat strămoșii din Ardealul de Nord în 1940–1944: stare civilă în maghiară, refugiul spre sud, armata, deportările și unde le cauți azi.
 category: Istorie și context
-cuvant: Ardealul de Nord 1940 strămoși
+updated: 2026-11-18
 related: documente-in-maghiara-si-germana, registrele-de-stare-civila, registrele-militare, stramosi-evrei-din-romania, cum-intervievezi-bunicii, documente-de-familie-din-casa
 terms: registru-de-stare-civila, act-de-nastere, livret-militar, fond-arhivistic, arhivele-nationale, sursa-primara
 ---
