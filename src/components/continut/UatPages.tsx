@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
+import { placeCrumbs } from "@/lib/seo/firimituri";
 import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
 import ShareCard from "@/components/continut/ShareCard";
 import { getEntry } from "@/lib/continut/colectii";
@@ -111,7 +112,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           ...(u.villages.length > 1 ? { containsPlace: u.villages.map((v) => ({ "@type": "Place", name: v.name })) } : {}),
         },
       }} />
-      <Breadcrumbs items={[{ name: "Localități", path: "/localitati" }, { name: `Județul ${c.name}`, path: countyPath(c) }, { name: u.name, path }]} />
+      <Breadcrumbs items={placeCrumbs(c, { name: u.name, path })} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>{k.title} {u.name} · județul {c.name}</div>
         <h1>Acte vechi și arhive pentru {u.name}, județul {c.name}</h1>

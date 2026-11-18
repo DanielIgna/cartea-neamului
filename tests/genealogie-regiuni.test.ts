@@ -6,8 +6,8 @@ import { sitemapGroups } from "@/lib/continut/sitemap";
 import { REGION_LABEL, regionPagePath } from "@/lib/genealogie-orase";
 
 describe("paginile regionale /genealogie/regiune/<slug>", () => {
-  it("sunt cele 7 cerute, cu aceeași adresă ca legăturile din paginile de orașe", () => {
-    expect(GEN_REGIONS.map((r) => r.slug).sort()).toEqual(["banat", "basarabia", "bucovina", "dobrogea", "maramures", "moldova", "transilvania"]);
+  it("sunt cele 10 (7 + Crișana, Muntenia, Oltenia), cu aceeași adresă ca legăturile din paginile de orașe", () => {
+    expect(GEN_REGIONS.map((r) => r.slug).sort()).toEqual(["banat", "basarabia", "bucovina", "crisana", "dobrogea", "maramures", "moldova", "muntenia", "oltenia", "transilvania"]);
     for (const r of GEN_REGIONS) {
       expect(genRegionPath(r)).toBe(regionPagePath(r.slug));
       expect(REGION_LABEL[r.slug]).toBe(r.name);

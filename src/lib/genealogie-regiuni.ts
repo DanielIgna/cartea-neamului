@@ -269,6 +269,111 @@ export const GEN_REGIONS: GenRegion[] = [
     ],
     guides: ["registrele-greco-catolice", "documente-in-latina", "documente-in-maghiara-si-germana", "registrele-evreiesti", "porecle-si-nume-in-sat"],
   },
+  {
+    slug: "crisana", name: "Crișana",
+    title: "Genealogie în Crișana: registre, confesiuni și arhive",
+    description: "Cum îți cauți strămoșii din Crișana: registrele greco-catolice, reformate și ortodoxe, actele în maghiară după 1895 și arhivele din Oradea, Arad și Zalău.",
+    h1: "Genealogie în Crișana: cum îți cauți strămoșii",
+    lead: "Crișana, țara Crișurilor, a fost veacuri la rând parte a Regatului Ungariei, cu sate românești, maghiare și slovace amestecate. Pentru genealogie, asta înseamnă registre în mai multe limbi și o graniță care, din 1920, a tăiat unele familii în două.",
+    counties: ["bihor", "arad", "salaj", "satu-mare"],
+    nameRegion: "crisana", oldNames: ["Körösvidék (maghiară)", "Partium (latină)", "Kreischgebiet (germană)"],
+    body: [
+      { h: "Un ținut de graniță", p: [
+        "Crișana cuprinde câmpia și dealurile dintre Mureș și Someș: Bihorul, partea de nord a județului Arad, o parte din Sălaj și sudul județului Satu Mare. Oradea a fost sub stăpânire otomană între 1660 și 1692, apoi ținutul a intrat sub Habsburgi, în cadrul Regatului Ungariei. În izvoare apare uneori ca parte din „Partium”, ținuturile de la vest de Transilvania.",
+        "După 1920, granița cu Ungaria a trecut prin vechile comitate Bihor și Arad, așa că unele sate ale acestor comitate sunt azi în Ungaria. Dacă satul strămoșilor e aproape de graniță, verifică de ce parte a rămas.",
+      ] },
+      { h: "Registrele fiecărei confesiuni", p: [
+        "Românii din Crișana au fost ortodocși sau greco-catolici; Episcopia greco-catolică de la Oradea a fost înființată în 1777. Maghiarii au fost mai ales reformați (calvini) și romano-catolici, slovacii din satele bihorene catolici sau luterani, iar Oradea și Aradul au avut comunități evreiești mari. Fiecare confesiune își ținea registrele ei, în română, maghiară, latină sau germană.",
+        "Starea civilă de stat începe la 1 octombrie 1895, cu registre în maghiară până în 1918 și numele de botez traduse: Ioan apare ca János, Floarea ca Flóra. Registrele mai vechi de aproximativ 100 de ani sunt la serviciile județene ale Arhivelor Naționale.",
+      ] },
+      { h: "Conscripții și acte de moșie", p: [
+        "Pentru vremea de dinainte de registre, Crișana are aceleași surse ca restul Ungariei: conscripțiile fiscale ale comitatelor, conscripția națională din 1828, cu capii de familie pe sate, și urbariile din vremea Mariei Tereza, care arată iobagii fiecărei moșii.",
+        "Multe dintre aceste acte au fost scrise în latină și maghiară și sunt păstrate în arhivele județene sau în cele din Ungaria; o parte se pot răsfoi online, pe platformele arhivelor maghiare.",
+      ] },
+      { h: "Unde sunt actele azi", p: [
+        "Registrele vechi sunt la serviciile județene Bihor (Oradea), Arad, Sălaj (Zalău) și Satu Mare ale Arhivelor Naționale. Pentru satele rămase în Ungaria după 1920, întreabă arhivele comitatelor de acolo. Actele de stare civilă mai noi de 100 de ani se cer de la primărie.",
+      ] },
+      { h: "Cum lucrezi pas cu pas", p: [
+        "Află satul și confesiunea familiei. Cere actele de la primărie, apoi întreabă arhiva județului ce registre are pentru parohia ta. Notează numele în română și în maghiară și caută familia, pentru anii de dinainte de 1850, în conscripții și urbarii.",
+      ] },
+    ],
+    faq: [
+      { q: "Ce județe țin de Crișana?", a: "Bihorul, partea de nord a județului Arad, o parte din Sălaj și sudul județului Satu Mare. Granițele regiunilor istorice nu se potrivesc exact cu cele ale județelor de azi." },
+      { q: "De ce numele bunicilor sunt scrise ungurește în acte?", a: "Între 1895 și 1918 starea civilă se ținea în maghiară, cu numele de botez traduse. Caută aceeași persoană și sub forma românească a numelui." },
+      { q: "Satul străbunicilor a rămas în Ungaria. Unde caut?", a: "La arhivele comitatelor din Ungaria. Registrele parohiale ale satelor românești de acolo pot fi și la bisericile lor sau la episcopii." },
+    ],
+    guides: ["registrele-greco-catolice", "registrele-catolice-si-protestante", "documente-in-maghiara-si-germana", "urbariile-si-documentele-mosiilor", "registrele-evreiesti"],
+  },
+  {
+    slug: "muntenia", name: "Muntenia",
+    title: "Genealogie în Muntenia: condici, catagrafii și arhive",
+    description: "Cum îți cauți strămoșii din Muntenia: registrele de la Regulamentul Organic, catagrafiile din 1831 și 1838, moșnenii, împroprietăririle și arhivele.",
+    h1: "Genealogie în Muntenia: cum îți cauți strămoșii",
+    lead: "Muntenia, partea Țării Românești de la est de Olt, are registre de stare civilă din anii 1830 și liste de gospodării și mai vechi. Greutatea e scrisul cu litere chirilice și calendarul vechi.",
+    counties: ["arges", "braila", "bucuresti", "buzau", "calarasi", "dambovita", "giurgiu", "ialomita", "ilfov", "olt", "prahova", "teleorman"],
+    nameRegion: "muntenia", oldNames: ["Țara Românească", "Valahia", "Walachei (germană)"],
+    body: [
+      { h: "Registrele de după Regulamentul Organic", p: [
+        "După Regulamentul Organic, din anii 1830 preoții din Țara Românească au ținut, pe parohii, registre de stare civilă cu nașteri, cununii și morți. Din decembrie 1865, odată cu Codul civil, registrele au trecut la primării. Pentru multe familii din Muntenia se poate urca prin acte oficiale până în prima jumătate a secolului al XIX-lea.",
+        "Registrele de până în anii 1860 sunt scrise de obicei cu litere chirilice românești, iar cele din anii 1860 cu alfabetul de tranziție. Până în 1919 datele sunt după calendarul iulian, cu 12 zile în urmă în secolul al XIX-lea și 13 după 1900.",
+      ] },
+      { h: "Catagrafiile", p: [
+        "Pentru generațiile de dinainte de registre, sursa principală sunt catagrafiile, recensămintele fiscale pe sate și gospodării. Cele mai folosite în Muntenia sunt cele din 1831 și 1838; există și liste mai vechi, din vremea ocupațiilor rusești. Ele trec capul familiei, uneori soția, copiii și vârstele, starea socială și ce bir plătea.",
+        "Catagrafiile Țării Românești sunt păstrate în cea mai mare parte la Arhivele Naționale Istorice Centrale, la București, iar unele au fost publicate pe județe.",
+      ] },
+      { h: "Moșneni, clăcași și împroprietăriri", p: [
+        "În satele de deal și de munte trăiau moșnenii, țărani liberi care stăpâneau pământul în devălmășie, ca urmași ai unui strămoș comun; actele lor de hotărnicie pot păstra spița neamului pe multe generații. La câmpie, cei mai mulți țărani erau clăcași pe moșiile boierilor și ale mănăstirilor.",
+        "Legea rurală din 1864 și reforma agrară din 1921 au lăsat liste și dosare de împroprietărire, pe sate, cu numele capilor de familie. Sunt surse foarte bune pentru a lega între ele generațiile din a doua jumătate a secolului al XIX-lea și de la începutul secolului XX.",
+      ] },
+      { h: "București și comunitățile", p: [
+        "Bucureștiul a atras oameni din toată țara. Registrele lui sunt la Serviciul Municipiului București al Arhivelor Naționale, iar pentru o familie venită din provincie merită căutat satul de origine. În Muntenia au trăit și comunități de bulgari, greci, evrei, armeni și catolici, cu registrele bisericilor și sinagogilor lor.",
+      ] },
+      { h: "Cum lucrezi pas cu pas", p: [
+        "Cere actele din ultimii 100 de ani de la primărie, apoi caută registrele parohiei la serviciul județean al Arhivelor Naționale. Pentru anii de dinainte de 1830, caută satul în catagrafii. Notează datele așa cum sunt scrise și precizează calendarul.",
+      ] },
+    ],
+    faq: [
+      { q: "Ce sunt catagrafiile din 1838?", a: "Recensăminte fiscale ale Țării Românești, pe sate și gospodării, cu capul familiei și adesea membrii ei. Sunt în cea mai mare parte la Arhivele Naționale Istorice Centrale." },
+      { q: "Ce erau moșnenii?", a: "Țărani liberi din Țara Românească, care stăpâneau pământul în devălmășie ca urmași ai aceluiași strămoș. Hotărniciile moșiilor lor pot păstra genealogii lungi." },
+      { q: "Unde găsesc listele de împroprietărire?", a: "Tabelele din 1864 și dosarele reformei agrare din 1921 sunt de obicei la serviciile județene ale Arhivelor Naționale; întreabă arhiva județului de care ținea satul." },
+    ],
+    guides: ["catagrafiile-din-moldova-si-tara-romaneasca", "registrele-de-stare-civila", "scrierea-chirilica-romaneasca", "calendarul-iulian-si-gregorian", "registrele-ortodoxe", "testamente-si-acte-de-mostenire"],
+  },
+  {
+    slug: "oltenia", name: "Oltenia",
+    title: "Genealogie în Oltenia: moșneni, catagrafii și arhive",
+    description: "Cum îți cauți strămoșii din Oltenia: registrele din anii 1830, catagrafiile, moșnenii din Gorj și Vâlcea, anii austrieci 1718–1739 și arhiva de la Craiova.",
+    h1: "Genealogie în Oltenia: cum îți cauți strămoșii",
+    lead: "Oltenia, partea Țării Românești de la vest de Olt, e ținutul moșnenilor, al satelor de deal cu neamuri vechi și al Craiovei. Are aceleași registre ca Muntenia, plus câteva surse numai ale ei.",
+    counties: ["dolj", "gorj", "mehedinti", "olt", "valcea"],
+    nameRegion: "oltenia", oldNames: ["Valahia Mică", "Kleine Walachei (germană)", "Banatul Craiovei"],
+    body: [
+      { h: "Anii austrieci și Banatul Craiovei", p: [
+        "Între 1718 și 1739, după pacea de la Passarowitz, Oltenia a fost sub administrația Habsburgilor, ca „Valahia Mică”. Administrația austriacă a făcut atunci liste ale satelor și ale locuitorilor, unele publicate de istorici, care pot arăta satele și capii de familie cu mai bine de un secol înainte de registrele de stare civilă.",
+        "Înainte și după acești ani, Oltenia a fost condusă de banii Craiovei, iar actele vechi ale ținutului vorbesc despre „Banatul Craiovei”.",
+      ] },
+      { h: "Registre și catagrafii", p: [
+        "Ca în toată Țara Românească, din anii 1830 preoții au ținut registre de stare civilă pe parohii, iar din decembrie 1865 primăriile. Registrele vechi sunt scrise cu litere chirilice sau cu alfabetul de tranziție, cu datele după calendarul iulian până în 1919.",
+        "Pentru generațiile de dinainte, catagrafiile din 1831 și 1838 trec gospodăriile pe sate. Ele sunt în cea mai mare parte la Arhivele Naționale Istorice Centrale, la București.",
+      ] },
+      { h: "Moșnenii din Gorj, Vâlcea și Mehedinți", p: [
+        "În satele de sub munte ale Olteniei, o mare parte din țărani au fost moșneni: stăpâni pe pământ în devălmășie, împărțit pe „bătrâni”, adică pe urmașii câte unui strămoș. Hotărniciile și actele de împărțeală ale acestor moșii arată adesea cine din cine se trage, pe multe generații.",
+        "Dacă familia ta vine dintr-un sat de moșneni, întreabă de actele moșiei: uneori au rămas la familii, alteori au ajuns la arhivă sau la judecătorie.",
+      ] },
+      { h: "Unde sunt actele azi", p: [
+        "Registrele vechi sunt la serviciile județene Dolj (Craiova), Gorj, Mehedinți, Olt și Vâlcea ale Arhivelor Naționale. Județul Olt de azi cuprinde și sate de la est de Olt, care țineau de Muntenia. Actele mai noi de 100 de ani se cer de la primărie.",
+      ] },
+      { h: "Cum lucrezi pas cu pas", p: [
+        "Cere actele de la primărie, apoi registrele parohiei de la arhiva județului. Cu satul aflat, caută familia în catagrafiile din 1831 și 1838, iar dacă e un sat de moșneni, în actele moșiei. Notează datele cu calendarul lor.",
+      ] },
+    ],
+    faq: [
+      { q: "Ce sunt „bătrânii” din actele de moșneni?", a: "Părțile în care se împărțea o moșie de moșneni, fiecare a urmașilor unui strămoș. Numele bătrânului e adesea și numele de neam al familiilor de azi." },
+      { q: "Există acte din vremea stăpânirii austriece?", a: "Da, administrația austriacă din 1718–1739 a făcut liste ale satelor și ale locuitorilor; unele au fost publicate de istorici. Întreabă și arhiva județului." },
+      { q: "Județul Olt ține de Oltenia?", a: "În mare parte, da, dar județul de azi cuprinde și sate de la est de râul Olt, care istoric țineau de Muntenia." },
+    ],
+    guides: ["catagrafiile-din-moldova-si-tara-romaneasca", "registrele-de-stare-civila", "scrierea-chirilica-romaneasca", "testamente-si-acte-de-mostenire", "calendarul-iulian-si-gregorian"],
+  },
 ];
 
 export const getGenRegion = (slug: string) => GEN_REGIONS.find((r) => r.slug === slug) ?? null;

@@ -7,8 +7,8 @@
  */
 export type GenCity = {
   slug: string; name: string; county: string;
-  /** Pagina regională de legat (doar cele 7: transilvania, banat, bucovina, basarabia, moldova, dobrogea, maramures). */
-  region: "transilvania" | "banat" | "moldova" | "dobrogea" | null;
+  /** Pagina regională de legat (/genealogie/regiune/<slug>); null = prima regiune a județului. */
+  region: "transilvania" | "banat" | "moldova" | "dobrogea" | "crisana" | "muntenia" | "oltenia" | null;
   /** Numele orașului în alte limbi, în actele vechi. */
   oldNames: string[];
   body: { h: string; p: string[] }[];
@@ -19,6 +19,7 @@ export const REGION_PAGES_LIVE = true;
 export const regionPagePath = (slug: string) => `/genealogie/regiune/${slug}`;
 export const REGION_LABEL: Record<string, string> = {
   transilvania: "Transilvania", banat: "Banat", bucovina: "Bucovina", basarabia: "Basarabia", moldova: "Moldova", dobrogea: "Dobrogea", maramures: "Maramureș",
+  crisana: "Crișana", muntenia: "Muntenia", oltenia: "Oltenia",
 };
 export const GEN_HUB = "/genealogie";
 export const genCityPath = (c: GenCity) => `${GEN_HUB}/${c.slug}`;
@@ -46,7 +47,7 @@ export const GEN_CITIES: GenCity[] = [
     ],
   },
   {
-    slug: "bucuresti", name: "București", county: "bucuresti", region: null, oldNames: ["Bukarest (germană)", "Bükrös (maghiară)"],
+    slug: "bucuresti", name: "București", county: "bucuresti", region: "muntenia", oldNames: ["Bukarest (germană)", "Bükrös (maghiară)"],
     body: [
       { h: "Registrele Bucureștiului", p: [
         "În Țara Românească, registrele de stare civilă au fost ținute din anii 1830 de preoți, după Regulamentul Organic, iar din decembrie 1865 de primării. Bucureștiul are deci registre de nașteri, căsătorii și decese foarte vechi, pe parohii și apoi pe circumscripții. Cele mai vechi de 100 de ani sunt la Serviciul Municipiului București al Arhivelor Naționale; cele mai noi, la starea civilă a sectorului.",
@@ -146,7 +147,7 @@ export const GEN_CITIES: GenCity[] = [
     ],
   },
   {
-    slug: "craiova", name: "Craiova", county: "dolj", region: null, oldNames: [],
+    slug: "craiova", name: "Craiova", county: "dolj", region: "oltenia", oldNames: [],
     body: [
       { h: "Cetatea băniei", p: [
         "Craiova a fost reședința băniei Olteniei și cel mai mare oraș al regiunii. Între 1718 și 1739, Oltenia a fost sub stăpânire habsburgică, iar administrația austriacă a lăsat recensăminte și hărți ale satelor oltenești, folosite și azi de istorici și genealogiști.",
@@ -166,7 +167,7 @@ export const GEN_CITIES: GenCity[] = [
     ],
   },
   {
-    slug: "oradea", name: "Oradea", county: "bihor", region: "transilvania", oldNames: ["Nagyvárad (maghiară)", "Großwardein (germană)"],
+    slug: "oradea", name: "Oradea", county: "bihor", region: "crisana", oldNames: ["Nagyvárad (maghiară)", "Großwardein (germană)"],
     body: [
       { h: "Orașul de pe Crișul Repede", p: [
         "Oradea a fost un mare oraș al Crișanei, cu cetatea ei, cu episcopii romano-catolică și greco-catolică și cu o puternică viață negustorească. În oraș au trăit maghiari, români, evrei și germani, iar fiecare confesiune și-a ținut registrele proprii.",
