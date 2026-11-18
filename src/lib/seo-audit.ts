@@ -16,6 +16,8 @@ import { fitTitle } from "./page-metadata";
 import { SCHOOL_PAGES } from "./scoala";
 import { GIFTS_DESCRIPTION, GIFTS_HUB, GIFTS_TITLE, GIFT_PAGES, giftPath, giftWords } from "./cadouri";
 import { AUTHORITY_PAGES } from "./autoritate";
+import { KIN_PAGES, TOOLS_HUB, kinPagePath, kinWords } from "./unelte/rudenie-pagini";
+import { TOOLS, TOOLS_DESCRIPTION, TOOLS_TITLE, toolPath } from "./unelte/unelte";
 
 /**
  * Admin → SEO (Daniel, 14.11.2026, după modelul din PropManage): inventarul tuturor paginilor publice cunoscute, cu titlul,
@@ -67,6 +69,10 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
   // Cadouri (src/lib/cadouri.ts).
   push({ path: GIFTS_HUB, title: GIFTS_TITLE, description: GIFTS_DESCRIPTION, words: null, indexable: true, gate: null, category: "cadouri" });
   for (const p of GIFT_PAGES) push({ path: giftPath(p), title: p.title, description: p.description, words: giftWords(p), indexable: true, gate: null, category: "cadouri" });
+  // Uneltele gratuite și paginile despre rude (src/lib/unelte).
+  push({ path: TOOLS_HUB, title: `${TOOLS_TITLE}${SUFFIX}`, description: TOOLS_DESCRIPTION, words: null, indexable: true, gate: null, category: "unelte" });
+  for (const t of TOOLS) push({ path: toolPath(t), title: `${t.title}${SUFFIX}`, description: t.description, words: null, indexable: true, gate: null, category: "unelte" });
+  for (const p of KIN_PAGES) push({ path: kinPagePath(p), title: `${p.title}${SUFFIX}`, description: p.description, words: kinWords(p), indexable: true, gate: null, category: "unelte" });
   // Presă și widgetul „Arborele meu” (src/lib/autoritate.ts).
   for (const p of AUTHORITY_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "autoritate" });
   // Genealogie pe orașe mari (src/lib/genealogie-orase.ts).

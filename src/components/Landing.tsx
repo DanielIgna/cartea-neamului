@@ -95,7 +95,7 @@ const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { 
 /** Huburile și cele 6 ghiduri de pornire din „Începe de aici”. */
 const START_HUBS: [string, string][] = [
   ["/genealogie", "Genealogie pe regiuni, județe și orașe"], ["/nume", "Nume de familie explicate"], ["/localitati", "Arhive și registre pe județe"],
-  ["/ghid", "Toate ghidurile"], ["/glosar", "Glosarul cuvintelor din acte"], ["/surse-publice", "Surse publice de genealogie"], ["/cadouri", "Idei de cadou pentru familie"],
+  ["/ghid", "Toate ghidurile"], ["/glosar", "Glosarul cuvintelor din acte"], ["/surse-publice", "Surse publice de genealogie"], ["/cadouri", "Idei de cadou pentru familie"], ["/unelte", "Unelte gratuite: rudenie, arbore de tipărit"],
 ];
 const START_GUIDES = [
   "cum-incepi-arborele-genealogic", "intrebari-pentru-bunici", "cum-ceri-un-act-de-stare-civila",

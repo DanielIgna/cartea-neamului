@@ -13,6 +13,9 @@ import { GEN_REGIONS, genRegionPath } from "@/lib/genealogie-regiuni";
 import { SCHOOL_PAGES } from "@/lib/scoala";
 import { AUTHORITY_PAGES } from "@/lib/autoritate";
 import { GIFT_PAGES, giftPath } from "@/lib/cadouri";
+import { KIN_PAGES, kinPagePath } from "@/lib/unelte/rudenie-pagini";
+import { TOOLS, toolPath } from "@/lib/unelte/unelte";
+import { grandparentQuestions } from "@/lib/unelte/intrebari";
 import { entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
@@ -63,7 +66,7 @@ type Resolver = (p: string) => string | null;
 
 /** Adresele pentru care amprenta n-ar avea de unde citi conținutul (nici regulă de secțiune, nici fișier de pagină): pentru teste. */
 export function unknownSources(paths: string[]): string[] {
-  const known = [/^\/(ghid|glosar|nume|localitati|scoala|cadouri|genealogie|diaspora)\/.+$/];
+  const known = [/^\/(ghid|glosar|nume|localitati|scoala|cadouri|unelte|genealogie|diaspora)\/.+$/];
   return paths.map((f) => splitLocalePath(f).path).filter((p) => !known.some((re) => re.test(p)) && !existsSync(path.join(SITE, routeFileOf(p))));
 }
 
@@ -87,6 +90,8 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
   for (const a of AUTHORITY_PAGES) records.set(a.path, a);
   for (const g of GIFT_PAGES) records.set(giftPath(g), g);
   for (const e of diasporaEntries()) records.set(e.path, e);
+  for (const t of TOOLS) records.set(toolPath(t), t.slug === "intrebari-pentru-bunici-pdf" ? { t, q: grandparentQuestions() } : t);
+  for (const p of KIN_PAGES) records.set(kinPagePath(p), p);
 
   const hubs: Record<string, string[]> = {
     "/ghid": [...records.keys()].filter((k) => k.startsWith("/ghid/")),
@@ -94,6 +99,7 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
     "/nume": loadNames().map((n) => `${n.slug}:${n.name}`),
     "/localitati": [...counties.keys()],
     "/cadouri": GIFT_PAGES.map((g) => `${g.slug}:${g.title}`),
+    "/unelte": [...TOOLS.map((t) => `${t.slug}:${t.title}`), ...KIN_PAGES.map((p) => `${p.slug}:${p.title}`)],
   };
 
   // Șablonul fiecărei familii de pagini (după fișierul rutei din app/(site)).
@@ -106,6 +112,8 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
     [/^\/genealogie\/[^/]+$/, "genealogie/[oras]/page.tsx"],
     [/^\/scoala\/[^/]+$/, "scoala/[slug]/page.tsx"],
     [/^\/cadouri\/[^/]+$/, "cadouri/[slug]/page.tsx"],
+    [/^\/unelte\/rudenie\/[^/]+$/, "unelte/rudenie/[relatie]/page.tsx"],
+    [/^\/unelte\/[^/]+$/, "unelte/[slug]/page.tsx"],
     [/^\/diaspora\/[^/]+\/[^/]+$/, "diaspora/[a]/[b]/page.tsx"],
     [/^\/diaspora\/[^/]+$/, "diaspora/[a]/page.tsx"],
   ];

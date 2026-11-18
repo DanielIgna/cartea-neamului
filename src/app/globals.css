@@ -2064,3 +2064,24 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .surse-grup li p{margin:4px 0}
 .surse-meta{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
 .surse-toc{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Uneltele gratuite (/unelte): calculatorul de rudenie, arborele gol de tipărit, întrebările pentru bunici. */
+.kin-path{font-size:18px;margin-top:0}
+.kin-actions{margin:12px 0}
+.kin-result{border-top:1px solid var(--line);padding-top:12px}
+.kin-name{font-family:var(--display);font-size:clamp(24px,4vw,32px);margin:0 0 6px;color:var(--ink)}
+.kin-error{color:#a33}
+.gen-in input{width:6em;font-size:18px;margin-left:6px}
+.sp-row-16{grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}
+.sp-row-16 .sp-rel{font-size:8px;letter-spacing:0}
+.sp-row-16 .sp-box{padding:4px 2px;min-height:64px;border-width:1.5px;border-radius:10px}
+.sp-blank .sp-box{min-height:78px;justify-content:flex-start}
+@media (max-width:700px){.sp-row-16{grid-template-columns:repeat(8,minmax(0,1fr))}}
+.qsheet ol{padding-left:22px}
+.qsheet li{margin:0 0 10px;break-inside:avoid}
+.qsheet .q-lines{display:block;border-bottom:1px solid var(--line);height:22px}
+@media print{
+  body:has(.qsheet) :is(header.top,.site-foot,.cookie-notice,.usage-notice,nav.crumbs,.wa-float,.access-banner),body:has(.qsheet) .no-print{display:none!important}
+  body:has(.qsheet) .card{box-shadow:none;border:0}
+  @page{margin:14mm}
+}

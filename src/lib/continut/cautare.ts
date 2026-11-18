@@ -5,6 +5,8 @@ import { nameGate, uatThin } from "./prag";
 import { KIND_NAME, loadUats, uatPath } from "./uat";
 import { SCHOOL_PAGES } from "@/lib/scoala";
 import { GIFTS_HUB, GIFTS_TITLE, GIFT_PAGES, giftPath } from "@/lib/cadouri";
+import { KIN_PAGES, TOOLS_HUB, kinPagePath } from "@/lib/unelte/rudenie-pagini";
+import { TOOLS, toolPath } from "@/lib/unelte/unelte";
 
 /**
  * Căutarea din site (/cauta?q=…, Daniel, 17.11.2026): numele de familie, județele, orașele și comunele, ghidurile, glosarul și
@@ -38,6 +40,9 @@ function build(): Doc[] {
   for (const p of SCHOOL_PAGES) out.push({ href: p.path, title: p.h1, kind: "Pentru școli", keys: [p.title, "scoala arbore genealogic", p.description], boost: 1 });
   out.push({ href: GIFTS_HUB, title: GIFTS_TITLE, kind: "Cadouri", keys: ["cadou", "cadouri", "cadou pentru familie", "cadou craciun"], boost: 2 });
   for (const p of GIFT_PAGES) out.push({ href: giftPath(p), title: p.h1, kind: "Cadouri", keys: [p.title, p.name, `cadou ${p.name}`], boost: 1 });
+  out.push({ href: TOOLS_HUB, title: "Unelte gratuite de genealogie", kind: "Unelte", keys: ["unelte", "calculator", "gratuit", "arbore de completat"], boost: 2 });
+  for (const t of TOOLS) out.push({ href: toolPath(t), title: t.h1, kind: "Unelte", keys: [t.title, t.name], boost: 2 });
+  for (const p of KIN_PAGES) out.push({ href: kinPagePath(p), title: p.h1, kind: "Rudenie", keys: [p.title, p.name, `ce este ${p.name}`], boost: 2 });
   return out.map((d) => ({ ...d, keys: d.keys.map(plain) }));
 }
 

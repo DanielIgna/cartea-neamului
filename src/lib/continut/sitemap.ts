@@ -11,6 +11,8 @@ import { GEN_REGIONS, REGIONS_UPDATED, genRegionPath } from "@/lib/genealogie-re
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
 import { GIFTS_HUB, GIFTS_UPDATED, GIFT_PAGES, giftPath } from "@/lib/cadouri";
+import { KIN_PAGES, TOOLS_HUB, TOOLS_UPDATED, kinPagePath } from "@/lib/unelte/rudenie-pagini";
+import { TOOLS, toolPath } from "@/lib/unelte/unelte";
 import { AUTHORITY_PAGES, AUTHORITY_UPDATED } from "@/lib/autoritate";
 import { lastmodOf } from "@/lib/seo/versiuni";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
@@ -116,6 +118,11 @@ export function rawGroups(published: Map<string, Date> = new Map()): SitemapGrou
       // Cadourile pe ocazii și persoane (src/lib/cadouri.ts); Crăciunul e /cadou-de-sarbatori, în „pagini”.
       name: "cadouri", label: "Cadouri",
       urls: [GIFTS_HUB, ...GIFT_PAGES.map(giftPath)].map((path): SitemapUrl => ({ path, lastModified: GIFTS_UPDATED })),
+    },
+    {
+      // Uneltele gratuite și paginile despre rude (src/lib/unelte).
+      name: "unelte", label: "Unelte gratuite",
+      urls: [TOOLS_HUB, ...TOOLS.map(toolPath), ...KIN_PAGES.map(kinPagePath)].map((path): SitemapUrl => ({ path, lastModified: TOOLS_UPDATED })),
     },
     {
       // Presă și widgetul gratuit (src/lib/autoritate.ts).

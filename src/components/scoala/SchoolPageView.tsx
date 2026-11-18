@@ -81,6 +81,8 @@ export default function SchoolPageView({ page }: { page: SchoolPage }) {
         <h2 style={{ marginTop: 0 }}>Vezi și</h2>
         <ul>
           {others.map((p) => <li key={p.path}><Link href={p.path}>{p.h1}</Link></li>)}
+          <li><Link href="/unelte/arbore-printabil">Arbore genealogic gol, de tipărit</Link></li>
+          <li><Link href="/unelte/calculator-grad-de-rudenie">Calculatorul de rudenie</Link></li>
           <li><Link href="/ghid">Ghiduri de genealogie</Link></li>
           <li><Link href="/glosar">Glosarul cuvintelor de rudenie și de arhivă</Link></li>
         </ul>

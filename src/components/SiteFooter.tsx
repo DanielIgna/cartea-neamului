@@ -30,6 +30,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       {/* Paginile doar în română: școli, presă și widgetul „Arborele meu” (Etapa 5). */}
       {ro && <Link href="/genealogie">Genealogie pe regiuni</Link>}
       {ro && <Link href="/cadouri">Cadouri</Link>}
+      {ro && <Link href="/unelte">Unelte gratuite</Link>}
       {ro && <Link href="/scoala">Pentru școli</Link>}
       {ro && <Link href="/presa">Presă</Link>}
       {ro && <Link href="/arborele-meu">Widget pentru blog</Link>}
