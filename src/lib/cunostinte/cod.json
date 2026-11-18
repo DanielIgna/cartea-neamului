@@ -43,6 +43,7 @@
   "drizzle/0041_crm_campanii.sql",
   "drizzle/0042_crm_bani.sql",
   "drizzle/0043_crm_sarcini.sql",
+  "drizzle/0044_crm_ambasadori.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -775,6 +776,7 @@
   "src/lib/corectura-igna-todea.ts",
   "src/lib/crestere.ts",
   "src/lib/crm-admin.ts",
+  "src/lib/crm-ambasadori.ts",
   "src/lib/crm-auto.ts",
   "src/lib/crm-bani.ts",
   "src/lib/crm-campanii.ts",
@@ -931,6 +933,7 @@
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
   "tests/crm-admin.test.ts",
+  "tests/crm-ambasadori.test.ts",
   "tests/crm-auto.test.ts",
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
@@ -1652,6 +1655,7 @@
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
   "tests/crm-admin.test.ts",
+  "tests/crm-ambasadori.test.ts",
   "tests/crm-auto.test.ts",
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
@@ -1719,5 +1723,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 43
+ "migrations": 44
 }

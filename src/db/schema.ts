@@ -1152,3 +1152,36 @@ export const schoolPayment = pgTable("school_payment", {
   currency: text("currency").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// CRM Etapa 10 (Daniel, 18.11.2026; src/lib/crm-ambasadori.ts): profesorii ambasadori, elevii aduși și recompensele date.
+export const crmAmbassadors = pgTable("crm_ambassadors", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  nume: text("nume").notNull(),
+  email: text("email"),
+  telefon: text("telefon"),
+  acordLa: timestamp("acord_la"),
+  organizationId: uuid("organization_id").references(() => crmOrganizations.id, { onDelete: "set null" }),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  slug: text("slug").notNull(),
+  cod: text("cod"),
+  stripePromoId: text("stripe_promo_id"),
+  schoolCodeId: uuid("school_code_id").references(() => schoolCode.id, { onDelete: "set null" }),
+  activ: boolean("activ").notNull().default(true),
+  nota: text("nota"),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("crm_ambassadors_slug_idx").on(t.slug), uniqueIndex("crm_ambassadors_cod_idx").on(t.cod)]);
+export const crmAmbassadorAccounts = pgTable("crm_ambassador_accounts", {
+  userId: text("user_id").primaryKey().references(() => user.id, { onDelete: "cascade" }),
+  ambassadorId: uuid("ambassador_id").notNull().references(() => crmAmbassadors.id, { onDelete: "cascade" }),
+  via: text("via").notNull(), // src / cod / clasa
+  at: timestamp("at").notNull().defaultNow(),
+}, (t) => [index("crm_ambassador_accounts_idx").on(t.ambassadorId)]);
+export const crmAmbassadorPayouts = pgTable("crm_ambassador_payouts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ambassadorId: uuid("ambassador_id").notNull().references(() => crmAmbassadors.id, { onDelete: "cascade" }),
+  suma: integer("suma").notNull(), // lei
+  nota: text("nota"),
+  at: timestamp("at").notNull().defaultNow(),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+});

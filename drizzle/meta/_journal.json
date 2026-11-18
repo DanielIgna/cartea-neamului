@@ -302,6 +302,13 @@
       "when": 1795000200000,
       "tag": "0043_crm_sarcini",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1795000300000,
+      "tag": "0044_crm_ambasadori",
+      "breakpoints": true
     }
   ]
 }

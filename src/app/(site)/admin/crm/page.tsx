@@ -20,6 +20,9 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
+import { ambassadorCodeAction, newAmbassadorAction, payoutAction, rewardRulesAction, toggleAmbassadorAction } from "@/app/crm-actions";
+import { ambLink, ambassadorList, rewardRules } from "@/lib/crm-ambasadori";
+import { crmOrganizations, school as schoolT, schoolCode as schoolCodeT } from "@/db/schema";
 import { contactMonths, funnel, templateStats } from "@/lib/crm-rapoarte";
 import { closeTaskAction, gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
 import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
@@ -35,7 +38,7 @@ export const metadata = { title: "CRM · Admin" };
 
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
-  { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
+  { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
   { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
@@ -73,6 +76,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "scoli" && <Orgs q={q} fixed="scoala" />}
       {tab === "firme" && <Firms q={q} />}
       {tab === "parteneri" && <Partners />}
+      {tab === "profesori" && <Teachers />}
       {tab === "aprobari" && <Approvals />}
       {tab === "campanii" && <Campaigns />}
       {tab === "nucontacta" && <Suppression />}
@@ -644,6 +648,76 @@ async function Reports({ q }: { q: Record<string, string | undefined> }) {
           </div>
         ) : <p className="muted" style={{ marginBottom: 0 }}>Niciun șablon încă (CRM → Campanii).</p>}
         <p className="muted" style={{ marginBottom: 0 }}>Procentele sunt din emailurile trimise (deschiderile, din cele livrate). Deschiderile sunt aproximative: unele programe de email nu încarcă imaginile.</p>
+      </div>
+    </>
+  );
+}
+
+/** Etapa 10: profesorii ambasadori: elevii aduși, plătitorii, recompensa după reguli și ce s-a dat deja. */
+async function Teachers() {
+  const [list, rules, schools, codes] = await Promise.all([
+    ambassadorList(db), rewardRules(db),
+    db.select({ id: crmOrganizations.id, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.tip, "scoala")).orderBy(crmOrganizations.nume).limit(1000),
+    db.select({ id: schoolCodeT.id, code: schoolCodeT.code, clasa: schoolCodeT.classLabel, scoala: schoolT.name }).from(schoolCodeT).innerJoin(schoolT, eq(schoolT.id, schoolCodeT.schoolId)).orderBy(desc(schoolCodeT.createdAt)).limit(500),
+  ]);
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Profesorii ambasadori</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Fiecare profesor are linkul lui (și, dacă vrei, codul lui NEAM-XXXX, cu aceeași reducere ca NEAM90, sau codul clasei din Admin → Școli). Elevii care își fac cont sau plătesc așa se trec la el; recompensa se calculează după regulile de mai jos. Conturile de test nu contează.</p>
+        {list.length ? (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Profesorul</th><th>Link și cod</th><th className="n">Elevi aduși</th><th className="n">Au plătit</th><th className="n">Venit</th><th className="n">Recompensă</th><th className="n">Dat</th><th className="n">De dat</th><th></th></tr></thead>
+              <tbody>{list.map((a) => (
+                <tr key={a.id} style={a.activ ? undefined : { opacity: 0.6 }}>
+                  <td><b>{a.nume}</b><small>{[a.orgNume, a.clasa && `clasa ${a.clasa}`, a.email, a.telefon].filter(Boolean).join(" · ")}</small></td>
+                  <td><CopyLink url={ambLink(a.slug)} />{a.cod ? <small> cod <b>{a.cod}</b></small> : (
+                    <form action={ambassadorCodeAction} style={{ display: "inline" }}><input type="hidden" name="id" value={a.id} /><button className="btn">Fă cod</button></form>
+                  )}</td>
+                  <td className="n">{num(a.elevi)}</td><td className="n">{num(a.platitori)}</td><td className="n">{num(a.venit)} lei</td>
+                  <td className="n">{num(a.recompensaLei)} lei{a.aniGratuiti ? <small> + {a.aniGratuiti} an{a.aniGratuiti > 1 ? "i" : ""} gratuit{a.aniGratuiti > 1 ? "i" : ""}</small> : null}</td>
+                  <td className="n">{num(a.dat)} lei</td><td className="n"><b>{num(a.deDat)} lei</b></td>
+                  <td className="tight">
+                    <form action={payoutAction} style={{ display: "flex", gap: 4 }}>
+                      <input type="hidden" name="id" value={a.id} /><input name="suma" type="number" min={1} placeholder="lei" style={{ width: 70 }} aria-label="Suma dată" />
+                      <button className="btn">Am dat</button>
+                    </form>
+                    <form action={toggleAmbassadorAction}><input type="hidden" name="id" value={a.id} /><input type="hidden" name="activ" value={a.activ ? "0" : "1"} /><button className="btn">{a.activ ? "Oprește" : "Repornește"}</button></form>
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="muted">Niciun profesor încă.</p>}
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Profesor nou</h2>
+        <form action={newAmbassadorAction} className="form stack">
+          <label>Numele<input name="nume" required maxLength={120} /></label>
+          <div className="crm-filters">
+            <label>Școala (din CRM)<select name="organizationId" defaultValue=""><option value="">—</option>{schools.map((o) => <option key={o.id} value={o.id}>{o.nume}</option>)}</select></label>
+            <label>Codul clasei (Admin → Școli)<select name="schoolCodeId" defaultValue=""><option value="">—</option>{codes.map((c) => <option key={c.id} value={c.id}>{c.code} · {c.scoala}{c.clasa ? `, ${c.clasa}` : ""}</option>)}</select></label>
+          </div>
+          <div className="crm-filters">
+            <label>Email<input name="email" type="email" maxLength={200} /></label>
+            <label>Telefon<input name="telefon" maxLength={40} /></label>
+          </div>
+          <label><input type="checkbox" name="acord" /> Profesorul și-a dat acordul să-i păstrăm emailul/telefonul pentru recompense</label>
+          <label>Notă<input name="nota" maxLength={500} /></label>
+          <button className="btn primary">Adaugă</button>
+        </form>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Regulile recompensei</h2>
+        <form action={rewardRulesAction} className="crm-filters">
+          <label>Lei pe fiecare elev cu cont<input name="leiPerCont" type="number" min={0} max={500} defaultValue={rules.leiPerCont} /></label>
+          <label>Lei pe fiecare elev care a plătit<input name="leiPerPlata" type="number" min={0} max={500} defaultValue={rules.leiPerPlata} /></label>
+          <label>Un an gratuit la fiecare … elevi plătitori (0 = fără)<input name="pragAnGratuit" type="number" min={0} max={500} defaultValue={rules.pragAnGratuit} /></label>
+          <label>Plata minimă care contează (lei)<input name="minimPlata" type="number" min={0} max={5000} defaultValue={rules.minimPlata} /></label>
+          <button className="btn">Salvează</button>
+        </form>
+        <p className="muted" style={{ marginBottom: 0 }}>Recompensa se calculează singură; „Am dat” trece ce i-ai dat, ca să vezi cât mai e. Anul gratuit îl pui din Admin → Oameni pe contul profesorului.</p>
       </div>
     </>
   );

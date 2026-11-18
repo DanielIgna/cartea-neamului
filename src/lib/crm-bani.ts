@@ -40,26 +40,34 @@ async function stripe(path: string, params: Record<string, string> | null, f: ty
   return { ok: r.ok, status: r.status, json: (await r.json().catch(() => ({}))) as Record<string, unknown> & { id?: string; error?: { message?: string } } };
 }
 
-/** Codul NEAM-XXXX al organizației, pe același cupon ca NEAM90 (deci aceeași reducere). Dacă există deja, îl întoarce. */
-export async function createOrgCode(db: Db, orgId: string, f: typeof fetch = fetch) {
-  const [org] = await db.select({ cod: crmOrganizations.cod, tip: crmOrganizations.tip, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.id, orgId));
-  if (!org) throw new Error("organizația nu există");
-  if (org.cod) return org.cod;
+/** Un cod NEAM-XXXX nou în Stripe, pe același cupon ca NEAM90 (deci aceeași reducere), cu metadata dată. */
+export async function createNeamPromo(meta: Record<string, string>, f: typeof fetch = fetch) {
   if (!process.env.STRIPE_SECRET_KEY) throw new Error("lipsește STRIPE_SECRET_KEY");
   const base = await stripe(`promotion_codes?code=${BASE_CODE}&limit=1`, null, f, "GET");
   const coupon = ((base.json.data as { coupon?: { id?: string } }[] | undefined)?.[0]?.coupon?.id) ?? null;
   if (!coupon) throw new Error(`codul ${BASE_CODE} nu există în Stripe`);
   for (let i = 0; i < 5; i++) {
     const code = newOrgCode();
-    const promo = await stripe("promotion_codes", { coupon, code, "metadata[sursa]": "crm", "metadata[crmOrg]": orgId }, f);
+    const params: Record<string, string> = { coupon, code };
+    for (const [k, v] of Object.entries(meta)) params[`metadata[${k}]`] = v;
+    const promo = await stripe("promotion_codes", params, f);
     if (!promo.ok || !promo.json.id) {
       if (/already exists|exist/i.test(promo.json.error?.message ?? "")) continue;
       throw new Error(`Stripe: ${promo.json.error?.message ?? promo.status}`);
     }
-    await db.update(crmOrganizations).set({ cod: code, stripePromoId: promo.json.id, updatedAt: new Date() }).where(eq(crmOrganizations.id, orgId));
-    return code;
+    return { code, promoId: promo.json.id };
   }
   throw new Error("nu am găsit un cod liber");
+}
+
+/** Codul NEAM-XXXX al organizației. Dacă există deja, îl întoarce. */
+export async function createOrgCode(db: Db, orgId: string, f: typeof fetch = fetch) {
+  const [org] = await db.select({ cod: crmOrganizations.cod }).from(crmOrganizations).where(eq(crmOrganizations.id, orgId));
+  if (!org) throw new Error("organizația nu există");
+  if (org.cod) return org.cod;
+  const p = await createNeamPromo({ sursa: "crm", crmOrg: orgId }, f);
+  await db.update(crmOrganizations).set({ cod: p.code, stripePromoId: p.promoId, updatedAt: new Date() }).where(eq(crmOrganizations.id, orgId));
+  return p.code;
 }
 
 /* ---------- Conturile aduse și plățile lor ---------- */
@@ -105,7 +113,8 @@ export async function refreshOrgAccounts(db: Db, now = new Date()) {
     added += ins.length;
   }
   const money = await syncOrgMoney(db, now);
-  return { added, ...money };
+  const prof = await (await import("./crm-ambasadori")).refreshAmbassadorAccounts(db, now);
+  return { added, ...money, profesori: prof.added };
 }
 
 /** La înscriere (src/lib/auth.ts): contul nou se leagă imediat de organizația din linkul lui sau din codul școlii. Nu aruncă. */
@@ -126,6 +135,7 @@ export async function attributeNewAccount(db: Db, userId: string, now = new Date
       join crm_organizations o on o.school_id = c.school_id where ss.user_id = ${userId} limit 1`);
     if (sc) await db.insert(crmOrgAccounts).values({ userId, organizationId: sc.org, via: "scoala", at: now }).onConflictDoNothing();
     await syncOrgMoney(db, now);
+    await (await import("./crm-ambasadori")).attributeToAmbassador(db, userId, now);
   } catch (e) {
     console.error("crm: contul nou", e);
   }
@@ -164,6 +174,7 @@ export async function afterCrmPayment(db: Db, p: { userId: string; promo?: strin
     const [org] = await db.select({ id: crmOrganizations.id }).from(crmOrganizations)
       .where(p.promo ? sql`${crmOrganizations.stripePromoId} = ${p.promo} or ${crmOrganizations.cod} = ${p.offer ?? ""}` : sql`${crmOrganizations.cod} = ${p.offer ?? ""}`).limit(1);
     if (org) await db.insert(crmOrgAccounts).values({ userId: p.userId, organizationId: org.id, via: "cod", at: now }).onConflictDoNothing();
+    await (await import("./crm-ambasadori")).ambassadorOnPayment(db, p, now);
   }
   return syncOrgMoney(db, now);
 }

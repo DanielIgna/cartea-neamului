@@ -335,3 +335,71 @@ export async function closeTaskAction(form: FormData) {
   const ret = s(form, "back");
   back(ret.startsWith("/admin/crm") ? ret : "/admin/crm", st === "facuta" ? "Bifat ca făcut." : "Sarcina a fost anulată.");
 }
+
+/* ---------- Profesorii ambasadori (Etapa 10) ---------- */
+
+const PROF = "/admin/crm?t=profesori";
+
+export async function newAmbassadorAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { AmbassadorInput, createAmbassador } = await import("@/lib/crm-ambasadori");
+  const p = AmbassadorInput.safeParse({ nume: s(form, "nume"), email: s(form, "email"), telefon: s(form, "telefon"), acord: form.get("acord") === "on",
+    organizationId: s(form, "organizationId") || null, schoolCodeId: s(form, "schoolCodeId") || null, nota: s(form, "nota") });
+  if (!p.success) back(PROF, `Nesalvat: ${p.error.issues[0]?.message ?? "date greșite"}`);
+  else {
+    const a = await createAmbassador(db, p.data, me.id);
+    revalidatePath("/admin/crm");
+    back(PROF, `Profesorul e adăugat. Linkul lui: ?src=prof-${a.slug}`);
+  }
+}
+
+export async function ambassadorCodeAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const { ambassadorCode } = await import("@/lib/crm-ambasadori");
+  let msg: string;
+  try { msg = `Codul profesorului: ${await ambassadorCode(db, id)}`; } catch (e) { msg = `Codul nu s-a făcut: ${e instanceof Error ? e.message : "eroare"}`; }
+  revalidatePath("/admin/crm");
+  back(PROF, msg);
+}
+
+export async function payoutAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id"), suma = Number(s(form, "suma"));
+  if (!/^[0-9a-f-]{36}$/i.test(id) || !Number.isFinite(suma) || suma <= 0 || suma > 100000) back(PROF, "Scrie suma dată (în lei).");
+  else {
+    const { addPayout } = await import("@/lib/crm-ambasadori");
+    await addPayout(db, id, suma, txt(form.get("nota"), 300), me.id);
+    revalidatePath("/admin/crm");
+    back(PROF, "Recompensa dată e trecută.");
+  }
+}
+
+export async function rewardRulesAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const { RewardRules, saveRewardRules } = await import("@/lib/crm-ambasadori");
+  const p = RewardRules.safeParse({ leiPerCont: s(form, "leiPerCont"), leiPerPlata: s(form, "leiPerPlata"), pragAnGratuit: s(form, "pragAnGratuit"), minimPlata: s(form, "minimPlata") });
+  if (!p.success) back(PROF, "Nesalvat: verifică numerele.");
+  else {
+    await saveRewardRules(db, p.data, me.id);
+    revalidatePath("/admin/crm");
+    back(PROF, "Regulile recompensei au fost salvate.");
+  }
+}
+
+export async function toggleAmbassadorAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const { crmAmbassadors } = await import("@/db/schema");
+  const { eq } = await import("drizzle-orm");
+  await db.update(crmAmbassadors).set({ activ: s(form, "activ") === "1" }).where(eq(crmAmbassadors.id, id));
+  revalidatePath("/admin/crm");
+  back(PROF, "Gata.");
+}
