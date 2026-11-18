@@ -18,7 +18,8 @@ import { deleteObjects } from "@/lib/storage";
 import { markRemovedByUpload } from "@/lib/home-submissions";
 import { activeServiceAccount, listSites, parseServiceAccount, parseVerification, parseWatch, pickSite, saveSeoSettings, sealCredentials, seoSettings, submitSitemap, type SeoSettings } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site-url";
-import { engineSettings, saveEngineSettings } from "@/lib/motor-seo/motor";
+import { engineSettings, publishedMap, saveEngineSettings } from "@/lib/motor-seo/motor";
+import { runIndexNow } from "@/lib/seo/indexnow";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -205,6 +206,18 @@ export async function submitSitemapNow(): Promise<AdminFormState> {
   }
   revalidatePath("/admin/seo");
   return { ok: "Trimis. Google îl citește în câteva ore sau zile." };
+}
+
+/** Admin → SEO → Sitemap: anunță acum prin IndexNow paginile schimbate (Bing, Yandex); altfel se face singur, zilnic. */
+export async function sendIndexNowNow(): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const r = await runIndexNow(db, { by: "admin", published: await publishedMap(db) });
+  revalidatePath("/admin/seo");
+  if (r.state === "fara-cheie") return { error: "Lipsește cheia INDEXNOW_KEY în Vercel." };
+  if (r.state === "nimic-nou") return { ok: "Nicio pagină schimbată de la ultima trimitere." };
+  if (r.state === "eroare") return { error: `Nu s-a trimis: ${r.error}.` };
+  return { ok: `Am anunțat ${r.count} pagini.` };
 }
 
 /**

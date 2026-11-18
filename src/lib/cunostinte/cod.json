@@ -274,6 +274,7 @@
   "src/app/api/datele-mele/route.ts",
   "src/app/api/document/[docId]/route.ts",
   "src/app/api/folosire/route.ts",
+  "src/app/api/indexnow/cheie/route.ts",
   "src/app/api/parteneri/[partner]/export/route.ts",
   "src/app/api/parteneri/dezabonare/route.ts",
   "src/app/api/ping/route.ts",
@@ -940,6 +941,7 @@
   "src/lib/seo.ts",
   "src/lib/seo/amprente.ts",
   "src/lib/seo/firimituri.ts",
+  "src/lib/seo/indexnow.ts",
   "src/lib/seo/legaturi.ts",
   "src/lib/seo/quality.ts",
   "src/lib/seo/sezon.ts",
@@ -1024,6 +1026,7 @@
   "tests/genealogie-regiuni.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
+  "tests/indexnow.test.ts",
   "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",
@@ -1368,6 +1371,10 @@
   },
   {
    "path": "/api/folosire",
+   "kind": "api"
+  },
+  {
+   "path": "/api/indexnow/cheie",
    "kind": "api"
   },
   {
@@ -1800,6 +1807,7 @@
   "tests/genealogie-regiuni.test.ts",
   "tests/home-images.test.ts",
   "tests/i18n.test.ts",
+  "tests/indexnow.test.ts",
   "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",

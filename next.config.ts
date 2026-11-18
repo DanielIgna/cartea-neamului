@@ -90,6 +90,10 @@ const config: NextConfig = {
       { source: "/diaspora/sua/:b", destination: "/diaspora/statele-unite/:b", permanent: true },
     ];
   },
+  // Fișierul cheii IndexNow (/<cheie>.txt), vezi src/lib/seo/indexnow.ts. Fișierele din public/ (robots, sw.js) au întâietate.
+  async rewrites() {
+    return [{ source: "/:key([a-zA-Z0-9-]{8,128}).txt", destination: "/api/indexnow/cheie?k=:key" }];
+  },
   async headers() {
     // Fișa „Arborele meu” (/widget/arbore/…) e făcută să stea pe alte site-uri: își pune singură regulile (fără scripturi).
     return [{ source: "/:path((?!widget/arbore/).*)", headers: securityHeaders }];

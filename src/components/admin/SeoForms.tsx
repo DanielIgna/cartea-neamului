@@ -1,6 +1,6 @@
 "use client";
 import { useActionState, useState, useTransition } from "react";
-import { saveSeoEngine, saveSeoSetup, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
+import { saveSeoEngine, saveSeoSetup, sendIndexNowNow, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
 
 /** Setările SEO: codul de verificare Google, proprietatea, cuvintele urmărite și cheia Search Console. */
 export function SeoSetupForm({ verification, siteUrl, sites, watch, keySource, keyEmail }: {
@@ -52,6 +52,19 @@ export function SubmitSitemapButton() {
     <div className="actions" style={{ marginTop: 8 }}>
       <button className="btn" disabled={pending} onClick={() => start(async () => setMsg(await submitSitemapNow()))}>
         {pending ? "Trimit…" : "Trimite sitemap-ul la Google"}
+      </button>
+      <span role="status" className={msg?.error ? "err" : "muted"}>{msg?.error ?? msg?.ok ?? ""}</span>
+    </div>
+  );
+}
+
+export function IndexNowButton() {
+  const [msg, setMsg] = useState<AdminFormState>(null);
+  const [pending, start] = useTransition();
+  return (
+    <div className="actions" style={{ marginTop: 8 }}>
+      <button className="btn" disabled={pending} onClick={() => start(async () => setMsg(await sendIndexNowNow()))}>
+        {pending ? "Trimit…" : "Anunță acum paginile schimbate"}
       </button>
       <span role="status" className={msg?.error ? "err" : "muted"}>{msg?.error ?? msg?.ok ?? ""}</span>
     </div>
