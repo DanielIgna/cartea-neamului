@@ -23,6 +23,8 @@ import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfSt
 import { ambassadorCodeAction, newAmbassadorAction, payoutAction, rewardRulesAction, toggleAmbassadorAction } from "@/app/crm-actions";
 import { ambLink, ambassadorList, rewardRules } from "@/lib/crm-ambasadori";
 import { crmOrganizations, school as schoolT, schoolCode as schoolCodeT } from "@/db/schema";
+import { ignoreDupAction, mergeAction } from "@/app/crm-actions";
+import { DUP_LABEL, EXPORTS, auditList, findDuplicates, mergePreview } from "@/lib/crm-curatenie";
 import { contactMonths, funnel, templateStats } from "@/lib/crm-rapoarte";
 import { closeTaskAction, gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
 import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
@@ -39,7 +41,7 @@ export const metadata = { title: "CRM · Admin" };
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
   { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
-  { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "import", label: "Import" },
+  { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "curatenie", label: "Curățenie" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -84,6 +86,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "scor" && <Scores />}
       {tab === "automatizari" && <Automations />}
       {tab === "sanatate" && <Health />}
+      {tab === "curatenie" && <Cleanup q={q} />}
       {tab === "import" && (
         <div className="card stack">
           <h2 style={{ margin: 0 }}>Import din CSV</h2>
@@ -718,6 +721,78 @@ async function Teachers() {
           <button className="btn">Salvează</button>
         </form>
         <p className="muted" style={{ marginBottom: 0 }}>Recompensa se calculează singură; „Am dat” trece ce i-ai dat, ca să vezi cât mai e. Anul gratuit îl pui din Admin → Oameni pe contul profesorului.</p>
+      </div>
+    </>
+  );
+}
+
+/** Etapa 11: dublurile (cu previzualizare înainte de unire), exportul CSV și istoricul modificărilor. */
+async function Cleanup({ q }: { q: Record<string, string | undefined> }) {
+  const isId = (v?: string) => !!v && /^[0-9a-f-]{36}$/i.test(v);
+  const [dups, log, prev] = await Promise.all([findDuplicates(db), auditList(db, 150), isId(q.a) && isId(q.b) ? mergePreview(db, q.a!, q.b!) : Promise.resolve(null)]);
+  return (
+    <>
+      {prev && (
+        <div className="card stack">
+          <h2 style={{ margin: 0 }}>Previzualizarea unirii</h2>
+          <p style={{ margin: 0 }}>Se păstrează <b><Link href={`/admin/crm/org/${prev.keep.id}`}>{prev.keep.nume}</Link></b> ({prev.keep.localitate ?? "—"}, {prev.keep.emailOficial ?? "fără email"}) și se șterge <b><Link href={`/admin/crm/org/${prev.drop.id}`}>{prev.drop.nume}</Link></b> ({prev.drop.localitate ?? "—"}, {prev.drop.emailOficial ?? "fără email"}).</p>
+          <ul style={{ margin: 0 }}>
+            {prev.counts.length ? prev.counts.map((c) => <li key={c.label}>se mută {num(c.n)} {c.label}</li>) : <li>nimic de mutat</li>}
+            {Object.keys(prev.fill).length > 0 && <li>se completează: {Object.keys(prev.fill).join(", ")}</li>}
+            <li>statusul rămas: {isOrgStatus(prev.status) ? ORG_STATUS_LABEL[prev.status] : prev.status}</li>
+          </ul>
+          <form action={mergeAction} style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <input type="hidden" name="keep" value={prev.keep.id} /><input type="hidden" name="drop" value={prev.drop.id} />
+            <label><input type="checkbox" name="confirm" /> Am văzut previzualizarea</label>
+            <button className="btn primary">Unește</button>
+            <Link className="btn" href={`/admin/crm?t=curatenie&a=${prev.drop.id}&b=${prev.keep.id}`}>Invers (păstrează cealaltă)</Link>
+          </form>
+        </div>
+      )}
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Posibile dubluri</h2>
+        {dups.length ? (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Prima</th><th>A doua</th><th>De ce</th><th></th></tr></thead>
+              <tbody>{dups.map((d) => (
+                <tr key={d.key}>
+                  <td><Link href={`/admin/crm/org/${d.a.id}`}>{d.a.nume}</Link><small>{[d.a.localitate, d.a.email].filter(Boolean).join(" · ")}</small></td>
+                  <td><Link href={`/admin/crm/org/${d.b.id}`}>{d.b.nume}</Link><small>{[d.b.localitate, d.b.email].filter(Boolean).join(" · ")}</small></td>
+                  <td className="tight">{DUP_LABEL[d.motiv]}</td>
+                  <td className="tight" style={{ display: "flex", gap: 6 }}>
+                    <Link className="btn" href={`/admin/crm?t=curatenie&a=${d.a.id}&b=${d.b.id}`}>Previzualizează unirea</Link>
+                    <form action={ignoreDupAction}><input type="hidden" name="a" value={d.a.id} /><input type="hidden" name="b" value={d.b.id} /><button className="btn">Nu sunt dubluri</button></form>
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Nicio dublură găsită (aceeași adresă, același domeniu propriu sau același nume și oraș).</p>}
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Export CSV</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Se deschide direct în Excel (separator „;”, cu diacritice). Fiecare export rămâne în istoricul de mai jos.</p>
+        <ul style={{ margin: 0 }}>{Object.entries(EXPORTS).map(([k, v]) => <li key={k}><a href={`/api/admin/crm/export?lista=${k}`}>{v}</a></li>)}</ul>
+        <p className="muted" style={{ marginBottom: 0 }}>Ștergerea la cerere (GDPR) se face din fișa organizației, jos.</p>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Istoricul modificărilor</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Cine, ce și când pentru tot ce se schimbă din Admin → CRM. Ce fac automatizările se vede în istoricul fiecărei organizații și în Autonomie.</p>
+        {log.length ? (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Când</th><th>Cine</th><th>Ce</th><th>Unde</th><th>Detalii</th></tr></thead>
+              <tbody>{log.map((l) => (
+                <tr key={l.id}>
+                  <td className="tight">{day(new Date(l.at).toISOString(), true)}</td><td className="tight">{l.actor ?? "—"}</td><td>{l.action}</td>
+                  <td>{l.org ? <Link href={`/admin/crm/org/${l.entity_id}`}>{l.org}</Link> : l.entity_id === "-" ? "" : <small>{l.entity_id.slice(0, 8)}</small>}</td>
+                  <td><small>{l.diff ? JSON.stringify(l.diff).slice(0, 160) : ""}</small></td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Nimic încă.</p>}
       </div>
     </>
   );

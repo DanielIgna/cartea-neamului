@@ -9,6 +9,7 @@ import { addActivity, isActivityType, isDealProduct, isOrgType, isSuppressionRea
 import { addDeal, checkPartnershipForm, decideApproval, submitPartnership, updateDeal, updateOrg } from "@/lib/crm-admin";
 import { importCsv, isImportKind, kindOfFile, type ImportReport } from "@/lib/crm-import";
 import { contactRateOk } from "@/lib/contact";
+import { crmAudit, formDiff } from "@/lib/crm-curatenie";
 
 async function admin() {
   const me = await currentUser();
@@ -23,6 +24,7 @@ export type ImportState = { reports?: ImportReport[]; error?: string } | null;
 export async function importAction(_: ImportState, form: FormData): Promise<ImportState> {
   const me = await admin();
   if (!me) return { error: "Doar pentru admin." };
+  await crmAudit(db, me.id, "import CSV", form.get("id") as string | null, formDiff(form));
   const files = form.getAll("files").filter((f): f is File => f instanceof File && f.size > 0);
   if (!files.length) return { error: "Alege cel puțin un fișier CSV." };
   const chosen = s(form, "kind");
@@ -42,6 +44,7 @@ export async function importAction(_: ImportState, form: FormData): Promise<Impo
 export async function newOrgAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "organizație nouă", form.get("id") as string | null, formDiff(form));
   const tip = s(form, "tip");
   const nume = txt(form.get("nume"), 200);
   if (!isOrgType(tip) || !nume) return back("/admin/crm?t=organizatii", "Scrie numele și alege tipul.");
@@ -53,6 +56,7 @@ export async function newOrgAction(form: FormData) {
 export async function updateOrgAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "organizație modificată", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   const f = Object.fromEntries([...form.entries()].filter(([k]) => k !== "id")) as Record<string, unknown>;
   f.deSunat = form.get("deSunat") === "on";
@@ -65,6 +69,7 @@ export async function updateOrgAction(form: FormData) {
 export async function addActivityAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "activitate adăugată", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id"), tip = s(form, "tip");
   if (!isActivityType(tip)) return;
   const rezumat = txt(form.get("rezumat"), 2000);
@@ -78,6 +83,7 @@ export async function addActivityAction(form: FormData) {
 export async function calledAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "am sunat", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   await addActivity(db, { tip: "apel", canal: "telefon", rezumat: txt(form.get("rezumat"), 500) ?? "Am sunat", organizationId: id, createdBy: me.id });
   await updateOrg(db, id, { deSunat: false });
@@ -92,6 +98,7 @@ export async function calledAction(form: FormData) {
 export async function newDealAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "deal nou", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id"), produs = s(form, "produs");
   if (!isDealProduct(produs)) return;
   const d = await addDeal(db, { organizationId: id, produs });
@@ -103,6 +110,7 @@ export async function newDealAction(form: FormData) {
 export async function updateDealAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "deal modificat", form.get("id") as string | null, formDiff(form));
   await updateDeal(db, s(form, "deal"), Object.fromEntries(form.entries()) as Record<string, unknown>);
   const to = s(form, "back") || "/admin/crm?t=pipeline";
   revalidatePath("/admin/crm");
@@ -114,6 +122,7 @@ export async function updateDealAction(form: FormData) {
 export async function decideAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "aprobare decisă", form.get("id") as string | null, formDiff(form));
   const d = s(form, "decizie");
   if (d !== "aprobat" && d !== "respins") return;
   const r = await decideApproval(db, s(form, "id"), d, me.id, { subiect: txt(form.get("subiect"), 300) ?? undefined, text: txt(form.get("text"), 8000) ?? undefined });
@@ -126,6 +135,7 @@ export async function decideAction(form: FormData) {
 export async function suppressAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "pus pe „nu contacta”", form.get("id") as string | null, formDiff(form));
   const motiv = s(form, "motiv");
   const v = await suppress(db, s(form, "valoare"), isSuppressionReason(motiv) ? motiv : "nu_contacta", { sursa: "adăugat manual", by: me.id });
   revalidatePath("/admin/crm");
@@ -134,6 +144,7 @@ export async function suppressAction(form: FormData) {
 export async function unsuppressAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "scos de pe „nu contacta”", form.get("id") as string | null, formDiff(form));
   await unsuppress(db, s(form, "valoare"));
   revalidatePath("/admin/crm");
   back("/admin/crm?t=nucontacta", "Scos de pe listă.");
@@ -161,6 +172,7 @@ export async function partnershipAction(_: PartnershipState, form: FormData): Pr
 export async function recomputeAction() {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "recalculare scoruri", null, null);
   const { refreshSignals } = await import("@/lib/crm-scor");
   const r = await refreshSignals(db);
   revalidatePath("/admin/crm");
@@ -172,6 +184,7 @@ export async function recomputeAction() {
 export async function limitsAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "limite pe zi", form.get("id") as string | null, formDiff(form));
   const { CrmLimits, saveCrmLimits } = await import("@/lib/crm-auto");
   const p = CrmLimits.safeParse({ reactivare: s(form, "reactivare"), ambasador: s(form, "ambasador"), ciorne: s(form, "ciorne"), campanii: s(form, "campanii") });
   if (!p.success) back("/admin/crm?t=automatizari", `Nesalvat: ${p.error.issues[0]?.message ?? "valori greșite"}`);
@@ -189,6 +202,7 @@ const CAMP = "/admin/crm?t=campanii";
 export async function saveTemplateAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "șablon salvat", form.get("id") as string | null, formDiff(form));
   const { TemplateInput, saveTemplate } = await import("@/lib/crm-campanii");
   const p = TemplateInput.safeParse({ nume: s(form, "nume"), tipOrg: s(form, "tipOrg"), subiect: s(form, "subiect"), corp: s(form, "corp"), butonText: s(form, "butonText"), butonCale: s(form, "butonCale") });
   if (!p.success) back(CAMP, `Nesalvat: ${p.error.issues[0]?.message ?? "date greșite"}`);
@@ -203,6 +217,7 @@ export async function saveTemplateAction(form: FormData) {
 export async function newCampaignAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "campanie nouă", form.get("id") as string | null, formDiff(form));
   const { CampaignInput, createCampaign } = await import("@/lib/crm-campanii");
   const fu = s(form, "followUpZile");
   const p = CampaignInput.safeParse({
@@ -222,6 +237,7 @@ export async function newCampaignAction(form: FormData) {
 export async function campaignStatusAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "stare campanie", form.get("id") as string | null, formDiff(form));
   const { isCampaignStatus, setCampaignStatus } = await import("@/lib/crm-campanii");
   const id = s(form, "id"), st = s(form, "status");
   if (!/^[0-9a-f-]{36}$/i.test(id) || !isCampaignStatus(st)) return;
@@ -233,6 +249,7 @@ export async function campaignStatusAction(form: FormData) {
 export async function testMailAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "email de probă", form.get("id") as string | null, formDiff(form));
   const { sendTestMail } = await import("@/lib/crm-campanii");
   const id = s(form, "templateId");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
@@ -243,6 +260,7 @@ export async function testMailAction(form: FormData) {
 export async function batchNowAction() {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "lot trimis acum", null, null);
   const { automationSwitches, runAutomation } = await import("@/lib/autonomie");
   const sw = await automationSwitches(db);
   if (!sw["crm-campanii"]) back(CAMP, "Pornește întâi „CRM: campanii către organizații” în Admin → Autonomie.");
@@ -258,6 +276,7 @@ export async function batchNowAction() {
 export async function gmailSyncAction() {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "Gmail citit acum", null, null);
   const { runAutomation } = await import("@/lib/autonomie");
   const r = await runAutomation(db, "crm-gmail", "manual", me.id);
   revalidatePath("/admin/crm");
@@ -267,6 +286,7 @@ export async function gmailSyncAction() {
 export async function gmailUnlinkAction() {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "Gmail dezlegat", null, null);
   const { gmailState, saveGmailState } = await import("@/lib/crm-gmail");
   const st = await gmailState(db);
   await saveGmailState(db, { ...st, sealed: undefined, linkedAt: undefined }, me.id);
@@ -279,6 +299,7 @@ export async function gmailUnlinkAction() {
 export async function orgCodeAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "cod organizație", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { createOrgCode } = await import("@/lib/crm-bani");
@@ -295,6 +316,7 @@ export async function orgCodeAction(form: FormData) {
 export async function linkSchoolAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "școală legată", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id"), school = s(form, "schoolId");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { linkSchool, refreshOrgAccounts } = await import("@/lib/crm-bani");
@@ -309,6 +331,7 @@ export async function linkSchoolAction(form: FormData) {
 export async function newTaskAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "sarcină nouă", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   const { addTask, dueFrom } = await import("@/lib/crm-sarcini");
   const due = dueFrom(s(form, "cand"), s(form, "data"));
@@ -325,6 +348,7 @@ export async function newTaskAction(form: FormData) {
 export async function closeTaskAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "sarcină închisă", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { closeTask } = await import("@/lib/crm-sarcini");
@@ -343,6 +367,7 @@ const PROF = "/admin/crm?t=profesori";
 export async function newAmbassadorAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "profesor nou", form.get("id") as string | null, formDiff(form));
   const { AmbassadorInput, createAmbassador } = await import("@/lib/crm-ambasadori");
   const p = AmbassadorInput.safeParse({ nume: s(form, "nume"), email: s(form, "email"), telefon: s(form, "telefon"), acord: form.get("acord") === "on",
     organizationId: s(form, "organizationId") || null, schoolCodeId: s(form, "schoolCodeId") || null, nota: s(form, "nota") });
@@ -357,6 +382,7 @@ export async function newAmbassadorAction(form: FormData) {
 export async function ambassadorCodeAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "cod profesor", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { ambassadorCode } = await import("@/lib/crm-ambasadori");
@@ -369,6 +395,7 @@ export async function ambassadorCodeAction(form: FormData) {
 export async function payoutAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "recompensă dată", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id"), suma = Number(s(form, "suma"));
   if (!/^[0-9a-f-]{36}$/i.test(id) || !Number.isFinite(suma) || suma <= 0 || suma > 100000) back(PROF, "Scrie suma dată (în lei).");
   else {
@@ -382,6 +409,7 @@ export async function payoutAction(form: FormData) {
 export async function rewardRulesAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "reguli recompensă", form.get("id") as string | null, formDiff(form));
   const { RewardRules, saveRewardRules } = await import("@/lib/crm-ambasadori");
   const p = RewardRules.safeParse({ leiPerCont: s(form, "leiPerCont"), leiPerPlata: s(form, "leiPerPlata"), pragAnGratuit: s(form, "pragAnGratuit"), minimPlata: s(form, "minimPlata") });
   if (!p.success) back(PROF, "Nesalvat: verifică numerele.");
@@ -395,6 +423,7 @@ export async function rewardRulesAction(form: FormData) {
 export async function toggleAmbassadorAction(form: FormData) {
   const me = await admin();
   if (!me) return;
+  await crmAudit(db, me.id, "profesor pornit/oprit", form.get("id") as string | null, formDiff(form));
   const id = s(form, "id");
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { crmAmbassadors } = await import("@/db/schema");
@@ -402,4 +431,58 @@ export async function toggleAmbassadorAction(form: FormData) {
   await db.update(crmAmbassadors).set({ activ: s(form, "activ") === "1" }).where(eq(crmAmbassadors.id, id));
   revalidatePath("/admin/crm");
   back(PROF, "Gata.");
+}
+
+/* ---------- Curățenie: dubluri, ștergere GDPR (Etapa 11) ---------- */
+
+const CUR = "/admin/crm?t=curatenie";
+const isId = (v: string) => /^[0-9a-f-]{36}$/i.test(v);
+
+export async function mergeAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const keep = s(form, "keep"), drop = s(form, "drop");
+  if (!isId(keep) || !isId(drop) || keep === drop || s(form, "confirm") !== "on") back(CUR, "Bifează „Am văzut previzualizarea” ca să unești.");
+  else {
+    const { mergeOrgs } = await import("@/lib/crm-curatenie");
+    const ok = await mergeOrgs(db, keep, drop, me.id);
+    revalidatePath("/admin/crm");
+    back(ok ? `/admin/crm/org/${keep}` : CUR, ok ? "Organizațiile au fost unite." : "Nu s-au putut uni (poate una a fost deja ștearsă).");
+  }
+}
+
+export async function ignoreDupAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const a = s(form, "a"), b = s(form, "b");
+  if (!isId(a) || !isId(b)) return;
+  const { crmAudit: log, ignoreDuplicate } = await import("@/lib/crm-curatenie");
+  await ignoreDuplicate(db, a, b, me.id);
+  await log(db, me.id, "nu sunt dubluri", a, { a, b });
+  revalidatePath("/admin/crm");
+  back(CUR, "Perechea nu mai apare la dubluri.");
+}
+
+export async function gdprDeleteAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  if (!isId(id) || s(form, "confirm") !== "STERGE") back(isId(id) ? `/admin/crm/org/${id}` : "/admin/crm", "Scrie STERGE ca să confirmi ștergerea.");
+  else {
+    const { gdprDeleteOrg } = await import("@/lib/crm-curatenie");
+    await gdprDeleteOrg(db, id, { keepSuppression: form.get("keep") === "on", by: me.id });
+    revalidatePath("/admin/crm");
+    back("/admin/crm?t=organizatii", "Organizația, persoanele ei și istoricul au fost șterse.");
+  }
+}
+
+export async function gdprDeleteContactAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id"), org = s(form, "org");
+  if (!isId(id)) return;
+  const { gdprDeleteContact } = await import("@/lib/crm-curatenie");
+  await gdprDeleteContact(db, id, { keepSuppression: form.get("keep") === "on", by: me.id });
+  revalidatePath("/admin/crm");
+  back(isId(org) ? `/admin/crm/org/${org}` : "/admin/crm", "Persoana de contact a fost ștearsă.");
 }

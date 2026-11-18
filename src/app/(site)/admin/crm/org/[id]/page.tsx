@@ -12,7 +12,7 @@ import { orgDetail, whatsappLink } from "@/lib/crm-admin";
 import { orgSends } from "@/lib/crm-campanii";
 import { VIA_LABEL, moneyByOrg, orgAccountsList } from "@/lib/crm-bani";
 import { school } from "@/db/schema";
-import { closeTaskAction, linkSchoolAction, newTaskAction, orgCodeAction } from "@/app/crm-actions";
+import { closeTaskAction, gdprDeleteAction, gdprDeleteContactAction, linkSchoolAction, newTaskAction, orgCodeAction } from "@/app/crm-actions";
 import { DUE_CHOICES, orgTasks } from "@/lib/crm-sarcini";
 
 const AUTO_ACTIVITIES = new Set<string>(["email_livrat", "email_deschis", "email_click", "dezabonat"]);
@@ -177,7 +177,8 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
         <div className="card">
           <h2 style={{ marginTop: 0 }}>Persoane de contact</h2>
           <p className="muted" style={{ marginTop: 0 }}>Doar cei care și-au dat singuri datele, cu dovada acordului.</p>
-          <ul>{d.contacts.map((c) => <li key={c.id}>{[c.nume, c.rol, c.email, c.telefon].filter(Boolean).join(" · ")} <small className="muted">{c.consimtamant ? `acord ${c.consimtamantAt ? day(c.consimtamantAt.toISOString()) : ""} (${c.sursaConsimtamant ?? ""})` : "fără acord"}</small></li>)}</ul>
+          <ul>{d.contacts.map((c) => <li key={c.id}>{[c.nume, c.rol, c.email, c.telefon].filter(Boolean).join(" · ")} <small className="muted">{c.consimtamant ? `acord ${c.consimtamantAt ? day(c.consimtamantAt.toISOString()) : ""} (${c.sursaConsimtamant ?? ""})` : "fără acord"}</small>
+            <form action={gdprDeleteContactAction} style={{ display: "inline-flex", gap: 6, marginLeft: 8 }}><input type="hidden" name="id" value={c.id} /><input type="hidden" name="org" value={org.id} /><label><input type="checkbox" name="keep" defaultChecked /> pe „nu contacta”</label><button className="btn">Șterge (GDPR)</button></form></li>)}</ul>
         </div>
       )}
 
@@ -211,6 +212,17 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
           </div>
         ) : <p className="muted" style={{ marginBottom: 0 }}>Niciun cont adus încă. Conturile se leagă la fiecare oră când deschizi CRM-ul și zilnic din Autonomie; conturile de test nu contează.</p>}
       </div>
+
+      <details className="card">
+        <summary><b>Ștergere la cerere (GDPR)</b></summary>
+        <p className="muted">Șterge organizația, persoanele ei de contact, istoricul, emailurile de campanie, sarcinile și deal-urile. Nu se poate desface. Plățile conturilor rămân (contabilitate), doar fără legătura cu organizația.</p>
+        <form action={gdprDeleteAction} className="form stack">
+          <input type="hidden" name="id" value={org.id} />
+          <label><input type="checkbox" name="keep" defaultChecked /> Păstrează adresele doar pe „Nu contacta”, ca să nu le mai scriem din greșeală (recomandat)</label>
+          <label>Scrie STERGE ca să confirmi<input name="confirm" autoComplete="off" /></label>
+          <button className="btn">Șterge definitiv</button>
+        </form>
+      </details>
     </section>
   );
 }
