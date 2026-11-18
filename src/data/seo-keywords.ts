@@ -60,6 +60,12 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "reuniune-de-familie", title: "Cum organizezi o reuniune de familie, cu arborele ca temă", order: 28 },
   { slug: "catagrafia-cum-o-citesti", title: "Cum citești o catagrafie", order: 29 },
   { slug: "oltenia-si-muntenia-condici-catagrafii", title: "Oltenia și Muntenia: condici, catagrafii, registre", order: 30 },
+  // A doua serie (Daniel, 18.11.2026: „da scrie ghiduri noi”), subiecte care nu repetă ghidurile și paginile de regiune existente.
+  { slug: "romanii-din-banatul-sarbesc", title: "Românii din Banatul sârbesc: cum îți cauți strămoșii", order: 31 },
+  { slug: "romanii-din-ungaria-registre", title: "Românii din Ungaria: Jula, Micherechi, Chitighaz, Bătania", order: 32 },
+  { slug: "nemesi-si-boieri-din-transilvania", title: "Nemeși și boieri: strămoși din mica nobilime românească", order: 33 },
+  { slug: "ardealul-de-nord-1940-1944", title: "Ardealul de Nord, 1940–1944: acte, refugiați și urme ale familiei", order: 34 },
+  { slug: "dosarul-de-la-securitate-al-bunicului", title: "Dosarul de la Securitate al bunicului: cum ceri acces la CNSAS", order: 35 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
 /** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */
@@ -186,6 +192,11 @@ const MANUAL: Keyword[] = [
   row("confesiunea strămoșilor", "acte", "informational", 3, planned("confesiunea-stramosilor"), "de-creat"),
   row("catagrafii", "acte", "informational", 3, "/ghid/catagrafiile-din-moldova-si-tara-romaneasca"),
   row("cum citești o catagrafie", "acte", "informational", 3, planned("catagrafia-cum-o-citesti"), "de-creat"),
+  row("românii din banatul sârbesc strămoși", "acte", "informational", 3, planned("romanii-din-banatul-sarbesc"), "de-creat"),
+  row("românii din ungaria registre", "acte", "informational", 3, planned("romanii-din-ungaria-registre"), "de-creat"),
+  row("nemeși maramureșeni strămoși", "acte", "informational", 3, planned("nemesi-si-boieri-din-transilvania"), "de-creat"),
+  row("ardealul de nord 1940 acte", "acte", "informational", 3, planned("ardealul-de-nord-1940-1944"), "de-creat"),
+  row("dosar cnsas bunic", "acte", "informational", 2, planned("dosarul-de-la-securitate-al-bunicului"), "de-creat"),
   row("conscripții transilvania", "acte", "informational", 3, "/ghid/conscriptiile-din-transilvania"),
   row("urbarii", "acte", "informational", 3, "/ghid/urbariile-si-documentele-mosiilor"),
   row("carte funciară veche", "acte", "informational", 3, "/ghid/cartea-funciara-si-cadastrul-vechi"),
