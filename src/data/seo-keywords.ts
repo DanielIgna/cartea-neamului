@@ -69,6 +69,8 @@ export const PUBLISHED_GUIDES = new Set([
   "greseli-frecvente-arbore-genealogic", "registre-parohiale-online", "reuniune-de-familie", "rude-in-viata-si-viata-privata",
   "harti-vechi-ridicarile-austriece", "razesi-mosneni-clacasi-iobagi", "svabii-banateni-genealogie",
   "sasii-din-transilvania-registre", "stramosi-evrei-din-romania", "bucovina-registre-si-arhive", "deportati-in-baragan-si-siberia",
+  "basarabia-registrele-parohiale", "dobrogea-genealogie", "oltenia-si-muntenia-condici-catagrafii", "stramosi-in-armata-austro-ungara",
+  "hpdt-registrele-din-transilvania", "redobandirea-cetateniei-acte-stramosi",
 ]);
 
 /** Rândurile scrise de mână, pentru intențiile principale. */

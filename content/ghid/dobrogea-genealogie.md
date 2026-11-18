@@ -3,7 +3,7 @@ title: Dobrogea: aromâni, tătari, turci, coloniști
 seo: Dobrogea: genealogie pentru familiile de aici
 description: Cum cauți strămoși în Dobrogea: actele de după 1878, comunitățile regiunii, coloniștii, aromânii din Cadrilater și arhivele de la Constanța și Tulcea.
 category: Comunități și regiuni
-cuvant: Dobrogea genealogie
+updated: 2026-11-18
 related: registrele-de-stare-civila, registrele-ortodoxe, registrele-catolice-si-protestante, nume-schimbate-si-variante, recensamintele-vechi, cum-ceri-copii-de-la-arhive
 terms: registru-de-stare-civila, registru-parohial, confesiune, recensamant, plasa, act-de-nastere
 ---

@@ -3,7 +3,7 @@ title: Strămoși în armata austro-ungară: listele de pierderi și matricolele
 seo: Strămoși în armata austro-ungară: pierderi și matricole
 description: Cum găsești un strămoș din Transilvania, Banat sau Bucovina din armata austro-ungară: listele de pierderi din 1914–1919, matricolele, regimentul.
 category: Registre și arhive
-cuvant: armata austro-ungară strămoși
+updated: 2026-11-18
 related: registrele-militare, listele-eroilor-si-monumentele, documente-in-maghiara-si-germana, cum-citesti-scrisul-de-mana-vechi, cum-datezi-o-fotografie-veche, emigrarea-in-america
 terms: matricola-militara, livret-militar, comitat, conscriptie, cota-arhivistica
 ---

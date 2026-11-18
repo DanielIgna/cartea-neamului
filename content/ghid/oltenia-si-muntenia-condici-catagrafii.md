@@ -3,7 +3,7 @@ title: Oltenia și Muntenia: condici, catagrafii, registre
 seo: Oltenia și Muntenia: condici, catagrafii, registre
 description: Cum cauți strămoși din Oltenia și Muntenia: actele de stare civilă din 1865, condicile parohiale din anii 1830, catagrafiile și documentele moșnenilor.
 category: Comunități și regiuni
-cuvant: Oltenia Muntenia genealogie
+updated: 2026-11-18
 related: catagrafiile-din-moldova-si-tara-romaneasca, registrele-ortodoxe, registrele-de-stare-civila, scrierea-chirilica-romaneasca, urbariile-si-documentele-mosiilor, ce-este-spita-neamului
 terms: regulamentele-organice, catagrafie, mosnean, clacas, plasa, registru-parohial
 ---

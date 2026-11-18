@@ -3,7 +3,7 @@ title: Basarabia: registrele parohiale din perioada rusă și arhiva de la Chiș
 seo: Basarabia: registrele parohiale și arhiva de la Chișinău
 description: Cum cauți strămoși din Basarabia: registrele parohiale din perioada rusă, reviziile, arhiva de la Chișinău și ce se schimbă după 1918 și după 1940.
 category: Comunități și regiuni
-cuvant: Basarabia registre parohiale
+updated: 2026-11-18
 related: registrele-ortodoxe, calendarul-iulian-si-gregorian, scrierea-chirilica-romaneasca, nume-schimbate-si-variante, cum-ceri-copii-de-la-arhive, registrele-evreiesti
 terms: registru-parohial, parohie, protopopiat, episcopie, recensamant, calendarul-iulian
 ---

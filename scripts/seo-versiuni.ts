@@ -12,7 +12,8 @@ import { splitLocalePath } from "@/i18n/locales";
 
 const FILE = "src/data/seo-versiuni.json";
 const seed = process.argv.includes("--seed");
-const today = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Bucharest" }).format(new Date());
+// Ziua în UTC: sitemap-ul nu are voie să arate o dată din viitor (între 00:00 la București și 00:00 UTC, data românească e încă „mâine”).
+const today = new Date().toISOString().slice(0, 10);
 
 const gitDateOf = (file: string): string | null => {
   try {

@@ -3,7 +3,7 @@ title: HPDT: cum cauți strămoși din Transilvania, 1850–1914
 seo: HPDT: baza de date a populației Transilvaniei, 1850–1914
 description: Ce este baza de date a populației istorice a Transilvaniei (HPDT), ce conține, cum cauți în ea un strămoș și cum verifici apoi în registrul original.
 category: Registre și arhive
-cuvant: HPDT Transilvania strămoși
+updated: 2026-11-18
 related: registre-parohiale-online, registrele-greco-catolice, registrele-ortodoxe, registrele-catolice-si-protestante, cum-citesti-un-registru-parohial, nume-schimbate-si-variante
 terms: registru-parohial, sursa-secundara, sursa-primara, confesiune, comitat, parohie
 ---

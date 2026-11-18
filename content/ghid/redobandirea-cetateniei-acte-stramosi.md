@@ -3,7 +3,7 @@ title: Redobândirea cetățeniei române: ce acte ale strămoșilor îți trebu
 seo: Redobândirea cetățeniei române: actele strămoșilor
 description: Ce acte ale părinților, bunicilor sau străbunicilor îți trebuie pentru redobândirea cetățeniei române, unde le cauți și cum dovedești legătura de rudenie.
 category: Acte și stare civilă
-cuvant: redobândirea cetățeniei acte strămoși
+updated: 2026-11-18
 related: cum-ceri-un-act-de-stare-civila, registrele-de-stare-civila, cum-ceri-copii-de-la-arhive, nume-schimbate-si-variante, emigrarea-in-america, certificatul-de-nastere-al-bunicului
 terms: act-de-nastere, act-de-casatorie, extras-multilingv, apostila, stare-civila, grad-de-rudenie
 ---
@@ -25,7 +25,7 @@ Cel mai des, actul de bază e **actul de naștere sau de căsătorie al buniculu
 
 Unde le cauți:
 
-- **Basarabia**: Arhiva Națională a Republicii Moldova și arhivele de stare civilă din Republica Moldova. Registrele parohiale din perioada rusă, de la Chișinău, ajută la generațiile mai vechi.
+- **Basarabia**: Arhiva Națională a Republicii Moldova și arhivele de stare civilă din Republica Moldova. Registrele parohiale din perioada rusă, de la Chișinău, ajută la generațiile mai vechi; vezi [Basarabia: registrele parohiale](/ghid/basarabia-registrele-parohiale).
 - **Bucovina de nord și ținutul Herța**: arhivele din Ucraina, mai ales cea din Cernăuți; vezi [Bucovina: registre și arhive](/ghid/bucovina-registre-si-arhive).
 - **România de azi**: primăriile, pentru actele din ultimii aproximativ 100 de ani, și Arhivele Naționale, pentru cele mai vechi; vezi [Cum ceri un act de stare civilă](/ghid/cum-ceri-un-act-de-stare-civila).
 
