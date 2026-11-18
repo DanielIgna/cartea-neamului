@@ -26,6 +26,8 @@ import { seoQueue } from "@/db/schema";
 import LINKS from "@/data/seo-legaturi.json";
 import { indexRequests, inspectLink, linkReport, type LinkData } from "@/lib/seo/legaturi";
 import { versionEntries } from "@/lib/seo/versiuni";
+import { getDraft, loadDrafts } from "@/lib/continut/ciorne";
+import Prose from "@/components/continut/Prose";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -38,7 +40,7 @@ export const metadata = { title: "SEO · Admin" };
 const TABS = [
   { key: "prezentare", label: "Prezentare" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
   { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "diaspora", label: "Diaspora" }, { key: "inspector", label: "Inspector URL" },
-  { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
+  { key: "ciorne", label: "Ciorne" }, { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 const PERIODS = [7, 28, 90] as const;
@@ -57,7 +59,7 @@ const VERDICT: Record<string, { label: string; ok: boolean; warn?: boolean }> = 
   FAIL: { label: "cu probleme", ok: false }, EROARE: { label: "nu am putut verifica", ok: false, warn: true },
 };
 
-type SP = { t?: string; zile?: string; q?: string; grupa?: string; stare?: string; url?: string; proba?: string };
+type SP = { t?: string; zile?: string; q?: string; grupa?: string; stare?: string; url?: string; proba?: string; ciorna?: string };
 
 export default async function AdminSeo({ searchParams }: { searchParams: Promise<SP> }) {
   await requireAdmin("/admin/seo");
@@ -111,6 +113,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "diaspora" && await Diaspora({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "inspector" && await Inspector({ sp, pages, gscOn: gsc.state === "legat" })}
+      {tab === "ciorne" && <Drafts sp={sp} href={href} />}
       {tab === "motor" && await Engine({ sp, href })}
       {tab === "sitemap" && await SitemapTab({ gscOn: gsc.state === "legat" })}
       {tab === "alerte" && <Alerts alerts={alerts} />}
@@ -850,5 +853,36 @@ function InternalLinks({ pages }: { pages: AuditPage[] }) {
         </div>
       )}
     </div>
+  );
+}
+
+/** Ciornele de ghiduri (content/ciorne/ghid): nepublicate până le aprobi; aici le citești întregi. */
+function Drafts({ sp, href }: { sp: SP; href: (o: Partial<SP>) => string }) {
+  const drafts = loadDrafts();
+  const d = sp.ciorna ? getDraft(sp.ciorna) : null;
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ciornele de ghiduri</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Articolele noi din plan, scrise dar nepublicate: nu au pagină pe site, nu intră în Google și nu apar în căutare. Le citești aici; când una e bună, spune-mi și o public (ajunge la /ghid/&lt;adresă&gt;).</p>
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Ghidul</th><th>Căutarea țintă</th><th>Cuvinte</th><th>Întrebări</th><th>Surse</th></tr></thead>
+            <tbody>
+              {drafts.map((x) => <tr key={x.slug}><td style={{ textAlign: "start" }}><Link href={href({ ciorna: x.slug })}>{x.title}</Link><small className="muted"> · /ghid/{x.slug}</small></td><td>{x.keyword || "—"}</td><td>{num(x.words)}</td><td>{x.faq}</td><td>{x.sources ? "da" : "nu"}</td></tr>)}
+              {!drafts.length && <tr><td colSpan={5} className="muted">Nicio ciornă.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {d && (
+        <article className="card prose">
+          <div className="section-label" style={{ marginTop: 0 }}>Ciornă · {d.category}</div>
+          <h1>{d.title}</h1>
+          <p className="muted small">Titlu pentru Google: {d.seoTitle} · Descriere: {d.description}</p>
+          <Prose blocks={d.blocks} />
+        </article>
+      )}
+    </>
   );
 }
