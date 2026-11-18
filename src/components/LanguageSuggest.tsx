@@ -2,8 +2,9 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { chooseLanguage } from "@/app/limba-actions";
-import { dirOf, LANGUAGE_FLAGS, SUGGEST_DISMISSED_COOKIE, localizedPath, splitLocalePath, type Locale } from "@/i18n/locales";
+import { dirOf, LANGUAGE_FLAGS, SUGGEST_DISMISSED_COOKIE, splitLocalePath, type Locale } from "@/i18n/locales";
 import { isPublicPath } from "@/lib/public-variant";
+import { pathForLocale } from "@/lib/traduceri-reale";
 
 /**
  * Întrebarea „Citești în …?”, o singură dată, pentru cine are browserul în altă limbă pe care o avem și n-a ales încă nimic.
@@ -20,7 +21,7 @@ export default function LanguageSuggest({ locale, question, hint, accept, stay, 
     if (!r.ok) return;
     setGone(true);
     const { path } = splitLocalePath(location.pathname);
-    if (isPublicPath(path)) location.assign(localizedPath(path, l) + location.search);
+    if (isPublicPath(path)) location.assign(pathForLocale(path, l) + location.search);
     else router.refresh();
   });
   // ✕: întrebarea dispare și nu mai vine înapoi pe acest dispozitiv (un an), fără să schimbe limba.

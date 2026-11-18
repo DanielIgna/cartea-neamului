@@ -27,8 +27,9 @@ jobs:
           echo "--- comunele din sitemap-ul de localități (publicate de motor)"
           curl -s $S/sitemaps/localitati.xml > loc.xml
           echo "adrese în total: $(grep -c '<loc>' loc.xml)"
-          python3 -c "import re;x=open('loc.xml').read();print('\n'.join(re.findall(r'<loc>([^<]+)</loc>(?:(?!</url>).)*<priority>0.3</priority>',x,re.S)))" > comune.txt
-          echo "comune publicate de motor: $(wc -l < comune.txt)"
+          # Fără <priority> în sitemap (18.11.2026): luăm toate localitățile (adrese cu județ și localitate).
+          python3 -c "import re;x=open('loc.xml').read();print('\n'.join(re.findall(r'<loc>([^<]+/localitati/[^/<]+/[^/<]+)</loc>',x)))" > comune.txt
+          echo "localități în sitemap (reședințe, orașe și comunele publicate de motor): $(wc -l < comune.txt)"
           for u in $(head -12 comune.txt) $S/localitati/cluj/floresti $S/localitati/timis/giroc; do
             h=$(curl -sL -A "Googlebot" "$u")
             r=$(echo "$h" | grep -oE '<meta name="robots"[^>]*>' | head -1)

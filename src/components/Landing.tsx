@@ -129,7 +129,7 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         <BannerSlides imgs={imgs.banner.map(({ src, custom }) => ({ src, custom }))} />
         <div className="lp-banner-panel">
           {/* Un singur H1: „Arborele genealogic al familiei tale” deasupra, apoi numele, ca înainte la vedere. */}
-          <h1 className="lp-h1"><span className="lp-tagline">{t("eyebrow")}</span><span className="lp-name">{await getAppName()}</span></h1>
+          <h1 className="lp-h1"><span className="lp-tagline">{t("eyebrow")}</span><span className="sr-only"> – </span><span className="lp-name">{await getAppName()}</span></h1>
           {ornament}
           <p className="lp-subtitle">{t.rich("heroTitleRich", { em })}</p>
           {t("brandNote") && <p className="lp-brand">{t("brandNote")}</p>}

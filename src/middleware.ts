@@ -3,6 +3,7 @@ import { DEFAULT_LOCALE, LOCALE_COOKIE, SUGGEST_DISMISSED_COOKIE, detectLocale, 
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { PUBLIC_PREFIX, isPublicPath, variantKey } from "@/lib/public-variant";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
+import { hasRealTranslation, pathForLocale } from "@/lib/traduceri-reale";
 
 /**
  * Paginile publice, pentru cine nu e intrat în cont, vin gata făcute din cache (app/(public)/pub/[v]): aici cererea e
@@ -13,6 +14,8 @@ import { THEME_COOKIE, parseTheme } from "@/lib/theme";
  * - fără prefix: limba aleasă (cookie-ul „limba”), altfel româna; cine vine prima dată cu browserul sau țara în altă limbă
  *   primește pagina făcută pe loc, cu întrebarea „Vezi site-ul în …?” (nu e trimis nicăieri cu forța);
  * - roboții (Googlebot, Bingbot…) nu sunt niciodată redirecționați și nu primesc întrebarea: văd mereu pagina adresei.
+ * - o adresă pe o limbă în care pagina nu are text (ghidurile, numele, localitățile sunt doar în română) trimite cu 308 la
+ *   pagina cu text (src/lib/traduceri-reale.ts);
  * Rămân la pagina obișnuită, făcută pe loc: cine e intrat în cont și adresele cu parametri (?cont=sters, ?tipar=…).
  */
 export function middleware(req: NextRequest) {
@@ -30,6 +33,13 @@ export function middleware(req: NextRequest) {
     || cookies.getAll().some((c) => c.name.endsWith("session_token"));
 
   if (inUrl) {
+    // O adresă pe o limbă în care pagina nu e scrisă (/en/nume/pop, /nl/ghid) trimite, pentru oricine, la pagina cu text (308),
+    // în loc să arate text românesc sub <html lang="en"> (planul SEO, 18.11.2026).
+    if (!hasRealTranslation(path, inUrl)) {
+      const url = req.nextUrl.clone();
+      url.pathname = pathForLocale(path, inUrl);
+      return NextResponse.redirect(url, 308);
+    }
     const res = live ? liveIn(req, path, inUrl) : rewriteTo(req, path, inUrl);
     // Cine intră pe o adresă într-o limbă și n-a ales încă nimic rămâne în ea și pe paginile următoare (un an).
     if (!isLocale(chosen) && !isCrawler(ua)) res.cookies.set(LOCALE_COOKIE, inUrl, { path: "/", maxAge: 31_536_000, sameSite: "lax", secure: req.nextUrl.protocol === "https:" });
