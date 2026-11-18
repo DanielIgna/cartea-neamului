@@ -9,7 +9,7 @@ import { PRIVATE_PREFIXES } from "@/lib/public-pages";
 import { hasRealTranslation, pathForLocale } from "@/lib/traduceri-reale";
 import { diasporaLangsSource } from "@/lib/diaspora/limbi-sursa";
 import { mainSitemapXml, rawGroups, sitemapGroups, urlsetXml } from "@/lib/continut/sitemap";
-import { contentFingerprints } from "@/lib/seo/amprente";
+import { contentFingerprints, unknownSources } from "@/lib/seo/amprente";
 import VERSIONS from "@/data/seo-versiuni.json";
 import { guideFeedXml } from "@/lib/continut/rss";
 import { loadCollection } from "@/lib/continut/colectii";
@@ -148,6 +148,10 @@ describe("lastmod real în sitemap", () => {
     const stale = paths.filter((p) => v[p]?.split(" ")[0] !== prints.get(p));
     expect(stale).toEqual([]);
   }, 60_000);
+
+  it("fiecare adresă din sitemap are o sursă pentru amprentă (altfel data nu s-ar schimba niciodată)", () => {
+    expect(unknownSources(rawGroups().flatMap((g) => g.urls.map((u) => u.path)))).toEqual([]);
+  });
 
   it("schimbarea unui ghid schimbă doar amprenta lui", async () => {
     const [a, b] = loadCollection("ghid");

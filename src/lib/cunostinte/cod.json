@@ -178,6 +178,8 @@
   "src/app/(site)/cadou-de-sarbatori/page.tsx",
   "src/app/(site)/cadou/[cod]/card/page.tsx",
   "src/app/(site)/cadou/[cod]/page.tsx",
+  "src/app/(site)/cadouri/[slug]/page.tsx",
+  "src/app/(site)/cadouri/page.tsx",
   "src/app/(site)/card/[token]/page.tsx",
   "src/app/(site)/cauta/page.tsx",
   "src/app/(site)/confidentialitate/page.tsx",
@@ -445,6 +447,7 @@
   "src/components/admin/SeoForms.tsx",
   "src/components/admin/charts.tsx",
   "src/components/admin/ui.tsx",
+  "src/components/cadouri/GiftPages.tsx",
   "src/components/charts.tsx",
   "src/components/continut/ArticlePages.tsx",
   "src/components/continut/Breadcrumbs.tsx",
@@ -772,6 +775,7 @@
   "src/lib/book.ts",
   "src/lib/bootstrap.ts",
   "src/lib/cadou-sarbatori.ts",
+  "src/lib/cadouri.ts",
   "src/lib/calatorie.ts",
   "src/lib/calendar-continut.ts",
   "src/lib/carduri-cadou.ts",
@@ -921,6 +925,7 @@
   "src/lib/seo-raport.ts",
   "src/lib/seo.ts",
   "src/lib/seo/amprente.ts",
+  "src/lib/seo/sezon.ts",
   "src/lib/seo/versiuni.ts",
   "src/lib/shared-places.ts",
   "src/lib/short-link.ts",
@@ -960,6 +965,7 @@
   "tests/autoritate.test.ts",
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
+  "tests/cadouri.test.ts",
   "tests/calatorie.test.ts",
   "tests/carduri-cadou.test.ts",
   "tests/carte-model.test.ts",
@@ -1459,6 +1465,14 @@
    "kind": "pagina"
   },
   {
+   "path": "/cadouri",
+   "kind": "pagina"
+  },
+  {
+   "path": "/cadouri/[slug]",
+   "kind": "pagina"
+  },
+  {
    "path": "/card-imagine/[token]",
    "kind": "api"
   },
@@ -1710,6 +1724,7 @@
   "tests/autoritate.test.ts",
   "tests/book.test.ts",
   "tests/cadou-sarbatori.test.ts",
+  "tests/cadouri.test.ts",
   "tests/calatorie.test.ts",
   "tests/carduri-cadou.test.ts",
   "tests/carte-model.test.ts",

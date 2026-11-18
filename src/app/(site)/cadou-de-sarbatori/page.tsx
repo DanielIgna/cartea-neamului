@@ -76,6 +76,18 @@ export default async function GiftSeasonPage() {
         <h2 style={{ marginTop: 0 }}>{t("faqTitle")}</h2>
         {faq.map((f) => <details key={f.q} className="gift-faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
       </div>
+      {/* Celelalte idei de cadou (/cadouri) sunt doar în română (planul SEO, 18.11.2026). */}
+      {locale === "ro" && (
+        <nav className="card" aria-label="Alte idei de cadou">
+          <h2 style={{ marginTop: 0 }}>Alte idei de cadou pentru familie</h2>
+          <ul>
+            <li><Link href="/cadouri/pentru-parinti">Cadou pentru părinți</Link></li>
+            <li><Link href="/cadouri/pentru-bunici">Cadou pentru bunici care „au tot”</Link></li>
+            <li><Link href="/cadouri/cadou-de-ultim-moment">Cadou de ultim moment, digital, primit imediat</Link></li>
+            <li><Link href="/cadouri">Toate ideile: pe ocazii și pe persoane</Link></li>
+          </ul>
+        </nav>
+      )}
     </section>
   );
 }
