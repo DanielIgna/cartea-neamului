@@ -1433,10 +1433,10 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .source-ext{font-size:13px}
 .dna-note{border-inline-start:3px solid var(--accent);padding-inline-start:10px}
 .dna-form label.check{display:flex;gap:8px;align-items:flex-start;font-size:14px}
-.plata .code-box{border:2px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin:6px 0 10px}
-.plata .code-box label{display:flex;flex-direction:column;gap:8px;font-size:1.1rem}
-.plata .code-box input{font-size:1.25rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:10px 12px;border:2px solid var(--accent);border-radius:10px;width:100%;max-width:100%;box-sizing:border-box}
-.plata .code-box p{margin:6px 0 0;font-size:.9rem}
+.plata .code-box{border:1px solid var(--line, #ddd);border-radius:10px;padding:10px 12px;margin:6px 0 10px}
+.plata .code-box label{display:flex;flex-direction:column;gap:6px;font-weight:600}
+.plata .code-box input{text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;width:100%;max-width:18rem;box-sizing:border-box}
+.plata .code-box p{margin:4px 0 0;font-size:.85rem}
 .plan-bundle{border-top:1px dashed var(--line, #ddd);padding-top:8px;margin-top:6px}
 .gift-list{padding-inline-start:18px;font-size:14px}
 .gift-list code{word-break:break-all}

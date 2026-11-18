@@ -68,7 +68,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
 
   const err = str("eroare");
   const notice = str("gata") === "pastrare" ? tk("thanks") : str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
-    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err === "cod" ? t("errCode") : err === "codan" ? t("errCodeYear") : err ? t("err") : null;
+    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err === "cod" ? t("errCode") : err === "codan" ? t("errCodeYear") : err === "codplan" ? t("errCodePlan") : err ? t("err") : null;
 
   const status = payAccess.kind === "mereu" ? t("freeForever")
     : payAccess.kind === "platit" ? (payAccess.until ? t("tierUntil", { plan: tierName(payAccess.tier), date: date(payAccess.until) }) : t("freeForever"))
@@ -99,11 +99,11 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     until: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(offer.expiresAt) }) : null;
 
   const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
-  // Câmpul mare pentru codul de reducere (NEAM90, TEST90, codul unei organizații), pus înaintea butonului de plată al primului an.
+  // Câmpul pentru codul de reducere (fără să arate vreun cod: Daniel îl trimite fiecărui om), pus înaintea butonului de plată al primului an.
   const codeBox = (
     <div className="code-box">
-      <label><b>{t("codeTitle")}</b>
-        <input type="text" name="cod" defaultValue={linkCode ?? ""} placeholder="NEAM90" autoComplete="off" autoCapitalize="characters"
+      <label>{t("codeTitle")}
+        <input type="text" name="cod" autoComplete="off" autoCapitalize="characters"
           spellCheck={false} maxLength={30} aria-label={t("codeLabel")} />
       </label>
       <p className="muted">{t("codeHint")}</p>
@@ -139,7 +139,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
           <form action="/api/plata/start" method="post" className="form pay-form">
             <input type="hidden" name="kind" value="an" />
             <input type="hidden" name="tier" value={x} />
-            {!quote.upgradeFrom && codeBox}
+            {x === "basic" && !quote.upgradeFrom && codeBox}
             {consent}
             <div className="actions"><button className={`btn${x === "familie" || quote.upgradeFrom ? " primary" : ""}`}>{quote.upgradeFrom ? t("upgradeBtn", { plan: tierName(x), price: money(quote.value, locale).label }) : t("pay", { price: money(quote.value, locale).label })}</button></div>
           </form>
@@ -196,7 +196,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
       <div className="card">
         <h1 style={{ marginTop: 0 }}>{t("title")}</h1>
         {offerLine && <p role="status" className="pay-ok"><b>{offerLine}</b></p>}
-        {!offerLine && linkCode && <p role="status" className="pay-ok">{t("linkCode", { code: linkCode })}</p>}
+        {!offerLine && linkCode && <p role="status" className="pay-ok">{t("linkCode")}</p>}
         {notice && <p role="status" className={err ? "err" : "pay-ok"}>{notice}{str("gata") === "pastrare" && <> <Link href="/arhiva">{tk("archiveLink")}</Link></>}{err === "curand" && <> <Link href="/contact">{t("contact")}</Link></>}</p>}
         <h2>{t("yearTitle")}</h2>
         <p>{isKept(payAccess) && payAccess.kind === "expirat" && payAccess.keptUntil ? tk("keptUntil", { date: date(payAccess.keptUntil) }) : status}</p>

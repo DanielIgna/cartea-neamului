@@ -34,9 +34,13 @@ describe("reducerile (oferta din 18 noiembrie 2026)", () => {
     expect(sent!.get("discounts[1][promotion_code]")).toBeNull();
     const route = src("src/app/api/plata/start/route.ts");
     expect(route).toContain("promoField: isAdminUser(me)");
+    // Codurile (scrise sau din link) doar la Basic; pe pagină nu apare niciun nume de cod.
+    expect(route).toContain('const basicYear = kind === "an" && year?.tier === "basic";');
+    expect(route).toContain("fullFirstYear: basicYear &&");
+    expect(src("src/app/(site)/plata/page.tsx")).not.toMatch(/placeholder="NEAM|defaultValue=\{linkCode/);
     expect(route).toMatch(/offer: typed\?\.ok \? .* : offer\?\.stripePromoId \? .* : school \?\? linked/);
     // Câmpul mare de cod pe /plata, înaintea butonului de plată al primului an.
-    expect(src("src/app/(site)/plata/page.tsx")).toContain("{!quote.upgradeFrom && codeBox}");
+    expect(src("src/app/(site)/plata/page.tsx")).toContain('{x === "basic" && !quote.upgradeFrom && codeBox}');
   });
 
   it("codul din link: doar NEAM90 și NEAM-XXXX, ținut minte în cookie", () => {
