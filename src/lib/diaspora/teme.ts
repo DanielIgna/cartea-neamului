@@ -237,6 +237,61 @@ export const THEMES: Theme[] = [
     ],
     related: ["germania", "austria"],
   },
+  {
+    // Pagina de aterizare pentru românii din SUA și Canada (Daniel, 18.11.2026): în română pentru diaspora, în engleză pentru
+    // generațiile născute acolo. Fapte din Encyclopedia of Cleveland History, The Canadian Encyclopedia, Gale (Romanian
+    // Americans), Statistics Canada 2021 și ACS 2023; detaliile și sursele sunt în ghidul despre valurile de emigrare.
+    slug: "america-de-nord", langs: ["ro", "en"],
+    name: { ro: "Românii din SUA și Canada: arborele familiei", en: "Romanian Heritage Family Tree: US & Canada" },
+    description: {
+      ro: "Pentru românii din SUA și Canada: arborele familiei făcut cu rudele de acasă, glasul bunicilor păstrat și actele strămoșilor plecați peste ocean.",
+      en: "For Romanian Americans and Canadians: build your family tree with relatives back home, keep your grandparents' voices and find your immigrant ancestors.",
+    },
+    body: {
+      ro: [
+        { h: "O familie, două continente", p: [
+          "Bunica e la Bistrița, o mătușă la București, un frate la Chicago, o verișoară la Toronto, iar copiii născuți acolo vorbesc româna doar la telefon cu bunicii. Fiecare știe o bucată din poveste. Pe Cartea Neamului o strângeți la un loc: faci arborele, trimiți un link rudelor și fiecare completează ramura lui, în limba în care folosește site-ul.",
+          "Arborele e privat: îl văd doar rudele invitate. Poveștile scurte înregistrate cu telefonul stau la profilul omului, iar din arbore se poate face cartea neamului în PDF, cu coduri QR care pornesc vocea bunicilor.",
+        ] },
+        { h: "Când au plecat românii în America", p: [
+          "Primul val mare a venit între 1895 și 1920: aproximativ 145.000 de români, mai ales țărani din Transilvania și Banat, au intrat în SUA să lucreze în oțelăriile și fabricile din Ohio, Pennsylvania, Michigan, Illinois și Indiana. Mulți s-au întors acasă. În Canada, familii din Bucovina au primit loturi în prerii din 1896; în 1898 primele familii din satul Boian au întemeiat Boian, Alberta.",
+          "După 1945 au venit refugiații politici, cam 30.000 în SUA, iar în Canada mai ales la Montréal, Toronto, Hamilton, London și Windsor. În comunism s-a plecat greu, prin reîntregirea familiei sau prin fugă peste graniță. După 1989, românii au ajuns în număr mare la New York, Chicago, Los Angeles, Atlanta, Phoenix și Montréal.",
+        ] },
+        { h: "Unde cauți actele strămoșilor", p: [
+          "Pentru cei plecați înainte de 1920: listele de sosire de la New York (Ellis Island) și din porturile canadiene Halifax, Québec și Montréal, recensămintele americane din 1910–1940 și actele de naturalizare. Ele notează adesea satul de origine, scris uneori în maghiară sau germană.",
+          "Acasă, actele sunt în registrele parohiale și de stare civilă ale satului: cele mai vechi de 100 de ani la Arhivele Naționale, pe județe, cele mai noi la primărie. Pe pagina fiecărei localități din site găsești primăria și arhiva care le țin.",
+        ] },
+        { h: "Pentru copiii născuți acolo", p: [
+          "Copiii și nepoții născuți în SUA sau Canada pot folosi site-ul în engleză sau franceză și văd același arbore ca bunicii. Scrie în arbore numele în ambele forme, de pildă „Gheorghe (George) Moldovan”, ca să-l recunoască și bunicii, și nepoții.",
+        ] },
+      ],
+      en: [
+        { h: "One family, two continents", p: [
+          "Grandma lives in Bistrița, an aunt in Bucharest, an uncle in Chicago and a cousin in Toronto, while the children born in North America speak Romanian only on the phone with their grandparents. Everyone holds a piece of the story. On The Family Book you bring it together: start the tree, send your relatives a link and let each branch fill in its part, with the site in their own language.",
+          "Your tree is private: only the relatives you invite can see it. Short stories recorded on a phone stay on each person's profile, and your tree can become a PDF family book with QR codes that play your grandparents' voices.",
+        ] },
+        { h: "When Romanians came to North America", p: [
+          "The first large wave came between 1895 and 1920, when about 145,000 Romanians, mostly peasants from Transylvania and Banat, entered the United States to work in the mills and factories of Ohio, Pennsylvania, Michigan, Illinois and Indiana. Many later went home. In Canada, families from Bukovina took up prairie homesteads from 1896; in 1898 the first families from the village of Boian founded Boian, Alberta.",
+          "After 1945 came political refugees, about 30,000 in the United States, and in Canada mostly in Montreal, Toronto, Hamilton, London and Windsor. Under communism, leaving was hard: some left through family reunification, others escaped across the border. After 1989, many Romanians settled in New York, Chicago, Los Angeles, Atlanta, Phoenix and Montreal.",
+        ] },
+        { h: "Where to find your ancestors' records", p: [
+          "For ancestors who came before 1920: arrival lists at New York (Ellis Island) and at the Canadian ports of Halifax, Quebec City and Montreal, the 1910–1940 US censuses and naturalization papers. They often name the home village, sometimes in its Hungarian or German form.",
+          "In Romania, records are kept in the parish and civil registers of the village: those older than 100 years in the county branches of the National Archives, newer ones at the town hall. Every locality page on the site names the town hall and the archive that hold its records.",
+        ] },
+        { h: "For children born in the US and Canada", p: [
+          "Children and grandchildren born in North America can use the site in English or French and see the same tree as their grandparents. Write names in both forms, for example \"Gheorghe (George) Moldovan\", so both the grandparents and the grandchildren recognize them.",
+        ] },
+      ],
+    },
+    records: [
+      { name: "Statue of Liberty – Ellis Island Foundation, passenger search", url: "https://www.statueofliberty.org/discover/passenger-ship-search/", note: { ro: "listele de sosire la New York, 1892–1957", en: "New York arrival lists, 1892–1957" } },
+      { name: "Library and Archives Canada", url: "https://www.bac-lac.gc.ca", note: { ro: "liste de pasageri, recensăminte și dosare de loturi din Canada", en: "Canadian passenger lists, censuses and homestead records" } },
+      { name: "U.S. National Archives – Immigration Records", url: "https://www.archives.gov/research/immigration", note: { ro: "liste de pasageri și acte de naturalizare din SUA", en: "US passenger lists and naturalization records" } },
+      { name: "FamilySearch", url: "https://www.familysearch.org", note: { ro: "registre din România și din America de Nord, gratuit cu cont", en: "Romanian and North American records, free with an account" } },
+      { name: "Arhivele Naționale ale României", url: "https://arhivelenationale.ro", note: { ro: "registrele parohiale și de stare civilă mai vechi de 100 de ani", en: "parish and civil registers older than 100 years" } },
+    ],
+    related: ["statele-unite", "canada"],
+  },
 ];
 
 export const getTheme = (slug: string) => THEMES.find((t) => t.slug === slug) ?? null;

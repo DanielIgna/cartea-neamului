@@ -379,7 +379,7 @@ export const FUNCTIONS: Fn[] = [
   {
     key: "home", name: "Prima pagină", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Prima impresie; pozele familiilor doar cu acord.",
     what: "Pagina pentru vizitatori, bannerul, galeria și prețurile.",
-    engine: ["src/lib/home-images.ts", "src/lib/home-variants.ts", "src/lib/home-jsonld.ts", "src/components/Landing.tsx"],
+    engine: ["src/lib/home-images.ts", "src/lib/home-variants.ts", "src/components/Landing.tsx"],
     pages: ["/"],
     api: ["/api/poza-acasa/[id]", "/api/admin/poze"],
     dashboard: "/admin/poze",

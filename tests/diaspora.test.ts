@@ -26,7 +26,7 @@ describe("diaspora: conținut", () => {
   });
 
   it("paginile speciale au text în fiecare limbă a lor", () => {
-    expect(THEMES.map((t) => t.slug)).toEqual(["radacini-evreiesti", "moldoveni-in-italia-si-israel", "sasi-si-svabi", "maghiari-din-transilvania"]);
+    expect(THEMES.map((t) => t.slug)).toEqual(["radacini-evreiesti", "moldoveni-in-italia-si-israel", "sasi-si-svabi", "maghiari-din-transilvania", "america-de-nord"]);
     for (const t of THEMES) for (const l of t.langs) {
       expect(t.name[l] && t.description[l], `${t.slug} ${l}`).toBeTruthy();
       expect(t.body[l]?.length, `${t.slug} ${l} corp`).toBeGreaterThanOrEqual(3);
@@ -81,7 +81,9 @@ describe("diaspora: adrese și limbi", () => {
 
   it("hreflang: doar limbile paginii, ambele engleze și româna ca x-default", () => {
     const a = alternatesFor("/diaspora/italia", ["it", "ro", "en"]);
-    expect(a).toEqual({ it: "/it/diaspora/italia", ro: "/diaspora/italia", "en-GB": "/en/diaspora/italia", "en-US": "/en-us/diaspora/italia", "x-default": "/diaspora/italia" });
+    expect(a).toEqual({ it: "/it/diaspora/italia", ro: "/diaspora/italia", "en-GB": "/en/diaspora/italia", "en-US": "/en-us/diaspora/italia", "x-default": "/diaspora/italia",
+      // Etichetele regionale pentru America de Nord trimit la paginile existente, fără adrese noi.
+      "en-CA": "/en-us/diaspora/italia", "ro-US": "/diaspora/italia", "ro-CA": "/diaspora/italia" });
     expect(alternatesFor("/diaspora/radacini-evreiesti", ["en", "he", "ro"]).he).toBe("/he/diaspora/radacini-evreiesti");
   });
 

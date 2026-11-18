@@ -882,7 +882,6 @@
   "src/lib/genealogie-regiuni.ts",
   "src/lib/history.ts",
   "src/lib/home-images.ts",
-  "src/lib/home-jsonld.ts",
   "src/lib/home-submissions.ts",
   "src/lib/home-variants.ts",
   "src/lib/invatare.ts",

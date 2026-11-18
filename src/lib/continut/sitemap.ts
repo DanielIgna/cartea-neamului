@@ -1,4 +1,4 @@
-import { LOCALES, localizedPath } from "@/i18n/locales";
+import { LOCALES, localizedPath, withRegionalHreflang } from "@/i18n/locales";
 import { PUBLIC_PAGES, TRANSLATED_PAGES } from "@/lib/public-pages";
 import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
@@ -61,7 +61,7 @@ function languagesGroup(): SitemapGroup {
   const alt = (path: string) => {
     const a: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, localizedPath(path, l)]));
     a["x-default"] = path;
-    return a;
+    return withRegionalHreflang(a);
   };
   return {
     name: "limbi", label: "Paginile principale în celelalte limbi",

@@ -1049,6 +1049,11 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .lp-light .lp-head p:not(.lp-eyebrow){color:var(--l-muted)}
 .lp-light .lp-ornament,.lp-paper .lp-ornament{color:var(--l-gold)}
 .lp-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+/* Întrebările frecvente de pe prima pagină (română și engleză), deschise la apăsare. */
+.lp-faq-list{max-width:760px;margin:0 auto;display:grid;gap:12px}
+.lp-faq-item{background:var(--l-card);border:1px solid var(--l-line);border-radius:14px;padding:16px 20px;box-shadow:var(--lp-shadow)}
+.lp-faq-item summary{cursor:pointer;font-weight:600;font-size:17px;color:var(--l-ink);line-height:1.4}
+.lp-faq-item p{margin:10px 0 0;color:var(--l-muted);font-size:16px;line-height:1.6}
 .lp-card{display:flex;flex-direction:column;background:var(--l-card);border:1px solid var(--l-line);border-radius:18px;overflow:hidden;box-shadow:var(--lp-shadow)}
 .lp-card-art{position:relative;aspect-ratio:4/3;overflow:hidden;background:#2a1a12}
 .lp-card-art .lp-img{z-index:0;transition:transform .6s ease}

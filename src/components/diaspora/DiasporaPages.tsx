@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, type Crumb } from "@/components/continut/Breadcrumbs";
 import { getLocale } from "@/i18n/server";
-import { LANGUAGE_NAMES, localizedPath, type Locale } from "@/i18n/locales";
+import { LANGUAGE_NAMES, REGIONAL_HREFLANG, localizedPath, type Locale } from "@/i18n/locales";
 import { OG_LOCALE, canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import {
@@ -72,7 +72,7 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
   if (e.kind === "region") crumbs.push({ name: tx(e.country.name, lang), path: href(entryOf(countryPath(e.country))) });
   if (e.kind !== "hub") crumbs.push({ name: nameOf(e, lang), path: href(e) });
 
-  const otherLangs = Object.entries(alternatesFor(e.path, e.langs)).filter(([k]) => k !== "x-default" && k !== locale);
+  const otherLangs = Object.entries(alternatesFor(e.path, e.langs)).filter(([k]) => k !== "x-default" && k !== locale && !(k in REGIONAL_HREFLANG));
   return (
     <section className="stack content-page diaspora-page" lang={lang} dir={isRtl(lang) ? "rtl" : "ltr"}>
       {!native && <p className="untranslated-note" role="note">{UI[lang].fallback}</p>}
