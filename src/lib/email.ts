@@ -68,6 +68,8 @@ export async function sendEmail(m: EmailMessage): Promise<EmailResult> {
   }
   if ((m.marketing ?? MARKETING_TAG.test(tag)) && (await suppressedAny(m.to))) {
     console.info(`[email] ${tag}: sărit, destinatarul e pe lista „nu contacta”`);
+    // Pentru Admin → CRM → Sănătate (și alertă): s-a încercat o trimitere spre cineva de pe „nu contacta”. Fără adresă.
+    await import("@/db").then(({ db }) => import("./crm-curatenie").then((c) => c.crmAudit(db, null, "trimitere oprită (nu contacta)", tag))).catch(() => undefined);
     return { skipped: true };
   }
   try {

@@ -256,7 +256,9 @@ export async function runCampaignBatch(db: Db, o: { now?: Date; mailer?: Campaig
         continue;
       }
       const m = await buildCampaignMail(t, r, row.id, c.id);
-      const res = await mailer({ to: r.email, subject: m.subject, html: m.html, text: m.text, tag: "crm-campanie", marketing: true, replyTo: siteInbox(), idempotencyKey: `crm-send-${row.id}`,
+      // Proba din preview: cu CRM_TEST_RECIPIENT pus (doar în Vercel → Preview), toate emailurile pleacă la adresa de test.
+      const testTo = process.env.CRM_TEST_RECIPIENT?.trim();
+      const res = await mailer({ to: testTo || r.email, subject: testTo ? `[PROBĂ pentru ${r.email}] ${m.subject}` : m.subject, html: m.html, text: m.text, tag: "crm-campanie", marketing: true, replyTo: siteInbox(), idempotencyKey: `crm-send-${row.id}`,
         headers: { "List-Unsubscribe": `<${crmUnsubPost(row.id)}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } });
       if ("skipped" in res) {
         await db.update(crmSends).set({ status: "blocat", motiv: "oprit la trimitere (nu contacta)" }).where(eq(crmSends.id, row.id));
