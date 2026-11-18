@@ -235,6 +235,7 @@
   "src/app/actions.ts",
   "src/app/admin-actions.ts",
   "src/app/adn-admin-actions.ts",
+  "src/app/api/admin/crm/export/route.ts",
   "src/app/api/admin/crm/gmail/callback/route.ts",
   "src/app/api/admin/crm/gmail/start/route.ts",
   "src/app/api/admin/crm/ingest/route.ts",
@@ -780,6 +781,7 @@
   "src/lib/crm-auto.ts",
   "src/lib/crm-bani.ts",
   "src/lib/crm-campanii.ts",
+  "src/lib/crm-curatenie.ts",
   "src/lib/crm-gmail.ts",
   "src/lib/crm-import.ts",
   "src/lib/crm-ingest.ts",
@@ -937,6 +939,7 @@
   "tests/crm-auto.test.ts",
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
+  "tests/crm-curatenie.test.ts",
   "tests/crm-gmail.test.ts",
   "tests/crm-rapoarte.test.ts",
   "tests/crm-sarcini.test.ts",
@@ -1193,6 +1196,10 @@
   {
    "path": "/admin/texte",
    "kind": "pagina"
+  },
+  {
+   "path": "/api/admin/crm/export",
+   "kind": "api"
   },
   {
    "path": "/api/admin/crm/gmail/callback",
@@ -1659,6 +1666,7 @@
   "tests/crm-auto.test.ts",
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
+  "tests/crm-curatenie.test.ts",
   "tests/crm-gmail.test.ts",
   "tests/crm-rapoarte.test.ts",
   "tests/crm-sarcini.test.ts",
