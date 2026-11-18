@@ -82,6 +82,7 @@ export async function calledAction(form: FormData) {
   await addActivity(db, { tip: "apel", canal: "telefon", rezumat: txt(form.get("rezumat"), 500) ?? "Am sunat", organizationId: id, createdBy: me.id });
   await updateOrg(db, id, { deSunat: false });
   await setOrgStatus(db, id, "contactat");
+  await (await import("@/lib/crm-sarcini")).closeCallTasks(db, id, me.id);
   revalidatePath("/admin/crm");
   back("/admin/crm", "Apelul e trecut în istoric.");
 }
@@ -301,4 +302,36 @@ export async function linkSchoolAction(form: FormData) {
   await refreshOrgAccounts(db);
   revalidatePath(`/admin/crm/org/${id}`);
   back(`/admin/crm/org/${id}`, "Școala a fost legată.");
+}
+
+/* ---------- Sarcinile (Etapa 8) ---------- */
+
+export async function newTaskAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  const { addTask, dueFrom } = await import("@/lib/crm-sarcini");
+  const due = dueFrom(s(form, "cand"), s(form, "data"));
+  const titlu = txt(form.get("titlu"), 300);
+  const path = /^[0-9a-f-]{36}$/i.test(id) ? `/admin/crm/org/${id}` : "/admin/crm";
+  if (!titlu || !due) back(path, "Scrie ce e de făcut și alege termenul.");
+  else {
+    await addTask(db, { organizationId: /^[0-9a-f-]{36}$/i.test(id) ? id : null, titlu, scadenta: due, by: me.id });
+    revalidatePath("/admin/crm");
+    back(path, `Sarcina e pusă pe ${due.toLocaleDateString("ro-RO", { timeZone: "Europe/Bucharest", weekday: "long", day: "numeric", month: "long" })}.`);
+  }
+}
+
+export async function closeTaskAction(form: FormData) {
+  const me = await admin();
+  if (!me) return;
+  const id = s(form, "id");
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+  const { closeTask } = await import("@/lib/crm-sarcini");
+  const st = s(form, "status") === "anulata" ? "anulata" : "facuta";
+  const t = await closeTask(db, id, st, me.id);
+  if (t?.org && st === "facuta") await addActivity(db, { tip: "sarcina", canal: "crm", rezumat: `Făcut: ${t.titlu}`, organizationId: t.org, createdBy: me.id });
+  revalidatePath("/admin/crm");
+  const ret = s(form, "back");
+  back(ret.startsWith("/admin/crm") ? ret : "/admin/crm", st === "facuta" ? "Bifat ca făcut." : "Sarcina a fost anulată.");
 }

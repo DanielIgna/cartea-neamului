@@ -319,6 +319,7 @@ export async function trackSend(db: Db, sendId: string, ev: SendEvent, now = new
     await suppress(db, s.email, "nelivrat", { sursa: "campanie", now });
     await setOrgStatus(db, s.organizationId, "nelivrat", { now });
     await db.update(crmOrganizations).set({ deSunat: true, updatedAt: now }).where(eq(crmOrganizations.id, s.organizationId));
+    await (await import("./crm-sarcini")).ensureCallTask(db, s.organizationId, now);
   }
   if (ev === "dezabonat") {
     await suppress(db, s.email, "dezabonat", { sursa: "campanie", now });

@@ -1078,6 +1078,21 @@ export const crmOrgAccounts = pgTable("crm_org_accounts", {
   at: timestamp("at").notNull().defaultNow(),
 }, (t) => [index("crm_org_accounts_org_idx").on(t.organizationId)]);
 
+// CRM Etapa 8: sarcinile cu termen (src/lib/crm-sarcini.ts).
+export const crmTasks = pgTable("crm_tasks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id").references(() => crmOrganizations.id, { onDelete: "cascade" }),
+  titlu: text("titlu").notNull(),
+  scadenta: timestamp("scadenta").notNull(),
+  status: text("status").notNull().default("deschisa"), // deschisa / facuta / anulata
+  sursa: text("sursa").notNull().default("manual"), // manual / nelivrat / raspuns
+  dedupeKey: text("dedupe_key"),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  doneAt: timestamp("done_at"),
+  doneBy: text("done_by").references(() => user.id, { onDelete: "set null" }),
+}, (t) => [uniqueIndex("crm_tasks_dedupe_idx").on(t.dedupeKey), index("crm_tasks_due_idx").on(t.status, t.scadenta), index("crm_tasks_org_idx").on(t.organizationId)]);
+
 /* ---------- Școli (Daniel, 17.11.2026; src/lib/scoli.ts, Admin → Școli) ---------- */
 // Cererile din formularul „Vreau coduri pentru clasa mea” de pe /scoala. Codurile se dau doar după aprobarea manuală (conducerea
 // școlii a confirmat). Datele de contact sunt ale învățătorului/profesorului, folosite doar pentru răspuns.

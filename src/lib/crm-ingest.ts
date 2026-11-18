@@ -86,6 +86,7 @@ export async function ingestOne(db: Db, ev: IngestEvent, now = new Date()): Prom
     if (nou) {
       await setOrgStatus(db, orgId, "nelivrat", { now });
       await db.update(crmOrganizations).set({ deSunat: true, updatedAt: now }).where(eq(crmOrganizations.id, orgId));
+      await (await import("./crm-sarcini")).ensureCallTask(db, orgId, now);
     }
     // Daniel, 18.11.2026: adresa care nu există intră pe „nu contacta” cu motivul „nelivrat” (organizația rămâne „de sunat”).
     if (email) await suppress(db, email, "nelivrat", { sursa: "ingestie", now });
@@ -95,6 +96,7 @@ export async function ingestOne(db: Db, ev: IngestEvent, now = new Date()): Prom
   const kind: ReplyKind = isReplyKind(ev.clasificare) ? ev.clasificare : classifyReply(`${ev.subiect ?? ""}\n${ev.rezumat ?? ""}`);
   const nou = await addActivity(db, { tip: "raspuns", canal: "email", rezumat: ev.rezumat ?? ev.subiect ?? "Răspuns", at, organizationId: orgId, externalId: ext, meta: { clasificare: kind, subiect: ev.subiect ?? null } });
   if (nou && kind !== "automat") await markReplied(db, orgId, at);
+  if (nou && kind === "interesat") await (await import("./crm-sarcini")).ensureReplyTask(db, orgId, ext, now);
   if (kind === "refuz" || kind === "dezabonare") {
     // Lista „nu contacta” se pune chiar dacă evenimentul vine a doua oară: e partea care protejează omul.
     if (email) await suppress(db, email, kind === "refuz" ? "refuz" : "dezabonat", { sursa: "ingestie", now });

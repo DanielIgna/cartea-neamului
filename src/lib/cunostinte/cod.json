@@ -42,6 +42,7 @@
   "drizzle/0040_crm.sql",
   "drizzle/0041_crm_campanii.sql",
   "drizzle/0042_crm_bani.sql",
+  "drizzle/0043_crm_sarcini.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -251,6 +252,7 @@
   "src/app/api/crm/resend/route.ts",
   "src/app/api/cron/aminteste-plata/route.ts",
   "src/app/api/cron/autonomie/route.ts",
+  "src/app/api/cron/crm-dimineata/route.ts",
   "src/app/api/cron/crm/route.ts",
   "src/app/api/datele-mele/route.ts",
   "src/app/api/document/[docId]/route.ts",
@@ -779,6 +781,7 @@
   "src/lib/crm-gmail.ts",
   "src/lib/crm-import.ts",
   "src/lib/crm-ingest.ts",
+  "src/lib/crm-sarcini.ts",
   "src/lib/crm-scor.ts",
   "src/lib/crm.ts",
   "src/lib/cta.ts",
@@ -931,6 +934,7 @@
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
   "tests/crm-gmail.test.ts",
+  "tests/crm-sarcini.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
@@ -1259,6 +1263,10 @@
   },
   {
    "path": "/api/cron/crm",
+   "kind": "api"
+  },
+  {
+   "path": "/api/cron/crm-dimineata",
    "kind": "api"
   },
   {
@@ -1646,6 +1654,7 @@
   "tests/crm-bani.test.ts",
   "tests/crm-campanii.test.ts",
   "tests/crm-gmail.test.ts",
+  "tests/crm-sarcini.test.ts",
   "tests/crm-scor.test.ts",
   "tests/crm.test.ts",
   "tests/cunostinte.test.ts",
@@ -1707,5 +1716,5 @@
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
  ],
- "migrations": 42
+ "migrations": 43
 }
