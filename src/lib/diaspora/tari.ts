@@ -1,4 +1,5 @@
 import type { Country, Link } from "./tipuri";
+import { APPROVED_COUNTRIES } from "./ciorne";
 
 /**
  * Țările cu comunități mari de români (lista lui Daniel, 15.11.2026). Istoria e scrisă de noi, pe scurt, din fapte cunoscute
@@ -14,7 +15,7 @@ const ROMANIA: Link[] = [
 ];
 export const ROMANIA_LINKS = ROMANIA;
 
-export const COUNTRIES: Country[] = [
+const BASE: Country[] = [
   {
     slug: "italia", code: "IT", flag: "🇮🇹", langs: ["it", "ro", "en"], eu: true, icr: { ro: "Roma și Veneția", en: "Rome and Venice", it: "Roma e Venezia" },
     name: { ro: "Italia", en: "Italy", it: "Italia" },
@@ -416,5 +417,8 @@ export const COUNTRIES: Country[] = [
     ],
   },
 ];
+
+/** Țările publicate: cele de bază și ciornele aprobate (src/lib/diaspora/ciorne). */
+export const COUNTRIES: Country[] = [...BASE, ...APPROVED_COUNTRIES];
 
 export const getCountry = (slug: string) => COUNTRIES.find((c) => c.slug === slug) ?? null;

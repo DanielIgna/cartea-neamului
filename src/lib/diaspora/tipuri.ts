@@ -5,17 +5,17 @@ import type { Locale } from "@/i18n/locales";
  * SUA și provinciile Canadei, pe orașele mari și câteva pagini speciale. Fiecare pagină e scrisă în câteva limbi (româna,
  * engleza și limba țării), nu în toate: textul e propriu fiecărei limbi, nu tradus automat.
  */
-export type Lang = "ro" | "en" | "it" | "es" | "de" | "fr" | "he" | "hu";
+export type Lang = "ro" | "en" | "it" | "es" | "de" | "fr" | "he" | "hu" | "nl";
 export type T = Partial<Record<Lang, string>>;
 export type TList = Partial<Record<Lang, string[]>>;
 
 /** Limba conținutului pentru limba site-ului (engleza britanică și cea americană au același text). */
 export const LANG_OF: Record<Locale, Lang | null> = {
-  ro: "ro", "en-GB": "en", "en-US": "en", fr: "fr", es: "es", nl: null, de: "de", it: "it", hu: "hu", he: "he",
+  ro: "ro", "en-GB": "en", "en-US": "en", fr: "fr", es: "es", nl: "nl", de: "de", it: "it", hu: "hu", he: "he",
 };
 /** Limbile site-ului care arată un text (pentru hreflang). */
 export const LOCALES_OF: Record<Lang, Locale[]> = {
-  ro: ["ro"], en: ["en-GB", "en-US"], it: ["it"], es: ["es"], de: ["de"], fr: ["fr"], he: ["he"], hu: ["hu"],
+  ro: ["ro"], en: ["en-GB", "en-US"], it: ["it"], es: ["es"], de: ["de"], fr: ["fr"], he: ["he"], hu: ["hu"], nl: ["nl"],
 };
 
 export type Link = { name: string; url: string; note: T };
@@ -41,10 +41,12 @@ export type Country = {
 };
 
 /** Țările cu pagini pe regiuni sau orașe: codul țării, cu litere mici. */
-export type CountryKey = "us" | "ca" | "it" | "es" | "de" | "gb" | "il" | "fr" | "at" | "be" | "ie" | "pt" | "gr" | "cy";
+export type CountryKey = "us" | "ca" | "it" | "es" | "de" | "gb" | "il" | "fr" | "at" | "be" | "ie" | "pt" | "gr" | "cy" | "nl" | "ua";
 
 export type Region = {
-  slug: string; country: CountryKey; kind: "state" | "province" | "city";
+  slug: string; country: CountryKey;
+  /** „region” = regiune, land, comunitate autonomă sau națiune din Europa (și regiunile Ucrainei). */
+  kind: "state" | "province" | "city" | "region";
   /** Orașele misiunilor României (din extins.ts) care servesc orașul, ca să le arătăm pe pagină. */
   mission?: string[];
   name: T;
@@ -55,6 +57,8 @@ export type Region = {
   /** Ce știm sigur despre românii de acolo; fără note, pagina rămâne în afara Google (prea puțin text propriu). */
   notes: TList;
   cities?: string[];
+  /** Ghidurile din /ghid legate de regiune (slug), ca să nu repetăm ce e scris acolo. */
+  guides?: string[];
 };
 
 export type Theme = {
@@ -62,6 +66,8 @@ export type Theme = {
   body: Partial<Record<Lang, { h: string; p: string[] }[]>>;
   records: Link[];
   related: string[];
+  /** Ghidurile din /ghid legate de temă (slug). */
+  guides?: string[];
 };
 
 /** O misiune a României: ambasadă, secția ei consulară, consulat general sau consulat (doar din surse oficiale). */

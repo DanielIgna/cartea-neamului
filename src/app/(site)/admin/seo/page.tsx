@@ -27,6 +27,9 @@ import LINKS from "@/data/seo-legaturi.json";
 import { indexRequests, inspectLink, linkReport, type LinkData } from "@/lib/seo/legaturi";
 import { versionEntries } from "@/lib/seo/versiuni";
 import { getDraft, loadDrafts } from "@/lib/continut/ciorne";
+import { draftEntries as diasporaDrafts, nameOf as diasporaName } from "@/lib/diaspora";
+import { draftKey } from "@/lib/diaspora/ciorne";
+import { ownWords } from "@/lib/diaspora/extins";
 import Prose from "@/components/continut/Prose";
 
 export const dynamic = "force-dynamic";
@@ -856,6 +859,45 @@ function InternalLinks({ pages }: { pages: AuditPage[] }) {
   );
 }
 
+/** Ciornele de diaspora (src/lib/diaspora/ciorne): țări, regiuni și articole despre valurile de emigrare, pe limbi. */
+function DiasporaDrafts() {
+  const ds = diasporaDrafts();
+  if (!ds.length) return null;
+  const words = (e: (typeof ds)[number], l: string) => {
+    const L = l as Parameters<typeof diasporaName>[1];
+    if (e.kind === "theme") return ownWords((e.theme.body[L] ?? []).flatMap((s) => [s.h, ...s.p]));
+    if (e.kind === "region") return ownWords(e.region.notes[L] ?? []);
+    if (e.kind === "country") return ownWords(e.country.history[L] ?? []);
+    return 0;
+  };
+  const kind = { country: "Țară", region: "Regiune", theme: "Articol", hub: "" } as const;
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Ciornele diasporei</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Pagini noi pentru românii din Europa și Ucraina, scrise în limba țării și în română. Nu sunt pe site până nu le aprobi. Deschide-le în fiecare limbă; când una e bună, spune-mi și o public.</p>
+      <div className="an-scroll">
+        <table className="an-table">
+          <thead><tr><th>Pagina</th><th>Tip</th><th>Limbi (cuvinte)</th><th>Adresa după publicare</th></tr></thead>
+          <tbody>
+            {ds.map((e) => {
+              const key = e.kind === "theme" ? draftKey.theme(e.theme) : e.kind === "region" ? draftKey.region(e.region) : e.kind === "country" ? draftKey.country(e.country) : "";
+              const tail = e.path.replace(/^\/diaspora\//, "");
+              return (
+                <tr key={key}>
+                  <td style={{ textAlign: "start" }}>{diasporaName(e, "ro")}</td>
+                  <td>{kind[e.kind]}</td>
+                  <td style={{ textAlign: "start" }}>{e.langs.map((l, i) => <span key={l}>{i > 0 && " · "}<Link href={`/admin/seo/diaspora/${tail}?l=${l}`}>{l}</Link> <small className="muted">({num(words(e, l))})</small></span>)}</td>
+                  <td style={{ textAlign: "start" }}><small className="muted">{e.path}</small></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 /** Ciornele de ghiduri (content/ciorne/ghid): nepublicate până le aprobi; aici le citești întregi. */
 function Drafts({ sp, href }: { sp: SP; href: (o: Partial<SP>) => string }) {
   const drafts = loadDrafts();
@@ -875,6 +917,7 @@ function Drafts({ sp, href }: { sp: SP; href: (o: Partial<SP>) => string }) {
           </table>
         </div>
       </div>
+      <DiasporaDrafts />
       {d && (
         <article className="card prose">
           <div className="section-label" style={{ marginTop: 0 }}>Ciornă · {d.category}</div>
