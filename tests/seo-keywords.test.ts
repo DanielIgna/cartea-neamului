@@ -31,7 +31,7 @@ describe("cuvinte cheie (ciornă)", () => {
       expect(planned.has(r.targetUrl), r.targetUrl).toBe(true);
       expect(paths.has(r.targetUrl), r.targetUrl).toBe(false);
     }
-    expect(PLANNED_GUIDES).toHaveLength(30);
+    expect(PLANNED_GUIDES).toHaveLength(35);
   });
 
   it("o pagină țintă nu primește cuvinte din grupe diferite (fără canibalizare)", () => {
