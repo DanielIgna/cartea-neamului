@@ -241,6 +241,9 @@
   "src/app/(site)/securitate/page.tsx",
   "src/app/(site)/surse-publice/page.tsx",
   "src/app/(site)/termeni/page.tsx",
+  "src/app/(site)/unelte/[slug]/page.tsx",
+  "src/app/(site)/unelte/page.tsx",
+  "src/app/(site)/unelte/rudenie/[relatie]/page.tsx",
   "src/app/.well-known/security.txt/route.ts",
   "src/app/actions.ts",
   "src/app/admin-actions.ts",
@@ -469,6 +472,11 @@
   "src/components/scoala/SchoolRequestForm.tsx",
   "src/components/scoala/SheetEditor.tsx",
   "src/components/time-journey.css",
+  "src/components/unelte/GenCalc.tsx",
+  "src/components/unelte/KinCalc.tsx",
+  "src/components/unelte/PrintButton.tsx",
+  "src/components/unelte/PrintableTree.tsx",
+  "src/components/unelte/ToolPages.tsx",
   "src/data/places/README.md",
   "src/data/places/judete.json",
   "src/data/places/ro.ts",
@@ -946,6 +954,10 @@
   "src/lib/tree-data.ts",
   "src/lib/tree-layout.ts",
   "src/lib/tree360.ts",
+  "src/lib/unelte/intrebari.ts",
+  "src/lib/unelte/rudenie-pagini.ts",
+  "src/lib/unelte/rudenie.ts",
+  "src/lib/unelte/unelte.ts",
   "src/lib/usage.ts",
   "src/lib/verificari-db.ts",
   "src/lib/verificari.ts",
@@ -1052,6 +1064,7 @@
   "tests/tree-layout.test.ts",
   "tests/tree360-twin.test.ts",
   "tests/tree360.test.ts",
+  "tests/unelte.test.ts",
   "tests/usage.test.ts",
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
@@ -1710,6 +1723,18 @@
    "kind": "pagina"
   },
   {
+   "path": "/unelte",
+   "kind": "pagina"
+  },
+  {
+   "path": "/unelte/[slug]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/unelte/rudenie/[relatie]",
+   "kind": "pagina"
+  },
+  {
    "path": "/widget/arbore/[token]",
    "kind": "api"
   }
@@ -1813,6 +1838,7 @@
   "tests/tree-layout.test.ts",
   "tests/tree360-twin.test.ts",
   "tests/tree360.test.ts",
+  "tests/unelte.test.ts",
   "tests/usage.test.ts",
   "tests/verificari.test.ts",
   "tests/vremuri.test.ts"
