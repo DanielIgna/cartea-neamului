@@ -26,9 +26,9 @@ export const AUTHORITY_PAGES = [PRESS_PAGE, WIDGET_PAGE];
 
 /** Unghiurile de articol din kitul de presă: subiecte care țin de familie și istorie, nu de produs. */
 export const PRESS_ANGLES: { title: string; text: string }[] = [
-  { title: "Vocea bunicilor, păstrată pentru strănepoți", text: "Familiile înregistrează poveștile bătrânilor și le leagă de paginile cărții tipărite, cu un cod pe care nepoții îl scanează cu telefonul." },
+  { title: "Vocea bunicilor, păstrată pentru strănepoți", text: "Familiile înregistrează poveștile bătrânilor și le leagă de paginile cărții familiei, cu un cod pe care nepoții îl scanează cu telefonul." },
   { title: "Românii din diaspora își caută satul de baștină", text: "Milioane de români trăiesc în afara țării. Mulți copii crescuți în Italia, Spania sau Germania vor să știe de unde vin bunicii lor." },
   { title: "Arborele genealogic, temă de școală", text: "Fișe gratuite pentru clasele primare și gimnaziu, pe care copiii le completează împreună cu părinții și bunicii." },
   { title: "Ce spun registrele vechi despre satele noastre", text: "Registrele parohiale, catagrafiile și conscripțiile arată cum trăiau oamenii acum două sute de ani. Ghidurile gratuite explică pe înțeles cum se citesc." },
-  { title: "Cadoul de sărbători care rămâne în familie", text: "Un arbore al familiei, făcut împreună și tipărit ca o carte, oferit părinților și bunicilor." },
+  { title: "Cadoul de sărbători care rămâne în familie", text: "Un arbore al familiei, făcut împreună, cu pozele și glasurile celor dragi, oferit părinților și bunicilor." },
 ];

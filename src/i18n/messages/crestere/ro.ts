@@ -47,7 +47,7 @@ export const roCrestere = {
     e3Body: "Bună, {name}! Glasul unui bunic e una dintre cele mai frumoase amintiri pe care le poți păstra.\n\nÎntreabă-i: Cum era casa în care ai crescut? Cum v-ați cunoscut? Ce lucrau părinții tăi? Ce zi din copilărie îți amintești cel mai bine? Ce le-ai spune nepoților?\n\nÎnregistrezi direct din telefon, pe fișa lor din arbore.",
     e3Button: "Mai multe întrebări",
     e4Subject: "Arborele tău, ca o carte",
-    e4Body: "Bună, {name}! Tot ce adunați în arbore (oameni, poze, povești) se poate face carte: o descarci ca PDF sau o tipărești pentru toată familia.\n\nCa să păstrezi arborele deschis pentru scris și după zilele gratuite, alegi un plan de la {price} pe an. Nu se iau bani automat și nu se șterge nimic.",
+    e4Body: "Bună, {name}! Tot ce adunați în arbore (oameni, poze, povești) se poate face carte în PDF, pe care o cumperi separat și, dacă vrei, o tipărești singur.\n\nCa să păstrezi arborele deschis pentru scris și după zilele gratuite, alegi un plan de la {price} pe an. Nu se iau bani automat și nu se șterge nimic.",
     e4Button: "Vezi planurile",
     e5Subject: "Ce ai mai aflat despre familia ta?",
     e5Body: "Bună, {name}! Au trecut trei săptămâni de când ai început. Fiecare nume, dată sau poză adăugată acum e o bucată de istorie pe care copiii voștri n-o vor mai pierde.\n\nDacă ai aflat ceva nou de la rude, pune-l în arbore cât e proaspăt.",

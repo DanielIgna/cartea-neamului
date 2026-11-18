@@ -69,7 +69,7 @@ Un capitol devine mai ușor de înțeles pentru copii și nepoți dacă spui ce 
 
 **Cât de lungă trebuie să fie?** Cât ai de spus. Și o broșură de 20 de pagini e o carte a familiei.
 
-**Pot face cartea în Cartea Neamului?** Da: arborele, profilele, fotografiile și poveștile scrise la fiecare om se adună într-o carte pe care o poți tipări. Amintirile înregistrate pot fi legate de pagini prin coduri QR.
+**Pot face cartea în Cartea Neamului?** Da: arborele, profilele, fotografiile și poveștile scrise la fiecare om se adună într-o carte în PDF (o cumperi separat și o poți tipări singur). Amintirile înregistrate pot fi legate de pagini prin coduri QR.
 
 **Ce fac cu informațiile despre cei în viață?** Întreabă-i înainte și scrie despre ei doar ce sunt de acord să apară. Vezi [Protecția datelor în arbore](/ghid/protectia-datelor-in-arbore).
 

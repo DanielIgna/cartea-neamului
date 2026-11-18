@@ -3,7 +3,6 @@ import type { ContactCatalog } from "./ro";
 export const heContact: ContactCatalog = {
   ContactPage: {
     seller: "Cartea Neamului מוצעת על ידי {name}, מספר מזהה (CUI) {cui}, מספר רישום {regCom}, שמשרדה ב־{address}.",
-    printRequest: "שלום! אשמח להצעת מחיר לספר המשפחה המודפס. עמודים: {pages}, פורמט {format}. כריכה קשה או רכה: … כמה עותקים: … טלפון: …",
     metaTitle: "צור קשר",
     metaDescription: "כתבו לנו בוואטסאפ או שלחו הודעה על אילן היוחסין, על ספר המשפחה המודפס, על מתנה או על פרויקט לבית הספר. בדרך כלל עונים באותו יום.",
     menu: "צור קשר",

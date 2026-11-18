@@ -40,7 +40,7 @@ export const deCrestere: CrestereCatalog = {
     e3Body: "Hallo {name}! Die Stimme eines Großelternteils ist eine der schönsten Erinnerungen, die man bewahren kann.\n\nFrag sie: Wie sah das Haus aus, in dem du aufgewachsen bist? Wie habt ihr euch kennengelernt? Was haben deine Eltern gearbeitet? An welchen Tag aus deiner Kindheit erinnerst du dich am besten? Was würdest du deinen Enkeln sagen?\n\nNimm direkt mit dem Handy auf, auf ihrem Profil im Stammbaum.",
     e3Button: "Mehr Fragen",
     e4Subject: "Dein Stammbaum als Buch",
-    e4Body: "Hallo {name}! Alles, was ihr im Stammbaum sammelt (Menschen, Fotos, Geschichten), kann ein Buch werden: als PDF oder gedruckt für die ganze Familie.\n\nDamit der Stammbaum nach den kostenlosen Tagen zum Schreiben offen bleibt, wählst du einen Tarif ab {price} pro Jahr. Es wird nichts automatisch abgebucht und nichts gelöscht.",
+    e4Body: "Hallo {name}! Alles, was ihr im Stammbaum sammelt (Menschen, Fotos, Geschichten), kann ein PDF-Buch werden, das du separat kaufst und, wenn du willst, selbst druckst.\n\nDamit der Stammbaum nach den kostenlosen Tagen zum Schreiben offen bleibt, wählst du einen Tarif ab {price} pro Jahr. Es wird nichts automatisch abgebucht und nichts gelöscht.",
     e4Button: "Tarife ansehen",
     e5Subject: "Was hast du noch über deine Familie erfahren?",
     e5Body: "Hallo {name}! Drei Wochen sind vergangen, seit du angefangen hast. Jeder Name, jedes Datum, jedes Foto, das du jetzt ergänzt, ist ein Stück Geschichte, das deine Kinder nicht mehr verlieren.\n\nWenn du von Verwandten etwas Neues gehört hast, trag es ein, solange es frisch ist.",

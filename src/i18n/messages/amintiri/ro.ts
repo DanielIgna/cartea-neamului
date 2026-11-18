@@ -256,7 +256,7 @@ export const roAmintiri = {
     back: "← Înapoi la profilul tău",
     label: "Autobiografia ta",
     title: "Povestea vieții tale, scrisă de tine",
-    lead: "Cartea te ia de mână, capitol cu capitol. Răspunde la ce vrei și în ce ordine vrei, scris sau cu glasul. Fiecare răspuns intră în lada ta cu amintiri, iar tu alegi cine îl vede. La sfârșit ai totul ca pe o carte, gata de tipărit.",
+    lead: "Cartea te ia de mână, capitol cu capitol. Răspunde la ce vrei și în ce ordine vrei, scris sau cu glasul. Fiecare răspuns intră în lada ta cu amintiri, iar tu alegi cine îl vede. La sfârșit ai totul ca pe o carte, pe care o poți tipări și acasă.",
     progress: "Ai răspuns la {done} din {total, plural, one {# întrebare} few {# întrebări} other {# de întrebări}}.",
     waiting: "{total, plural, one {O întrebare te așteaptă.} few {# întrebări te așteaptă.} other {# de întrebări te așteaptă.}} Începe cu oricare.",
     seeBook: "Vezi cartea",

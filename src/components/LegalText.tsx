@@ -52,7 +52,8 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
   const prices = {
     trialDays: ps.trialDays, trialPersons: ps.trialPersons, priceLei: ps.priceLei, priceEur: ps.priceEur, invitePriceLei: ps.invitePriceLei, invitePriceEur: ps.invitePriceEur,
     bookLei: ps.bookLei, bookEur: ps.bookEur, keepLei: ps.keepLei, keepEur: ps.keepEur, keepBookLei: ps.keepBookLei, keepBookEur: ps.keepBookEur, familieLei: ps.familieLei, familieEur: ps.familieEur, premiumLei: ps.premiumLei, premiumEur: ps.premiumEur,
-    premiumPrint: ps.premiumPrint, ...caps,
+    // Cartea PDF la fiecare plan, din Admin: „inclusă” sau „separat” (oferta din 18.11.2026).
+    basicBook: ps.basicBook === "toti" ? "yes" : "no", familieBook: ps.familieBook === "toti" ? "yes" : "no", premiumBook: ps.premiumBook === "toti" ? "yes" : "no", ...caps,
   };
   // Arhiva sigilată: paragrafele „…arch” se arată doar cu regulile pornite din Admin → Arhivă; atunci cele două l6 („nu se șterge
   // nimic”, la §2 și §5) sunt înlocuite de l6arch de la §5, care păstrează promisiunea veche pentru conturile de dinainte.

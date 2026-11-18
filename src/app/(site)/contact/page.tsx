@@ -21,11 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ContactPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const t = await getT("ContactPage");
   const op = operator();
-  // Din pagina cărții, „Vreau cartea tipărită”: mesajul vine scris cu numărul de pagini și formatul, ca oferta să se poată cere tipografiei.
-  const q = await searchParams;
-  const pages = typeof q.tipar === "string" && /^\d{1,4}$/.test(q.tipar) ? Number(q.tipar) : 0;
-  const format = q.format === "A5" ? "A5" : "A4";
-  const prefill = pages ? t("printRequest", { pages: String(pages), format }) : undefined;
+  // Site-ul nu mai vinde și nu mai promite carte tipărită (oferta din 18.11.2026): vechiul ?tipar=… nu mai scrie nimic în mesaj.
+  await searchParams;
   return (
     <section className="stack contact" style={{ maxWidth: 760, margin: "0 auto" }}>
       <JsonLd data={webPageJsonLd({ path: "/contact", title: t("metaTitle"), description: t("metaDescription"), locale: await getLocale() })} />
@@ -48,7 +45,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
         <div className="card stack">
           <h3 style={{ margin: 0 }}>{t("mailTitle")}</h3>
           <p className="muted" style={{ margin: 0 }}>{t("mailText")}</p>
-          <PageIntl ns={["Contact"]}><ContactForm from={prefill ? "carte-tiparita" : undefined} message={prefill} /></PageIntl>
+          <PageIntl ns={["Contact"]}><ContactForm /></PageIntl>
         </div>
       </div>
       <p className="muted" style={{ fontSize: 14, margin: 0 }}><Link href="/resurse-genealogie">{(await getT("Resources"))("contactLink")}</Link></p>

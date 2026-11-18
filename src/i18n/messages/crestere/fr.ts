@@ -40,7 +40,7 @@ export const frCrestere: CrestereCatalog = {
     e3Body: "Bonjour {name} ! La voix d’un grand-parent est l’un des plus beaux souvenirs à garder.\n\nDemandez-leur : Comment était la maison de votre enfance ? Comment vous êtes-vous rencontrés ? Que faisaient vos parents ? De quel jour de votre enfance vous souvenez-vous le mieux ? Que diriez-vous à vos petits-enfants ?\n\nEnregistrez directement depuis le téléphone, sur leur fiche dans l’arbre.",
     e3Button: "Plus de questions",
     e4Subject: "Votre arbre, comme un livre",
-    e4Body: "Bonjour {name} ! Tout ce que vous réunissez dans l’arbre (personnes, photos, histoires) peut devenir un livre : en PDF ou imprimé pour toute la famille.\n\nPour garder l’arbre ouvert à l’écriture après les jours gratuits, choisissez une formule à partir de {price} par an. Rien n’est prélevé automatiquement et rien n’est supprimé.",
+    e4Body: "Bonjour {name} ! Tout ce que vous réunissez dans l’arbre (personnes, photos, histoires) peut devenir un livre PDF, acheté à part, que vous pouvez imprimer vous-même si vous le souhaitez.\n\nPour garder l’arbre ouvert à l’écriture après les jours gratuits, choisissez une formule à partir de {price} par an. Rien n’est prélevé automatiquement et rien n’est supprimé.",
     e4Button: "Voir les formules",
     e5Subject: "Qu’avez-vous appris de plus sur votre famille ?",
     e5Body: "Bonjour {name} ! Trois semaines déjà depuis vos débuts. Chaque nom, date ou photo ajouté maintenant est un morceau d’histoire que vos enfants ne perdront pas.\n\nSi vos proches vous ont appris quelque chose, mettez-le dans l’arbre tant que c’est frais.",

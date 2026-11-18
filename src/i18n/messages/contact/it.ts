@@ -4,7 +4,6 @@ import type { ContactCatalog } from "./ro";
 export const itContact: ContactCatalog = {
   "ContactPage": {
     "seller": "Il Libro della Famiglia è offerto da {name}, CUI {cui}, n. Registro delle imprese {regCom}, con sede in {address}.",
-    "printRequest": "Buongiorno! Vorrei un preventivo per il libro della famiglia stampato: {pages} pagine, formato {format}. Copertina rigida o morbida: … Quante copie: … Telefono: …",
     "metaTitle": "Contatti",
     "metaDescription": "Scrivici su WhatsApp o mandaci un messaggio sul tuo albero, sul libro stampato, su un regalo o un progetto scolastico. Di solito rispondiamo in giornata.",
     "menu": "Contatti",

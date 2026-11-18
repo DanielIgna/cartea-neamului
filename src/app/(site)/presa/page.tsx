@@ -21,7 +21,7 @@ export default function PressPage() {
   const terms = loadCollection("glosar").length;
   const names = loadNames().length;
   const counties = loadCounties().length;
-  const short = "Cartea Neamului este o platformă românească pentru arborele genealogic al familiei: rudele construiesc împreună arborele, adaugă poze, acte și amintiri spuse cu vocea lor, iar la sfârșit îl pot tipări ca o carte a neamului.";
+  const short = "Cartea Neamului este o platformă românească pentru arborele genealogic al familiei: rudele construiesc împreună arborele, adaugă poze, acte și amintiri spuse cu vocea lor, iar din el își pot face cartea neamului în PDF.";
   return (
     <section className="stack content-page" lang="ro">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: page.h1, description: page.description, url: canonicalUrl(page.path), inLanguage: "ro",
@@ -50,7 +50,7 @@ export default function PressPage() {
           <li><b>Spițele neamului</b>: linia fiecărei familii din tată în fiu, așa cum se țineau odinioară.</li>
           <li><b>Lada cu amintiri</b>: poze, acte și povești înregistrate cu vocea bunicilor.</li>
           <li><b>Harta neamului</b>: satele și orașele prin care a trecut familia.</li>
-          <li><b>Cartea neamului</b>, gata de tipărit, cu arborele, fotografiile și poveștile.</li>
+          <li><b>Cartea neamului</b> în PDF, cu arborele, fotografiile și poveștile.</li>
         </ul>
         <p>Datele celor în viață nu apar pe paginile publice; arborele îl văd doar rudele invitate. Primele 7 zile sunt gratuite, apoi există abonamente anuale (prețurile la zi sunt pe <Link href="/#preturi">prima pagină</Link>).</p>
 

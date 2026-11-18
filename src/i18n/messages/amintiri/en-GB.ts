@@ -262,7 +262,7 @@ export const enGBAmintiri: AmintiriCatalog = {
     back: "← Back to your profile",
     label: "Your autobiography",
     title: "The story of your life, written by you",
-    lead: "The book takes you by the hand, chapter by chapter. Answer whatever you like, in any order, in writing or aloud. Every answer goes into your memory chest, and you choose who sees it. In the end you have it all as a book, ready to print.",
+    lead: "The book takes you by the hand, chapter by chapter. Answer whatever you like, in any order, in writing or aloud. Every answer goes into your memory chest, and you choose who sees it. In the end you have it all as a book, which you can also print at home.",
     progress: "You have answered {done} of {total, plural, one {# question} other {# questions}}.",
     waiting: "{total, plural, one {One question is waiting for you.} other {# questions are waiting for you.}} Start with any of them.",
     seeBook: "See the book",

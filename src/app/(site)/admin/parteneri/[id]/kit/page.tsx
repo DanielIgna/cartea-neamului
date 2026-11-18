@@ -37,7 +37,7 @@ export default async function Kit({ params }: { params: Promise<{ id: string }> 
         <div className="kit-brand"><Logo size={56} /><b>Cartea Neamului</b></div>
         <p className="kit-at">Acum și la <b>{p.numeMagazin}</b>{p.oras ? `, ${p.oras}` : ""}</p>
         <h1>Povestea familiei tale,<br />într-un singur loc.</h1>
-        <p className="kit-lead">Arborele familiei, pozele, glasurile și amintirile bunicilor, păstrate pentru copii și nepoți. Și o carte a neamului, gata de tipărit.</p>
+        <p className="kit-lead">Arborele familiei, pozele, glasurile și amintirile bunicilor, păstrate pentru copii și nepoți. Și cartea neamului, în PDF.</p>
         <div className="kit-offer">
           <div><b>Card cadou</b><span>un an în Cartea Neamului, primit direct pe telefon</span></div>
           <div><b>La casă</b><span>întreabă de cardul cadou: un dar care rămâne în familie</span></div>

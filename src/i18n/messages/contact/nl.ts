@@ -4,7 +4,6 @@ import type { ContactCatalog } from "./ro";
 export const nlContact: ContactCatalog = {
   "ContactPage": {
     "seller": "Het Familieboek wordt aangeboden door {name}, CUI {cui}, handelsregisternr. {regCom}, gevestigd te {address}.",
-    "printRequest": "Hallo! Ik wil graag een offerte voor het gedrukte familieboek: {pages} pagina’s, formaat {format}. Harde of zachte kaft: … Hoeveel exemplaren: … Telefoon: …",
     "metaTitle": "Contact",
     "metaDescription": "Stuur ons een WhatsApp-bericht of een bericht over je stamboom, het gedrukte familieboek, een cadeau of schoolproject. We antwoorden meestal dezelfde dag.",
     "menu": "Contact",
