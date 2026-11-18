@@ -1,22 +1,25 @@
 import type { Surname } from "./nume";
-import { profileWords } from "./nume-profil";
+import { nameQuality } from "./nume-extra";
 
 /**
  * Pragul de indexare (Daniel, 14.11.2026, „vreau să fie corect indexată”): o pagină intră în Google doar dacă are destul conținut
  * propriu. Paginile de sub prag rămân deschise oamenilor (și legate din site), dar au „noindex, follow” și nu intră în sitemap,
  * ca Google să nu vadă pagini subțiri sau aproape la fel (asta trage în jos tot site-ul). Admin → SEO → Indexare le arată.
  */
-export const NAME_MIN_WORDS = 8;
+/**
+ * Pragul pentru paginile de nume (planul SEO, etapa 4, 18.11.2026): cuvintele proprii se numără cu scorul de calitate
+ * (src/lib/seo/quality.ts), adică fără frazele care se repetă pe alte pagini de nume cu alt nume în ele. Ținta din plan e 400;
+ * pragul de acum lasă în Google doar paginile cu conținut real și urcă pe măsură ce numele primesc text scris anume.
+ */
+export const NAME_MIN_WORDS = 100;
 
-const words = (s: string | undefined) => (s ? s.replace(/[*_]/g, "").split(/\s+/).filter(Boolean).length : 0);
-
-/** Cuvintele proprii ale paginii: sensul, nota și „ce spun datele” (src/lib/continut/nume-profil.ts), fără textul comun tuturor paginilor de nume. */
-export const nameOwnWords = (n: Surname) => words(n.meaning) + words(n.note) + profileWords(n);
+/** Cuvintele proprii ale paginii de nume (fără frazele comune). */
+export const nameOwnWords = (n: Surname) => nameQuality(n).own;
 
 /** null = indexabilă; altfel motivul. */
 export function nameGate(n: Surname): string | null {
-  const w = nameOwnWords(n);
-  return w < NAME_MIN_WORDS ? `doar ${w} cuvinte proprii (pragul e ${NAME_MIN_WORDS}); restul paginii e text comun` : null;
+  const q = nameQuality(n);
+  return q.own < NAME_MIN_WORDS ? `doar ${q.own} cuvinte proprii (pragul e ${NAME_MIN_WORDS}, ținta 400); ${q.commonPct}% din text e comun cu alte pagini de nume` : null;
 }
 
 /**

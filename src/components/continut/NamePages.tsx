@@ -12,6 +12,7 @@ import Pager from "@/components/continut/Pager";
 import { getEntry } from "@/lib/continut/colectii";
 import { KIND_LABEL, getName, loadNames, nameText, relatedNames } from "@/lib/continut/nume";
 import { nameProfile } from "@/lib/continut/nume-profil";
+import { nameDescription, nameFaq, nameRecords, nameRegionGuides, nameTitle } from "@/lib/continut/nume-extra";
 import { MIN_TREES, surnamePublicStat } from "@/lib/continut/nume-statistici";
 import { paginate, pageHref } from "@/lib/continut/paginare";
 import { REGIONS } from "@/lib/continut/regiuni";
@@ -54,7 +55,7 @@ export function NamesHub({ page }: { page: number }) {
         <p>De unde vin numele noastre de familie, ce înseamnă, unde sunt mai des întâlnite și cum le cauți în arhive. Multe s-au născut din prenumele unui strămoș, dintr-o meserie, dintr-o poreclă sau din locul de unde a venit familia.</p>
         <p className="muted" style={{ marginBottom: 0 }}>{all.length} de nume · vezi și <Link href="/ghid/nume-schimbate-si-variante">variantele de scriere în acte</Link>, <Link href="/glosar/patronimic">patronimicul</Link>, <Link href="/localitati">arhivele pe județe</Link></p>
         <SiteSearch placeholder="Caută un nume de familie" />
-        <CtaSus />
+        <CtaSus src="nume" />
       </div>
       <HubSearch items={all.map((n) => ({ href: `/nume/${n.slug}`, title: n.name, text: n.variants.join(", ") }))} label="Caută un nume" placeholder="Caută un nume de familie…">
         <div className="card">
@@ -69,18 +70,16 @@ export function NamesHub({ page }: { page: number }) {
         </div>
         <Pager base={HUB.path} page={p.page} pages={p.pages} />
       </HubSearch>
-      <CtaArbore />
+      <CtaArbore src="nume" />
     </section>
   );
 }
 
-const titleOf = (name: string) => `Numele ${name}: origine, semnificație și arhive | Cartea Neamului`;
-const descOf = (name: string) => `Ce înseamnă numele de familie ${name}, de unde vine, unde e mai des întâlnit, cum se mai scrie și cum cauți familia ${name} în arhive.`;
 
 export function nameMetadata(slug: string): Metadata {
   const n = getName(slug);
   if (!n) notFound();
-  const meta = publicPageMetadata({ path: `/nume/${n.slug}`, title: titleOf(n.name), description: descOf(n.name), image: { url: `/api/card?nume=${n.slug}`, alt: `Numele de familie ${n.name}` } });
+  const meta = publicPageMetadata({ path: `/nume/${n.slug}`, title: nameTitle(n), description: nameDescription(n), image: { url: `/api/card?nume=${n.slug}`, alt: `Numele de familie ${n.name}` } });
   // Sub pragul de conținut propriu: deschisă oamenilor, dar nu în Google (src/lib/continut/prag.ts).
   return nameGate(n) ? { ...meta, robots: { index: false, follow: true } } : meta;
 }
@@ -91,16 +90,18 @@ export async function NamePage({ slug }: { slug: string }) {
   const t = nameText(n);
   const [stat, growth] = await Promise.all([surnamePublicStat(db, n.name), growthSettings(db)]);
   const related = relatedNames(n);
-  const guides = t.guides.map((g) => getEntry("ghid", g)).filter((g) => !!g);
+  const guides = [...new Set([...nameRegionGuides(n), ...t.guides])].slice(0, 5).map((g) => getEntry("ghid", g)).filter((g) => !!g);
+  const faq = nameFaq(n);
   const path = `/nume/${n.slug}`;
   return (
     <section className="stack content-page" lang="ro">
       <JsonLd data={{
-        "@context": "https://schema.org", "@type": "Article", headline: `Numele de familie ${n.name}`, description: descOf(n.name),
+        "@context": "https://schema.org", "@type": "Article", headline: `Numele de familie ${n.name}`, description: nameDescription(n),
         url: canonicalUrl(path), mainEntityOfPage: canonicalUrl(path), inLanguage: "ro", about: { "@type": "Thing", name: `${n.name} (nume de familie)` },
         author: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL }, publisher: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL },
         image: `${SITE_URL}/api/card?nume=${n.slug}`,
       }} />
+      <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }} />
       <Breadcrumbs items={[{ name: "Nume de familie", path: "/nume" }, { name: n.name, path }]} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>{KIND_LABEL[n.kind]}</div>
@@ -110,7 +111,7 @@ export async function NamePage({ slug }: { slug: string }) {
           <div><b>Se mai scrie</b>{n.variants.length ? n.variants.join(", ") : "—"}</div>
           {stat && <div><b>În Cartea Neamului</b>peste {stat.personsAtLeast} de persoane, în {stat.trees} arbori</div>}
         </div>
-        <CtaSus label={`Începe arborele familiei ${n.name}`} />
+        <CtaSus src={`nume-${n.slug}`} label={`Începe arborele familiei ${n.name}`} />
         <h2>Originea și semnificația</h2>
         <p>{renderEm(t.origin)}</p>
         <p>{t.kindText}</p>
@@ -126,9 +127,13 @@ export async function NamePage({ slug }: { slug: string }) {
             <p>În acte și în bazele de date, numele {n.name} poate apărea și ca: {n.variants.map((v, i) => <span key={v}>{i ? ", " : ""}<b>{v}</b></span>)}. Caută și forma fără diacritice; vezi <Link href="/ghid/nume-schimbate-si-variante">de ce se scriu numele diferit</Link>.</p>
           </>
         )}
+        <h2>În ce acte apare de obicei</h2>
+        {nameRecords(n).map((r) => <p key={r}>{r}</p>)}
         <h2>Cum cauți familia {n.name} în arhive</h2>
         {t.civil.map((c) => <p key={c}>{c}</p>)}
         <ul>{t.tips.map((x) => <li key={x}>{renderEm(x)}</li>)}</ul>
+        <h2>Întrebări frecvente despre numele {n.name}</h2>
+        {faq.map((f) => <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>)}
         {stat && <p className="muted small">Cifra din Cartea Neamului e un total anonim al arborilor de pe platformă, arătat doar de la {MIN_TREES} arbori în sus, fără nicio dată despre o persoană anume.</p>}
       </article>
       {guides.length > 0 && (
@@ -145,7 +150,7 @@ export async function NamePage({ slug }: { slug: string }) {
       )}
       {growth.shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?nume=${n.slug}`} campaign="card-nume"
         text={`Știai de unde vine numele ${n.name}? Uite ce înseamnă și unde găsești actele familiei:`} />}
-      <CtaArbore title={`Începe arborele familiei ${n.name}`} text="Primele 7 zile sunt gratuite, fără card. Adaugi părinții și bunicii, iar rudele pot completa ce știu ele." />
+      <CtaArbore src={`nume-${n.slug}`} title={`Începe arborele familiei ${n.name}`} text="Primele 7 zile sunt gratuite, fără card. Adaugi părinții și bunicii, iar rudele pot completa ce știu ele." />
       <p className="muted small" style={{ textAlign: "center" }}><Link href="/nume">← Toate numele de familie</Link></p>
     </section>
   );

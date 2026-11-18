@@ -122,7 +122,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           <div><b>Locuitori (2021)</b>{u.pop.toLocaleString("ro-RO")}</div>
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
-        <CtaSus label={`Începe arborele familiei din ${u.name}`} />
+        <CtaSus src={`localitate-${c.slug}-${slug}`} label={`Începe arborele familiei din ${u.name}`} />
         <h2>Pe scurt</h2>
         {uatIntro(u, c).map((p) => <p key={p}>{p}</p>)}
         <h2>Unde ceri actele</h2>
@@ -156,7 +156,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
       </article>
       {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}`} campaign="card-localitate"
         text={`Familia ta are rădăcini în ${u.name}, județul ${c.name}? Aici scrie unde găsești actele vechi:`} />}
-      <CtaArbore title={`Începe arborele familiei tale din ${u.name}`} />
+      <CtaArbore src={`localitate-${c.slug}-${slug}`} title={`Începe arborele familiei tale din ${u.name}`} />
       <p className="muted small" style={{ textAlign: "center" }}><Link href={countyPath(c)}>← Toate localitățile din județul {c.name}</Link></p>
     </section>
   );

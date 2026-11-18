@@ -65,7 +65,7 @@ export function LocalitiesHub() {
           </div>
         ))}
       </HubSearch>
-      <CtaArbore />
+      <CtaArbore src="localitati" />
     </section>
   );
 }
@@ -161,7 +161,7 @@ export async function CountyPage({ slug }: { slug: string }) {
           {c.seat && <div><b>Reședința</b>{seatPath(c) ? <Link href={seatPath(c)!}>{c.seat}</Link> : c.seat}</div>}
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
-        <CtaSus />
+        <CtaSus src={`judet-${c.slug}`} />
         <h2>Pe scurt</h2>
         <p>{c.history}</p>
         <h2>Unde sunt arhivele</h2>
@@ -182,7 +182,7 @@ export async function CountyPage({ slug }: { slug: string }) {
       )}
       {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}`} campaign="card-localitate"
         text={`Familia ta are rădăcini în ${isCapital(c) ? "București" : `județul ${c.name}`}? Aici scrie unde găsești actele vechi:`} />}
-      <CtaArbore />
+      <CtaArbore src={`judet-${c.slug}`} />
       <p className="muted small" style={{ textAlign: "center" }}><Link href="/localitati">← Toate județele</Link></p>
     </section>
   );
@@ -208,7 +208,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
           <div><b>Regiunea istorică</b><RegionLinks regions={c.regions} /></div>
           <div><b>Arhiva</b>{c.archive}</div>
         </div>
-        <CtaSus />
+        <CtaSus src={`localitate-${c.slug}-${seat}`} />
         <h2>Pe scurt</h2>
         <p>{c.seatHistory}</p>
         <h2>Unde ceri actele</h2>
@@ -224,7 +224,7 @@ export async function SeatPage({ slug, seat }: { slug: string; seat: string }) {
       </article>
       {(await growthSettings(db)).shareCards && <ShareCard url={canonicalUrl(path)} image={`/api/card?judet=${c.slug}&oras=${c.seatSlug}`} campaign="card-localitate"
         text={`Familia ta are rădăcini în ${c.seat}? Aici scrie unde găsești actele vechi:`} />}
-      <CtaArbore />
+      <CtaArbore src={`localitate-${c.slug}-${seat}`} />
       <p className="muted small" style={{ textAlign: "center" }}><Link href={countyPath(c)}>← Județul {c.name}</Link></p>
     </section>
   );
