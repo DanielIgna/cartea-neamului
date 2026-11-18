@@ -62,6 +62,12 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "oltenia-si-muntenia-condici-catagrafii", title: "Oltenia și Muntenia: condici, catagrafii, registre", order: 30 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
+/** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026): rândurile lor devin „exista”. */
+export const PUBLISHED_GUIDES = new Set([
+  "arbore-genealogic-gratuit-online-pas-cu-pas", "cadou-pentru-bunicii-care-au-tot", "cate-generatii-poti-afla", "certificatul-de-nastere-al-bunicului",
+  "confesiunea-stramosilor", "cum-afli-satul-de-origine", "cum-cauti-un-mormant-vechi-online", "de-unde-vine-numele-tau-de-familie",
+  "greseli-frecvente-arbore-genealogic", "registre-parohiale-online", "reuniune-de-familie", "rude-in-viata-si-viata-privata",
+]);
 
 /** Rândurile scrise de mână, pentru intențiile principale. */
 const MANUAL: Keyword[] = [
@@ -241,7 +247,8 @@ let cache: Keyword[] | null = null;
 export function seoKeywords(): Keyword[] {
   if (cache) return cache;
   const seen = new Set<string>();
-  cache = [...MANUAL, ...generated()].filter((k) => { const key = k.keyword.toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; });
+  cache = [...MANUAL, ...generated()].filter((k) => { const key = k.keyword.toLowerCase(); if (seen.has(key)) return false; seen.add(key); return true; })
+    .map((k) => (k.status === "de-creat" && PUBLISHED_GUIDES.has(k.targetUrl.replace("/ghid/", "")) ? { ...k, status: "exista" as const } : k));
   return cache;
 }
 

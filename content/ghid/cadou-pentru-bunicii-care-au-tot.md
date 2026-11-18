@@ -3,7 +3,7 @@ title: Ce cadou dai bunicilor care „au tot”
 seo: Cadou pentru bunicii care au tot: idei care contează
 description: Bunicii spun că nu le trebuie nimic? Idei de cadou care nu se strică și nu stau în dulap: timp, amintiri, glasul și povestea lor, păstrate pentru nepoți.
 category: Poze, documente și amintiri
-cuvant: cadou bunici care au tot
+updated: 2026-11-18
 related: intrebari-pentru-bunici, cum-intervievezi-bunicii, cum-inregistrezi-glasul-bunicilor, cum-scanezi-poze-si-documente, cum-scrii-povestea-familiei
 terms: arbore-genealogic, spita-neamului
 ---

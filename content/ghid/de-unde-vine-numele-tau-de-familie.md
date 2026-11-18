@@ -1,9 +1,9 @@
 ---
 title: De unde vine numele tău de familie: cum afli singur
 seo: De unde vine numele de familie: cum afli singur
-description: Cum afli originea numelui tău de familie: tipurile de nume românești, ce spun terminațiile, cum urmărești numele în acte și de ce explicația „din dicționar” nu ajunge.
+description: Cum afli originea numelui tău de familie: tipurile de nume românești, ce spun terminațiile și cum urmărești numele în acte, generație cu generație.
 category: Nume și familii
-cuvant: de unde vine numele de familie
+updated: 2026-11-18
 related: nume-schimbate-si-variante, porecle-si-nume-in-sat, cum-incepi-arborele-genealogic, recensamintele-vechi, conscriptiile-din-transilvania, catagrafiile-din-moldova-si-tara-romaneasca
 terms: patronimic, porecla, prenume, nume-de-fata, catagrafie, conscriptie
 ---

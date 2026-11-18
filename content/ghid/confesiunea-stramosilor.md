@@ -1,9 +1,9 @@
 ---
 title: Cum afli confesiunea strămoșilor și de ce contează
 seo: Confesiunea strămoșilor: cum o afli și de ce contează
-description: De ce trebuie să știi confesiunea strămoșilor înainte să cauți în registrele parohiale, cum o afli din acte și ce faci când familia a trecut de la o biserică la alta.
+description: De ce contează confesiunea strămoșilor când cauți în registrele parohiale, cum o afli din acte și ce faci când familia a schimbat biserica.
 category: Registre și arhive
-cuvant: confesiunea strămoșilor
+updated: 2026-11-18
 related: registrele-ortodoxe, registrele-greco-catolice, registrele-catolice-si-protestante, registrele-evreiesti, cum-citesti-un-registru-parohial, recensamintele-vechi
 terms: confesiune, parohie, filie, registru-parohial, protopopiat, episcopie
 ---

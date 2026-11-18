@@ -3,7 +3,7 @@ title: Greșeli frecvente la arborele genealogic
 seo: Greșeli frecvente la arborele genealogic și cum le eviți
 description: Cele mai dese greșeli la arborele familiei: persoane cu același nume confundate, date copiate fără sursă, sate greșite, stil vechi și nou. Cum le eviți.
 category: Organizare și unelte
-cuvant: greșeli arbore genealogic
+updated: 2026-11-18
 related: cum-verifici-informatiile, cum-organizezi-cercetarea, nume-schimbate-si-variante, calendarul-iulian-si-gregorian, cum-incepi-arborele-genealogic
 terms: sursa-primara, sursa-secundara, calendarul-iulian, patronimic, porecla, nume-de-fata
 ---

@@ -3,7 +3,7 @@ title: Câte generații poți afla realist în România
 seo: Câte generații poți afla în arborele genealogic
 description: Cât de departe poți ajunge cu arborele familiei în România, după regiune: ce acte există pe fiecare perioadă, unde se oprește de obicei căutarea și de ce.
 category: Primii pași
-cuvant: câte generații poți afla
+updated: 2026-11-18
 related: cum-incepi-arborele-genealogic, registrele-de-stare-civila, cum-citesti-un-registru-parohial, conscriptiile-din-transilvania, catagrafiile-din-moldova-si-tara-romaneasca, urbariile-si-documentele-mosiilor
 terms: registru-parohial, registru-de-stare-civila, regulamentele-organice, conscriptie, catagrafie, ascendent
 ---

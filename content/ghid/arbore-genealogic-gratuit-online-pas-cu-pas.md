@@ -1,9 +1,9 @@
 ---
 title: Cum faci un arbore genealogic gratuit online, pas cu pas
 seo: Arbore genealogic gratuit online: pașii, de la zero
-description: Cum începi un arbore genealogic online fără să plătești: ce scrii întâi, ce unelte gratuite folosești, cum adaugi surse și cum îi aduci pe ceilalți din familie.
+description: Cum începi un arbore genealogic online fără să plătești: ce scrii întâi, ce unelte gratuite folosești, cum notezi sursele și cum aduci familia.
 category: Primii pași
-cuvant: arbore genealogic gratuit online
+updated: 2026-11-18
 related: cum-incepi-arborele-genealogic, cum-implici-familia, intrebari-pentru-bunici, cum-organizezi-cercetarea, cum-faci-un-fisier-gedcom, protectia-datelor-in-arbore
 terms: arbore-genealogic, spita-neamului, ascendent, descendent, gedcom, sursa-primara
 ---

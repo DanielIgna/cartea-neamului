@@ -3,7 +3,7 @@ title: Cum găsești rude în viață fără să le încalci viața privată
 seo: Cum găsești rude în viață, respectând viața privată
 description: Cum dai de verii și de rudele pierdute din vedere: unde cauți, cum le scrii prima dată și ce date despre cei în viață nu pui niciodată pe internet.
 category: Organizare și unelte
-cuvant: cum găsești rude în viață
+updated: 2026-11-18
 related: protectia-datelor-in-arbore, cum-implici-familia, testele-adn-in-genealogie, emigrarea-in-america, nume-schimbate-si-variante, cum-verifici-informatiile
 terms: rudenie-colaterala, grad-de-rudenie, descendent, arbore-genealogic
 ---
