@@ -287,6 +287,7 @@
   "src/app/api/stare/route.ts",
   "src/app/api/vesti/dezabonare/route.ts",
   "src/app/api/vizita/route.ts",
+  "src/app/api/zona/route.ts",
   "src/app/apple-icon.png",
   "src/app/autonomie-actions.ts",
   "src/app/calatorie-actions.ts",
@@ -432,6 +433,7 @@
   "src/components/VoiceRecorder.tsx",
   "src/components/WhatsAppIcon.tsx",
   "src/components/WordBlocks.tsx",
+  "src/components/ZonaSugestii.tsx",
   "src/components/ZoomBox.tsx",
   "src/components/admin/AdminShell.tsx",
   "src/components/admin/AnalizaConversii.tsx",
@@ -946,6 +948,7 @@
   "src/lib/seo/amprente.ts",
   "src/lib/seo/bugete.ts",
   "src/lib/seo/firimituri.ts",
+  "src/lib/seo/home-faq.ts",
   "src/lib/seo/indexnow.ts",
   "src/lib/seo/legaturi.ts",
   "src/lib/seo/organizatie.ts",
@@ -978,6 +981,7 @@
   "src/lib/vizite.ts",
   "src/lib/vremuri.ts",
   "src/lib/widget-arbore.ts",
+  "src/lib/zona/registru.ts",
   "src/middleware.ts",
   "src/types/pagedjs.d.ts",
   "tests/account-image.test.ts",
@@ -1088,7 +1092,8 @@
   "tests/unelte.test.ts",
   "tests/usage.test.ts",
   "tests/verificari.test.ts",
-  "tests/vremuri.test.ts"
+  "tests/vremuri.test.ts",
+  "tests/zona.test.ts"
  ],
  "routes": [
   {
@@ -1429,6 +1434,10 @@
   },
   {
    "path": "/api/vizita",
+   "kind": "api"
+  },
+  {
+   "path": "/api/zona",
    "kind": "api"
   },
   {
@@ -1873,7 +1882,8 @@
   "tests/unelte.test.ts",
   "tests/usage.test.ts",
   "tests/verificari.test.ts",
-  "tests/vremuri.test.ts"
+  "tests/vremuri.test.ts",
+  "tests/zona.test.ts"
  ],
  "migrations": 45
 }

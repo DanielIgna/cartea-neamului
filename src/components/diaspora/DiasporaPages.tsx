@@ -309,7 +309,7 @@ function CountryBody({ c, l, href }: { c: Country; l: Lang; href: Href }) {
       <Extra c={c} l={l} where={where} part="after" />
       <Sources l={l} links={c.records} title={u.records} />
       {(regions.length > 0 || themes.length > 0) && (
-        <div className="card">
+        <div className="card" id="regiuni">
           <h2 style={{ marginTop: 0 }}>{u.related}</h2>
           {regions.length > 0 && <ul className="hub-list hub-cols">{regions.filter(regionIndexable).map((r) => <li key={r.slug}><Link href={href(entryOf(regionPath(r)))}>{tx(r.name, l)}</Link></li>)}</ul>}
           {themes.length > 0 && <ul className="hub-list">{themes.map((t) => <li key={t.slug}><Link href={href(entryOf(themePath(t)))}>{tx(t.name, l)}</Link></li>)}</ul>}

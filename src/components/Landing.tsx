@@ -14,6 +14,7 @@ import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
+import ZonaSugestii from "@/components/ZonaSugestii";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -257,6 +258,9 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           </nav>
         </div>
       </section>
+
+      {/* „Pentru românii din zona ta”: doar pentru cine vine din SUA, Canada (și, curând, din Europa); cerut după încărcare. */}
+      <div className="lp-in lp-zona"><ZonaSugestii locale={locale} /></div>
 
       {/* „Începe de aici” (planul SEO, etapa 3): paginile-hub și primele ghiduri, doar în română, unde există conținutul. */}
       {lei && (
