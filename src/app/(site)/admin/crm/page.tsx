@@ -614,6 +614,14 @@ async function Health() {
         {h.errors.length > 0 && <ul>{h.errors.map((e, i) => <li key={i}><small>{day(e.at, true)}</small> {AUTOMATIONS.find((a) => a.key === e.key)?.label ?? e.key}: {e.note}</li>)}</ul>}
       </div>
       <div className="card stack">
+        <h2 style={{ margin: 0 }}>Evenimentele de email (livrat, deschis, nelivrat)</h2>
+        <p style={{ margin: 0 }}>
+          Secretul webhook-ului: <span className={`pill ${h.resend.secret ? "ok" : "bad"}`}>{h.resend.secret ? "pus" : "lipsește"}</span>{" "}
+          · Ultimul eveniment primit: {h.resend.lastAt ? <>{day(h.resend.lastAt, true)} ({h.resend.lastType})</> : "niciunul încă"}
+        </p>
+        <p className="muted" style={{ margin: 0 }}>Adresa webhook-ului: <code>{SITE_URL}/api/crm/resend</code>, cu secretul în RESEND_WEBHOOK_SECRET.</p>
+      </div>
+      <div className="card stack">
         <h2 style={{ margin: 0 }}>Gmail ({GMAIL_INBOX})</h2>
         <p style={{ margin: 0 }}>
           {linked ? <>Legat (doar citire) din {st.linkedAt ? day(st.linkedAt, true) : "—"}.</> : <>Nelegat.</>}{" "}
