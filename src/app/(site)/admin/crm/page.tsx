@@ -20,6 +20,8 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
+import { gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
+import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
 import { batchNowAction, campaignStatusAction, limitsAction, newCampaignAction, recomputeAction, saveTemplateAction, testMailAction } from "@/app/crm-actions";
 import { CAMPAIGN_LABEL, PLACEHOLDERS, campaignList, isCampaignStatus, sentToday, templateList } from "@/lib/crm-campanii";
 import { AUTOMATIONS, automationSwitches } from "@/lib/autonomie";
@@ -33,7 +35,7 @@ export const metadata = { title: "CRM · Admin" };
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
   { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
-  { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "import", label: "Import" },
+  { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -75,6 +77,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "nucontacta" && <Suppression />}
       {tab === "scor" && <Scores />}
       {tab === "automatizari" && <Automations />}
+      {tab === "sanatate" && <Health />}
       {tab === "import" && (
         <div className="card stack">
           <h2 style={{ margin: 0 }}>Import din CSV</h2>
@@ -389,14 +392,14 @@ async function Scores() {
   );
 }
 
-const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii"] as const;
+const CRM_AUTO = ["activare", "conversie", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail"] as const;
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 100)}%` : "—");
 
 /** Etapa 4: ce automatizări lucrează pentru CRM, dacă sunt pornite, limitele pe zi, textele și cifrele. Pornirea se face în Autonomie. */
 async function Automations() {
   const [sw, limits, st, runs] = await Promise.all([
     automationSwitches(db), crmLimits(db), automationStats(db),
-    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne','crm-campanii') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
+    db.execute(sql`select automation, started_at as ran_at, status, note from automation_run where automation in ('activare','conversie','crm-scor','crm-reactivare','crm-ambasador','crm-ciorne','crm-campanii','crm-gmail') order by started_at desc limit 15`).then((r) => (r.rows ?? []) as { automation: string; ran_at: string; status: string; note: string }[]).catch(() => []),
   ]);
   const t = reactivationText("ro");
   const amb = ambassadorDraft("Maria Pop", 3);
@@ -557,5 +560,29 @@ function TemplateForm({ t }: { t?: { id: string; nume: string; tipOrg: string | 
       </div>
       <button className="btn primary">Salvează șablonul</button>
     </form>
+  );
+}
+
+/** Sănătatea CRM: legătura cu Gmail (și, în etapa de monitorizare, rulările, erorile, limitele și alertele). */
+async function Health() {
+  const st = await gmailState(db);
+  const linked = !!st.sealed;
+  const client = !!gmailClient();
+  return (
+    <div className="card stack">
+      <h2 style={{ margin: 0 }}>Gmail ({GMAIL_INBOX})</h2>
+      <p style={{ margin: 0 }}>
+        {linked ? <>Legat (doar citire) din {st.linkedAt ? day(st.linkedAt, true) : "—"}.</> : <>Nelegat.</>}{" "}
+        Ultima sincronizare: {st.lastSync ? day(st.lastSync, true) : "niciodată"}{st.lastError ? <> · <b>eroare:</b> {st.lastError}</> : null}
+        {st.read ? <> · în total {num(st.read)} mesaje citite, {num(st.matched ?? 0)} de la organizații din CRM</> : null}
+      </p>
+      {!client && <p className="muted" style={{ margin: 0 }}>Lipsesc cheile Google: pune GMAIL_CLIENT_ID și GMAIL_CLIENT_SECRET în Vercel (sau se folosesc cele de la intrarea cu Google), cu adresa de întoarcere <code>{SITE_URL}{GMAIL_CALLBACK}</code> în Google Cloud.</p>}
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <a className="btn primary" href="/api/admin/crm/gmail/start">{linked ? "Leagă din nou" : "Leagă Gmail"}</a>
+        {linked && <form action={gmailSyncAction}><button className="btn">Citește acum</button></form>}
+        {linked && <form action={gmailUnlinkAction}><button className="btn">Dezleagă</button></form>}
+      </div>
+      <p className="muted" style={{ margin: 0 }}>Se citesc doar mesajele de la organizațiile din CRM (adresa exactă sau domeniul lor propriu). Restul inbox-ului nu se păstrează nicăieri. Nu se trimite nimic din Gmail.</p>
+    </div>
   );
 }

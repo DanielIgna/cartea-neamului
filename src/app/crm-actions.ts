@@ -251,3 +251,24 @@ export async function batchNowAction() {
     back(CAMP, r.note);
   }
 }
+
+/* ---------- Gmail (Etapa 6) ---------- */
+
+export async function gmailSyncAction() {
+  const me = await admin();
+  if (!me) return;
+  const { runAutomation } = await import("@/lib/autonomie");
+  const r = await runAutomation(db, "crm-gmail", "manual", me.id);
+  revalidatePath("/admin/crm");
+  back("/admin/crm?t=sanatate", r.note);
+}
+
+export async function gmailUnlinkAction() {
+  const me = await admin();
+  if (!me) return;
+  const { gmailState, saveGmailState } = await import("@/lib/crm-gmail");
+  const st = await gmailState(db);
+  await saveGmailState(db, { ...st, sealed: undefined, linkedAt: undefined }, me.id);
+  revalidatePath("/admin/crm");
+  back("/admin/crm?t=sanatate", "Gmail a fost dezlegat. Poți scoate și accesul din contul Google (Securitate → Aplicații terțe).");
+}
