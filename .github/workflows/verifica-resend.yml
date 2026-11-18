@@ -9,7 +9,11 @@ jobs:
       - name: Secretul e pus și cererile nesemnate sunt refuzate
         run: |
           S=https://carteaneamului.ro
-          echo "GET:  $(curl -s $S/api/crm/resend)"
+          echo "--- GET (cu anteturi)"
+          curl -s -i $S/api/crm/resend | head -20
+          echo
+          echo "--- GET pe www"
+          curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" https://www.carteaneamului.ro/api/crm/resend
           code=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H "content-type: application/json" -d '{"type":"email.delivered","data":{"email_id":"proba"}}' $S/api/crm/resend)
           echo "POST nesemnat: $code (trebuie 401)"
           curl -s $S/api/crm/resend | grep -q '"secret":true' || { echo "secretul NU e văzut de site"; exit 1; }
