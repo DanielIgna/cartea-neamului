@@ -13,6 +13,7 @@ import { INDEX_LIMIT, sitemapGroups } from "./continut/sitemap";
 import { clusterOf, type Cluster } from "./seo-clustere";
 import { fitTitle } from "./page-metadata";
 import { SCHOOL_PAGES } from "./scoala";
+import { GIFTS_DESCRIPTION, GIFTS_HUB, GIFTS_TITLE, GIFT_PAGES, giftPath, giftWords } from "./cadouri";
 import { AUTHORITY_PAGES } from "./autoritate";
 
 /**
@@ -59,6 +60,9 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
   }
   // Pentru școli: /scoala și paginile pe clase.
   for (const p of SCHOOL_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "școli" });
+  // Cadouri (src/lib/cadouri.ts).
+  push({ path: GIFTS_HUB, title: GIFTS_TITLE, description: GIFTS_DESCRIPTION, words: null, indexable: true, gate: null, category: "cadouri" });
+  for (const p of GIFT_PAGES) push({ path: giftPath(p), title: p.title, description: p.description, words: giftWords(p), indexable: true, gate: null, category: "cadouri" });
   // Presă și widgetul „Arborele meu” (src/lib/autoritate.ts).
   for (const p of AUTHORITY_PAGES) push({ path: p.path, title: p.title, description: p.description, words: null, indexable: true, gate: null, category: "autoritate" });
   // Genealogie pe orașe mari (src/lib/genealogie-orase.ts).

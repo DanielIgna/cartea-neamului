@@ -10,6 +10,7 @@ import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, GEN_UPDATED, genCityPath, genWords 
 import { GEN_REGIONS, REGIONS_UPDATED, genRegionPath } from "@/lib/genealogie-regiuni";
 import { COUNTIES_UPDATED, countyPath, loadCounties, seatPath } from "@/lib/continut/localitati";
 import { SCHOOL_PAGES, SCHOOL_UPDATED } from "@/lib/scoala";
+import { GIFTS_HUB, GIFTS_UPDATED, GIFT_PAGES, giftPath } from "@/lib/cadouri";
 import { AUTHORITY_PAGES, AUTHORITY_UPDATED } from "@/lib/autoritate";
 import { lastmodOf } from "@/lib/seo/versiuni";
 import { DIASPORA_UPDATED, HUB_LANGS, LOCALES_OF, alternatesFor, entries as diasporaEntries } from "@/lib/diaspora";
@@ -110,6 +111,11 @@ export function rawGroups(published: Map<string, Date> = new Map()): SitemapGrou
       // Pentru școli (/scoala): pagina profesorilor și cele trei pe clase.
       name: "scoala", label: "Pentru școli",
       urls: SCHOOL_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: SCHOOL_UPDATED, changeFrequency: "monthly", priority: p.path === "/scoala" ? 0.7 : 0.6 })),
+    },
+    {
+      // Cadourile pe ocazii și persoane (src/lib/cadouri.ts); Crăciunul e /cadou-de-sarbatori, în „pagini”.
+      name: "cadouri", label: "Cadouri",
+      urls: [GIFTS_HUB, ...GIFT_PAGES.map(giftPath)].map((path): SitemapUrl => ({ path, lastModified: GIFTS_UPDATED })),
     },
     {
       // Presă și widgetul gratuit (src/lib/autoritate.ts).

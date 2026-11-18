@@ -11,6 +11,7 @@ import { GEN_CITIES, genCityPath } from "@/lib/genealogie-orase";
 import { GEN_REGIONS, genRegionPath } from "@/lib/genealogie-regiuni";
 import { SCHOOL_PAGES } from "@/lib/scoala";
 import { AUTHORITY_PAGES } from "@/lib/autoritate";
+import { GIFT_PAGES, giftPath } from "@/lib/cadouri";
 import { entries as diasporaEntries } from "@/lib/diaspora";
 
 /**
@@ -59,6 +60,12 @@ const routeFileOf = (p: string) => (p === "/" ? "page.tsx" : `${p.slice(1)}/page
 
 type Resolver = (p: string) => string | null;
 
+/** Adresele pentru care amprenta n-ar avea de unde citi conținutul (nici regulă de secțiune, nici fișier de pagină): pentru teste. */
+export function unknownSources(paths: string[]): string[] {
+  const known = [/^\/(ghid|glosar|nume|localitati|scoala|cadouri|genealogie|diaspora)\/.+$/];
+  return paths.map((f) => splitLocalePath(f).path).filter((p) => !known.some((re) => re.test(p)) && !existsSync(path.join(SITE, routeFileOf(p))));
+}
+
 export async function contentFingerprints(paths: string[]): Promise<Map<string, string>> {
   const messages = new Map<Locale, Record<string, unknown>>();
   const msg = async (l: Locale) => {
@@ -76,6 +83,7 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
   for (const r of GEN_REGIONS) records.set(genRegionPath(r), r);
   for (const s of SCHOOL_PAGES) records.set(s.path, s);
   for (const a of AUTHORITY_PAGES) records.set(a.path, a);
+  for (const g of GIFT_PAGES) records.set(giftPath(g), g);
   for (const e of diasporaEntries()) records.set(e.path, e);
 
   const hubs: Record<string, string[]> = {
@@ -83,6 +91,7 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
     "/glosar": [...records.keys()].filter((k) => k.startsWith("/glosar/")),
     "/nume": loadNames().map((n) => `${n.slug}:${n.name}`),
     "/localitati": [...counties.keys()],
+    "/cadouri": GIFT_PAGES.map((g) => `${g.slug}:${g.title}`),
   };
 
   // Șablonul fiecărei familii de pagini (după fișierul rutei din app/(site)).
@@ -94,6 +103,7 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
     [/^\/genealogie\/regiune\/[^/]+$/, "genealogie/regiune/[regiune]/page.tsx"],
     [/^\/genealogie\/[^/]+$/, "genealogie/[oras]/page.tsx"],
     [/^\/scoala\/[^/]+$/, "scoala/[slug]/page.tsx"],
+    [/^\/cadouri\/[^/]+$/, "cadouri/[slug]/page.tsx"],
     [/^\/diaspora\/[^/]+\/[^/]+$/, "diaspora/[a]/[b]/page.tsx"],
     [/^\/diaspora\/[^/]+$/, "diaspora/[a]/page.tsx"],
   ];

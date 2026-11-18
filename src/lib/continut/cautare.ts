@@ -4,6 +4,7 @@ import { loadNames } from "./nume";
 import { nameGate, uatThin } from "./prag";
 import { KIND_NAME, loadUats, uatPath } from "./uat";
 import { SCHOOL_PAGES } from "@/lib/scoala";
+import { GIFTS_HUB, GIFTS_TITLE, GIFT_PAGES, giftPath } from "@/lib/cadouri";
 
 /**
  * Căutarea din site (/cauta?q=…, Daniel, 17.11.2026): numele de familie, județele, orașele și comunele, ghidurile, glosarul și
@@ -35,6 +36,8 @@ function build(): Doc[] {
     out.push({ href: e.path, title: e.title, kind: c === "ghid" ? "Ghid" : "Glosar", keys: [e.title, ...e.alt, e.description], boost: c === "ghid" ? 2 : 1 });
   }
   for (const p of SCHOOL_PAGES) out.push({ href: p.path, title: p.h1, kind: "Pentru școli", keys: [p.title, "scoala arbore genealogic", p.description], boost: 1 });
+  out.push({ href: GIFTS_HUB, title: GIFTS_TITLE, kind: "Cadouri", keys: ["cadou", "cadouri", "cadou pentru familie", "cadou craciun"], boost: 2 });
+  for (const p of GIFT_PAGES) out.push({ href: giftPath(p), title: p.h1, kind: "Cadouri", keys: [p.title, p.name, `cadou ${p.name}`], boost: 1 });
   return out.map((d) => ({ ...d, keys: d.keys.map(plain) }));
 }
 

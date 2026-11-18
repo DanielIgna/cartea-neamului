@@ -83,6 +83,8 @@ const config: NextConfig = {
       // adresa principală, fără www (altfel ar fi două salturi: spre www, apoi înapoi).
       { source: "/preturi", destination: "https://carteaneamului.ro/#preturi", statusCode: 301 },
       { source: "/planuri", destination: "https://carteaneamului.ro/#preturi", statusCode: 301 },
+      // Crăciunul are pagina lui de dinainte (tradusă în toate limbile); /cadouri/craciun duce acolo (planul SEO, 18.11.2026).
+      { source: "/cadouri/craciun", destination: "/cadou-de-sarbatori", permanent: true },
       // Adresa scurtă a paginii despre românii din SUA (Daniel, 17.11.2026) duce la cea existentă, cu statele și orașele ei.
       { source: "/diaspora/sua", destination: "/diaspora/statele-unite", permanent: true },
       { source: "/diaspora/sua/:b", destination: "/diaspora/statele-unite/:b", permanent: true },
