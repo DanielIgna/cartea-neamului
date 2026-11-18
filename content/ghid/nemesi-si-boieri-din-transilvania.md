@@ -3,7 +3,7 @@ title: Nemeși și boieri: strămoși din mica nobilime românească
 seo: Nemeși și boieri: strămoși din mica nobilime românească
 description: Cum afli dacă strămoșii tăi erau nemeși în Maramureș, Hațeg sau Chioar ori boieri de Făgăraș, și ce documente au lăsat: diplome, conscripții, Libri Regii.
 category: Istorie și context
-cuvant: nemeși maramureșeni strămoși
+updated: 2026-11-18
 related: razesi-mosneni-clacasi-iobagi, conscriptiile-din-transilvania, documente-in-latina, documente-in-maghiara-si-germana, urbariile-si-documentele-mosiilor, porecle-si-nume-in-sat
 terms: comitat, conscriptie, iobag, jeler, urbariu, scaun
 ---

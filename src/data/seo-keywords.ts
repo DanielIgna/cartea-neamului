@@ -77,6 +77,8 @@ export const PUBLISHED_GUIDES = new Set([
   "sasii-din-transilvania-registre", "stramosi-evrei-din-romania", "bucovina-registre-si-arhive", "deportati-in-baragan-si-siberia",
   "basarabia-registrele-parohiale", "dobrogea-genealogie", "oltenia-si-muntenia-condici-catagrafii", "stramosi-in-armata-austro-ungara",
   "hpdt-registrele-din-transilvania", "redobandirea-cetateniei-acte-stramosi",
+  "romanii-din-banatul-sarbesc", "romanii-din-ungaria-registre", "nemesi-si-boieri-din-transilvania", "ardealul-de-nord-1940-1944",
+  "dosarul-de-la-securitate-al-bunicului",
 ]);
 
 /** Rândurile scrise de mână, pentru intențiile principale. */

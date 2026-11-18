@@ -3,7 +3,7 @@ title: Dosarul de la Securitate al bunicului: cum ceri acces la CNSAS
 seo: Dosarul de la Securitate al bunicului: acces la CNSAS
 description: Cum afli dacă bunicul a avut dosar la Securitate, cine poate cere acces la CNSAS, ce găsești în dosar și cum îl folosești, cu grijă, în arborele familiei.
 category: Registre și arhive
-cuvant: dosar CNSAS bunic acces
+updated: 2026-11-18
 related: deportati-in-baragan-si-siberia, colectivizarea-si-registrele-agricole, cum-ceri-copii-de-la-arhive, cum-verifici-informatiile, protectia-datelor-in-arbore, cum-intervievezi-bunicii
 terms: fond-arhivistic, sursa-primara, sursa-secundara, grad-de-rudenie, cota-arhivistica, sala-de-studiu
 ---
