@@ -75,13 +75,12 @@ function fillPageNumbers(area: HTMLElement) {
 }
 
 /**
- * `locked`: plățile sunt pornite și omul n-a plătit cartea: o vede toată, cu „Previzualizare” pe fiecare pagină (și la tipărire),
- * iar în locul lui „Descarcă PDF” e butonul de plată.
+ * `sample`: omul n-a cumpărat cartea PDF a arborelui, deci pagina îi arată doar modelul (familia închipuită). După așezare,
+ * pe fiecare pagină se pune „MODEL” ca text în pagina cărții (nu doar ca stil), deci rămâne și în PDF-ul salvat; în locul lui
+ * „Descarcă PDF” e butonul de cumpărare. Site-ul nu vinde și nu promite carte tipărită (oferta din 18.11.2026).
  */
-export default function BookView({ format, renderKey, fileName, locked, printFrom, children }: {
-  format: BookFormat; renderKey: string; fileName: string; locked?: { buyHref: string; price: string } | null;
-  /** „de la X lei” la cartea tipărită, din Admin (doar când e pus). */
-  printFrom?: string | null; children: React.ReactNode;
+export default function BookView({ format, renderKey, fileName, sample, children }: {
+  format: BookFormat; renderKey: string; fileName: string; sample?: { buyHref: string; price: string; mark: string } | null; children: React.ReactNode;
 }) {
   const src = useRef<HTMLDivElement>(null), out = useRef<HTMLDivElement>(null), stage = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<"work" | "done" | "error">("work");
@@ -123,6 +122,13 @@ export default function BookView({ format, renderKey, fileName, locked, printFro
       // O poză care nu s-a putut încărca nu lasă iconița de „imagine stricată” în carte: rămâne doar locul ei, gri.
       target.querySelectorAll("img").forEach((img) => { if (img.complete && !img.naturalWidth) { img.alt = ""; img.src = BLANK; } });
       fillPageNumbers(target);
+      if (sample) target.querySelectorAll<HTMLElement>(".pagedjs_page").forEach((page) => {
+        const m = document.createElement("div");
+        m.className = "bk-sample-mark";
+        m.setAttribute("aria-hidden", "true");
+        m.textContent = sample.mark;
+        page.appendChild(m);
+      });
       setPages(flow.total);
       setPhase("done");
     };
@@ -165,12 +171,10 @@ export default function BookView({ format, renderKey, fileName, locked, printFro
         {phase === "error" && <span>{t("error")}</span>}
         {phase === "done" && (
           <>
-            {locked
-              ? <a className="btn primary" href={locked.buyHref}>{t("buy", { price: locked.price })}</a>
+            {sample
+              ? <a className="btn primary" href={sample.buyHref}>{t("buy", { price: sample.price })}</a>
               : <button type="button" className="btn primary" onClick={print}>{t("download")}</button>}
-            <a className="btn" href={`/contact?tipar=${pages}&format=${format}`}>{t("printed")}</a>
-            {printFrom && <span className="muted book-print-from">{t("printFrom", { price: printFrom })}</span>}
-            <span className="muted">{t(locked ? "previewNote" : "ready", { count: pages })}</span>
+            <span className="muted">{sample ? t("sampleNote") : t("ready", { count: pages })}</span>
           </>
         )}
       </div>
@@ -186,7 +190,7 @@ export default function BookView({ format, renderKey, fileName, locked, printFro
         </aside>
       )}
       <div ref={src} className="book-source" hidden>{children}</div>
-      <div ref={stage} className={`book-stage${locked ? " book-locked" : ""}`} style={locked ? ({ "--wm": JSON.stringify(t("preview")) } as React.CSSProperties) : undefined}>
+      <div ref={stage} className={`book-stage${sample ? " book-sample-stage" : ""}`}>
         <div ref={out} className={`book-pages${phase === "done" ? "" : " busy"}`} data-phase={phase} data-key={renderKey} style={phase === "done" && zoom < 1 ? { zoom } : undefined} />
       </div>
     </>
