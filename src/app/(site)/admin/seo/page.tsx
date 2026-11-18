@@ -22,6 +22,9 @@ import { COUNTRIES, entries as diasporaEntries, type Entry as DiasporaEntry } fr
 import { DEMO_EMAIL } from "@/lib/demo";
 import { buildWeeklyReport, reportHistory, saveWeek, type WeekTotals } from "@/lib/seo-raport";
 import { seoQueue } from "@/db/schema";
+import LINKS from "@/data/seo-legaturi.json";
+import { indexRequests, inspectLink, linkReport, type LinkData } from "@/lib/seo/legaturi";
+import { versionEntries } from "@/lib/seo/versiuni";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -103,7 +106,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       {tab === "raport" && await WeeklyTab({ s, pages })}
       {tab === "cuvinte" && <Keywords gsc={gsc} watch={s.watch} pages={pages} />}
       {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
-      {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} />}
+      {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} gscPages={gscPages} />}
       {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "diaspora" && await Diaspora({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "inspector" && await Inspector({ sp, pages, gscOn: gsc.state === "legat" })}
@@ -382,7 +385,7 @@ async function Pages({ pages, gscPages, sp, href }: { pages: AuditPage[]; gscPag
 
 /* ---------------------------------- Indexare (pragul) ---------------------------------- */
 
-function Indexing({ pages, href, sp }: { pages: AuditPage[]; href: (o: Partial<SP>) => string; sp: SP }) {
+function Indexing({ pages, href, sp, gscPages }: { pages: AuditPage[]; href: (o: Partial<SP>) => string; sp: SP; gscPages?: ReturnType<typeof gscByPath> }) {
   const byCluster = [...new Map(pages.map((p) => [p.cluster.key, p.cluster.label])).entries()].map(([k, label]) => {
     const ps = pages.filter((p) => p.cluster.key === k);
     return { k, label, total: ps.length, index: ps.filter((p) => p.indexable).length, inSitemap: ps.filter((p) => p.inSitemap).length };
@@ -397,6 +400,8 @@ function Indexing({ pages, href, sp }: { pages: AuditPage[]; href: (o: Partial<S
         <Stat label="Pragul la nume" value={`${NAME_MIN_WORDS} cuvinte proprii`} hint={`ținta din plan: ${TARGET_OWN_WORDS} cuvinte proprii și sub ${TARGET_MAX_COMMON}% fraze comune`} />
         <Stat label="Ating ținta" value={num(pages.filter((p) => p.quality?.meetsTarget).length)} hint={`din ${num(pages.filter((p) => p.quality).length)} pagini cu scor`} />
       </div>
+      <IndexRequests pages={pages} gscPages={gscPages} />
+      <InternalLinks pages={pages} />
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Cum hotărâm ce intră în Google</h2>
         <p style={{ marginTop: 0 }}>O pagină intră în Google doar dacă are destul conținut propriu. Paginile subțiri sau aproape la fel cu altele trag în jos tot site-ul, așa că rămân deschise oamenilor, dar au „noindex” și nu intră în sitemap. Pragul e în src/lib/continut/prag.ts. Ghidurile, glosarul, județele și orașele sunt scrise de mână, deci intră toate.</p>
@@ -768,6 +773,56 @@ function KeywordDraft() {
       <p style={{ margin: "4px 0" }}><b>Pe stări:</b> {count((r) => r.status).map(([k, n]) => `${k === "exista" ? "pagina există" : k === "de-creat" ? "pagină de scris" : "pagină de îmbogățit"} ${n}`).join(" · ")}</p>
       {todo.length > 0 && <p style={{ margin: "4px 0" }}><b>Pagini de scris cu prioritate 1:</b> {[...new Set(todo.map((r) => r.targetUrl))].join(", ")}</p>}
       <p style={{ marginBottom: 0 }}><a className="btn ghost" href="/admin/seo/csv?ce=cuvinte">Descarcă lista (CSV)</a></p>
+    </div>
+  );
+}
+
+/** „De cerut indexare”: primele 15 pagini care nu apar încă în Google, cu legătura spre Inspectarea adresei. */
+function IndexRequests({ pages, gscPages }: { pages: AuditPage[]; gscPages?: ReturnType<typeof gscByPath> }) {
+  const v = versionEntries();
+  const list = indexRequests(pages, { gscPages, lastmod: (p) => (v[p] ? new Date(`${v[p].split(" ")[1]}T00:00:00Z`) : null) });
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>De cerut indexare (primele 15)</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Pagini bune care {gscPages ? "nu au apărut încă în Google în perioada aleasă" : "încă nu le putem verifica în Google (Search Console nu e legat), deci le luăm pe toate"}. Întâi paginile-hub, apoi cadourile, paginile principale și uneltele, cele schimbate recent primele. Google primește cam 10 cereri pe zi: apasă „Cere în Google”, apoi în Search Console „Solicită indexarea”.</p>
+      <div className="an-scroll">
+        <table className="an-table">
+          <thead><tr><th>Pagina</th><th>Grupa</th><th>Schimbată</th><th></th></tr></thead>
+          <tbody>
+            {list.map((p) => <tr key={p.path}><td><a href={p.path} target="_blank">{p.path}</a></td><td>{p.cluster.label}</td><td>{p.lastmod ? p.lastmod.toISOString().slice(0, 10) : "—"}</td>
+              <td><a className="btn ghost" href={inspectLink(`${SITE_URL}${p.path === "/" ? "/" : p.path}`)} target="_blank" rel="noreferrer">Cere în Google</a></td></tr>)}
+            {!list.length && <tr><td colSpan={4} className="muted">Toate paginile bune apar deja în Google.</td></tr>}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+/** Legăturile interne: paginile pe care nu le leagă nicio altă pagină (orfane) și cele legate doar de 1–2 pagini. */
+function InternalLinks({ pages }: { pages: AuditPage[] }) {
+  const r = linkReport(LINKS as LinkData, pages);
+  const data = (LINKS as LinkData).pages;
+  if (!r) return null;
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Legăturile interne</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Câte pagini leagă fiecare pagină, din textul paginii (fără meniul de sus și subsol). O pagină pe care n-o leagă nimeni („orfană”) e greu de găsit pentru Google. Numărătoare din {r.generated}, pe {num(r.measured)} pagini{r.missing ? `; ${num(r.missing)} pagini noi încă nenumărate` : ""}. Se reface cu scripts/seo-legaturi.ts.</p>
+      <div className="stats">
+        <Stat label="Orfane" value={num(r.orphans.length)} tone={r.orphans.length ? "bad" : "ok"} />
+        <Stat label="Slab legate (1–2)" value={num(r.weak.length)} tone={r.weak.length ? "warn" : "ok"} />
+      </div>
+      {(r.orphans.length > 0 || r.weak.length > 0) && (
+        <div className="an-scroll">
+          <table className="an-table">
+            <thead><tr><th>Pagina</th><th>Grupa</th><th>Legături primite</th><th>De la</th></tr></thead>
+            <tbody>
+              {[...r.orphans, ...r.weak].slice(0, 100).map((p) => <tr key={p.path}><td><a href={p.path} target="_blank">{p.path}</a></td><td>{p.cluster.label}</td><td>{data[p.path].in}</td>
+                <td style={{ textAlign: "start" }}>{data[p.path].from.join(", ") || "—"}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
