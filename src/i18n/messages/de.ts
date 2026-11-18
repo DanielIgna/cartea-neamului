@@ -474,6 +474,8 @@ export const de: Catalog = {
     bookPaid: "Du hast das Buch bezahlt. Du kannst es auf der Buchseite herunterladen.",
     bookFree: "Dein Konto hat das PDF-Buch ohne Bezahlung. Du kannst es auf der Buchseite herunterladen.",
     bookNote: "Das Familienbuch als PDF gibt es separat: {price} für einen Stammbaum. Nach der Zahlung entsteht es aus euren Daten, und du kannst es 12 Monate lang neu erstellen und herunterladen. Wenn du willst, druckst du es selbst, zu Hause oder in einer Druckerei.",
+    discountNote: "Rabatte (ein Klassencode oder der Link einer Organisation) werden bei der Zahlung automatisch angewendet, nur für das erste Jahr; die Verlängerung kostet den vollen Preis. Pro Zahlung gilt nur ein Rabatt.",
+    linkCode: "Der Code {code} ist gespeichert: Wenn er noch gültig ist, wird er bei der Zahlung des ersten Jahres automatisch angewendet.",
     backToBook: "Zurück zum Buch",
     consent: "Ich möchte sofort beginnen und verstehe, dass ich durch den sofortigen Erhalt der digitalen Inhalte mein 14-tägiges Widerrufsrecht verliere.",
     pay: "{price} mit Karte bezahlen",

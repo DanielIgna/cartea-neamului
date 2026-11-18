@@ -143,11 +143,3 @@ export async function testAccess(db: Db, userId: string, now = new Date()): Prom
   return { kind: "proba", until: now, daysLeft: 0 };
 }
 
-/**
- * Descărcarea arborelui (GEDCOM) e închisă? Da doar după zilele gratuite, pentru cine n-a avut niciodată un an plătit (Daniel,
- * 2026-11-16: „după expirare … exportul blocat”). Cine a avut un an o păstrează, cum spun Termenii; „Datele mele” rămâne deschis.
- */
-export async function exportLocked(db: Db, userId: string) {
-  const { access } = await accessOnce(db, userId);
-  return access.kind === "expirat" && !access.keepable && !access.keptUntil;
-}

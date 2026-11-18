@@ -43,8 +43,6 @@ type Props = {
   meId: string; isEditor: boolean; isRoot: boolean; canAdd: boolean; canInvite: boolean; live: Live | null; aiEnabled: boolean; storageEnabled: boolean;
   /** Răspunsurile date în „De verificat” (și „nu sunt aceeași persoană”): adevărul arborelui, ținut pentru toți. */
   decisions?: Decisions;
-  /** După zilele gratuite, fără an plătit: descărcarea arborelui duce la /plata (src/lib/plata.ts, `exportLocked`). */
-  exportLocked?: boolean;
 };
 type View = "fan" | "classic" | "tree" | "360" | "desc" | "hour";
 type Sel = { n: number } | { id: string };
@@ -430,9 +428,8 @@ export default function TreeScreen(props: Props) {
             {/* Proiectul de la școală (/scoala): fișa e în română, ca programa școlilor din România. */}
             {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/scoala?p=${centerId}`}>🎒 Printează pentru proiectul de la școală</Link>}
             {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/widget`}>🌳 Widget pentru blog sau site</Link>}
-            {props.exportLocked
-              ? <a className="btn" href="/plata?blocat=export" title={t("exportGedcom")}>🔒 {t("exportGedcom")}</a>
-              : <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>}
+            {/* Descărcarea arborelui e deschisă oricând, cu sau fără plan. */}
+            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>
           </div>
         </div>
         {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}

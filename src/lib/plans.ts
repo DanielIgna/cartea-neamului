@@ -275,7 +275,8 @@ export function accessFor(a: { createdAt: Date; plan: Plan | null; paidUntil: Da
     return ended(a.paidUntil && a.paidUntil > betaEnd ? a.paidUntil : betaEnd, true);
   }
   const from = Math.max(a.createdAt.getTime(), started.getTime());
-  const trialEnd = new Date(Math.max(from + s.trialDays * DAY, a.freeUntil?.getTime() ?? 0));
+  // Contul refăcut cu un email care și-a folosit deja zilele gratuite („fara-proba”) nu le mai primește o dată.
+  const trialEnd = new Date(Math.max(from + (a.plan === "fara-proba" ? 0 : s.trialDays) * DAY, a.freeUntil?.getTime() ?? 0));
   if (now < trialEnd) return { kind: "proba", until: trialEnd, daysLeft: Math.ceil((trialEnd.getTime() - now.getTime()) / DAY) };
   return ended(a.paidUntil && a.paidUntil > trialEnd ? a.paidUntil : trialEnd, !!a.paidUntil);
 }

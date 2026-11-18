@@ -123,6 +123,8 @@ export async function createCheckout(o: {
   attribution?: Record<string, string>;
   /** Reducerea de după zilele gratuite (src/lib/conversie.ts): codul omului, pus pe plată din start (fără câmpul de cod). */
   offer?: { code: string; promoId: string } | null;
+  /** Câmpul de cod promoțional pe pagina Stripe (doar adminii, pentru plăți de probă). */
+  promoField?: boolean;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
     mode: "payment",
@@ -138,10 +140,10 @@ export async function createCheckout(o: {
     "metadata[kind]": o.kind,
     "metadata[userId]": o.userId,
     "invoice_creation[enabled]": "true",
-    // Câmpul „Cod promoțional” pe pagina Stripe: codurile se fac în Stripe (Products → Coupons), de pildă pentru plăți de
-    // probă cu sume mici, fără să se schimbe prețurile din Admin. Suma plătită nu se verifică la confirmare.
-    allow_promotion_codes: "true",
   });
+  // Câmpul „Cod promoțional” pe pagina Stripe doar pentru admini (oferta din 18.11.2026): codurile de probă (TEST90) se scriu
+  // acolo. Ceilalți nu au câmp liber: reducerile lor (după zilele gratuite, codul clasei, NEAM90 din link) se pun singure.
+  if (o.promoField) body.set("allow_promotion_codes", "true");
   // Confirmarea pe suport durabil a renunțării la retragere (OUG 34/2014, art. 12 alin. 7 și art. 16 lit. m): sub butonul de plată
   // din Stripe și în descrierea facturii care pleacă pe email; în subsolul facturii, cine vinde.
   if (o.waiver) {

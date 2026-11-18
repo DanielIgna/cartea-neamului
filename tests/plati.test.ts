@@ -40,7 +40,8 @@ describe("plata cu cardul", () => {
     expect(sent!.get("line_items[0][price_data][unit_amount]")).toBe("9900");
     expect(sent!.get("locale")).toBe("en");
     expect(sent!.get("metadata[treeId]")).toBe("t1");
-    expect(sent!.get("allow_promotion_codes")).toBe("true");
+    // Fără câmp liber de cod pentru clienți (18.11.2026); adminii îl au pentru plățile de probă (TEST90).
+    expect(sent!.get("allow_promotion_codes")).toBeNull();
     // Fără texte de confirmare nu se trimite nimic în plus; cu ele, acordul ajunge sub buton și pe factură, iar vânzătorul în subsolul facturii.
     expect(sent!.get("invoice_creation[invoice_data][description]")).toBeNull();
     await createCheckout({ kind: "an", userId: "u1", email: "a@b.ro", name: "An", amount: 5000, currency: "ron", locale: "ro", successUrl: "x", cancelUrl: "y", waiver: "Confirmare: fără retragere", seller: "PFA, CUI 1" }, fake);
@@ -103,7 +104,7 @@ describe("plata cu cardul", () => {
     expect(sent!.get("metadata[tier]")).toBe("familie");
     expect(sent!.get("metadata[upgradeFrom]")).toBe("basic");
     expect(sent!.get("metadata[paidUntil]")).toBe("2027-04-11T00:00:00.000Z");
-    expect(sent!.get("allow_promotion_codes")).toBe("true");
+    expect(sent!.get("allow_promotion_codes")).toBeNull();
   });
 
   it("cartea PDF: implicit separată la toate planurile (18.11.2026)", () => {

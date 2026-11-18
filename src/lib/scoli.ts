@@ -9,6 +9,7 @@
  * - Plățile cu codul (ales pe Stripe sau pus singur) se trec în `school_payment`, pentru statisticile pe fiecare cod.
  * CRM-ul refolosește createSchoolCode() și tabelele de aici (nu face alt generator).
  */
+import { isFirstYear } from "./cod-link";
 import { randomInt } from "node:crypto";
 import { and, desc, eq, sql, type SQL } from "drizzle-orm";
 import { z } from "zod";
@@ -179,8 +180,12 @@ export async function recordSchoolSignup(db: Db, userId: string, cookie: string 
   }
 }
 
-/** Codul școlii care se pune singur pe /plata: al contului, activ, neexpirat, cu folosiri rămase și făcut în Stripe. */
+/**
+ * Codul școlii care se pune singur pe /plata: al contului, activ, neexpirat, cu folosiri rămase și făcut în Stripe. Doar la primul
+ * an (oferta din 18.11.2026): cine a mai plătit un an sau a primit unul dăruit plătește reînnoirea la prețul întreg.
+ */
 export async function activeSchoolOffer(db: Db, userId: string, now = new Date()): Promise<{ code: string; promoId: string } | null> {
+  if (!(await isFirstYear(db, userId))) return null;
   const [r] = await rows<{ code: string; promo: string | null; max_uses: number; used: number }>(db, sql`
     select c.code, c.stripe_promo_id as promo, c.max_uses, (select count(*) from school_payment p where p.code_id = c.id) as used
     from school_signup s join school_code c on c.id = s.code_id

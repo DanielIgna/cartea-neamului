@@ -474,6 +474,8 @@ export const fr: Catalog = {
     bookPaid: "Vous avez payé le livre. Vous pouvez le télécharger depuis la page du livre.",
     bookFree: "Votre compte a le livre PDF sans paiement. Vous pouvez le télécharger depuis la page du livre.",
     bookNote: "Le livre de famille en PDF s’achète à part : {price} pour un arbre. Après le paiement, il est fait à partir de vos données et vous pouvez le refaire et le télécharger pendant 12 mois. Si vous le souhaitez, vous pouvez l’imprimer vous-même, chez vous ou chez un imprimeur.",
+    discountNote: "Les réductions (code de classe ou lien d’une organisation) s’appliquent d’elles-mêmes au paiement, pour la première année seulement ; le renouvellement se fait au prix plein. Une seule réduction par paiement.",
+    linkCode: "Le code {code} est enregistré : s’il est encore valable, il s’applique de lui-même au paiement de la première année.",
     backToBook: "Retour au livre",
     consent: "Je veux commencer tout de suite et je comprends qu’en recevant le contenu numérique immédiatement, je perds le droit de rétractation de 14 jours.",
     pay: "Payer {price} par carte",

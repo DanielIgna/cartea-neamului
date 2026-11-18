@@ -474,6 +474,8 @@ export const enGB: Catalog = {
     bookPaid: "You have paid for the book. You can download it from the book page.",
     bookFree: "Your account has the PDF book at no cost. You can download it from the book page.",
     bookNote: "The family book as a PDF is bought separately: {price} for one tree. After payment it is made from your data and you can remake and download it for 12 months. If you like, you can print it yourself, at home or at a print shop.",
+    discountNote: "Discounts (a class code or an organisation’s link) are applied automatically at payment, for the first year only; renewal is at the full price. Only one discount applies to a payment.",
+    linkCode: "The code {code} is saved: if it is still valid, it is applied automatically when you pay for your first year.",
     backToBook: "Back to the book",
     consent: "I want to start straight away and understand that, by receiving the digital content immediately, I lose the 14-day right of withdrawal.",
     pay: "Pay {price} by card",

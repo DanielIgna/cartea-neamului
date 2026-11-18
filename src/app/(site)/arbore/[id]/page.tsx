@@ -12,7 +12,6 @@ import TreeLimits from "@/components/TreeLimits";
 import VoiceNudge from "@/components/VoiceNudge";
 import BranchInvite from "@/components/BranchInvite";
 import { loadDecisions } from "@/lib/verificari-db";
-import { exportLocked } from "@/lib/plata";
 import PageIntl from "@/i18n/PageIntl";
 import { getLocale } from "@/i18n/server";
 
@@ -43,7 +42,7 @@ export default async function TreePage({ params, searchParams }: { params: Promi
       <TreeScreen treeId={id} treeName={data.tree.name} slots={data.slots} people={data.people} rels={data.rels} raised={data.raised} centerId={data.centerId} generations={generations}
         meId={me.id} isEditor={can(role, "editor")} isRoot={data.centerId === home} canAdd={can(role, "contributor")} canInvite={can(role, "editor")}
         live={live && { ...live, url: process.env.NEON_REALTIME_URL!, userId: me.id }} aiEnabled={aiConfigured()} storageEnabled={storageConfigured()}
-        decisions={can(role, "editor") ? await loadDecisions(db, id) : {}} exportLocked={await exportLocked(db, me.id)} />
+        decisions={can(role, "editor") ? await loadDecisions(db, id) : {}} />
     </PageIntl>
   );
 }
