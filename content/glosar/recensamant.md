@@ -1,7 +1,7 @@
 ---
 title: Recensământ
 description: Recensămintele în genealogie: ce s-a păstrat din cele vechi, ce date conțin și de ce de cele mai multe ori găsești doar cifre.
-updated: 2026-11-13
+updated: 2026-11-18
 alt: recensăminte, census
 terms: conscriptie, catagrafie, arhivele-nationale
 related: recensamintele-vechi
@@ -11,3 +11,11 @@ Un **recensământ** este numărarea întregii populații, la o anumită dată, 
 ## Ce se poate folosi
 
 De multe ori s-au publicat doar **rezultatele**: câți locuitori avea fiecare sat, pe religii, limbi sau ocupații. Foile individuale s-au păstrat inegal, de la caz la caz. Și cifrele sunt însă utile: arată cât de mare era satul, ce confesiuni existau și deci în ce registre parohiale să cauți. Ghidul [Recensămintele vechi](/ghid/recensamintele-vechi) arată ce recensăminte au fost și ce poți afla din ele.
+
+## Cum apare într-un act
+
+Un formular de recensământ are câte un rând pentru fiecare om din gospodărie: numele, legătura cu capul gospodăriei (soție, fiu, nepot, slugă), vârsta, locul nașterii, religia, limba maternă, știința de carte și ocupația. Rubrica „locul nașterii” arată dacă cineva venise din alt sat.
+
+## Unde și când
+
+Din recensămintele moderne s-au păstrat formularele nominale mai ales pentru 1930 (parțial) și 1941 (în anumite județe), la Arhivele Naționale. Pentru Transilvania și Bucovina există și recensăminte austriece și maghiare din secolul al XIX-lea, păstrate fragmentar.

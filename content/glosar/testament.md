@@ -1,7 +1,7 @@
 ---
 title: Testament
 description: Testamentele și actele de moștenire în genealogie: cum numesc copii, nepoți și bunuri și unde se păstrează. Explicat pe scurt, pentru cercetarea familiei.
-updated: 2026-11-13
+updated: 2026-11-18
 alt: diată, testamente
 terms: certificat-de-mostenitor, cartea-funciara, foaie-de-zestre
 related: testamente-si-acte-de-mostenire
@@ -9,3 +9,11 @@ related: testamente-si-acte-de-mostenire
 Un **testament** (în actele vechi, *diată*) arată cui își lăsa un om bunurile. Pentru genealogie e valoros pentru că **numește oameni**: copii, nepoți, gineri, uneori și copiii morți înainte, ale căror părți treceau la urmași.
 
 Testamentele vechi se găsesc în fondurile notariatelor și ale judecătoriilor de la Arhive, în [cărțile funciare](/glosar/cartea-funciara) (ca temei al unei moșteniri) și uneori în lada de acte a familiei. Pentru moștenirile mai noi, documentul de bază e [certificatul de moștenitor](/glosar/certificat-de-mostenitor).
+
+## Cum apare într-un act
+
+Un testament începe adesea cu formula „În numele Tatălui…”, apoi numele celui care testează, satul și starea sănătății („bolnav cu trupul, dar întreg la minte”). Urmează bunurile și cui le lasă: copii, nepoți, ginere, biserică. La final semnează martorii și cel care a scris actul, uneori preotul.
+
+## Unde și când
+
+Testamentele vechi se găsesc în colecțiile de documente ale Arhivelor Naționale, în dosarele judecătoriilor și ale notariatelor, iar în Transilvania și în fondurile comitatelor. Cele de după 1990 sunt la notari.

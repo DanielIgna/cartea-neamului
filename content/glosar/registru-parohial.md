@@ -1,7 +1,7 @@
 ---
 title: Registru parohial
 description: Registrul parohial (botezuri, cununii, înmormântări): principala sursă pentru strămoșii de dinaintea stării civile de stat.
-updated: 2026-11-13
+updated: 2026-11-18
 alt: registre parohiale, registre bisericești, mitrici
 terms: matricola, botez, cununie, parohie, protopopiat, filie
 related: cum-citesti-un-registru-parohial, registrele-ortodoxe, registrele-greco-catolice, registrele-catolice-si-protestante
@@ -17,3 +17,11 @@ Un **registru parohial** este cartea în care o [parohie](/glosar/parohie) nota 
 - Fiecare confesiune își ținea registrele ei. Într-un sat cu ortodocși și greco-catolici există două serii separate.
 - Satele mici fără preot propriu erau [filii](/glosar/filie): evenimentele lor sunt în registrul parohiei-mamă, din satul vecin.
 - Data notată este a botezului; nașterea poate fi cu câteva zile mai devreme, iar uneori ambele sunt scrise.
+
+## Cum apare într-un act
+
+Un registru parohial e împărțit în coloane: la botezați, data nașterii și a botezului, numele copilului, părinții, nașii, preotul; la cununați, mirii și nașii; la morți, numele, vârsta și locul înmormântării. Coloanele sunt tipărite în registrele din secolul al XIX-lea și trase de mână în cele mai vechi.
+
+## Unde și când
+
+În Transilvania și Banat registrele parohiale încep în multe locuri din secolul al XVIII-lea; în Moldova și Țara Românească, sistematic din anii 1830. Cele de dinainte de registrele civile sunt la serviciile județene ale Arhivelor Naționale.
