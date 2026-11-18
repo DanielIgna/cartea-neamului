@@ -3,6 +3,7 @@ import { AMERICA_CITIES, EUROPE_CITIES } from "./orase";
 import { EUROPE_CITIES_2 } from "./orase-2";
 import { MORE } from "./orase-mai-mult";
 import { ownWords } from "./extins";
+import { localHistory } from "./istorie-locala";
 
 /**
  * Statele SUA, provinciile Canadei și câteva orașe mari. Toate au pagină (Daniel: „toate statele, toate provinciile”), dar
@@ -342,13 +343,20 @@ const CITY_NOTES: Region[] = [
   },
 ];
 
+/** Textul paginii plus istoria locală (src/lib/diaspora/istorie-locala.ts), doar după ce Daniel o aprobă. */
+function withHistory(slug: string, n: (typeof NOTES)[string] | undefined): (typeof NOTES)[string] | undefined {
+  const h = localHistory(slug);
+  if (!h) return n;
+  return { ...(n ?? {}), ro: [...(n?.ro ?? []), ...h.ro], en: [...(n?.en ?? []), ...h.en] };
+}
+
 export const REGIONS: Region[] = [
   ...US_STATES.map(([slug, en, ro]): Region => {
-    const n = NOTES[slug];
+    const n = withHistory(slug, NOTES[slug]);
     return { slug, country: "us", kind: "state", name: { ro: ro ?? en, en }, where: { ro: slug === "new-york" ? "în statul New York" : `în ${ro ?? en}`, en: slug === "new-york" ? "in New York State" : slug === "washington" ? "in Washington State" : `in ${en}` }, langs: ["en", "ro"], notes: n ? { ro: n.ro, en: n.en } : {}, cities: n?.cities };
   }),
   ...CA_PROVINCES.map(([slug, en, fr, ro]): Region => {
-    const n = NOTES[slug];
+    const n = withHistory(slug, NOTES[slug]);
     const langs: Region["langs"] = slug === "quebec" ? ["fr", "en", "ro"] : ["en", "ro"];
     return { slug, country: "ca", kind: "province", name: { ro, en, fr }, where: { ro: `în ${ro}`, en: `in ${en}`, fr: FR_WHERE[slug] ?? `en ${fr}` }, langs, notes: n ? { ro: n.ro, en: n.en, fr: n.fr } : {}, cities: n?.cities };
   }),

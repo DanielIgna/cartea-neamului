@@ -28,3 +28,21 @@ describe("sugestii după zonă (SUA și Canada)", () => {
     expect(s.guides.map((g) => g.href)).not.toContain("/ghid/romanian-immigration-waves-us-canada");
   });
 });
+
+import { ISTORIE_LOCALA, ISTORIE_LOCALA_APROBATA } from "@/lib/diaspora/istorie-locala";
+import { REGIONS, regionIndexable } from "@/lib/diaspora/america";
+
+describe("istoria locală pe state și provincii (ciornă)", () => {
+  it("e ciornă: nu schimbă paginile până o aprobă Daniel", () => {
+    expect(ISTORIE_LOCALA_APROBATA).toBe(false);
+    expect(REGIONS.find((r) => r.country === "us" && r.slug === "north-dakota" && r.kind === "state")!.notes.ro ?? []).toEqual([]);
+    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "arizona")!)).toBe(false);
+  });
+  it("fiecare stat are română, engleză și surse, iar slug-ul există", () => {
+    for (const [slug, h] of Object.entries(ISTORIE_LOCALA)) {
+      expect(REGIONS.some((r) => (r.country === "us" || r.country === "ca") && r.slug === slug), slug).toBe(true);
+      expect(h.ro.length, slug).toBe(h.en.length);
+      expect(h.sources.length, slug).toBeGreaterThan(0);
+    }
+  });
+});
