@@ -64,3 +64,20 @@ export async function linkCodeOffer(db: Db, o: { userId: string; cookie: string 
   const promoId = await stripePromoFor(code, fetcher).catch(() => null);
   return promoId ? { code, promoId } : null;
 }
+
+/** Codul scris de mână în câmpul de pe /plata (NEAM90, TEST90, NEAM-XXXX…): litere mari, cifre și cratimă. */
+export function cleanTypedCode(raw: unknown): string | null {
+  const c = String(raw ?? "").trim().toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 30);
+  return c.length >= 3 ? c : null;
+}
+
+/**
+ * Codul scris în câmpul de pe /plata. Merge doar pe plata primului an întreg; dacă e scris, el e singura reducere de pe plată
+ * (omul l-a ales). `bad`: codul nu există, a expirat sau s-a terminat; `year`: nu e plata primului an întreg.
+ */
+export async function typedCodeOffer(db: Db, o: { userId: string; code: string; fullFirstYear: boolean },
+  fetcher: typeof fetch = fetch): Promise<{ ok: true; code: string; promoId: string } | { ok: false; reason: "bad" | "year" }> {
+  if (!o.fullFirstYear || !(await isFirstYear(db, o.userId))) return { ok: false, reason: "year" };
+  const promoId = await stripePromoFor(o.code, fetcher).catch(() => null);
+  return promoId ? { ok: true, code: o.code, promoId } : { ok: false, reason: "bad" };
+}

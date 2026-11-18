@@ -68,7 +68,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
 
   const err = str("eroare");
   const notice = str("gata") === "pastrare" ? tk("thanks") : str("gata") === "inclus" ? t("thanksIncluded") : str("gata") === "cadou" ? t("thanksGift") : str("gata") ? t("thanks") : str("renuntat") ? t("cancelled")
-    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err ? t("err") : null;
+    : err === "acord" ? t("errAcord") : err === "curand" ? t("errSoon") : err === "jos" ? t("errDown") : err === "cod" ? t("errCode") : err === "codan" ? t("errCodeYear") : err ? t("err") : null;
 
   const status = payAccess.kind === "mereu" ? t("freeForever")
     : payAccess.kind === "platit" ? (payAccess.until ? t("tierUntil", { plan: tierName(payAccess.tier), date: date(payAccess.until) }) : t("freeForever"))
@@ -99,6 +99,16 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     until: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(offer.expiresAt) }) : null;
 
   const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
+  // Câmpul mare pentru codul de reducere (NEAM90, TEST90, codul unei organizații), pus înaintea butonului de plată al primului an.
+  const codeBox = (
+    <div className="code-box">
+      <label><b>{t("codeTitle")}</b>
+        <input type="text" name="cod" defaultValue={linkCode ?? ""} placeholder="NEAM90" autoComplete="off" autoCapitalize="characters"
+          spellCheck={false} maxLength={30} aria-label={t("codeLabel")} />
+      </label>
+      <p className="muted">{t("codeHint")}</p>
+    </div>
+  );
   const limitValue = (n: number | null) => (n === null ? t("unlimited") : nf.format(n));
 
   const card = (x: Tier) => {
@@ -129,6 +139,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
           <form action="/api/plata/start" method="post" className="form pay-form">
             <input type="hidden" name="kind" value="an" />
             <input type="hidden" name="tier" value={x} />
+            {!quote.upgradeFrom && codeBox}
             {consent}
             <div className="actions"><button className={`btn${x === "familie" || quote.upgradeFrom ? " primary" : ""}`}>{quote.upgradeFrom ? t("upgradeBtn", { plan: tierName(x), price: money(quote.value, locale).label }) : t("pay", { price: money(quote.value, locale).label })}</button></div>
           </form>

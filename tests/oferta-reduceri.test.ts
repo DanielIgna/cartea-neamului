@@ -4,7 +4,7 @@ import { createDb } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { accountPlan, gift, payment, user } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { cleanLinkCode, isFirstYear, linkCodeFromCookie, linkCodeOffer, stripePromoFor } from "@/lib/cod-link";
+import { cleanLinkCode, cleanTypedCode, isFirstYear, typedCodeOffer, linkCodeFromCookie, linkCodeOffer, stripePromoFor } from "@/lib/cod-link";
 import { applyUsedTrial, emailPrint, markTrialUsed, normalEmail, trialUsed } from "@/lib/proba-email";
 import { createCheckout } from "@/lib/plati";
 import { accessFor, DEFAULT_SETTINGS } from "@/lib/plans";
@@ -34,7 +34,9 @@ describe("reducerile (oferta din 18 noiembrie 2026)", () => {
     expect(sent!.get("discounts[1][promotion_code]")).toBeNull();
     const route = src("src/app/api/plata/start/route.ts");
     expect(route).toContain("promoField: isAdminUser(me)");
-    expect(route).toMatch(/offer: offer\?\.stripePromoId \? .* : school \?\? linked/);
+    expect(route).toMatch(/offer: typed\?\.ok \? .* : offer\?\.stripePromoId \? .* : school \?\? linked/);
+    // Câmpul mare de cod pe /plata, înaintea butonului de plată al primului an.
+    expect(src("src/app/(site)/plata/page.tsx")).toContain("{!quote.upgradeFrom && codeBox}");
   });
 
   it("codul din link: doar NEAM90 și NEAM-XXXX, ținut minte în cookie", () => {
@@ -70,6 +72,13 @@ describe("reducerile (oferta din 18 noiembrie 2026)", () => {
     expect(await ask("dar")).toBeNull();
     expect(await linkCodeOffer(d, { userId: "nou", cookie: "", fullFirstYear: true, other: false }, promo())).toBeNull();
     expect(await isFirstYear(d, "nou")).toBe(true);
+    // Codul scris în câmpul de pe /plata: doar la primul an întreg, și doar dacă e bun în Stripe.
+    expect(cleanTypedCode(" neam90 ")).toBe("NEAM90");
+    expect(cleanTypedCode("x")).toBeNull();
+    expect(await typedCodeOffer(d, { userId: "nou", code: "NEAM90", fullFirstYear: true }, promo())).toEqual({ ok: true, code: "NEAM90", promoId: "promo_1" });
+    expect(await typedCodeOffer(d, { userId: "nou", code: "NEAM90", fullFirstYear: true }, promo({ active: false }))).toEqual({ ok: false, reason: "bad" });
+    expect(await typedCodeOffer(d, { userId: "nou", code: "NEAM90", fullFirstYear: false }, promo())).toEqual({ ok: false, reason: "year" });
+    expect(await typedCodeOffer(d, { userId: "vechi", code: "NEAM90", fullFirstYear: true }, promo())).toEqual({ ok: false, reason: "year" });
     // Codul clasei: tot doar la primul an.
     expect(src("src/lib/scoli.ts")).toContain("if (!(await isFirstYear(db, userId))) return null;");
   });
