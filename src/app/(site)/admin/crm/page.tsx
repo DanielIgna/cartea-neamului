@@ -20,6 +20,7 @@ import { AdminNav, Stat, day, num } from "@/components/admin/ui";
 import CopyLink from "@/components/admin/CopyLink";
 import CrmImport from "@/components/admin/CrmImport";
 import { LIFE_LABEL, LIFE_RULE, LIFE_STAGES, ORG_RULES, SCORE_RULES, refreshIfStale, stageCounts } from "@/lib/crm-scor";
+import { contactMonths, funnel, templateStats } from "@/lib/crm-rapoarte";
 import { closeTaskAction, gmailSyncAction, gmailUnlinkAction } from "@/app/crm-actions";
 import { GMAIL_CALLBACK, GMAIL_INBOX, gmailClient, gmailState } from "@/lib/crm-gmail";
 import { batchNowAction, campaignStatusAction, limitsAction, newCampaignAction, recomputeAction, saveTemplateAction, testMailAction } from "@/app/crm-actions";
@@ -35,7 +36,7 @@ export const metadata = { title: "CRM · Admin" };
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
   { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
-  { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "import", label: "Import" },
+  { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
 
@@ -75,6 +76,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "aprobari" && <Approvals />}
       {tab === "campanii" && <Campaigns />}
       {tab === "nucontacta" && <Suppression />}
+      {tab === "rapoarte" && <Reports q={q} />}
       {tab === "scor" && <Scores />}
       {tab === "automatizari" && <Automations />}
       {tab === "sanatate" && <Health />}
@@ -587,5 +589,62 @@ async function Health() {
       </div>
       <p className="muted" style={{ margin: 0 }}>Se citesc doar mesajele de la organizațiile din CRM (adresa exactă sau domeniul lor propriu). Restul inbox-ului nu se păstrează nicăieri. Nu se trimite nimic din Gmail.</p>
     </div>
+  );
+}
+
+/** Etapa 9: pâlnia (cu filtre) și rezultatele pe șablon. */
+async function Reports({ q }: { q: Record<string, string | undefined> }) {
+  const f = { tip: q.tip || null, judet: q.judet || null, localitate: q.localitate || null, luna: q.luna || null, campanie: q.campanie || null };
+  const [fun, tpl, months, camps] = await Promise.all([funnel(db, f), templateStats(db), contactMonths(db), campaignList(db)]);
+  const steps = [
+    { label: "Contactate", v: fun.contactat, r: null },
+    { label: "Au răspuns", v: fun.raspuns, r: fun.rates.raspuns },
+    { label: "Interesate", v: fun.interesat, r: fun.rates.interesat },
+    { label: "Clienți", v: fun.client, r: fun.rates.client },
+  ];
+  const max = Math.max(1, fun.contactat);
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Pâlnia</h2>
+        <form className="crm-filters" method="get" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <input type="hidden" name="t" value="rapoarte" />
+          <select name="tip" defaultValue={q.tip ?? ""} aria-label="Tipul"><option value="">Școli și firme</option>{ORG_TYPES.map((k) => <option key={k} value={k}>{ORG_TYPE_LABEL[k]}</option>)}</select>
+          <select name="judet" defaultValue={q.judet ?? ""} aria-label="Județul"><option value="">Toate județele</option>{Object.entries(COUNTIES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
+          <input name="localitate" defaultValue={q.localitate ?? ""} placeholder="Orașul" aria-label="Orașul" />
+          <select name="luna" defaultValue={q.luna ?? ""} aria-label="Luna"><option value="">Toate lunile</option>{months.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+          <select name="campanie" defaultValue={q.campanie ?? ""} aria-label="Campania"><option value="">Toate (și din afară)</option>{camps.map((c) => <option key={c.id} value={c.id}>{c.nume}</option>)}</select>
+          <button className="btn">Arată</button>
+        </form>
+        <div className="stack" style={{ marginTop: 12 }}>
+          {steps.map((s) => (
+            <div key={s.label}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}><b>{s.label}</b><span>{num(s.v)}{s.r !== null ? ` · ${s.r}% din pasul de dinainte` : ""}</span></div>
+              <div style={{ background: "var(--line, #ddd)", borderRadius: 4, height: 10 }}><div style={{ width: `${(s.v / max) * 100}%`, background: "var(--accent, #8a5a2b)", height: 10, borderRadius: 4 }} /></div>
+            </div>
+          ))}
+        </div>
+        <p className="muted" style={{ marginBottom: 0 }}>Din contactate până la client: <b>{fun.rates.total}%</b>. „Luna” = luna primului email. Răspunsurile automate (absent din birou) nu se numără.</p>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ce text merge: rezultatele pe șablon</h2>
+        {tpl.length ? (
+          <div className="tbl-wrap">
+            <table className="tbl">
+              <thead><tr><th>Șablonul</th><th className="n">Trimise</th><th className="n">Deschise</th><th className="n">Click</th><th className="n">Răspunsuri</th><th className="n">Pozitive</th><th className="n">Clienți</th><th className="n">Nelivrate</th><th className="n">Dezabonări</th></tr></thead>
+              <tbody>{tpl.map((t) => (
+                <tr key={t.id}>
+                  <td><b>{t.nume}</b></td><td className="n">{num(t.trimise)}</td>
+                  <td className="n">{num(t.deschise)}<small> {t.rataDeschidere}%</small></td><td className="n">{num(t.click)}</td>
+                  <td className="n">{num(t.raspunsuri)}<small> {t.rataRaspuns}%</small></td><td className="n">{num(t.pozitive)}<small> {t.rataPozitiv}%</small></td>
+                  <td className="n">{num(t.clienti)}<small> {t.rataClient}%</small></td><td className="n">{num(t.nelivrate)}</td><td className="n">{num(t.dezabonari)}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="muted" style={{ marginBottom: 0 }}>Niciun șablon încă (CRM → Campanii).</p>}
+        <p className="muted" style={{ marginBottom: 0 }}>Procentele sunt din emailurile trimise (deschiderile, din cele livrate). Deschiderile sunt aproximative: unele programe de email nu încarcă imaginile.</p>
+      </div>
+    </>
   );
 }
