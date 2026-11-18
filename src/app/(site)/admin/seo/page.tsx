@@ -8,6 +8,7 @@ import { auditAlerts, auditPages, sitemapCheck, type AuditPage } from "@/lib/seo
 import { inspectOwnPage, ownPath } from "@/lib/seo-inspector";
 import { TARGET_KEYWORDS, matchTarget } from "@/lib/seo-cuvinte";
 import { NAME_MIN_WORDS } from "@/lib/continut/prag";
+import { TARGET_MAX_COMMON, TARGET_OWN_WORDS } from "@/lib/seo/quality";
 import { conversionsBy } from "@/lib/conversii";
 import { rangeOf } from "@/lib/analiza";
 import { sql } from "drizzle-orm";
@@ -391,11 +392,13 @@ function Indexing({ pages, href, sp }: { pages: AuditPage[]; href: (o: Partial<S
       <div className="stats">
         <Stat label="Indexabile" value={num(pages.filter((p) => p.indexable).length)} tone="ok" />
         <Stat label="Ținute afară" value={num(gated.length)} tone={gated.length ? "warn" : undefined} />
-        <Stat label="Pragul la nume" value={`${NAME_MIN_WORDS} cuvinte proprii`} hint="sensul și nota numelui, fără textul comun" />
+        <Stat label="Pragul la nume" value={`${NAME_MIN_WORDS} cuvinte proprii`} hint={`ținta din plan: ${TARGET_OWN_WORDS} cuvinte proprii și sub ${TARGET_MAX_COMMON}% fraze comune`} />
+        <Stat label="Ating ținta" value={num(pages.filter((p) => p.quality?.meetsTarget).length)} hint={`din ${num(pages.filter((p) => p.quality).length)} pagini cu scor`} />
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Cum hotărâm ce intră în Google</h2>
         <p style={{ marginTop: 0 }}>O pagină intră în Google doar dacă are destul conținut propriu. Paginile subțiri sau aproape la fel cu altele trag în jos tot site-ul, așa că rămân deschise oamenilor, dar au „noindex” și nu intră în sitemap. Pragul e în src/lib/continut/prag.ts. Ghidurile, glosarul, județele și orașele sunt scrise de mână, deci intră toate.</p>
+        <p>„Cuvinte proprii” înseamnă cuvintele din frazele care nu se repetă pe alte pagini de același fel (o frază care diferă doar prin nume e tot comună). „% comun” e partea din text repetată, iar scorul (0–100) le cântărește pe amândouă. Paginile de nume cu scor mic sunt „paginile subțiri”: au nevoie de text scris anume.</p>
         <div className="an-scroll">
           <table className="an-table">
             <thead><tr><th>Grupa</th><th>Pagini</th><th>Indexabile</th><th>În sitemap</th><th>Ținute afară</th></tr></thead>
@@ -409,11 +412,11 @@ function Indexing({ pages, href, sp }: { pages: AuditPage[]; href: (o: Partial<S
       <div className="card">
         <div className="an-scroll">
           <table className="an-table">
-            <thead><tr><th>Pagina</th><th>Grupa</th><th>Cuvinte</th><th>Stare</th><th>De ce</th></tr></thead>
+            <thead><tr><th>Pagina</th><th>Grupa</th><th>Cuvinte</th><th>% comun</th><th>Scor</th><th>Stare</th><th>De ce</th></tr></thead>
             <tbody>
-              {show.slice(0, 500).map((p) => <tr key={p.path}><td><a href={p.path} target="_blank">{p.path}</a></td><td>{p.cluster.label}</td><td>{p.words ?? "—"}</td>
+              {show.slice(0, 500).map((p) => <tr key={p.path}><td><a href={p.path} target="_blank">{p.path}</a></td><td>{p.cluster.label}</td><td>{p.words ?? "—"}</td><td>{p.quality ? `${p.quality.commonPct}%` : "—"}</td><td>{p.quality?.score ?? "—"}</td>
                 <td>{p.indexable ? <Status ok>index</Status> : <Status ok={false} warn>noindex</Status>}</td><td style={{ textAlign: "start" }}>{p.gate ?? "conținut propriu suficient"}</td></tr>)}
-              {!show.length && <tr><td colSpan={5} className="muted">Nicio pagină.</td></tr>}
+              {!show.length && <tr><td colSpan={7} className="muted">Nicio pagină.</td></tr>}
             </tbody>
           </table>
         </div>

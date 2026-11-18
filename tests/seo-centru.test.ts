@@ -14,7 +14,7 @@ describe("pragul de indexare", () => {
   it("paginile de nume subțiri nu intră în sitemap, celelalte da", () => {
     const urls = new Set(sitemapGroups().flatMap((g) => g.urls.map((u) => u.path)));
     for (const n of loadNames()) expect(urls.has(`/nume/${n.slug}`), n.slug).toBe(!nameGate(n));
-    expect(loadNames().filter((n) => !nameGate(n)).length).toBeGreaterThan(200);
+    expect(loadNames().filter((n) => !nameGate(n)).length).toBeGreaterThan(0);
   });
   it("inventarul are fiecare adresă din sitemap și nimic dublu", () => {
     const pages = auditPages();

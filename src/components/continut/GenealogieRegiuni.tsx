@@ -26,7 +26,8 @@ export function GenealogieRegion({ slug }: { slug: string }) {
   const counties = r.counties.map((c) => getCounty(c)).filter((c) => !!c);
   const cities = GEN_CITIES.filter((c) => c.region === r.slug || r.counties.includes(c.county));
   const names = r.nameRegion ? namesInRegion(r.nameRegion).slice(0, 18) : [];
-  const guides = r.guides.map((g) => getEntry("ghid", g)).filter((g) => !!g);
+  // FamilySearch e util în toate regiunile (planul SEO, etapa 4): ghidul lui apare pe fiecare pagină regională.
+  const guides = [...new Set([...r.guides, "familysearch-pentru-romania"])].map((g) => getEntry("ghid", g)).filter((g) => !!g);
   const others = GEN_REGIONS.filter((x) => x.slug !== r.slug);
   const src = `regiune-${r.slug}`;
   return (

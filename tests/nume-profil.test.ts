@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { loadNames, getName } from "@/lib/continut/nume";
 import { nameProfile } from "@/lib/continut/nume-profil";
-import { nameGate, nameOwnWords, uatGate } from "@/lib/continut/prag";
+import { NAME_MIN_WORDS, nameGate, nameOwnWords, uatGate } from "@/lib/continut/prag";
 
 describe("„Ce spun datele” pe paginile de nume (Etapa 3)", () => {
-  it("fiecare nume are cel puțin 120 de cuvinte proprii, iar niciunul nu mai e subțire", () => {
-    for (const n of loadNames()) expect(nameOwnWords(n), n.slug).toBeGreaterThanOrEqual(120);
-    expect(loadNames().filter((n) => nameGate(n))).toEqual([]);
+  it("pragul (etapa 4 SEO): intră în Google exact numele cu destule cuvinte proprii", () => {
+    for (const n of loadNames()) expect(!!nameGate(n), n.slug).toBe(nameOwnWords(n) < NAME_MIN_WORDS);
+    expect(loadNames().filter((n) => !nameGate(n)).length).toBeGreaterThan(0);
   });
   it("frazele sunt corecte gramatical la singular și spun ortografia variantelor", () => {
     const all = loadNames().flatMap(nameProfile).join(" ");

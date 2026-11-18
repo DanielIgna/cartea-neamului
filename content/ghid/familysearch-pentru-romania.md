@@ -3,8 +3,8 @@ title: Cum folosești FamilySearch pentru strămoși din România
 seo: FamilySearch pentru România: cum cauți registrele online
 description: Cum cauți gratuit pe FamilySearch registre parohiale și de stare civilă din România fotografiate: catalogul pe localități și răsfoirea imaginilor.
 category: Organizare și unelte
-updated: 2026-11-17
-related: registrele-de-stare-civila, cum-citesti-un-registru-parohial, cum-organizezi-cercetarea
+updated: 2026-11-18
+related: registrele-de-stare-civila, cum-citesti-un-registru-parohial, cum-organizezi-cercetarea, cum-faci-un-fisier-gedcom
 terms: registru-de-stare-civila, matricola, registru-parohial
 ---
 FamilySearch este un site gratuit de genealogie care a fotografiat, de-a lungul anilor, multe registre de stare civilă și parohiale din România. Ai nevoie doar de un cont gratuit.
@@ -44,6 +44,26 @@ Multe localități din Transilvania apar în catalog după numele maghiar sau ge
 2. Încearcă numele maghiar (de pildă *Kolozsvár* pentru Cluj) sau german (de pildă *Hermannstadt* pentru Sibiu).
 3. Caută după orașul mai mare din apropiere: unele registre sunt grupate pe parohii sau pe notariate care cuprindeau mai multe sate.
 
+## Ce cauți, regiune cu regiune
+
+Ce găsești pe FamilySearch depinde mult de regiunea din care vine familia, pentru că fiecare a avut alte registre:
+
+- **[Transilvania](/genealogie/regiune/transilvania), [Crișana](/genealogie/regiune/crisana), [Maramureș](/genealogie/regiune/maramures) și [Banat](/genealogie/regiune/banat)**: caută mai întâi registrele de stare civilă de după 1895, scrise în maghiară până în 1918, apoi registrele parohiale ale confesiunii familiei. Localitatea poate apărea sub numele maghiar sau german.
+- **[Moldova](/genealogie/regiune/moldova), [Muntenia](/genealogie/regiune/muntenia) și [Oltenia](/genealogie/regiune/oltenia)**: registrele de stare civilă pornesc din anii 1830; cele vechi sunt scrise cu litere chirilice, iar datele sunt după calendarul vechi.
+- **[Bucovina](/genealogie/regiune/bucovina) și [Basarabia](/genealogie/regiune/basarabia)**: o parte din registre sunt păstrate în arhivele din Ucraina și din Republica Moldova; caută și după numele localității în ucraineană, rusă sau germană.
+- **[Dobrogea](/genealogie/regiune/dobrogea)**: registrele românești încep după 1878; pentru familiile venite din alte regiuni, caută în satul lor de origine.
+
+Pagina fiecărei regiuni arată ce registre există acolo și unde sunt cele care nu au fost fotografiate.
+
+## Un plan pentru prima oră
+
+1. Alege un singur strămoș, cel mai vechi pe care îl știi sigur, cu satul și un an aproximativ.
+2. Caută satul în catalog și notează ce registre există și pentru ce ani.
+3. Răsfoiește mai întâi registrul de nașteri sau de botezuri din anii apropiați, apoi pe cel de căsătorii.
+4. Scrie tot ce găsești în arbore, cu sursa, înainte să treci la următorul strămoș.
+
+O oră cu un singur om bine căutat aduce de obicei mai mult decât o seară petrecută cu căutări după nume.
+
 ## Cum citești o pagină de registru
 
 Registrele de stare civilă au de obicei rubrici tipărite: numărul actului, data, numele, părinții, casa, martorii. Primul pas e să citești capul de tabel; restul paginii se citește apoi ușor, chiar într-o limbă pe care nu o știi bine. Pentru actele în maghiară, latină sau cu chirilice, vezi [Documente în latină](/ghid/documente-in-latina), [Documente în maghiară și germană](/ghid/documente-in-maghiara-si-germana) și [Scrierea chirilică românească](/ghid/scrierea-chirilica-romaneasca).
@@ -77,6 +97,12 @@ FamilySearch are și un arbore comun, la care contribuie mulți utilizatori. Poa
 **De ce căutarea după nume nu găsește nimic?** Pentru că multe registre românești nu sunt transcrise. Răsfoiește registrul satului din catalog.
 
 **Pot descărca imaginile?** Depinde de colecție și de drepturile ei. Unde nu se poate, notează exact sursa și cere copia de la arhivă.
+
+**Satul meu nu apare în catalog. Ce fac?** Caută comuna de care ținea, numele vechi al satului sau parohia din satul vecin. Dacă tot nu apare, registrele pot fi la arhiva județului, nefotografiate: întreabă acolo.
+
+**Pot muta arborele de pe FamilySearch în alt program?** Datele se mută între programele de genealogie printr-un fișier GEDCOM; vezi [cum faci un fișier GEDCOM](/ghid/cum-faci-un-fisier-gedcom). Verifică după mutare persoanele de două ori și sursele.
+
+**Ce fac cu datele rudelor în viață?** Nu le publica în arbori publici. Ține-le doar în arborele familiei, vizibil celor pe care îi inviți; vezi [protecția datelor în arbore](/ghid/protectia-datelor-in-arbore).
 
 ## Greșeli frecvente
 

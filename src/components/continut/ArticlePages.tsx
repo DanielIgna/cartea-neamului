@@ -90,7 +90,7 @@ export function HubPage({ c, page }: { c: Collection; page: number }) {
         ))}
         <Pager base={h.path} page={p.page} pages={p.pages} />
       </HubSearch>
-      <CtaArbore />
+      <CtaArbore src={c} />
     </section>
   );
 }
@@ -167,7 +167,7 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
           <ul className="hub-list">{relGuides.map((g) => <li key={g.path}><Link href={g.path}>{g.title}</Link> <span className="muted">{g.description}</span></li>)}</ul>
         </div>
       )}
-      <CtaArbore />
+      <CtaArbore src={`${c}-${e.slug}`} />
       <p className="muted small" style={{ textAlign: "center" }}><Link href={h.path}>← Toate {c === "ghid" ? "ghidurile" : "termenii din glosar"}</Link></p>
     </section>
   );

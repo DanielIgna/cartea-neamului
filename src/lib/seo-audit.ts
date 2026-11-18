@@ -5,6 +5,7 @@ import { LANGUAGE_NAMES, LOCALES, localizedPath } from "@/i18n/locales";
 import { PRIVATE_PREFIXES, PUBLIC_PAGES, TRANSLATED_PAGES } from "./public-pages";
 import { loadCollection } from "./continut/colectii";
 import { loadNames } from "./continut/nume";
+import { nameDescription, nameQuality, nameTitle } from "./continut/nume-extra";
 import { countyPath, isCapital, loadCounties, seatPath } from "./continut/localitati";
 import { NAME_MIN_WORDS, nameGate, nameOwnWords, uatGate } from "./continut/prag";
 import { loadUats, uatPath } from "./continut/uat";
@@ -27,6 +28,8 @@ export type AuditPage = {
   /** Cuvintele paginii (la ghiduri și glosar) sau cuvintele proprii (la nume), null unde nu le știm fără să deschidem pagina. */
   words: number | null;
   indexable: boolean; gate: string | null; inSitemap: boolean; category: string | null;
+  /** Scorul de calitate (src/lib/seo/quality.ts), unde îl calculăm: cuvinte proprii, % fraze comune, scor 0–100. */
+  quality?: { own: number; commonPct: number; score: number; meetsTarget: boolean };
 };
 
 const SUFFIX = " | Cartea Neamului";
@@ -46,7 +49,8 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
   push({ path: "/nume", title: "Nume de familie", description: null, words: null, indexable: true, gate: null, category: "hub" });
   for (const n of loadNames()) {
     const gate = nameGate(n);
-    push({ path: `/nume/${n.slug}`, title: `Numele ${n.name}: origine, semnificație și arhive${SUFFIX}`, description: `Ce înseamnă numele de familie ${n.name}, de unde vine, unde e mai des întâlnit, cum se mai scrie și cum cauți familia ${n.name} în arhive.`, words: nameOwnWords(n), indexable: !gate, gate, category: null });
+    const q = nameQuality(n);
+    push({ path: `/nume/${n.slug}`, title: nameTitle(n), description: nameDescription(n), words: nameOwnWords(n), indexable: !gate, gate, category: null, quality: { own: q.own, commonPct: q.commonPct, score: q.score, meetsTarget: q.meetsTarget } });
   }
   push({ path: "/localitati", title: "Localități", description: null, words: null, indexable: true, gate: null, category: "hub" });
   for (const c of loadCounties()) {
@@ -114,7 +118,7 @@ export function auditAlerts(pages: AuditPage[], o: { gscState?: string; gscError
   const queued = pages.filter((p) => p.gate?.startsWith("în coada"));
   if (queued.length) out.push({ level: "info", code: "IN_COADA", title: "Pagini care așteaptă să intre în Google", text: `${queued.length} pagini de comune sunt deja în site, dar intră în Google pe rând, prin motorul de publicare, ca să nu apară dintr-odată mii de pagini noi.`, paths: queued.map((p) => p.path) });
   const gated = pages.filter((p) => p.gate && !p.gate.startsWith("în coada"));
-  if (gated.length) out.push({ level: "info", code: "SUBTIRE_EXCLUS", title: "Pagini subțiri ținute în afara Google (corect)", text: `${gated.length} pagini au prea puțin conținut propriu (nume cu sub ${NAME_MIN_WORDS} cuvinte proprii, comune mici cu un singur sat): rămân în site, dar cu „noindex” și fără sitemap. Când primesc text propriu, intră singure.`, paths: gated.map((p) => p.path) });
+  if (gated.length) out.push({ level: "info", code: "SUBTIRE_EXCLUS", title: "Pagini subțiri ținute în afara Google (corect)", text: `${gated.length} pagini au prea puțin conținut propriu (nume cu sub ${NAME_MIN_WORDS} cuvinte proprii, adică fără frazele comune cu alte pagini de nume; comune mici cu un singur sat): rămân în site, dar cu „noindex” și fără sitemap. Când primesc text propriu, intră singure.`, paths: gated.map((p) => p.path) });
 
   const titles = new Map<string, string[]>();
   for (const p of pages.filter((x) => x.indexable)) titles.set(p.title, [...(titles.get(p.title) ?? []), p.path]);

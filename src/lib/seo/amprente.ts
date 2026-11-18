@@ -5,6 +5,7 @@ import { splitLocalePath, type Locale } from "@/i18n/locales";
 import { loadMessages } from "@/i18n/messages";
 import { loadCollection } from "@/lib/continut/colectii";
 import { loadNames } from "@/lib/continut/nume";
+import { nameDescription, namePageText, nameTitle } from "@/lib/continut/nume-extra";
 import { loadCounties } from "@/lib/continut/localitati";
 import { loadUats, uatPath } from "@/lib/continut/uat";
 import { GEN_CITIES, genCityPath } from "@/lib/genealogie-orase";
@@ -75,7 +76,8 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
 
   const records = new Map<string, unknown>();
   for (const c of ["ghid", "glosar"] as const) for (const e of loadCollection(c)) records.set(e.path, read(path.join(ROOT, "content", c, `${e.slug}.md`)));
-  for (const n of loadNames()) records.set(`/nume/${n.slug}`, n);
+  // La nume, textul vizibil întreg (și cel compus în src/lib/continut/nume-extra.ts), nu doar datele din JSON.
+  for (const n of loadNames()) records.set(`/nume/${n.slug}`, { n, text: namePageText(n).paragraphs, title: nameTitle(n), description: nameDescription(n) });
   const counties = new Map(loadCounties().map((c) => [c.slug, c]));
   for (const c of counties.values()) records.set(`/localitati/${c.slug}`, c);
   for (const u of loadUats()) records.set(uatPath(u), { u, county: counties.get(u.countySlug) ?? null });
