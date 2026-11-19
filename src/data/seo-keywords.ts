@@ -73,6 +73,11 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "romanian-surnames-changed-in-america", title: "Romanian Surnames in America and Canada: How Names Changed", order: 39 },
   { slug: "romanian-immigration-waves-us-canada", title: "Romanian Immigration to the US and Canada: Every Wave", order: 40 },
   { slug: "valurile-de-emigrare-in-america-de-nord", title: "Românii în SUA și Canada: valurile de emigrare", order: 41 },
+  // Seria a doua pentru diaspora (19.11.2026, ciorne): teme care aduc conturi noi.
+  { slug: "romanian-citizenship-by-descent-documents", title: "Romanian Citizenship by Descent: The Family Documents You Need", order: 42 },
+  { slug: "questions-to-ask-romanian-grandparents", title: "40 Questions to Ask Your Romanian Grandparents", order: 43 },
+  { slug: "free-romanian-family-tree-template", title: "Free Romanian Family Tree Template", order: 44 },
+  { slug: "copiii-din-diaspora-si-bunicii-din-romania", title: "Copiii născuți în străinătate și bunicii din România", order: 45 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
 /** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */
