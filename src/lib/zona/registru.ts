@@ -3,6 +3,9 @@ import { HUB_PATH, regionPath } from "@/lib/diaspora/index";
 import { getRegion } from "@/lib/diaspora/america";
 import { getEntry } from "@/lib/continut/colectii";
 import { localizedPath, type Locale } from "@/i18n/locales";
+import { EUROPE_ZONES } from "./europa";
+import { DIASPORA_LANGS } from "@/lib/diaspora/limbi-generat";
+import { LANG_OF } from "@/lib/diaspora/tipuri";
 
 /**
  * Sugestii după zona vizitatorului (Daniel, 18.11.2026): cine intră din Ohio vede pagina românilor din Ohio, pagina SUA și
@@ -21,6 +24,8 @@ export type ZoneEntry = {
   page: string;
   /** Ghidurile potrivite zonei (căi /ghid/…), doar cele publicate; cele nepublicate sunt sărite. */
   guides?: string[];
+  /** Numele zonei, când nu e un stat SUA sau o provincie canadiană (regiunile din Europa). */
+  label?: Partial<Record<"ro" | "en", string>>;
 };
 
 /** Codurile poștale ale statelor SUA (ISO 3166-2:US fără „US-”), după slug-ul paginii din src/lib/diaspora/america.ts. */
@@ -65,6 +70,7 @@ export const ZONES: ZoneEntry[] = [
   { country: "CA", page: country("ca"), guides: NORTH_AMERICA_GUIDES },
   ...regionsOf("US", US_CODES),
   ...regionsOf("CA", CA_CODES),
+  ...EUROPE_ZONES,
 ];
 
 export type ZoneLink = { href: string; label: string };
@@ -94,7 +100,12 @@ export function suggestFor(countryCode: string | null | undefined, regionCode: s
   const zone = rc ? ZONES.find((z) => z.country === cc && z.region === rc) ?? null : null;
   const lang = locale === "ro" ? "ro" : "en";
   // Paginile de diaspora au adresă pe limbă (/en-us/diaspora/…); ghidurile sunt doar în română, fără prefix.
-  const page = (p: string) => localizedPath(p, locale === "ro" ? "ro" : locale === "en-GB" ? "en-GB" : "en-US");
+  // În Europa, pagina e adesea scrisă și în limba țării (it, es, de, fr, nl): atunci o deschidem direct în limba omului.
+  const page = (p: string) => {
+    const own = LANG_OF[locale];
+    if (own && DIASPORA_LANGS[p]?.split(" ").includes(own)) return localizedPath(p, locale);
+    return localizedPath(p, locale === "ro" ? "ro" : locale === "en-GB" ? "en-GB" : "en-US");
+  };
   const guides = [...new Set([...(zone?.guides ?? []), ...(top.guides ?? [])])]
     .map((p) => ({ p, e: getEntry("ghid", p.replace(/^\/ghid\//, "")) }))
     .filter((g) => !!g.e)
@@ -102,7 +113,7 @@ export function suggestFor(countryCode: string | null | undefined, regionCode: s
     .map(({ p, e }) => ({ href: p, label: e!.title }));
   return {
     lang,
-    region: zone ? { href: page(zone.page), label: placeName(cc, rc, lang) } : null,
+    region: zone ? { href: page(zone.page), label: zone.label?.[lang] ?? zone.label?.en ?? placeName(cc, rc, lang) } : null,
     country: { href: page(top.page), label: placeName(cc, undefined, lang) },
     guides,
   };

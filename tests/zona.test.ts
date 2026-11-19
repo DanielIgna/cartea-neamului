@@ -46,3 +46,18 @@ describe("istoria locală pe state și provincii (ciornă)", () => {
     }
   });
 });
+
+describe("zonele din Europa", () => {
+  it("țările publicate au intrare; regiunile în ciornă nu apar până la aprobare", async () => {
+    const { EUROPE_ZONES } = await import("@/lib/zona/europa");
+    const { suggestFor } = await import("@/lib/zona/registru");
+    expect(EUROPE_ZONES.some((z) => z.country === "IT" && !z.region && z.page === "/diaspora/italia")).toBe(true);
+    // Ucraina și regiunile europene sunt încă ciorne: fără pagină publică, fără sugestie.
+    expect(EUROPE_ZONES.some((z) => z.country === "UA")).toBe(false);
+    expect(EUROPE_ZONES.some((z) => z.region)).toBe(false);
+    const it = suggestFor("IT", "62", "it");
+    expect(it?.country.href).toBe("/it/diaspora/italia");
+    expect(it?.region).toBeNull();
+    expect(suggestFor("DE", "BY", "en-GB")?.country.href).toBe("/en/diaspora/germania");
+  });
+});

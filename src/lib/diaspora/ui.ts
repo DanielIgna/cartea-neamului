@@ -9,6 +9,8 @@ type Ctx = { where: string; eu: boolean; icr: string | null };
 type Ui = {
   hubTitle: string; hubLead: string; hubDescription: string; diaspora: string; home: string;
   countries: string; america: string; canada: string; themes: string; states: string; provinces: string; cities: string;
+  /** Regiunile, landurile sau comunitățile autonome (Europa). */
+  regions: string;
   history: string; where: string; docs: string; records: string; community: string; steps: string; related: string; otherLangs: string;
   titleCountry: (where: string) => string; descCountry: (where: string) => string;
   titleRegion: (where: string) => string; descRegion: (where: string, c: string) => string;
@@ -27,7 +29,7 @@ const ro: Ui = {
   hubTitle: "Români de pretutindeni: arborele familiei, de oriunde", diaspora: "Diaspora", home: "Acasă",
   hubLead: "Pentru românii care trăiesc în afara țării: istoria comunității din țara ta, cum obții acte din România fără să vii acasă, ce arhive există acolo și cum faci arborele familiei împreună cu rudele rămase în România.",
   hubDescription: "Istoria emigrației, acte din România cerute din străinătate și arhive: ghid pentru românii din Italia, Spania, Germania, Marea Britanie, SUA și Canada.",
-  countries: "Europa și Israel", america: "Statele Unite", canada: "Canada", themes: "Pagini speciale", states: "Statele", provinces: "Provinciile și teritoriile", cities: "Orașele mari",
+  countries: "Europa și Israel", america: "Statele Unite", canada: "Canada", themes: "Pagini speciale", states: "Statele", provinces: "Provinciile și teritoriile", cities: "Orașele mari", regions: "Regiunile",
   history: "Cum au ajuns românii aici", where: "Unde trăiesc", docs: "Acte din România, cerute de aici", records: "Arhivele și registrele de aici",
   community: "Comunități și asociații", steps: "Pas cu pas: arborele familiei, de departe", related: "Vezi și", otherLangs: "Pagina în alte limbi",
   titleCountry: (w) => `Români ${w} – află-ți rădăcinile din România | Cartea Neamului`,
@@ -66,7 +68,7 @@ const en: Ui = {
   hubTitle: "Romanians abroad: your family tree, from anywhere", diaspora: "Diaspora", home: "Home",
   hubLead: "For Romanians living outside Romania and for anyone with Romanian roots: the history of the community where you live, how to get Romanian documents without travelling, which archives exist there, and how to build the family tree together with relatives back home.",
   hubDescription: "Emigration history, Romanian documents from abroad and archives: a guide for families with Romanian roots in the UK, US, Canada, Italy and Spain.",
-  countries: "Europe and Israel", america: "United States", canada: "Canada", themes: "Special pages", states: "States", provinces: "Provinces and territories", cities: "Major cities",
+  countries: "Europe and Israel", america: "United States", canada: "Canada", themes: "Special pages", states: "States", provinces: "Provinces and territories", cities: "Major cities", regions: "Regions",
   history: "How Romanians came here", where: "Where they live", docs: "Romanian documents, requested from here", records: "Local archives and records",
   community: "Communities and associations", steps: "Step by step: your family tree, from far away", related: "See also", otherLangs: "This page in other languages",
   titleCountry: (w) => `Romanian roots ${w}: records and family tree | Cartea Neamului`,
@@ -104,7 +106,7 @@ const it: Ui = {
   hubTitle: "Romeni nel mondo: l'albero di famiglia, da ovunque", diaspora: "Diaspora", home: "Home",
   hubLead: "Per i romeni che vivono all'estero e per chi ha radici romene: la storia della comunità nel tuo paese, come ottenere documenti romeni senza tornare, quali archivi esistono e come costruire l'albero di famiglia con i parenti rimasti in Romania.",
   hubDescription: "Storia dell'emigrazione, documenti romeni richiesti dall'estero, archivi e comunità: guida per i romeni in Italia e nel mondo.",
-  countries: "Europa e Israele", america: "Stati Uniti", canada: "Canada", themes: "Pagine speciali", states: "Stati", provinces: "Province e territori", cities: "Grandi città",
+  countries: "Europa e Israele", america: "Stati Uniti", canada: "Canada", themes: "Pagine speciali", states: "Stati", provinces: "Province e territori", cities: "Grandi città", regions: "Regioni",
   history: "Come sono arrivati i romeni", where: "Dove vivono", docs: "Documenti romeni, richiesti da qui", records: "Archivi e registri locali",
   community: "Comunità e associazioni", steps: "Passo dopo passo: l'albero di famiglia, da lontano", related: "Vedi anche", otherLangs: "Questa pagina in altre lingue",
   titleCountry: (w) => `Romeni ${w}: storia, documenti, albero genealogico | Cartea Neamului`,
@@ -142,7 +144,7 @@ const es: Ui = {
   hubTitle: "Rumanos por el mundo: el árbol familiar, desde donde estés", diaspora: "Diáspora", home: "Inicio",
   hubLead: "Para los rumanos que viven fuera de Rumanía y para quien tiene raíces rumanas: la historia de la comunidad en tu país, cómo conseguir documentos rumanos sin viajar, qué archivos hay y cómo hacer el árbol familiar con los parientes que siguen en Rumanía.",
   hubDescription: "Historia de la emigración, documentos rumanos pedidos desde el extranjero, archivos y comunidades: guía para los rumanos en España y en el mundo.",
-  countries: "Europa e Israel", america: "Estados Unidos", canada: "Canadá", themes: "Páginas especiales", states: "Estados", provinces: "Provincias y territorios", cities: "Grandes ciudades",
+  countries: "Europa e Israel", america: "Estados Unidos", canada: "Canadá", themes: "Páginas especiales", states: "Estados", provinces: "Provincias y territorios", cities: "Grandes ciudades", regions: "Regiones",
   history: "Cómo llegaron los rumanos", where: "Dónde viven", docs: "Documentos rumanos, pedidos desde aquí", records: "Archivos y registros locales",
   community: "Comunidades y asociaciones", steps: "Paso a paso: el árbol familiar, desde lejos", related: "Ver también", otherLangs: "Esta página en otros idiomas",
   titleCountry: (w) => `Rumanos ${w}: historia, documentos, árbol familiar | Cartea Neamului`,
@@ -180,7 +182,7 @@ const de: Ui = {
   hubTitle: "Rumänen in aller Welt: der Familienstammbaum, von überall", diaspora: "Diaspora", home: "Startseite",
   hubLead: "Für Rumänen im Ausland und alle mit Wurzeln in Rumänien: die Geschichte der Gemeinschaft in deinem Land, wie du rumänische Urkunden ohne Reise bekommst, welche Archive es gibt und wie du den Stammbaum mit den Verwandten in Rumänien aufbaust.",
   hubDescription: "Auswanderung, rumänische Urkunden aus dem Ausland und Archive: ein Leitfaden für Rumänen, Sachsen und Schwaben in Deutschland und Österreich.",
-  countries: "Europa und Israel", america: "Vereinigte Staaten", canada: "Kanada", themes: "Sonderseiten", states: "Bundesstaaten", provinces: "Provinzen und Territorien", cities: "Großstädte",
+  countries: "Europa und Israel", america: "Vereinigte Staaten", canada: "Kanada", themes: "Sonderseiten", states: "Bundesstaaten", provinces: "Provinzen und Territorien", cities: "Großstädte", regions: "Regionen und Bundesländer",
   history: "Wie die Rumänen hierherkamen", where: "Wo sie leben", docs: "Rumänische Urkunden, von hier beantragt", records: "Archive und Register vor Ort",
   community: "Gemeinschaften und Vereine", steps: "Schritt für Schritt: der Stammbaum aus der Ferne", related: "Siehe auch", otherLangs: "Diese Seite in anderen Sprachen",
   titleCountry: (w) => `Rumänen ${w}: Geschichte, Urkunden, Stammbaum | Cartea Neamului`,
@@ -218,7 +220,7 @@ const fr: Ui = {
   hubTitle: "Roumains du monde : l'arbre familial, d'où que vous soyez", diaspora: "Diaspora", home: "Accueil",
   hubLead: "Pour les Roumains de l'étranger et tous ceux qui ont des racines roumaines : l'histoire de la communauté dans votre pays, comment obtenir des actes roumains sans voyager, quelles archives existent et comment construire l'arbre familial avec les proches restés en Roumanie.",
   hubDescription: "Histoire de l'émigration, actes roumains demandés depuis l'étranger et archives : un guide pour les Roumains de France, Belgique, Suisse et Québec.",
-  countries: "Europe et Israël", america: "États-Unis", canada: "Canada", themes: "Pages spéciales", states: "États", provinces: "Provinces et territoires", cities: "Grandes villes",
+  countries: "Europe et Israël", america: "États-Unis", canada: "Canada", themes: "Pages spéciales", states: "États", provinces: "Provinces et territoires", cities: "Grandes villes", regions: "Régions",
   history: "Comment les Roumains sont arrivés", where: "Où ils vivent", docs: "Actes roumains, demandés d'ici", records: "Archives et registres locaux",
   community: "Communautés et associations", steps: "Pas à pas : l'arbre familial, de loin", related: "Voir aussi", otherLangs: "Cette page dans d'autres langues",
   titleCountry: (w) => `Roumains ${w} : histoire, actes, arbre généalogique | Cartea Neamului`,
@@ -256,7 +258,7 @@ const he: Ui = {
   hubTitle: "שורשים ברומניה: אילן היוחסין של המשפחה, מכל מקום", diaspora: "תפוצות", home: "דף הבית",
   hubLead: "למי שנולד ברומניה או שמשפחתו הגיעה משם: תולדות הקהילה בארץ שבה אתם חיים, איך משיגים מסמכים מרומניה בלי לנסוע, אילו ארכיונים קיימים ואיך בונים את אילן היוחסין יחד עם הקרובים.",
   hubDescription: "תולדות העלייה וההגירה מרומניה, מסמכים רומניים מחו\"ל, ארכיונים וקהילות: מדריך לבעלי שורשים רומניים בישראל ובעולם, וכיצד בונים יחד את אילן היוחסין.",
-  countries: "אירופה וישראל", america: "ארצות הברית", canada: "קנדה", themes: "דפים מיוחדים", states: "מדינות", provinces: "פרובינציות וטריטוריות", cities: "ערים גדולות",
+  countries: "אירופה וישראל", america: "ארצות הברית", canada: "קנדה", themes: "דפים מיוחדים", states: "מדינות", provinces: "פרובינציות וטריטוריות", cities: "ערים גדולות", regions: "אזורים",
   history: "איך הגיעו לכאן", where: "היכן הם חיים", docs: "מסמכים מרומניה, מבוקשים מכאן", records: "ארכיונים ורשומות מקומיים",
   community: "קהילות ועמותות", steps: "צעד אחר צעד: אילן היוחסין, מרחוק", related: "ראו גם", otherLangs: "הדף בשפות אחרות",
   titleCountry: (w) => `יוצאי רומניה ${w}: היסטוריה, מסמכים, אילן יוחסין | Cartea Neamului`,
@@ -294,7 +296,7 @@ const hu: Ui = {
   hubTitle: "Erdélyi és romániai gyökerek: a családfa, bárhonnan", diaspora: "Diaszpóra", home: "Kezdőlap",
   hubLead: "Azoknak, akik Romániából származnak vagy ott élő rokonaik vannak: a közösség története, romániai iratok beszerzése utazás nélkül, levéltárak és a családfa közös építése.",
   hubDescription: "Kivándorlástörténet, romániai iratok külföldről, levéltárak és közösségek: útmutató a romániai gyökerű családoknak itthon és a nagyvilágban.",
-  countries: "Európa és Izrael", america: "Egyesült Államok", canada: "Kanada", themes: "Különleges oldalak", states: "Államok", provinces: "Tartományok és területek", cities: "Nagyvárosok",
+  countries: "Európa és Izrael", america: "Egyesült Államok", canada: "Kanada", themes: "Különleges oldalak", states: "Államok", provinces: "Tartományok és területek", cities: "Nagyvárosok", regions: "Régiók",
   history: "Hogyan érkeztek ide", where: "Hol élnek", docs: "Romániai iratok, innen kérve", records: "Helyi levéltárak és anyakönyvek",
   community: "Közösségek és egyesületek", steps: "Lépésről lépésre: a családfa, messziről", related: "Lásd még", otherLangs: "Az oldal más nyelveken",
   titleCountry: (w) => `Romániai gyökerek – ${w}: történet, iratok, családfa | Cartea Neamului`,
@@ -328,7 +330,45 @@ const hu: Ui = {
   regionThin: "Még gyűjtjük az információkat. Addig az alábbi lépések mindenhol érvényesek.",
 };
 
-export const UI: Record<Lang, Ui> = { ro, en, it, es, de, fr, he, hu };
+const nl: Ui = {
+  hubTitle: "Roemenen in het buitenland: je stamboom, waar je ook woont", diaspora: "Diaspora", home: "Home",
+  hubLead: "Voor Roemenen die buiten Roemenië wonen en voor iedereen met Roemeense wortels: de geschiedenis van de gemeenschap waar je woont, hoe je Roemeense akten krijgt zonder te reizen, welke archieven er zijn en hoe je samen met familie in Roemenië je stamboom maakt.",
+  hubDescription: "Emigratiegeschiedenis, Roemeense akten aanvragen vanuit het buitenland en archieven: een gids voor families met Roemeense wortels in Europa en Noord-Amerika.",
+  countries: "Europa en Israël", america: "Verenigde Staten", canada: "Canada", themes: "Speciale pagina's", states: "Staten", provinces: "Provincies en territoria", cities: "Grote steden", regions: "Regio's en provincies",
+  history: "Hoe Roemenen hier kwamen", where: "Waar ze wonen", docs: "Roemeense akten, aangevraagd vanuit hier", records: "Archieven en registers hier",
+  community: "Gemeenschappen en verenigingen", steps: "Stap voor stap: je stamboom, van ver weg", related: "Zie ook", otherLangs: "Deze pagina in andere talen",
+  titleCountry: (w) => `Roemeense wortels ${w}: akten en stamboom | Cartea Neamului`,
+  descCountry: (w) => `Hoe Roemenen ${w} terechtkwamen, hoe je vanuit daar Roemeense akten aanvraagt, welke archieven je gebruikt en hoe je je stamboom maakt.`,
+  titleRegion: (w) => `Roemeense wortels ${w}: akten en stamboom | Cartea Neamului`,
+  descRegion: (w, c) => `Roemenen ${w} (${c}): geschiedenis van de gemeenschap, Roemeense akten aanvragen vanuit het buitenland, archieven en je stamboom.`,
+  citiesLine: (l) => `De meeste Roemeense families wonen in ${l}.`,
+  docsSteps: ({ where, eu }) => [
+    "Zoek eerst uit welke akte je nodig hebt en waar die ligt: geboorte-, huwelijks- en overlijdensakten worden afgegeven door de burgerlijke stand van het gemeentehuis waar ze zijn ingeschreven; registers ouder dan 100 jaar liggen meestal bij de provinciale afdeling van het Roemeense Nationaal Archief.",
+    `Woon je ${where}, dan zijn er drie wegen: via het Roemeense consulaat voor jouw regio (afspraak via econsulat.ro), via een familielid in Roemenië aan wie je een volmacht geeft (getekend op het consulaat), of rechtstreeks per e-mail bij het Nationaal Archief voor oude registers.`,
+    eu
+      ? `Om een Roemeense akte ${where} te gebruiken heb je meestal geen apostille meer nodig: binnen de Europese Unie gelden akten van de burgerlijke stand zonder apostille (EU-verordening 2016/1191), en je kunt er een meertalig modelformulier bij vragen.`
+      : `Om een Roemeense akte ${where} te gebruiken heb je meestal een apostille nodig, in Roemenië afgegeven door de prefectuur, en een beëdigde vertaling.`,
+    "Geef bij het aanvragen van een oude akte alles wat je weet: de naam (en de oude of buitenlandse schrijfwijze), het jaar bij benadering, en het dorp en de gemeente van toen. Op elke plaatspagina van Cartea Neamului zie je bij welk gemeentehuis en welk archief een dorp hoort.",
+    "Heb je de Roemeense nationaliteit, dan worden akten die in het buitenland zijn opgemaakt (de geboorte van een kind, een huwelijk) via het consulaat of bij de burgerlijke stand in Roemenië overgeschreven in de Roemeense registers.",
+  ],
+  communityText: ({ where, icr }) => [
+    `Roemenen ${where} ontmoeten elkaar vooral via culturele verenigingen, weekendscholen en Roemeense lessen voor kinderen. Geregistreerde verenigingen staan op de site van het Roemeense Departement voor Roemenen in het Buitenland (dprp.gov.ro), en het consulaat kent meestal die in jouw stad.`,
+    ...(icr ? [`Het Roemeens Cultureel Instituut heeft een vestiging in ${icr}, met tentoonstellingen, concerten en een bibliotheek.`] : []),
+    "De beste bronnen voor familiegeschiedenis blijven mensen: de ouderen van de gemeenschap weten uit welke dorpen de eerste families kwamen en wie familie is van wie.",
+  ],
+  genealogySteps: [
+    "Schrijf op wat je al weet: de namen, data en plaatsen van je ouders en grootouders.",
+    "Vraag het oudere familieleden, ook die in Roemenië: een videogesprek met oude foto's op het scherm brengt veel namen terug.",
+    "Zoek het dorp waar je familie vandaan komt op Cartea Neamului: het gemeentehuis, het archief en de familienamen van daar.",
+    "Vraag de akten aan die je nodig hebt, in Roemenië en in het land waar je woont (zie hierboven).",
+    "Zet alles in één stamboom die de hele familie kan aanvullen, waar ze ook wonen.",
+  ],
+  ctaTitle: "Begin je stamboom", ctaText: "De eerste 7 dagen zijn gratis, zonder creditcard. Nodig familie in Roemenië en in het buitenland uit; iedereen vult aan wat hij weet.", ctaButton: "Begin je stamboom →",
+  fallback: "Deze pagina is nog niet in jouw taal beschikbaar en wordt in het Engels getoond.", sources: "Bronnen", localities: "Plaatsen in Roemenië", names: "Roemeense familienamen", guides: "Genealogiegidsen",
+  regionThin: "We verzamelen nog informatie over de Roemenen hier. De stappen hieronder werken intussen overal in het land.",
+};
+
+export const UI: Record<Lang, Ui> = { ro, en, it, es, de, fr, he, hu, nl };
 
 /** Titlurile secțiunilor noi (ambasade, ghid, particularități, întrebări) și îndemnul cu prețul și WhatsApp, pe limbi. */
 type XUi = {

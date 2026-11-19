@@ -88,7 +88,11 @@ export function splitLocalePath(pathname: string): { locale: Locale | null; path
  * primește aceeași pagină ca SUA (/en-us), iar românii din SUA și Canada pagina românească. Nu sunt limbi noi și nu au adresă
  * proprie, doar îi spun lui Google ce variantă să arate acolo; fără ele, Google alegea la întâmplare între /en și /en-us.
  */
-export const REGIONAL_HREFLANG: Record<string, Locale> = { "en-CA": "en-US", "ro-US": "ro", "ro-CA": "ro" };
+export const REGIONAL_HREFLANG: Record<string, Locale> = {
+  "en-CA": "en-US", "ro-US": "ro", "ro-CA": "ro",
+  // Europa (firul „Extinde SEO-ul diasporei în Europa”): variantele regionale ale limbilor pe care le avem, plus Republica Moldova.
+  "de-AT": "de", "de-CH": "de", "fr-BE": "fr", "fr-CH": "fr", "nl-BE": "nl", "en-IE": "en-GB", "ro-MD": "ro",
+};
 
 /** Adaugă etichetele regionale la o listă hreflang → adresă, doar unde există limba de bază (fără ea nu adaugă nimic). */
 export function withRegionalHreflang<T>(langs: Record<string, T>): Record<string, T> {

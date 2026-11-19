@@ -82,8 +82,9 @@ describe("diaspora: adrese și limbi", () => {
   it("hreflang: doar limbile paginii, ambele engleze și româna ca x-default", () => {
     const a = alternatesFor("/diaspora/italia", ["it", "ro", "en"]);
     expect(a).toEqual({ it: "/it/diaspora/italia", ro: "/diaspora/italia", "en-GB": "/en/diaspora/italia", "en-US": "/en-us/diaspora/italia", "x-default": "/diaspora/italia",
-      // Etichetele regionale pentru America de Nord trimit la paginile existente, fără adrese noi.
-      "en-CA": "/en-us/diaspora/italia", "ro-US": "/diaspora/italia", "ro-CA": "/diaspora/italia" });
+      // Etichetele regionale (America de Nord, Irlanda, Moldova) trimit la paginile existente, fără adrese noi.
+      "en-CA": "/en-us/diaspora/italia", "ro-US": "/diaspora/italia", "ro-CA": "/diaspora/italia", "en-IE": "/en/diaspora/italia", "ro-MD": "/diaspora/italia" });
+    expect(alternatesFor("/diaspora/austria", ["de", "ro", "en"])["de-AT"]).toBe("/de/diaspora/austria");
     expect(alternatesFor("/diaspora/radacini-evreiesti", ["en", "he", "ro"]).he).toBe("/he/diaspora/radacini-evreiesti");
   });
 

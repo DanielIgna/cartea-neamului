@@ -3,6 +3,7 @@ import { AMERICA_CITIES, EUROPE_CITIES } from "./orase";
 import { EUROPE_CITIES_2 } from "./orase-2";
 import { MORE } from "./orase-mai-mult";
 import { ownWords } from "./extins";
+import { APPROVED_REGIONS } from "./ciorne";
 import { localHistory } from "./istorie-locala";
 
 /**
@@ -364,6 +365,7 @@ export const REGIONS: Region[] = [
   ...AMERICA_CITIES,
   ...EUROPE_CITIES,
   ...EUROPE_CITIES_2,
+  ...APPROVED_REGIONS,
 ];
 
 export const regionsOf = (country: CountryKey, kind?: Region["kind"]) => REGIONS.filter((r) => r.country === country && (!kind || r.kind === kind));
@@ -371,5 +373,9 @@ export const getRegion = (country: CountryKey, slug: string) => REGIONS.find((r)
 /** O pagină de stat sau provincie intră în Google doar dacă are text propriu. */
 /** Pragul unei pagini de oraș (Daniel, 17.11.2026: „300–600 de cuvinte pe oraș”); sub el, pagina rămâne în afara Google. */
 export const CITY_MIN_WORDS = 300;
+/** Pragul unei regiuni europene (land, regiune, comunitate autonomă): ca la statele SUA e nevoie de text propriu, dar cerem minimum 200 de cuvinte. */
+export const REGION_MIN_WORDS = 200;
 export const regionIndexable = (r: Region) =>
-  r.kind === "city" ? ownWords(r.notes.ro ?? []) >= CITY_MIN_WORDS : (r.notes.ro?.length ?? 0) > 0;
+  r.kind === "city" ? ownWords(r.notes.ro ?? []) >= CITY_MIN_WORDS
+  : r.kind === "region" ? ownWords(r.notes.ro ?? []) >= REGION_MIN_WORDS
+  : (r.notes.ro?.length ?? 0) > 0;

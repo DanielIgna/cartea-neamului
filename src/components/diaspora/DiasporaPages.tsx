@@ -9,7 +9,7 @@ import { LANGUAGE_NAMES, REGIONAL_HREFLANG, localizedPath, type Locale } from "@
 import { OG_LOCALE, canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import {
-  COUNTRIES, COUNTRY_OF, LOCALES_OF, THEMES, alternatesFor, keyOfCountry, countryPath, descriptionOf, diasporaAlternates, entries, isRtl, nameOf, pickLang, regionPath, resolve, themePath, titleOf, tx,
+  COUNTRIES, COUNTRY_OF, LOCALES_OF, THEMES, alternatesFor, draftEntries, resolveDraft, keyOfCountry, countryPath, descriptionOf, diasporaAlternates, entries, isRtl, nameOf, pickLang, regionPath, resolve, themePath, titleOf, tx,
   type Country, type Entry, type Lang, type Link as Src, type Region, type Theme,
 } from "@/lib/diaspora";
 import { ROMANIA_LINKS } from "@/lib/diaspora/tari";
@@ -20,6 +20,7 @@ import { unstable_cache } from "next/cache";
 import { db } from "@/db";
 import { DEFAULT_SETTINGS, PLANS_TAG, planSettings, yearPrice, type PlanSettings } from "@/lib/plans";
 import { money, type Currency } from "@/lib/plati";
+import { getEntry as getGuide } from "@/lib/continut/colectii";
 
 /** Paginile /diaspora, /diaspora/<țară sau temă> și /diaspora/<statele-unite|canada>/<stat, provincie sau oraș>. */
 
@@ -31,7 +32,8 @@ function hrefOf(e: Entry, locale: Locale) {
   const { lang, native } = pickLang(e.langs, locale);
   return localizedPath(e.path, native ? locale : LOCALES_OF[lang][0]);
 }
-const entryOf = (path: string) => entries().find((e) => e.path === path)!;
+/** Pagina după adresă; ciornele se găsesc și ele, pentru previzualizarea din Admin (pe site nu există legături spre ele). */
+const entryOf = (path: string) => entries().find((e) => e.path === path) ?? draftEntries().find((e) => e.path === path)!;
 
 /** Prețurile din Admin → Manager control: în cache 10 minute, golit la salvare (ca pe prima pagină). */
 const cachedPlans = unstable_cache(() => planSettings(db), ["plan-settings"], { tags: [PLANS_TAG], revalidate: 600 });
@@ -61,11 +63,15 @@ export async function diasporaMetadata(a?: string, b?: string): Promise<Metadata
   };
 }
 
-export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
-  const e = resolve(a, b);
+/**
+ * `preview`: previzualizarea unei ciorne în Admin → SEO → Ciorne, în limba aleasă (pagina nu e publică și nu intră în Google).
+ */
+export async function DiasporaPage({ a, b, preview }: { a?: string; b?: string; preview?: { lang?: Lang } }) {
+  const e = preview ? resolveDraft(a, b) ?? resolve(a, b) : resolve(a, b);
   if (!e) notFound();
   const locale = await getLocale();
-  const { lang, native } = pickLang(e.langs, locale);
+  const picked = pickLang(e.langs, locale);
+  const { lang, native } = preview?.lang && e.langs.includes(preview.lang) ? { lang: preview.lang, native: true } : picked;
   const u = UI[lang];
   const href = (x: Entry) => hrefOf(x, locale);
   const crumbs: Crumb[] = [{ name: u.home, path: localizedPath("/", locale) }, { name: u.diaspora, path: href(entries()[0]) }];
@@ -75,6 +81,7 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
   const otherLangs = Object.entries(alternatesFor(e.path, e.langs)).filter(([k]) => k !== "x-default" && k !== locale && !(k in REGIONAL_HREFLANG));
   return (
     <section className="stack content-page diaspora-page" lang={lang} dir={isRtl(lang) ? "rtl" : "ltr"}>
+      {preview && <p className="untranslated-note" role="note" lang="ro" dir="ltr">Ciornă, nepublicată: o vezi doar tu, din Admin. Limbile ciornei: {e.langs.join(", ")}.</p>}
       {!native && <p className="untranslated-note" role="note">{UI[lang].fallback}</p>}
       <JsonLd data={breadcrumbJsonLd(crumbs)} />
       {e.kind === "country" && faqOf(e.country, lang).length > 0 && (
@@ -210,12 +217,14 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{u.cities}</h2>
-        {(["it", "es", "de", "gb", "fr", "at", "be", "ie", "pt", "gr", "cy", "il"] as const).map((k) => {
-          const c = COUNTRIES.find((x) => x.slug === COUNTRY_OF[k])!;
+        {(["it", "es", "de", "gb", "fr", "at", "be", "ie", "pt", "gr", "cy", "il", "nl", "ua"] as const).map((k) => {
+          const c = COUNTRIES.find((x) => x.slug === COUNTRY_OF[k]);
+          if (!c || !regionsOf(k).length) return null;
           return (
             <div key={k}>
               <h3><span aria-hidden>{c.flag} </span><Link href={href(country(c))}>{tx(c.name, l)}</Link></h3>
               {list(regionsOf(k, "city"))}
+              {regionsOf(k, "region").length > 0 && <><h4>{u.regions}</h4>{list(regionsOf(k, "region"))}</>}
             </div>
           );
         })}
@@ -241,6 +250,18 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
         </ul>
       </div>
     </>
+  );
+}
+
+/** Ghidurile din /ghid legate de pagină (titlul lor e în română; legătura e spre ghid, nu îl repetăm aici). */
+function Guides({ slugs, l }: { slugs?: string[]; l: Lang }) {
+  const gs = (slugs ?? []).map((s) => getGuide("ghid", s)).filter((g) => !!g);
+  if (!gs.length) return null;
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>{UI[l].guides}</h2>
+      <ul className="hub-list">{gs.map((g) => <li key={g!.slug}><Link href={`/ghid/${g!.slug}`} lang="ro">{g!.title}</Link></li>)}</ul>
+    </div>
   );
 }
 
@@ -357,6 +378,7 @@ function RegionBody({ r, c, l, href }: { r: Region; c: Country; l: Lang; href: H
           <p className="muted" style={{ marginBottom: 0 }}>{x!.missionsNote(VERIFIED_ON)} <a href={ex!.missionsSource.url} rel="noopener" target="_blank">{ex!.missionsSource.name}</a>.</p>
         </div>
       )}
+      <Guides slugs={r.guides} l={l} />
       <Docs l={l} where={where} eu={c.eu} icr={null} />
       <Sources l={l} links={c.records} title={u.records} />
       {siblings.length > 0 && (
@@ -384,6 +406,7 @@ function ThemeBody({ t, l, href }: { t: Theme; l: Lang; href: Href }) {
           {s.p.map((p) => <p key={p.slice(0, 40)}>{p}</p>)}
         </div>
       ))}
+      <Guides slugs={t.guides} l={l} />
       <Sources l={l} links={[...t.records, ...ROMANIA_LINKS.slice(0, 2)]} title={u.sources} />
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{u.related}</h2>

@@ -6,6 +6,7 @@ import { REGIONS, getRegion, regionIndexable } from "./america";
 import { THEMES, getTheme } from "./teme";
 import { LANG_OF, LOCALES_OF, type Country, type Lang, type Region, type T, type Theme } from "./tipuri";
 import { UI } from "./ui";
+import { DRAFT_COUNTRIES, PENDING } from "./ciorne";
 
 export * from "./tipuri";
 export { COUNTRIES, REGIONS, THEMES };
@@ -23,7 +24,7 @@ export type Entry =
   | { kind: "theme"; path: string; langs: Lang[]; indexable: true; theme: Theme };
 
 const countryPath = (c: Country) => `${HUB_PATH}/${c.slug}`;
-export const COUNTRY_OF = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel", fr: "franta", at: "austria", be: "belgia", ie: "irlanda", pt: "portugalia", gr: "grecia", cy: "cipru" } as const;
+export const COUNTRY_OF = { us: "statele-unite", ca: "canada", it: "italia", es: "spania", de: "germania", gb: "marea-britanie", il: "israel", fr: "franta", at: "austria", be: "belgia", ie: "irlanda", pt: "portugalia", gr: "grecia", cy: "cipru", nl: "olanda", ua: "ucraina" } as const;
 const KEY_OF = Object.fromEntries(Object.entries(COUNTRY_OF).map(([k, v]) => [v, k])) as Record<string, keyof typeof COUNTRY_OF>;
 /** Cheia țării (pentru orașe și regiuni) după pagina ei. */
 export const keyOfCountry = (c: Country) => KEY_OF[c.slug] ?? null;
@@ -42,6 +43,21 @@ export function entries(): Entry[] {
   ];
   return all;
 }
+
+/** Ciornele neaprobate, ca pagini (doar pentru previzualizarea din Admin; nu apar în sitemap, liste sau legături). */
+let drafts: Entry[] | null = null;
+export function draftEntries(): Entry[] {
+  if (drafts) return drafts;
+  const countryOf = (k: Region["country"]) => getCountry(COUNTRY_OF[k]) ?? DRAFT_COUNTRIES.find((c) => c.slug === COUNTRY_OF[k])!;
+  drafts = [
+    ...PENDING.countries.map((c): Entry => ({ kind: "country", path: countryPath(c), langs: c.langs, indexable: true, country: c })),
+    ...PENDING.themes.map((t): Entry => ({ kind: "theme", path: themePath(t), langs: t.langs, indexable: true, theme: t })),
+    ...PENDING.regions.map((r): Entry => ({ kind: "region", path: regionPath(r), langs: r.langs, indexable: true, region: r, country: countryOf(r.country) })),
+  ];
+  return drafts;
+}
+/** O ciornă după adresă (previzualizare în Admin), sau null. */
+export const resolveDraft = (a?: string, b?: string) => draftEntries().find((e) => e.path === [HUB_PATH, a, b].filter(Boolean).join("/")) ?? null;
 
 /** Pagina pentru /diaspora/<a>[/<b>], sau null. */
 export function resolve(a?: string, b?: string): Entry | null {

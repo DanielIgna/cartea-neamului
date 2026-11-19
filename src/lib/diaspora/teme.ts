@@ -1,10 +1,11 @@
 import type { Theme } from "./tipuri";
+import { APPROVED_THEMES } from "./ciorne";
 
 /**
  * Paginile speciale ale diasporei (Daniel, 15.11.2026): rădăcini evreiești (en + he), moldovenii din Italia și Israel,
  * sașii și șvabii (de), maghiarii din Transilvania (hu). Ton neutru, istoric; registrele bisericești apar doar ca sursă de acte.
  */
-export const THEMES: Theme[] = [
+const BASE: Theme[] = [
   {
     slug: "radacini-evreiesti", langs: ["en", "he", "ro"],
     name: { ro: "Rădăcini evreiești în România", en: "Jewish roots in Romania", he: "שורשים יהודיים ברומניה" },
@@ -293,5 +294,8 @@ export const THEMES: Theme[] = [
     related: ["statele-unite", "canada"],
   },
 ];
+
+/** Paginile speciale publicate: cele de bază și ciornele aprobate. */
+export const THEMES: Theme[] = [...BASE, ...APPROVED_THEMES];
 
 export const getTheme = (slug: string) => THEMES.find((t) => t.slug === slug) ?? null;
