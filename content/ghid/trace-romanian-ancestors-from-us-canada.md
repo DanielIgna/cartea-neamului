@@ -3,6 +3,7 @@ title: How to Trace Your Romanian Ancestors from the US and Canada (and Preserve
 seo: How to Trace Your Romanian Ancestors from the US & Canada
 description: Living in the US or Canada with Romanian roots? Learn how to trace your family tree, work with relatives back home and record your grandparents' stories.
 category: Diaspora
+updated: 2026-11-19
 lang: en
 cuvant: trace romanian ancestry
 related: emigrarea-in-america, cum-afli-satul-de-origine, registre-parohiale-online, hpdt-registrele-din-transilvania, nume-schimbate-si-variante, cum-inregistrezi-glasul-bunicilor

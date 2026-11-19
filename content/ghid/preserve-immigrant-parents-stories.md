@@ -3,6 +3,7 @@ title: How to Preserve Your Immigrant Parents' Stories Before They Fade
 seo: How to Preserve Your Immigrant Parents' Stories
 description: Growing up in an immigrant family means carrying two worlds. Learn how to capture your parents' and grandparents' memories and voices before they are lost.
 category: Diaspora
+updated: 2026-11-19
 lang: en
 cuvant: preserve grandparents stories
 related: cum-inregistrezi-glasul-bunicilor, intrebari-pentru-bunici, cum-intervievezi-bunicii, emigrarea-in-america, cum-implici-familia, cadou-pentru-bunicii-care-au-tot

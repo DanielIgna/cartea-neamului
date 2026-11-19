@@ -1,8 +1,9 @@
 ---
 title: Cum îți faci arborele genealogic când familia e împărțită între România, SUA și Canada
 seo: Arbore genealogic cu familia în România, SUA și Canada
-description: Familia ta e la Cluj, la Chicago și la Toronto? Cum strângi numele, pozele și poveștile într-un singur arbore, pe care să-l înțeleagă și copiii născuți acolo.
+description: Familia ta e la Cluj, la Chicago și la Toronto? Cum strângi numele, pozele și poveștile într-un singur arbore, pe care îl înțeleg și copiii de acolo.
 category: Diaspora
+updated: 2026-11-19
 cuvant: arbore genealogic diaspora America
 related: emigrarea-in-america, cum-implici-familia, cum-inregistrezi-glasul-bunicilor, intrebari-pentru-bunici, cum-afli-satul-de-origine, redobandirea-cetateniei-acte-stramosi
 terms: arbore-genealogic, spita-neamului, nume-de-fata, porecla, act-de-nastere, extras-multilingv
