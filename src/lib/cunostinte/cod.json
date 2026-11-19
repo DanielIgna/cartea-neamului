@@ -75,6 +75,7 @@
   "scripts/migrate.ts",
   "scripts/plan-indexare-md.ts",
   "scripts/proba-motor-seo.ts",
+  "scripts/rudenie-ciorne-md.ts",
   "scripts/seed.ts",
   "scripts/seo-keywords-csv.ts",
   "scripts/seo-legaturi.ts",
