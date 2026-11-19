@@ -7,7 +7,8 @@
  * Statele fără nicio istorie românească documentată rămân în afara Google până găsim fapte (pragul paginilor de diaspora).
  * Recenzia: /mnt/project-files/seo-sua-canada/istorie-state-ciorna.md (scripts/istorie-locala-md.ts).
  */
-export const ISTORIE_LOCALA_APROBATA = false;
+// Aprobată de Daniel la 19.11.2026 („publicale pe cele de pe America și Canada prima dată”).
+export const ISTORIE_LOCALA_APROBATA = true;
 
 export type LocalHistory = { ro: string[]; en: string[]; sources: string[] };
 

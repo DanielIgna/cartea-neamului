@@ -39,7 +39,15 @@ const HUB = {
   },
 } as const;
 
-const DAY = (d: Date) => d.toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const DAY = (d: Date, lang: "ro" | "en" = "ro") => d.toLocaleDateString(lang === "en" ? "en-US" : "ro-RO", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+
+/** Etichetele paginii unui ghid în engleză (ghidurile pentru SUA și Canada, 19.11.2026); restul ghidurilor sunt în română. */
+const EN = {
+  label: (cat: string) => `Guide · ${cat === "Diaspora" ? "Romanian heritage" : cat}`,
+  byline: (d: string, m: number) => `By the Cartea Neamului team · updated ${d} · about ${m} ${m === 1 ? "minute" : "minutes"} to read`,
+  toc: "Contents", terms: "Romanian terms in this guide", related: "Related guides", all: "← All guides",
+  ctaTitle: "Start your family tree", ctaText: "The first 7 days are free, no credit card required. Add your parents and grandparents, and relatives on both sides of the ocean can fill in what they know.",
+};
 const PUBLISHER = ORG;
 
 export function hubMetadata(c: Collection, page: number): Metadata {
@@ -85,7 +93,7 @@ export function HubPage({ c, page }: { c: Collection; page: number }) {
             {g && <h2 style={{ marginTop: 0 }}>{g}</h2>}
             <ul className={c === "glosar" ? "hub-list hub-cols" : "hub-list"}>
               {p.items.filter((e) => !g || e.category === g).map((e) => (
-                <li key={e.slug}><Link href={e.path}>{e.title}</Link>{c === "ghid" && <span className="muted"> {e.description}</span>}</li>
+                <li key={e.slug} lang={e.lang === "en" ? "en" : undefined}><Link href={e.path}>{e.title}</Link>{c === "ghid" && <span className="muted"> {e.description}</span>}</li>
               ))}
             </ul>
           </div>
@@ -100,7 +108,9 @@ export function HubPage({ c, page }: { c: Collection; page: number }) {
 export function entryMetadata(c: Collection, slug: string): Metadata {
   const e = getEntry(c, slug);
   if (!e) notFound();
-  return publicPageMetadata({ path: e.path, title: e.seoTitle, description: e.description });
+  const m = publicPageMetadata({ path: e.path, title: e.seoTitle, description: e.description });
+  // Ghidurile în engleză: previzualizarea linkului spune engleza americană (pentru SUA și Canada).
+  return e.lang === "en" ? { ...m, openGraph: { ...m.openGraph, locale: "en_US" } } : m;
 }
 
 function entryJsonLd(e: Entry) {
@@ -113,7 +123,7 @@ function entryJsonLd(e: Entry) {
     };
   }
   return {
-    "@context": "https://schema.org", "@type": "Article", headline: e.title, description: e.description, url, inLanguage: "ro",
+    "@context": "https://schema.org", "@type": "Article", headline: e.title, description: e.description, url, inLanguage: e.lang === "en" ? "en-US" : "ro",
     mainEntityOfPage: url, datePublished: e.published.toISOString().slice(0, 10), dateModified: e.updated.toISOString().slice(0, 10),
     wordCount: e.words, image: `${SITE_URL}${pageCardUrl(e.path) ?? "/opengraph-image.png"}`, author: PUBLISHER, publisher: PUBLISHER,
     isPartOf: { "@type": "CollectionPage", name: HUB.ghid.h1, url: canonicalUrl(HUB.ghid.path) },
@@ -139,19 +149,20 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
   ].filter((t): t is Entry => !!t && t.path !== e.path).map((t) => [t.path, t])).values()].slice(0, 12);
   const toc = e.blocks.filter((b) => b.t === "h2");
   const minutes = Math.max(1, Math.round(e.words / 200));
+  const en = e.lang === "en";
   return (
-    <section className="stack content-page" lang="ro">
+    <section className="stack content-page" lang={en ? "en" : "ro"}>
       <JsonLd data={entryJsonLd(e)} />
       <Breadcrumbs items={[{ name: h.name, path: h.path }, { name: e.title, path: e.path }]} />
       <article className="card prose">
-        <div className="section-label" style={{ marginTop: 0 }}>{c === "ghid" ? `Ghid · ${e.category}` : "Glosar"}</div>
+        <div className="section-label" style={{ marginTop: 0 }}>{c === "ghid" ? (en ? EN.label(e.category) : `Ghid · ${e.category}`) : "Glosar"}</div>
         <h1>{e.title}</h1>
         {c === "glosar" && e.alt.length > 0 && <p className="muted">Se mai spune: {e.alt.join(", ")}</p>}
         <p className="lead">{e.description}</p>
-        {c === "ghid" && <p className="muted small">De {BYLINE} · actualizat la {DAY(e.updated)} · cam {minutes} {minutes === 1 ? "minut" : "minute"} de citit</p>}
+        {c === "ghid" && <p className="muted small">{en ? EN.byline(DAY(e.updated, "en"), minutes) : <>De {BYLINE} · actualizat la {DAY(e.updated)} · cam {minutes} {minutes === 1 ? "minut" : "minute"} de citit</>}</p>}
         {c === "ghid" && toc.length >= 3 && (
-          <nav className="toc" aria-label="Cuprins">
-            <b>Cuprins</b>
+          <nav className="toc" aria-label={en ? EN.toc : "Cuprins"}>
+            <b>{en ? EN.toc : "Cuprins"}</b>
             <ol>{toc.map((b) => "id" in b && <li key={b.id}><a href={`#${b.id}`}>{b.v}</a></li>)}</ol>
           </nav>
         )}
@@ -159,20 +170,20 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
       </article>
       {relTerms.length > 0 && (
         <div className="card">
-          <h2 style={{ marginTop: 0 }}>{c === "ghid" ? "Termeni din acest ghid" : "Termeni apropiați"}</h2>
+          <h2 style={{ marginTop: 0 }}>{c === "ghid" ? (en ? EN.terms : "Termeni din acest ghid") : "Termeni apropiați"}</h2>
           <div className="chips">{relTerms.map((t) => <Link key={t.path} className="chip" href={t.path}>{t.title}</Link>)}</div>
         </div>
       )}
       {relGuides.length > 0 && (
         <div className="card">
-          <h2 style={{ marginTop: 0 }}>{c === "ghid" ? "Ghiduri înrudite" : "Ghiduri în care apare"}</h2>
+          <h2 style={{ marginTop: 0 }}>{c === "ghid" ? (en ? EN.related : "Ghiduri înrudite") : "Ghiduri în care apare"}</h2>
           <ul className="hub-list">{relGuides.map((g) => <li key={g.path}><Link href={g.path}>{g.title}</Link> <span className="muted">{g.description}</span></li>)}</ul>
         </div>
       )}
       {/* Pentru cine citește din SUA sau Canada (și, curând, din Europa): pagina zonei lui și ghiduri potrivite. */}
-      {c === "ghid" && <ZonaSugestii locale="ro" />}
-      <CtaArbore src={`${c}-${e.slug}`} />
-      <p className="muted small" style={{ textAlign: "center" }}><Link href={h.path}>← Toate {c === "ghid" ? "ghidurile" : "termenii din glosar"}</Link></p>
+      {c === "ghid" && <ZonaSugestii locale={en ? "en-US" : "ro"} />}
+      {en ? <CtaArbore src={`${c}-${e.slug}`} title={EN.ctaTitle} text={EN.ctaText} /> : <CtaArbore src={`${c}-${e.slug}`} />}
+      <p className="muted small" style={{ textAlign: "center" }}><Link href={h.path}>{en ? EN.all : `← Toate ${c === "ghid" ? "ghidurile" : "termenii din glosar"}`}</Link></p>
     </section>
   );
 }

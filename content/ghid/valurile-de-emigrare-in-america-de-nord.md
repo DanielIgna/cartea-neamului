@@ -1,8 +1,9 @@
 ---
 title: Românii în SUA și Canada: valurile de emigrare, din 1890 până azi
 seo: Emigrarea românilor în SUA și Canada, din 1890 până azi
-description: Când au plecat ai tăi peste ocean? Valurile de emigrare românească spre SUA și Canada, de la țăranii din 1895 la refugiații din comunism și plecările de după 1989.
+description: Când au plecat ai tăi peste ocean? Valurile de emigrare spre SUA și Canada, de la țăranii din 1895 la refugiații din comunism și plecările de după 1989.
 category: Diaspora
+updated: 2026-11-19
 cuvant: emigrarea românilor în America
 related: emigrarea-in-america, nume-schimbate-si-variante, bucovina-registre-si-arhive, hpdt-registrele-din-transilvania, svabii-banateni-genealogie, dosarul-de-la-securitate-al-bunicului
 terms: lista-de-pasageri, recensamant, registru-parohial, sursa-primara, nume-de-fata, porecla

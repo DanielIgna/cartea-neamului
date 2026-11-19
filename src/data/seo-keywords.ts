@@ -86,6 +86,9 @@ export const PUBLISHED_GUIDES = new Set([
   "hpdt-registrele-din-transilvania", "redobandirea-cetateniei-acte-stramosi",
   "romanii-din-banatul-sarbesc", "romanii-din-ungaria-registre", "nemesi-si-boieri-din-transilvania", "ardealul-de-nord-1940-1944",
   "dosarul-de-la-securitate-al-bunicului",
+  // SUA și Canada, publicate la cererea lui Daniel (19.11.2026: „publicale pe cele de pe America și Canada prima dată”).
+  "trace-romanian-ancestors-from-us-canada", "preserve-immigrant-parents-stories", "arbore-genealogic-familie-romania-sua-canada",
+  "romanian-surnames-changed-in-america", "romanian-immigration-waves-us-canada", "valurile-de-emigrare-in-america-de-nord",
 ]);
 
 /** Rândurile scrise de mână, pentru intențiile principale. */

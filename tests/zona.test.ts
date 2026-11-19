@@ -23,20 +23,23 @@ describe("sugestii după zonă (SUA și Canada)", () => {
     expect(suggestFor("RO", "CJ", "ro")).toBeNull();
     expect(suggestFor(null, null, "ro")).toBeNull();
   });
-  it("ciornele nu apar ca sugestii până nu sunt publicate", () => {
+  it("ghidurile pentru America de Nord publicate apar ca sugestii", () => {
     const s = suggestFor("US", "IL", "ro")!;
-    expect(s.guides.map((g) => g.href)).not.toContain("/ghid/romanian-immigration-waves-us-canada");
+    expect(s.guides.length).toBe(4);
   });
 });
 
 import { ISTORIE_LOCALA, ISTORIE_LOCALA_APROBATA } from "@/lib/diaspora/istorie-locala";
 import { REGIONS, regionIndexable } from "@/lib/diaspora/america";
 
-describe("istoria locală pe state și provincii (ciornă)", () => {
-  it("e ciornă: nu schimbă paginile până o aprobă Daniel", () => {
-    expect(ISTORIE_LOCALA_APROBATA).toBe(false);
-    expect(REGIONS.find((r) => r.country === "us" && r.slug === "north-dakota" && r.kind === "state")!.notes.ro ?? []).toEqual([]);
-    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "arizona")!)).toBe(false);
+describe("istoria locală pe state și provincii", () => {
+  it("aprobată (19.11.2026): statele cu istorie verificată au text și intră în Google", () => {
+    expect(ISTORIE_LOCALA_APROBATA).toBe(true);
+    const nd = REGIONS.find((r) => r.country === "us" && r.slug === "north-dakota" && r.kind === "state")!;
+    expect(nd.notes.en?.join(" ")).toMatch(/Dickinson/);
+    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "arizona")!)).toBe(true);
+    // Statele fără istorie documentată rămân în afara Google (Daniel, 19.11.2026).
+    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "wyoming")!)).toBe(false);
   });
   it("fiecare stat are română, engleză și surse, iar slug-ul există", () => {
     for (const [slug, h] of Object.entries(ISTORIE_LOCALA)) {
