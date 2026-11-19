@@ -31,6 +31,8 @@ import { draftEntries as diasporaDrafts, nameOf as diasporaName } from "@/lib/di
 import { draftKey } from "@/lib/diaspora/ciorne";
 import { ownWords } from "@/lib/diaspora/extins";
 import Prose from "@/components/continut/Prose";
+import { currentDay, planDays, planDone } from "@/lib/seo/plan-indexare";
+import { IndexPlanCheck } from "@/components/admin/IndexPlanCheck";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -407,6 +409,7 @@ function Indexing({ pages, href, sp, gscPages }: { pages: AuditPage[]; href: (o:
         <Stat label="Pragul la nume" value={`${NAME_MIN_WORDS} cuvinte proprii`} hint={`ținta din plan: ${TARGET_OWN_WORDS} cuvinte proprii și sub ${TARGET_MAX_COMMON}% fraze comune`} />
         <Stat label="Ating ținta" value={num(pages.filter((p) => p.quality?.meetsTarget).length)} hint={`din ${num(pages.filter((p) => p.quality).length)} pagini cu scor`} />
       </div>
+      <IndexPlan gscPages={gscPages} />
       <IndexRequests pages={pages} gscPages={gscPages} />
       <InternalLinks pages={pages} />
       <div className="card">
@@ -805,6 +808,47 @@ function KeywordDraft() {
       <p style={{ margin: "4px 0" }}><b>Pe stări:</b> {count((r) => r.status).map(([k, n]) => `${k === "exista" ? "pagina există" : k === "de-creat" ? "pagină de scris" : "pagină de îmbogățit"} ${n}`).join(" · ")}</p>
       {todo.length > 0 && <p style={{ margin: "4px 0" }}><b>Pagini de scris cu prioritate 1:</b> {[...new Set(todo.map((r) => r.targetUrl))].join(", ")}</p>}
       <p style={{ marginBottom: 0 }}><a className="btn ghost" href="/admin/seo/csv?ce=cuvinte">Descarcă lista (CSV)</a></p>
+    </div>
+  );
+}
+
+/**
+ * Planul pe zile pentru SUA și Canada (Daniel, 19.11.2026): câte 10 adrese pe zi, în ordinea priorității, cu bifă pentru ce ai
+ * cerut deja în Search Console. Bifele se păstrează în baza de date; o adresă care apare deja în Google e marcată singură.
+ */
+async function IndexPlan({ gscPages }: { gscPages?: ReturnType<typeof gscByPath> }) {
+  const days = planDays();
+  const done = await planDone(db);
+  const now = currentDay(days, done);
+  const total = days.reduce((n, d) => n + d.items.length, 0);
+  const ticked = days.reduce((n, d) => n + d.items.filter((x) => done[x.path]).length, 0);
+  const inGoogle = (p: string) => !!gscPages?.get(p)?.impressions;
+  return (
+    <div className="card" id="plan-indexare">
+      <h2 style={{ marginTop: 0 }}>Plan de indexare: SUA și Canada</h2>
+      <p className="muted" style={{ marginTop: 0 }}>Câte 10 adrese pe zi, cât primește Google. Pentru fiecare: „Cere în Google” deschide Search Console la adresa potrivită, apeși „Solicită indexarea”, apoi bifezi aici. Bifate: {num(ticked)} din {num(total)}{now ? `; azi e rândul zilei ${now}` : "; toate au fost cerute"}.</p>
+      {days.map((d) => {
+        const left = d.items.filter((x) => !done[x.path]).length;
+        return (
+          <details key={d.day} open={d.day === now} style={{ marginTop: 8 }}>
+            <summary><b>Ziua {d.day}</b> <span className="muted">· {left ? `${left} de cerut` : "gata"}</span></summary>
+            <div className="an-scroll">
+              <table className="an-table">
+                <tbody>
+                  {d.items.map((x) => (
+                    <tr key={x.path}>
+                      <td style={{ width: 32 }}><IndexPlanCheck path={x.path} done={!!done[x.path]} /></td>
+                      <td style={{ textAlign: "start" }}><a href={x.path} target="_blank">{x.label}</a><br /><small className="muted">{x.path}</small></td>
+                      <td>{done[x.path] ? <small className="muted">cerut {done[x.path]}</small> : inGoogle(x.path) ? <span className="pill ok">apare în Google</span> : null}</td>
+                      <td><a className="btn ghost" href={inspectLink(`${SITE_URL}${x.path}`)} target="_blank" rel="noreferrer">Cere în Google</a></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        );
+      })}
     </div>
   );
 }
