@@ -1,6 +1,6 @@
 "use client";
 import { useActionState, useState, useTransition } from "react";
-import { saveSeoEngine, saveSeoSetup, sendIndexNowNow, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
+import { runGoogleNow, runStrategNow, saveSeoEngine, saveSeoSetup, sendIndexNowNow, submitSitemapNow, type AdminFormState } from "@/app/admin-actions";
 
 /** Setările SEO: codul de verificare Google, proprietatea, cuvintele urmărite și cheia Search Console. */
 export function SeoSetupForm({ verification, siteUrl, sites, watch, keySource, keyEmail }: {
@@ -84,5 +84,18 @@ export function SeoEngineForm({ perDay, min, max, autoRamp }: { perDay: number; 
       {state?.ok && <span className="muted">{state.ok}</span>}
       {state?.error && <span style={{ color: "var(--red)" }}>{state.error}</span>}
     </form>
+  );
+}
+
+/** Admin → SEO → Strateg: „Analizează acum” și „Anunță Google acum”. */
+export function StrategButtons({ google }: { google: boolean }) {
+  const [msg, setMsg] = useState<AdminFormState>(null);
+  const [pending, start] = useTransition();
+  return (
+    <div className="actions" style={{ marginTop: 8, flexWrap: "wrap" }}>
+      <button className="btn primary" disabled={pending} onClick={() => start(async () => setMsg(await runStrategNow()))}>{pending ? "Lucrez…" : "Analizează acum"}</button>
+      {google && <button className="btn" disabled={pending} onClick={() => start(async () => setMsg(await runGoogleNow()))}>Anunță Google acum</button>}
+      <span role="status" className={msg?.error ? "err" : "muted"}>{msg?.error ?? msg?.ok ?? ""}</span>
+    </div>
   );
 }

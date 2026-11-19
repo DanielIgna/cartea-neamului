@@ -220,6 +220,46 @@ export async function sendIndexNowNow(): Promise<AdminFormState> {
   return { ok: `Am anunțat ${r.count} pagini.` };
 }
 
+/** Admin → SEO → Strateg: analizează acum (altfel o dată pe săptămână, dacă e pornit în Autonomie). */
+export async function runStrategNow(): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const { runStrateg } = await import("@/lib/seo/strateg");
+  try {
+    const r = await runStrateg(db, { by: me.id });
+    revalidatePath("/admin/seo");
+    return { ok: `Gata: ${r.note}.` };
+  } catch (e) {
+    return { error: `Nu s-a putut analiza: ${e instanceof Error ? e.message : String(e)}` };
+  }
+}
+
+/** Admin → SEO → Strateg: anunță Google acum (sitemap dacă s-a schimbat ceva + verificarea indexării). */
+export async function runGoogleNow(): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  const { runGoogleAnnounce } = await import("@/lib/seo/google-anunt");
+  try {
+    const r = await runGoogleAnnounce(db, { published: await publishedMap(db) });
+    revalidatePath("/admin/seo");
+    return r.status === "ok" ? { ok: `Gata: ${r.note}.` } : { error: r.note };
+  } catch (e) {
+    return { error: `Google a refuzat: ${e instanceof Error ? e.message : String(e)}` };
+  }
+}
+
+/** Admin → SEO → Strateg: acceptă, respinge, „Făcut” sau redeschide o propunere. */
+export async function decideStrategIdea(form: FormData): Promise<void> {
+  const me = await admin();
+  if (!me) return;
+  const id = String(form.get("id") ?? "");
+  const status = String(form.get("status") ?? "");
+  if (!id || !["acceptat", "respins", "facut", "redeschide"].includes(status)) return;
+  const { decideIdea } = await import("@/lib/seo/strateg");
+  await decideIdea(db, id, status as "acceptat" | "respins" | "facut" | "redeschide", me.id);
+  revalidatePath("/admin/seo");
+}
+
 /**
  * „Infra & Dev” → „Erori pe server”: adminul marchează erorile de până acum ca rezolvate, ca lista să arate doar ce apare de aici
  * încolo. Nu se șterge nimic din jurnal; „Arată-le din nou” le aduce înapoi.
