@@ -43,26 +43,26 @@ function bloodName(up: number, down: number, sex: Sex): { name: string; page: st
   if (down === 0) {
     if (up === 1) return pick("tată", "mamă");
     if (up === 2) return pick("bunic", "bunică");
-    if (up === 3) return pick("străbunic", "străbunică");
+    if (up === 3) return pick("străbunic", "străbunică", "strabunic");
     if (up === 4) return pick("răsstrăbunic", "răsstrăbunică");
     return pick(`strămoș (cu ${up} generații în urmă)`, `strămoașă (cu ${up} generații în urmă)`);
   }
   if (up === 0) {
     if (down === 1) return pick("fiu", "fiică");
-    if (down === 2) return pick("nepot (de bunic)", "nepoată (de bunic)");
-    if (down === 3) return pick("strănepot", "strănepoată");
+    if (down === 2) return pick("nepot (de bunic)", "nepoată (de bunic)", "nepot");
+    if (down === 3) return pick("strănepot", "strănepoată", "stranepot");
     return pick(`urmaș (după ${down} generații)`, `urmașă (după ${down} generații)`);
   }
-  if (up === 1 && down === 1) return pick("frate", "soră");
+  if (up === 1 && down === 1) return pick("frate", "soră", "frate-vitreg");
   if (up === 2 && down === 1) return pick("unchi", "mătușă");
-  if (up === 1 && down === 2) return pick("nepot de frate sau de soră", "nepoată de frate sau de soră");
+  if (up === 1 && down === 2) return pick("nepot de frate sau de soră", "nepoată de frate sau de soră", "nepot");
   if (up === 2 && down === 2) return pick("văr primar", "vară primară", "var-primar");
   if (up === 3 && down === 1) return pick("unchi mare (fratele bunicului sau al bunicii)", "mătușă mare (sora bunicului sau a bunicii)", "unchi-mare");
   if (up === 1 && down === 3) return pick("strănepot de frate", "strănepoată de frate");
   if (up === 3 && down === 2) return pick("văr al părintelui tău", "vară a părintelui tău");
   if (up === 2 && down === 3) return pick("nepot de văr (copilul vărului primar)", "nepoată de văr (copilul vărului primar)", "nepot-de-var");
   if (up === 3 && down === 3) return pick("văr de-al doilea", "vară de-a doua", "var-de-al-doilea");
-  if (up === 4 && down === 4) return pick("văr de-al treilea", "vară de-a treia");
+  if (up === 4 && down === 4) return pick("văr de-al treilea", "vară de-a treia", "var-de-al-treilea");
   return pick("rudă colaterală", "rudă colaterală");
 }
 

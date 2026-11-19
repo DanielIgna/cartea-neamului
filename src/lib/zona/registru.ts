@@ -50,6 +50,7 @@ const NORTH_AMERICA_GUIDES = [
   "/ghid/trace-romanian-ancestors-from-us-canada", "/ghid/romanian-immigration-waves-us-canada", "/ghid/valurile-de-emigrare-in-america-de-nord",
   "/ghid/arbore-genealogic-familie-romania-sua-canada", "/ghid/romanian-surnames-changed-in-america", "/ghid/preserve-immigrant-parents-stories",
   "/ghid/romanian-citizenship-by-descent-documents", "/ghid/questions-to-ask-romanian-grandparents", "/ghid/free-romanian-family-tree-template",
+  "/ghid/family-tree-school-project",
 ];
 /** Ghiduri în plus pentru o regiune anume (de pildă Canada de Vest, unde au venit familii din Bucovina). */
 const REGION_GUIDES: Record<string, string[]> = {

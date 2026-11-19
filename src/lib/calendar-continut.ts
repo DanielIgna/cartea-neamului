@@ -59,7 +59,7 @@ export function buildCalendar(from = new Date(), weeks = 8): CalItem[] {
       if (d >= start && d < end) out.push({ id: `${y}-${s.id}`, date: iso(d), channel: s.channel, title: s.title, text: s.text, path: s.path, kind: "sezon" });
     }
   }
-  const names = loadNames(), counties = loadCounties(), guides = loadCollection("ghid");
+  const names = loadNames(), counties = loadCounties(), guides = loadCollection("ghid").filter((g) => !/biseric|Biblie|Dumnez|preot|rugăc/i.test(`${g.title} ${g.description}`)); // tonul neutru (Daniel, 12.11.2026)
   for (let w = 0; w < weeks; w++) {
     const mon = new Date(start.getTime() + w * 7 * DAY);
     const k = Math.floor(mon.getTime() / (7 * DAY)); // numărul săptămânii de la 1970: alt nume în fiecare săptămână, mereu același pentru aceeași săptămână

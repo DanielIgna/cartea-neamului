@@ -18,7 +18,7 @@ export type KinPage = {
 export const TOOLS_HUB = "/unelte";
 export const KIN_CALC = "/unelte/calculator-grad-de-rudenie";
 export const kinPagePath = (p: Pick<KinPage, "slug">) => `/unelte/rudenie/${p.slug}`;
-export const TOOLS_UPDATED = new Date("2026-11-18T00:00:00Z");
+export const TOOLS_UPDATED = new Date("2026-11-19T00:00:00Z");
 
 export const KIN_PAGES: KinPage[] = [
   {
@@ -266,16 +266,7 @@ export const KIN_PAGES: KinPage[] = [
     ],
     related: ["socru", "cuscru", "cumnata"],
   },
-];
-
-export const getKinPage = (slug: string) => KIN_PAGES.find((p) => p.slug === slug) ?? null;
-export const kinWords = (p: KinPage) => [p.lead, ...p.body.flatMap((b) => [b.h, ...b.p]), ...p.faq.flatMap((f) => [f.q, f.a])].join(" ").split(/\s+/).filter(Boolean).length;
-
-/**
- * Ciorne de pagini de rudenie (Daniel, 19.11.2026): NU au pagină, nu intră în sitemap, în căutare sau în liste până nu le aprobă
- * Daniel; atunci se mută în KIN_PAGES. Se citesc în /mnt/project-files/rudenie/ciorne-rudenie.md (scripts/rudenie-ciorne-md.ts).
- */
-export const KIN_DRAFTS: KinPage[] = [
+  // Aprobate de Daniel la 19.11.2026 (erau ciorne în KIN_DRAFTS).
   {
     slug: "strabunic", name: "Străbunic",
     title: "Străbunicul: ce rudă e și ce grad de rudenie are",
@@ -295,6 +286,7 @@ export const KIN_DRAFTS: KinPage[] = [
       { h: "Cum le afli numele", p: [
         "Cei mai buni martori sunt bunicii și frații lor: își amintesc numele părinților și, adesea, porecla familiei din sat. Mai departe, actele de naștere ale bunicilor, păstrate la primăria locului, au numele părinților, adică ale străbunicilor tăi.",
         "Scrie la fiecare străbunică numele de fată: el duce mai departe, la părinții ei.",
+        "Dacă nu mai trăiește nimeni care să-i fi cunoscut, caută la cimitirul satului: pe crucile vechi apar adesea numele și anii străbunicilor, iar uneori și ai părinților lor.",
       ] },
     ],
     faq: [
@@ -318,9 +310,10 @@ export const KIN_DRAFTS: KinPage[] = [
       { h: "Strănepot sau nepot de frate?", p: [
         "În vorbire, „strănepot” se folosește uneori și pentru copilul nepotului de frate. Acela însă e rudă colaterală, de gradul IV: urci la părintele tău comun cu fratele (1), cobori la frate (2), la nepotul de frate (3) și la copilul lui (4).",
         "Strănepotul adevărat e urmașul tău direct, pe linie dreaptă.",
+        "Ca să eviți confuzia în arbore, scrie relația întreagă: „strănepot de fiu” sau „copilul nepotului de frate”. Așa, oricine citește arborele peste ani înțelege pe ce ramură se află fiecare copil.",
       ] },
       { h: "De ce contează pentru arbore", p: [
-        "Strănepoții sunt cei care vor citi arborele peste ani. Mulți bunici și străbunici încep să scrie amintiri sau să înregistreze povești tocmai pentru ei: vocea unui străbunic, păstrată în arbore, e un dar pe care strănepotul îl înțelege abia când crește.",
+        "Strănepoții sunt cei care vor citi arborele peste ani. Cei mai mulți oameni își cunosc strănepoții doar câțiva ani, cât sunt mici, așa că amintirile scrise sau înregistrate sunt singurul fel în care strănepotul mai poate afla, mai târziu, cine a fost străbunicul lui. Mulți bunici și străbunici încep să scrie amintiri sau să înregistreze povești tocmai pentru ei: vocea unui străbunic, păstrată în arbore, e un dar pe care strănepotul îl înțelege abia când crește.",
       ] },
     ],
     faq: [
@@ -346,6 +339,7 @@ export const KIN_DRAFTS: KinPage[] = [
         "E copilul fratelui sau al surorii tale, iar tu ești unchiul sau mătușa lui. Urci la părintele comun (1), cobori la frate (2) și la nepot (3): gradul III, în linie colaterală. În engleză, „nephew” sau „niece”.",
       ] },
       { h: "În arbore și în acte", p: [
+        "În multe familii, nepoții de frate și nepoții de fiu cresc împreună și își spun veri, ceea ce e corect doar pentru unii dintre ei: copiii a doi frați sunt veri primari, dar copilul tău și nepotul tău de frate nu sunt veri, ci veri primari doar între copiii fraților. Un arbore desenat lămurește repede cine cu cine e văr.",
         "Ca să nu încurci cele două sensuri, în arbore scrie mereu legătura exactă: „nepot de fiu”, „nepot de soră”. În registrele vechi, cuvântul „nepot” poate însemna oricare dintre ele, iar uneori chiar un văr mai tânăr; verifică după numele părinților.",
       ] },
     ],
@@ -371,6 +365,7 @@ export const KIN_DRAFTS: KinPage[] = [
       { h: "De ce îi găsești rar fără arbore", p: [
         "Stră-străbunicii s-au născut de obicei cu peste o sută de ani înaintea ta. Urmașii lor au acum zeci de nume de familie diferite și trăiesc adesea în alte orașe sau țări. Fără un arbore care urmărește toți copiii stră-străbunicilor, verii de-al treilea nu se mai cunosc între ei.",
         "Testele ADN de genealogie găsesc des veri de-al treilea, dar nu spun pe ce ramură; arborele face legătura.",
+        "Un arbore care adună toți copiii stră-străbunicilor are de obicei sute de oameni. Fiecare familie scrie ramura ei, iar întâlnirile de familie le leagă pe toate.",
       ] },
       { h: "Ce mai e după gradul VIII", p: [
         "Pentru căsătorie, Codul civil interzice căsătoria între rudele în linie colaterală până la gradul IV inclusiv; verii de-al treilea nu intră în această interdicție. Pentru moștenire, rudele colaterale moștenesc doar până la gradul IV.",
@@ -409,4 +404,14 @@ export const KIN_DRAFTS: KinPage[] = [
     ],
     related: ["cumnat", "socru", "var-primar"],
   },
+];
+
+export const getKinPage = (slug: string) => KIN_PAGES.find((p) => p.slug === slug) ?? null;
+export const kinWords = (p: KinPage) => [p.lead, ...p.body.flatMap((b) => [b.h, ...b.p]), ...p.faq.flatMap((f) => [f.q, f.a])].join(" ").split(/\s+/).filter(Boolean).length;
+
+/**
+ * Ciorne de pagini de rudenie (Daniel, 19.11.2026): NU au pagină, nu intră în sitemap, în căutare sau în liste până nu le aprobă
+ * Daniel; atunci se mută în KIN_PAGES. Se citesc în /mnt/project-files/rudenie/ciorne-rudenie.md (scripts/rudenie-ciorne-md.ts).
+ */
+export const KIN_DRAFTS: KinPage[] = [
 ];
