@@ -239,11 +239,8 @@ export const ISTORIE_LOCALA: Record<string, LocalHistory> = {
 /** Paragrafele de adăugat la o pagină de stat sau provincie: nimic cât ciorna nu e aprobată. */
 const ACS_STATE = "US Census Bureau, American Community Survey 5 ani 2020–2024, tabelul B04006 (ascendență română), prin worldpopulationreview.com";
 
-/**
- * Ciorne noi (19.11.2026), după aprobarea primului lot: NU apar pe site până nu le aprobă Daniel; atunci se mută în ISTORIE_LOCALA.
- * Se citesc în același fișier de recenzie (scripts/istorie-locala-md.ts).
- */
-export const ISTORIE_LOCALA_CIORNE: Record<string, LocalHistory> = {
+/** Al doilea lot (Colorado, Virginia, Virginia de Vest, Nevada), aprobat de Daniel la 19.11.2026; intră în ISTORIE_LOCALA mai jos. */
+const LOT_2: Record<string, LocalHistory> = {
   colorado: {
     ro: [
       "Potrivit enciclopediei Gale despre românii americani, cam nouă la sută dintre imigranții români s-au așezat în Colorado, Dakota de Nord și de Sud, Idaho și Wyoming, unde au lucrat în agricultură și la ferme de vite, ca proprietari sau administratori.",
@@ -295,5 +292,13 @@ export const ISTORIE_LOCALA_CIORNE: Record<string, LocalHistory> = {
     sources: ["Mitropolia Ortodoxă Română a celor două Americi, „The 25th anniversary of the Romanian Orthodox Church in Las Vegas” (2021)", ACS_STATE],
   },
 };
+
+Object.assign(ISTORIE_LOCALA, LOT_2);
+
+/**
+ * Ciornele noi: NU apar pe site până nu le aprobă Daniel; atunci se mută în ISTORIE_LOCALA (sau într-un lot ca LOT_2).
+ * Se citesc în același fișier de recenzie (scripts/istorie-locala-md.ts).
+ */
+export const ISTORIE_LOCALA_CIORNE: Record<string, LocalHistory> = {};
 
 export const localHistory = (slug: string): LocalHistory | null => (ISTORIE_LOCALA_APROBATA ? ISTORIE_LOCALA[slug] ?? null : null);
