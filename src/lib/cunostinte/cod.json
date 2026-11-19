@@ -287,6 +287,7 @@
   "src/app/api/poza-acasa/[id]/route.ts",
   "src/app/api/problema/[id]/[n]/route.ts",
   "src/app/api/problema/route.ts",
+  "src/app/api/raport/saptamanal/route.ts",
   "src/app/api/stare/route.ts",
   "src/app/api/vesti/dezabonare/route.ts",
   "src/app/api/vizita/route.ts",
@@ -943,6 +944,7 @@
   "src/lib/public-variant.ts",
   "src/lib/questions.ts",
   "src/lib/raised.ts",
+  "src/lib/raport-saptamanal.ts",
   "src/lib/realtime.ts",
   "src/lib/relatives.ts",
   "src/lib/resurse.ts",
@@ -1088,6 +1090,7 @@
   "tests/propmanage-cont.test.ts",
   "tests/public-variant.test.ts",
   "tests/raised.test.ts",
+  "tests/raport-saptamanal.test.ts",
   "tests/resurse.test.ts",
   "tests/rude-istoric.test.ts",
   "tests/scoli.test.ts",
@@ -1447,6 +1450,10 @@
   },
   {
    "path": "/api/problema/[id]/[n]",
+   "kind": "api"
+  },
+  {
+   "path": "/api/raport/saptamanal",
    "kind": "api"
   },
   {
@@ -1885,6 +1892,7 @@
   "tests/propmanage-cont.test.ts",
   "tests/public-variant.test.ts",
   "tests/raised.test.ts",
+  "tests/raport-saptamanal.test.ts",
   "tests/resurse.test.ts",
   "tests/rude-istoric.test.ts",
   "tests/scoli.test.ts",

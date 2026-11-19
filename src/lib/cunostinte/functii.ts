@@ -247,6 +247,17 @@ export const FUNCTIONS: Fn[] = [
     env: ["CRM_INGEST_TOKEN", "RESEND_WEBHOOK_SECRET", "GMAIL_CLIENT_ID", "GMAIL_CLIENT_SECRET", "CRM_TEST_RECIPIENT"],
     human: "Pune CRM_INGEST_TOKEN în Vercel (cel puțin 16 semne) și dă-l asistentului care trimite emailurile.",
   },
+  {
+    key: "cifre-raport-luni", name: "Cifrele pentru raportul de luni", area: "admin", lifecycle: "live", risk: "scazut", riskWhy: "Doar citește cifre adunate, fără nume sau emailuri; e închisă fără token.",
+    what: "Adresă privată cu cifrele săptămânii (vizite pe zile, surse și campanii, conturi reale noi, plăți reale, Search Console) puse lângă săptămâna dinainte, pentru analiza de luni a planului de creștere. Fără conturile de test, fără „Acces gratuit” (familia) și fără plățile de test de dinainte de 20.11.2026.",
+    engine: ["src/lib/raport-saptamanal.ts"],
+    pages: [],
+    api: ["/api/raport/saptamanal"],
+    tables: ["page_view", "user", "payment", "account_plan"],
+    tests: ["tests/raport-saptamanal.test.ts"],
+    env: ["RAPORT_TOKEN"],
+    human: "Pune RAPORT_TOKEN în Vercel (cel puțin 24 de semne) și permite carteaneamului.ro în setările de rețea ale mediului Claude.",
+  },
   // Conturi și siguranță
   {
     key: "conturi", name: "Conturi și intrare", area: "conturi", lifecycle: "live", risk: "ridicat", riskWhy: "Intrarea în cont; o greșeală închide oamenii afară.",
