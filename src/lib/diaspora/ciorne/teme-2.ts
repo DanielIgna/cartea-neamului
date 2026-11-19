@@ -9,10 +9,10 @@ export const THEMES_2: Theme[] = [
   {
     slug: "istoria-romanilor-din-marea-britanie", langs: ["en", "ro"], related: ["marea-britanie"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-intervievezi-bunicii"],
-    name: { ro: "Românii din Marea Britanie: istoria valurilor de emigrare", en: "Romanians in the UK: a history of migration" },
+    name: {ro: "Românii din Marea Britanie: valurile de emigrare", en: "Romanians in the UK: a history of migration" },
     description: {
-      ro: "De la exilații din Londra și emisiunile BBC în limba română la valul de după 2014 și statutul de rezident de după Brexit, plus actele pentru arborele familiei.",
-      en: "From the exiles in London and the BBC Romanian broadcasts to the arrivals after 2014 and settled status after Brexit, plus the records you need for your family tree.",
+      ro: "De la exilații din Londra și emisiunile BBC în română la valul de după 2014 și statutul de rezident de după Brexit, plus actele.",
+      en: "From the exiles in London and the BBC Romanian broadcasts to the arrivals after 2014 and settled status after Brexit, plus the records.",
     },
     body: {
       en: [
@@ -57,10 +57,10 @@ export const THEMES_2: Theme[] = [
   {
     slug: "istoria-romanilor-din-franta", langs: ["fr", "ro"], related: ["franta"],
     guides: ["cum-afli-satul-de-origine", "cum-scrii-povestea-familiei", "dosarul-de-la-securitate-al-bunicului"],
-    name: { ro: "Românii din Franța: studenți, artiști, exilați și noua emigrare", fr: "Les Roumains en France : étudiants, artistes, exilés et nouvelle émigration" },
+    name: {ro: "Românii din Franța: studenți, artiști, exilați", fr: "Les Roumains en France : étudiants, artistes, exilés" },
     description: {
-      ro: "Cum s-a legat România de Franța: studenții din secolul XIX, artiștii de la Paris, exilul de după 1947 și plecările de după 1990 și 2007, plus actele pentru arborele familiei.",
-      fr: "Comment la Roumanie s'est liée à la France : les étudiants du XIXe siècle, les artistes à Paris, l'exil après 1947 et les départs après 1990 et 2007, avec les archives utiles pour l'arbre familial.",
+      ro: "România și Franța: studenții din secolul XIX, artiștii de la Paris, exilul de după 1947 și plecările de după 1990, plus actele.",
+      fr: "La Roumanie et la France : étudiants du XIXe siècle, artistes à Paris, exil après 1947 et départs après 1990, avec les archives utiles.",
     },
     body: {
       ro: [
@@ -113,10 +113,10 @@ export const THEMES_2: Theme[] = [
   {
     slug: "istoria-romanilor-din-olanda", langs: ["nl", "ro"], related: ["olanda"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-implici-familia"],
-    name: { ro: "Românii din Țările de Jos: o comunitate tânără", nl: "Roemenen in Nederland: een jonge gemeenschap" },
+    name: {ro: "Românii din Țările de Jos: o comunitate tânără", nl: "Roemenen in Nederland: een jonge gemeenschap" },
     description: {
-      ro: "Cum s-au legat românii de Țările de Jos: solidaritatea din 1989, studenții și specialiștii, valul de după 2014 și actele pentru arborele familiei.",
-      nl: "Hoe Roemenen en Nederland met elkaar verbonden raakten: de solidariteit van 1989, studenten en specialisten, de groei na 2014 en welke akten je nodig hebt voor je stamboom.",
+      ro: "Românii și Țările de Jos: solidaritatea din 1989, studenții și specialiștii, valul de după 2014 și actele pentru arborele familiei.",
+      nl: "Roemenen en Nederland: de solidariteit van 1989, studenten en specialisten, de groei na 2014 en de akten die je nodig hebt.",
     },
     body: {
       ro: [
@@ -165,10 +165,10 @@ export const THEMES_2: Theme[] = [
   {
     slug: "istoria-romanilor-din-belgia", langs: ["fr", "ro"], related: ["belgia"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-implici-familia"],
-    name: { ro: "Românii din Belgia: de la satele adoptate la Bruxelles-ul european", fr: "Les Roumains en Belgique : des villages adoptés à la Bruxelles européenne" },
+    name: {ro: "Românii din Belgia: de la satele adoptate la azi", fr: "Les Roumains en Belgique : des villages adoptés à nos jours" },
     description: {
-      ro: "Cum s-au legat românii de Belgia: acțiunea Opération Villages Roumains din 1988–1989, valul de după 2007, Bruxelles-ul instituțiilor europene și actele pentru arborele familiei.",
-      fr: "Comment les Roumains se sont liés à la Belgique : l'Opération Villages Roumains de 1988–1989, l'arrivée après 2007, la Bruxelles des institutions européennes et les archives pour l'arbre familial.",
+      ro: "Românii și Belgia: satele adoptate în 1988–1989, valul de după 2007, Bruxelles-ul european și actele pentru arborele familiei.",
+      fr: "Les Roumains et la Belgique : villages adoptés en 1988–1989, arrivées après 2007, Bruxelles européenne et archives pour l'arbre.",
     },
     body: {
       ro: [
@@ -213,10 +213,10 @@ export const THEMES_2: Theme[] = [
   {
     slug: "istoria-romanilor-din-irlanda", langs: ["en", "ro"], related: ["irlanda"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-implici-familia"],
-    name: { ro: "Românii din Irlanda: o comunitate formată după 2007", en: "Romanians in Ireland: a community built after 2007" },
+    name: {ro: "Românii din Irlanda: o comunitate de după 2007", en: "Romanians in Ireland: a community built after 2007" },
     description: {
-      ro: "Cum s-a format comunitatea românească din Irlanda: primii veniți, permisele de muncă până în 2012, creșterea de după și actele pentru arborele familiei.",
-      en: "How the Romanian community in Ireland took shape: the first arrivals, work permits until 2012, the growth that followed and the records you need for your family tree.",
+      ro: "Cum s-a format comunitatea românească din Irlanda: primii veniți, permisele de muncă până în 2012, creșterea și actele de căutat.",
+      en: "How the Romanian community in Ireland took shape: the first arrivals, work permits until 2012, the growth after and the records to find.",
     },
     body: {
       en: [

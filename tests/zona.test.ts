@@ -51,16 +51,16 @@ describe("istoria locală pe state și provincii", () => {
 });
 
 describe("zonele din Europa", () => {
-  it("țările publicate au intrare; regiunile în ciornă nu apar până la aprobare", async () => {
+  it("țările și regiunile publicate au intrare, cu pagina în limba omului", async () => {
     const { EUROPE_ZONES } = await import("@/lib/zona/europa");
     const { suggestFor } = await import("@/lib/zona/registru");
     expect(EUROPE_ZONES.some((z) => z.country === "IT" && !z.region && z.page === "/diaspora/italia")).toBe(true);
-    // Ucraina și regiunile europene sunt încă ciorne: fără pagină publică, fără sugestie.
-    expect(EUROPE_ZONES.some((z) => z.country === "UA")).toBe(false);
-    expect(EUROPE_ZONES.some((z) => z.region)).toBe(false);
+    expect(EUROPE_ZONES.some((z) => z.country === "UA" && z.region === "77" && z.page === "/diaspora/ucraina/cernauti")).toBe(true);
     const it = suggestFor("IT", "62", "it");
     expect(it?.country.href).toBe("/it/diaspora/italia");
-    expect(it?.region).toBeNull();
-    expect(suggestFor("DE", "BY", "en-GB")?.country.href).toBe("/en/diaspora/germania");
+    expect(it?.region).toEqual({ href: "/it/diaspora/italia/lazio", label: "Lazio" });
+    expect(suggestFor("IT", "RM", "ro")?.region?.href).toBe("/diaspora/italia/lazio");
+    expect(suggestFor("DE", "BY", "de")?.region?.href).toBe("/de/diaspora/germania/bayern");
+    expect(suggestFor("UA", "51", "ro")?.region?.label).toBe("Sudul Basarabiei (regiunea Odesa)");
   });
 });

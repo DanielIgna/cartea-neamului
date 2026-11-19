@@ -2,4 +2,30 @@
  * Ciornele de diaspora aprobate de Daniel. O ciornă apare pe site (pagină, sitemap, legături, hreflang) doar după ce cheia ei
  * e aici: „tara:<slug>”, „regiune:<țară>/<slug>” sau „tema:<slug>”. Până atunci se citește doar în Admin → SEO → Ciorne.
  */
-export const APROBATE = new Set<string>([]);
+export const APROBATE = new Set<string>([
+  // Daniel, 19.11.2026: „aprob și restul ciornelor”.
+  "tara:ucraina",
+  "regiune:ua/cernauti",
+  "regiune:ua/sudul-basarabiei",
+  "regiune:it/lazio",
+  "regiune:it/piemonte",
+  "regiune:it/lombardia",
+  "regiune:it/veneto",
+  "regiune:es/castilla-la-mancha",
+  "regiune:es/andalucia",
+  "regiune:es/comunitat-valenciana",
+  "regiune:es/cataluna",
+  "regiune:de/bayern",
+  "regiune:de/baden-wuerttemberg",
+  "regiune:de/nordrhein-westfalen",
+  "regiune:at/oberoesterreich",
+  "tema:istoria-romanilor-din-italia",
+  "tema:istoria-romanilor-din-spania",
+  "tema:istoria-romanilor-din-germania",
+  "tema:istoria-romanilor-din-austria",
+  "tema:istoria-romanilor-din-marea-britanie",
+  "tema:istoria-romanilor-din-franta",
+  "tema:istoria-romanilor-din-olanda",
+  "tema:istoria-romanilor-din-belgia",
+  "tema:istoria-romanilor-din-irlanda",
+]);
