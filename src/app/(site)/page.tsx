@@ -16,7 +16,6 @@ import { seoSettings, SEO_TAG } from "@/lib/seo";
 import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/page-metadata";
-import { HOME_JSON_LD } from "@/lib/home-jsonld";
 import { userAccess } from "@/lib/plata";
 import { tierRank, TIERS } from "@/lib/plans";
 import { getLocale } from "@/i18n/server";
@@ -39,7 +38,7 @@ export const dynamic = "force-dynamic";
 export default async function Home({ searchParams }: { searchParams: Promise<{ cont?: string }> }) {
   const me = await currentUser();
   const deleted = (await searchParams).cont === "sters";
-  if (!me) return <Landing deleted={deleted} jsonLd={HOME_JSON_LD} />;
+  if (!me) return <Landing deleted={deleted} />;
   const trees = await db.select({ id: tree.id, name: tree.name, region: tree.region, role: treeMember.role, count: sql<number>`(select count(*) from person p where p.tree_id = ${tree.id})::int` })
     .from(treeMember).innerJoin(tree, eq(tree.id, treeMember.treeId)).where(eq(treeMember.userId, me.id)).orderBy(desc(tree.createdAt));
   const requests = (await myJoinRequests(db, me.id)).map((j) => ({ ...j, at: j.at.toISOString() }));

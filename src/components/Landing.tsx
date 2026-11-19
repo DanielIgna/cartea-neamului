@@ -13,6 +13,8 @@ import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook,
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
+import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
+import ZonaSugestii from "@/components/ZonaSugestii";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -102,8 +104,8 @@ const START_GUIDES = [
   "registrele-de-stare-civila", "cum-citesti-un-registru-parohial", "familysearch-pentru-romania",
 ];
 
-export default async function Landing({ deleted, jsonLd }: { deleted: boolean; jsonLd: object }) {
-  const [t, tc, th, tp, tg, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), cachedHomeImages(),
+export default async function Landing({ deleted }: { deleted: boolean }) {
+  const [t, tc, th, tp, tg, tm, appName, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), getT("Meta"), getAppName(), cachedHomeImages(),
     // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
   // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
@@ -112,6 +114,13 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
   const nf = new Intl.NumberFormat(locale);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
+  // Întrebările frecvente (română și engleză) se văd pe pagină și intră în datele pentru Google, cu prețurile din Admin.
+  const faq = homeFaq(locale, s);
+  const fl = faqLang(locale);
+  const jsonLd = homeJsonLd(locale, s, tm("description"), faq, {
+    app: appName, book: fl === "ro" ? "Cartea neamului în PDF" : "PDF family book",
+    tiers: { basic: tp("tiers.basic.name"), familie: tp("tiers.familie.name"), premium: tp("tiers.premium.name") },
+  });
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
   const cards = [
     { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
@@ -250,6 +259,9 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
         </div>
       </section>
 
+      {/* „Pentru românii din zona ta”: doar pentru cine vine din SUA, Canada (și, curând, din Europa); cerut după încărcare. */}
+      <div className="lp-in lp-zona"><ZonaSugestii locale={locale} /></div>
+
       {/* „Începe de aici” (planul SEO, etapa 3): paginile-hub și primele ghiduri, doar în română, unde există conținutul. */}
       {lei && (
         <section className="lp-band lp-paper lp-what" aria-labelledby="lp-start">
@@ -301,6 +313,25 @@ export default async function Landing({ deleted, jsonLd }: { deleted: boolean; j
             <p className="lp-plans-note">{t("plansNote", { keep: money(lei ? s.keepLei : s.keepEur, locale).label })} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</p>
             <div className="lp-actions lp-plans-actions">
               <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {fl && faq.length > 0 && (
+        <section className="lp-band lp-light lp-faq" aria-labelledby="lp-faq" id="intrebari">
+          <div className="lp-in">
+            <header className="lp-head">
+              <h2 id="lp-faq">{FAQ_TITLE[fl]}</h2>
+              {ornament}
+            </header>
+            <div className="lp-faq-list">
+              {faq.map((f) => (
+                <details key={f.q} className="lp-faq-item">
+                  <summary>{f.q}</summary>
+                  <p>{f.a}</p>
+                </details>
+              ))}
             </div>
           </div>
         </section>

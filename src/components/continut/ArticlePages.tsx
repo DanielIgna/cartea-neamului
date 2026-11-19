@@ -14,6 +14,7 @@ import { paginate, pageHref } from "@/lib/continut/paginare";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { GUIDE_FEED_PATH } from "@/lib/continut/rss";
 import { SITE_URL } from "@/lib/site-url";
+import ZonaSugestii from "@/components/ZonaSugestii";
 
 /**
  * Paginile ghidurilor (/ghid) și ale glosarului (/glosar): hubul cu listă, căutare și paginare, și pagina fiecărui ghid sau
@@ -168,6 +169,8 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
           <ul className="hub-list">{relGuides.map((g) => <li key={g.path}><Link href={g.path}>{g.title}</Link> <span className="muted">{g.description}</span></li>)}</ul>
         </div>
       )}
+      {/* Pentru cine citește din SUA sau Canada (și, curând, din Europa): pagina zonei lui și ghiduri potrivite. */}
+      {c === "ghid" && <ZonaSugestii locale="ro" />}
       <CtaArbore src={`${c}-${e.slug}`} />
       <p className="muted small" style={{ textAlign: "center" }}><Link href={h.path}>← Toate {c === "ghid" ? "ghidurile" : "termenii din glosar"}</Link></p>
     </section>

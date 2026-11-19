@@ -166,7 +166,11 @@ describe("adresele pe limbă", () => {
     expect(langs.ro).toBe("https://carteaneamului.ro/contact");
     expect(langs.he).toBe("https://carteaneamului.ro/he/contact");
     expect(langs["en-US"]).toBe("https://carteaneamului.ro/en-us/contact");
-    expect(Object.keys(langs)).toHaveLength(LOCALES.length + 1);
+    // Limbile site-ului, x-default și cele trei etichete regionale (en-CA, ro-US, ro-CA), care nu au adresă proprie.
+    expect(Object.keys(langs)).toHaveLength(LOCALES.length + 1 + 3);
+    expect(langs["en-CA"]).toBe(langs["en-US"]);
+    expect(langs["ro-US"]).toBe(langs.ro);
+    expect(langs["ro-CA"]).toBe(langs.ro);
     expect(languageAlternates("/", "ro").alternates?.canonical).toBe("https://carteaneamului.ro/");
     expect(languageAlternates("/", "de").alternates?.canonical).toBe("https://carteaneamului.ro/de");
     // Netradusă: canonical spre română și afară din Google în celelalte limbi.

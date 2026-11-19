@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbJsonLd, type Crumb } from "@/components/continut/Breadcrumbs";
 import { getLocale } from "@/i18n/server";
-import { LANGUAGE_NAMES, localizedPath, type Locale } from "@/i18n/locales";
+import { LANGUAGE_NAMES, REGIONAL_HREFLANG, localizedPath, type Locale } from "@/i18n/locales";
 import { OG_LOCALE, canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import {
@@ -72,7 +72,7 @@ export async function DiasporaPage({ a, b }: { a?: string; b?: string }) {
   if (e.kind === "region") crumbs.push({ name: tx(e.country.name, lang), path: href(entryOf(countryPath(e.country))) });
   if (e.kind !== "hub") crumbs.push({ name: nameOf(e, lang), path: href(e) });
 
-  const otherLangs = Object.entries(alternatesFor(e.path, e.langs)).filter(([k]) => k !== "x-default" && k !== locale);
+  const otherLangs = Object.entries(alternatesFor(e.path, e.langs)).filter(([k]) => k !== "x-default" && k !== locale && !(k in REGIONAL_HREFLANG));
   return (
     <section className="stack content-page diaspora-page" lang={lang} dir={isRtl(lang) ? "rtl" : "ltr"}>
       {!native && <p className="untranslated-note" role="note">{UI[lang].fallback}</p>}
@@ -309,7 +309,7 @@ function CountryBody({ c, l, href }: { c: Country; l: Lang; href: Href }) {
       <Extra c={c} l={l} where={where} part="after" />
       <Sources l={l} links={c.records} title={u.records} />
       {(regions.length > 0 || themes.length > 0) && (
-        <div className="card">
+        <div className="card" id="regiuni">
           <h2 style={{ marginTop: 0 }}>{u.related}</h2>
           {regions.length > 0 && <ul className="hub-list hub-cols">{regions.filter(regionIndexable).map((r) => <li key={r.slug}><Link href={href(entryOf(regionPath(r)))}>{tx(r.name, l)}</Link></li>)}</ul>}
           {themes.length > 0 && <ul className="hub-list">{themes.map((t) => <li key={t.slug}><Link href={href(entryOf(themePath(t)))}>{tx(t.name, l)}</Link></li>)}</ul>}
