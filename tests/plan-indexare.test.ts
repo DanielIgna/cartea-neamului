@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { currentDay, planDays, planItems } from "@/lib/seo/plan-indexare";
+import { currentDay, planDays, planItems, planItemsEurope } from "@/lib/seo/plan-indexare";
 import { allPaths, resolve } from "@/lib/diaspora";
 import { splitLocalePath } from "@/i18n/locales";
 
@@ -28,5 +28,24 @@ describe("planul de indexare SUA și Canada", () => {
     expect(days.every((d) => d.items.length <= 10)).toBe(true);
     expect(currentDay(days, {})).toBe(1);
     expect(currentDay(days, Object.fromEntries(days[0].items.map((x) => [x.path, "2026-11-19"])))).toBe(2);
+  });
+});
+
+describe("planul de indexare pentru Europa", () => {
+  const items = planItemsEurope();
+  it("începe cu Marea Britanie, apoi Spania, și are fiecare țară în limba ei și în română", () => {
+    expect(items[0].path).toBe("/en/diaspora/marea-britanie");
+    expect(items[1].path).toBe("/diaspora/marea-britanie");
+    expect(items[2].path).toBe("/es/diaspora/spania");
+    expect(items.some((x) => x.path === "/de/diaspora/germania")).toBe(true);
+  });
+  it("nu are adrese de două ori și nici pagini din America", () => {
+    expect(new Set(items.map((x) => x.path)).size).toBe(items.length);
+    expect(items.some((x) => x.path.includes("statele-unite") || x.path.includes("canada"))).toBe(false);
+  });
+  it("orașele în limba țării vin înaintea orașelor în română", () => {
+    const firstRoCity = items.findIndex((x) => x.kind === "oras" && !/^\/[a-z]{2}\//.test(x.path));
+    const lastLocal = items.map((x, i) => (x.kind !== "pagina" && x.kind !== "ghid" && /^\/[a-z]{2}\//.test(x.path) ? i : -1)).reduce((a, b) => Math.max(a, b), -1);
+    expect(lastLocal).toBeLessThan(firstRoCity);
   });
 });

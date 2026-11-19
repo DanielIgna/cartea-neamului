@@ -4,7 +4,8 @@ import { appSetting } from "@/db/schema";
 import { localizedPath, type Locale } from "@/i18n/locales";
 import { getEntry } from "@/lib/continut/colectii";
 import { REGIONS, regionIndexable } from "@/lib/diaspora/america";
-import { regionPath } from "@/lib/diaspora/index";
+import { entries as diasporaEntries, regionPath } from "@/lib/diaspora/index";
+import { LOCALES_OF, type Lang } from "@/lib/diaspora/tipuri";
 import type { Region } from "@/lib/diaspora/tipuri";
 
 /**
@@ -60,6 +61,41 @@ export function planItems(): PlanItem[] {
   return out;
 }
 
+/**
+ * Planul pentru Europa (Daniel, 19.11.2026: „cele mai mari comunități sunt în UK, Spania, apoi Italia, Germania, Austria,
+ * Franța; pe locuri secundare Olanda, Belgia, Elveția, Norvegia, Suedia, Danemarca”). Țările vin în ordinea mărimii
+ * comunității, iar fiecare pagină e cerută în toate limbile ei: limba țării (pentru copiii crescuți acolo), engleza și
+ * româna (pentru părinți și bunici). Întâi paginile de țară, apoi istoria românilor din fiecare țară, apoi orașele și
+ * regiunile. Ciornele intră singure după aprobare, pentru că lista se face din paginile publicate.
+ */
+export const EUROPE_ORDER = [
+  "marea-britanie", "spania", "italia", "germania", "austria", "franta",
+  "olanda", "belgia", "elvetia", "norvegia", "suedia", "danemarca", "irlanda", "portugalia", "grecia", "cipru",
+];
+const LANG_LABEL: Partial<Record<Lang, string>> = { ro: "română", en: "engleză", es: "spaniolă", it: "italiană", de: "germană", fr: "franceză", nl: "neerlandeză", hu: "maghiară", he: "ebraică" };
+
+export function planItemsEurope(): PlanItem[] {
+  const out: PlanItem[] = [];
+  const all = diasporaEntries().filter((e) => e.indexable);
+  const countryOf = (e: (typeof all)[number]) => (e.kind === "country" || e.kind === "region" ? e.country.slug : e.kind === "theme" ? e.theme.slug.replace(/^istoria-romanilor-din-/, "") : null);
+  const order = (e: (typeof all)[number]) => EUROPE_ORDER.indexOf(countryOf(e) ?? "");
+  const label = (e: (typeof all)[number], l: Lang) => {
+    const n = e.kind === "country" ? e.country.name : e.kind === "region" ? e.region.name : e.kind === "theme" ? e.theme.name : null;
+    return `${n?.ro ?? n?.en ?? e.path} (${LANG_LABEL[l] ?? l})`;
+  };
+  const add = (e: (typeof all)[number], langs: Lang[], kind: PlanItem["kind"]) => {
+    for (const l of langs) { const path = localizedPath(e.path, LOCALES_OF[l][0]); if (!out.some((x) => x.path === path)) out.push({ path, label: label(e, l), kind }); }
+  };
+  const inEurope = all.filter((e) => order(e) >= 0).sort((a, b) => order(a) - order(b));
+  const local = (ls: Lang[]) => ls.filter((l) => l !== "ro");
+  for (const e of inEurope) if (e.kind === "country") add(e, [...local(e.langs), "ro" as Lang].filter((l) => e.langs.includes(l)), "pagina");
+  for (const e of inEurope) if (e.kind === "theme" && e.theme.slug.startsWith("istoria-romanilor-din-")) add(e, [...local(e.langs), "ro" as Lang].filter((l) => e.langs.includes(l)), "ghid");
+  // Orașele și regiunile: întâi în limba țării (copiii), apoi în română (părinții), țară cu țară.
+  for (const e of inEurope) if (e.kind === "region") add(e, local(e.langs), e.region.kind === "city" ? "oras" : "stat");
+  for (const e of inEurope) if (e.kind === "region" && e.langs.includes("ro")) add(e, ["ro" as Lang], e.region.kind === "city" ? "oras" : "stat");
+  return out;
+}
+
 export function planDays(items = planItems(), perDay = PER_DAY): PlanDay[] {
   const days: PlanDay[] = [];
   for (let i = 0; i < items.length; i += perDay) days.push({ day: days.length + 1, items: items.slice(i, i + perDay) });
@@ -77,7 +113,7 @@ export async function planDone(db: Pick<Db, "select">): Promise<PlanDone> {
 }
 
 export async function setPlanDone(db: Pick<Db, "select" | "insert">, path: string, on: boolean, by: string, now = new Date()) {
-  if (!planItems().some((x) => x.path === path)) return false;
+  if (![...planItems(), ...planItemsEurope()].some((x) => x.path === path)) return false;
   const done = await planDone(db);
   if (on) done[path] = now.toISOString().slice(0, 10); else delete done[path];
   const value = { done };
