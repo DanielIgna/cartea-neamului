@@ -9,10 +9,10 @@ export const THEMES_1: Theme[] = [
   {
     slug: "istoria-romanilor-din-italia", langs: ["it", "ro"], related: ["italia"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-implici-familia"],
-    name: { ro: "Românii din Italia: istoria valurilor de emigrare", it: "I romeni in Italia: la storia delle ondate migratorie" },
+    name: {ro: "Românii din Italia: valurile de emigrare", it: "I romeni in Italia: le ondate migratorie" },
     description: {
-      ro: "Cum au ajuns românii în Italia, de la studenții și exilații de dinainte de 1990 la valul de după 2002 și 2007, de unde au plecat și ce acte cauți pentru arborele familiei.",
-      it: "Come sono arrivati i romeni in Italia, dagli studenti e dagli esuli di prima del 1990 all'ondata dopo il 2002 e il 2007, da dove sono partiti e quali documenti servono per l'albero di famiglia.",
+      ro: "Cum au ajuns românii în Italia, de la exilații de dinainte de 1990 la valul de după 2002, de unde au plecat și ce acte cauți.",
+      it: "Come sono arrivati i romeni in Italia, dagli esuli di prima del 1990 all'ondata dopo il 2002, da dove sono partiti e quali atti cercare.",
     },
     body: {
       ro: [
@@ -69,10 +69,10 @@ export const THEMES_1: Theme[] = [
   {
     slug: "istoria-romanilor-din-spania", langs: ["es", "ro"], related: ["spania"],
     guides: ["cum-afli-satul-de-origine", "cum-ceri-un-act-de-stare-civila", "cum-implici-familia"],
-    name: { ro: "Românii din Spania: istoria valurilor de emigrare", es: "Los rumanos en España: la historia de las oleadas migratorias" },
+    name: {ro: "Românii din Spania: valurile de emigrare", es: "Los rumanos en España: las oleadas migratorias" },
     description: {
-      ro: "Cum au ajuns românii în Spania, de la primii veniți la sfârșitul anilor '90 la valul de după 2002, criza din 2008 și a doua generație, plus actele pentru arborele familiei.",
-      es: "Cómo llegaron los rumanos a España, desde los primeros a finales de los noventa hasta la oleada posterior a 2002, la crisis de 2008 y la segunda generación, y qué documentos buscar para el árbol familiar.",
+      ro: "Cum au ajuns românii în Spania: primii veniți în anii '90, valul de după 2002, criza din 2008 și actele pentru arborele familiei.",
+      es: "Cómo llegaron los rumanos a España: los primeros en los noventa, la oleada tras 2002, la crisis de 2008 y los documentos para el árbol.",
     },
     body: {
       ro: [
@@ -121,10 +121,10 @@ export const THEMES_1: Theme[] = [
   {
     slug: "istoria-romanilor-din-germania", langs: ["de", "ro"], related: ["germania"],
     guides: ["sasii-din-transilvania-registre", "svabii-banateni-genealogie", "documente-in-maghiara-si-germana", "deportati-in-baragan-si-siberia"],
-    name: { ro: "Românii și germanii din România în Germania: istoria emigrării", de: "Rumänen und Rumäniendeutsche in Deutschland: Geschichte der Auswanderung" },
+    name: {ro: "Românii și germanii din România în Germania", de: "Rumänen und Rumäniendeutsche in Deutschland" },
     description: {
-      ro: "Trei drumuri spre Germania: germanii din România (sași, șvabi, bucovineni), exilul de după 1947 și valul de după 2007, cu actele de căutat pentru fiecare.",
-      de: "Drei Wege nach Deutschland: die Rumäniendeutschen (Sachsen, Schwaben, Buchenländer), das Exil nach 1947 und die Zuwanderung nach 2007, mit den passenden Quellen für die Familienforschung.",
+      ro: "Trei drumuri spre Germania: sașii și șvabii, exilul de după 1947 și valul de după 2007, cu actele de căutat pentru fiecare.",
+      de: "Drei Wege nach Deutschland: Sachsen und Schwaben, das Exil nach 1947 und die Zuwanderung nach 2007, mit Quellen für die Familienforschung.",
     },
     body: {
       ro: [
@@ -173,10 +173,10 @@ export const THEMES_1: Theme[] = [
   {
     slug: "istoria-romanilor-din-austria", langs: ["de", "ro"], related: ["austria"],
     guides: ["bucovina-registre-si-arhive", "sasii-din-transilvania-registre", "stramosi-in-armata-austro-ungara", "documente-in-maghiara-si-germana"],
-    name: { ro: "Românii din Austria: de la Imperiul Habsburgic până azi", de: "Rumänen in Österreich: vom Habsburgerreich bis heute" },
+    name: {ro: "Românii din Austria: de la Imperiu până azi", de: "Rumänen in Österreich: vom Kaiserreich bis heute" },
     description: {
-      ro: "Cum s-au legat românii de Austria: provinciile habsburgice, studenții de la Viena, refugiații din 1944, exilul și valul de după 2007, cu sursele pentru arborele familiei.",
-      de: "Wie Rumänen mit Österreich verbunden sind: die habsburgischen Kronländer, die Studenten in Wien, die Flüchtlinge von 1944, das Exil und die Zuwanderung nach 2007, mit Quellen für die Familienforschung.",
+      ro: "Românii și Austria: provinciile habsburgice, studenții de la Viena, refugiații din 1944, exilul și noul val de după 2007.",
+      de: "Rumänen und Österreich: habsburgische Kronländer, Studenten in Wien, die Flüchtlinge von 1944, das Exil und die Zuwanderung nach 2007.",
     },
     body: {
       ro: [

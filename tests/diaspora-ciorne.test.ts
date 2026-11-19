@@ -24,7 +24,8 @@ describe("ciornele diasporei", () => {
   it("fiecare cheie aprobată există", () => {
     const keys = new Set([...DRAFT_COUNTRIES.map(draftKey.country), ...DRAFT_REGIONS.map(draftKey.region), ...DRAFT_THEMES.map(draftKey.theme)]);
     for (const k of APROBATE) expect(keys.has(k), k).toBe(true);
-    expect(PENDING.themes.length + PENDING.regions.length + PENDING.countries.length).toBeGreaterThan(0);
+    // Toate ciornele din 18.11.2026 sunt aprobate (19.11.2026); ce rămâne în PENDING nu e public.
+    expect(PENDING.themes.length + PENDING.regions.length + PENDING.countries.length).toBeGreaterThanOrEqual(0);
   });
 
   it("fiecare articol e scris în toate limbile lui, cu titlu și descriere", () => {

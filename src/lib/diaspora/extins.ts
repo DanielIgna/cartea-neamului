@@ -1,5 +1,6 @@
 import type { CountryExtra } from "./tipuri";
 import { EXTRA_2 } from "./extins-2";
+import { EXTRA_UA } from "./extins-ucraina";
 
 /**
  * Pasul 1 al extinderii diaspora (Daniel, 17.11.2026): cele 7 țări mari primesc text propriu mai lung (în română, plus engleza
@@ -328,7 +329,7 @@ const EXTRA_1: Record<string, CountryExtra> = {
 };
 
 /** Toate țările cu ghid propriu: cele 7 mari (pasul 1) și celelalte 11 (pasul 4, extins-2.ts). */
-export const EXTRA: Record<string, CountryExtra> = { ...EXTRA_1, ...EXTRA_2 };
+export const EXTRA: Record<string, CountryExtra> = { ...EXTRA_1, ...EXTRA_2, ...EXTRA_UA };
 
 /** Cuvintele proprii (românești) ale unei țări: istoria, ghidul, particularitățile și întrebările (pentru prag și teste). */
 export function ownWords(parts: (string | undefined)[]): number {
