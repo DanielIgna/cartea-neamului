@@ -78,6 +78,9 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "questions-to-ask-romanian-grandparents", title: "40 Questions to Ask Your Romanian Grandparents", order: 43 },
   { slug: "free-romanian-family-tree-template", title: "Free Romanian Family Tree Template", order: 44 },
   { slug: "copiii-din-diaspora-si-bunicii-din-romania", title: "Copiii născuți în străinătate și bunicii din România", order: 45 },
+  // Accelerarea din 19.11.2026 (ciorne): școala în engleză și actele pentru diaspora din Europa.
+  { slug: "family-tree-school-project", title: "Family Tree School Project: A Guide for Parents", order: 46 },
+  { slug: "acte-romanesti-din-strainatate", title: "Acte românești când locuiești în Italia, Spania, Germania sau Anglia", order: 47 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
 /** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */
