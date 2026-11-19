@@ -28,4 +28,8 @@ export const APROBATE = new Set<string>([
   "tema:istoria-romanilor-din-olanda",
   "tema:istoria-romanilor-din-belgia",
   "tema:istoria-romanilor-din-irlanda",
+  // Daniel, 19.11.2026: „aprob” (PR #209: orașele în limba țării și Norvegia).
+  "tara:norvegia",
+  "limba:gb/londra/en", "limba:gb/manchester/en", "limba:gb/birmingham/en", "limba:gb/edinburgh/en",
+  "limba:es/madrid/es", "limba:es/castellon/es", "limba:es/valencia/es", "limba:es/barcelona/es",
 ]);

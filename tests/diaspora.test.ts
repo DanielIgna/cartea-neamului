@@ -9,7 +9,7 @@ import { isPublicPath } from "@/lib/public-variant";
 describe("diaspora: conținut", () => {
   it("are țările cerute de Daniel, plus SUA și Canada", () => {
     const codes = COUNTRIES.map((c) => c.code).sort();
-    expect(codes).toEqual(["AT", "BE", "CA", "CH", "CY", "DE", "DK", "ES", "FR", "GB", "GR", "IE", "IL", "IT", "NL", "PT", "SE", "UA", "US"].sort());
+    expect(codes).toEqual(["AT", "BE", "CA", "CH", "CY", "DE", "DK", "ES", "FR", "GB", "GR", "IE", "IL", "IT", "NL", "NO", "PT", "SE", "UA", "US"].sort());
   });
 
   it("are toate cele 50 de state și cele 13 provincii și teritorii", () => {
