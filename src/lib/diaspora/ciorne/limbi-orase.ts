@@ -182,6 +182,64 @@ export const CITY_LANG_DRAFTS: CityLang[] = [
       "Avec le nom exact du village, la page de la localité sur Cartea Neamului vous indique la commune et les archives départementales roumaines (județ) dont il dépend aujourd'hui. Vous pouvez lire l'arbre en français pendant que vos grands-parents le complètent en roumain.",
     ],
   },
+  // ================================================================ Lotul 3 (19.11.2026, aprobare permanentă de la Daniel)
+  {
+    country: "us", slug: "miami", lang: "en", name: "Miami", where: "in Miami",
+    notes: [
+      "Miami and South Florida have a Romanian community formed mostly after 1990: business owners, professionals, retirees who moved here from other American states, and families drawn by the climate and the region's economy. Many Romanians in Florida came after living in other states or other countries, so the family is often spread across several continents.",
+      "If you grew up here with Romanian parents or grandparents, your family story probably has many stops: Romania, then perhaps Italy or Germany, then another state, then Florida. Write down every place the family lived, with its years, so your own children can follow it one day. A shared tree, which each relative fills in from wherever they are, brings together what everyone knows. On Cartea Neamului you read it in English, while your grandparents can write in Romanian.",
+      "For the Romanian side, start with the oldest people in the family, while they can still tell the stories. A video call with the family album open often brings back names, nicknames and villages you would not find in any archive. Ask for full names, your grandmother's maiden name, the village and the years, then look up the village on Cartea Neamului to see which commune and county it belongs to today.",
+      "Florida vital records come from the Florida Bureau of Vital Statistics or from the county health department. American documents used in Romania need an apostille from the Florida Secretary of State and a translation; Romanian documents used in Florida need an apostille issued in Romania, usually at the prefecture, and a translation.",
+      "Miami has a Consulate General of Romania, listed on the official page of the embassy in Washington. Certificates from Romania, powers of attorney, passports and birth transcriptions are booked on econsulat.ro. Children born in Florida to Romanian parents need their birth transcribed before they can get a Romanian birth certificate and passport.",
+      "For Romanian registers older than 100 years, write to the county branch of the Romanian National Archives, with the name, the approximate year and the village.",
+    ],
+  },
+  {
+    country: "it", slug: "bologna", lang: "it", name: "Bologna", where: "a Bologna",
+    notes: [
+      "Bologna e l'Emilia-Romagna hanno una comunità romena numerosa, sparsa nelle città della Via Emilia, da Piacenza e Parma fino a Modena, Reggio Emilia, Bologna e Rimini. I romeni lavorano qui nell'industria, nell'agricoltura, nella logistica e nell'assistenza, e molti studenti romeni frequentano l'Università di Bologna, la più antica d'Europa. Anche i comuni intorno a Bologna, come Imola, Casalecchio o San Lazzaro, hanno famiglie romene.",
+      "Per i ragazzi cresciuti qui con genitori romeni, e per gli studenti arrivati per l'università, l'albero di famiglia può essere un progetto di inizio strada: annota adesso quello che sanno i genitori e i nonni, con date e luoghi, e completalo man mano. Tra qualche anno, quando avrai una famiglia tua, saprai raccontare ai figli da dove vengono. Su Cartea Neamului lo leggi in italiano mentre i nonni lo scrivono in romeno.",
+      "Le famiglie con radici in Emilia-Romagna hanno spesso registri parrocchiali italiani conservati da secoli. Anche la parte romena può arrivare lontano, se trovi il paese e i suoi registri: in Transilvania e nel Banato i registri delle parrocchie cominciano spesso nel Settecento.",
+      "Quando cerchi parenti negli atti italiani, ricorda che gli impiegati scrivevano spesso i nomi romeni senza segni diacritici e a volte invertivano nome e cognome. Nell'albero annota entrambe le forme, così le troveranno sia i figli sia i nonni.",
+      "Gli atti italiani si chiedono al Comune di Bologna, o al comune dove è avvenuto l'evento. Per le famiglie miste, l'Archivio di Stato di Bologna ha registri di stato civile e fondi del periodo in cui la città faceva parte dello Stato Pontificio, e molti registri di stato civile italiani sono online, gratis, sul portale Antenati.",
+      "La città ha un consolato generale di Romania, presente nell'elenco ufficiale dei consolati stranieri in Italia. La sua zona e gli orari sono sulla pagina ufficiale dell'ambasciata, e l'appuntamento per certificati, procure e trascrizioni si prende su econsulat.ro. Annota nell'albero anche la città italiana di ogni evento: accorcia la strada per qualsiasi richiesta.",
+    ],
+  },
+  {
+    country: "de", slug: "nurnberg", lang: "de", name: "Nürnberg", where: "in Nürnberg",
+    notes: [
+      "Nürnberg und die Städte Frankens wie Fürth und Erlangen haben eine große rumänische Gemeinschaft, in der sich Familien von Siebenbürger Sachsen und Banater Schwaben, die seit den 1970er- bis 1990er-Jahren hier leben, mit Rumänen mischen, die nach 2007 gekommen sind. Viele arbeiten in der Industrie, der Logistik, im Gesundheitswesen und in der IT.",
+      "In Franken leben viele gemischte Familien, in denen ein Großelternteil Sachse oder Schwabe ist und der andere Rumäne oder Ungar. Ihr Stammbaum hat oft Urkunden in drei Sprachen: alte Register auf Deutsch oder Latein, ungarische staatliche Urkunden aus der Zeit vor 1918 und rumänische Urkunden danach. Notiere im Stammbaum alle Formen der Namen, damit auch die Kinder sie finden.",
+      "Für Familien, die erst vor Kurzem gekommen sind, sind die ersten Schritte einfach: eine Liste mit Namen, Daten und Dörfern der Eltern und Großeltern, gemeinsam am Telefon erstellt, dann die eingescannten alten Fotos und die Geschichten, die sie erzählen. Der Stammbaum wächst von selbst, wenn mehrere Verwandte ihn ergänzen, jeder von dort, wo er lebt. Auf Cartea Neamului liest du ihn auf Deutsch, deine Großeltern schreiben auf Rumänisch.",
+      "Ein Tipp für den Stammbaum: Dieselbe Person kann in alten Urkunden mit einem deutschen, einem ungarischen und einem rumänischen Vornamen stehen, etwa Johann, János und Ioan. Trag die Form ein, die die Familie benutzt hat, und notiere die anderen daneben. So finden die Verwandten in Deutschland und in Rumänien dieselbe Person, auch wenn sie in ihren Urkunden anders heißt.",
+      "Für Familien von Siebenbürger Sachsen lohnt es sich, auch die Heimatortsgemeinschaften zu fragen, die Familienlisten, Fotos und Chroniken gesammelt haben und oft wissen, wo die Register ihres Dorfes heute liegen.",
+      "Deutsche Urkunden stellt das Standesamt Nürnberg aus. Das Stadtarchiv Nürnberg hat eines der reichsten Stadtarchive Deutschlands. Zwischen Deutschland und Rumänien brauchen Personenstandsurkunden keine Apostille.",
+      "Da Nürnberg in Bayern liegt, ist meist das Generalkonsulat von Rumänien in München zuständig; der genaue Bezirk steht auf der offiziellen Seite der Botschaft in Berlin. Termine gibt es über econsulat.ro. Für rumänische Register, die älter als 100 Jahre sind, kannst du direkt an die Kreisdirektion des Rumänischen Nationalarchivs schreiben.",
+    ],
+  },
+  {
+    country: "de", slug: "stuttgart", lang: "de", name: "Stuttgart", where: "in Stuttgart",
+    notes: [
+      "Stuttgart und Baden-Württemberg haben viele Rumänen: Nachkommen der Siebenbürger Sachsen und Banater Schwaben, die sich im Süden Deutschlands niedergelassen haben, und Arbeiter und Ingenieure, die nach 2007 gekommen sind, angezogen von der Autoindustrie und den Ingenieurfirmen der Region.",
+      "Baden-Württemberg ist auch das Land, aus dem im 18. Jahrhundert viele der deutschen Siedler ins Banat aufgebrochen sind. Familien von Banater Schwaben haben deshalb oft Vorfahren, die aus dem Südwesten Deutschlands ins Banat gezogen sind. Ein vollständiger Stammbaum kann den ganzen Weg zeigen: vom deutschen Dorf ins Banat und zweihundert Jahre später zurück nach Deutschland. Die alten Register der Banater Dörfer, viele davon in Archiven in Rumänien, sind der wertvollste Teil dieses Weges.",
+      "Für junge Ingenieure und Informatiker, die vor Kurzem gekommen sind, beginnt der Stammbaum mit einer einfachen Liste, die man mit den Eltern erstellt: Namen, Daten und Dörfer der Großeltern und Urgroßeltern. Danach ergänzt ihn jeder Verwandte von dort, wo er lebt, und die in Deutschland geborenen Kinder werden später nachlesen können, wer ihre Vorfahren waren. Auf Cartea Neamului lesen sie ihn auf Deutsch.",
+      "Frag die Großeltern auch nach den Dingen, die in keiner Urkunde stehen: wie das Haus im Dorf aussah, welche Feste gefeiert wurden, welche Spitznamen die Familie hatte und wer wohin ausgewandert ist. Nimm ihre Stimme auf, wenn sie erzählen. Diese Erinnerungen sind oft das Erste, was verloren geht, und das, was die Enkel später am meisten suchen.",
+      "Deutsche Urkunden stellt das Standesamt Stuttgart aus. Das Landesarchiv Baden-Württemberg mit Hauptsitz in Stuttgart bewahrt alte Dokumente des Landes auf. Zwischen Deutschland und Rumänien brauchen Personenstandsurkunden keine Apostille, und das mehrsprachige Formular kann die Übersetzung ersparen.",
+      "Das Generalkonsulat von Rumänien in Stuttgart befindet sich in der Hauptstätter Straße 68–70, 70178 Stuttgart, laut der offiziellen Liste des Auswärtigen Amtes. Termine für Urkunden, Vollmachten und Eintragungen werden über econsulat.ro gebucht.",
+      "Für alte Urkunden aus Rumänien schreibst du an die Kreisdirektion des Rumänischen Nationalarchivs, mit Namen, ungefährem Jahr und Herkunftsdorf; die Seite des Dorfes auf Cartea Neamului zeigt dir, zu welcher Gemeinde es heute gehört.",
+    ],
+  },
+  {
+    country: "fr", slug: "lyon", lang: "fr", name: "Lyon", where: "à Lyon",
+    notes: [
+      "Lyon et la région Auvergne-Rhône-Alpes ont une communauté roumaine en croissance, avec des ouvriers du bâtiment et de l'industrie, du personnel médical, des chercheurs et de nombreux étudiants dans les universités et les écoles d'ingénieurs de la ville. Beaucoup sont arrivés après 2007, et une partie s'est installée dans les villes alentour, de Villeurbanne à Saint-Étienne et Grenoble.",
+      "Pour les enfants qui grandissent ici avec des parents roumains, et pour les étudiants roumains de Lyon, l'arbre de famille peut commencer tout de suite, avec ce que savent les parents et les grands-parents, et se compléter au fil des voyages au pays. Commencez par les noms complets, le village et les années, puis cherchez le village sur Cartea Neamului pour savoir de quelle commune et de quel département roumain (județ) il dépend aujourd'hui. Vous lisez l'arbre en français, vos grands-parents l'écrivent en roumain.",
+      "Les familles de la région lyonnaise ont souvent de la famille en Suisse, à quelques heures de route, ou en Italie. Sur Cartea Neamului, toutes ces branches tiennent dans le même arbre, et chacun le lit dans sa langue, du français et de l'italien jusqu'au roumain.",
+      "Les actes français se demandent à la mairie de la commune où l'événement a eu lieu. Les archives municipales de Lyon et les archives départementales ont mis en ligne les anciens registres d'état civil et les registres paroissiaux d'avant la Révolution : la partie française d'une famille mixte peut souvent se retrouver, depuis chez soi, plusieurs siècles en arrière.",
+      "Lyon a été pendant des siècles la ville de la soie, avec des ateliers qui attiraient des ouvriers de toute l'Europe. Si la famille de votre conjoint a d'anciennes racines lyonnaises, les actes de mariage du XIXe siècle indiquent en général le métier des mariés et de leurs parents, un bon indice pour relier les générations.",
+      "Un consulat général de Roumanie fonctionne à Lyon et dessert les départements de la région ; la liste exacte figure sur sa page officielle. On y demande des certificats roumains, on y signe des procurations et on y transcrit la naissance des enfants nés en France, avec rendez-vous sur econsulat.ro. Les registres roumains de plus de 100 ans sont aux Archives nationales roumaines, par département ; les plus récents, dans les mairies.",
+    ],
+  },
 ];
 
 /** Adaugă la orașe limbile aprobate (limba țării pusă prima, ca la celelalte pagini). */
