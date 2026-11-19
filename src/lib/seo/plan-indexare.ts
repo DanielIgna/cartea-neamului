@@ -25,7 +25,7 @@ const GUIDES = [
   "arbore-genealogic-familie-romania-sua-canada", "romanian-surnames-changed-in-america", "preserve-immigrant-parents-stories",
 ];
 /** Ghidurile aprobate după ce planul a pornit: intră după paginile mari, ca ziua 1 să rămână cea trimisă lui Daniel. */
-const LATER_GUIDES = ["romanian-citizenship-by-descent-documents", "questions-to-ask-romanian-grandparents", "free-romanian-family-tree-template", "copiii-din-diaspora-si-bunicii-din-romania"];
+const LATER_GUIDES = ["romanian-citizenship-by-descent-documents", "questions-to-ask-romanian-grandparents", "free-romanian-family-tree-template", "copiii-din-diaspora-si-bunicii-din-romania", "family-tree-school-project", "acte-romanesti-din-strainatate"];
 
 /** Statele și provinciile cu cele mai mari comunități românești vin primele; restul urmează în ordinea alfabetică. */
 const FIRST_REGIONS = [
