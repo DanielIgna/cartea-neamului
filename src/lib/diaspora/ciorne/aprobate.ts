@@ -35,4 +35,6 @@ export const APROBATE = new Set<string>([
   // Daniel, 19.11.2026: „aprob” (lotul 2, PR #211).
   "limba:it/roma/it", "limba:it/milano/it", "limba:it/torino/it",
   "limba:de/munchen/de", "limba:de/berlin/de", "limba:at/viena/de", "limba:fr/paris/fr",
+  // Daniel, 19.11.2026 23:08: aprobare permanentă („ruleaza fara mine”) – lotul 3.
+  "limba:us/miami/en", "limba:it/bologna/it", "limba:de/nurnberg/de", "limba:de/stuttgart/de", "limba:fr/lyon/fr",
 ]);
