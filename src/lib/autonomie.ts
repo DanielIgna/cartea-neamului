@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte", "surse-publice"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte", "surse-publice", "strateg-seo", "google-zilnic"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -88,6 +88,10 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
     what: "Publică zilnic următoarele pagini de localități din coadă (50 pe zi la început, cât e pus în Admin → SEO → Motor): adună datele publice din Wikipedia (rescrise, cu atribuire), trece fiecare pagină prin controlul de calitate și o pune în Google sau o lasă noindex cu motivul. Trimite sitemap-ul la Google după lot, verifică indexarea și crește ritmul până la 200 pe zi doar dacă Google le ia." },
+  { key: "strateg-seo", label: "Strategul SEO", risk: "singur", defaultOn: false, everyDays: 7, needs: "Search Console legat (fără el, doar planul de cuvinte și sezonul)",
+    what: "O dată pe săptămână citește ultimele 28 de zile din Search Console și scrie propuneri în Admin → SEO → Strateg: căutări aproape de prima pagină, titluri văzute dar neapăsate, căutări în scădere, teme noi fără pagină și ce e încă nescris din planul de cuvinte (mai sus ce e în sezon). Arată ce secțiuni aduc clicuri și învață din propunerile marcate „Făcut”: după 28 de zile le măsoară și urcă ce a mers. Nu publică și nu schimbă nimic pe site; articolele noi se scriu ca ciorne și se publică doar după aprobarea ta." },
+  { key: "google-zilnic", label: "Anunță Google în aceeași zi", risk: "singur", defaultOn: false, everyDays: 1, needs: "Search Console legat",
+    what: "Zilnic: dacă s-a schimbat sau s-a adăugat vreo pagină, trimite sitemap.xml la Google în aceeași zi (nu doar o dată pe săptămână), apoi verifică prin Search Console dacă paginile noi au intrat în index (după 3 zile, de cel mult 4 ori, 25 pe zi). Ce nu intră apare în Admin → SEO → Strateg, cu legătura spre „Solicită indexarea”. Google nu primește pagini „împinse” direct (în afară de anunțuri de angajare și video live); Bing și Yandex le primesc separat, prin IndexNow." },
   { key: "probleme-vechi", label: "Închide problemele lămurite", risk: "aprobare", defaultOn: false, everyDays: 1,
     what: "Problemele raportate la care ai răspuns și la care omul n-a mai scris de 21 de zile. Pregătește lista; le trece la „Rezolvată” doar după ce apeși „Aprobă”." },
 ];
@@ -406,7 +410,25 @@ const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
   "crm-dimineata": runCrmMorning,
   "crm-alerte": runCrmAlerts,
   "surse-publice": runArchivesMail,
+  "strateg-seo": runSeoStrategist,
+  "google-zilnic": runGoogleDaily,
 };
+
+/** Strategul SEO (src/lib/seo/strateg.ts): doar citește Google și scrie propuneri în Admin. */
+async function runSeoStrategist({ db, now }: Ctx): Promise<RunResult> {
+  const { runStrateg } = await import("./seo/strateg");
+  const r = await runStrateg(db, { now });
+  return { status: r.open ? "ok" : "nimic", observed: r.perf, acted: r.open, note: r.note, details: r, verified: true };
+}
+
+/** Sitemap-ul la Google în ziua schimbării + verificarea indexării (src/lib/seo/google-anunt.ts). */
+async function runGoogleDaily({ db, now }: Ctx): Promise<RunResult> {
+  const [{ runGoogleAnnounce }, { publishedMap }] = await Promise.all([import("./seo/google-anunt"), import("./motor-seo/motor")]);
+  const r = await runGoogleAnnounce(db, { now, published: await publishedMap(db) });
+  if (r.status === "fara-cheie") return { status: "sarit", observed: 0, acted: 0, note: r.note };
+  if (r.status === "fara-acces") return { status: "eroare", observed: 1, acted: 0, note: r.note };
+  return { status: r.submitted || r.checked ? "ok" : "nimic", observed: r.changed + r.checked, acted: (r.submitted ? 1 : 0) + r.checked, note: r.note, details: r, verified: true };
+}
 
 async function runCrmAlerts({ db, now }: Ctx): Promise<RunResult> {
   if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "Lipsește RESEND_API_KEY" };

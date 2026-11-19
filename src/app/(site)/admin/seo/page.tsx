@@ -14,7 +14,10 @@ import { conversionsBy } from "@/lib/conversii";
 import { rangeOf } from "@/lib/analiza";
 import { sql } from "drizzle-orm";
 import { AdminNav, Stat, Status, day, num } from "@/components/admin/ui";
-import { IndexNowButton, SeoEngineForm, SeoSetupForm, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { IndexNowButton, SeoEngineForm, SeoSetupForm, StrategButtons, SubmitSitemapButton } from "@/components/admin/SeoForms";
+import { decideStrategIdea } from "@/app/admin-actions";
+import { KIND_LABEL, learnedSummary, strategState, type StoredIdea } from "@/lib/seo/strateg";
+import { googleState, stuck as googleStuck, waiting as googleWaiting } from "@/lib/seo/google-anunt";
 import { currentVersions, indexNowKey, indexNowState, pendingPaths } from "@/lib/seo/indexnow";
 import { STATUS_LABEL, publishedMap, engineSettings, engineStats, runBatch, syncQueue } from "@/lib/motor-seo/motor";
 import { MAX_SIMILARITY, MIN_FACTS, MIN_UNIQUE_WORDS } from "@/lib/motor-seo/calitate";
@@ -43,7 +46,7 @@ export const metadata = { title: "SEO · Admin" };
  * și conversii, din Analiză). Partea din Google Search Console se aprinde singură după ce cheia e pusă în Setări.
  */
 const TABS = [
-  { key: "prezentare", label: "Prezentare" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
+  { key: "prezentare", label: "Prezentare" }, { key: "strateg", label: "Strateg" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
   { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "diaspora", label: "Diaspora" }, { key: "inspector", label: "Inspector URL" },
   { key: "ciorne", label: "Ciorne" }, { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
@@ -111,6 +114,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       )}
 
       {tab === "prezentare" && await Overview({ pages, gsc, gscErr, alerts, days, href })}
+      {tab === "strateg" && await StrategTab({ gscOn: gsc.state === "legat" })}
       {tab === "raport" && await WeeklyTab({ s, pages })}
       {tab === "cuvinte" && <Keywords gsc={gsc} watch={s.watch} pages={pages} />}
       {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
@@ -191,6 +195,129 @@ function GscState({ gsc, gscErr }: { gsc: Awaited<ReturnType<typeof gscSnapshot>
 }
 
 /* ---------------------------------- Raport săptămânal ---------------------------------- */
+
+/* ---------------------------------- Strateg ---------------------------------- */
+
+/**
+ * Strategul SEO (src/lib/seo/strateg.ts): ce funcționează, ce e de făcut și ce a învățat; plus Google în ziua schimbării
+ * (src/lib/seo/google-anunt.ts). Nimic de aici nu publică singur.
+ */
+async function StrategTab({ gscOn }: { gscOn: boolean }) {
+  const [st, g, sw] = await Promise.all([strategState(db), googleState(db), automationSwitches(db)]);
+  const open = st.ideas.filter((i) => i.status === "nou");
+  const accepted = st.ideas.filter((i) => i.status === "acceptat");
+  const done = st.ideas.filter((i) => i.status === "facut");
+  const rejected = st.ideas.filter((i) => i.status === "respins");
+  const learned = learnedSummary(st.learned);
+  const stuckList = googleStuck(g);
+  const verdict = { merge: "aduce clicuri", mediu: "în medie", slab: "aduce puțin" } as const;
+  return (
+    <>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Strategul SEO</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Citește ce caută oamenii în Google și ce aduce fiecare pagină, apoi propune ce e de făcut: pagini de urcat pe prima pagină, titluri de rescris, teme noi pentru articole. Nu publică nimic singur: temele noi devin ciorne și intră pe site doar după ce le aprobi. Învață din ce marchezi „Făcut”: după 28 de zile măsoară rezultatul și pune mai sus felul de propuneri care a mers.</p>
+        <p style={{ margin: "0 0 6px" }}>
+          <Status ok={!!sw["strateg-seo"]} warn={!sw["strateg-seo"]}>{sw["strateg-seo"] ? "Analiza săptămânală: pornită" : "Analiza săptămânală: oprită"}</Status>{" "}
+          <Status ok={!!sw["google-zilnic"]} warn={!sw["google-zilnic"]}>{sw["google-zilnic"] ? "Google în aceeași zi: pornit" : "Google în aceeași zi: oprit"}</Status>{" "}
+          <Link href="/admin/autonomie">Pornește sau oprește din Autonomie →</Link>
+        </p>
+        <p className="muted" style={{ margin: 0, fontSize: 13 }}>
+          {st.lastRun ? `Ultima analiză: ${st.lastRun.slice(0, 16).replace("T", " ")} UTC${st.gsc ? ", cu datele din Search Console" : ", fără Search Console (doar planul de cuvinte și sezonul)"}.` : "Încă nu a rulat. Apasă „Analizează acum”."}
+          {!gscOn && <> Search Console nu e legat încă: propunerile din căutările reale apar după ce pui cheia în <Link href="/admin/seo?t=setari">Setări</Link>.</>}
+          {st.skippedTone > 0 && ` ${st.skippedTone} teme sărite după regula de ton.`}
+        </p>
+        <StrategButtons google={gscOn} />
+      </div>
+
+      {st.perf.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Ce funcționează (28 de zile)</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Clicuri din Google pe fiecare pagină indexată, pe secțiuni. Temele din secțiunile care „aduc clicuri” urcă în propuneri.</p>
+          <div className="an-scroll"><table className="an-table">
+            <thead><tr><th>Secțiunea</th><th>Pagini</th><th>Clicuri</th><th>Afișări</th><th>CTR</th><th>Clicuri pe pagină</th><th>Locul mediu</th><th></th></tr></thead>
+            <tbody>{st.perf.map((p) => <tr key={p.key}><td>{p.label}</td><td>{num(p.pages)}</td><td>{num(p.clicks)}</td><td>{num(p.impressions)}</td><td>{pctF(p.ctr)}</td><td>{pos(p.clicksPerPage)}</td><td>{p.position != null ? pos(p.position) : "—"}</td>
+              <td><Status ok={p.verdict === "merge"} warn={p.verdict === "mediu"}>{verdict[p.verdict]}</Status></td></tr>)}</tbody>
+          </table></div>
+        </div>
+      )}
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Propuneri ({num(open.length)})</h2>
+        {open.length === 0 ? <p className="muted" style={{ margin: 0 }}>Nicio propunere deschisă.</p>
+          : <div className="stack" style={{ gap: 12 }}>{open.map((i) => <IdeaCard key={i.id} i={i} />)}</div>}
+      </div>
+
+      {accepted.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Acceptate, de făcut ({num(accepted.length)})</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Temele noi se scriu ca ciorne (Admin → SEO → Ciorne) și se publică doar după aprobarea ta. Când o schimbare e pe site, apasă „Făcut”, ca strategul să o poată măsura.</p>
+          <div className="stack" style={{ gap: 12 }}>{accepted.map((i) => <IdeaCard key={i.id} i={i} />)}</div>
+        </div>
+      )}
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Ce a învățat</h2>
+        {done.length === 0 ? <p className="muted" style={{ margin: 0 }}>Încă nimic: învață din propunerile marcate „Făcut”, la 28 de zile după.</p> : (
+          <div className="an-scroll"><table className="an-table">
+            <thead><tr><th>Propunerea</th><th>Făcută</th><th>Înainte</th><th>După 28 de zile</th><th>Rezultat</th></tr></thead>
+            <tbody>{done.map((i) => <tr key={i.id}><td>{KIND_LABEL[i.kind]}: {i.title}</td><td>{i.doneAt?.slice(0, 10)}</td>
+              <td>{i.baseline ? `${num(i.baseline.clicks)} clicuri · ${num(i.baseline.impressions)} afișări${i.baseline.position != null ? ` · locul ${pos(i.baseline.position)}` : ""}` : "—"}</td>
+              <td>{i.result ? `${num(i.result.clicks)} clicuri · ${num(i.result.impressions)} afișări${i.result.position != null ? ` · locul ${pos(i.result.position)}` : ""}` : "se măsoară după 28 de zile"}</td>
+              <td>{i.result ? <Status ok={i.result.verdict === "a-mers"} warn={i.result.verdict === "neclar"}>{i.result.verdict === "a-mers" ? "a mers" : i.result.verdict === "neclar" ? "neclar" : "n-a mers"}</Status> : "—"}</td></tr>)}</tbody>
+          </table></div>
+        )}
+        {learned.length > 0 && (
+          <p className="muted" style={{ margin: "10px 0 0", fontSize: 13 }}>{learned.map((l) => `${l.kind === "fel" ? KIND_LABEL[l.name as keyof typeof KIND_LABEL] ?? l.name : `secțiunea ${l.name}`}: ${l.wins} din ${l.tried} au mers (pondere ×${l.weight.toFixed(2)})`).join(" · ")}</p>
+        )}
+      </div>
+
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Google în ziua schimbării</h2>
+        <p className="muted" style={{ marginTop: 0 }}>Google nu primește pagini „împinse” direct (Indexing API e doar pentru anunțuri de angajare și video live). Calea corectă: sitemap-ul cu data reală a schimbării, trimis în aceeași zi, apoi verificarea indexării. Bing și Yandex primesc paginile separat, prin IndexNow (fila Sitemap).</p>
+        <div className="stats">
+          <Stat label="Sitemap trimis ultima dată" value={g.lastSubmit ? day(g.lastSubmit) : "—"} hint={`${num(g.submits)} trimiteri de când e pornit`} />
+          <Stat label="Pagini intrate în index" value={num(g.indexed)} hint="verificate după schimbare" tone={g.indexed ? "ok" : undefined} />
+          <Stat label="În așteptare" value={num(googleWaiting(g).length)} hint="se verifică după 3 zile" />
+          <Stat label="De cerut de mână" value={num(stuckList.length)} tone={stuckList.length ? "warn" : "ok"} hint="nu au intrat după 4 verificări" />
+        </div>
+        {stuckList.length > 0 && (
+          <div className="an-scroll" style={{ marginTop: 10 }}><table className="an-table">
+            <thead><tr><th>Pagina</th><th>Ce spune Google</th><th></th></tr></thead>
+            <tbody>{stuckList.slice(0, 30).map((w) => <tr key={w.path}><td><a href={w.path} target="_blank">{w.path}</a></td><td>{w.verdict ?? "—"}</td>
+              <td><a href={inspectLink(`${SITE_URL}${w.path}`)} target="_blank" rel="noreferrer">Solicită indexarea →</a></td></tr>)}</tbody>
+          </table></div>
+        )}
+        {g.log.length > 0 && <ul className="muted" style={{ margin: "10px 0 0", paddingLeft: 18, fontSize: 13 }}>{g.log.slice(0, 5).map((l) => <li key={l.at}>{l.at.slice(0, 16).replace("T", " ")}: {l.note}</li>)}</ul>}
+      </div>
+
+      {rejected.length > 0 && <p className="muted" style={{ fontSize: 13 }}>{num(rejected.length)} propuneri respinse nu mai apar 90 de zile.</p>}
+    </>
+  );
+}
+
+function IdeaCard({ i }: { i: StoredIdea }) {
+  const btn = (status: string, label: string, primary = false) => (
+    <form action={decideStrategIdea} style={{ display: "inline" }}>
+      <input type="hidden" name="id" value={i.id} /><input type="hidden" name="status" value={status} />
+      <button className={`btn${primary ? " primary" : ""}`} style={{ padding: "4px 10px", fontSize: 13 }}>{label}</button>
+    </form>
+  );
+  return (
+    <div style={{ borderTop: "1px solid var(--line, #ddd)", paddingTop: 10 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "baseline" }}>
+        <span className="pill">{KIND_LABEL[i.kind]}</span>{i.season && <span className="pill warn">în sezon</span>}
+        <b>{i.title}</b>
+      </div>
+      <p style={{ margin: "6px 0 4px" }}>{i.why}</p>
+      <p className="muted" style={{ margin: "0 0 4px", fontSize: 14 }}>{i.action}</p>
+      {i.path && <p className="muted" style={{ margin: "0 0 4px", fontSize: 13 }}>Pagina: {i.kind === "tema" || i.kind === "plan" ? <code>{i.path}</code> : <a href={i.path} target="_blank">{i.path}</a>}{i.links.length > 0 && <> · legături cu {i.links.map((l, k) => <span key={l}>{k ? ", " : ""}<a href={l} target="_blank">{l}</a></span>)}</>}</p>}
+      <div className="actions" style={{ marginTop: 6, gap: 6 }}>
+        {i.status === "nou" && <>{btn("acceptat", "Accept", true)}{btn("respins", "Nu acum")}</>}
+        {i.status === "acceptat" && <>{btn("facut", "Făcut", true)}{btn("redeschide", "Înapoi la propuneri")}</>}
+      </div>
+    </div>
+  );
+}
 
 async function WeeklyTab({ s, pages }: { s: Awaited<ReturnType<typeof seoSettings>>; pages: AuditPage[] }) {
   const gsc = await gscSnapshot(s, SITE_URL, 7);
