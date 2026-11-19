@@ -117,8 +117,9 @@ describe("Admin → Analiză, pe o bază adevărată", () => {
     await recordVisit(db, { path: "/contact" }, { ...ctx("4.4.4.4"), region: "CJ", city: "Cluj-Napoca" });
     await recordVisit(db, { path: "/" }, { ...ctx("5.5.5.5"), country: "DE", region: "BW", city: "Stuttgart" });
     await recordVisit(db, { path: "/" }, { ...ctx("6.6.6.6"), country: null, region: "XX", city: "Nicăieri" });
-    const raw = await db.execute(sql`select country, region, city from page_view where visitor is not null order by at desc limit 1`);
-    expect(raw.rows[0]).toEqual({ country: null, region: null, city: null });
+    // Fără țară, nici județul, nici orașul nu se păstrează. (Nu „ultimul rând după oră”: două vizite în aceeași milisecundă îl încurcau în CI.)
+    const raw = await db.execute(sql`select count(*)::int as c from page_view where region = 'XX' or city = 'Nicăieri'`);
+    expect(raw.rows[0]).toEqual({ c: 0 });
     const cols = await db.execute(sql`select column_name from information_schema.columns where table_name = 'page_view'`);
     expect((cols.rows as { column_name: string }[]).map((c) => c.column_name)).not.toContain("ip");
     const { cur } = rangeOf("7z");
