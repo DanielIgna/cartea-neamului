@@ -47,5 +47,12 @@ export const frCadou: CadouCatalog = {
     cardHow: "Scanne le code ou ouvre le lien, connecte-toi et appuie sur « Recevoir l’année ».",
     cardHint: "Dans la fenêtre d’impression, vous pouvez aussi choisir « Enregistrer au format PDF ».",
     cardBack: "Retour à vos cadeaux",
+    sampleName: "Maman et Papa",
+    quick1: "Vous recevez le lien juste après le paiement",
+    quick2: "Le lien n’expire pas",
+    quick3: "Sans abonnement, rien ne se renouvelle seul",
+    buyNote: "Pour acheter, créez d’abord un compte gratuit avec votre e-mail (une minute), puis payez par carte.",
+    tryFirst: "Vous voulez d’abord voir à quoi ça ressemble ?",
+    tryLink: "Essayez gratuitement 7 jours",
   },
 };

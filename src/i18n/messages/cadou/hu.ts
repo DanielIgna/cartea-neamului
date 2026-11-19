@@ -47,5 +47,12 @@ export const huCadou: CadouCatalog = {
     cardHow: "Olvasd be a kódot vagy nyisd meg a linket, lépj be, és nyomd meg az „Az év átvétele” gombot.",
     cardHint: "A nyomtatási ablakban a „Mentés PDF-ként” is választható.",
     cardBack: "Vissza az ajándékaidhoz",
+    sampleName: "anya és apa",
+    quick1: "A linket rögtön a fizetés után megkapod",
+    quick2: "A link nem jár le",
+    quick3: "Nincs előfizetés, semmi sem újul meg magától",
+    buyNote: "A vásárláshoz előbb létrehozol egy ingyenes fiókot az e-mail-címeddel (egy perc), aztán kártyával fizetsz.",
+    tryFirst: "Előbb megnéznéd, milyen?",
+    tryLink: "Próbáld ki ingyen 7 napig",
   },
 };

@@ -14,6 +14,8 @@ export default function VisitBeacon() {
   useEffect(() => {
     const nav = navigator as Navigator & { globalPrivacyControl?: boolean; doNotTrack?: string };
     if (nav.globalPrivacyControl || nav.doNotTrack === "1") return;
+    // Browserele conduse de programe (testare, roboți care citesc pagini) se dau singure de gol: nu le numărăm.
+    if (nav.webdriver || !nav.languages?.length) return;
     const q = new URLSearchParams(window.location.search);
     // Sursa (site-ul din care a venit) contează doar la prima pagină; la paginile următoare omul vine din site.
     const ref = first.current ? document.referrer || null : null;

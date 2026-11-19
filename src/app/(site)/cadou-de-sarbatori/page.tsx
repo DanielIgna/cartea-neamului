@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
-import { getLocale, getT } from "@/i18n/server";
+import { getAppName, getLocale, getT } from "@/i18n/server";
 import { FAQ_KEYS, GIFT_PATH, giftJsonLd } from "@/lib/cadou-sarbatori";
 import { publicPageMetadata } from "@/lib/page-metadata";
 import { publicPlanSettings } from "@/lib/plan-cache";
@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
  * Nu are nimic despre oamenii din arbori; e la fel pentru toți vizitatorii.
  */
 export default async function GiftSeasonPage() {
-  const [{ t, locale, s, price, title, description }, tp] = await Promise.all([texts(), getT("Plata")]);
+  const [{ t, locale, s, price, title, description }, tp, appName] = await Promise.all([texts(), getT("Plata"), getAppName()]);
   const lim = tierLimits("basic", s);
   const nf = new Intl.NumberFormat(locale);
   const n = (v: number | null) => (v === null ? "∞" : nf.format(v));
@@ -53,11 +53,30 @@ export default async function GiftSeasonPage() {
     <section className="stack gift-season" style={{ maxWidth: 860, margin: "0 auto" }}>
       <JsonLd data={giftJsonLd({ title, description, home: t("home"), crumb: t("label"), faq, lang: locale })} />
       <nav aria-label="breadcrumb" className="crumbs"><Link href="/">{t("home")}</Link> <span aria-hidden="true">›</span> <span aria-current="page">{t("label")}</span></nav>
-      <div className="card gift-hero">
-        <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
-        <h1>{t("title", { price })}</h1>
-        <p className="gift-lead">{t("lead")}</p>
-        <GiftCta on={s.on} cta={t("cta")} note={note} soon={t("soon")} soonLink={t("soonLink")} />
+      {/* Sus, dintr-o privire (19.11.2026: pagina pierdea pe toți cei care intrau): cum arată darul, prețul, butonul și ce urmează. */}
+      <div className="card gift-hero gift-hero-split">
+        <div>
+          <div className="section-label" style={{ marginTop: 0 }}>{t("label")}</div>
+          <h1>{t("title", { price })}</h1>
+          <p className="gift-lead">{t("lead")}</p>
+          <GiftCta on={s.on} cta={t("cta")} note={null} soon={t("soon")} soonLink={t("soonLink")} />
+          {s.on && (
+            <ul className="gift-quick">
+              <li>{t("quick1")}</li><li>{t("quick2")}</li><li>{t("quick3")}</li>
+            </ul>
+          )}
+          {s.on && <p className="muted gift-buy-note">{t("buyNote")} {note}</p>}
+          <p className="gift-try">{t("tryFirst")} <Link href="/intrare?mod=cont-nou">{t("tryLink")} →</Link></p>
+        </div>
+        <figure className="gift-card-demo" aria-hidden="true">
+          <div className="gift-card-face">
+            <span className="gift-card-brand">{appName}</span>
+            <b className="gift-card-title">{t("cardTitle")}</b>
+            <span className="gift-card-for">{t("cardFor", { name: t("sampleName") })}</span>
+            <span className="gift-card-plan">{plan} · {price}</span>
+            <span className="gift-card-qr" />
+          </div>
+        </figure>
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{t("getTitle")}</h2>

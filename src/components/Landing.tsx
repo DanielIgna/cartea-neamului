@@ -7,6 +7,7 @@ import { whatsappUrl } from "@/lib/contact";
 import { getAppName, getT } from "@/i18n/server";
 import Image from "next/image";
 import { db } from "@/db";
+import { sql } from "drizzle-orm";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
 import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
@@ -15,6 +16,8 @@ import { getLocale } from "@/i18n/server";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
 import ZonaSugestii from "@/components/ZonaSugestii";
+import FanChart from "@/components/FanChart";
+import TryTree from "@/components/TryTree";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -22,43 +25,6 @@ import ZonaSugestii from "@/components/ZonaSugestii";
  * Fotografiile sunt din public/home, de pe Unsplash, cu licență liberă (sursele în public/home/CREDITS.md).
  * Numele din evantai sunt de probă, o familie din satele noastre, la fel în orice limbă.
  */
-
-/* Arborele în evantai: tu în mijloc, părinții, bunicii și străbunicii pe inele; tata în stânga, mama în dreapta. */
-const CX = 220, CY = 222;
-const RINGS = [
-  { r0: 58, r1: 108, names: [["Ion", "1948"], ["Maria", "1951"]] },
-  { r0: 110, r1: 160, names: [["Mihai", "1921"], ["Ana", "1924"], ["Vasile", "1919"], ["Elena", "1926"]] },
-  { r0: 162, r1: 208, names: [["Petru"], ["Ileana"], ["Toma"], ["Sofia"], ["Simion"], ["Lucia"], ["Iacob"], ["Irina"]] },
-] as const;
-const pt = (r: number, a: number) => [CX + r * Math.cos(a), CY + r * Math.sin(a)] as const;
-const f = (n: number) => n.toFixed(1);
-function sector(r0: number, r1: number, a0: number, a1: number) {
-  const [x0, y0] = pt(r1, a0), [x1, y1] = pt(r1, a1), [x2, y2] = pt(r0, a1), [x3, y3] = pt(r0, a0);
-  return `M${f(x0)} ${f(y0)}A${r1} ${r1} 0 0 1 ${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}A${r0} ${r0} 0 0 0 ${f(x3)} ${f(y3)}Z`;
-}
-const FAN = RINGS.flatMap((ring, depth) => ring.names.map((name, i) => {
-  const n = ring.names.length, a0 = Math.PI + (Math.PI * i) / n, a1 = Math.PI + (Math.PI * (i + 1)) / n;
-  const [tx, ty] = pt((ring.r0 + ring.r1) / 2, (a0 + a1) / 2);
-  return { d: sector(ring.r0, ring.r1, a0 + 0.008, a1 - 0.008), side: i < n / 2 ? "pat" : "mat", depth, tx, ty, name };
-}));
-const [ax, ay] = pt(222, Math.PI), [bx, by] = pt(222, 2 * Math.PI);
-
-function FanChart({ you }: { you: string }) {
-  return (
-    <svg className="lp-fan" viewBox="0 0 440 232" aria-hidden="true">
-      <path d={`M${f(ax)} ${f(ay)}A222 222 0 0 1 ${f(bx)} ${f(by)}`} className="lp-fan-orbit" />
-      {FAN.map((s, i) => (
-        <g key={i}>
-          <path d={s.d} className={`lp-seg lp-${s.side}-${s.depth + 1}`} />
-          <text x={f(s.tx)} y={f(s.ty + (s.name.length > 1 ? -2 : 4))} className={s.depth === 2 ? "lp-fan-sm" : "lp-fan-name"}>{s.name[0]}</text>
-          {s.name.length > 1 && <text x={f(s.tx)} y={f(s.ty + 13)} className="lp-fan-year">{s.name[1]}</text>}
-        </g>
-      ))}
-      <path d={`M${CX - 54} ${CY}A54 54 0 0 1 ${CX + 54} ${CY}Z`} className="lp-you" />
-      <text x={CX} y={CY - 18} className="lp-you-text">{you}</text>
-    </svg>
-  );
-}
 
 /* Desenele mici din „Ce găsești aici”. */
 const BARS = Array.from({ length: 38 }, (_, i) => Math.round(10 + 26 * Math.abs(Math.sin(i * 1.7) * Math.cos(i * 0.45))));
@@ -104,8 +70,15 @@ const START_GUIDES = [
   "registrele-de-stare-civila", "cum-citesti-un-registru-parohial", "familysearch-pentru-romania",
 ];
 
+/** Câte arbori noi s-au început în ultimele 30 de zile (dovada de sub „Începe chiar acum”); se arată doar de la 10 în sus. */
+const PROOF_MIN = 10;
+const cachedProof = unstable_cache(async () => {
+  const r = await db.execute(sql`select count(*)::int as c from tree where created_at > now() - interval '30 days'`);
+  return Number((r.rows?.[0] as { c?: number } | undefined)?.c ?? 0);
+}, ["home-proof"], { revalidate: 3600 });
+
 export default async function Landing({ deleted }: { deleted: boolean }) {
-  const [t, tc, th, tp, tg, tm, appName, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), getT("Meta"), getAppName(), cachedHomeImages(),
+  const [t, tc, th, tp, tg, tm, tt, proof, appName, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), getT("Meta"), getT("TryTree"), cachedProof().catch(() => 0), getAppName(), cachedHomeImages(),
     // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
   // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
@@ -153,12 +126,11 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           {ornament}
           <p className="lp-subtitle">{t.rich("heroTitleRich", { em })}</p>
           {t("brandNote") && <p className="lp-brand">{t("brandNote")}</p>}
-          <p className="lp-banner-lead">{t("heroText")}</p>
-          <div className="lp-actions">
-            <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
-            <Link className="lp-btn lp-btn-ghost" href="/intrare">{t("signIn")}</Link>
-          </div>
+          {/* Începutul pe loc (19.11.2026): numele tău, apoi părinții, desenați pe loc în evantai; contul vine după. */}
+          <TryTree />
           {sales && <p className="lp-free">{t("freeNote", { days: String(s.trialDays) })}</p>}
+          <p className="lp-signin">{tt("haveAccount")} <Link href="/intrare">{t("signIn")}</Link></p>
+          {proof >= PROOF_MIN && <p className="lp-proof">{tt("proof", { count: proof })}</p>}
         </div>
         <ul className="lp-trust">
           <li><Icon>{CHECK}</Icon>{t("trust1")}</li>

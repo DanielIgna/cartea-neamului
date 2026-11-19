@@ -51,6 +51,13 @@ export const roCadou = {
     cardHow: "Scanează codul sau deschide legătura, intră în cont și apasă „Primește anul”.",
     cardHint: "Din fereastra de tipărire poți alege și „Salvează ca PDF”.",
     cardBack: "Înapoi la darurile tale",
+    sampleName: "mama și tata",
+    quick1: "Primești legătura imediat după plată",
+    quick2: "Legătura nu expiră",
+    quick3: "Fără abonament, nimic reînnoit singur",
+    buyNote: "Ca să cumperi, îți faci întâi un cont gratuit cu emailul (un minut), apoi plătești cu cardul.",
+    tryFirst: "Vrei să vezi întâi cum e?",
+    tryLink: "Încearcă tu gratuit 7 zile",
   },
 } as const;
 export type CadouCatalog = Widen<typeof roCadou>;

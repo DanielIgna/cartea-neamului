@@ -6,6 +6,11 @@ import { canonicalUrl, publicPageMetadata, webPageJsonLd } from "@/lib/page-meta
 import { SITE_URL } from "@/lib/site-url";
 import { GRUPURI, GRUP_TITLU, REGIUNE_TITLU, SURSE, TIP_TITLU, ghidulSursei, type Sursa } from "@/lib/surse-publice";
 import { surse } from "@/lib/surse-publice-db";
+import CtaArbore, { CtaSus } from "@/components/continut/CtaArbore";
+import { getEntry } from "@/lib/continut/colectii";
+
+/** Ghidurile cele mai apropiate de surse, puse la final ca pas următor (19.11.2026: pagina pierdea pe toți cei care intrau). */
+const GHIDURI = ["cum-citesti-un-registru-parohial", "registrele-de-stare-civila", "familysearch-pentru-romania", "cum-ceri-un-act-de-stare-civila", "intrebari-pentru-bunici"];
 
 export const dynamic = "force-dynamic";
 const PATH = "/surse-publice";
@@ -83,6 +88,7 @@ export default async function SursePublicePage() {
         <nav className="surse-toc" aria-label="Grupele de surse">
           {grupuri.map(({ g }) => <a key={g} className="chip" href={`#grup-${g}`}>{GRUP_TITLU[g]}</a>)}
         </nav>
+        <CtaSus label="Începe arborele în care pui ce găsești" src="surse-publice" />
       </article>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Cum cauți, pe scurt</h2>
@@ -90,11 +96,18 @@ export default async function SursePublicePage() {
           {PASI.map(([h, t]) => <li key={h}><b>{h}.</b> {t}</li>)}
         </ol>
       </div>
-      {grupuri.map(({ g, items }) => (
-        <div className="card surse-grup" key={g} id={`grup-${g}`}>
-          <h2 style={{ marginTop: 0 }}>{GRUP_TITLU[g]}</h2>
-          {g === "platit" && <p className="muted">Nu e nevoie de ele ca să începi. Le punem aici pentru cine vrea să meargă mai departe; nu avem nicio înțelegere cu ele și nu primim nimic pentru linkuri.</p>}
-          <ul>{items.map((s) => <SourceItem key={s.id} s={s} />)}</ul>
+      {grupuri.map(({ g, items }, i) => (
+        <div key={g} className="stack">
+          <div className="card surse-grup" id={`grup-${g}`}>
+            <h2 style={{ marginTop: 0 }}>{GRUP_TITLU[g]}</h2>
+            {g === "platit" && <p className="muted">Nu e nevoie de ele ca să începi. Le punem aici pentru cine vrea să meargă mai departe; nu avem nicio înțelegere cu ele și nu primim nimic pentru linkuri.</p>}
+            <ul>{items.map((s) => <SourceItem key={s.id} s={s} />)}</ul>
+          </div>
+          {/* La mijlocul listei, pasul următor: un loc unde să pui ce găsești, înainte să se piardă printre file deschise. */}
+          {i === 1 && grupuri.length > 2 && (
+            <CtaArbore src="surse-publice" title="Ai găsit un nume? Pune-l în arbore"
+              text="Scrii numele, anul și satul, iar la „Sursa informației” lipești linkul registrului. Primele 7 zile sunt gratuite, fără card, și rudele pot vedea ce ai găsit." />
+          )}
         </div>
       ))}
       <div className="card">
@@ -104,8 +117,13 @@ export default async function SursePublicePage() {
           și <Link href="/resurse-genealogie">Resurse gratuite pentru genealogie</Link>, iar pentru pași mai pe larg, <Link href="/ghid">ghidurile noastre</Link>.
         </p>
         <p>Când găsești ceva, trece-l în arbore și scrie la „Sursa informației” de unde l-ai luat. Așa rămâne pentru copii și nepoți, verificat.</p>
-        <p><Link className="btn primary" href="/arbore-nou">Începe arborele familiei</Link></p>
       </div>
+      <nav className="card" aria-label="Ghiduri apropiate">
+        <h2 style={{ marginTop: 0 }}>Citește și</h2>
+        <ul>{GHIDURI.map((g) => getEntry("ghid", g)).filter((g) => !!g).map((g) => <li key={g!.path}><Link href={g!.path}>{g!.title}</Link></li>)}</ul>
+      </nav>
+      <CtaArbore src="surse-publice" title="Începe arborele familiei tale"
+        text="Pornești de la tine, părinți și bunici, apoi adaugi ce găsești în arhive, cu sursa lângă fiecare nume. Primele 7 zile sunt gratuite, fără card." />
     </section>
   );
 }

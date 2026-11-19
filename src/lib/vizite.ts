@@ -72,6 +72,27 @@ export function refHostOf(ref: string | null | undefined, ownHost: string | null
 const BOT = /bot|crawl|spider|slurp|preview|headless|lighthouse|pagespeed|facebookexternalhit|whatsapp\/|embedly|vercel|uptime|monitor|curl|wget|python|axios|node-fetch|go-http/i;
 export const isBot = (ua: string | null) => !ua || BOT.test(ua);
 
+/**
+ * Orașele mici din SUA unde sunt centrele de date mari (Amazon, Google, Microsoft, Meta), nu oameni: Vercel dă orașul serverului.
+ * În Analiză (19.11.2026) „vizitatorii din SUA” erau mai ales Boardman (Oregon) și Ashburn (Virginia), cu 97% plecați imediat:
+ * programe care deschid paginile cu un browser adevărat, deci nu se văd după „user-agent”. Nu le numărăm, iar ce s-a numărat
+ * deja de acolo se șterge la curățenie (cleanupVisits).
+ */
+export const DATACENTER_CITIES = ["boardman", "ashburn", "council bluffs", "the dalles", "prineville", "forest city"] as const;
+export function isDatacenter(country: string | null | undefined, city: string | null | undefined): boolean {
+  if (country !== "US" || !city) return false;
+  const c = cityOf(city)?.toLowerCase();
+  return !!c && (DATACENTER_CITIES as readonly string[]).includes(c);
+}
+
+/**
+ * Robot sau om? Pe lângă „user-agent”: un browser adevărat trimite mereu limba (Accept-Language), iar programele care
+ * deschid pagini singure de multe ori nu; și orașele cu centre de date de mai sus.
+ */
+export function looksAutomated(ctx: { ua: string | null; lang?: string | null; country?: string | null; city?: string | null }): boolean {
+  return isBot(ctx.ua) || (ctx.lang !== undefined && !ctx.lang?.trim()) || isDatacenter(ctx.country, ctx.city);
+}
+
 export function deviceOf(ua: string, width: number | null): "telefon" | "tabletă" | "calculator" {
   if (/ipad|tablet|kindle|silk/i.test(ua) || (/android/i.test(ua) && !/mobile/i.test(ua))) return "tabletă";
   if (/mobi|iphone|ipod|android.+mobile|windows phone/i.test(ua)) return "telefon";
@@ -126,8 +147,9 @@ export function cityOf(raw: string | null | undefined): string | null {
 /** Ține minte o pagină deschisă. Întoarce false când n-a numărat (robot, adresă ciudată). */
 export async function recordVisit(db: Db, v: Visit, ctx: {
   ip: string | null; ua: string | null; host: string | null; country: string | null; region?: string | null; city?: string | null; logged: boolean;
+  acceptLanguage?: string | null;
 }) {
-  if (isBot(ctx.ua)) return false;
+  if (looksAutomated({ ua: ctx.ua, lang: ctx.acceptLanguage, country: ctx.country, city: ctx.city })) return false;
   const path = normalizePath(v.path);
   if (!path || path.startsWith("/admin") || path.startsWith("/api") || path.startsWith("/pub")) return false;
   const now = new Date();
@@ -154,4 +176,6 @@ export async function recordVisit(db: Db, v: Visit, ctx: {
 /** Curățenie: vizitele mai vechi de 13 luni pleacă. */
 export async function cleanupVisits(db: Db) {
   await db.execute(sql`delete from page_view where day < (current_date - interval '13 months')`);
+  // Vizitele numărate înainte de 19.11.2026 din orașele cu centre de date (vezi DATACENTER_CITIES): roboți, nu oameni.
+  await db.execute(sql`delete from page_view where country = 'US' and lower(city) in (${sql.join(DATACENTER_CITIES.map((c) => sql`${c}`), sql`, `)})`);
 }

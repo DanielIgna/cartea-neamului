@@ -47,5 +47,12 @@ export const enGBCadou: CadouCatalog = {
     cardHow: "Scan the code or open the link, sign in and press “Receive the year”.",
     cardHint: "In the print window you can also choose “Save as PDF”.",
     cardBack: "Back to your gifts",
+    sampleName: "Mum and Dad",
+    quick1: "You get the link right after paying",
+    quick2: "The link never expires",
+    quick3: "No subscription, nothing renews by itself",
+    buyNote: "To buy, first make a free account with your email (one minute), then pay by card.",
+    tryFirst: "Want to see what it’s like first?",
+    tryLink: "Try it free for 7 days",
   },
 };
