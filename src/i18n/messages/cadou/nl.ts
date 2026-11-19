@@ -47,5 +47,12 @@ export const nlCadou: CadouCatalog = {
     cardHow: "Scan de code of open de link, log in en druk op ‘Ontvang het jaar’.",
     cardHint: "In het afdrukvenster kun je ook ‘Opslaan als PDF’ kiezen.",
     cardBack: "Terug naar je cadeaus",
+    sampleName: "mama en papa",
+    quick1: "Je krijgt de link direct na betaling",
+    quick2: "De link verloopt niet",
+    quick3: "Geen abonnement, niets verlengt vanzelf",
+    buyNote: "Om te kopen maak je eerst een gratis account met je e-mail (één minuut), daarna betaal je met je kaart.",
+    tryFirst: "Wil je eerst zien hoe het is?",
+    tryLink: "Probeer het 7 dagen gratis",
   },
 };

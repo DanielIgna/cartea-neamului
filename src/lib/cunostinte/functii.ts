@@ -494,6 +494,14 @@ export const FUNCTIONS: Fn[] = [
     env: ["RESEND_API_KEY"],
   },
   {
+    key: "incepe-acasa", name: "„Începe chiar acum” pe prima pagină și pașii următori pe paginile care pierdeau vizitatori", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Ce scrie vizitatorul stă doar în browserul lui până își face contul; nu pleacă nicăieri.",
+    what: "În bannerul primei pagini vizitatorul își scrie numele și vede pe loc evantaiul cu el în mijloc, apoi părinții; „Salvează arborele” duce la contul nou, unde vede ce a scris, iar primii pași pornesc completați. Salut pentru cine vine din Facebook, drumul spre dar pentru linkurile de Crăciun, numărul de arbori începuți în ultima lună (de la 10 în sus). Pe Surse publice: îndemn sus, la mijloc și la final, plus ghiduri apropiate; pe Cadou de sărbători: cum arată cardul, ce urmează după plată, „Încearcă tu întâi”. În Analiză nu se mai numără orașele cu centre de date din SUA (Boardman, Ashburn…), browserele conduse de programe și cererile fără limbă.",
+    engine: ["src/components/TryTree.tsx", "src/components/FanChart.tsx", "src/lib/incepe-draft.ts", "src/components/DraftNote.tsx", "src/components/QuickStart.tsx", "src/lib/vizite.ts", "src/components/VisitBeacon.tsx"],
+    pages: ["/", "/intrare", "/surse-publice", "/cadou-de-sarbatori", "/admin/analiza"],
+    dashboard: "/admin/analiza",
+    tests: ["tests/incepe-acasa.test.ts"],
+  },
+  {
     key: "scoli", name: "Pentru școli: fișe gratuite, coduri pe clasă, arborele de tipărit", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Face coduri de reducere în Stripe; codurile se fac doar după aprobarea manuală din Admin.",
     what: "/scoala cu paginile pe clase (a III-a, a IV-a, gimnaziu-istorie), fișe PDF gratuite și kitul profesorului (PDF + Word), fișele completabile pe ecran cu cont, formularul „Vreau coduri pentru clasa mea”, Admin → Școli (aprobare, cod Stripe pe clasă cu procent, folosiri și expirare, conturi și plăți pe cod), linkul /scoala-cod/<COD> care ține minte codul și îl pune singur la plată, butonul „Printează pentru proiectul de la școală” (A4/A3).",
     engine: ["src/lib/scoli.ts", "src/lib/scoala.ts", "src/app/scoala-actions.ts", "src/components/scoala/SchoolPageView.tsx", "src/components/scoala/SchoolRequestForm.tsx", "src/components/scoala/SheetEditor.tsx", "scripts/fise-scoala.cjs", "scripts/fise-scoala-docx.py"],

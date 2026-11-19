@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/access";
 import { googleEnabled, turnstileSiteKey } from "@/lib/auth";
 import PageIntl from "@/i18n/PageIntl";
 import AuthForm from "@/components/AuthForm";
+import DraftNote from "@/components/DraftNote";
 
 export const dynamic = "force-dynamic";
 /** Intrarea în cont nu are ce căuta în Google (pe lângă robots.txt). */
@@ -14,5 +15,5 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
   const { next, mod, eroare, error, scoala } = await searchParams;
   const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
   if (await currentUser()) redirect(safeNext);
-  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}>{scoala && <p className="ok-box" style={{ marginTop: 0 }}>Codul clasei e ținut minte: după zilele gratuite, reducerea școlii se pune singură la plată.</p>}<PageIntl ns={["TwoStep"]}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} turnstileKey={turnstileSiteKey()} /></PageIntl></div>;
+  return <div className="card" style={{ maxWidth: 440, margin: "0 auto" }}>{scoala && <p className="ok-box" style={{ marginTop: 0 }}>Codul clasei e ținut minte: după zilele gratuite, reducerea școlii se pune singură la plată.</p>}{mod === "cont-nou" && <DraftNote />}<PageIntl ns={["TwoStep"]}><AuthForm next={safeNext} startWithSignUp={mod === "cont-nou"} google={googleEnabled()} oauthError={eroare ?? error} turnstileKey={turnstileSiteKey()} /></PageIntl></div>;
 }

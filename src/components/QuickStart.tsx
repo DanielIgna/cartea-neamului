@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useTranslations } from "use-intl";
 import { startFamilyTree } from "@/app/pornire-actions";
 import type { StartInput } from "@/lib/family-start";
+import { clearDraft, readDraft } from "@/lib/incepe-draft";
 
 /**
  * Primii pași după înscriere (Daniel, 17.11.2026): „Adaugă-te pe tine, apoi pe părinți și bunici”, cel mult 3 câmpuri pe ecran,
@@ -29,6 +30,17 @@ export default function QuickStart() {
   const head = useRef<HTMLHeadingElement>(null);
   const first = useRef(true);
   useEffect(() => { if (first.current) { first.current = false; return; } head.current?.focus(); }, [i]);
+  // Ce a scris omul în „Începe chiar acum” de pe prima pagină, înainte de cont (src/components/TryTree.tsx), completează pașii.
+  const tt = useTranslations("TryTree");
+  const [kept, setKept] = useState(false);
+  useEffect(() => {
+    const d = readDraft();
+    if (!d) return;
+    setMe((m) => ({ ...m, given: d.given, surname: d.surname }));
+    if (d.father) setFather((p) => ({ ...p, given: d.father, surname: d.surname }));
+    if (d.mother) setMother((p) => ({ ...p, given: d.mother }));
+    setKept(true);
+  }, []);
 
   const screen = SCREENS[i];
   const last = i === SCREENS.length - 1;
@@ -52,6 +64,7 @@ export default function QuickStart() {
       ff: pick(ff, dad, false), fm: typed(fm) ? { ...fm, surname: fm.surname.trim() || dad, living: false } : undefined,
       mf: pick(mf, momMaiden, false), mm: typed(mm) ? { ...mm, surname: mm.surname.trim() || momMaiden, living: false } : undefined,
     };
+    clearDraft();
     const r = await startFamilyTree(input);
     if (r?.error) setErr(r.error);
   });
@@ -90,6 +103,7 @@ export default function QuickStart() {
         {screen === "me" && (
           <>
             <h3 ref={head} tabIndex={-1}>{tf("whoTitle")}</h3>
+            {kept && <p className="ok-box qs-kept" role="status">{tt("quickKept")}</p>}
             {field(tf("given"), me.given, (v) => setMe({ ...me, given: v }), { auto: "given-name" })}
             {field(tf("surname"), me.surname, (v) => setMe({ ...me, surname: v }), { auto: "family-name" })}
             <div className="qs-sex" role="radiogroup" aria-label={tf("youAre")}>
