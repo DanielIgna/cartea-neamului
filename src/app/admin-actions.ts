@@ -20,6 +20,7 @@ import { activeServiceAccount, listSites, parseServiceAccount, parseVerification
 import { SITE_URL } from "@/lib/site-url";
 import { engineSettings, publishedMap, saveEngineSettings } from "@/lib/motor-seo/motor";
 import { runIndexNow } from "@/lib/seo/indexnow";
+import { setPlanDone } from "@/lib/seo/plan-indexare";
 import { TREE_MODES, USER_MODES, setTreeLimit, setUserLimit, type TreeMode, type UserMode } from "@/lib/edit-limits";
 
 export type AdminFormState = { ok?: string; error?: string } | null;
@@ -258,6 +259,15 @@ export async function decideStrategIdea(form: FormData): Promise<void> {
   const { decideIdea } = await import("@/lib/seo/strateg");
   await decideIdea(db, id, status as "acceptat" | "respins" | "facut" | "redeschide", me.id);
   revalidatePath("/admin/seo");
+}
+
+/** Admin → SEO → Indexare → Plan de indexare: bifa „am cerut în Google” pentru o adresă. */
+export async function togglePlanIndexare(path: string, on: boolean): Promise<AdminFormState> {
+  const me = await admin();
+  if (!me) return { error: "Nu ai voie aici." };
+  if (typeof path !== "string" || !(await setPlanDone(db, path, !!on, me.id))) return { error: "Adresa nu e în plan." };
+  revalidatePath("/admin/seo");
+  return { ok: on ? "Bifat." : "Debifat." };
 }
 
 /**

@@ -7,7 +7,8 @@
  * Statele fără nicio istorie românească documentată rămân în afara Google până găsim fapte (pragul paginilor de diaspora).
  * Recenzia: /mnt/project-files/seo-sua-canada/istorie-state-ciorna.md (scripts/istorie-locala-md.ts).
  */
-export const ISTORIE_LOCALA_APROBATA = false;
+// Aprobată de Daniel la 19.11.2026 („publicale pe cele de pe America și Canada prima dată”).
+export const ISTORIE_LOCALA_APROBATA = true;
 
 export type LocalHistory = { ro: string[]; en: string[]; sources: string[] };
 
@@ -236,4 +237,63 @@ export const ISTORIE_LOCALA: Record<string, LocalHistory> = {
 };
 
 /** Paragrafele de adăugat la o pagină de stat sau provincie: nimic cât ciorna nu e aprobată. */
+const ACS_STATE = "US Census Bureau, American Community Survey 5 ani 2020–2024, tabelul B04006 (ascendență română), prin worldpopulationreview.com";
+
+/**
+ * Ciorne noi (19.11.2026), după aprobarea primului lot: NU apar pe site până nu le aprobă Daniel; atunci se mută în ISTORIE_LOCALA.
+ * Se citesc în același fișier de recenzie (scripts/istorie-locala-md.ts).
+ */
+export const ISTORIE_LOCALA_CIORNE: Record<string, LocalHistory> = {
+  colorado: {
+    ro: [
+      "Potrivit enciclopediei Gale despre românii americani, cam nouă la sută dintre imigranții români s-au așezat în Colorado, Dakota de Nord și de Sud, Idaho și Wyoming, unde au lucrat în agricultură și la ferme de vite, ca proprietari sau administratori.",
+      "Pe 10 noiembrie 1926, regina Maria a României a trecut cu mașina pe strada a 16-a din Denver, alături de fiul ei, în turneul ei prin America.",
+      "La recensământul din 2000, 4.431 de locuitori ai statului s-au declarat de origine română; în estimările Census Bureau pentru 2020–2024 sunt aproximativ 6.000.",
+    ],
+    en: [
+      "According to the Gale encyclopedia entry on Romanian Americans, about nine percent of Romanian immigrants settled in Colorado, North and South Dakota, Idaho and Wyoming, where they worked in farming and ranching, as owners or managers.",
+      "On 10 November 1926, Queen Marie of Romania rode with her son down Sixteenth Street in Denver during her tour of America.",
+      "In the 2000 census, 4,431 Coloradans reported Romanian ancestry; Census Bureau estimates for 2020–2024 put the number at about 6,000.",
+    ],
+    sources: [GALE, "Denver Public Library Digital Collections, fotografia „Queen Marie of Rumania in car with son in Denver”, 1926", "OrthoChristian.com, „Second in Colorado” (2010), cu datele recensământului din 2000", ACS_STATE],
+  },
+  virginia: {
+    ro: [
+      "Legăturile românilor cu Virginia sunt vechi: după relatările despre preotul transilvănean Samuil Damian, acesta a călătorit în 1748 prin Maryland, Carolina de Nord și Virginia, înainte să se stabilească pentru câțiva ani la Charleston, în Carolina de Sud.",
+      "În Războiul Civil, căpitanul Nicolae Dunca (1825–1862), din Regimentul 9 de voluntari New York, a murit în bătălia de la Cross Keys, în Virginia, în 1862.",
+      "Azi, estimările Census Bureau pentru 2020–2024 numără în Virginia aproximativ 8.800 de oameni de origine română, mulți în nordul statului, lângă Washington.",
+    ],
+    en: [
+      "Romanian ties to Virginia go back a long way: according to accounts of the Transylvanian priest Samuel Damian, he travelled through Maryland, North Carolina and Virginia in 1748 before settling for a few years in Charleston, South Carolina.",
+      "In the Civil War, Captain Nicholas Dunca (1825–1862) of the 9th New York Volunteer Infantry was killed at the Battle of Cross Keys, Virginia, in 1862.",
+      "Today, Census Bureau estimates for 2020–2024 count about 8,800 people of Romanian ancestry in Virginia, many of them in the northern part of the state, near Washington.",
+    ],
+    sources: ["FEEFHS, „Romanians in America”", GALE, ACS_STATE],
+  },
+  "west-virginia": {
+    ro: [
+      "Românii din Virginia de Vest au fost mai ales mineri. Raportul Comisiei pentru Imigrare a Congresului (1908–1911) îi numără printre muncitorii veniți după greva din 1902 în bazinele carbonifere de pe râurile New și Kanawha (comitatele Fayette, Kanawha și Raleigh) și în bazinul Pocahontas (comitatele McDowell, Mercer, Mingo și Logan).",
+      "Erau puțini: la 30 iunie 1908, statisticile minelor din stat arătau doar 8 „români” din peste 51.000 de mineri care și-au declarat naționalitatea; studiul comisiei a găsit 33 printre minerii născuți în străinătate.",
+      "Pentru urmașii lor, listele de angajați ale companiilor miniere, recensămintele din 1910 și 1920 și actele de naturalizare ale comitatelor de mai sus sunt locul de pornire. Azi, estimările Census Bureau pentru 2020–2024 numără în stat aproximativ 700 de oameni de origine română.",
+    ],
+    en: [
+      "Romanians in West Virginia were mostly miners. The report of the US Immigration Commission (1908–1911) lists them among the workers who came after the 1902 strike to the New and Kanawha River coal fields (Fayette, Kanawha and Raleigh counties) and to the Pocahontas field (McDowell, Mercer, Mingo and Logan counties).",
+      "They were few: on 30 June 1908 the state's mine statistics showed only 8 'Roumanians' among more than 51,000 miners who reported a nationality; the commission's own survey found 33 among foreign-born miners.",
+      "For their descendants, mining company payrolls, the 1910 and 1920 censuses and naturalization records from these counties are the place to start. Census Bureau estimates for 2020–2024 count about 700 people of Romanian ancestry in the state today.",
+    ],
+    sources: ["West Virginia Archives and History, „Immigrant Labor in West Virginia Coal Mines” (din raportul Comisiei pentru Imigrare a SUA)", ACS_STATE],
+  },
+  nevada: {
+    ro: [
+      "Comunitatea românească din Nevada e nouă și s-a format mai ales după 1990, în jurul orașului Las Vegas. Din 1996 românii de aici au o parohie proprie, unul dintre locurile unde se strâng la sărbători; la împlinirea a 25 de ani, în 2021, au venit aproape 150 de oameni.",
+      "Estimările Census Bureau pentru 2020–2024 numără în Nevada aproximativ 5.000 de oameni de origine română.",
+    ],
+    en: [
+      "Nevada's Romanian community is recent and grew mostly after 1990, around Las Vegas. Since 1996 the Romanians there have had their own parish, one of the places where they gather for holidays; almost 150 people came to its 25th anniversary in 2021.",
+      "Census Bureau estimates for 2020–2024 count about 5,000 people of Romanian ancestry in Nevada.",
+    ],
+    sources: ["Mitropolia Ortodoxă Română a celor două Americi, „The 25th anniversary of the Romanian Orthodox Church in Las Vegas” (2021)", ACS_STATE],
+  },
+};
+
 export const localHistory = (slug: string): LocalHistory | null => (ISTORIE_LOCALA_APROBATA ? ISTORIE_LOCALA[slug] ?? null : null);

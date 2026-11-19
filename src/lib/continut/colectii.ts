@@ -14,6 +14,7 @@ import { list, parseBlocks, parseFrontmatter, plainText, type Block } from "./ma
  *   terms       – termeni din glosar, după adresă
  *   alt         – (glosar) alte forme ale termenului
  *   category    – (ghid) grupa din lista de ghiduri
+ *   lang        – (ghid) „en” pentru ghidurile în engleză pentru SUA și Canada (Daniel, 19.11.2026); implicit „ro”
  */
 export type Collection = "ghid" | "glosar";
 export type Entry = {
@@ -21,6 +22,8 @@ export type Entry = {
   title: string; seoTitle: string; description: string;
   updated: Date; published: Date; related: string[]; terms: string[]; alt: string[]; category: string;
   blocks: Block[]; words: number;
+  /** Limba textului: „ro” sau „en” (ghidurile pentru americanii și canadienii de origine română). */
+  lang: "ro" | "en";
 };
 
 const DIR = (c: Collection) => path.join(process.cwd(), "content", c);
@@ -45,7 +48,7 @@ export function loadCollection(c: Collection): Entry[] {
       title: data.title ?? slug, seoTitle: seoTitle(c, data.title ?? slug, data.seo), description: data.description ?? "",
       updated, published: data.published ? new Date(`${data.published}T00:00:00Z`) : updated,
       related: list(data.related), terms: list(data.terms), alt: list(data.alt), category: data.category ?? "Altele",
-      blocks, words: plainText(blocks).split(/\s+/).filter(Boolean).length,
+      blocks, words: plainText(blocks).split(/\s+/).filter(Boolean).length, lang: data.lang === "en" ? "en" : "ro",
     };
   });
   entries.sort((a, b) => a.title.localeCompare(b.title, "ro"));

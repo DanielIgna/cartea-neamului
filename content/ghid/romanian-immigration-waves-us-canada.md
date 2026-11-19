@@ -3,6 +3,7 @@ title: Romanian Immigration to the US and Canada: Every Wave from the 1890s to T
 seo: Romanian Immigration to the US & Canada, 1890s to Today
 description: When did your Romanian ancestors cross the ocean? The waves of Romanian immigration to the US and Canada, from the 1890s to communism and after 1989.
 category: Diaspora
+updated: 2026-11-19
 lang: en
 cuvant: romanian immigration to america history
 related: emigrarea-in-america, nume-schimbate-si-variante, bucovina-registre-si-arhive, hpdt-registrele-din-transilvania, svabii-banateni-genealogie, stramosi-evrei-din-romania

@@ -23,20 +23,23 @@ describe("sugestii după zonă (SUA și Canada)", () => {
     expect(suggestFor("RO", "CJ", "ro")).toBeNull();
     expect(suggestFor(null, null, "ro")).toBeNull();
   });
-  it("ciornele nu apar ca sugestii până nu sunt publicate", () => {
+  it("ghidurile pentru America de Nord publicate apar ca sugestii", () => {
     const s = suggestFor("US", "IL", "ro")!;
-    expect(s.guides.map((g) => g.href)).not.toContain("/ghid/romanian-immigration-waves-us-canada");
+    expect(s.guides.length).toBe(4);
   });
 });
 
 import { ISTORIE_LOCALA, ISTORIE_LOCALA_APROBATA } from "@/lib/diaspora/istorie-locala";
 import { REGIONS, regionIndexable } from "@/lib/diaspora/america";
 
-describe("istoria locală pe state și provincii (ciornă)", () => {
-  it("e ciornă: nu schimbă paginile până o aprobă Daniel", () => {
-    expect(ISTORIE_LOCALA_APROBATA).toBe(false);
-    expect(REGIONS.find((r) => r.country === "us" && r.slug === "north-dakota" && r.kind === "state")!.notes.ro ?? []).toEqual([]);
-    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "arizona")!)).toBe(false);
+describe("istoria locală pe state și provincii", () => {
+  it("aprobată (19.11.2026): statele cu istorie verificată au text și intră în Google", () => {
+    expect(ISTORIE_LOCALA_APROBATA).toBe(true);
+    const nd = REGIONS.find((r) => r.country === "us" && r.slug === "north-dakota" && r.kind === "state")!;
+    expect(nd.notes.en?.join(" ")).toMatch(/Dickinson/);
+    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "arizona")!)).toBe(true);
+    // Statele fără istorie documentată rămân în afara Google (Daniel, 19.11.2026).
+    expect(regionIndexable(REGIONS.find((r) => r.country === "us" && r.slug === "wyoming")!)).toBe(false);
   });
   it("fiecare stat are română, engleză și surse, iar slug-ul există", () => {
     for (const [slug, h] of Object.entries(ISTORIE_LOCALA)) {
@@ -48,16 +51,16 @@ describe("istoria locală pe state și provincii (ciornă)", () => {
 });
 
 describe("zonele din Europa", () => {
-  it("țările publicate au intrare; regiunile în ciornă nu apar până la aprobare", async () => {
+  it("țările și regiunile publicate au intrare, cu pagina în limba omului", async () => {
     const { EUROPE_ZONES } = await import("@/lib/zona/europa");
     const { suggestFor } = await import("@/lib/zona/registru");
     expect(EUROPE_ZONES.some((z) => z.country === "IT" && !z.region && z.page === "/diaspora/italia")).toBe(true);
-    // Ucraina și regiunile europene sunt încă ciorne: fără pagină publică, fără sugestie.
-    expect(EUROPE_ZONES.some((z) => z.country === "UA")).toBe(false);
-    expect(EUROPE_ZONES.some((z) => z.region)).toBe(false);
+    expect(EUROPE_ZONES.some((z) => z.country === "UA" && z.region === "77" && z.page === "/diaspora/ucraina/cernauti")).toBe(true);
     const it = suggestFor("IT", "62", "it");
     expect(it?.country.href).toBe("/it/diaspora/italia");
-    expect(it?.region).toBeNull();
-    expect(suggestFor("DE", "BY", "en-GB")?.country.href).toBe("/en/diaspora/germania");
+    expect(it?.region).toEqual({ href: "/it/diaspora/italia/lazio", label: "Lazio" });
+    expect(suggestFor("IT", "RM", "ro")?.region?.href).toBe("/diaspora/italia/lazio");
+    expect(suggestFor("DE", "BY", "de")?.region?.href).toBe("/de/diaspora/germania/bayern");
+    expect(suggestFor("UA", "51", "ro")?.region?.label).toBe("Sudul Basarabiei (regiunea Odesa)");
   });
 });

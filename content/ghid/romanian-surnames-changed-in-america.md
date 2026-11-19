@@ -3,6 +3,7 @@ title: Romanian Surnames in America and Canada: How Names Changed and How to Fin
 seo: Romanian Surnames in America: How Names Changed
 description: John was once Ioan, and Moldovan became Moldavan. How Romanian names changed in the US and Canada, and how to find your ancestors under every spelling.
 category: Diaspora
+updated: 2026-11-19
 lang: en
 cuvant: romanian surnames america
 related: nume-schimbate-si-variante, emigrarea-in-america, de-unde-vine-numele-tau-de-familie, documente-in-maghiara-si-germana, porecle-si-nume-in-sat, cum-gasesti-numele-de-fata-al-bunicii
