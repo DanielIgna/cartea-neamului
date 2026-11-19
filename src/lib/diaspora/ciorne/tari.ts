@@ -36,4 +36,38 @@ export const DRAFT_COUNTRIES: Country[] = [
       { name: "Arhivele Naționale ale României", url: "https://arhivelenationale.ro", note: { ro: "serviciul județean Suceava păstrează o parte din documentele Bucovinei, iar alte servicii au dosarele refugiaților din 1940 și 1944", en: "the Suceava county branch holds part of the Bukovina records; other branches hold files on the 1940 and 1944 refugees" } },
     ],
   },
+  {
+    // Ciornă (Daniel, 19.11.2026: Norvegia, printre comunitățile „pe locuri secundare”). Cifrele: SSB, 1 ianuarie 2026;
+    // adresa ambasadei: lista oficială a Comisiei Europene (consular-protection.ec.europa.eu).
+    slug: "norvegia", code: "NO", flag: "🇳🇴", langs: ["en", "ro"], eu: false, icr: null,
+    name: { ro: "Norvegia", en: "Norway" },
+    where: { ro: "în Norvegia", en: "in Norway" },
+    size: {
+      ro: "18.893 de imigranți din România și 3.347 de copii născuți în Norvegia din părinți imigranți din România, la 1 ianuarie 2026, după Statistisk sentralbyrå (SSB)",
+      en: "18,893 immigrants from Romania and 3,347 Norwegian-born children of Romanian immigrant parents on 1 January 2026, according to Statistics Norway (SSB)",
+    },
+    cities: ["Oslo", "Bergen", "Trondheim", "Stavanger"],
+    history: {
+      ro: [
+        "Cei mai mulți români din Norvegia au venit după 2007, când România a intrat în Uniunea Europeană și, prin Spațiul Economic European, s-a deschis drumul spre piața muncii norvegiană. Au venit muncitori în construcții, în pescuit și în industria peștelui, în agricultură și în curățenie, dar și medici, asistente și ingineri.",
+        "Comunitatea are deja o a doua generație: la începutul lui 2026, statistica norvegiană număra peste 3.300 de copii născuți în Norvegia din părinți veniți din România. Mulți dintre ei vorbesc norvegiana mai bine decât româna, iar bunicii le sunt cunoscuți mai ales din vacanțe și de la telefon. Pentru ei, un arbore al familiei făcut împreună cu bunicii e felul cel mai simplu de a afla de unde vin.",
+        "Norvegia nu e în Uniunea Europeană, așa că regulamentul european care scutește actele de stare civilă de apostilă nu se aplică aici: actele românești folosite în Norvegia au nevoie de apostilă și traducere, iar cele norvegiene folosite în România de apostilă. Certificatele norvegiene (de pildă cel de naștere) se cer de la Folkeregisteret, registrul populației ținut de Skatteetaten.",
+        "Pentru familiile mixte româno-norvegiene, partea norvegiană a arborelui se face ușor: Arkivverket, Arhivele Naționale ale Norvegiei, are pe Digitalarkivet, gratuit, recensămintele și registrele parohiale vechi. Partea românească pornește de la bunici: nume întregi, satul, anii, apoi arhiva județeană de care ține satul.",
+        "Ambasada României se află în Oscars gate 51, 0244 Oslo, după lista oficială a Comisiei Europene. Prin ea se cer actele din România, se dau procuri și se transcrie nașterea copiilor născuți în Norvegia, cu programare pe econsulat.ro.",
+      ],
+      en: [
+        "Most Romanians in Norway arrived after 2007, when Romania joined the European Union and, through the European Economic Area, the way to the Norwegian labour market opened. They came to work in construction, fishing and fish processing, farming and cleaning, and also as doctors, nurses and engineers.",
+        "The community already has a second generation: at the start of 2026, Statistics Norway counted more than 3,300 Norwegian-born children of parents who came from Romania. Many of them speak Norwegian better than Romanian and know their grandparents mostly from holidays and phone calls. For them, a family tree made together with the grandparents is the simplest way to find out where they come from.",
+        "Norway is not in the European Union, so the EU regulation that exempts civil-status documents from the apostille does not apply here: Romanian documents used in Norway need an apostille and a translation, and Norwegian documents used in Romania need an apostille. Norwegian certificates (a birth certificate, for example) come from Folkeregisteret, the population register kept by the Norwegian Tax Administration (Skatteetaten).",
+        "For mixed Romanian-Norwegian families, the Norwegian side of the tree is easy: Arkivverket, the National Archives of Norway, has old censuses and parish registers online for free on Digitalarkivet. The Romanian side starts with the grandparents: full names, the village, the years, and then the county archive the village belongs to.",
+        "The Embassy of Romania is at Oscars gate 51, 0244 Oslo, according to the European Commission's official list. Records from Romania, powers of attorney and the transcription of births of children born in Norway go through the embassy, with appointments on econsulat.ro.",
+      ],
+    },
+    records: [
+      { name: "Digitalarkivet (Arkivverket)", url: "https://www.digitalarkivet.no", note: { ro: "recensămintele și registrele parohiale norvegiene, online și gratuit", en: "Norwegian censuses and parish registers, online and free" } },
+      { name: "Skatteetaten: Folkeregisteret", url: "https://www.skatteetaten.no/en/person/national-registry/", note: { ro: "registrul populației: certificate de naștere și de stare civilă", en: "the population register: birth and civil-status certificates" } },
+      { name: "Statistisk sentralbyrå (SSB)", url: "https://www.ssb.no/en/befolkning/innvandrere/statistikk/innvandrere-og-norskfodte-med-innvandrerforeldre", note: { ro: "câți imigranți din fiecare țară trăiesc în Norvegia", en: "how many immigrants from each country live in Norway" } },
+      { name: "Ambasada României la Oslo", url: "http://oslo.mae.ro", note: { ro: "acte, procuri și transcrieri, cu programare pe econsulat.ro", en: "records, powers of attorney and transcriptions, booked on econsulat.ro" } },
+    ],
+  },
 ];

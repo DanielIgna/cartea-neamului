@@ -34,7 +34,7 @@ import { draftEntries as diasporaDrafts, nameOf as diasporaName } from "@/lib/di
 import { draftKey } from "@/lib/diaspora/ciorne";
 import { ownWords } from "@/lib/diaspora/extins";
 import Prose from "@/components/continut/Prose";
-import { currentDay, planDays, planDone } from "@/lib/seo/plan-indexare";
+import { currentDay, planDays, planDone, planItemsEurope } from "@/lib/seo/plan-indexare";
 import { IndexPlanCheck } from "@/components/admin/IndexPlanCheck";
 
 export const dynamic = "force-dynamic";
@@ -537,6 +537,7 @@ function Indexing({ pages, href, sp, gscPages }: { pages: AuditPage[]; href: (o:
         <Stat label="Ating ținta" value={num(pages.filter((p) => p.quality?.meetsTarget).length)} hint={`din ${num(pages.filter((p) => p.quality).length)} pagini cu scor`} />
       </div>
       <IndexPlan gscPages={gscPages} />
+      <IndexPlan gscPages={gscPages} europe />
       <IndexRequests pages={pages} gscPages={gscPages} />
       <InternalLinks pages={pages} />
       <div className="card">
@@ -943,16 +944,17 @@ function KeywordDraft() {
  * Planul pe zile pentru SUA și Canada (Daniel, 19.11.2026): câte 10 adrese pe zi, în ordinea priorității, cu bifă pentru ce ai
  * cerut deja în Search Console. Bifele se păstrează în baza de date; o adresă care apare deja în Google e marcată singură.
  */
-async function IndexPlan({ gscPages }: { gscPages?: ReturnType<typeof gscByPath> }) {
-  const days = planDays();
+async function IndexPlan({ gscPages, europe }: { gscPages?: ReturnType<typeof gscByPath>; europe?: boolean }) {
+  const days = europe ? planDays(planItemsEurope()) : planDays();
   const done = await planDone(db);
   const now = currentDay(days, done);
   const total = days.reduce((n, d) => n + d.items.length, 0);
   const ticked = days.reduce((n, d) => n + d.items.filter((x) => done[x.path]).length, 0);
   const inGoogle = (p: string) => !!gscPages?.get(p)?.impressions;
   return (
-    <div className="card" id="plan-indexare">
-      <h2 style={{ marginTop: 0 }}>Plan de indexare: SUA și Canada</h2>
+    <div className="card" id={europe ? "plan-indexare-europa" : "plan-indexare"}>
+      <h2 style={{ marginTop: 0 }}>{europe ? "Plan de indexare: Europa (după mărimea comunităților)" : "Plan de indexare: SUA și Canada"}</h2>
+      {europe ? <p className="muted" style={{ marginTop: 0 }}>Marea Britanie și Spania primele, apoi Italia, Germania, Austria, Franța și țările mai mici. Fiecare pagină e cerută în limba țării (pentru copiii crescuți acolo) și în română (pentru părinți și bunici). Dacă ai cereri libere după planul SUA și Canada, continuă aici.</p> : null}
       <p className="muted" style={{ marginTop: 0 }}>Câte 10 adrese pe zi, cât primește Google. Pentru fiecare: „Cere în Google” deschide Search Console la adresa potrivită, apeși „Solicită indexarea”, apoi bifezi aici. Bifate: {num(ticked)} din {num(total)}{now ? `; azi e rândul zilei ${now}` : "; toate au fost cerute"}.</p>
       {days.map((d) => {
         const left = d.items.filter((x) => !done[x.path]).length;
