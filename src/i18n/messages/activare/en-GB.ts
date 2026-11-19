@@ -20,7 +20,7 @@ export const enGBActivare: ActivareCatalog = {
     given: "Your first name",
     surname: "Your surname",
     go1: "See your tree",
-    q2: "{name}, what are your parents’ names?",
+    q2: "Now your parents: what are their names?",
     father: "Father’s first name",
     mother: "Mother’s first name",
     go2: "Save the tree, free",

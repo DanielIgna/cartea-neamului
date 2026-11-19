@@ -20,7 +20,7 @@ export const frActivare: ActivareCatalog = {
     given: "Votre prénom",
     surname: "Votre nom de famille",
     go1: "Voir votre arbre",
-    q2: "{name}, comment s’appellent vos parents ?",
+    q2: "Maintenant vos parents : comment s’appellent-ils ?",
     father: "Prénom du père",
     mother: "Prénom de la mère",
     go2: "Enregistrer l’arbre, gratuitement",

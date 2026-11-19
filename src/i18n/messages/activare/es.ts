@@ -20,7 +20,7 @@ export const esActivare: ActivareCatalog = {
     given: "Tu nombre",
     surname: "Tu apellido",
     go1: "Ver tu árbol",
-    q2: "{name}, ¿cómo se llaman tus padres?",
+    q2: "Ahora tus padres: ¿cómo se llaman?",
     father: "Nombre del padre",
     mother: "Nombre de la madre",
     go2: "Guardar el árbol, gratis",
