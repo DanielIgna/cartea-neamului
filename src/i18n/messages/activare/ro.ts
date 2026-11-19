@@ -27,7 +27,7 @@ export const roActivare = {
     given: "Prenumele tău",
     surname: "Numele de familie",
     go1: "Vezi-ți arborele",
-    q2: "{name}, cum îi cheamă pe părinții tăi?",
+    q2: "Acum părinții: cum îi cheamă?",
     father: "Prenumele tatălui",
     mother: "Prenumele mamei",
     go2: "Salvează arborele, gratuit",

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "use-intl";
 import FanChart from "@/components/FanChart";
-import { readDraft, saveDraft } from "@/lib/incepe-draft";
+import { saveDraft } from "@/lib/incepe-draft";
 
 /**
  * „Începe chiar acum” din bannerul primei pagini (Daniel, 19.11.2026: 70% din cei care intrau pe prima pagină plecau fără să
@@ -31,13 +31,13 @@ export default function TryTree({ signUpHref = "/intrare?mod=cont-nou" }: { sign
     const fb = us === "fb" || us.startsWith("facebook") || /(^|\.)(facebook|fb)\.(com|me)$/.test(hostOf(document.referrer));
     const gift = /craciun|cadou|sarbator/.test((q.get("utm_campaign") ?? "").toLowerCase());
     setFrom({ fb, gift });
-    // Cine s-a întors fără să-și fi făcut contul își regăsește numele scrise.
-    const d = readDraft();
-    if (d) { setGiven(d.given); setSurname(d.surname); setFather(d.father); setMother(d.mother); }
+    // Prima pagină pornește mereu goală (Daniel, 19.11.2026): un nume scris mai demult, pe același telefon sau calculator,
+    // nu reapare aici, ca nimeni să nu vadă numele altcuiva. Ce s-a scris se folosește doar mai departe, la contul nou.
   }, []);
   useEffect(() => { if (step === 2) second.current?.focus(); }, [step]);
 
-  const fullName = [given.trim(), surname.trim()].filter(Boolean).join(" ");
+  // În mijlocul evantaiului doar primul prenume, scurt și fără nume de familie.
+  const firstName = given.trim().split(/\s+/)[0] ?? "";
   const q = (s: string) => (s.trim() ? [s.trim()] : undefined);
   // Inelele evantaiului: tata, mama, apoi bunicii; ce nu e scris rămâne cu semnul întrebării, ca un loc de completat.
   const names = [
@@ -64,7 +64,7 @@ export default function TryTree({ signUpHref = "/intrare?mod=cont-nou" }: { sign
       {from.fb && <p className="tt-hello" role="status">{t("fbHello")}</p>}
       {from.gift && <p className="tt-hello"><Link href="/cadou-de-sarbatori">{t("giftHello")}<span aria-hidden="true"> →</span></Link></p>}
       <form className="tt-form" onSubmit={submit} noValidate>
-        <p className="tt-q" id="tt-q">{step === 1 ? t("q1") : t("q2", { name: given.trim() })}</p>
+        <p className="tt-q" id="tt-q">{step === 1 ? t("q1") : t("q2")}</p>
         {step === 1 ? (
           <div className="tt-row">
             <label className="tt-field"><span className="sr-only">{t("given")}</span>
@@ -92,7 +92,7 @@ export default function TryTree({ signUpHref = "/intrare?mod=cont-nou" }: { sign
         {step === 2 && <p className="tt-note">{t("note2")}</p>}
       </form>
       <div className="tt-fan" aria-hidden="true">
-        <FanChart live you={fullName || t("you")} names={names} />
+        <FanChart live you={firstName || t("you")} names={names} />
       </div>
     </div>
   );

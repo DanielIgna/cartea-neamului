@@ -20,7 +20,7 @@ export const nlActivare: ActivareCatalog = {
     given: "Je voornaam",
     surname: "Je achternaam",
     go1: "Bekijk je stamboom",
-    q2: "{name}, hoe heten je ouders?",
+    q2: "Nu je ouders: hoe heten ze?",
     father: "Voornaam van je vader",
     mother: "Voornaam van je moeder",
     go2: "Stamboom opslaan, gratis",

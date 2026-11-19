@@ -20,7 +20,7 @@ export const huActivare: ActivareCatalog = {
     given: "Keresztneved",
     surname: "Vezetékneved",
     go1: "Nézd meg a családfádat",
-    q2: "{name}, hogy hívják a szüleidet?",
+    q2: "Most a szüleid: hogy hívják őket?",
     father: "Apád keresztneve",
     mother: "Anyád keresztneve",
     go2: "Családfa mentése, ingyen",

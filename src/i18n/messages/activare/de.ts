@@ -20,7 +20,7 @@ export const deActivare: ActivareCatalog = {
     given: "Dein Vorname",
     surname: "Dein Nachname",
     go1: "Deinen Stammbaum sehen",
-    q2: "{name}, wie heißen deine Eltern?",
+    q2: "Jetzt deine Eltern: Wie heißen sie?",
     father: "Vorname des Vaters",
     mother: "Vorname der Mutter",
     go2: "Stammbaum speichern, kostenlos",
