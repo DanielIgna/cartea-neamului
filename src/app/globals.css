@@ -2170,3 +2170,7 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 /* Anunțul de cookie-uri jos, peste pagină, nu deasupra ei (19.11.2026): pe telefon împingea bannerul și butonul sub ecran. */
 .cookie-notice{position:fixed;z-index:70;left:12px;right:12px;bottom:12px;max-width:820px;margin:0 auto;box-shadow:0 18px 40px -16px #0007}
 @media (max-width:600px){.cookie-notice{left:8px;right:8px;bottom:8px;margin:0 auto;font-size:12.5px}.cookie-notice p{flex-basis:100%}}
+
+/* Facebook în subsol: sigla și un chenar ușor, ca să se vadă printre legături (19.11.2026) */
+.site-foot a.foot-fb{display:inline-flex;align-items:center;gap:7px;padding:5px 12px 5px 6px;border-radius:999px;border:1px solid #1877f255;background:#1877f212;color:var(--ink);font-weight:600;text-decoration:none}
+.site-foot a.foot-fb:hover{background:#1877f224;border-color:#1877f2;color:var(--ink)}
