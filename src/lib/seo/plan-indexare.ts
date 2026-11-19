@@ -24,6 +24,8 @@ const GUIDES = [
   "trace-romanian-ancestors-from-us-canada", "romanian-immigration-waves-us-canada", "valurile-de-emigrare-in-america-de-nord",
   "arbore-genealogic-familie-romania-sua-canada", "romanian-surnames-changed-in-america", "preserve-immigrant-parents-stories",
 ];
+/** Ghidurile aprobate după ce planul a pornit: intră după paginile mari, ca ziua 1 să rămână cea trimisă lui Daniel. */
+const LATER_GUIDES = ["romanian-citizenship-by-descent-documents", "questions-to-ask-romanian-grandparents", "free-romanian-family-tree-template", "copiii-din-diaspora-si-bunicii-din-romania"];
 
 /** Statele și provinciile cu cele mai mari comunități românești vin primele; restul urmează în ordinea alfabetică. */
 const FIRST_REGIONS = [
@@ -47,6 +49,7 @@ export function planItems(): PlanItem[] {
   add("/en-us/diaspora/canada", "Canada (engleză)", "pagina");
   add("/diaspora/statele-unite", "Statele Unite (română)", "pagina");
   add("/diaspora/canada", "Canada (română)", "pagina");
+  for (const slug of LATER_GUIDES) { const e = getEntry("ghid", slug); if (e) add(`/ghid/${slug}`, e.title, "ghid"); }
   const na = REGIONS.filter((r) => (r.country === "us" || r.country === "ca") && regionIndexable(r));
   const states = sortRegions(na.filter((r) => r.kind !== "city"));
   const cities = sortRegions(na.filter((r) => r.kind === "city"));

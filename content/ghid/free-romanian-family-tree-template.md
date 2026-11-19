@@ -47,7 +47,7 @@ A family called Moldovan in Romania may appear as Moldavan, Moldowan or Moldvan 
 
 ## Who to ask first
 
-Start with the oldest relatives, and do it soon. A short phone call with a great-aunt can fill a whole branch. Our list of [questions to ask your grandparents](/ghid/intrebari-pentru-bunici) gives you dozens of ideas, in Romanian.
+Start with the oldest relatives, and do it soon. A short phone call with a great-aunt can fill a whole branch. Our list of [40 questions to ask your Romanian grandparents](/ghid/questions-to-ask-romanian-grandparents) gives you the questions in English and in Romanian.
 
 Relatives in Romania often know what the American side has forgotten: the nickname of the family in the village, the cousins who stayed, the graves in the village cemetery.
 
