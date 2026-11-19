@@ -67,7 +67,7 @@ export const DRAFT_COUNTRIES: Country[] = [
       { name: "Digitalarkivet (Arkivverket)", url: "https://www.digitalarkivet.no", note: { ro: "recensămintele și registrele parohiale norvegiene, online și gratuit", en: "Norwegian censuses and parish registers, online and free" } },
       { name: "Skatteetaten: Folkeregisteret", url: "https://www.skatteetaten.no/en/person/national-registry/", note: { ro: "registrul populației: certificate de naștere și de stare civilă", en: "the population register: birth and civil-status certificates" } },
       { name: "Statistisk sentralbyrå (SSB)", url: "https://www.ssb.no/en/befolkning/innvandrere/statistikk/innvandrere-og-norskfodte-med-innvandrerforeldre", note: { ro: "câți imigranți din fiecare țară trăiesc în Norvegia", en: "how many immigrants from each country live in Norway" } },
-      { name: "Ambasada României la Oslo", url: "http://oslo.mae.ro", note: { ro: "acte, procuri și transcrieri, cu programare pe econsulat.ro", en: "records, powers of attorney and transcriptions, booked on econsulat.ro" } },
+      { name: "Ambasada României la Oslo", url: "https://oslo.mae.ro", note: { ro: "acte, procuri și transcrieri, cu programare pe econsulat.ro", en: "records, powers of attorney and transcriptions, booked on econsulat.ro" } },
     ],
   },
 ];
