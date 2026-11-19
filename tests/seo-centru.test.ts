@@ -103,3 +103,16 @@ describe("conversiile", () => {
     expect(ctaTarget("https://exemplu.com/intrare")).toBeNull();
   });
 });
+
+describe("alerta de titluri la fel", () => {
+  it("nu numără aceeași pagină în engleza britanică și cea americană (/en și /en-us, legate prin hreflang)", () => {
+    const dup = auditAlerts(auditPages()).find((a) => a.code === "TITLU_DUPLICAT");
+    expect((dup?.paths ?? []).filter((p) => p.startsWith("/en-us/diaspora"))).toEqual([]);
+  });
+  it("numără în continuare titlurile la fel de pe pagini diferite", () => {
+    const base = auditPages().find((p) => p.indexable)!;
+    const pages = [{ ...base, path: "/x-unu", title: "T" }, { ...base, path: "/x-doi", title: "T" }, { ...base, path: "/en/x-unu", title: "U" }, { ...base, path: "/en-us/x-unu", title: "U" }];
+    const dup = auditAlerts(pages).find((a) => a.code === "TITLU_DUPLICAT");
+    expect(dup?.paths).toEqual(["/x-unu", "/x-doi"]);
+  });
+});

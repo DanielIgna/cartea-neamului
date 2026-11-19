@@ -1,7 +1,7 @@
 import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, cityDesc, cityTitle, genCityPath, genWords } from "@/lib/genealogie-orase";
 import { GEN_REGIONS, genRegionPath, regionWords } from "@/lib/genealogie-regiuni";
 import { LOCALES_OF as DIASPORA_LOCALES_OF, descriptionOf as diasporaDescription, entries as diasporaEntries, titleOf as diasporaTitle } from "@/lib/diaspora";
-import { LANGUAGE_NAMES, LOCALES, localizedPath } from "@/i18n/locales";
+import { LANGUAGE_NAMES, LOCALES, localizedPath, splitLocalePath } from "@/i18n/locales";
 import { PRIVATE_PREFIXES, PUBLIC_PAGES, TRANSLATED_PAGES } from "./public-pages";
 import { loadCollection } from "./continut/colectii";
 import { loadNames } from "./continut/nume";
@@ -128,7 +128,9 @@ export function auditAlerts(pages: AuditPage[], o: { gscState?: string; gscError
 
   const titles = new Map<string, string[]>();
   for (const p of pages.filter((x) => x.indexable)) titles.set(p.title, [...(titles.get(p.title) ?? []), p.path]);
-  const dupTitles = [...titles.values()].filter((v) => v.length > 1);
+  // Aceeași pagină în engleza britanică și cea americană (/en/… și /en-us/…) are voie să aibă același titlu: sunt legate prin
+  // hreflang, iar Google arată fiecăruia varianta lui. Numărăm doar titlurile folosite de pagini cu adevărat diferite.
+  const dupTitles = [...titles.values()].filter((v) => new Set(v.map((x) => splitLocalePath(x).path)).size > 1);
   if (dupTitles.length) out.push({ level: "avertisment", code: "TITLU_DUPLICAT", title: "Titluri la fel pe pagini diferite", text: `${dupTitles.length} titluri sunt folosite de mai multe pagini.`, paths: dupTitles.flat() });
 
   const longTitle = pages.filter((p) => p.indexable && p.title.length > 60 && p.category !== "hub");
