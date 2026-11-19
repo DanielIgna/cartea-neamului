@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
+import { LOCALES, localizedPath, withRegionalHreflang, type Locale } from "@/i18n/locales";
 import { staticLocaleNow } from "@/i18n/static-locale";
 import { TRANSLATED_PAGES } from "@/lib/public-pages";
 import { SITE_URL } from "@/lib/site-url";
@@ -46,7 +46,7 @@ export function languageAlternates(path: string, locale: Locale): Pick<Metadata,
   const url = canonicalUrl(localizedPath(path, locale));
   const languages: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, canonicalUrl(localizedPath(path, l))]));
   languages["x-default"] = canonicalUrl(path);
-  return { url, alternates: { canonical: url, languages } };
+  return { url, alternates: { canonical: url, languages: withRegionalHreflang(languages) } };
 }
 
 /**

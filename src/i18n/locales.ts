@@ -83,6 +83,24 @@ export function splitLocalePath(pathname: string): { locale: Locale | null; path
   return { locale: l, path: rest.length > 1 ? rest.replace(/\/+$/, "") || "/" : "/" };
 }
 
+/**
+ * Etichetele hreflang regionale pentru America de Nord (Daniel, 18.11.2026: „hreflang, fără adrese noi”): Canada în engleză
+ * primește aceeași pagină ca SUA (/en-us), iar românii din SUA și Canada pagina românească. Nu sunt limbi noi și nu au adresă
+ * proprie, doar îi spun lui Google ce variantă să arate acolo; fără ele, Google alegea la întâmplare între /en și /en-us.
+ */
+export const REGIONAL_HREFLANG: Record<string, Locale> = {
+  "en-CA": "en-US", "ro-US": "ro", "ro-CA": "ro",
+  // Europa (firul „Extinde SEO-ul diasporei în Europa”): variantele regionale ale limbilor pe care le avem, plus Republica Moldova.
+  "de-AT": "de", "de-CH": "de", "fr-BE": "fr", "fr-CH": "fr", "nl-BE": "nl", "en-IE": "en-GB", "ro-MD": "ro",
+};
+
+/** Adaugă etichetele regionale la o listă hreflang → adresă, doar unde există limba de bază (fără ea nu adaugă nimic). */
+export function withRegionalHreflang<T>(langs: Record<string, T>): Record<string, T> {
+  const out: Record<string, T> = { ...langs };
+  for (const [tag, base] of Object.entries(REGIONAL_HREFLANG)) if (base in langs && !(tag in out)) out[tag] = langs[base];
+  return out;
+}
+
 /** Steagul de lângă numele limbii (în selectorul din antet și în întrebarea despre limbă). */
 export const LANGUAGE_FLAGS: Record<Locale, string> = {
   ro: "🇷🇴", "en-GB": "🇬🇧", "en-US": "🇺🇸", fr: "🇫🇷", es: "🇪🇸", nl: "🇳🇱", de: "🇩🇪", it: "🇮🇹", hu: "🇭🇺", he: "🇮🇱",

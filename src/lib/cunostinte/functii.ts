@@ -379,10 +379,18 @@ export const FUNCTIONS: Fn[] = [
   {
     key: "home", name: "Prima pagină", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Prima impresie; pozele familiilor doar cu acord.",
     what: "Pagina pentru vizitatori, bannerul, galeria și prețurile.",
-    engine: ["src/lib/home-images.ts", "src/lib/home-variants.ts", "src/lib/home-jsonld.ts", "src/components/Landing.tsx"],
+    engine: ["src/lib/home-images.ts", "src/lib/home-variants.ts", "src/components/Landing.tsx", "src/lib/seo/home-faq.ts"],
     pages: ["/"],
     api: ["/api/poza-acasa/[id]", "/api/admin/poze"],
     dashboard: "/admin/poze",
+  },
+  {
+    key: "zona-sugestii", name: "Sugestii după zona vizitatorului", area: "public", lifecycle: "implementat", risk: "scazut", riskWhy: "Folosește doar țara și regiunea din cerere, nu salvează nimic; Google vede aceeași pagină.",
+    what: "Blocul „Pentru românii din …” de pe prima pagină și din ghiduri (18.11.2026): cine vine din SUA sau Canada vede pagina statului sau a provinciei lui, pagina țării (cu toate statele, pentru cine s-a mutat) și până la 4 ghiduri publicate potrivite, în română sau engleză. Registrul e comun (src/lib/zona/registru.ts → ZONES); țările din Europa se adaugă acolo. Tot din 18.11.2026 pentru SUA și Canada: etichetele hreflang en-CA, ro-US și ro-CA spre adresele existente (REGIONAL_HREFLANG în src/i18n/locales.ts), titlurile en-US, datele pentru Google ale primei pagini în limba paginii cu ofertele din Admin și întrebările frecvente vizibile (src/lib/seo/home-faq.ts) și pagina /diaspora/america-de-nord în română și engleză.",
+    engine: ["src/lib/zona/registru.ts", "src/components/ZonaSugestii.tsx", "src/lib/seo/home-faq.ts"],
+    pages: ["/", "/ghid/[slug]", "/diaspora/[a]"],
+    tests: ["tests/zona.test.ts"],
+    api: ["/api/zona"],
   },
   {
     key: "seo-pagini", name: "Pagini publice și Google", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor.",

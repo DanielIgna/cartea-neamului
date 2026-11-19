@@ -17,6 +17,20 @@ import { enUSSecuritate } from "./securitate/en-US";
  * Dates written by hand are month first here (03/12/1970 is March 12); the server turns them into 1970-03-12.
  */
 export const enUS: DeepPartial<Catalog> = {
+  // Titles and descriptions for Google in the US and Canada (Daniel, 18.11.2026): Romanian heritage, grandparents' voices and the
+  // PDF family book with QR codes. Canada in English gets these pages too (hreflang en-CA → /en-us).
+  Meta: {
+    homeTitle: "Collaborative Family Tree & Audio Heirloom Book",
+    description: "Build your Romanian and European family tree together. Record your grandparents’ voices, map the old villages and make a PDF family book with QR codes.",
+  },
+  Resources: {
+    metaTitle: "Free Romanian Genealogy Resources & Archives",
+    metaDescription: "Romanian archives, parish registers, censuses, digital libraries and old newspapers: where to trace your Romanian family for free, from anywhere.",
+  },
+  GiftPage: {
+    metaTitle: "Meaningful Christmas Gift for Grandparents, {price}",
+    metaDescription: "A Christmas gift for immigrant parents and grandparents: a year in The Family Book for {price}, with the family tree, old photos and their voices.",
+  },
   ThemeSwitch: {
     label: "Color theme",
   },

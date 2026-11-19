@@ -3,7 +3,8 @@ import { auditPages } from "@/lib/seo-audit";
 import { sitemapGroups } from "@/lib/continut/sitemap";
 import { languageAlternates, webPageJsonLd } from "@/lib/page-metadata";
 import { searchSite, plain } from "@/lib/continut/cautare";
-import { HOME_JSON_LD } from "@/lib/home-jsonld";
+import { homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
+import { DEFAULT_SETTINGS } from "@/lib/plans";
 import { TRANSLATED_PAGES, PUBLIC_PAGES } from "@/lib/public-pages";
 
 /** Etapa 2 (Daniel, 17.11.2026): titluri unice de cel mult 60 de semne, descrieri de 120–155, canonical curat, noindex în afara sitemap-ului. */
@@ -46,9 +47,34 @@ describe("canonical, hreflang și sitemap", () => {
   });
 });
 
+const NAMES = { app: "Cartea Neamului", book: "Cartea neamului în PDF", tiers: { basic: "Basic", familie: "Familie", premium: "Premium" } };
+const homeLd = (l: "ro" | "en-US" | "it", on = true) => {
+  const s = { ...DEFAULT_SETTINGS, on };
+  return homeJsonLd(l, s, "descriere", homeFaq(l, s), NAMES);
+};
+
 describe("datele schema.org", () => {
+  it("prima pagină: limba paginii, oferte din Admin (doar cu vânzarea pornită) și FAQ doar în română și engleză", () => {
+    const en = homeLd("en-US")["@graph"] as Record<string, unknown>[];
+    const app = en.find((x) => x["@type"] === "WebApplication") as { offers: { price: string; priceCurrency: string }[]; url: string };
+    expect(app.url).toBe("https://carteaneamului.ro/en-us");
+    expect(app.offers.map((o) => o.price)).toEqual([DEFAULT_SETTINGS.priceEur, DEFAULT_SETTINGS.familieEur, DEFAULT_SETTINGS.premiumEur, DEFAULT_SETTINGS.bookEur].map(String));
+    expect(app.offers[0].priceCurrency).toBe("EUR");
+    expect((homeLd("ro")["@graph"] as Record<string, unknown>[]).find((x) => x["@type"] === "WebApplication")).toMatchObject({ offers: [{ priceCurrency: "RON" }, {}, {}, {}] });
+    expect(en.find((x) => x["@type"] === "FAQPage")).toBeTruthy();
+    expect((homeLd("it")["@graph"] as Record<string, unknown>[]).some((x) => x["@type"] === "FAQPage")).toBe(false);
+    // Cu vânzarea oprită: fără oferte și fără întrebarea despre preț.
+    const off = homeLd("ro", false)["@graph"] as Record<string, unknown>[];
+    expect(off.find((x) => x["@type"] === "WebApplication")).not.toHaveProperty("offers");
+    expect(homeFaq("ro", { ...DEFAULT_SETTINGS, on: false }).some((f) => /cost/i.test(f.q))).toBe(false);
+  });
+  it("întrebările frecvente nu promit carte tipărită și nu au prețuri scrise de mână", () => {
+    for (const l of ["ro", "en-US"] as const) for (const f of homeFaq(l, { ...DEFAULT_SETTINGS, on: true })) {
+      expect(f.a).not.toMatch(/tipărit|printed|hardcover|livrare|delivery/i);
+    }
+  });
   it("WebSite are SearchAction spre /cauta", () => {
-    const site = HOME_JSON_LD["@graph"].find((x) => x["@type"] === "WebSite") as { potentialAction?: { target: { urlTemplate: string } } };
+    const site = homeLd("ro")["@graph"].find((x) => x["@type"] === "WebSite") as { potentialAction?: { target: { urlTemplate: string } } };
     expect(site.potentialAction?.target.urlTemplate).toBe("https://carteaneamului.ro/cauta?q={search_term_string}");
   });
   it("paginile simple au WebPage și BreadcrumbList, cu adresa limbii", () => {

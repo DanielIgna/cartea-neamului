@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
+import { LOCALES, localizedPath, withRegionalHreflang, type Locale } from "@/i18n/locales";
 import { canonicalUrl, fitTitle } from "@/lib/page-metadata";
 import { COUNTRIES, getCountry } from "./tari";
 import { REGIONS, getRegion, regionIndexable } from "./america";
@@ -88,7 +88,7 @@ export function alternatesFor(path: string, langs: Lang[]): Record<string, strin
   const out: Record<string, string> = {};
   for (const l of langs) for (const loc of LOCALES_OF[l]) out[loc] = localizedPath(path, loc);
   out["x-default"] = localizedPath(path, langs.includes("ro") ? "ro" : firstLocale(langs.includes("en") ? "en" : langs[0]));
-  return out;
+  return withRegionalHreflang(out);
 }
 
 /**

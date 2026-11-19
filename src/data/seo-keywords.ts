@@ -66,6 +66,13 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
   { slug: "nemesi-si-boieri-din-transilvania", title: "Nemeși și boieri: strămoși din mica nobilime românească", order: 33 },
   { slug: "ardealul-de-nord-1940-1944", title: "Ardealul de Nord, 1940–1944: acte, refugiați și urme ale familiei", order: 34 },
   { slug: "dosarul-de-la-securitate-al-bunicului", title: "Dosarul de la Securitate al bunicului: cum ceri acces la CNSAS", order: 35 },
+  // SUA și Canada (Daniel, 18.11.2026): diaspora din America de Nord, în engleză (lang: en) și în română. Ciorne până le aprobă Daniel.
+  { slug: "trace-romanian-ancestors-from-us-canada", title: "How to Trace Your Romanian Ancestors from the US and Canada", order: 36 },
+  { slug: "preserve-immigrant-parents-stories", title: "How to Preserve Your Immigrant Parents' Stories Before They Fade", order: 37 },
+  { slug: "arbore-genealogic-familie-romania-sua-canada", title: "Arborele genealogic când familia e în România, SUA și Canada", order: 38 },
+  { slug: "romanian-surnames-changed-in-america", title: "Romanian Surnames in America and Canada: How Names Changed", order: 39 },
+  { slug: "romanian-immigration-waves-us-canada", title: "Romanian Immigration to the US and Canada: Every Wave", order: 40 },
+  { slug: "valurile-de-emigrare-in-america-de-nord", title: "Românii în SUA și Canada: valurile de emigrare", order: 41 },
 ];
 const planned = (slug: string) => `/ghid/${slug}`;
 /** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */

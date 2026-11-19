@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { NextRequest } from "next/server";
 import { middleware } from "@/middleware";
-import { LOCALES, URL_PREFIXES, detectLocale, isCrawler, localizedPath, splitLocalePath } from "@/i18n/locales";
+import { LOCALES, REGIONAL_HREFLANG, URL_PREFIXES, detectLocale, isCrawler, localizedPath, splitLocalePath } from "@/i18n/locales";
 import { languageAlternates } from "@/lib/page-metadata";
 import { sitemapGroups, urlsetXml } from "@/lib/continut/sitemap";
 import { convertEur, currencyFor, money, priceFor } from "@/lib/plati";
@@ -166,7 +166,15 @@ describe("adresele pe limbă", () => {
     expect(langs.ro).toBe("https://carteaneamului.ro/contact");
     expect(langs.he).toBe("https://carteaneamului.ro/he/contact");
     expect(langs["en-US"]).toBe("https://carteaneamului.ro/en-us/contact");
-    expect(Object.keys(langs)).toHaveLength(LOCALES.length + 1);
+    // Limbile site-ului, x-default și etichetele regionale (en-CA, ro-US, ro-CA și cele europene), care nu au adresă proprie.
+    expect(Object.keys(langs)).toHaveLength(LOCALES.length + 1 + Object.keys(REGIONAL_HREFLANG).length);
+    expect(langs["de-AT"]).toBe(langs.de);
+    expect(langs["fr-BE"]).toBe(langs.fr);
+    expect(langs["en-IE"]).toBe(langs["en-GB"]);
+    expect(langs["ro-MD"]).toBe(langs.ro);
+    expect(langs["en-CA"]).toBe(langs["en-US"]);
+    expect(langs["ro-US"]).toBe(langs.ro);
+    expect(langs["ro-CA"]).toBe(langs.ro);
     expect(languageAlternates("/", "ro").alternates?.canonical).toBe("https://carteaneamului.ro/");
     expect(languageAlternates("/", "de").alternates?.canonical).toBe("https://carteaneamului.ro/de");
     // Netradusă: canonical spre română și afară din Google în celelalte limbi.
