@@ -82,6 +82,8 @@ export const PLANNED_GUIDES: { slug: string; title: string; order: number }[] = 
 const planned = (slug: string) => `/ghid/${slug}`;
 /** Ghidurile plănuite deja publicate (aprobate de Daniel la 18.11.2026, în trei tranșe): rândurile lor devin „exista”. */
 export const PUBLISHED_GUIDES = new Set([
+  // Seria a doua pentru diaspora, aprobată de Daniel la 19.11.2026.
+  "romanian-citizenship-by-descent-documents", "questions-to-ask-romanian-grandparents", "free-romanian-family-tree-template", "copiii-din-diaspora-si-bunicii-din-romania",
   "arbore-genealogic-gratuit-online-pas-cu-pas", "cadou-pentru-bunicii-care-au-tot", "cate-generatii-poti-afla", "certificatul-de-nastere-al-bunicului",
   "confesiunea-stramosilor", "cum-afli-satul-de-origine", "cum-cauti-un-mormant-vechi-online", "de-unde-vine-numele-tau-de-familie",
   "greseli-frecvente-arbore-genealogic", "registre-parohiale-online", "reuniune-de-familie", "rude-in-viata-si-viata-privata",
