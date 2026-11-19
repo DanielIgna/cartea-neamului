@@ -37,7 +37,11 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       <Link href="/istoria-umanitatii">{th("humanity")}</Link>
       <Link href="/genealogii-vechi">{th("genealogies")}</Link>
       <Link href="/libertatea-de-a-crede">{th("label")}</Link>
-      <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">Facebook</a>
+      {/* Pagina de Facebook cu sigla ei, puțin mai vizibilă decât celelalte legături (Daniel, 19.11.2026). */}
+      <a className="foot-fb" href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2" /><path fill="#fff" d="M13.4 19.5v-6h2l.3-2.4h-2.3V9.6c0-.7.2-1.2 1.2-1.2h1.2V6.3a16 16 0 0 0-1.8-.1c-1.8 0-3 1.1-3 3.1v1.8h-2v2.4h2v6h2.4z" /></svg>
+        Facebook
+      </a>
       {/* Cine vinde (cerut de lege pentru comerțul online): datele PFA-ului din src/lib/legal.ts și legătura ANPC – SAL. */}
       <span className="site-seller">{seller.name} · CUI {seller.cui} · {seller.regCom} · <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer">ANPC – SAL</a></span>
     </footer>
