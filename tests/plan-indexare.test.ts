@@ -18,6 +18,8 @@ describe("planul de indexare SUA și Canada", () => {
       expect(resolve(a, b)?.indexable, x.path).toBe(true);
     }
     expect(items.some((x) => x.path.endsWith("/wyoming"))).toBe(false);
+    // Ciornele noi (Colorado, Virginia, …) nu intră în Google până nu le aprobă Daniel.
+    expect(items.some((x) => x.path.endsWith("/colorado"))).toBe(false);
   });
   it("pune Ohio în engleză înaintea paginilor în română și împarte câte 10 pe zi", () => {
     const i = (p: string) => items.findIndex((x) => x.path === p);
