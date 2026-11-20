@@ -23,7 +23,7 @@ export const SOURCE_COOKIE_DAYS = 30;
 /** Răspunsul din formular, ținut cel mult 30 de minute: cât să ajungă la contul nou și când e făcut cu Google. */
 export const ANSWER_COOKIE = "cn-de-unde";
 
-/** Variantele întrebării „De unde ai aflat de noi?” (textele, în cele 10 limbi, în src/i18n/messages/sursa/). */
+/** Variantele întrebării „De unde ai aflat de noi?” (textele, în fiecare limbă, în src/i18n/messages/sursa/). */
 export const ANSWERS = ["facebook-grup", "facebook-pagina", "google", "recomandare", "card-cadou", "altceva"] as const;
 export type Answer = (typeof ANSWERS)[number];
 export const isAnswer = (v: unknown): v is Answer => ANSWERS.includes(v as Answer);

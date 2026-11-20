@@ -1,5 +1,5 @@
 import { LOCALES, localizedPath, type Locale } from "@/i18n/locales";
-import { PUBLIC_PAGES } from "@/lib/public-pages";
+import { PUBLIC_PAGES, pageLocales } from "@/lib/public-pages";
 import { sectionOf } from "@/lib/public-sections";
 import { DIASPORA_LANGS } from "@/lib/diaspora/limbi-generat";
 import { LANG_OF } from "@/lib/diaspora/tipuri";
@@ -11,8 +11,7 @@ import { LANG_OF } from "@/lib/diaspora/tipuri";
  * - diaspora: limbile în care e scrisă fiecare pagină;
  * - restul (ghiduri, glosar, nume, localități, genealogie, paginile `roOnly`): doar româna.
  */
-const ALL = new Set<Locale>(LOCALES);
-const PAGES = new Map(PUBLIC_PAGES.map((p) => [p.path, p.roOnly ? new Set<Locale>(["ro"]) : ALL]));
+const PAGES = new Map(PUBLIC_PAGES.map((p) => [p.path, new Set<Locale>(pageLocales(p.path))]));
 
 export function realLocales(path: string): ReadonlySet<Locale> {
   const page = PAGES.get(path);

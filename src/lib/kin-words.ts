@@ -538,6 +538,531 @@ const he: Words = (k, sex) => {
   }
 };
 
+/* ───────────── Português (Portugal) ───────────── */
+
+const PT_ORD: Three[] = [["", "", ""], ["primeiro", "primeira", "primeiro"], ["segundo", "segunda", "segundo"], ["terceiro", "terceira", "terceiro"], ["quarto", "quarta", "quarto"], ["quinto", "quinta", "quinto"]];
+
+function ptBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["pai", "mãe", "progenitor"], ["avô", "avó", "avô ou avó"], ["bisavô", "bisavó", "bisavô ou bisavó"], ["trisavô", "trisavó", "trisavô ou trisavó"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `antepassado (geração ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["filho", "filha", "filho ou filha"], ["neto", "neta", "neto ou neta"], ["bisneto", "bisneta", "bisneto ou bisneta"], ["trineto", "trineta", "trineto ou trineta"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `descendente (geração ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["irmão", "irmã", "irmão ou irmã"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["sobrinho", "sobrinha", "sobrinho ou sobrinha"]);
+    if (down === 3) return pick(sex, ["sobrinho-neto", "sobrinha-neta", "sobrinho-neto ou sobrinha-neta"]);
+    return "descendente de um irmão ou irmã";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["tio", "tia", "tio ou tia"]);
+    if (up === 3) return pick(sex, ["tio-avô", "tia-avó", "tio-avô ou tia-avó"]);
+    return pick(sex, ["irmão de um antepassado", "irmã de um antepassado", "irmão ou irmã de um antepassado"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? pick(sex, ["primo direito", "prima direita", "primo ou prima direitos"])
+    : n < PT_ORD.length ? `${pick(sex, ["primo", "prima", "primo ou prima"])} em ${PT_ORD[n][0]} grau` : pick(sex, ["primo afastado", "prima afastada", "primo ou prima afastados"]);
+  return up === down ? base : `${base}, de uma geração ${up > down ? "anterior" : "seguinte"}`;
+}
+
+const pt: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["marido", "mulher", "cônjuge"]);
+  switch (k.t) {
+    case "self": return "a pessoa ao centro";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["meio-irmão", "meia-irmã", "meio-irmão ou meia-irmã"])} ${pick(k.half, ["por parte do pai", "por parte da mãe", "por parte de um dos pais"])}`;
+      return ptBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["padrasto", "madrasta", "padrasto ou madrasta"]);
+      const of = pick(k.parent, ["do pai", "da mãe", "de um dos pais"]);
+      if (k.when === "unknown") return `${spouse(sex)} ${of}`;
+      const ord = k.order < PT_ORD.length ? pick(sex, PT_ORD[k.order]) : `${k.order}.${sex === "F" ? "ª" : "º"}`;
+      return `${ord} ${spouse(sex)} ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["genro", "nora", "cônjuge do filho ou da filha"]);
+    case "siblingInLaw": return pick(sex, ["cunhado", "cunhada", "cunhado ou cunhada"]);
+    case "stepGrandparent": return pick(sex, ["avô por afinidade", "avó por afinidade", "avô ou avó por afinidade"]);
+    case "piblingByMarriage": return pick(sex, ["tio por afinidade", "tia por afinidade", "tio ou tia por afinidade"]);
+    case "kinSpouse": return `${spouse(sex)} de um familiar (${pt(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["sogro", "sogra", "sogro ou sogra"]);
+    case "stepChild": return pick(sex, ["enteado", "enteada", "enteado ou enteada"]);
+    case "stepGrandchild": return pick(sex, ["neto por afinidade", "neta por afinidade", "neto ou neta por afinidade"]);
+    case "spouseKin": return `familiar por afinidade: ${pt(k.kin, sex)}, do lado ${pick(k.spouse, ["do marido", "da mulher", "do cônjuge"])}`;
+  }
+};
+
+/* ───────────── Ελληνικά ───────────── */
+
+const EL_ORD: Three[] = [["", "", ""], ["πρώτος", "πρώτη", "πρώτος"], ["δεύτερος", "δεύτερη", "δεύτερος"], ["τρίτος", "τρίτη", "τρίτος"], ["τέταρτος", "τέταρτη", "τέταρτος"], ["πέμπτος", "πέμπτη", "πέμπτος"]];
+
+function elBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["πατέρας", "μητέρα", "γονέας"], ["παππούς", "γιαγιά", "παππούς ή γιαγιά"], ["προπάππους", "προγιαγιά", "προπάππους ή προγιαγιά"], ["προπροπάππους", "προπρογιαγιά", "προπροπάππους ή προπρογιαγιά"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `πρόγονος (γενιά ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["γιος", "κόρη", "παιδί"], ["εγγονός", "εγγονή", "εγγόνι"], ["δισέγγονος", "δισέγγονη", "δισέγγονο"], ["τρισέγγονος", "τρισέγγονη", "τρισέγγονο"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `απόγονος (γενιά ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["αδελφός", "αδελφή", "αδελφός ή αδελφή"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["ανιψιός", "ανιψιά", "ανιψιός ή ανιψιά"]);
+    if (down === 3) return pick(sex, ["εγγονός αδελφού ή αδελφής", "εγγονή αδελφού ή αδελφής", "εγγόνι αδελφού ή αδελφής"]);
+    return "απόγονος αδελφού ή αδελφής";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["θείος", "θεία", "θείος ή θεία"]);
+    if (up === 3) return pick(sex, ["αδελφός του παππού ή της γιαγιάς", "αδελφή του παππού ή της γιαγιάς", "αδελφός ή αδελφή του παππού ή της γιαγιάς"]);
+    return pick(sex, ["αδελφός ενός προγόνου", "αδελφή ενός προγόνου", "αδελφός ή αδελφή ενός προγόνου"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const cousin = pick(sex, ["ξάδελφος", "ξαδέλφη", "ξάδελφος ή ξαδέλφη"]);
+  const base = n === 1 ? cousin : n < EL_ORD.length ? `${pick(sex, EL_ORD[n])} ${cousin}` : pick(sex, ["μακρινός ξάδελφος", "μακρινή ξαδέλφη", "μακρινός ξάδελφος ή ξαδέλφη"]);
+  return up === down ? base : `${base}, από ${up > down ? "παλαιότερη" : "νεότερη"} γενιά`;
+}
+
+const el: Words = (k, sex) => {
+  switch (k.t) {
+    case "self": return "το πρόσωπο στο κέντρο";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["ετεροθαλής αδελφός", "ετεροθαλής αδελφή", "ετεροθαλής αδελφός ή αδελφή"])} ${pick(k.half, ["από τον πατέρα", "από τη μητέρα", "από έναν γονέα"])}`;
+      return elBlood(k.up, k.down, sex);
+    case "spouse": return "σύζυγος";
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["πατριός", "μητριά", "πατριός ή μητριά"]);
+      const of = pick(k.parent, ["του πατέρα", "της μητέρας", "του γονέα"]);
+      if (k.when === "unknown") return `σύζυγος ${of}`;
+      const ord = k.order < EL_ORD.length ? pick(sex, EL_ORD[k.order]) : `${k.order}${sex === "F" ? "η" : "ος"}`;
+      return `${ord} σύζυγος ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["γαμπρός", "νύφη", "σύζυγος του παιδιού"]);
+    case "siblingInLaw": return pick(sex, ["κουνιάδος", "κουνιάδα", "κουνιάδος ή κουνιάδα"]);
+    case "stepGrandparent": return pick(sex, ["παππούς εξ αγχιστείας", "γιαγιά εξ αγχιστείας", "παππούς ή γιαγιά εξ αγχιστείας"]);
+    case "piblingByMarriage": return pick(sex, ["θείος εξ αγχιστείας", "θεία εξ αγχιστείας", "θείος ή θεία εξ αγχιστείας"]);
+    case "kinSpouse": return `σύζυγος συγγενούς (${el(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["πεθερός", "πεθερά", "πεθερός ή πεθερά"]);
+    case "stepChild": return pick(sex, ["προγονός", "προγονή", "προγονός ή προγονή"]);
+    case "stepGrandchild": return pick(sex, ["εγγονός εξ αγχιστείας", "εγγονή εξ αγχιστείας", "εγγόνι εξ αγχιστείας"]);
+    case "spouseKin": return `συγγενής εξ αγχιστείας: ${el(k.kin, sex)}, από την πλευρά ${pick(k.spouse, ["του συζύγου", "της συζύγου", "του ή της συζύγου"])}`;
+  }
+};
+
+/* ───────────── Svenska ───────────── */
+
+const SV_ORD = ["", "första", "andra", "tredje", "fjärde", "femte", "sjätte"];
+const SV_COUSIN = ["", "kusin", "tremänning", "fyrmänning", "femmänning"];
+
+function svBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["far", "mor", "förälder"], ["farfar eller morfar", "farmor eller mormor", "mor- eller farförälder"], ["gammelfarfar eller gammelmorfar", "gammelfarmor eller gammelmormor", "gammelmor- eller gammelfarförälder"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `ana (generation ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["son", "dotter", "barn"], ["barnbarn", "barnbarn", "barnbarn"], ["barnbarnsbarn", "barnbarnsbarn", "barnbarnsbarn"], ["barnbarnsbarnsbarn", "barnbarnsbarnsbarn", "barnbarnsbarnsbarn"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `ättling (generation ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["bror", "syster", "syskon"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["brorson eller systerson", "brorsdotter eller systerdotter", "syskonbarn"]);
+    if (down === 3) return "syskonbarnbarn";
+    return "ättling till ett syskon";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["farbror eller morbror", "faster eller moster", "föräldrasyskon"]);
+    if (up === 3) return pick(sex, ["mor- eller farförälders bror", "mor- eller farförälders syster", "mor- eller farförälders syskon"]);
+    return pick(sex, ["bror till en ana", "syster till en ana", "syskon till en ana"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = SV_COUSIN[n] ?? "avlägsen kusin";
+  return up === down ? base : `${base}, från en ${up > down ? "äldre" : "yngre"} generation`;
+}
+
+const sv: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["make", "maka", "make eller maka"]);
+  switch (k.t) {
+    case "self": return "personen i mitten";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["halvbror", "halvsyster", "halvsyskon"])} ${pick(k.half, ["på faderns sida", "på moderns sida", "genom en förälder"])}`;
+      return svBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["styvfar", "styvmor", "styvförälder"]);
+      const of = pick(k.parent, ["faderns", "moderns", "förälderns"]);
+      return k.when === "before" ? `${of} ${SV_ORD[k.order] ?? `${k.order}:e`} ${spouse(sex)}` : `${of} ${spouse(sex)}`;
+    }
+    case "childSpouse": return pick(sex, ["svärson", "svärdotter", "barnets make eller maka"]);
+    case "siblingInLaw": return pick(sex, ["svåger", "svägerska", "svåger eller svägerska"]);
+    case "stepGrandparent": return pick(sex, ["styvfarfar eller styvmorfar", "styvfarmor eller styvmormor", "styvmor- eller styvfarförälder"]);
+    case "piblingByMarriage": return pick(sex, ["ingift farbror eller morbror", "ingift faster eller moster", "ingift föräldrasyskon"]);
+    case "kinSpouse": return `${spouse(sex)} till en släkting (${sv(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["svärfar", "svärmor", "svärförälder"]);
+    case "stepChild": return pick(sex, ["styvson", "styvdotter", "styvbarn"]);
+    case "stepGrandchild": return "styvbarnbarn";
+    case "spouseKin": return `ingift släkt: ${sv(k.kin, sex)}, på ${pick(k.spouse, ["makens", "makans", "makens eller makans"])} sida`;
+  }
+};
+
+/* ───────────── Dansk ───────────── */
+
+const DA_ORD = ["", "første", "anden", "tredje", "fjerde", "femte", "sjette"];
+
+function daBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["far", "mor", "forælder"], ["bedstefar", "bedstemor", "bedsteforælder"], ["oldefar", "oldemor", "oldeforælder"], ["tipoldefar", "tipoldemor", "tipoldeforælder"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `ane (generation ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["søn", "datter", "barn"], ["barnebarn", "barnebarn", "barnebarn"], ["oldebarn", "oldebarn", "oldebarn"], ["tipoldebarn", "tipoldebarn", "tipoldebarn"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `efterkommer (generation ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["bror", "søster", "søskende"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["nevø", "niece", "nevø eller niece"]);
+    if (down === 3) return pick(sex, ["grandnevø", "grandniece", "grandnevø eller grandniece"]);
+    return "efterkommer af en søskende";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["onkel", "tante", "onkel eller tante"]);
+    if (up === 3) return pick(sex, ["grandonkel", "grandtante", "grandonkel eller grandtante"]);
+    return pick(sex, ["bror til en ane", "søster til en ane", "søskende til en ane"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? pick(sex, ["fætter", "kusine", "fætter eller kusine"]) : n === 2 ? "næstsøskendebarn" : pick(sex, ["fjern fætter", "fjern kusine", "fjern fætter eller kusine"]);
+  return up === down ? base : `${base}, fra en ${up > down ? "ældre" : "yngre"} generation`;
+}
+
+const da: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["ægtemand", "hustru", "ægtefælle"]);
+  switch (k.t) {
+    case "self": return "personen i midten";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["halvbror", "halvsøster", "halvsøskende"])} ${pick(k.half, ["på farens side", "på morens side", "gennem en forælder"])}`;
+      return daBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["stedfar", "stedmor", "stedforælder"]);
+      const of = pick(k.parent, ["farens", "morens", "forælderens"]);
+      return k.when === "before" ? `${of} ${DA_ORD[k.order] ?? `${k.order}.`} ${spouse(sex)}` : `${of} ${spouse(sex)}`;
+    }
+    case "childSpouse": return pick(sex, ["svigersøn", "svigerdatter", "barnets ægtefælle"]);
+    case "siblingInLaw": return pick(sex, ["svoger", "svigerinde", "svoger eller svigerinde"]);
+    case "stepGrandparent": return pick(sex, ["stedbedstefar", "stedbedstemor", "stedbedsteforælder"]);
+    case "piblingByMarriage": return pick(sex, ["indgiftet onkel", "indgiftet tante", "indgiftet onkel eller tante"]);
+    case "kinSpouse": return `${spouse(sex)} til en slægtning (${da(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["svigerfar", "svigermor", "svigerforælder"]);
+    case "stepChild": return pick(sex, ["stedsøn", "steddatter", "stedbarn"]);
+    case "stepGrandchild": return "stedbarnebarn";
+    case "spouseKin": return `indgiftet familie: ${da(k.kin, sex)}, på ${pick(k.spouse, ["mandens", "hustruens", "ægtefællens"])} side`;
+  }
+};
+
+/* ───────────── Norsk (bokmål) ───────────── */
+
+const NB_ORD = ["", "første", "andre", "tredje", "fjerde", "femte", "sjette"];
+const NB_COUSIN = ["", "", "tremenning", "firmenning", "femmenning"];
+
+function nbBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["far", "mor", "forelder"], ["bestefar", "bestemor", "besteforelder"], ["oldefar", "oldemor", "oldeforelder"], ["tippoldefar", "tippoldemor", "tippoldeforelder"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `ane (generasjon ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["sønn", "datter", "barn"], ["barnebarn", "barnebarn", "barnebarn"], ["oldebarn", "oldebarn", "oldebarn"], ["tippoldebarn", "tippoldebarn", "tippoldebarn"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `etterkommer (generasjon ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["bror", "søster", "søsken"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["nevø", "niese", "nevø eller niese"]);
+    if (down === 3) return pick(sex, ["grandnevø", "grandniese", "grandnevø eller grandniese"]);
+    return "etterkommer av et søsken";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["onkel", "tante", "onkel eller tante"]);
+    if (up === 3) return pick(sex, ["grandonkel", "grandtante", "grandonkel eller grandtante"]);
+    return pick(sex, ["bror til en ane", "søster til en ane", "søsken til en ane"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? pick(sex, ["fetter", "kusine", "fetter eller kusine"]) : NB_COUSIN[n] || "fjern slektning";
+  return up === down ? base : `${base}, fra en ${up > down ? "eldre" : "yngre"} generasjon`;
+}
+
+const nb: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["ektemann", "kone", "ektefelle"]);
+  switch (k.t) {
+    case "self": return "personen i midten";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["halvbror", "halvsøster", "halvsøsken"])} ${pick(k.half, ["på farssiden", "på morssiden", "gjennom en forelder"])}`;
+      return nbBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["stefar", "stemor", "steforelder"]);
+      const of = pick(k.parent, ["farens", "morens", "forelderens"]);
+      return k.when === "before" ? `${of} ${NB_ORD[k.order] ?? `${k.order}.`} ${spouse(sex)}` : `${of} ${spouse(sex)}`;
+    }
+    case "childSpouse": return pick(sex, ["svigersønn", "svigerdatter", "barnets ektefelle"]);
+    case "siblingInLaw": return pick(sex, ["svoger", "svigerinne", "svoger eller svigerinne"]);
+    case "stepGrandparent": return pick(sex, ["stebestefar", "stebestemor", "stebesteforelder"]);
+    case "piblingByMarriage": return pick(sex, ["inngiftet onkel", "inngiftet tante", "inngiftet onkel eller tante"]);
+    case "kinSpouse": return `${spouse(sex)} til en slektning (${nb(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["svigerfar", "svigermor", "svigerforelder"]);
+    case "stepChild": return pick(sex, ["stesønn", "stedatter", "stebarn"]);
+    case "stepGrandchild": return "stebarnebarn";
+    case "spouseKin": return `inngiftet slekt: ${nb(k.kin, sex)}, på ${pick(k.spouse, ["mannens", "konas", "ektefellens"])} side`;
+  }
+};
+
+/* ───────────── Українська ───────────── */
+
+const UK_ORD: Three[] = [["", "", ""], ["перший", "перша", "перший"], ["другий", "друга", "другий"], ["третій", "третя", "третій"], ["четвертий", "четверта", "четвертий"], ["п’ятий", "п’ята", "п’ятий"]];
+const UK_COUSIN: Three[] = [["", "", ""], ["двоюрідний брат", "двоюрідна сестра", "двоюрідний брат або сестра"], ["троюрідний брат", "троюрідна сестра", "троюрідний брат або сестра"], ["четвероюрідний брат", "четвероюрідна сестра", "четвероюрідний брат або сестра"]];
+
+function ukBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["батько", "мати", "один із батьків"], ["дідусь", "бабуся", "дідусь або бабуся"], ["прадід", "прабаба", "прадід або прабаба"], ["прапрадід", "прапрабаба", "прапрадід або прапрабаба"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `предок (покоління ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["син", "донька", "дитина"], ["онук", "онука", "онук або онука"], ["правнук", "правнучка", "правнук або правнучка"], ["праправнук", "праправнучка", "праправнук або праправнучка"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `нащадок (покоління ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["брат", "сестра", "брат або сестра"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["племінник", "племінниця", "племінник або племінниця"]);
+    if (down === 3) return pick(sex, ["внучатий племінник", "внучата племінниця", "внучатий племінник або племінниця"]);
+    return "нащадок брата або сестри";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["дядько", "тітка", "дядько або тітка"]);
+    if (up === 3) return pick(sex, ["двоюрідний дід", "двоюрідна баба", "двоюрідний дід або баба"]);
+    return pick(sex, ["брат одного з предків", "сестра одного з предків", "брат або сестра одного з предків"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n < UK_COUSIN.length ? pick(sex, UK_COUSIN[n]) : pick(sex, ["далекий родич", "далека родичка", "далекий родич"]);
+  return up === down ? base : `${base}, зі ${up > down ? "старшого" : "молодшого"} покоління`;
+}
+
+const uk: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["чоловік", "дружина", "чоловік або дружина"]);
+  switch (k.t) {
+    case "self": return "людина в центрі";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) {
+        if (k.half === "U") return `${pick(sex, ["брат", "сестра", "брат або сестра"])} по одному з батьків`;
+        const word = k.half === "M" ? "єдинокровн" : "єдиноутробн";
+        return pick(sex, [`${word}ий брат`, `${word}а сестра`, `${word}ий брат або сестра`]);
+      }
+      return ukBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["вітчим", "мачуха", "вітчим або мачуха"]);
+      const of = pick(k.parent, ["батька", "матері", "одного з батьків"]);
+      if (k.when === "unknown") return `${spouse(sex)} ${of}`;
+      const ord = k.order < UK_ORD.length ? pick(sex, UK_ORD[k.order]) : `${k.order}-${sex === "F" ? "а" : "й"}`;
+      return `${ord} ${spouse(sex)} ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["зять", "невістка", "чоловік або дружина дитини"]);
+    case "siblingInLaw": return pick(sex, ["свояк", "своячка", "свояк або своячка"]);
+    case "stepGrandparent": return pick(sex, ["нерідний дідусь", "нерідна бабуся", "нерідний дідусь або бабуся"]);
+    case "piblingByMarriage": return pick(sex, ["дядько за шлюбом", "тітка за шлюбом", "дядько або тітка за шлюбом"]);
+    case "kinSpouse": return `${spouse(sex)} родича (${uk(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["свекор або тесть", "свекруха або теща", "батько або мати чоловіка чи дружини"]);
+    case "stepChild": return pick(sex, ["пасинок", "падчерка", "пасинок або падчерка"]);
+    case "stepGrandchild": return pick(sex, ["нерідний онук", "нерідна онука", "нерідний онук або онука"]);
+    case "spouseKin": return `${pick(sex, ["родич", "родичка", "родич"])} за шлюбом: ${uk(k.kin, sex)}, з боку ${pick(k.spouse, ["чоловіка", "дружини", "чоловіка або дружини"])}`;
+  }
+};
+
+/* ───────────── Srpski (latinica) ───────────── */
+
+const SR_ORD: Three[] = [["", "", ""], ["prvi", "prva", "prvi"], ["drugi", "druga", "drugi"], ["treći", "treća", "treći"], ["četvrti", "četvrta", "četvrti"], ["peti", "peta", "peti"]];
+
+function srBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["otac", "majka", "roditelj"], ["deda", "baba", "deda ili baba"], ["pradeda", "prababa", "pradeda ili prababa"], ["čukundeda", "čukunbaba", "čukundeda ili čukunbaba"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `predak (${up}. kolena)`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["sin", "ćerka", "dete"], ["unuk", "unuka", "unuk ili unuka"], ["praunuk", "praunuka", "praunuk ili praunuka"], ["čukununuk", "čukununuka", "čukununuk ili čukununuka"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `potomak (${down}. kolena)`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["brat", "sestra", "brat ili sestra"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["sestrić ili bratanac", "sestričina ili bratanica", "dete brata ili sestre"]);
+    if (down === 3) return pick(sex, ["unuk brata ili sestre", "unuka brata ili sestre", "unuče brata ili sestre"]);
+    return "potomak brata ili sestre";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["stric, ujak ili teča", "tetka ili strina", "brat ili sestra roditelja"]);
+    if (up === 3) return pick(sex, ["brat dede ili babe", "sestra dede ili babe", "brat ili sestra dede ili babe"]);
+    return pick(sex, ["brat jednog pretka", "sestra jednog pretka", "brat ili sestra jednog pretka"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? pick(sex, ["brat od strica ili tetke", "sestra od strica ili tetke", "brat ili sestra od strica ili tetke"])
+    : n < SR_ORD.length ? `${pick(sex, ["rođak", "rođaka", "rođak"])} u ${n + 1}. kolenu` : pick(sex, ["daljni rođak", "daljna rođaka", "daljni rođak"]);
+  return up === down ? base : `${base}, iz ${up > down ? "starije" : "mlađe"} generacije`;
+}
+
+const sr: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["muž", "žena", "supružnik"]);
+  switch (k.t) {
+    case "self": return "osoba u sredini";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["polubrat", "polusestra", "polubrat ili polusestra"])} ${pick(k.half, ["po ocu", "po majci", "po jednom roditelju"])}`;
+      return srBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["očuh", "maćeha", "očuh ili maćeha"]);
+      const of = pick(k.parent, ["oca", "majke", "roditelja"]);
+      if (k.when === "unknown") return `${spouse(sex)} ${of}`;
+      const ord = k.order < SR_ORD.length ? pick(sex, SR_ORD[k.order]) : `${k.order}.`;
+      return `${ord} ${spouse(sex)} ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["zet", "snaja", "supružnik deteta"]);
+    case "siblingInLaw": return pick(sex, ["dever, šurak ili zet", "zaova, svastika ili snaja", "srodnik po braku"]);
+    case "stepGrandparent": return pick(sex, ["deda po braku", "baba po braku", "deda ili baba po braku"]);
+    case "piblingByMarriage": return pick(sex, ["teča ili tetak", "strina ili ujna", "tetak ili strina po braku"]);
+    case "kinSpouse": return `${spouse(sex)} rođaka (${sr(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["svekar ili tast", "svekrva ili tašta", "roditelj supružnika"]);
+    case "stepChild": return pick(sex, ["pastorak", "pastorka", "pastorak ili pastorka"]);
+    case "stepGrandchild": return pick(sex, ["unuk po braku", "unuka po braku", "unuče po braku"]);
+    case "spouseKin": return `${pick(sex, ["srodnik", "srodnica", "srodnik"])} po braku: ${sr(k.kin, sex)}, sa strane ${pick(k.spouse, ["muža", "žene", "supružnika"])}`;
+  }
+};
+
+/* ───────────── Български ───────────── */
+
+const BG_ORD: Three[] = [["", "", ""], ["първи", "първа", "първи"], ["втори", "втора", "втори"], ["трети", "трета", "трети"], ["четвърти", "четвърта", "четвърти"], ["пети", "пета", "пети"]];
+
+function bgBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["баща", "майка", "родител"], ["дядо", "баба", "дядо или баба"], ["прадядо", "прабаба", "прадядо или прабаба"], ["прапрадядо", "прапрабаба", "прапрадядо или прапрабаба"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `прародител (поколение ${up})`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["син", "дъщеря", "дете"], ["внук", "внучка", "внук или внучка"], ["правнук", "правнучка", "правнук или правнучка"], ["праправнук", "праправнучка", "праправнук или праправнучка"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `потомък (поколение ${down})`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["брат", "сестра", "брат или сестра"]);
+  if (up === 1) {
+    if (down === 2) return pick(sex, ["племенник", "племенница", "племенник или племенница"]);
+    if (down === 3) return pick(sex, ["внук на брат или сестра", "внучка на брат или сестра", "внук или внучка на брат или сестра"]);
+    return "потомък на брат или сестра";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["чичо или вуйчо", "леля", "чичо, вуйчо или леля"]);
+    if (up === 3) return pick(sex, ["брат на дядо или баба", "сестра на дядо или баба", "брат или сестра на дядо или баба"]);
+    return pick(sex, ["брат на прародител", "сестра на прародител", "брат или сестра на прародител"]);
+  }
+  const n = Math.min(up, down) - 1;
+  const cousin = (k: "първ" | "втор" | "трет") => pick(sex, [`${k}и братовчед`, `${k}а братовчедка`, `${k}и братовчед или братовчедка`]);
+  const base = n === 1 ? cousin("първ") : n === 2 ? cousin("втор") : n === 3 ? cousin("трет") : pick(sex, ["далечен братовчед", "далечна братовчедка", "далечен роднина"]);
+  return up === down ? base : `${base}, от ${up > down ? "по-старо" : "по-младо"} поколение`;
+}
+
+const bg: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["съпруг", "съпруга", "съпруг или съпруга"]);
+  switch (k.t) {
+    case "self": return "човекът в центъра";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(sex, ["полубрат", "полусестра", "полубрат или полусестра"])} ${pick(k.half, ["по бащина линия", "по майчина линия", "по един от родителите"])}`;
+      return bgBlood(k.up, k.down, sex);
+    case "spouse": return spouse(sex);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["пастрок", "мащеха", "пастрок или мащеха"]);
+      const of = pick(k.parent, ["на бащата", "на майката", "на родителя"]);
+      if (k.when === "unknown") return `${spouse(sex)} ${of}`;
+      const ord = k.order < BG_ORD.length ? pick(sex, BG_ORD[k.order]) : `${k.order}.`;
+      return `${ord} ${spouse(sex)} ${of}`;
+    }
+    case "childSpouse": return pick(sex, ["зет", "снаха", "съпруг или съпруга на детето"]);
+    case "siblingInLaw": return pick(sex, ["зет или девер", "снаха или балдъза", "роднина по сватовство"]);
+    case "stepGrandparent": return pick(sex, ["дядо по сватовство", "баба по сватовство", "дядо или баба по сватовство"]);
+    case "piblingByMarriage": return pick(sex, ["чичо по сватовство", "леля по сватовство", "чичо или леля по сватовство"]);
+    case "kinSpouse": return `${spouse(sex)} на роднина (${bg(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["свекър или тъст", "свекърва или тъща", "родител на съпруга"]);
+    case "stepChild": return pick(sex, ["доведен син", "доведена дъщеря", "доведено дете"]);
+    case "stepGrandchild": return pick(sex, ["доведен внук", "доведена внучка", "доведено внуче"]);
+    case "spouseKin": return `${pick(sex, ["роднина", "роднина", "роднина"])} по сватовство: ${bg(k.kin, sex)}, от страната на ${pick(k.spouse, ["съпруга", "съпругата", "съпруга или съпругата"])}`;
+  }
+};
+
+/* ───────────── Türkçe ───────────── */
+
+/** Türkçe akrabalık: babaanne/anneanne, amca/dayı/hala/teyze ayrımları; taraf bilinmediğinde ikisi birden yazılır. */
+const TR_ORD = ["", "birinci", "ikinci", "üçüncü", "dördüncü", "beşinci", "altıncı"];
+
+function trBlood(up: number, down: number, sex: Sex): string {
+  if (down === 0) {
+    const names: Three[] = [["", "", ""], ["baba", "anne", "ebeveyn"], ["dede", "babaanne veya anneanne", "büyükanne veya büyükbaba"], ["büyük dede", "büyük nine", "büyük dede veya nine"], ["dedenin dedesi", "ninenin ninesi", "büyük dedenin ebeveyni"]];
+    if (up < names.length) return pick(sex, names[up]);
+    return `ata (${up}. kuşak)`;
+  }
+  if (up === 0) {
+    const names: Three[] = [["", "", ""], ["oğul", "kız", "çocuk"], ["torun", "torun", "torun"], ["torun çocuğu", "torun çocuğu", "torun çocuğu"], ["torun torunu", "torun torunu", "torun torunu"]];
+    if (down < names.length) return pick(sex, names[down]);
+    return `torun (${down}. kuşak)`;
+  }
+  if (up === 1 && down === 1) return pick(sex, ["erkek kardeş", "kız kardeş", "kardeş"]);
+  if (up === 1) {
+    if (down === 2) return "yeğen";
+    if (down === 3) return "kardeş torunu";
+    return "bir kardeşin torunu";
+  }
+  if (down === 1) {
+    if (up === 2) return pick(sex, ["amca veya dayı", "hala veya teyze", "amca, dayı, hala veya teyze"]);
+    if (up === 3) return pick(sex, ["dedenin veya ninenin erkek kardeşi", "dedenin veya ninenin kız kardeşi", "dedenin veya ninenin kardeşi"]);
+    return "bir atanın kardeşi";
+  }
+  const n = Math.min(up, down) - 1;
+  const base = n === 1 ? "kuzen" : TR_ORD[n] ? `${TR_ORD[n]} dereceden kuzen` : "uzak kuzen";
+  return up === down ? base : `${base}, ${up > down ? "daha eski" : "daha yeni"} bir kuşaktan`;
+}
+
+const tr: Words = (k, sex) => {
+  const spouse = (s: Sex) => pick(s, ["koca", "eş", "eş"]);
+  switch (k.t) {
+    case "self": return "ortadaki kişi";
+    case "blood":
+      if (k.half && k.up === 1 && k.down === 1) return `${pick(k.half, ["baba bir ", "anne bir ", "yarım "])}${pick(sex, ["erkek kardeş", "kız kardeş", "kardeş"])}`;
+      return trBlood(k.up, k.down, sex);
+    case "spouse": return pick(sex, ["koca", "karı", "eş"]);
+    case "parentSpouse": {
+      if (k.when === "after") return pick(sex, ["üvey baba", "üvey anne", "üvey ebeveyn"]);
+      const of = pick(k.parent, ["babanın", "annenin", "ebeveynin"]);
+      return k.when === "before" ? `${of} ${TR_ORD[k.order] ?? `${k.order}.`} eşi` : `${of} eşi`;
+    }
+    case "childSpouse": return pick(sex, ["damat", "gelin", "çocuğun eşi"]);
+    case "siblingInLaw": return pick(sex, ["kayınbirader veya enişte", "görümce, baldız veya yenge", "evlilik yoluyla kardeş"]);
+    case "stepGrandparent": return pick(sex, ["üvey dede", "üvey nine", "üvey dede veya nine"]);
+    case "piblingByMarriage": return pick(sex, ["enişte", "yenge", "enişte veya yenge"]);
+    case "kinSpouse": return `bir akrabanın eşi (${tr(k.kin, k.kinSex)})`;
+    case "parentInLaw": return pick(sex, ["kayınpeder", "kayınvalide", "kayınpeder veya kayınvalide"]);
+    case "stepChild": return pick(sex, ["üvey oğul", "üvey kız", "üvey çocuk"]);
+    case "stepGrandchild": return "üvey torun";
+    case "spouseKin": return `evlilik yoluyla akraba: ${tr(k.kin, sex)}, ${pick(k.spouse, ["kocanın", "karının", "eşin"])} tarafından`;
+  }
+};
+
 /** Gradul în cifre romane, ca în actele de succesiune: 4 → „IV”. */
 export function romanDegree(n: number) {
   const r: [number, string][] = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
@@ -546,7 +1071,7 @@ export function romanDegree(n: number) {
   return out;
 }
 
-const WORDS: Record<Locale, Words> = { ro, "en-GB": en("centre"), "en-US": en("center"), fr, es, nl, de, it, hu, he };
+const WORDS: Record<Locale, Words> = { ro, "en-GB": en("centre"), "en-US": en("center"), fr, es, nl, de, it, hu, he, pt, el, sv, da, nb, uk, sr, bg, tr };
 
 /** Numele rudeniei în limba cerută: kinLabel(k.term, k.sex, "de") → „Cousine”. */
 export function kinLabel(term: KinTerm, sex: Sex, locale: Locale): string {
@@ -568,6 +1093,10 @@ export function degreeWord(n: number, locale: Locale): string {
     case "es": return `${n}.º`;
     case "nl": return `${n}e`;
     case "de": case "hu": return `${n}.`;
-    case "he": return `${n}`;
+    case "he": case "el": case "uk": return `${n}`;
+    case "pt": return `${n}.º`;
+    case "sv": return `${n}:${n % 10 === 1 || n % 10 === 2 ? "a" : "e"}`;
+    case "da": case "nb": case "sr": case "tr": return `${n}.`;
+    case "bg": return `${n}`;
   }
 }

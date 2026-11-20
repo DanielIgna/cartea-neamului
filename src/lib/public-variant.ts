@@ -1,4 +1,4 @@
-import { LOCALES, type Locale } from "@/i18n/locales";
+import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
 import { sectionOf } from "@/lib/public-sections";
 
@@ -23,8 +23,18 @@ export function parseVariant(key: string): PublicVariant | null {
   return { locale: locale as Locale, theme: theme as PublicVariant["theme"], cookieSeen: seen === "1" };
 }
 
-/** Toate variantele (10 limbi × 3 teme × anunț închis sau nu = 60), făcute la publicare și reîmprospătate din 10 în 10 minute. */
+/** Toate variantele (fiecare limbă × 3 teme × anunț închis sau nu), reîmprospătate din 10 în 10 minute. */
 export const ALL_VARIANTS = LOCALES.flatMap((locale) => THEMES.flatMap((theme) => [false, true].map((cookieSeen) => variantKey({ locale, theme, cookieSeen }))));
+
+/**
+ * Variantele făcute dinainte, la publicare: toate pentru limbile vechi; pentru limbile adăugate pe 19.11.2026 doar tema
+ * automată (cea pe care o primesc Google și vizitatorii noi), ca publicarea să nu dureze de două ori mai mult. Restul se fac
+ * la prima cerere și apoi stau în cache, la fel de repede.
+ */
+export const PREBUILT_VARIANTS = ALL_VARIANTS.filter((key) => {
+  const [locale, theme] = key.split(".");
+  return theme === "auto" || !(NEW_LOCALES as readonly string[]).includes(locale);
+});
 
 /** Paginile care au variantă gata făcută: toate cele din PUBLIC_PAGES. */
 export const PUBLIC_PATHS = new Set(PUBLIC_PAGES.map((p) => p.path));

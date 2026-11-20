@@ -62,7 +62,7 @@ For children born in North America, their grandparents' homeland can feel abstra
 
 Seeing that their great-grandparents lived in a specific village in Transylvania, Moldavia or Banat, reading the stories of cousins who stayed behind and seeing how every branch connects helps kids understand who they are and where they come from.
 
-Because Cartea Neamului works in ten languages, including English and Romanian, grandparents in Romania and grandchildren in the US or Canada can open the exact same family tree, each with the site in the language they are most comfortable with. The stories and recordings stay in the language they were told in, which is often exactly what makes them precious.
+Because Cartea Neamului works in many languages, including English and Romanian, grandparents in Romania and grandchildren in the US or Canada can open the exact same family tree, each with the site in the language they are most comfortable with. The stories and recordings stay in the language they were told in, which is often exactly what makes them precious.
 
 ## 5. Turn digital memories into a family book
 

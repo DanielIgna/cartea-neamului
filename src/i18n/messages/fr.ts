@@ -117,7 +117,7 @@ export const fr: Catalog = {
     eyebrow: "La généalogie de votre famille, ensemble",
     trust1: "7 jours gratuits pour commencer",
     trust2: "Privé : seuls vos proches le voient",
-    trust3: "En 10 langues, aussi pour ceux partis loin",
+    trust3: "En {count} langues, aussi pour ceux partis loin",
     visualLabel: "Exemple d’arbre en éventail, avec un souvenir enregistré et le livre de la famille",
     visualYou: "Vous",
     voiceTitle: "La voix de grand-mère Ana",

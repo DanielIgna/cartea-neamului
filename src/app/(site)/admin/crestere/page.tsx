@@ -77,7 +77,7 @@ export default async function Crestere() {
           <thead><tr><th>Email</th><th>Trimise</th></tr></thead>
           <tbody>{NEWS_STEPS.map((s) => <tr key={s.key}><td>{STEP[s.key]}</td><td>{num(d.news.sent[s.key] ?? 0)}</td></tr>)}</tbody>
         </table></div>
-        <p className="muted small" style={{ marginBottom: 0 }}>Textele sunt în src/i18n/messages/crestere (9 limbi). Fiecare email se sare dacă omul a făcut deja pasul (a invitat, a înregistrat un glas, a plătit).</p>
+        <p className="muted small" style={{ marginBottom: 0 }}>Textele sunt în src/i18n/messages/crestere (câte un fișier pe limbă). Fiecare email se sare dacă omul a făcut deja pasul (a invitat, a înregistrat un glas, a plătit).</p>
       </div>
 
       <div className="card">

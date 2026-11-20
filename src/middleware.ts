@@ -86,6 +86,6 @@ export const config = {
     "/diaspora", "/diaspora/:a", "/diaspora/:a/:b",
     "/genealogie", "/genealogie/:oras", "/genealogie/:oras/:b",
     // Aceleași pagini, în celelalte limbi.
-    "/:lang(en|en-us|fr|es|nl|de|it|hu|he)", "/:lang(en|en-us|fr|es|nl|de|it|hu|he)/:path*",
+    "/:lang(en|en-us|fr|es|nl|de|it|hu|he|pt|el|sv|da|no|ua|sr|bg|tr)", "/:lang(en|en-us|fr|es|nl|de|it|hu|he|pt|el|sv|da|no|ua|sr|bg|tr)/:path*",
     "/pub", "/pub/:path*"],
 };

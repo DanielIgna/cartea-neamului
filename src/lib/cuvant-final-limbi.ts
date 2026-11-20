@@ -386,4 +386,6 @@ const HE = `## שתי שושלות, שני ספרים
 /** Textul de bază din cod, pe limbi (româna e chiar DEFAULT_WORD; engleza americană citește același text ca cea britanică). */
 export const DEFAULT_WORDS: Record<Locale, string> = {
   ro: DEFAULT_WORD, "en-GB": EN, "en-US": EN, fr: FR, es: ES, nl: NL, de: DE, it: IT, hu: HU, he: HE,
+  // Limbile noi (19.11.2026) citesc textul englezesc până verificăm versetele dintr-o traducere clasică a Bibliei în limba lor.
+  pt: EN, el: EN, sv: EN, da: EN, nb: EN, uk: EN, sr: EN, bg: EN, tr: EN,
 };

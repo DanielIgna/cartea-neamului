@@ -2,7 +2,7 @@ import { GEN_CITIES, GEN_HUB, GEN_MIN_WORDS, cityDesc, cityTitle, genCityPath, g
 import { GEN_REGIONS, genRegionPath, regionWords } from "@/lib/genealogie-regiuni";
 import { LOCALES_OF as DIASPORA_LOCALES_OF, descriptionOf as diasporaDescription, entries as diasporaEntries, titleOf as diasporaTitle } from "@/lib/diaspora";
 import { LANGUAGE_NAMES, LOCALES, localizedPath, splitLocalePath } from "@/i18n/locales";
-import { PRIVATE_PREFIXES, PUBLIC_PAGES, TRANSLATED_PAGES } from "./public-pages";
+import { PRIVATE_PREFIXES, PUBLIC_PAGES, TRANSLATED_PAGES, pageLocales } from "./public-pages";
 import { loadCollection } from "./continut/colectii";
 import { loadNames } from "./continut/nume";
 import { nameDescription, nameQuality, nameTitle } from "./continut/nume-extra";
@@ -43,7 +43,7 @@ export function auditPages(published: Map<string, Date> = new Map()): AuditPage[
 
   for (const p of PUBLIC_PAGES) push({ path: p.path, title: p.label, description: null, words: null, indexable: true, gate: null, category: null });
   // Aceleași pagini în celelalte limbi (/it/contact, /en, /he/termeni), cu hreflang; vezi URL_PREFIX în src/i18n/locales.ts.
-  for (const l of LOCALES) if (l !== "ro") for (const p of TRANSLATED_PAGES) push({ path: localizedPath(p.path, l), title: `${p.label} (${LANGUAGE_NAMES[l]})`, description: null, words: null, indexable: true, gate: null, category: "limbă" });
+  for (const l of LOCALES) if (l !== "ro") for (const p of TRANSLATED_PAGES) if (pageLocales(p.path).includes(l)) push({ path: localizedPath(p.path, l), title: `${p.label} (${LANGUAGE_NAMES[l]})`, description: null, words: null, indexable: true, gate: null, category: "limbă" });
   for (const c of ["ghid", "glosar"] as const) {
     push({ path: `/${c}`, title: c === "ghid" ? "Ghiduri de genealogie" : "Glosar de genealogie", description: null, words: null, indexable: true, gate: null, category: "hub" });
     for (const e of loadCollection(c)) push({ path: e.path, title: e.seoTitle, description: e.description, words: e.words, indexable: true, gate: null, category: e.category });
