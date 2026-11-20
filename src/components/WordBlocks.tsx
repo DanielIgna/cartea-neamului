@@ -5,6 +5,7 @@ import "./time-journey.css";
 /** Ghilimelele obișnuite în fiecare limbă, pentru versete: „…”, “…”, « … », „…“. */
 const QUOTES: Record<Locale, [string, string]> = {
   ro: ["„", "”"], "en-GB": ["“", "”"], "en-US": ["“", "”"], fr: ["« ", " »"], es: ["«", "»"], nl: ["‘", "’"], de: ["„", "“"], it: ["«", "»"], hu: ["„", "”"], he: ["“", "”"],
+  pt: ["«", "»"], el: ["«", "»"], sv: ["”", "”"], da: ["»", "«"], nb: ["«", "»"], uk: ["«", "»"], sr: ["„", "“"], bg: ["„", "“"], tr: ["“", "”"],
 };
 export const quoted = (text: string, locale: Locale = "ro") => {
   const [a, b] = QUOTES[locale] ?? QUOTES.ro;

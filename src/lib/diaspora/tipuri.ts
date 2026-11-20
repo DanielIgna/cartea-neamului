@@ -12,6 +12,8 @@ export type TList = Partial<Record<Lang, string[]>>;
 /** Limba conținutului pentru limba site-ului (engleza britanică și cea americană au același text). */
 export const LANG_OF: Record<Locale, Lang | null> = {
   ro: "ro", "en-GB": "en", "en-US": "en", fr: "fr", es: "es", nl: "nl", de: "de", it: "it", hu: "hu", he: "he",
+  // Limbile noi (19.11.2026): paginile scrise în ele vin pe rând; până atunci citesc engleza (noindex).
+  pt: null, el: null, sv: null, da: null, nb: null, uk: null, sr: null, bg: null, tr: null,
 };
 /** Limbile site-ului care arată un text (pentru hreflang). */
 export const LOCALES_OF: Record<Lang, Locale[]> = {

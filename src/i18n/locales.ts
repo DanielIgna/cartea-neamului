@@ -5,9 +5,19 @@
  * Alegerea se ține într-un cookie („limba”) și, pentru cine are cont, și în cont (coloana user.locale), ca să-l urmeze pe
  * alt telefon. Paginile publice au și adresa lor pe limbă (/it/, /en/contact; vezi URL_PREFIX), româna e fără prefix.
  */
-export const LOCALES = ["ro", "en-GB", "en-US", "fr", "es", "nl", "de", "it", "hu", "he"] as const;
+export const LOCALES = ["ro", "en-GB", "en-US", "fr", "es", "nl", "de", "it", "hu", "he", "pt", "el", "sv", "da", "nb", "uk", "sr", "bg", "tr"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "ro";
+/**
+ * În câte limbi e site-ul, cum se spune oamenilor („în 18 limbi”): engleza britanică și cea americană sunt o singură limbă.
+ * Orice text care spune numărul limbilor îl ia de aici, ca să nu rămână în urmă când se adaugă o limbă.
+ */
+export const LANGUAGE_COUNT = new Set(LOCALES.map((l) => l.split("-")[0])).size;
+/**
+ * Limbile adăugate pe 19.11.2026 care nu au încă toate textele traduse: ce lipsește se arată în engleză (nu în română), iar
+ * paginile publice fără text în ele nu primesc adresă pe acea limbă (vezi NOT_YET_IN din public-pages.ts).
+ */
+export const NEW_LOCALES = ["pt", "el", "sv", "da", "nb", "uk", "sr", "bg", "tr"] as const satisfies readonly Locale[];
 export const LOCALE_COOKIE = "limba";
 /** Întrebarea despre limbă a fost închisă cu ✕ pe acest dispozitiv: nu mai apare. */
 export const SUGGEST_DISMISSED_COOKIE = "limba_intrebare";
@@ -18,6 +28,7 @@ export const TIME_ZONE = "Europe/Bucharest";
 export const LANGUAGE_NAMES: Record<Locale, string> = {
   ro: "Română", "en-GB": "English (UK)", "en-US": "English (US)", fr: "Français", es: "Español",
   nl: "Nederlands", de: "Deutsch", it: "Italiano", hu: "Magyar", he: "עברית",
+  pt: "Português", el: "Ελληνικά", sv: "Svenska", da: "Dansk", nb: "Norsk", uk: "Українська", sr: "Srpski", bg: "Български", tr: "Türkçe",
 };
 
 /** Limbile scrise de la dreapta la stânga (ebraica): pagina primește dir="rtl". */
@@ -32,7 +43,9 @@ function localeOfTag(tag: string): Locale | null {
   if (lang === "ro" || lang === "mo") return "ro";
   if (lang === "en") return ["us", "ca", "ph", "pr", "um", "vi", "as", "gu", "mp"].includes(region) ? "en-US" : "en-GB";
   if (lang === "he" || lang === "iw") return "he";
-  return (["fr", "es", "nl", "de", "it", "hu"] as const).find((l) => l === lang) ?? null;
+  // Norvegiana are două scrieri (bokmål „nb”, nynorsk „nn”) și eticheta veche „no”: toate primesc bokmål.
+  if (lang === "nb" || lang === "nn" || lang === "no") return "nb";
+  return (["fr", "es", "nl", "de", "it", "hu", "pt", "el", "sv", "da", "uk", "sr", "bg", "tr"] as const).find((l) => l === lang) ?? null;
 }
 
 /**
@@ -62,6 +75,8 @@ export function localeFromCookieHeader(header: string | null | undefined): Local
  */
 export const URL_PREFIX: Record<Locale, string> = {
   ro: "", "en-GB": "en", "en-US": "en-us", fr: "fr", es: "es", nl: "nl", de: "de", it: "it", hu: "hu", he: "he",
+  // Norvegiana sub „/no” (cum o caută oamenii), ucraineana sub „/ua”: „/uk” s-ar fi citit „Marea Britanie”.
+  pt: "pt", el: "el", sv: "sv", da: "da", nb: "no", uk: "ua", sr: "sr", bg: "bg", tr: "tr",
 };
 const PREFIX_LOCALE = new Map(LOCALES.filter((l) => URL_PREFIX[l]).map((l) => [URL_PREFIX[l], l] as const));
 /** Prefixele, pentru middleware și teste (fără română). */
@@ -92,6 +107,8 @@ export const REGIONAL_HREFLANG: Record<string, Locale> = {
   "en-CA": "en-US", "ro-US": "ro", "ro-CA": "ro",
   // Europa (firul „Extinde SEO-ul diasporei în Europa”): variantele regionale ale limbilor pe care le avem, plus Republica Moldova.
   "de-AT": "de", "de-CH": "de", "fr-BE": "fr", "fr-CH": "fr", "nl-BE": "nl", "en-IE": "en-GB", "ro-MD": "ro",
+  // Limbile adăugate pe 19.11.2026: portugheza Braziliei vede pagina din Portugalia, greaca din Cipru pe cea greacă.
+  "pt-BR": "pt", "el-CY": "el", "sv-FI": "sv",
 };
 
 /** Adaugă etichetele regionale la o listă hreflang → adresă, doar unde există limba de bază (fără ea nu adaugă nimic). */
@@ -104,11 +121,12 @@ export function withRegionalHreflang<T>(langs: Record<string, T>): Record<string
 /** Steagul de lângă numele limbii (în selectorul din antet și în întrebarea despre limbă). */
 export const LANGUAGE_FLAGS: Record<Locale, string> = {
   ro: "🇷🇴", "en-GB": "🇬🇧", "en-US": "🇺🇸", fr: "🇫🇷", es: "🇪🇸", nl: "🇳🇱", de: "🇩🇪", it: "🇮🇹", hu: "🇭🇺", he: "🇮🇱",
+  pt: "🇵🇹", el: "🇬🇷", sv: "🇸🇪", da: "🇩🇰", nb: "🇳🇴", uk: "🇺🇦", sr: "🇷🇸", bg: "🇧🇬", tr: "🇹🇷",
 };
 
 /**
  * Limba după țara de unde vine vizita (antetul x-vercel-ip-country), când browserul nu spune o limbă pe care o avem.
- * Portugalia (pt) nu e încă o limbă a site-ului; până atunci, de acolo se rămâne pe română.
+ * Irlanda rămâne pe engleză: nu are limbă proprie pe site, dar are pagini și articole proprii în /diaspora.
  */
 export const COUNTRY_LOCALE: Record<string, Locale> = {
   RO: "ro", MD: "ro",
@@ -119,8 +137,17 @@ export const COUNTRY_LOCALE: Record<string, Locale> = {
   NL: "nl",
   HU: "hu",
   IL: "he",
+  PT: "pt", BR: "pt", AO: "pt", MZ: "pt",
+  GR: "el", CY: "el",
+  SE: "sv",
+  DK: "da", FO: "da", GL: "da",
+  NO: "nb", SJ: "nb",
+  UA: "uk",
+  RS: "sr", ME: "sr", BA: "sr",
+  BG: "bg",
+  TR: "tr",
   US: "en-US", CA: "en-US",
-  GB: "en-GB", IE: "en-GB", AU: "en-GB", NZ: "en-GB", MT: "en-GB", CY: "en-GB", SE: "en-GB", DK: "en-GB", NO: "en-GB", FI: "en-GB",
+  GB: "en-GB", IE: "en-GB", AU: "en-GB", NZ: "en-GB", MT: "en-GB", FI: "en-GB",
 };
 
 /** Etichetele de limbă din Accept-Language, în ordinea preferinței (după q). */

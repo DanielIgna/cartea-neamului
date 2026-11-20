@@ -53,7 +53,12 @@ describe("limba browserului și cookie-ul", () => {
   it("alege prima limbă pe care o avem, în ordinea dată de browser", () => {
     expect(localeFromAcceptLanguage("de-DE,de;q=0.9,ro;q=0.8,en;q=0.7")).toBe("de");
     expect(localeFromAcceptLanguage("ro-RO,ro;q=0.9,en-US;q=0.8")).toBe("ro");
-    expect(localeFromAcceptLanguage("pt-BR,pt;q=0.9,fr;q=0.5")).toBe("fr");
+    expect(localeFromAcceptLanguage("pt-BR,pt;q=0.9,fr;q=0.5")).toBe("pt");
+    expect(localeFromAcceptLanguage("ja-JP,fr;q=0.5")).toBe("fr");
+    expect(localeFromAcceptLanguage("nn-NO")).toBe("nb");
+    expect(localeFromAcceptLanguage("no")).toBe("nb");
+    expect(localeFromAcceptLanguage("uk-UA,ru;q=0.8")).toBe("uk");
+    expect(localeFromAcceptLanguage("sr-Latn-RS")).toBe("sr");
     expect(localeFromAcceptLanguage("fr;q=0.5,de;q=0.8")).toBe("de");
     expect(localeFromAcceptLanguage("de;q=0,fr;q=0.1")).toBe("fr");
     expect(localeFromAcceptLanguage("nl-BE")).toBe("nl");
@@ -74,7 +79,7 @@ describe("limba browserului și cookie-ul", () => {
   });
 
   it("nimic când nu avem niciuna dintre limbi", () => {
-    expect(localeFromAcceptLanguage("pt-BR,pt;q=0.9")).toBeNull();
+    expect(localeFromAcceptLanguage("ja-JP,ja;q=0.9")).toBeNull();
     expect(localeFromAcceptLanguage("*")).toBeNull();
     expect(localeFromAcceptLanguage("")).toBeNull();
     expect(localeFromAcceptLanguage(null)).toBeNull();
@@ -145,10 +150,10 @@ describe("cataloagele de texte", () => {
   });
 
   it("nicio literă românească (ă ș ț) rămasă în celelalte limbi, afară de nume", () => {
-    // Nume proprii care rămân românești în orice limbă.
+    // Nume proprii care rămân românești în orice limbă. Turca are ş (cu sedilă) în alfabetul ei.
     // Locurile și oamenii din povestea vremurilor (Brașov, Ceaușescu…) se scriu ca în română, ca în orice carte de istorie.
     const names = /Cartea Neamului|Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal|București|Lada cu amintiri|Călătoria în timp|Țara|Maramureș|Mărjel|Crișana|Brașov|Iași|Timișoara|Ploiești|Brăila|Galați|Constanța|Cernavodă|Năsăud|Bărăgan|Mărăști|Mărășești|Grivița|Trăznea|Cloșca|Crișan|Barițiu|Ceaușescu|Beiușului|Buzău|Bălgrad|Căldărușani|[Nn]iculițel|Orăștie|Pitești|Stânca-Ștefănești|Stăniloae|Tordaș|[Vv]oroneț|Văcărești|Șaguna|Șerban|Ștefan/gu;
-    for (const l of others) for (const [key, msg] of leaves(catalogs[l])) expect(/[ăĂșȘțȚşŞţŢ]/.test(msg.replace(names, "")), `${l} ${key}: ${msg}`).toBe(false);
+    for (const l of others) for (const [key, msg] of leaves(catalogs[l])) expect((l === "tr" ? /[ăĂșȘțȚţŢ]/ : /[ăĂșȘțȚşŞţŢ]/).test(msg.replace(names, "")), `${l} ${key}: ${msg}`).toBe(false);
   });
 
   it("româna: „o persoană”, „5 persoane”, „20 de persoane”, ca înainte", () => {

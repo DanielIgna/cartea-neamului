@@ -23,6 +23,16 @@ const LOADERS: Record<Locale, () => Promise<Catalog>> = {
   it: async () => (await import("./it")).it,
   hu: async () => (await import("./hu")).hu,
   he: async () => (await import("./he")).he,
+  // Limbile adăugate pe 19.11.2026: ce nu e încă tradus rămâne în engleză (niciodată în română).
+  pt: async () => merge((await import("./en-GB")).enGB, (await import("./pt")).pt),
+  el: async () => merge((await import("./en-GB")).enGB, (await import("./el")).el),
+  sv: async () => merge((await import("./en-GB")).enGB, (await import("./sv")).sv),
+  da: async () => merge((await import("./en-GB")).enGB, (await import("./da")).da),
+  nb: async () => merge((await import("./en-GB")).enGB, (await import("./nb")).nb),
+  uk: async () => merge((await import("./en-GB")).enGB, (await import("./uk")).uk),
+  sr: async () => merge((await import("./en-GB")).enGB, (await import("./sr")).sr),
+  bg: async () => merge((await import("./en-GB")).enGB, (await import("./bg")).bg),
+  tr: async () => merge((await import("./en-GB")).enGB, (await import("./tr")).tr),
 };
 
 /** Textele unei limbi, întregi (toate limbile au aceleași chei ca româna). */

@@ -1,3 +1,5 @@
+import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
+
 /**
  * Paginile publice pe care le vrem în Google: din ele se fac sitemap.xml, robots.txt și lista din Admin → SEO.
  * (Fără importuri de pe server, ca să poată fi folosit oriunde.)
@@ -20,5 +22,23 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
 /** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
 export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/", "/widget/"];
 
-/** Paginile din PUBLIC_PAGES care au text în toate limbile site-ului. */
+/** Paginile din PUBLIC_PAGES care au text în limbile site-ului (toate sau, pentru limbile noi, cele din pageLocales). */
 export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);
+
+/**
+ * Paginile încă netraduse în limbile adăugate pe 19.11.2026 (până atunci textul lor ar ieși în engleză): în acele limbi nu
+ * au adresă proprie, nu intră în sitemap, iar /pt/termeni trimite la /termeni. Se scoate pagina de aici când e tradusă.
+ */
+const NOT_YET_TRANSLATED: Record<string, readonly Locale[]> = {
+  "/libertatea-de-a-crede": NEW_LOCALES,
+  "/confidentialitate": NEW_LOCALES,
+  "/termeni": NEW_LOCALES,
+};
+
+/** Limbile în care o pagină publică are text adevărat (româna mereu). */
+export function pageLocales(path: string): readonly Locale[] {
+  const page = PUBLIC_PAGES.find((p) => p.path === path);
+  if (!page || page.roOnly) return ["ro"];
+  const missing = NOT_YET_TRANSLATED[path] ?? [];
+  return LOCALES.filter((l) => !missing.includes(l));
+}

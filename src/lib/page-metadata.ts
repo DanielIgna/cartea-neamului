@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { LOCALES, localizedPath, withRegionalHreflang, type Locale } from "@/i18n/locales";
 import { staticLocaleNow } from "@/i18n/static-locale";
-import { TRANSLATED_PAGES } from "@/lib/public-pages";
+import { TRANSLATED_PAGES, pageLocales } from "@/lib/public-pages";
 import { SITE_URL } from "@/lib/site-url";
 import { pageCardUrl } from "@/lib/seo/organizatie";
 
@@ -27,6 +27,7 @@ export const fitTitle = (title: string) => (title.length > 60 && title.endsWith(
 /** Limba din Open Graph („it_IT”) a fiecărei limbi a site-ului. */
 export const OG_LOCALE: Record<Locale, string> = {
   ro: "ro_RO", "en-GB": "en_GB", "en-US": "en_US", fr: "fr_FR", es: "es_ES", nl: "nl_NL", de: "de_DE", it: "it_IT", hu: "hu_HU", he: "he_IL",
+  pt: "pt_PT", el: "el_GR", sv: "sv_SE", da: "da_DK", nb: "nb_NO", uk: "uk_UA", sr: "sr_RS", bg: "bg_BG", tr: "tr_TR",
 };
 
 /** Paginile traduse în toate limbile (au adresă pe fiecare limbă); ghidurile, glosarul, numele și localitățile sunt încă doar în română. */
@@ -39,12 +40,13 @@ export const isTranslatedPath = (path: string) => TRANSLATED.has(path);
  * românească și nu intră în Google (`noindex`), ca să nu fie aceeași pagină de două ori.
  */
 export function languageAlternates(path: string, locale: Locale): Pick<Metadata, "alternates" | "robots"> & { url: string } {
-  if (!isTranslatedPath(path)) {
+  const locales: readonly Locale[] = isTranslatedPath(path) ? pageLocales(path) : ["ro"];
+  if (!locales.includes(locale) || locales.length === 1) {
     const url = canonicalUrl(path);
     return locale === "ro" ? { url, alternates: { canonical: url } } : { url, alternates: { canonical: url }, robots: { index: false, follow: true } };
   }
   const url = canonicalUrl(localizedPath(path, locale));
-  const languages: Record<string, string> = Object.fromEntries(LOCALES.map((l) => [l, canonicalUrl(localizedPath(path, l))]));
+  const languages: Record<string, string> = Object.fromEntries(locales.map((l) => [l, canonicalUrl(localizedPath(path, l))]));
   languages["x-default"] = canonicalUrl(path);
   return { url, alternates: { canonical: url, languages: withRegionalHreflang(languages) } };
 }
@@ -75,6 +77,7 @@ export const PRIVATE_ROBOTS: Metadata["robots"] = { index: false, follow: false 
 /** „Acasă” în fiecare limbă, pentru firul de navigare (BreadcrumbList) al paginilor simple. */
 const HOME_LABEL: Record<Locale, string> = {
   ro: "Acasă", "en-GB": "Home", "en-US": "Home", fr: "Accueil", es: "Inicio", nl: "Home", de: "Startseite", it: "Home", hu: "Kezdőlap", he: "דף הבית",
+  pt: "Início", el: "Αρχική", sv: "Start", da: "Forside", nb: "Forside", uk: "Головна", sr: "Početna", bg: "Начало", tr: "Ana sayfa",
 };
 
 /**

@@ -57,7 +57,7 @@ const FIXED: Block[] = [
     what: "Tabelele și migrațiile; fișierele (poze, glas, acte) în stocarea Neon.",
     files: ["src/db/schema.ts", "src/db/migrate.ts", "src/lib/storage.ts"] },
   { id: "client", layer: "client", title: "Omul care folosește site-ul",
-    what: "Prima pagină, arborele, lada cu amintiri, cartea, plata; pe telefon ca aplicație (PWA), în 9 limbi.",
+    what: "Prima pagină, arborele, lada cu amintiri, cartea, plata; pe telefon ca aplicație (PWA), în toate limbile site-ului.",
     files: ["src/app/(site)/layout.tsx", "src/app/(site)/page.tsx", "src/middleware.ts", "src/app/manifest.ts"] },
 ];
 

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { setStaticLocale } from "@/i18n/server";
-import { parseVariant, ALL_VARIANTS, BUILD_VARIANT, type PublicVariant } from "@/lib/public-variant";
+import { parseVariant, PREBUILT_VARIANTS, BUILD_VARIANT, type PublicVariant } from "@/lib/public-variant";
 
 export type VariantParams = { params: Promise<{ v: string }> };
 
@@ -12,8 +12,8 @@ export async function readVariant({ params }: VariantParams): Promise<PublicVari
   return v;
 }
 
-/** Toate variantele, făcute la publicare. */
-export const variantParams = () => ALL_VARIANTS.map((v) => ({ v }));
+/** Variantele făcute la publicare (celelalte, la prima cerere). */
+export const variantParams = () => PREBUILT_VARIANTS.map((v) => ({ v }));
 
 /**
  * Paginile din secțiuni (ghiduri, glosar…) gata făcute la publicare: toate, dar doar în română cu tema automată, cu sau fără

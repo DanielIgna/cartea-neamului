@@ -22,6 +22,15 @@ export const DATE_WORDS: Record<Locale, DateWords> = {
   it: { approx: "ca. ", before: (y) => `prima del ${y}`, after: (y) => `dopo il ${y}`, ...slash },
   hu: { approx: "kb. ", before: (y) => `${y} előtt`, after: (y) => `${y} után`, dmy: (d, m, y) => `${y}. ${m}. ${d}.`, my: (m, y) => `${y}. ${m}.` },
   he: { approx: "בערך ", before: (y) => `לפני ${y}`, after: (y) => `אחרי ${y}`, ...dots },
+  pt: { approx: "c. ", before: (y) => `antes de ${y}`, after: (y) => `depois de ${y}`, ...slash },
+  el: { approx: "περ. ", before: (y) => `πριν από το ${y}`, after: (y) => `μετά το ${y}`, ...slash },
+  sv: { approx: "ca ", before: (y) => `före ${y}`, after: (y) => `efter ${y}`, dmy: (d, m, y) => `${y}-${m}-${d}`, my: (m, y) => `${y}-${m}` },
+  da: { approx: "ca. ", before: (y) => `før ${y}`, after: (y) => `efter ${y}`, ...dots },
+  nb: { approx: "ca. ", before: (y) => `før ${y}`, after: (y) => `etter ${y}`, ...dots },
+  uk: { approx: "бл. ", before: (y) => `до ${y}`, after: (y) => `після ${y}`, ...dots },
+  sr: { approx: "oko ", before: (y) => `pre ${y}.`, after: (y) => `posle ${y}.`, dmy: (d, m, y) => `${d}. ${m}. ${y}.`, my: (m, y) => `${m}. ${y}.` },
+  bg: { approx: "ок. ", before: (y) => `преди ${y} г.`, after: (y) => `след ${y} г.`, ...dots },
+  tr: { approx: "yak. ", before: (y) => `${y} öncesi`, after: (y) => `${y} sonrası`, ...dots },
 };
 
 /** „1898–1967”, „cca. 1870–?”, „1988” pentru cei în viață; nimic pentru cei în viață fără an de naștere (sau cu datele ascunse, în carte). */

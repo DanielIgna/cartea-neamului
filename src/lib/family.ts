@@ -61,8 +61,11 @@ const UNKNOWN_PARENT: Record<string, { M: string; F: string }> = {
   fr: { M: "Père inconnu", F: "Mère inconnue" }, es: { M: "Padre desconocido", F: "Madre desconocida" }, nl: { M: "Onbekende vader", F: "Onbekende moeder" },
   de: { M: "Unbekannter Vater", F: "Unbekannte Mutter" }, it: { M: "Padre sconosciuto", F: "Madre sconosciuta" }, hu: { M: "Ismeretlen apa", F: "Ismeretlen anya" },
   he: { M: "אב לא ידוע", F: "אם לא ידועה" },
+  pt: { M: "Pai desconhecido", F: "Mãe desconhecida" }, el: { M: "Άγνωστος πατέρας", F: "Άγνωστη μητέρα" }, sv: { M: "Okänd far", F: "Okänd mor" },
+  da: { M: "Ukendt far", F: "Ukendt mor" }, nb: { M: "Ukjent far", F: "Ukjent mor" }, uk: { M: "Невідомий батько", F: "Невідома мати" },
+  sr: { M: "Nepoznat otac", F: "Nepoznata majka" }, bg: { M: "Неизвестен баща", F: "Неизвестна майка" }, tr: { M: "Bilinmeyen baba", F: "Bilinmeyen anne" },
 };
-const UNKNOWN_PARENT_NAME = /^(tata|mama) necunoscut|^unknown (father|mother)|^(pere|mere) inconnu|^(padre|madre) (desconocid|sconosciut)|^onbekende (vader|moeder)|^unbekannter? (vater|mutter)|^ismeretlen (apa|anya)|^(אב|אם) לא ידוע/;
+const UNKNOWN_PARENT_NAME = /^(tata|mama) necunoscut|^unknown (father|mother)|^(pere|mere) inconnu|^(padre|madre) (desconocid|sconosciut)|^onbekende (vader|moeder)|^unbekannter? (vater|mutter)|^ismeretlen (apa|anya)|^(אב|אם) לא ידוע|^(pai|mae) desconhecid|^αγνωστ\S* (πατερας|μητερα)|^okand (far|mor)|^ukendt (far|mor)|^ukjent (far|mor)|^невідом\S* (батько|мати)|^nepoznata? (otac|majka)|^неизвест\S* (баща|маика)|^bilinmeyen (baba|anne)/;
 
 /** Părinții fără nume puși automat („Tată necunoscut”, „Mamă necunoscută”): nu sunt dubluri unii ai altora și nu primesc fișă în carte. */
 export const isPlaceholder = (given: string) => UNKNOWN_PARENT_NAME.test(normName(given)) || /^necunoscut/.test(normName(given));

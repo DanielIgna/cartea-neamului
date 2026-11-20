@@ -53,8 +53,15 @@ describe("limba ghicită: browserul, apoi țara", () => {
     expect(detectLocale({ country: "IE" })).toBe("en-GB");
     expect(detectLocale({ country: "MD" })).toBe("ro");
     expect(detectLocale({ country: "RO" })).toBe("ro");
-    // Portugheza nu e încă o limbă a site-ului: de acolo rămâne româna.
-    expect(detectLocale({ acceptLanguage: "pt-PT,pt;q=0.9", country: "PT" })).toBe("ro");
+    // Limbile adăugate pe 19.11.2026: Portugalia, Grecia, Scandinavia, Ucraina, Serbia, Bulgaria, Turcia.
+    expect(detectLocale({ acceptLanguage: "pt-PT,pt;q=0.9", country: "PT" })).toBe("pt");
+    expect(detectLocale({ country: "NO" })).toBe("nb");
+    expect(detectLocale({ country: "UA" })).toBe("uk");
+    expect(detectLocale({ country: "CY" })).toBe("el");
+    expect(detectLocale({ country: "FI" })).toBe("en-GB");
+    // Un român din Grecia cu „el,ro” rămâne pe română.
+    expect(detectLocale({ acceptLanguage: "el-GR,ro;q=0.8", country: "GR" })).toBe("ro");
+    expect(detectLocale({ acceptLanguage: "ja-JP", country: "JP" })).toBe("ro");
     expect(detectLocale({})).toBe("ro");
   });
 

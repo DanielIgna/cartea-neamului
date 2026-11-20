@@ -10,6 +10,7 @@
  * O funcție nouă = un rând nou aici.
  */
 import type { AutoKey } from "../autonomie";
+import { LANGUAGE_COUNT } from "@/i18n/locales";
 
 export type Area = "familie" | "poveste" | "bani" | "conturi" | "comunicare" | "public" | "admin" | "sistem";
 export type Lifecycle = "live" | "implementat" | "planificat" | "oprit";
@@ -290,7 +291,7 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "gdpr", name: "Datele mele, acorduri și ștergere", area: "conturi", lifecycle: "live", risk: "ridicat", riskWhy: "Obligații legale (GDPR).",
-    what: "Exportul datelor, ștergerea contului, acordurile, Termenii și Confidențialitatea în 9 limbi.",
+    what: "Exportul datelor, ștergerea contului, acordurile, Termenii și Confidențialitatea în limbile site-ului.",
     engine: ["src/lib/legal.ts", "src/lib/consent.ts", "src/components/MyDataTools.tsx", "src/components/CookieNotice.tsx"],
     pages: ["/datele-mele", "/confidentialitate", "/termeni"],
     api: ["/api/datele-mele"],
@@ -455,8 +456,8 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/adam-hristos.test.ts", "tests/istoria-bisericii.test.ts"],
   },
   {
-    key: "traduceri", name: "Cele 10 limbi", area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Un text lipsă dintr-o limbă strică pagina în acea limbă; o regulă greșită în middleware poate trimite Google pe altă pagină.",
-    what: "Traducerea întregii platforme, alegerea limbii (steag și nume în antet), adresele pe limbă (/it/, /en/, /he/…) cu hreflang și canonical, limba ghicită la prima vizită (browserul, apoi țara; româna oriunde în browser câștigă) cu întrebarea „Vezi site-ul în …?”, roboții niciodată redirecționați, prețuri în moneda locală (comutator în Admin → Planuri).",
+    key: "traduceri", name: `Cele ${LANGUAGE_COUNT} de limbi`, area: "public", lifecycle: "live", risk: "mediu", riskWhy: "Un text lipsă dintr-o limbă strică pagina în acea limbă; o regulă greșită în middleware poate trimite Google pe altă pagină.",
+    what: "Traducerea întregii platforme, alegerea limbii (steag și nume în antet), adresele pe limbă (/it/, /en/, /he/…) cu hreflang și canonical, limba ghicită la prima vizită (browserul, apoi țara; româna oriunde în browser câștigă) cu întrebarea „Vezi site-ul în …?”, roboții niciodată redirecționați, prețuri în moneda locală (comutator în Admin → Planuri). Limbile noi din noiembrie 2026 (portugheză /pt, greacă /el, suedeză /sv, daneză /da, norvegiană /no, ucraineană /ua, sârbă /sr, bulgară /bg, turcă /tr) au prima pagină, contul și plata traduse; restul apare în engleză până la traducere, iar paginile încă netraduse (Termeni, Confidențialitate, Libertatea de a crede) nu au adresă în aceste limbi (NOT_YET_TRANSLATED în src/lib/public-pages.ts). Numărul de limbi afișat pe site se calculează singur (LANGUAGE_COUNT).",
     engine: ["src/i18n/locales.ts", "src/i18n/server.ts", "src/middleware.ts", "src/lib/page-metadata.ts", "src/components/LanguagePicker.tsx", "src/components/LanguageSuggest.tsx", "src/components/UntranslatedNote.tsx", "src/lib/plati.ts"],
     tests: ["tests/i18n.test.ts", "tests/limba-detectata.test.ts"],
   },

@@ -13,6 +13,7 @@ import BannerSlides from "@/components/BannerSlides";
 import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
+import { LANGUAGE_COUNT } from "@/i18n/locales";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
 import ZonaSugestii from "@/components/ZonaSugestii";
@@ -44,7 +45,7 @@ const GLOBE = <><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.8 3 2.8
 const Icon = ({ children }: { children: React.ReactNode }) => (
   <svg className="lp-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{children}</svg>
 );
-const STATS = [["10", "stat1"], ["9", "stat2"], ["1", "stat3"], ["1", "stat4"]] as const;
+const STATS = [["10", "stat1"], [String(LANGUAGE_COUNT), "stat2"], ["1", "stat3"], ["1", "stat4"]] as const;
 
 /* O fotografie din public/home, servită de Next la mărimea potrivită ecranului (WebP/AVIF). */
 /* O fotografie a primei pagini: cea inițială o servește Next la mărimea ecranului (WebP/AVIF); cea pusă de admin vine
@@ -135,7 +136,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
         <ul className="lp-trust">
           <li><Icon>{CHECK}</Icon>{t("trust1")}</li>
           <li><Icon>{LOCK}</Icon>{t("trust2")}</li>
-          <li><Icon>{GLOBE}</Icon>{t("trust3")}</li>
+          <li><Icon>{GLOBE}</Icon>{t("trust3", { count: String(LANGUAGE_COUNT) })}</li>
         </ul>
       </section>
 
