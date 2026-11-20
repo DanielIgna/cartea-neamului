@@ -2597,7 +2597,6 @@ export const elExtra: DeepPartial<Catalog> = {
     },
     abroad: "άλλη χώρα",
   },
-<<<<<<< HEAD
   Legal: {
     updated: "Τελευταία αλλαγή: {date}",
     contactTitle: "Επικοινωνία",
@@ -2845,6 +2844,4 @@ export const elExtra: DeepPartial<Catalog> = {
       },
     },
   },
-=======
->>>>>>> origin/main
 };
