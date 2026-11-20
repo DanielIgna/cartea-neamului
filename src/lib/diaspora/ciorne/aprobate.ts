@@ -37,4 +37,6 @@ export const APROBATE = new Set<string>([
   "limba:de/munchen/de", "limba:de/berlin/de", "limba:at/viena/de", "limba:fr/paris/fr",
   // Daniel, 19.11.2026 23:08: aprobare permanentă („ruleaza fara mine”) – lotul 3.
   "limba:us/miami/en", "limba:it/bologna/it", "limba:de/nurnberg/de", "limba:de/stuttgart/de", "limba:fr/lyon/fr",
+  // Aceeași aprobare permanentă: Republica Moldova, Serbia, Bulgaria, Turcia, Luxemburg.
+  "tara:republica-moldova", "tara:serbia", "tara:bulgaria", "tara:turcia", "tara:luxemburg",
 ]);
