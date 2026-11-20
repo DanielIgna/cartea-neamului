@@ -1,4 +1,5 @@
 import type { Country } from "../tipuri";
+import { NEIGHBOUR_COUNTRIES } from "./tari-vecini";
 
 /**
  * Ciornă (Daniel, 18.11.2026): românii din Ucraina, din regiunea Cernăuți (nordul Bucovinei, ținutul Herța, nordul
@@ -70,4 +71,5 @@ export const DRAFT_COUNTRIES: Country[] = [
       { name: "Ambasada României la Oslo", url: "https://oslo.mae.ro", note: { ro: "acte, procuri și transcrieri, cu programare pe econsulat.ro", en: "records, powers of attorney and transcriptions, booked on econsulat.ro" } },
     ],
   },
+  ...NEIGHBOUR_COUNTRIES,
 ];
