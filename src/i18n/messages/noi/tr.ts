@@ -2085,7 +2085,7 @@ export const trExtra: DeepPartial<Catalog> = {
     merged: "Tamam: {name} artık tüm bağlantılar, fotoğraflar ve bilgilerle tek bir profile sahip.{warn, select, fathers { Dikkat: artık iki baba kayıtlı; doğrusunu “Babayı değiştir” ile seçin.} mothers { Dikkat: artık iki anne kayıtlı; doğrusunu “Anneyi değiştir” ile seçin.} other {}}",
     replaceOnlyPlaceholder: "Yalnızca adsız bir ebeveyn değiştirilebilir ve yalnızca adıyla kayıtlı biriyle.",
     replaceDescendant: "{name} çocuklardan birinin torunu, bu yüzden onların ebeveyni olamaz.",
-    autoNoteSiblings: "{name} kişisinin kardeşlerini bağlamak için otomatik eklendi. Adı öğrendiğinizde yazın.",
+    autoNoteSiblings: "Otomatik eklendi: {name} kişisinin kardeşlerini bağlamak için. Adı öğrendiğinizde yazın.",
     autoNoteOther: "{name} kişisinin {role, select, father {babası} other {annesi}}{hasOther, select, yes {, {other} kişisinin başka bir ilişkisinden} other {}}. Adı öğrendiğinizde yazın; gizli kalır ve yalnızca çocuğun profilinde görünür.",
     storageOff: "Dosya depolama ayarlanmamış (Neon’dan AWS_* değişkenleri eksik).",
     titleMissing: "Belgeye bir başlık verin.",
