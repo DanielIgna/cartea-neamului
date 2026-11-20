@@ -2556,7 +2556,7 @@ export const ptExtra: DeepPartial<Catalog> = {
       "1958-trupele-sovietice": "As tropas soviéticas deixam a Roménia",
       "1964-detinutii-politici": "Os presos políticos são libertados",
       "1965-nicolae-ceausescu": "Nicolae Ceaușescu chega ao poder",
-      "1966-decretul-interzice": "O Decreto 770 proíbe o aborto: nascem os “decreţei”",
+      "1966-decretul-interzice": "O Decreto 770 proíbe o aborto: nascem os “filhos do decreto”",
       "1968-ceausescu-refuza": "Ceaușescu recusa participar na invasão da Checoslováquia; o país é dividido em distritos",
       "1969-om-luna": "O primeiro homem na Lua, visto na televisão em todo o mundo",
       "1970-inundatiile-mari": "As grandes cheias de maio: centenas de aldeias debaixo de água",
