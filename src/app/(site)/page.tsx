@@ -11,6 +11,7 @@ import { myJoinRequests } from "@/lib/join";
 import { getT } from "@/i18n/server";
 import Landing from "@/components/Landing";
 import Image from "next/image";
+import { Ico } from "@/components/AccountNav";
 import { homeImages } from "@/lib/home-images";
 import { seoSettings, SEO_TAG } from "@/lib/seo";
 import { unstable_cache } from "next/cache";
@@ -74,57 +75,98 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ c
   const paid = access.kind === "platit" && access.until ? access : null;
   const canUp = !!paid && tierRank(paid.tier) < TIERS.length - 1;
   const date = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(d);
+  // Cifrele neamului (arborele cel mai nou): persoane, cel mai vechi an de naștere, locurile de baștină și rudele intrate în arbore.
+  const stats = await db.execute(sql`select
+      (select min(extract(year from p.birth_from))::int from person p where p.tree_id = ${first.id}) as oldest,
+      (select count(distinct lower(trim(p.birth_place)))::int from person p where p.tree_id = ${first.id} and coalesce(trim(p.birth_place), '') <> '') as places,
+      (select count(*)::int from tree_member m where m.tree_id = ${first.id}) as members`)
+    .then((r) => (r.rows?.[0] ?? {}) as { oldest?: number | null; places?: number; members?: number }).catch(() => ({} as { oldest?: number | null; places?: number; members?: number }));
+  const th = await getT("HomeDash");
+  const trial = access.kind === "proba" ? access : null;
+  const planName = paid ? tp(`tiers.${paid.tier}.name`) : null;
+  const tiles: { k: "persons" | "oldest" | "places" | "members"; icon: string; v: string | number }[] = [
+    { k: "persons", icon: "user", v: first.count },
+    { k: "oldest", icon: "book", v: stats.oldest ?? "–" },
+    { k: "places", icon: "map", v: stats.places ?? 0 },
+    { k: "members", icon: "inv", v: stats.members ?? 1 },
+  ];
+  const hero = stack[1] ?? stack[0];
   return (
-    <>
-    <header className="pf-cover home-cover">
+    <div className="dash">
+    <header className="dash-hero">
+      {hero && <div className="dash-hero-img" aria-hidden="true"><Image src={hero.src} alt="" fill sizes="(max-width: 900px) 100vw, 900px" priority unoptimized={hero.custom} /></div>}
       <div className="pf-cover-grain" aria-hidden="true" />
-      {/* Aceleași fotografii cu generații ca pe prima pagină, așezate ca niște poze vechi puse una peste alta. */}
-      <div className="hc-stack" aria-hidden="true">
-        {stack.map((img, i) => (
-          <div key={img.id + i} className="hc-photo"><div className="hc-photo-in"><Image src={img.src} alt="" fill sizes="200px" unoptimized={img.custom} /></div></div>
-        ))}
-      </div>
-      <p className="pf-eyebrow">{t("welcomeEyebrow")}</p>
-      <h1 className="pf-name">{firstName}</h1>
-      <div className="pf-orn" aria-hidden="true"><i /><b /><i /></div>
-      <p className="meta">{t("welcomeLead")}</p>
-      <div className="actions">
-        <Link className="btn primary" href={`/arbore/${first.id}`}>{t("openTree")} · {first.name}</Link>
-        {mine && <Link className="btn" href={`/arbore/${first.id}/persoana/${mine.id}`}>{t("myProfile")}</Link>}
+      <div className="dash-hero-in">
+        <p className="pf-eyebrow">{t("welcomeEyebrow")}</p>
+        <h1 className="dash-name">{firstName}</h1>
+        <p className="dash-lead">{t("welcomeLead")}</p>
+        <div className="actions">
+          <Link className="btn primary dash-go" href={`/arbore/${first.id}`}>{t("openTree")} · {first.name}<span className="dash-arrow" aria-hidden="true">→</span></Link>
+          {mine && <Link className="btn" href={`/arbore/${first.id}/persoana/${mine.id}`}>{t("myProfile")}</Link>}
+        </div>
       </div>
     </header>
-    <div className="layout">
-      <div className="stack">
-        <div className="card">
-          <div className="toolbar"><div className="title">{t("yourTrees")}</div></div>
-          <div className="list">
-            {trees.map((tr) => (
-              <Link key={tr.id} href={`/arbore/${tr.id}`}>
-                <b>{tr.name}</b>
-                <span className="muted">{tr.region ? `${tr.region} · ` : ""}{t("persons", { count: tr.count })} · {t(tr.role)}</span>
-              </Link>
-            ))}
-          </div>
+
+    <section className="dash-plan card">
+      {trial ? (
+        <div className="dash-ring" style={{ ["--p" as string]: `${Math.max(0, Math.min(100, Math.round((trial.daysLeft / 7) * 100)))}%` }}>
+          <b>{trial.daysLeft}<small>{th("daysLeft")}</small></b>
         </div>
-        <JoinTree compact requests={requests} />
+      ) : <div className="dash-ring dash-ring-full"><b><Ico n="card" /></b></div>}
+      <div>
+        <div className="section-label">{t("planTitle")}</div>
+        {paid && paid.until ? <>
+          <h3>{planName}</h3>
+          <p>{tp("tierUntil", { plan: planName ?? "", date: date(paid.until) })}</p>
+          {canUp && <p className="muted">{t("planUpText")}</p>}
+          <Link className={`btn${canUp ? " primary" : ""}`} href="/plata">{canUp ? t("planUpBtn") : tp("treeLink")}</Link>
+        </> : <>
+          <h3>{trial ? th("trialTitle") : th("planOther")}</h3>
+          <p className="muted">{trial ? th("trialText", { date: date(trial.until) }) : th("planOtherText")}</p>
+          <Link className="btn primary" href="/plata">{th("planButton")}</Link>
+        </>}
       </div>
-      <aside className="stack">
-        <div className="card">
-          <h2 style={{ fontSize: 20 }}>{t("newTitle")}</h2>
-          <p className="muted">{t("newText")}</p>
-          <Link className="btn" href="/arbore-nou">{t("newButton")}</Link>
-        </div>
-        {paid && paid.until && (
-          <div className="card">
-            <h2 style={{ fontSize: 20 }}>{t("planTitle")}</h2>
-            <p>{tp("tierUntil", { plan: tp(`tiers.${paid.tier}.name`), date: date(paid.until) })}</p>
-            {canUp && <p className="muted">{t("planUpText")}</p>}
-            <Link className={`btn${canUp ? " primary" : ""}`} href="/plata">{canUp ? t("planUpBtn") : tp("treeLink")}</Link>
-          </div>
-        )}
-        <InstallApp compact />
-      </aside>
+    </section>
+
+    {tiles.map((x) => (
+      <section key={x.k} className="dash-stat card">
+        <span className="dash-stat-ic"><Ico n={x.icon} /></span>
+        <div className="section-label">{th(`stat.${x.k}`)}</div>
+        <div className="dash-v">{x.v}</div>
+        <div className="muted">{th(`statHint.${x.k}`)}</div>
+      </section>
+    ))}
+
+    <section className="dash-next card">
+      <div className="section-label">{th("nextTitle")}</div>
+      <div className="dash-acts">
+        <Link href={`/arbore/${first.id}`}><span className="dash-act-ic"><Ico n="plus" /></span><span><b>{th("next.add")}</b><small>{th("next.addHint")}</small></span></Link>
+        <Link href="/invitatii"><span className="dash-act-ic"><Ico n="inv" /></span><span><b>{th("next.invite")}</b><small>{th("next.inviteHint")}</small></span></Link>
+        {mine && <Link href={`/arbore/${first.id}/persoana/${mine.id}#lada`}><span className="dash-act-ic"><Ico n="box" /></span><span><b>{th("next.memories")}</b><small>{th("next.memoriesHint")}</small></span></Link>}
+        <Link href={`/arbore/${first.id}/carte`}><span className="dash-act-ic"><Ico n="book" /></span><span><b>{th("next.book")}</b><small>{th("next.bookHint")}</small></span></Link>
+      </div>
+    </section>
+
+    <section className="dash-trees card">
+      <div className="section-label">{t("yourTrees")}</div>
+      <div className="list">
+        {trees.map((tr) => (
+          <Link key={tr.id} href={`/arbore/${tr.id}`}>
+            <b>{tr.name}</b>
+            <span className="muted">{tr.region ? `${tr.region} · ` : ""}{t("persons", { count: tr.count })} · {t(tr.role)}</span>
+          </Link>
+        ))}
+      </div>
+      <div className="dash-new">
+        <div><b>{t("newTitle")}</b><p className="muted">{t("newText")}</p></div>
+        <Link className="btn" href="/arbore-nou">{t("newButton")}</Link>
+      </div>
+    </section>
+
+    <div className="dash-side">
+      <JoinTree compact requests={requests} />
+      <InstallApp compact />
     </div>
-    </>
+    </div>
   );
 }

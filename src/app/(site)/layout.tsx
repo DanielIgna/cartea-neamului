@@ -16,6 +16,7 @@ import "@fontsource/assistant/hebrew-700.css";
 import "../globals.css";
 import { currentUser } from "@/lib/access";
 import UserMenu from "@/components/UserMenu";
+import AccountNav from "@/components/AccountNav";
 import { db } from "@/db";
 import { unreadCount } from "@/lib/chat";
 import { unseenReplies } from "@/lib/probleme";
@@ -31,7 +32,7 @@ import UserNotices from "@/components/UserNotices";
 import KeepNotice, { KEEP_NOTICE_COOKIE } from "@/components/KeepNotice";
 import { planSettings } from "@/lib/plans";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
 import { isAdminUser } from "@/lib/admin";
@@ -58,12 +59,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const me = await currentUser();
   // Pe „Mesaje”: mesajele necitite plus cererile care îmi așteaptă răspunsul („Din aceleași locuri” și intrări în arbore).
   // Totul deodată, nu pe rând: fiecare întrebare la baza de date costă un drum dus-întors.
-  const [unread, myPhoto, usage, prefs, replies, news] = await Promise.all([
+  const [unread, mine, usage, prefs, replies, news] = await Promise.all([
     me ? Promise.all([unreadCount(db, me.id), pendingContacts(db, me.id), pendingJoins(db, me.id)].map((p) => p.catch(() => 0))).then((n) => n.reduce((a, b) => a + b, 0)) : 0,
     // Poza de lângă nume: cea pusă pe fișa ta din arbore; altfel poza din contul Google; altfel inițialele.
+    // Tot de aici vine și „Profilul meu” din meniul contului: fișa mea (cea cu poză, dacă am una), în arborele ei.
     me
-      ? db.select({ photo: person.photoDocumentId }).from(person).where(and(eq(person.claimedByUserId, me.id), isNotNull(person.photoDocumentId))).limit(1)
-          .then((r) => r[0]?.photo ?? null).catch(() => null)
+      ? db.select({ id: person.id, treeId: person.treeId, photo: person.photoDocumentId }).from(person).where(eq(person.claimedByUserId, me.id))
+          .orderBy(sql`${person.photoDocumentId} is null`).limit(1).then((r) => r[0] ?? null).catch(() => null)
       : null,
     // Cât timp petrec oamenii în site: întrebăm o singură dată și măsurăm doar la cei care spun „Bine” (nu și la contul de probă).
     me && !isDemo(me.email) ? consentState(db, me.id, "usage").catch(() => null) : null,
@@ -79,6 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     }).catch(() => null) : null,
   ]);
   const { theme, cookieSeen, keepSeen } = prefs;
+  const myPhoto = mine?.photo ?? null;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
   const { locale, source } = await getLocaleInfo();
@@ -111,7 +114,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {me && <AccessBanner userId={me.id} locale={locale} />}
             {me && <UserNotices userId={me.id} />}
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
-            <main id="continut">{children}</main>
+            {/* Pe paginile contului: meniul lateral (calculator) și bara de jos (telefon), src/components/AccountNav.tsx. */}
+            <div className="acc-wrap">
+              {me && <AccountNav name={me.name} image={avatar} unread={unread} replies={replies} admin={isAdminUser(me)}
+                profile={mine ? `/arbore/${mine.treeId}/persoana/${mine.id}` : null} />}
+              <main id="continut">{children}</main>
+            </div>
             {me && usage?.granted && <UsageBeat userId={me.id} />}
             <VisitBeacon />
             <SourceTracker />

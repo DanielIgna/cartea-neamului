@@ -1441,7 +1441,7 @@ body:has(.lp){--bg:#f6efe4;overflow-x:clip}
 .limits-form .tier-fields{border:1px solid var(--line, #ddd);border-radius:10px;padding:10px 12px;margin:10px 0}
 .limits-form .tier-fields legend{padding:0 6px}
 .plan-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;align-items:stretch}
-.plan-card{position:relative;background:var(--card, #fff);border:1px solid var(--line, #ddd);border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:6px}
+.plan-card{position:relative;background:var(--surface);border:1px solid var(--line, #ddd);border-radius:22px;box-shadow:var(--shadow);padding:18px 16px;display:flex;flex-direction:column;gap:6px}
 .plan-card.recommended{border:2px solid var(--accent)}
 .plan-card.current{box-shadow:0 0 0 3px var(--accent-soft)}
 .plan-card h3{margin:0}
@@ -2222,3 +2222,132 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
   .tg-title{font-size:21px}
   .tg-actions .btn{flex:1 1 100%}
 }
+
+/* ── Zona contului, direcția „Panou cald” (Daniel, 24.11.2026; src/components/AccountNav.tsx) ──────────────────────────
+   Pe calculator (≥1024px): meniul lateral închis la culoare, cu toate paginile contului. Pe telefon (≤640px): bara de jos.
+   Pe arbore și pe paginile publice nu apar, deci acolo nu se schimbă nimic. */
+.acc-side,.acc-dock{display:none}
+.acc-ic{flex:none;display:block}
+@media (min-width:1024px){
+  .acc-wrap:has(> .acc-side){display:grid;grid-template-columns:252px minmax(0,1fr);gap:26px;align-items:start}
+  /* Meniul din antet are aceleași legături: cu meniul lateral pe ecran, antetul păstrează doar sigla, tema și limba. */
+  body:has(.acc-side) .um-inline{display:none}
+  .acc-side{display:flex;flex-direction:column;gap:2px;position:sticky;top:14px;max-height:calc(100vh - 28px);overflow-y:auto;scrollbar-width:thin;
+    background:radial-gradient(260px 220px at 100% 100%,#d39b4f26,transparent 70%),var(--brown);color:var(--cream);border-radius:22px;padding:14px 12px 12px;
+    border:1px solid #3a2b22;box-shadow:0 24px 50px -30px #231713cc}
+}
+.acc-me{display:flex;gap:11px;align-items:center;padding:10px;margin-bottom:10px;border-radius:16px;background:#ffffff0d;border:1px solid #ffffff17;color:inherit;text-decoration:none}
+.acc-me:hover{background:#ffffff17}
+.acc-av{width:40px;height:40px;border-radius:50%;flex:none;object-fit:cover;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold-2),var(--gold));color:var(--gold-ink);font-family:var(--display);font-weight:700;font-size:16px}
+.acc-me-t{min-width:0;display:grid;line-height:1.25}
+.acc-me-t b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-me-t small{color:var(--cream-muted);font-size:12.5px}
+.acc-links{display:grid;gap:2px}
+.acc-grp{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:14px 12px 6px}
+.acc-side a:not(.acc-me),.acc-out{display:flex;gap:12px;align-items:center;min-height:42px;padding:8px 12px;border-radius:12px;color:#e9dcc6;text-decoration:none;font-size:15.5px;transition:background .15s,color .15s}
+.acc-side a:not(.acc-me):hover,.acc-out:hover{background:#ffffff12;color:#fff}
+.acc-side a[aria-current="page"]{background:linear-gradient(90deg,#d39b4f38,#d39b4f0d);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.acc-side a[aria-current="page"] .acc-ic{color:var(--gold-2)}
+[dir="rtl"] .acc-side a[aria-current="page"]{box-shadow:inset -3px 0 0 var(--gold);background:linear-gradient(270deg,#d39b4f38,#d39b4f0d)}
+.acc-n{margin-inline-start:auto;min-width:20px;text-align:center;background:var(--gold);color:var(--gold-ink);border-radius:999px;font-size:12px;font-weight:700;padding:0 6px;line-height:20px}
+.acc-out{margin-top:10px;border:1px solid #ffffff1f;background:transparent;width:100%;font:inherit;font-size:15px;cursor:pointer}
+/* Pe tema întunecată meniul se desprinde puțin de fundal. */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .acc-side,:root:not([data-theme="light"]) .acc-dock{background:radial-gradient(260px 220px at 100% 100%,#d39b4f1f,transparent 70%),#0f0a08;border-color:#3a2b22}}
+:root[data-theme="dark"] .acc-side,:root[data-theme="dark"] .acc-dock{background:radial-gradient(260px 220px at 100% 100%,#d39b4f1f,transparent 70%),#0f0a08;border-color:#3a2b22}
+
+@media (max-width:640px){
+  .acc-dock{display:flex;position:fixed;z-index:65;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));justify-content:space-around;gap:2px;
+    background:var(--brown);border:1px solid #3a2b22;border-radius:22px;padding:6px;box-shadow:0 18px 40px -12px #000b}
+  .acc-dock a{position:relative;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px 6px;border-radius:15px;color:#d2c4ae;text-decoration:none;font-size:11.5px;line-height:1.2}
+  .acc-dock a span:not(.acc-n){max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .acc-dock a[aria-current="page"]{background:#d39b4f2e;color:var(--gold-2);font-weight:700}
+  .acc-dock .acc-n{position:absolute;top:2px;inset-inline-end:calc(50% - 22px);margin:0;min-width:17px;line-height:17px;font-size:10.5px;padding:0 4px}
+  body:has(.acc-dock){padding-bottom:96px}
+  /* Bara de jos are deja „Arbore”: în antet rămân sigla și meniul cu poza. */
+  body:has(.acc-dock) .um-tree{display:none}
+  body:has(.acc-dock) .cookie-notice{bottom:92px}
+  body:has(.acc-dock) .wa-float{bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+@media print{.acc-side,.acc-dock{display:none!important}.acc-wrap{display:block!important}}
+
+/* Paginile contului: carduri mai rotunde și mai aerisite; primul card al paginii e capul ei, într-un ton cald. */
+.acc-wrap:has(> .acc-side) main .card{border-radius:22px}
+.acc-wrap:has(> .acc-side) main > .stack > .card:first-child:not(.dash-plan),
+.acc-wrap:has(> .acc-side) main > .stack > .card.stack:first-child,
+.acc-wrap:has(> .acc-side) main > section.card:first-child{
+  background:radial-gradient(420px 240px at 100% 0%,var(--accent-soft),transparent 70%),var(--surface);border-color:var(--line)}
+.acc-wrap:has(> .acc-side) main > .stack > .card:first-child h1,
+.acc-wrap:has(> .acc-side) main > .stack > .card:first-child h2{font-size:clamp(26px,3vw,34px);line-height:1.15}
+.acc-wrap:has(> .acc-side) main .section-label{display:flex;align-items:center;gap:10px}
+.acc-wrap:has(> .acc-side) main .section-label::before{content:"";width:18px;height:2px;border-radius:2px;background:var(--gold);flex:none}
+@media (min-width:1024px){
+  /* Paginile care se centrau singure (Mesaje, Siguranță, Problemă) stau acum lângă meniu. */
+  .acc-wrap:has(> .acc-side) main > section[style*="margin"]{margin-inline:0!important}
+}
+
+/* Prima pagină a contului: panou în carouri (bento), ca în direcția A. */
+.dash{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.dash > *{min-width:0}
+.dash .card{border-radius:22px;padding:20px}
+.dash-hero{grid-column:span 8;position:relative;isolation:isolate;overflow:hidden;border-radius:22px;background:var(--brown);color:var(--cream);min-height:280px;
+  display:flex;align-items:flex-end;padding:clamp(22px,3vw,34px);border:1px solid #3a2b22;box-shadow:0 30px 60px -36px #231713}
+.dash-hero-img{position:absolute;inset:0;z-index:-2}
+.dash-hero-img img{object-fit:cover;filter:sepia(.35) saturate(.9)}
+.dash-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#231713 18%,#231713cc 52%,#23171333),linear-gradient(0deg,#231713aa,transparent 60%)}
+[dir="rtl"] .dash-hero::before{background:linear-gradient(270deg,#231713 18%,#231713cc 52%,#23171333),linear-gradient(0deg,#231713aa,transparent 60%)}
+.dash-hero-in{position:relative;max-width:560px}
+.dash-name{font-size:clamp(40px,5vw,60px);line-height:1;margin:2px 0 12px;color:#fff8ec}
+.dash-lead{color:#e3d6c1;margin:0 0 18px;max-width:46ch;font-size:16.5px}
+.dash-hero .actions{margin-top:0;gap:10px}
+.dash-hero .btn{min-height:46px;display:inline-flex;align-items:center;padding:0 20px;background:#1d130f66;color:var(--cream);border-color:#f5ecdd55}
+.dash-hero .btn:hover{background:#f5ecdd1f;border-color:#f5ecdd99}
+.dash-hero .btn.primary{background:linear-gradient(180deg,var(--gold-2),var(--gold));border-color:var(--gold);color:var(--gold-ink);padding-inline-end:6px;gap:12px;box-shadow:0 12px 28px -12px #d39b4fcc,inset 0 1px 0 #fff7}
+.dash-arrow{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--gold-ink);color:var(--gold-2);font-size:17px}
+[dir="rtl"] .dash-arrow{transform:scaleX(-1)}
+.dash-plan{grid-column:span 4;display:flex;flex-direction:column;gap:12px}
+.dash-plan h3{font-family:var(--display);font-size:24px;margin:0 0 6px}
+.dash-plan p{margin:0 0 12px}
+.dash-plan .section-label{margin:0 0 4px}
+.dash-ring{--p:100%;width:104px;height:104px;border-radius:50%;flex:none;display:grid;place-items:center;align-self:center;
+  background:conic-gradient(var(--accent) 0 var(--p),var(--accent-soft) 0)}
+.dash-ring b{width:80px;height:80px;border-radius:50%;background:var(--surface);display:grid;place-items:center;align-content:center;font-family:var(--display);font-size:32px;line-height:1}
+.dash-ring small{font-family:var(--body);font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}
+.dash-ring-full b{color:var(--accent)}
+.dash-ring-full .acc-ic{width:30px;height:30px}
+.dash-stat{grid-column:span 3;position:relative}
+.dash-stat .section-label{margin:0}
+.dash-stat-ic{position:absolute;top:16px;inset-inline-end:16px;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.dash-v{font-family:var(--display);font-weight:700;font-size:42px;line-height:1.05;margin-top:12px;font-variant-numeric:tabular-nums}
+.dash-stat .muted{font-size:14px}
+.dash-next{grid-column:span 7}
+.dash-next .section-label,.dash-trees .section-label{margin-top:0}
+.dash-acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dash-acts a{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);text-decoration:none;transition:border-color .15s,transform .15s}
+.dash-acts a:hover{border-color:var(--accent);transform:translateY(-1px)}
+.dash-acts small{display:block;color:var(--muted);font-size:13.5px}
+.dash-act-ic{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;background:var(--brown);color:var(--gold-2)}
+.dash-trees{grid-column:span 5}
+.dash-new{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.dash-new p{margin:2px 0 0;font-size:14px}
+.dash-side{grid-column:1 / -1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px;align-items:start}
+.dash-side:empty{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dash-act-ic{background:#d39b4f26}}
+:root[data-theme="dark"] .dash-act-ic{background:#d39b4f26}
+@media (max-width:1180px){
+  .dash-hero{grid-column:1 / -1}.dash-plan{grid-column:1 / -1;flex-direction:row;align-items:center;gap:18px}
+  .dash-stat{grid-column:span 6}.dash-next,.dash-trees{grid-column:1 / -1}
+}
+@media (min-width:700px) and (max-width:1180px){.dash-stat{grid-column:span 3}}
+@media (max-width:640px){
+  .dash{gap:12px}
+  .dash-hero{min-height:300px;padding:22px}
+  .dash-hero .actions{flex-direction:column;align-items:stretch}
+  .dash-hero .btn{justify-content:center}
+  .dash-hero .btn.primary{justify-content:space-between;padding-inline-start:20px}
+  .dash-plan{align-items:flex-start;padding:18px}
+  .dash-ring{width:82px;height:82px}.dash-ring b{width:62px;height:62px;font-size:24px}
+  .dash-stat{padding:16px}.dash-v{font-size:34px}.dash-stat-ic{width:34px;height:34px;top:12px}
+  .dash-acts{grid-template-columns:1fr 1fr}.dash-acts a{flex-direction:column;align-items:flex-start;gap:8px}
+}
+.dash-stat .section-label{padding-inline-end:46px;min-height:40px;align-items:flex-start}
+.dash-trees .list a{flex-direction:column;gap:2px}
