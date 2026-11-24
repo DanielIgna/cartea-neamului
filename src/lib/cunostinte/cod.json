@@ -348,6 +348,7 @@
   "src/assets/fonturi/alegreya-ro-500.woff",
   "src/assets/fonturi/alegreya-ro-700.woff",
   "src/components/AccessBanner.tsx",
+  "src/components/AccountNav.tsx",
   "src/components/AdamHristos.tsx",
   "src/components/Album.tsx",
   "src/components/ArchiveHint.tsx",
