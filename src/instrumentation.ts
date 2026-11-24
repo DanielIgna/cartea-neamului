@@ -1,6 +1,21 @@
 import type { Instrumentation } from "next";
 
-export function register() {}
+/**
+ * O variantă de probă (Vercel Preview) fără DATABASE_URL: baza locală din /tmp primește schema și contul demo înainte de prima
+ * cerere, ca paginile să se deschidă. Pe site-ul live (cu DATABASE_URL) nu face nimic.
+ */
+export async function register() {
+  // Importul stă înăuntrul condiției, ca varianta pentru middleware (edge) să nu-l includă.
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    if (!process.env.VERCEL || process.env.DATABASE_URL) return;
+    try {
+      const { preparePreviewDb } = await import("./lib/preview-db");
+      await preparePreviewDb();
+    } catch (e) {
+      console.error("Varianta de probă: nu am putut pregăti baza locală.", e);
+    }
+  }
+}
 
 /**
  * Erorile de pe server ajung, pe lângă jurnalul Vercel, și în audit_log (entity „eroare”),

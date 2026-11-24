@@ -27,7 +27,10 @@ export function createDb(): Db {
   }
   // În timpul `next build` mai mulți workeri importă modulul; nu deschidem baza locală reală de pe disc.
   const building = process.env.NEXT_PHASE === "phase-production-build";
-  const dir = building ? "memory" : (process.env.PGLITE_DIR ?? "./.data/pg");
+  // Variantele de probă de pe Vercel (Preview) n-au DATABASE_URL, iar acolo doar /tmp se poate scrie (24.11.2026: fără asta
+  // orice pagină dădea 500). Baza e goală la fiecare pornire și nu atinge niciodată baza reală; o umple src/lib/preview-db.ts.
+  const onVercel = !!process.env.VERCEL;
+  const dir = building ? "memory" : (process.env.PGLITE_DIR ?? (onVercel ? "/tmp/cartea-neamului-pg" : "./.data/pg"));
   if (dir !== "memory") mkdirSync(dir, { recursive: true });
   return drizzlePglite(dir === "memory" ? new PGlite() : new PGlite(dir), { schema });
 }
