@@ -2181,3 +2181,6 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 /* Facebook în subsol: sigla și un chenar ușor, ca să se vadă printre legături (19.11.2026) */
 .site-foot a.foot-fb{display:inline-flex;align-items:center;gap:7px;padding:5px 12px 5px 6px;border-radius:999px;border:1px solid #1877f255;background:#1877f212;color:var(--ink);font-weight:600;text-decoration:none}
 .site-foot a.foot-fb:hover{background:#1877f224;border-color:#1877f2;color:var(--ink)}
+.site-foot a.foot-tt{padding:5px 12px 5px 10px;border-color:color-mix(in srgb,var(--ink) 30%,transparent);background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.site-foot a.foot-tt:hover{background:color-mix(in srgb,var(--ink) 12%,transparent);border-color:var(--ink)}
+@media (max-width:640px){.site-foot a.foot-tt{min-height:44px;padding:8px 16px 8px 13px}}
