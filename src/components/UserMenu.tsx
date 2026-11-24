@@ -20,6 +20,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
   const [broken, setBroken] = useState<string | null>(null);
   const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
   // „Raportează o problemă” ține minte pagina de pe care s-a apăsat, ca omul să n-o mai explice.
+  const inTree = !!path && /^\/arbore(\/|$)/.test(path);
   const report = path?.startsWith("/problema") ? "/problema" : `/problema?de=${encodeURIComponent(path || "/")}`;
   const replyBadge = replies ? <span className="badge">{replies}</span> : null;
   const signOut = async () => { await authClient.signOut(); router.push("/"); router.refresh(); };
@@ -47,6 +48,8 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
           {avatar(30)}
           <span className="muted">{name}</span>
         </Link>
+        {/* „Arborele meu” (Daniel, 24.11.2026): drumul spre arbore pe orice pagină, fără să știi că trebuie apăsat pe siglă. */}
+        <Link className="menu-quiet menu-tree" href="/arbore" aria-current={inTree ? "page" : undefined}>{t("myTree")}</Link>
         <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
         <Link className="menu-quiet" href="/invitatii">{ti("menu")}</Link>
         <Link className="menu-quiet" href="/ghid">{t("guides")}</Link>
@@ -54,6 +57,10 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
         <Link className="menu-quiet" href={report}>{t("report")}{replyBadge}</Link>
         <button className="btn" onClick={signOut}>{t("signOut")}</button>
       </div>
+      {/* Pe telefon, arborele are butonul lui lângă meniu: se vede pe orice pagină, fără să deschizi meniul. */}
+      <Link className="um-tree" href="/arbore" aria-label={t("myTree")} title={t("myTree")} aria-current={inTree ? "page" : undefined}>
+        <TreeIcon /><span>{t("myTreeShort")}</span>
+      </Link>
       <details className="um-mobile" ref={menu}>
         <summary aria-label={t("menu")}>
           <span className="um-face">{avatar(34)}{unread + replies ? <span className="badge um-badge">{unread + replies}</span> : null}</span>
@@ -63,6 +70,7 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
           <div className="um-who">{avatar(40)}<b>{name}</b></div>
           <nav className="um-links">
             <Link href="/">{t("home")}</Link>
+            <Link href="/arbore">{t("myTree")}</Link>
             <Link href="/mesaje">{t("messages")}{unread ? <span className="badge">{unread}</span> : null}</Link>
             <Link href="/datele-mele">{t("account")}</Link>
             <Link href="/plata">{t("plan")}</Link>
@@ -77,5 +85,16 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
         </div>
       </details>
     </>
+  );
+}
+
+/** Un copăcel simplu, în culoarea textului (pentru butonul „Arborele meu” de pe telefon). */
+function TreeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 21v-7" /><path d="M12 14l-3.5-3M12 16l3.5-3" />
+      <path d="M12 3c-3.3 0-6 2.5-6 5.6 0 1.4.5 2.6 1.4 3.6M12 3c3.3 0 6 2.5 6 5.6 0 1.4-.5 2.6-1.4 3.6" />
+      <path d="M8 21h8" />
+    </svg>
   );
 }

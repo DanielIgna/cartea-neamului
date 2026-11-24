@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { srExtra } from "./noi/sr";
+import { srGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Srpski (latinica), za Rumune i Vlahe u Srbiji (Vojvodina, Timočka krajina) i njihovu decu. Obraćanje sa „ti”.
@@ -48,6 +49,8 @@ export const sr: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Moj plan",
+    myTree: "Moje stablo",
+    myTreeShort: "Stablo",
     report: "Prijavi problem",
     admin: "Admin",
     messages: "Poruke",
@@ -57,6 +60,7 @@ export const sr: DeepPartial<Catalog> = {
     home: "Početna",
     guides: "Vodiči",
   },
+  ...srGhidArbore,
   UsageNotice: {
     label: "Kako koristiš sajt",
     lead: "Jedno pitanje, samo jednom.",

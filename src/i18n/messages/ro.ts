@@ -31,6 +31,7 @@ import { roDatele } from "./datele/ro";
 import { roPastrare } from "./pastrare/ro";
 import { roSecuritate } from "./securitate/ro";
 import { roEmailuri } from "./emailuri/ro";
+import { roGhidArbore } from "./ghid-arbore/ro";
 
 export const ro = {
   Meta: {
@@ -79,6 +80,8 @@ export const ro = {
   },
   UserMenu: {
     plan: "Planul meu",
+    myTree: "Arborele meu",
+    myTreeShort: "Arbore",
     report: "Raportează o problemă",
     admin: "Admin",
     messages: "Mesaje",
@@ -88,6 +91,7 @@ export const ro = {
     home: "Acasă",
     guides: "Ghiduri",
   },
+  ...roGhidArbore,
   UsageNotice: {
     label: "Cât folosești site-ul",
     lead: "O întrebare, o singură dată.",

@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { daExtra } from "./noi/da";
+import { daGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Dansk, for rumænere i Danmark og deres børn. Tiltale med „du”. Det, der endnu ikke er oversat, vises på engelsk
@@ -48,6 +49,8 @@ export const da: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Min plan",
+    myTree: "Mit træ",
+    myTreeShort: "Træ",
     report: "Meld et problem",
     admin: "Admin",
     messages: "Beskeder",
@@ -57,6 +60,7 @@ export const da: DeepPartial<Catalog> = {
     home: "Forside",
     guides: "Guider",
   },
+  ...daGhidArbore,
   UsageNotice: {
     label: "Hvordan du bruger webstedet",
     lead: "Ét spørgsmål, kun én gang.",

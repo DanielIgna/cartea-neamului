@@ -22,6 +22,7 @@ import { huDatele } from "./datele/hu";
 import { huPastrare } from "./pastrare/hu";
 import { huSecuritate } from "./securitate/hu";
 import { huEmailuri } from "./emailuri/hu";
+import { huGhidArbore } from "./ghid-arbore/altele";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -69,6 +70,8 @@ export const hu: Catalog = {
   },
   UserMenu: {
     plan: "A csomagom",
+    myTree: "Családfám",
+    myTreeShort: "Családfa",
     report: "Hiba bejelentése",
     admin: "Admin",
     messages: "Üzenetek",
@@ -78,6 +81,7 @@ export const hu: Catalog = {
     home: "Kezdőlap",
     guides: "Útmutatók",
   },
+  ...huGhidArbore,
   UsageNotice: {
     label: "Hogyan használod az oldalt",
     lead: "Egy kérdés, csak egyszer.",

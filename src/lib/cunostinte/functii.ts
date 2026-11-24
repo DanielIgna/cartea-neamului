@@ -64,6 +64,13 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/family.test.ts", "tests/kinship.test.ts", "tests/tree-fold.test.ts"],
   },
   {
+    key: "drum-arbore", name: "Drumul spre arbore și ghidul în 6 pași", area: "familie", lifecycle: "live", risk: "scazut", riskWhy: "Doar butoane și un ghid; adăugarea folosește formularele existente.",
+    what: "„Arborele meu” în meniul de sus (pe telefon, butonul cu copăcel), „+ Adaugă persoană” deasupra oricărui desen și „+ Adaugă rudă” în fișă, ghidul în 6 pași (părinți, bunici, frați, poză și amintire, invitație) deschis singur la prima intrare și oricând din „?”, numele arborelui din „Datele mele” care deschide arborele, cu „Descarcă GEDCOM” separat (Daniel, 24.11.2026).",
+    engine: ["src/components/TreeGuide.tsx", "src/components/TreeScreen.tsx", "src/components/UserMenu.tsx", "src/i18n/messages/ghid-arbore/ro.ts"],
+    pages: ["/arbore", "/arbore/[id]", "/datele-mele"],
+    tables: ["tree_member"],
+  },
+  {
     key: "spite", name: "Spițe și Copac 360°", area: "familie", lifecycle: "live", risk: "scazut", riskWhy: "Doar o vedere a datelor; nu schimbă nimic.",
     what: "Spița pe linia bărbătească, alegerea fiecăruia, Copacul cu două rădăcini și roata de 360°.",
     engine: ["src/lib/ancestry.ts", "src/lib/tree360.ts", "src/lib/fan-geometry.ts", "src/components/Tree360.tsx"],

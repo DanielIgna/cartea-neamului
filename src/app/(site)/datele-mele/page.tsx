@@ -47,7 +47,7 @@ export default async function MyDataPage() {
   };
   const [plan, terms, faith, usage] = await Promise.all([deletionPlan(db, me.id), consentState(db, me.id, "terms"), consentState(db, me.id, "faith"),
     consentState(db, me.id, "usage")]);
-  const [partner, news, tn] = await Promise.all([partnerState(db, me.id), consentState(db, me.id, "news"), getT("News", locale)]);
+  const [partner, news, tn, tg] = await Promise.all([partnerState(db, me.id), consentState(db, me.id, "news"), getT("News", locale), getT("TreeGuide", locale)]);
   // Oferta PropManage (cont gratuit), aceeași ca după activarea cardului; PropManage e în România, deci doar în română.
   const pmOffer = locale === "ro" && (await offerVisible(db, me.id).catch(() => false));
   const mine = usage.granted ? await usageOf(db, me.id, 30) : null;
@@ -76,7 +76,13 @@ export default async function MyDataPage() {
           <>
             <p className="muted" style={{ marginBottom: 4 }}>{t("download.gedcom")}</p>
             <ul className="my-trees">
-              {trees.map((t) => <li key={t.id}><a href={`/api/arbore/${t.id}/gedcom?living=1`} download>{t.name}</a></li>)}
+              {/* Numele deschide arborele; descărcarea e un buton separat (Daniel, 24.11.2026: numele părea să descarce în loc să deschidă). */}
+              {trees.map((t) => (
+                <li key={t.id}>
+                  <Link href={`/arbore/${t.id}`}>{t.name}</Link>
+                  <a className="btn" style={{ fontSize: 14 }} href={`/api/arbore/${t.id}/gedcom?living=1`} download>{tg("gedcomButton")}</a>
+                </li>
+              ))}
             </ul>
           </>
         )}

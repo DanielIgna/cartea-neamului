@@ -22,6 +22,7 @@ import { esDatele } from "./datele/es";
 import { esPastrare } from "./pastrare/es";
 import { esSecuritate } from "./securitate/es";
 import { esEmailuri } from "./emailuri/es";
+import { esGhidArbore } from "./ghid-arbore/altele";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -69,6 +70,8 @@ export const es: Catalog = {
   },
   UserMenu: {
     plan: "Mi plan",
+    myTree: "Mi árbol",
+    myTreeShort: "Árbol",
     report: "Informar de un problema",
     admin: "Admin",
     messages: "Mensajes",
@@ -78,6 +81,7 @@ export const es: Catalog = {
     home: "Inicio",
     guides: "Guías",
   },
+  ...esGhidArbore,
   UsageNotice: {
     label: "Cómo usas el sitio",
     lead: "Una pregunta, solo una vez.",

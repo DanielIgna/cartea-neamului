@@ -22,6 +22,7 @@ import { frDatele } from "./datele/fr";
 import { frPastrare } from "./pastrare/fr";
 import { frSecuritate } from "./securitate/fr";
 import { frEmailuri } from "./emailuri/fr";
+import { frGhidArbore } from "./ghid-arbore/altele";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -69,6 +70,8 @@ export const fr: Catalog = {
   },
   UserMenu: {
     plan: "Ma formule",
+    myTree: "Mon arbre",
+    myTreeShort: "Arbre",
     report: "Signaler un problème",
     admin: "Admin",
     messages: "Messages",
@@ -78,6 +81,7 @@ export const fr: Catalog = {
     home: "Accueil",
     guides: "Guides",
   },
+  ...frGhidArbore,
   UsageNotice: {
     label: "Votre utilisation du site",
     lead: "Une question, une seule fois.",

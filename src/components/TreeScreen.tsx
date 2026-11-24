@@ -38,6 +38,7 @@ import { DATE_WORDS, lifeDates } from "@/lib/person-text";
 import Tree360 from "./Tree360";
 import TimesStory, { originFor } from "./TimesStory";
 import { treeOrigins } from "@/app/vremuri-actions";
+import TreeGuide, { type GuideStep } from "./TreeGuide";
 import type { Origin } from "@/lib/vremuri";
 
 type Live = TreeLive & { url: string; userId: string };
@@ -85,6 +86,10 @@ export default function TreeScreen(props: Props) {
   const [notice, setNotice] = useState<string | null>(null);
   // Desenul pe tot ecranul, cu zoom: pentru arborii mari.
   const [full, setFull] = useState(false);
+  // „+ Adaugă persoană” din orice desen (Daniel, 24.11.2026): fișa persoanei alese se deschide cu „Pe cine adaugi?” (sau direct cu formularul).
+  const [addFor, setAddFor] = useState<{ id: string; kind?: RelKind } | null>(null);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const tg = useTranslations("TreeGuide");
   const router = useRouter();
   const path = usePathname();
   const search = useSearchParams();
@@ -123,6 +128,14 @@ export default function TreeScreen(props: Props) {
     return () => io.disconnect();
   }, []);
   const toCard = () => document.querySelector("aside.panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  /** Alege persoana și deschide în fișa ei adăugarea unei rude (kind = direct formularul: tată, mamă, frate…). */
+  const askAdd = (id: string, kind?: RelKind) => {
+    setFull(false);
+    setSel({ id });
+    setAddFor({ id, kind });
+    requestAnimationFrame(() => requestAnimationFrame(toCard));
+  };
+  const showCard = (id: string) => { setFull(false); setSel({ id }); requestAnimationFrame(() => requestAnimationFrame(toCard)); };
   const box = useRef<HTMLDivElement>(null);
   // Din ce ținut istoric e fiecare om (după satul nașterii), pentru povestea vremurilor. Se caută pe server, după ce se arată arborele.
   const [origins, setOrigins] = useState<Record<string, Origin> | null>(null);
@@ -270,6 +283,40 @@ export default function TreeScreen(props: Props) {
   const kidsCount = (id: string) => graph.children.get(id)?.length ?? 0;
   const merged = (msg: string, keptId: string) => { setNotice(msg); setSel({ id: keptId }); router.refresh(); };
   const lineageProps = { root: lineage, people, selectedId, egoPath, onSelectPerson: (id: string) => setSel({ id }), onCenter: center };
+  // Ghidul arborelui: 6 pași, cu bifă la ce e deja făcut în arbore (părinți, bunici, frați, poză).
+  const guideSteps = useMemo((): GuideStep[] => {
+    if (!ego) return [];
+    const fam = family(graph, ego.id);
+    const parentsOf = (id: string) => (graph.parents.get(id) ?? []).map((x) => people[x]).filter((x): x is PersonView => !!x && !isPlaceholder(x.givenName));
+    const ps = parentsOf(ego.id);
+    const dad = ps.find((x) => x.sex === "M"), mom = ps.find((x) => x.sex === "F");
+    const missing = (x: PersonView): RelKind | undefined => {
+      const q = parentsOf(x.id);
+      return !q.some((y) => y.sex === "M") ? "father" : !q.some((y) => y.sex === "F") ? "mother" : undefined;
+    };
+    const add = canAdd;
+    const steps: GuideStep[] = [
+      { key: "open", done: true },
+      { key: "parents", done: !!dad && !!mom, actions: add ? [{ label: tg("steps.parents.action"), primary: true, run: () => askAdd(ego.id, missing(ego)) }] : [] },
+      { key: "grandparents", done: ps.length > 0 && ps.every((x) => parentsOf(x.id).length >= 2),
+        note: ps.length === 0 ? tg("steps.grandparents.needParents") : undefined,
+        actions: add ? [
+          ...(dad ? [{ label: tg("steps.grandparents.father", { name: dad.givenName }), primary: true, run: () => askAdd(dad.id, missing(dad)) }] : []),
+          ...(mom ? [{ label: tg("steps.grandparents.mother", { name: mom.givenName }), primary: !dad, run: () => askAdd(mom.id, missing(mom)) }] : []),
+        ] : [] },
+      { key: "siblings", done: fam.siblings.length > 0, actions: add ? [{ label: tg("steps.siblings.action"), primary: true, run: () => askAdd(ego.id, "sibling") }] : [] },
+      { key: "photo", done: !!ego.photoId, actions: [
+        ...(add ? [{ label: tg("steps.photo.photo"), primary: true, run: () => showCard(ego.id) }] : []),
+        { label: tg("steps.photo.memory"), run: () => router.push(`/arbore/${treeId}/persoana/${ego.id}${ego.living ? "#lada" : ""}`) },
+      ] },
+      { key: "invite", actions: [{ label: tg("steps.invite.action"), primary: true, run: () => {
+        const box = document.getElementById("invita-ruda");
+        if (box) box.scrollIntoView({ behavior: "smooth", block: "start" }); else router.push("/invitatii");
+      } }] },
+    ];
+    return steps;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ego, graph, people, canAdd, treeId, tg]);
   /** „Ion Igna, cca. 1870 · gen. 5” în listele de strămoși. */
   const ancestorOption = (x: PersonView, gen: number) => [x.name, x.birthYear ? `, ${x.approx ? DATE_WORDS[locale].approx : ""}${x.birthYear}` : "", " · ", t("genShort", { gen })].join("");
 
@@ -279,6 +326,10 @@ export default function TreeScreen(props: Props) {
         <div className={`card${full ? " chart-full" : ""}`}>
           <div className="toolbar">
             <div className="title">{view === "hour" ? t("titleHour", { name: ego?.name ?? "", line }) : twinOn ? twinTitle : showsLineage ? t("titleDescendants", { name: people[trunkId]?.name ?? "" }) : t("titleAncestors", { name: ego?.name ?? "", line })}</div>
+            <div className="tree-quick">
+              {canAdd && <button className="btn primary" onClick={() => askAdd(selectedId && people[selectedId] ? selectedId : centerId)}>{tg("addPerson")}</button>}
+              <button className="btn tg-help" onClick={() => setGuideOpen(true)} aria-label={tg("helpLabel")} title={tg("helpLabel")}>?</button>
+            </div>
             <div className="seg seg-wrap" role="group" aria-label={t("viewsLabel")}>
               {VIEWS.map(([v, key]) => <button key={v} aria-pressed={view === v} onClick={() => setView(v)}>{t(`views.${key}`)}</button>)}
             </div>
@@ -442,7 +493,7 @@ export default function TreeScreen(props: Props) {
         {pairs.length > 0 && <Duplicates treeId={treeId} pairs={pairs} people={people} kids={kidsCount} onDone={merged} />}
         {ego && <KinByDegree graph={graph} people={people} ego={ego} onSelect={(id) => setSel({ id })} />}
         {canInvite && (
-          <div className="card">
+          <div className="card" id="invita-ruda" style={{ scrollMarginTop: 72 }}>
             <div className="section-label" style={{ marginTop: 0 }}>{t("inviteRelative")}</div>
             <InvitePanel treeId={treeId} />
           </div>
@@ -450,12 +501,13 @@ export default function TreeScreen(props: Props) {
       </div>
       <aside className="card panel" aria-live="polite">
         {selectedId && people[selectedId]
-          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} origin={originOf(selectedId)} originsLoading={origins === null} graph={graph} ego={ego} pairs={pairs} checks={checks} onChecked={checked} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
+          ? <PersonPanel key={selectedId} p={people[selectedId]} {...props} askAdd={addFor?.id === selectedId ? addFor : null} onAsked={() => setAddFor(null)} origin={originOf(selectedId)} originsLoading={origins === null} graph={graph} ego={ego} pairs={pairs} checks={checks} onChecked={checked} onMerged={merged} onSelect={(id) => setSel({ id })} onCenter={center} onChanged={() => router.refresh()} />
           : canAdd && "n" in sel && slots[Math.floor(sel.n / 2)]
             ? <PersonForm key={sel.n} mode="add" kind={sel.n % 2 === 0 ? "father" : "mother"} treeId={treeId} anchor={slots[Math.floor(sel.n / 2)]}
                 shareWith={shareFor(graph, people, slots[Math.floor(sel.n / 2)].id, sel.n % 2 === 0 ? "father" : "mother")} onDone={() => router.refresh()} />
             : <p className="muted">{canAdd ? t("pickPerson") : t("viewerOnly")}</p>}
       </aside>
+      <TreeGuide steps={guideSteps} auto={canAdd} storageKey={`cn:ghid-arbore:${props.meId}`} open={guideOpen} onOpenChange={setGuideOpen} />
     </section>
   );
 }
@@ -463,6 +515,8 @@ export default function TreeScreen(props: Props) {
 type PanelProps = Props & {
   p: PersonView; graph: Graph; ego?: PersonView; pairs: Duplicate[]; checks: Check[]; onChecked: (msg: string) => void; origin: Origin | null; originsLoading: boolean;
   onSelect: (id: string) => void; onCenter: (id: string) => void; onChanged: () => void; onMerged: (msg: string, keptId: string) => void;
+  /** Cerut din „+ Adaugă persoană” sau din ghid: deschide alegerea rudei (sau direct formularul pentru `kind`). */
+  askAdd?: { kind?: RelKind } | null; onAsked?: () => void;
 };
 
 /** Pentru „Unește cu altă fișă”: oamenii de același sex care nu sunt rude directe cu persoana, întâi cei care arată la fel, apoi cei cu aceeași inițială. */
@@ -480,10 +534,17 @@ function mergeCandidates(g: Graph, people: Record<string, PersonView>, p: Person
     .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
 }
 
-function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, checks, onChecked, origin, originsLoading, onSelect, onCenter, onChanged, onMerged, archiveSources, archiveDismissed }: PanelProps) {
-  const t = useTranslations("Person"), tArch = useTranslations("Archives");
+function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, canInvite, canAdd, aiEnabled, storageEnabled, pairs, checks, onChecked, origin, originsLoading, onSelect, onCenter, onChanged, onMerged, archiveSources, archiveDismissed, askAdd, onAsked }: PanelProps) {
+  const t = useTranslations("Person"), tArch = useTranslations("Archives"), tg = useTranslations("TreeGuide");
   const locale = useLocale();
   const [form, setForm] = useState<"edit" | RelKind | null>(null);
+  // „Pe cine adaugi lângă …?”: tată, mamă, soț/soție, copil, frate/soră, sus în fișă.
+  const [chooser, setChooser] = useState(false);
+  useEffect(() => {
+    if (!askAdd || !canAdd) return;
+    if (askAdd.kind) setForm(askAdd.kind); else { setForm(null); setChooser(true); }
+    onAsked?.();
+  }, [askAdd, canAdd, onAsked]);
   // „Am găsit ceva” din cardul arhivelor deschide editarea cu câmpul „Sursa informației” în față.
   const [toSource, setToSource] = useState(false);
   const [done, setDone] = useState<string | null>(null);
@@ -626,11 +687,25 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
       )}
       <div className="actions">
         {canEdit && <button className="btn primary" onClick={() => setForm("edit")}>{t("edit")}</button>}
+        {canAdd && <button className="btn" aria-expanded={chooser} onClick={() => setChooser((c) => !c)}>{tg("addRelative")}</button>}
         {ego?.id !== p.id && <button className="btn" onClick={() => onCenter(p.id)}>{t("putInCentre")}</button>}
         {(isEditor || (canAdd && p.createdBy === meId)) && (!p.claimed || p.claimedBy === meId) && ego?.id !== p.id &&
           <DeletePerson key={`del${p.id}`} treeId={treeId} p={p} onDeleted={() => { onSelect(ego?.id ?? p.id); finished(t("deleted", { name: p.name, sex: p.sex })); }} />}
         {isEditor && <MergeWith key={`mg${p.id}`} treeId={treeId} p={p} candidates={mergeCandidates(graph, people, p)} onDone={onMerged} />}
       </div>
+      {canAdd && chooser && (
+        <div className="add-chooser" role="group" aria-label={tg("addFor", { name: p.givenName })}>
+          <p style={{ margin: "0 0 8px" }}><b>{tg("addFor", { name: p.givenName })}</b></p>
+          <div className="actions" style={{ flexWrap: "wrap", marginTop: 0 }}>
+            {!hasFather && <button className="btn" onClick={() => { setChooser(false); setForm("father"); }}>+ {t("addFather")}</button>}
+            {!hasMother && <button className="btn" onClick={() => { setChooser(false); setForm("mother"); }}>+ {t("addMother")}</button>}
+            <button className="btn" onClick={() => { setChooser(false); setForm("spouse"); }}>+ {t("addSpouse")}</button>
+            <button className="btn" onClick={() => { setChooser(false); setForm("child"); }}>+ {t("addChild")}</button>
+            <button className="btn" onClick={() => { setChooser(false); setForm("sibling"); }}>+ {t("addSibling")}</button>
+          </div>
+          <p className="muted" style={{ margin: "8px 0 0", fontSize: 13 }}>{tg("addHint")}</p>
+        </div>
+      )}
       {done && <p className="muted" style={{ fontSize: 14 }}>{done}</p>}
       {aiEnabled && canAdd && !p.living && <BiographySuggest key={`bio-${p.id}`} treeId={treeId} personId={p.id} canSave={isEditor} onSaved={onChanged} />}
 

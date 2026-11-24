@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { elExtra } from "./noi/el";
+import { elGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Ελληνικά, για τους Ρουμάνους στην Ελλάδα και την Κύπρο και τα παιδιά τους. Προσφώνηση στον ενικό („εσύ”).
@@ -48,6 +49,8 @@ export const el: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Το πρόγραμμά μου",
+    myTree: "Το δέντρο μου",
+    myTreeShort: "Δέντρο",
     report: "Ανάφερε ένα πρόβλημα",
     admin: "Διαχείριση",
     messages: "Μηνύματα",
@@ -57,6 +60,7 @@ export const el: DeepPartial<Catalog> = {
     home: "Αρχική",
     guides: "Οδηγοί",
   },
+  ...elGhidArbore,
   UsageNotice: {
     label: "Πώς χρησιμοποιείς τον ιστότοπο",
     lead: "Μία ερώτηση, μόνο μία φορά.",
