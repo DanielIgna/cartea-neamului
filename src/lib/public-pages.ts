@@ -31,8 +31,6 @@ export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);
  */
 const NOT_YET_TRANSLATED: Record<string, readonly Locale[]> = {
   "/libertatea-de-a-crede": NEW_LOCALES,
-  "/confidentialitate": NEW_LOCALES,
-  "/termeni": NEW_LOCALES,
 };
 
 /** Limbile în care o pagină publică are text adevărat (româna mereu). */
