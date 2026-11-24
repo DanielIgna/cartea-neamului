@@ -296,6 +296,8 @@ export const payment = pgTable("payment", {
   amount: integer("amount").notNull(), // în bani (lei × 100) sau cenți
   currency: text("currency").notNull(), // ron / eur
   extra: text("extra"), // „carte” = pachetul Basic + cartea PDF (cartea se alege apoi din /plata)
+  // Codul de reducere folosit (NEAM90, TEST90…); '' = fără cod; null = plată veche, încă neverificată (src/lib/plati-test.ts).
+  promo: text("promo"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [index("payment_user_idx").on(t.userId, t.kind)]);
 
