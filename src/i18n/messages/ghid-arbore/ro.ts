@@ -31,8 +31,8 @@ export const roGhidArbore = {
       grandparents: {
         title: "Adaugă bunicii",
         text: "Bunicii sunt părinții tatălui și ai mamei. Numele de fată al bunicii deschide adesea o ramură întreagă.",
-        father: "Părinții tatălui ({name})",
-        mother: "Părinții mamei ({name})",
+        father: "Părinții tatălui",
+        mother: "Părinții mamei",
         needParents: "Adaugă întâi părinții, apoi părinții lor.",
       },
       siblings: {

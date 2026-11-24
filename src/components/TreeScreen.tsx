@@ -301,8 +301,8 @@ export default function TreeScreen(props: Props) {
       { key: "grandparents", done: ps.length > 0 && ps.every((x) => parentsOf(x.id).length >= 2),
         note: ps.length === 0 ? tg("steps.grandparents.needParents") : undefined,
         actions: add ? [
-          ...(dad ? [{ label: tg("steps.grandparents.father", { name: dad.givenName }), primary: true, run: () => askAdd(dad.id, missing(dad)) }] : []),
-          ...(mom ? [{ label: tg("steps.grandparents.mother", { name: mom.givenName }), primary: !dad, run: () => askAdd(mom.id, missing(mom)) }] : []),
+          ...(dad ? [{ label: tg("steps.grandparents.father"), primary: true, run: () => askAdd(dad.id, missing(dad)) }] : []),
+          ...(mom ? [{ label: tg("steps.grandparents.mother"), primary: !dad, run: () => askAdd(mom.id, missing(mom)) }] : []),
         ] : [] },
       { key: "siblings", done: fam.siblings.length > 0, actions: add ? [{ label: tg("steps.siblings.action"), primary: true, run: () => askAdd(ego.id, "sibling") }] : [] },
       { key: "photo", done: !!ego.photoId, actions: [
