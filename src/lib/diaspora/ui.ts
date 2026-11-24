@@ -1,12 +1,13 @@
 import type { Lang } from "./tipuri";
+import { NEW_UI, NEW_XUI } from "./limbi-noi";
 
 /**
  * Textele comune ale paginilor de diaspora, în fiecare limbă: titlurile secțiunilor, pașii pentru acte și pentru arbore,
  * îndemnul de la final. Ce e propriu fiecărei țări (istoria, orașele, arhivele) stă în tari.ts și america.ts.
  */
 /** `where`: locul cu prepoziția potrivită limbii („în Italia”, „au Canada”, „in der Schweiz”, „בישראל”). */
-type Ctx = { where: string; eu: boolean; icr: string | null };
-type Ui = {
+export type Ctx = { where: string; eu: boolean; icr: string | null };
+export type Ui = {
   hubTitle: string; hubLead: string; hubDescription: string; diaspora: string; home: string;
   countries: string; america: string; canada: string; themes: string; states: string; provinces: string; cities: string;
   /** Regiunile, landurile sau comunitățile autonome (Europa). */
@@ -374,10 +375,10 @@ const nl: Ui = {
   regionThin: "We verzamelen nog informatie over de Roemenen hier. De stappen hieronder werken intussen overal in het land.",
 };
 
-export const UI: Record<Lang, Ui> = { ro, en, it, es, de, fr, he, hu, nl };
+export const UI: Record<Lang, Ui> = { ro, en, it, es, de, fr, he, hu, nl, ...NEW_UI };
 
 /** Titlurile secțiunilor noi (ambasade, ghid, particularități, întrebări) și îndemnul cu prețul și WhatsApp, pe limbi. */
-type XUi = {
+export type XUi = {
   guide: (where: string) => string; specifics: string; missions: string; faq: string;
   kind: Record<"embassy" | "consular" | "cg" | "consulate", string>;
   missionsNote: (date: string) => string; statsNote: string;
@@ -402,4 +403,4 @@ const xen: XUi = {
   whatsapp: "Send it to your grandparents in Romania on WhatsApp",
   whatsappText: (u) => `I'm building our family tree and need your help: what were your parents' and grandparents' names, and which village were they from? Let's fill it in together here: ${u}`,
 };
-export const XUI: Partial<Record<Lang, XUi>> = { ro: xro, en: xen };
+export const XUI: Partial<Record<Lang, XUi>> = { ro: xro, en: xen, ...NEW_XUI };

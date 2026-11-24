@@ -1,5 +1,6 @@
 import type { Country, Link } from "./tipuri";
 import { APPROVED_COUNTRIES } from "./ciorne";
+import { withNewCountries, withNewRomania } from "./limbi-noi";
 
 /**
  * Țările cu comunități mari de români (lista lui Daniel, 15.11.2026). Istoria e scrisă de noi, pe scurt, din fapte cunoscute
@@ -13,7 +14,7 @@ const ROMANIA: Link[] = [
   { name: "Ministerul Afacerilor Externe", url: "https://www.mae.ro", note: { ro: "lista ambasadelor și consulatelor, cu zona de care răspunde fiecare", en: "list of embassies and consulates and the area each covers", it: "elenco di ambasciate e consolati con la zona di competenza", es: "lista de embajadas y consulados y la zona que cubre cada uno", de: "Liste der Botschaften und Konsulate mit ihren Amtsbezirken", fr: "liste des ambassades et consulats et leur circonscription", he: "רשימת השגרירויות והקונסוליות והאזור שבאחריות כל אחת", hu: "nagykövetségek és konzulátusok listája, illetékességi területtel" } },
   { name: "Departamentul pentru Românii de Pretutindeni", url: "https://dprp.gov.ro", note: { ro: "asociațiile românilor din străinătate și programele pentru diaspora", en: "Romanian associations abroad and programmes for the diaspora", it: "associazioni dei romeni all'estero e programmi per la diaspora", es: "asociaciones de rumanos en el extranjero y programas para la diáspora", de: "rumänische Vereine im Ausland und Programme für die Diaspora", fr: "associations de Roumains à l'étranger et programmes pour la diaspora", he: "עמותות של יוצאי רומניה בעולם ותוכניות לתפוצות", hu: "külföldi román egyesületek és diaszpóraprogramok" } },
 ];
-export const ROMANIA_LINKS = ROMANIA;
+export const ROMANIA_LINKS = withNewRomania(ROMANIA);
 
 const BASE: Country[] = [
   {
@@ -419,6 +420,6 @@ const BASE: Country[] = [
 ];
 
 /** Țările publicate: cele de bază și ciornele aprobate (src/lib/diaspora/ciorne). */
-export const COUNTRIES: Country[] = [...BASE, ...APPROVED_COUNTRIES];
+export const COUNTRIES: Country[] = withNewCountries([...BASE, ...APPROVED_COUNTRIES]);
 
 export const getCountry = (slug: string) => COUNTRIES.find((c) => c.slug === slug) ?? null;

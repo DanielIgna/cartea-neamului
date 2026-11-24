@@ -72,7 +72,7 @@ export const EUROPE_ORDER = [
   "marea-britanie", "spania", "italia", "germania", "austria", "franta",
   "olanda", "belgia", "elvetia", "norvegia", "suedia", "danemarca", "irlanda", "portugalia", "grecia", "cipru",
 ];
-const LANG_LABEL: Partial<Record<Lang, string>> = { ro: "română", en: "engleză", es: "spaniolă", it: "italiană", de: "germană", fr: "franceză", nl: "neerlandeză", hu: "maghiară", he: "ebraică" };
+const LANG_LABEL: Partial<Record<Lang, string>> = { ro: "română", en: "engleză", es: "spaniolă", it: "italiană", de: "germană", fr: "franceză", nl: "neerlandeză", hu: "maghiară", he: "ebraică", pt: "portugheză", el: "greacă", sv: "suedeză", da: "daneză", nb: "norvegiană", uk: "ucraineană", sr: "sârbă", bg: "bulgară", tr: "turcă" };
 
 export function planItemsEurope(): PlanItem[] {
   const out: PlanItem[] = [];

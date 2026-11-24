@@ -7,6 +7,7 @@ import { APPROVED_REGIONS } from "./ciorne";
 import { APROBATE } from "./ciorne/aprobate";
 import { withCityLangs } from "./ciorne/limbi-orase";
 import { localHistory } from "./istorie-locala";
+import { withNewRegions } from "./limbi-noi";
 
 /**
  * Statele SUA, provinciile Canadei și câteva orașe mari. Toate au pagină (Daniel: „toate statele, toate provinciile”), dar
@@ -353,7 +354,7 @@ function withHistory(slug: string, n: (typeof NOTES)[string] | undefined): (type
   return { ...(n ?? {}), ro: [...(n?.ro ?? []), ...h.ro], en: [...(n?.en ?? []), ...h.en] };
 }
 
-export const REGIONS: Region[] = withCityLangs([
+export const REGIONS: Region[] = withNewRegions(withCityLangs([
   ...US_STATES.map(([slug, en, ro]): Region => {
     const n = withHistory(slug, NOTES[slug]);
     return { slug, country: "us", kind: "state", name: { ro: ro ?? en, en }, where: { ro: slug === "new-york" ? "în statul New York" : `în ${ro ?? en}`, en: slug === "new-york" ? "in New York State" : slug === "washington" ? "in Washington State" : `in ${en}` }, langs: ["en", "ro"], notes: n ? { ro: n.ro, en: n.en } : {}, cities: n?.cities };
@@ -368,7 +369,7 @@ export const REGIONS: Region[] = withCityLangs([
   ...EUROPE_CITIES,
   ...EUROPE_CITIES_2,
   ...APPROVED_REGIONS,
-], APROBATE);
+], APROBATE));
 
 export const regionsOf = (country: CountryKey, kind?: Region["kind"]) => REGIONS.filter((r) => r.country === country && (!kind || r.kind === kind));
 export const getRegion = (country: CountryKey, slug: string) => REGIONS.find((r) => r.country === country && r.slug === slug) ?? null;
