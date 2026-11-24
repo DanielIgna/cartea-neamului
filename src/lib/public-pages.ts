@@ -30,7 +30,6 @@ export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);
  * au adresă proprie, nu intră în sitemap, iar /pt/termeni trimite la /termeni. Se scoate pagina de aici când e tradusă.
  */
 const NOT_YET_TRANSLATED: Record<string, readonly Locale[]> = {
-  "/libertatea-de-a-crede": NEW_LOCALES,
 };
 
 /** Limbile în care o pagină publică are text adevărat (româna mereu). */
