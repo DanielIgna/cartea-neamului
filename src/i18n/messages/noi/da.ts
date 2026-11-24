@@ -2836,7 +2836,7 @@ export const daExtra: DeepPartial<Catalog> = {
         },
         dsa: {
           h: "12. Ulovligt indhold og kontaktpunkt",
-          p1: "Adressen <mail>{email}</mail> er vores eneste kontaktpunkt for borgere, for myndighederne i EU's medlemsstater og for Europa-Kommissionen (forordning (EU) 2022/2065, retsakten om digitale tjenester). Du kan skrive til os på rumænsk eller engelsk.",
+          p1: "Adressen <mail>{email}</mail> er vores eneste kontaktpunkt for borgere, for myndighederne i EU’s medlemsstater og for Europa-Kommissionen (forordning (EU) 2022/2065, retsakten om digitale tjenester). Du kan skrive til os på rumænsk eller engelsk.",
           l1: "Hvis du ser noget på webstedet, som du mener er ulovligt (for eksempel et billede lagt op uden tilladelse eller oplysninger om dig skrevet uden dit samtykke), så skriv til den adresse med: hvor det er (linket eller navnene på træet og profilen), hvorfor du mener, det er ulovligt, dit navn og din e-mail (undtagen hvor loven lader dig være anonym) og en erklæring om, at du skriver i god tro.",
           l2: "Vi bekræfter modtagelsen, ser grundigt og uden forsinkelse på det og fortæller dig, hvad vi har besluttet.",
           l3: "Hvis vi skjuler eller sletter noget, du har lagt op, fortæller vi dig hvorfor og på hvilket grundlag. Du kan anfægte afgørelsen ved at skrive til samme adresse, og et menneske vil gennemgå den; du kan også gå til domstolene eller klage til ANCOM, Rumæniens koordinator for digitale tjenester.",
