@@ -981,6 +981,7 @@
   "src/lib/plata.ts",
   "src/lib/plati-test.ts",
   "src/lib/plati.ts",
+  "src/lib/preview-db.ts",
   "src/lib/proba-email.ts",
   "src/lib/probleme.ts",
   "src/lib/propmanage-cont.ts",

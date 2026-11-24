@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo, useRef, useTransition } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Ico } from "@/components/AccountNav";
 import { useLocale, useTranslations } from "use-intl";
 import { degreeWord, kinLabel } from "@/lib/kin-words";
 import { FanChart, ClassicTree, DescendantsChart, type Side, type Slots, type DescNode } from "./charts";
@@ -321,7 +322,7 @@ export default function TreeScreen(props: Props) {
   const ancestorOption = (x: PersonView, gen: number) => [x.name, x.birthYear ? `, ${x.approx ? DATE_WORDS[locale].approx : ""}${x.birthYear}` : "", " · ", t("genShort", { gen })].join("");
 
   return (
-    <section className="layout">
+    <section className="layout tree-page">
       <div className="stack">
         <div className={`card${full ? " chart-full" : ""}`}>
           <div className="toolbar">
@@ -472,20 +473,20 @@ export default function TreeScreen(props: Props) {
             );
           })}
         </div>
-        <div className="card">
+        <div className="card tree-tools">
           <div className="toolbar" style={{ marginBottom: 0 }}>
             <div className="title" style={{ fontSize: 17 }}>{t("treeCount", { tree: treeName, count: Object.keys(people).length })}</div>
             {/* Legătură obișnuită, nu <Link>: cartea se așază pe pagini într-un document proaspăt. */}
-            <a className="btn primary" href={`/arbore/${treeId}/carte?p=${centerId}`}>{t("book")}</a>
-            <Link className="btn" href={`/arbore/${treeId}/harta`}>{t("map")}</Link>
-            <Link className="btn" href={`/arbore/${treeId}/cronologie`}>{t("timeline")}</Link>
-            <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}>{t("journey")}</Link>
-            <Link className="btn" href="/istoria-umanitatii">{t("humanHistory")}</Link>
+            <a className="btn primary" href={`/arbore/${treeId}/carte?p=${centerId}`}><Ico n="book" />{t("book")}</a>
+            <Link className="btn" href={`/arbore/${treeId}/harta`}><Ico n="map" />{t("map")}</Link>
+            <Link className="btn" href={`/arbore/${treeId}/cronologie`}><Ico n="clock" />{t("timeline")}</Link>
+            <Link className="btn" href={`/arbore/${treeId}/calatorie?p=${centerId}`}><Ico n="ship" />{t("journey")}</Link>
+            <Link className="btn" href="/istoria-umanitatii"><Ico n="globe" />{t("humanHistory")}</Link>
             {/* Proiectul de la școală (/scoala): fișa e în română, ca programa școlilor din România. */}
-            {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/scoala?p=${centerId}`}>🎒 Printează pentru proiectul de la școală</Link>}
-            {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/widget`}>🌳 Widget pentru blog sau site</Link>}
+            {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/scoala?p=${centerId}`}><Ico n="print" />Printează pentru proiectul de la școală</Link>}
+            {locale === "ro" && <Link className="btn" href={`/arbore/${treeId}/widget`}><Ico n="tree" />Widget pentru blog sau site</Link>}
             {/* Descărcarea arborelui e deschisă oricând, cu sau fără plan. */}
-            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}>{t("exportGedcom")}</a>
+            <a className="btn" href={`/api/arbore/${treeId}/gedcom`}><Ico n="down" />{t("exportGedcom")}</a>
           </div>
         </div>
         {notice && <div className="card"><p style={{ margin: 0 }}>{notice}</p></div>}
@@ -622,6 +623,8 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
 
   return (
     <>
+      {/* Capul fișei (Daniel, 25.11.2026, stilul „Panou cald”): banda maro cu poza, numele, semnele și rudenia. */}
+      <div className="pp-cover">
       <div className="section-label" style={{ marginTop: 0 }}>{t("cardTitle")}</div>
       <div className="person-head">
         <Avatar p={p} size={72} />
@@ -660,6 +663,7 @@ function PersonPanel({ p, graph, ego, people, raised, treeId, meId, isEditor, ca
         </div>
       )}
       {!kin && ego && ego.id !== p.id && <div className="kin">{t("noKin", { name: ego.givenName })}</div>}
+      </div>
       <dl className="facts" style={{ marginTop: 10 }}>
         {(() => {
           // Locul duce pe harta neamului, la satul acela, cu toți cei de acolo.

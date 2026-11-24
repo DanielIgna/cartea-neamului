@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "use-intl";
 import { authClient } from "@/lib/auth-client";
+import { Ico } from "@/components/AccountNav";
 
 /**
  * Meniul contului din antet. Pe calculator: butoanele pe un rând. Pe telefon: doar poza (cu numărul de mesaje noi)
@@ -42,20 +43,20 @@ export default function UserMenu({ name, unread = 0, replies = 0, image, admin =
   return (
     <>
       <div className="um-inline">
-        {admin && <Link className="btn" href="/admin">{t("admin")}</Link>}
-        <Link className="btn" href="/mesaje">{t("messages")}{unread ? <span className="badge">{unread}</span> : null}</Link>
+        {admin && <Link className="btn" href="/admin"><Ico n="key" />{t("admin")}</Link>}
+        <Link className="btn" href="/mesaje"><Ico n="msg" />{t("messages")}{unread ? <span className="badge">{unread}</span> : null}</Link>
         <Link className="user-chip" href="/datele-mele" title={t("account")}>
           {avatar(30)}
           <span className="muted">{name}</span>
         </Link>
         {/* „Arborele meu” (Daniel, 24.11.2026): drumul spre arbore pe orice pagină, fără să știi că trebuie apăsat pe siglă. */}
-        <Link className="menu-quiet menu-tree" href="/arbore" aria-current={inTree ? "page" : undefined}>{t("myTree")}</Link>
-        <Link className="menu-quiet" href="/plata">{t("plan")}</Link>
-        <Link className="menu-quiet" href="/invitatii">{ti("menu")}</Link>
-        <Link className="menu-quiet" href="/ghid">{t("guides")}</Link>
-        <Link className="menu-quiet" href="/parteneri">{tp("menu")}</Link>
-        <Link className="menu-quiet" href={report}>{t("report")}{replyBadge}</Link>
-        <button className="btn" onClick={signOut}>{t("signOut")}</button>
+        <Link className="menu-quiet menu-tree" href="/arbore" aria-current={inTree ? "page" : undefined}><Ico n="tree" />{t("myTree")}</Link>
+        <Link className="menu-quiet" href="/plata"><Ico n="card" />{t("plan")}</Link>
+        <Link className="menu-quiet" href="/invitatii"><Ico n="inv" />{ti("menu")}</Link>
+        <Link className="menu-quiet" href="/ghid"><Ico n="help" />{t("guides")}</Link>
+        <Link className="menu-quiet" href="/parteneri"><Ico n="hand" />{tp("menu")}</Link>
+        <Link className="menu-quiet" href={report}><Ico n="flag" />{t("report")}{replyBadge}</Link>
+        <button className="btn" onClick={signOut}><Ico n="out" />{t("signOut")}</button>
       </div>
       {/* Pe telefon, arborele are butonul lui lângă meniu: se vede pe orice pagină, fără să deschizi meniul. */}
       <Link className="um-tree" href="/arbore" aria-label={t("myTree")} title={t("myTree")} aria-current={inTree ? "page" : undefined}>
