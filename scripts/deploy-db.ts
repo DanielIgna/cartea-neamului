@@ -19,6 +19,12 @@ if (!process.env.DATABASE_URL) {
 try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
 process.exit(0);
 }
+// O variantă de probă (Vercel Preview) nu schimbă niciodată baza: dacă cineva pune DATABASE_URL și pentru Preview, ar putea fi
+// chiar baza reală, iar o ramură nepublicată i-ar schimba structura și datele (24.11.2026).
+if (process.env.VERCEL_ENV === "preview") {
+  console.log("deploy-db: variantă de probă, nu schimb baza de date.");
+  process.exit(0);
+}
 await applySchema(db);
 console.log("deploy-db: migrațiile sunt aplicate.");
 const [demo] = await db.select({ id: tree.id }).from(tree).where(eq(tree.name, "Neamul Pop din Ieud")).limit(1);
