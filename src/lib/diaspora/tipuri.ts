@@ -5,19 +5,21 @@ import type { Locale } from "@/i18n/locales";
  * SUA și provinciile Canadei, pe orașele mari și câteva pagini speciale. Fiecare pagină e scrisă în câteva limbi (româna,
  * engleza și limba țării), nu în toate: textul e propriu fiecărei limbi, nu tradus automat.
  */
-export type Lang = "ro" | "en" | "it" | "es" | "de" | "fr" | "he" | "hu" | "nl";
+export type Lang = "ro" | "en" | "it" | "es" | "de" | "fr" | "he" | "hu" | "nl"
+  | "pt" | "el" | "sv" | "da" | "nb" | "uk" | "sr" | "bg" | "tr";
 export type T = Partial<Record<Lang, string>>;
 export type TList = Partial<Record<Lang, string[]>>;
 
 /** Limba conținutului pentru limba site-ului (engleza britanică și cea americană au același text). */
 export const LANG_OF: Record<Locale, Lang | null> = {
   ro: "ro", "en-GB": "en", "en-US": "en", fr: "fr", es: "es", nl: "nl", de: "de", it: "it", hu: "hu", he: "he",
-  // Limbile noi (19.11.2026): paginile scrise în ele vin pe rând; până atunci citesc engleza (noindex).
-  pt: null, el: null, sv: null, da: null, nb: null, uk: null, sr: null, bg: null, tr: null,
+  // Limbile noi (Daniel, 24.11.2026: „tradu în limbile noi cele 9”): prima pagină, textele comune și pagina țării lor.
+  pt: "pt", el: "el", sv: "sv", da: "da", nb: "nb", uk: "uk", sr: "sr", bg: "bg", tr: "tr",
 };
 /** Limbile site-ului care arată un text (pentru hreflang). */
 export const LOCALES_OF: Record<Lang, Locale[]> = {
   ro: ["ro"], en: ["en-GB", "en-US"], it: ["it"], es: ["es"], de: ["de"], fr: ["fr"], he: ["he"], hu: ["hu"], nl: ["nl"],
+  pt: ["pt"], el: ["el"], sv: ["sv"], da: ["da"], nb: ["nb"], uk: ["uk"], sr: ["sr"], bg: ["bg"], tr: ["tr"],
 };
 
 export type Link = { name: string; url: string; note: T };

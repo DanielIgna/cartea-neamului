@@ -3,6 +3,7 @@ import { EXTRA_2 } from "./extins-2";
 import { EXTRA_UA } from "./extins-ucraina";
 import { EXTRA_NO } from "./extins-norvegia";
 import { EXTRA_VECINI } from "./extins-vecini";
+import { withNewExtra } from "./limbi-noi";
 
 /**
  * Pasul 1 al extinderii diaspora (Daniel, 17.11.2026): cele 7 țări mari primesc text propriu mai lung (în română, plus engleza
@@ -331,7 +332,7 @@ const EXTRA_1: Record<string, CountryExtra> = {
 };
 
 /** Toate țările cu ghid propriu: cele 7 mari (pasul 1) și celelalte 11 (pasul 4, extins-2.ts). */
-export const EXTRA: Record<string, CountryExtra> = { ...EXTRA_1, ...EXTRA_2, ...EXTRA_UA, ...EXTRA_NO, ...EXTRA_VECINI };
+export const EXTRA: Record<string, CountryExtra> = withNewExtra({ ...EXTRA_1, ...EXTRA_2, ...EXTRA_UA, ...EXTRA_NO, ...EXTRA_VECINI });
 
 /** Cuvintele proprii (românești) ale unei țări: istoria, ghidul, particularitățile și întrebările (pentru prag și teste). */
 export function ownWords(parts: (string | undefined)[]): number {

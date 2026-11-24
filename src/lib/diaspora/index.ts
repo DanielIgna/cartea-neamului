@@ -13,9 +13,9 @@ export { COUNTRIES, REGIONS, THEMES };
 
 /** Toate paginile secțiunii /diaspora, cu limbile lor și dacă intră în Google. */
 export const HUB_PATH = "/diaspora";
-export const HUB_LANGS: Lang[] = ["ro", "en", "it", "es", "de", "fr", "he", "hu"];
+export const HUB_LANGS: Lang[] = ["ro", "en", "it", "es", "de", "fr", "he", "hu", "pt", "el", "sv", "da", "nb", "uk", "sr", "bg", "tr"];
 /** Data ultimei schimbări de text (pentru sitemap). */
-export const DIASPORA_UPDATED = new Date("2026-11-15T00:00:00Z");
+export const DIASPORA_UPDATED = new Date("2026-11-24T00:00:00Z");
 
 export type Entry =
   | { kind: "hub"; path: string; langs: Lang[]; indexable: true }
