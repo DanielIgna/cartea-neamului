@@ -12,6 +12,8 @@ const WHATSAPP_DEFAULT = "40790541342";
 
 /** Pagina de Facebook a site-ului (cerută de Daniel, 13 noiembrie 2026): în subsol, pe /contact și în datele Organization. */
 export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61596217751674";
+/** Contul de TikTok (cerut de Daniel, 24 noiembrie 2026): în subsol, lângă Facebook, și în datele Organization (sameAs). */
+export const TIKTOK_URL = "https://www.tiktok.com/@carteaneamului.ro";
 
 export function contactInbox(): string {
   return process.env.CONTACT_INBOX?.trim() || INBOX_DEFAULT;
