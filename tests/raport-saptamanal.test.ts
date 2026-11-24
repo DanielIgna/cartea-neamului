@@ -2,7 +2,8 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
 import { accountPlan, payment, user } from "@/db/schema";
-import { REAL_PAYMENTS_SINCE, reportAuthorized, reportRanges, weeklyReport } from "@/lib/raport-saptamanal";
+import { codeOfSession, isTestCode } from "@/lib/plati-test";
+import { reportAuthorized, reportRanges, weeklyReport } from "@/lib/raport-saptamanal";
 
 describe("raportul de luni: cine poate citi", () => {
   it("fără token pus sau cu token scurt, adresa e închisă", () => {
@@ -33,23 +34,40 @@ describe("raportul de luni: doar clienții adevărați", () => {
     ]);
     await db.insert(accountPlan).values({ userId: "fam", plan: "mereu" });
     await db.insert(payment).values([
-      { id: "p-test-vechi", userId: "vechi", kind: "an", amount: 4900, currency: "ron", createdAt: at("2026-11-18") },
+      // 18.11: plata reală cu NEAM90 (4,90 lei) se numără; cea cu TEST90 și cea din modul de test Stripe nu.
+      { id: "cs_live_neam", userId: "vechi", kind: "an", amount: 490, currency: "ron", promo: "NEAM90", createdAt: at("2026-11-18") },
+      { id: "cs_live_test", userId: "real2", kind: "an", amount: 490, currency: "ron", promo: "TEST90", createdAt: at("2026-11-17") },
+      { id: "cs_test_x", userId: "real2", kind: "an", amount: 4900, currency: "ron", promo: "", createdAt: at("2026-11-19") },
+      { id: "cs_live_neam_carte", userId: "vechi", kind: "carte", amount: 0, currency: "pachet", createdAt: at("2026-11-18") },
       { id: "p-real", userId: "real1", kind: "an", amount: 4900, currency: "ron", createdAt: at("2026-11-21") },
       { id: "p-fam", userId: "fam", kind: "an", amount: 14900, currency: "ron", createdAt: at("2026-11-21") },
       { id: "p-test", userId: "test", kind: "an", amount: 1000, currency: "eur", createdAt: at("2026-11-21") },
     ]);
   });
   it("numără conturile și plățile reale, fără test, familie și plățile de test", async () => {
-    expect(REAL_PAYMENTS_SINCE).toBe("2026-11-20");
-    const r = await weeklyReport(db, 7, { today: "2026-11-23", gsc: false });
+    const r = await weeklyReport(db, 7, { today: "2026-11-23", gsc: false, stripe: false });
     expect(r.current.accounts.new).toBe(3); // real1, real2, vechi (18.11): fără familie și fără test
-    expect(r.current.accounts.paidSoFar).toBe(1);
-    expect(r.current.payments.count).toBe(1);
-    expect(r.current.payments.lei).toBe(49);
+    expect(r.current.accounts.paidSoFar).toBe(2); // real1 și vechi (NEAM90); real2 doar cu plăți de test
+    expect(r.current.payments.count).toBe(2);
+    expect(r.current.payments.lei).toBeCloseTo(53.9);
     expect(r.current.payments.eur).toBe(0);
-    expect(r.current.payments.excluded).toBe(3);
+    expect(r.current.payments.excluded).toBe(4); // familie, cont de test, TEST90, modul de test Stripe (cartea fără bani nu e plată)
     expect(r.current.visits.perDay).toHaveLength(7);
     expect(r.searchConsole).toBeNull();
     expect(JSON.stringify(r)).not.toMatch(/@x\.ro|example\.com/);
+  });
+});
+
+describe("plățile de test: după cod, nu după dată", () => {
+  it("TEST90 și codurile TEST… sunt de test; NEAM90 nu", () => {
+    expect(isTestCode("TEST90")).toBe(true);
+    expect(isTestCode(" test-1 ")).toBe(true);
+    expect(isTestCode("NEAM90")).toBe(false);
+    expect(isTestCode("")).toBe(false);
+  });
+  it("codul unei sesiuni Stripe: al nostru sau cel scris pe pagina Stripe", () => {
+    expect(codeOfSession({ metadata: { offer: "NEAM90" } })).toBe("NEAM90");
+    expect(codeOfSession({ metadata: {}, discounts: [{ promotion_code: { code: "TEST90" } }] })).toBe("TEST90");
+    expect(codeOfSession({ metadata: {}, discounts: [] })).toBe("");
   });
 });

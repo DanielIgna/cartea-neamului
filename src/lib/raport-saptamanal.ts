@@ -5,19 +5,18 @@
  *
  * Ce nu se numără, ca cifrele să arate clienții adevărați:
  * - conturile de test (src/lib/conturi-test.ts) și conturile cu „Acces gratuit” (planul `mereu`: Daniel, Cristina, familia);
- * - plățile de dinainte de REAL_PAYMENTS_SINCE: cele 3 plăți de până pe 19.11.2026 au fost teste Stripe făcute de Daniel.
+ * - plățile de test (src/lib/plati-test.ts): modul de test Stripe, codurile TEST… și cărțile fără bani. Până pe 24.11.2026 se
+ *   ignorau toate plățile de dinainte de 20.11, așa că plata reală cu NEAM90 din 18.11 nu apărea (Daniel, 24.11.2026).
  */
 import { sql } from "drizzle-orm";
 import { timingSafeEqual } from "node:crypto";
 import type { Db } from "@/db";
 import { realAccountSql, realUserIdSql } from "./conturi-test";
+import { fillPaymentCodes, realPaymentSql } from "./plati-test";
 import { groupBy, sessionsOf, summary, uniqueVisitors, type Range } from "./analiza";
 import { localDayHour } from "./vizite";
 import { gscSnapshot, seoSettings } from "./seo";
 import { SITE_URL } from "./site-url";
-
-/** Prima zi din care plățile sunt ale clienților (ora României). */
-export const REAL_PAYMENTS_SINCE = "2026-11-20";
 
 const DAY = 86_400_000;
 const addDays = (d: string, n: number) => new Date(Date.parse(`${d}T00:00:00Z`) + n * DAY).toISOString().slice(0, 10);
@@ -43,14 +42,14 @@ async function rows(db: Db, q: ReturnType<typeof sql>) {
   return (r.rows ?? []) as Record<string, unknown>[];
 }
 
-/** Conturile reale noi, arborii lor și câte au plătit (oricând după, de la REAL_PAYMENTS_SINCE). */
+/** Conturile reale noi, arborii lor și câte au plătit (oricând după, fără plățile de test). */
 async function accounts(db: Db, r: Range) {
   const [x] = await rows(db, sql`with u as (select uu.id from "user" uu where ${realAccountSql("uu")} and ${notFree("uu.id")}
       and ${localDay("uu.created_at")} between ${r.from} and ${r.to})
     select count(*) as accounts,
       count(*) filter (where exists (select 1 from tree t where t.owner_id = u.id)) as trees,
       count(*) filter (where exists (select 1 from tree t where t.owner_id = u.id and (select count(*) from person p where p.tree_id = t.id) >= 5)) as grown,
-      count(*) filter (where exists (select 1 from payment p where p.user_id = u.id and ${localDay("p.created_at")} >= ${REAL_PAYMENTS_SINCE})) as paid
+      count(*) filter (where exists (select 1 from payment p where p.user_id = u.id and ${realPaymentSql("p")})) as paid
     from u`);
   const perDay = await rows(db, sql`select ${localDay("uu.created_at")}::text as day, count(*) as c from "user" uu
     where ${realAccountSql("uu")} and ${notFree("uu.id")} and ${localDay("uu.created_at")} between ${r.from} and ${r.to} group by 1 order by 1`);
@@ -62,13 +61,12 @@ async function accounts(db: Db, r: Range) {
 
 /** Plățile reale din interval, pe fel (an / carte / păstrare…), plan și monedă. */
 async function payments(db: Db, r: Range) {
-  const from = r.from < REAL_PAYMENTS_SINCE ? REAL_PAYMENTS_SINCE : r.from;
-  const list = from > r.to ? [] : await rows(db, sql`select p.kind, coalesce(ap.tier, '') as tier, p.currency, count(*) as c, sum(p.amount) as s
+  const list = await rows(db, sql`select p.kind, coalesce(ap.tier, '') as tier, p.currency, count(*) as c, sum(p.amount) as s
     from payment p left join account_plan ap on ap.user_id = p.user_id
-    where ${localDay("p.created_at")} between ${from} and ${r.to}
+    where ${localDay("p.created_at")} between ${r.from} and ${r.to} and ${realPaymentSql("p")}
       and (p.user_id is null or (${realUserIdSql("p.user_id")} and ${notFree("p.user_id")}))
     group by 1, 2, 3 order by 4 desc`);
-  const [ex] = await rows(db, sql`select count(*) as c from payment p where ${localDay("p.created_at")} between ${r.from} and ${r.to}`);
+  const [ex] = await rows(db, sql`select count(*) as c from payment p where ${localDay("p.created_at")} between ${r.from} and ${r.to} and p.amount > 0`);
   const count = list.reduce((a, x) => a + num(x.c), 0);
   return {
     count,
@@ -113,15 +111,17 @@ async function searchConsole(db: Db, days: number) {
   };
 }
 
-export async function weeklyReport(db: Db, days = 7, opts: { today?: string; gsc?: boolean } = {}) {
+export async function weeklyReport(db: Db, days = 7, opts: { today?: string; gsc?: boolean; stripe?: boolean } = {}) {
   const { cur, prev } = reportRanges(days, opts.today);
+  // Codul plăților vechi (de dinainte să-l ținem), aflat din Stripe, ca TEST90 să nu se numere și NEAM90 să se numere.
+  if (opts.stripe !== false) await fillPaymentCodes(db).catch(() => 0);
   const [vc, vp, ac, ap, pc, pp] = await Promise.all([
     visits(db, cur), visits(db, prev), accounts(db, cur), accounts(db, prev), payments(db, cur), payments(db, prev),
   ]);
   const gsc = opts.gsc === false ? null : await searchConsole(db, days).catch((e) => ({ state: "eroare" as const, error: String(e) }));
   return {
-    generatedAt: new Date().toISOString(), days, realPaymentsSince: REAL_PAYMENTS_SINCE,
-    note: "Fără conturile de test, fără conturile cu „Acces gratuit” (familia) și fără plățile de test de dinainte de realPaymentsSince.",
+    generatedAt: new Date().toISOString(), days,
+    note: "Fără conturile de test, fără conturile cu „Acces gratuit” (familia) și fără plățile de test (modul de test Stripe, coduri TEST…, cărți fără bani). Plățile cu NEAM90 sunt reale și se numără.",
     current: { range: cur, visits: vc, accounts: ac, payments: pc },
     previous: { range: prev, visits: vp, accounts: ap, payments: pp },
     searchConsole: gsc,

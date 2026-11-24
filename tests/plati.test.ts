@@ -2,9 +2,9 @@ import { describe, it, expect, beforeAll } from "vitest";
 import { createHmac } from "node:crypto";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
-import { accountPlan, tree, treeMember, user } from "@/db/schema";
+import { accountPlan, payment, tree, treeMember, user } from "@/db/schema";
 import { readFileSync } from "node:fs";
-import { sql } from "drizzle-orm";
+import { inArray, sql } from "drizzle-orm";
 import { applyPayment, bookIncluded, bookPaid, claimIncludedBook, createCheckout, includedBooksLeft, paidSession, priceFor, quoteYear, verifyStripeSignature } from "@/lib/plati";
 import { DEFAULT_SETTINGS, accessFor, limitsFor, type Access } from "@/lib/plans";
 import { document, person } from "@/db/schema";
@@ -141,6 +141,15 @@ describe("plata cu cardul", () => {
       await applyPayment(db, { ...p, id: "cs_b" }, new Date("2027-06-01T00:00:00Z"));
       [r] = await db.select().from(accountPlan);
       expect(r.paidUntil).toEqual(new Date("2028-12-31T00:00:00Z"));
+    });
+
+    it("ține codul de reducere al plății (NEAM90, TEST90), ca raportul să deosebească testele", async () => {
+      const now = new Date("2027-02-01T00:00:00Z");
+      await db.insert(user).values({ id: "u-cod", name: "Cod", email: "cod@test.ro" });
+      await applyPayment(db, { id: "cs_neam", kind: "an", userId: "u-cod", treeId: null, amount: 490, currency: "ron", offer: "NEAM90" }, now);
+      await applyPayment(db, { id: "cs_fara", kind: "carte", userId: "u-cod", treeId: null, amount: 3900, currency: "ron" }, now);
+      const rows = await db.select({ id: payment.id, promo: payment.promo }).from(payment).where(inArray(payment.id, ["cs_neam", "cs_fara"]));
+      expect(Object.fromEntries(rows.map((x) => [x.id, x.promo]))).toEqual({ cs_neam: "NEAM90", cs_fara: "" });
     });
 
     it("o plată redusă cu un cod promoțional dă același an", async () => {
