@@ -47,7 +47,7 @@ export default function ProfileRelatives(props: Props) {
   const done = (msg?: string) => { setOpen(null); setNotice(msg ?? t("saved")); router.refresh(); };
 
   const card = (r: PersonView, role?: string) => (
-    <div key={r.id} className="kin-card">
+    <div key={r.id} className={`kin-card${r.id === props.personId ? " kin-self" : ""}`}>
       <Avatar p={r} size={44} />
       <span style={{ minWidth: 0 }}>
         {role && <small>{role}</small>}
@@ -81,12 +81,12 @@ export default function ProfileRelatives(props: Props) {
     );
   };
   /** Un grup: titlul, oamenii (fiecare cu „Editează”), locurile goale și formularul deschis pentru unul dintre ei. */
-  const group = (title: string, items: ReactNode[], keys: string[], hint?: string | false) => (
-    <>
+  const group = (title: string, items: ReactNode[], keys: string[], hint?: string | false, cls = "") => (
+    <section className={`fam-g ${cls}`}>
       <div className="section-label">{title}</div>
       {items.some(Boolean) ? <div className="kin-grid">{items}</div> : hint ? <p className="muted" style={{ margin: "4px 0" }}>{hint}</p> : <p className="muted" style={{ margin: "4px 0" }}>—</p>}
       {form(keys)}
-    </>
+    </section>
   );
   const editKeys = (ids: (string | null)[]) => ids.filter((x): x is string => !!x).map((x) => `edit:${x}`);
 
@@ -94,7 +94,7 @@ export default function ProfileRelatives(props: Props) {
   const parentsGroup = group(t("parents"), [
     data.father ? card(people[data.father], t("father")) : addBtn({ anchor: me, kind: "father" }, t("addFather")),
     data.mother ? card(people[data.mother], t("mother")) : addBtn({ anchor: me, kind: "mother" }, t("addMother")),
-  ], [`${me}:father`, `${me}:mother`, ...editKeys([data.father, data.mother])]);
+  ], [`${me}:father`, `${me}:mother`, ...editKeys([data.father, data.mother])], undefined, "fam-parents");
 
   const grand = (side: "paternal" | "maternal") => {
     const parent = side === "paternal" ? data.father : data.mother;
@@ -104,30 +104,36 @@ export default function ProfileRelatives(props: Props) {
       g.grandmother ? card(people[g.grandmother], t("grandmother")) : addBtn({ anchor: parent, kind: "mother" }, t("addGrandmother")),
     ] : [];
     return group(t(side), items, parent ? [`${parent}:father`, `${parent}:mother`, ...editKeys([g.grandfather, g.grandmother])] : [],
-      !parent && canAdd && t("needParent", { side: side === "paternal" ? "father" : "mother" }));
+      !parent && canAdd && t("needParent", { side: side === "paternal" ? "father" : "mother" }), "fam-grand");
   };
 
   const halfRole = (r: PersonView) => {
     const via = props.half?.[r.id];
     return via ? kinLabel({ t: "blood", up: 1, down: 1, half: via }, r.sex, locale) : undefined;
   };
-  const list = (title: string, ids: string[], slot: Slot, label: string, roles?: (r: PersonView) => string | undefined) =>
-    group(title, [...by(ids).map((r) => card(r, roles?.(r))), addBtn(slot, label)], [`${slot.anchor}:${slot.kind}`, ...editKeys(ids)]);
+  const list = (title: string, ids: string[], slot: Slot, label: string, roles?: (r: PersonView) => string | undefined, cls = "") =>
+    group(title, [...by(ids).map((r) => card(r, roles?.(r))), addBtn(slot, label)], [`${slot.anchor}:${slot.kind}`, ...editKeys(ids)], undefined, cls);
 
   /** Nepoții: toți într-un singur șir, copiii fiecărui frate (sau copil) urmați de locul pentru încă unul. */
+  /** Nepoții, pe ramuri: sub fiecare frate (sau copil), copiii lui și locul pentru încă unul. */
   const nested = (title: string, rows: { via: string; ids: string[] }[], hint: string) => (
-    <>
+    <section className="fam-g fam-wide">
       <div className="section-label">{title}</div>
       {!rows.length ? <p className="muted" style={{ margin: "4px 0" }}>{canAdd ? hint : "—"}</p> : (
-        <div className="kin-grid">
-          {rows.filter((row) => people[row.via]).flatMap((row) => [
-            ...by(row.ids).map((r) => card(r, t("via", { name: people[row.via].name }))),
-            addBtn({ anchor: row.via, kind: "child" }, t("addChildOf", { name: people[row.via].name })),
-          ])}
+        <div className="fam-branches">
+          {rows.filter((row) => people[row.via]).map((row) => (
+            <div key={row.via} className="fam-branch">
+              <div className="fam-via">{t("via", { name: people[row.via].name })}</div>
+              <div className="kin-grid">
+                {by(row.ids).map((r) => card(r))}
+                {addBtn({ anchor: row.via, kind: "child" }, t("addChild"))}
+              </div>
+            </div>
+          ))}
         </div>
       )}
       {form(rows.flatMap((row) => [`${row.via}:child`, ...editKeys(row.ids)]))}
-    </>
+    </section>
   );
 
   return (
@@ -136,15 +142,19 @@ export default function ProfileRelatives(props: Props) {
       <p className="muted" style={{ marginTop: 0 }}>{props.own ? t("leadOwn") : t("leadOther")}</p>
       {props.lockedNote && <p className="notice">{props.lockedNote}</p>}
       {notice && <p className="notice" role="status">{notice}</p>}
-      {group(t("self"), [card(people[me])], editKeys([me]))}
-      {parentsGroup}
-      {grand("paternal")}
-      {grand("maternal")}
-      {list(t("spouses"), data.partners, { anchor: me, kind: "spouse" }, t("addSpouse"))}
-      {list(t("siblings"), data.siblings, { anchor: me, kind: "sibling" }, t("addSibling"), halfRole)}
-      {list(t("children"), data.children, { anchor: me, kind: "child" }, t("addChild"))}
-      {nested(t("nephews"), data.nephews, t("needSibling"))}
-      {nested(t("grandchildren"), data.grandchildren, t("needChild"))}
+      {/* Pe generații, de sus în jos (Daniel, 25.11.2026): bunicii pe cele două părți, părinții sub ei, apoi tu cu soțul sau
+          soția, frații și copiii alături, iar nepoții pe ramuri. Pe telefon totul vine unul sub altul. */}
+      <div className="fam">
+        {grand("paternal")}
+        {grand("maternal")}
+        {parentsGroup}
+        {group(t("self"), [card(people[me])], editKeys([me]), undefined, "fam-self")}
+        {list(t("spouses"), data.partners, { anchor: me, kind: "spouse" }, t("addSpouse"), undefined, "fam-spouse")}
+        {list(t("siblings"), data.siblings, { anchor: me, kind: "sibling" }, t("addSibling"), halfRole)}
+        {list(t("children"), data.children, { anchor: me, kind: "child" }, t("addChild"))}
+        {nested(t("nephews"), data.nephews, t("needSibling"))}
+        {nested(t("grandchildren"), data.grandchildren, t("needChild"))}
+      </div>
     </div>
   );
 }
