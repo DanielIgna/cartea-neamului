@@ -71,6 +71,13 @@ export const FUNCTIONS: Fn[] = [
     tables: ["tree_member"],
   },
   {
+    key: "zona-contului", name: "Zona contului („Panou cald”)", area: "familie", lifecycle: "live", risk: "scazut", riskWhy: "Doar meniuri și aranjare; paginile și formularele sunt cele de dinainte.",
+    what: "Pe paginile contului (prima pagină a contului, Datele mele, Siguranța contului, Planul meu, Invitații, Mesaje, Arhiva mea, Raportează o problemă, Arbore nou și fișa proprie): meniu lateral închis la culoare pe calculator cu toate legăturile din meniul de sus și bară jos pe telefon (Acasă, Arbore, Mesaje, Invită, Cont). Prima pagină a contului în carouri: copertă cu poză, planul tău (zilele gratuite rămase), cifrele neamului (persoane, cel mai vechi an de naștere, locuri, rude intrate în arbore), „Continuă de unde ai rămas” și arborii tăi (Daniel, 24.11.2026).",
+    engine: ["src/components/AccountNav.tsx", "src/app/(site)/page.tsx", "src/app/(site)/layout.tsx"],
+    pages: ["/", "/datele-mele", "/securitate", "/plata", "/invitatii", "/mesaje", "/arhiva", "/problema", "/arbore-nou"],
+    tables: ["tree", "tree_member", "person"],
+  },
+  {
     key: "spite", name: "Spițe și Copac 360°", area: "familie", lifecycle: "live", risk: "scazut", riskWhy: "Doar o vedere a datelor; nu schimbă nimic.",
     what: "Spița pe linia bărbătească, alegerea fiecăruia, Copacul cu două rădăcini și roata de 360°.",
     engine: ["src/lib/ancestry.ts", "src/lib/tree360.ts", "src/lib/fan-geometry.ts", "src/components/Tree360.tsx"],
