@@ -22,6 +22,7 @@ import { heDatele } from "./datele/he";
 import { hePastrare } from "./pastrare/he";
 import { heSecuritate } from "./securitate/he";
 import { heEmailuri } from "./emailuri/he";
+import { heGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * עברית, נכתבת מימין לשמאל (הדף מקבל dir="rtl"). פנייה ברבים („התחילו”, „הוסיפו”), כדי לא לבחור מין לקורא.
@@ -73,6 +74,8 @@ export const he: Catalog = {
   },
   UserMenu: {
     plan: "התוכנית שלי",
+    myTree: "העץ שלי",
+    myTreeShort: "העץ",
     report: "דיווח על בעיה",
     admin: "Admin",
     messages: "הודעות",
@@ -82,6 +85,7 @@ export const he: Catalog = {
     home: "דף הבית",
     guides: "מדריכים",
   },
+  ...heGhidArbore,
   UsageNotice: {
     label: "כמה אתם משתמשים באתר",
     lead: "שאלה אחת, פעם אחת בלבד.",

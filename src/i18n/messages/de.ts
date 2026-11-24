@@ -22,6 +22,7 @@ import { deDatele } from "./datele/de";
 import { dePastrare } from "./pastrare/de";
 import { deSecuritate } from "./securitate/de";
 import { deEmailuri } from "./emailuri/de";
+import { deGhidArbore } from "./ghid-arbore/altele";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -69,6 +70,8 @@ export const de: Catalog = {
   },
   UserMenu: {
     plan: "Mein Tarif",
+    myTree: "Mein Stammbaum",
+    myTreeShort: "Baum",
     report: "Problem melden",
     admin: "Admin",
     messages: "Nachrichten",
@@ -78,6 +81,7 @@ export const de: Catalog = {
     home: "Startseite",
     guides: "Ratgeber",
   },
+  ...deGhidArbore,
   UsageNotice: {
     label: "Wie du die Seite nutzt",
     lead: "Eine Frage, nur einmal.",

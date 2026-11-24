@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { trExtra } from "./noi/tr";
+import { trGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Türkçe, Türkiye’deki ve Romanya’daki Türk ve Tatar aileleri için. “Sen” diye hitap edilir. Henüz çevrilmeyenler
@@ -48,6 +49,8 @@ export const tr: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Planım",
+    myTree: "Ağacım",
+    myTreeShort: "Ağaç",
     report: "Sorun bildir",
     admin: "Yönetim",
     messages: "Mesajlar",
@@ -57,6 +60,7 @@ export const tr: DeepPartial<Catalog> = {
     home: "Ana sayfa",
     guides: "Rehberler",
   },
+  ...trGhidArbore,
   UsageNotice: {
     label: "Siteyi nasıl kullanıyorsun",
     lead: "Bir soru, sadece bir kez.",

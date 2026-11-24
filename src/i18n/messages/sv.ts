@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { svExtra } from "./noi/sv";
+import { svGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Svenska, för rumäner i Sverige och deras barn. Tilltal med „du”. Det som ännu inte är översatt visas på engelska
@@ -48,6 +49,8 @@ export const sv: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Min plan",
+    myTree: "Mitt träd",
+    myTreeShort: "Träd",
     report: "Rapportera ett problem",
     admin: "Admin",
     messages: "Meddelanden",
@@ -57,6 +60,7 @@ export const sv: DeepPartial<Catalog> = {
     home: "Start",
     guides: "Guider",
   },
+  ...svGhidArbore,
   UsageNotice: {
     label: "Hur du använder webbplatsen",
     lead: "En enda fråga, bara en gång.",

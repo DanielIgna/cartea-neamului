@@ -22,6 +22,7 @@ import { enGBDatele } from "./datele/en-GB";
 import { enGBPastrare } from "./pastrare/en-GB";
 import { enGBSecuritate } from "./securitate/en-GB";
 import { enGBEmailuri } from "./emailuri/en-GB";
+import { enGBGhidArbore } from "./ghid-arbore/altele";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -69,6 +70,8 @@ export const enGB: Catalog = {
   },
   UserMenu: {
     plan: "My plan",
+    myTree: "My tree",
+    myTreeShort: "Tree",
     report: "Report a problem",
     admin: "Admin",
     messages: "Messages",
@@ -78,6 +81,7 @@ export const enGB: Catalog = {
     home: "Home",
     guides: "Guides",
   },
+  ...enGBGhidArbore,
   UsageNotice: {
     label: "How you use the site",
     lead: "One question, just once.",

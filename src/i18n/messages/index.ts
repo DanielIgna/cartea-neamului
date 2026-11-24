@@ -55,7 +55,7 @@ export const CLIENT_NAMESPACES = [
 export const PAGE_NAMESPACES = [
   "Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations", "Chat", "Map", "Nearby",
   "Lada", "MemoryForm", "Voice", "Story", "Grand", "Auto", "Relatives", "BookUi", "Journey", "Church", "OldHouse", "MyData", "Film", "Contact", "Resources", "Problem",
-  "TwoStep", "Security", "Archives",
+  "TwoStep", "Security", "Archives", "TreeGuide",
 ] as const satisfies readonly (keyof Messages)[];
 export type PageNamespace = (typeof PAGE_NAMESPACES)[number];
 

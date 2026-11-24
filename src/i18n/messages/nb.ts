@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { nbExtra } from "./noi/nb";
+import { nbGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Norsk bokmål, for rumenere i Norge og barna deres. Tiltale med „du”. Det som ennå ikke er oversatt, vises på engelsk
@@ -48,6 +49,8 @@ export const nb: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Min plan",
+    myTree: "Treet mitt",
+    myTreeShort: "Tre",
     report: "Meld fra om et problem",
     admin: "Admin",
     messages: "Meldinger",
@@ -57,6 +60,7 @@ export const nb: DeepPartial<Catalog> = {
     home: "Forside",
     guides: "Guider",
   },
+  ...nbGhidArbore,
   UsageNotice: {
     label: "Hvordan du bruker nettstedet",
     lead: "Ett spørsmål, bare én gang.",

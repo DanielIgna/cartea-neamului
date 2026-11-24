@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { bgExtra } from "./noi/bg";
+import { bgGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Български, за румънците и власите в България и за децата им. Обръщение на „ти”. Каквото още не е преведено, се
@@ -48,6 +49,8 @@ export const bg: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "Моят план",
+    myTree: "Моето дърво",
+    myTreeShort: "Дърво",
     report: "Съобщи за проблем",
     admin: "Администрация",
     messages: "Съобщения",
@@ -57,6 +60,7 @@ export const bg: DeepPartial<Catalog> = {
     home: "Начало",
     guides: "Ръководства",
   },
+  ...bgGhidArbore,
   UsageNotice: {
     label: "Как използваш сайта",
     lead: "Един въпрос, само веднъж.",

@@ -45,6 +45,7 @@
   "drizzle/0043_crm_sarcini.sql",
   "drizzle/0044_crm_ambasadori.sql",
   "drizzle/0045_surse_publice.sql",
+  "drizzle/0046_plata_cod.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -181,6 +182,7 @@
   "src/app/(site)/arbore/[id]/scoala/page.tsx",
   "src/app/(site)/arbore/[id]/widget/actions.ts",
   "src/app/(site)/arbore/[id]/widget/page.tsx",
+  "src/app/(site)/arbore/page.tsx",
   "src/app/(site)/arborele-meu/page.tsx",
   "src/app/(site)/arhiva/page.tsx",
   "src/app/(site)/cadou-de-sarbatori/page.tsx",
@@ -427,6 +429,7 @@
   "src/components/TimeJourney.tsx",
   "src/components/TimesStory.tsx",
   "src/components/Tree360.tsx",
+  "src/components/TreeGuide.tsx",
   "src/components/TreeLimits.tsx",
   "src/components/TreeScreen.tsx",
   "src/components/TryTree.tsx",
@@ -686,6 +689,8 @@
   "src/i18n/messages/film/nl.ts",
   "src/i18n/messages/film/ro.ts",
   "src/i18n/messages/fr.ts",
+  "src/i18n/messages/ghid-arbore/altele.ts",
+  "src/i18n/messages/ghid-arbore/ro.ts",
   "src/i18n/messages/he.ts",
   "src/i18n/messages/hu.ts",
   "src/i18n/messages/index.ts",
@@ -900,6 +905,17 @@
   "src/lib/diaspora/index.ts",
   "src/lib/diaspora/istorie-locala.ts",
   "src/lib/diaspora/limbi-generat.ts",
+  "src/lib/diaspora/limbi-noi/bg.ts",
+  "src/lib/diaspora/limbi-noi/da.ts",
+  "src/lib/diaspora/limbi-noi/el.ts",
+  "src/lib/diaspora/limbi-noi/index.ts",
+  "src/lib/diaspora/limbi-noi/nb.ts",
+  "src/lib/diaspora/limbi-noi/pt.ts",
+  "src/lib/diaspora/limbi-noi/sr.ts",
+  "src/lib/diaspora/limbi-noi/sv.ts",
+  "src/lib/diaspora/limbi-noi/tip.ts",
+  "src/lib/diaspora/limbi-noi/tr.ts",
+  "src/lib/diaspora/limbi-noi/uk.ts",
   "src/lib/diaspora/limbi-sursa.ts",
   "src/lib/diaspora/orase-2.ts",
   "src/lib/diaspora/orase-mai-mult.ts",
@@ -962,6 +978,7 @@
   "src/lib/plan-names.ts",
   "src/lib/plans.ts",
   "src/lib/plata.ts",
+  "src/lib/plati-test.ts",
   "src/lib/plati.ts",
   "src/lib/proba-email.ts",
   "src/lib/probleme.ts",
@@ -1504,6 +1521,10 @@
    "kind": "api"
   },
   {
+   "path": "/arbore",
+   "kind": "pagina"
+  },
+  {
    "path": "/arbore-nou",
    "kind": "pagina"
   },
@@ -1954,5 +1975,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 45
+ "migrations": 46
 }

@@ -38,7 +38,7 @@ export default async function TreePage({ params, searchParams }: { params: Promi
   // Surse publice: lista pornită din Admin și persoanele la care omul a închis cardul „Caută în arhive publice”.
   const [archiveSources, archiveDismissed] = await Promise.all([surse(db).then((l) => l.filter((x) => x.activ)), inchise(db, me.id, id)]);
   return (
-    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations", "Archives"]}>
+    <PageIntl ns={["Tree", "Person", "Charts", "Times", "Vremuri", "Duplicates", "Checks", "PersonForm", "Media", "Relations", "Archives", "TreeGuide"]}>
       {can(role, "editor") && !p && <BranchInvite treeId={id} userId={me.id} />}
       {can(role, "contributor") && <TreeLimits treeId={id} />}
       {can(role, "contributor") && <VoiceNudge treeId={id} />}

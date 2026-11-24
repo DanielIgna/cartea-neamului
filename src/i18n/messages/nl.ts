@@ -22,6 +22,7 @@ import { nlDatele } from "./datele/nl";
 import { nlPastrare } from "./pastrare/nl";
 import { nlSecuritate } from "./securitate/nl";
 import { nlEmailuri } from "./emailuri/nl";
+import { nlGhidArbore } from "./ghid-arbore/altele";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -69,6 +70,8 @@ export const nl: Catalog = {
   },
   UserMenu: {
     plan: "Mijn pakket",
+    myTree: "Mijn stamboom",
+    myTreeShort: "Stamboom",
     report: "Een probleem melden",
     admin: "Admin",
     messages: "Berichten",
@@ -78,6 +81,7 @@ export const nl: Catalog = {
     home: "Start",
     guides: "Gidsen",
   },
+  ...nlGhidArbore,
   UsageNotice: {
     label: "Hoe je de site gebruikt",
     lead: "Eén vraag, maar één keer.",

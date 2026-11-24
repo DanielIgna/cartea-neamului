@@ -1,5 +1,6 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { ptExtra } from "./noi/pt";
+import { ptGhidArbore } from "./ghid-arbore/altele";
 
 /**
  * Português (Portugal), para os romenos em Portugal e os seus filhos. Tratamento por „tu”, como nas outras línguas.
@@ -48,6 +49,8 @@ export const pt: DeepPartial<Catalog> = {
   },
   UserMenu: {
     plan: "O meu plano",
+    myTree: "A minha árvore",
+    myTreeShort: "Árvore",
     report: "Comunicar um problema",
     admin: "Admin",
     messages: "Mensagens",
@@ -57,6 +60,7 @@ export const pt: DeepPartial<Catalog> = {
     home: "Início",
     guides: "Guias",
   },
+  ...ptGhidArbore,
   UsageNotice: {
     label: "Como usas o site",
     lead: "Uma única pergunta, só uma vez.",
