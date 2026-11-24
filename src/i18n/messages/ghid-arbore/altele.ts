@@ -33,8 +33,8 @@ export const enGBGhidArbore: G = {
       grandparents: {
         title: "Add your grandparents",
         text: "Your grandparents are your father’s and your mother’s parents. A grandmother’s maiden name often opens a whole new branch.",
-        father: "Father’s parents ({name})",
-        mother: "Mother’s parents ({name})",
+        father: "Father’s parents",
+        mother: "Mother’s parents",
         needParents: "Add your parents first, then their parents.",
       },
       siblings: {
@@ -86,8 +86,8 @@ export const frGhidArbore: G = {
       grandparents: {
         title: "Ajouter les grands-parents",
         text: "Les grands-parents sont les parents de votre père et de votre mère. Le nom de jeune fille d’une grand-mère ouvre souvent toute une branche.",
-        father: "Parents du père ({name})",
-        mother: "Parents de la mère ({name})",
+        father: "Parents du père",
+        mother: "Parents de la mère",
         needParents: "Ajoutez d’abord les parents, puis leurs parents.",
       },
       siblings: {
@@ -139,8 +139,8 @@ export const esGhidArbore: G = {
       grandparents: {
         title: "Añade a tus abuelos",
         text: "Los abuelos son los padres de tu padre y de tu madre. El apellido de soltera de una abuela abre a menudo una rama entera.",
-        father: "Padres del padre ({name})",
-        mother: "Padres de la madre ({name})",
+        father: "Padres del padre",
+        mother: "Padres de la madre",
         needParents: "Añade primero a tus padres y después a los suyos.",
       },
       siblings: {
@@ -192,8 +192,8 @@ export const nlGhidArbore: G = {
       grandparents: {
         title: "Voeg je grootouders toe",
         text: "Je grootouders zijn de ouders van je vader en je moeder. De meisjesnaam van een oma opent vaak een hele tak.",
-        father: "Ouders van vader ({name})",
-        mother: "Ouders van moeder ({name})",
+        father: "Ouders van vader",
+        mother: "Ouders van moeder",
         needParents: "Voeg eerst je ouders toe, daarna hun ouders.",
       },
       siblings: {
@@ -245,8 +245,8 @@ export const deGhidArbore: G = {
       grandparents: {
         title: "Großeltern hinzufügen",
         text: "Die Großeltern sind die Eltern deines Vaters und deiner Mutter. Der Mädchenname einer Großmutter öffnet oft einen ganzen Zweig.",
-        father: "Eltern des Vaters ({name})",
-        mother: "Eltern der Mutter ({name})",
+        father: "Eltern des Vaters",
+        mother: "Eltern der Mutter",
         needParents: "Füge zuerst deine Eltern hinzu, dann deren Eltern.",
       },
       siblings: {
@@ -298,8 +298,8 @@ export const itGhidArbore: G = {
       grandparents: {
         title: "Aggiungi i nonni",
         text: "I nonni sono i genitori di tuo padre e di tua madre. Il cognome da nubile di una nonna apre spesso un ramo intero.",
-        father: "Genitori del padre ({name})",
-        mother: "Genitori della madre ({name})",
+        father: "Genitori del padre",
+        mother: "Genitori della madre",
         needParents: "Aggiungi prima i genitori, poi i loro genitori.",
       },
       siblings: {
@@ -351,8 +351,8 @@ export const huGhidArbore: G = {
       grandparents: {
         title: "Add hozzá a nagyszüleidet",
         text: "A nagyszülők az apád és az anyád szülei. Egy nagymama lánykori neve gyakran egy egész ágat nyit meg.",
-        father: "Az apa szülei ({name})",
-        mother: "Az anya szülei ({name})",
+        father: "Az apa szülei",
+        mother: "Az anya szülei",
         needParents: "Először a szüleidet add hozzá, aztán az ő szüleiket.",
       },
       siblings: {
@@ -404,8 +404,8 @@ export const heGhidArbore: G = {
       grandparents: {
         title: "הוסיפו את הסבים והסבתות",
         text: "הסבים והסבתות הם ההורים של אבא ושל אמא. שם הנעורים של סבתא פותח לעיתים קרובות ענף שלם.",
-        father: "ההורים של אבא ({name})",
-        mother: "ההורים של אמא ({name})",
+        father: "ההורים של אבא",
+        mother: "ההורים של אמא",
         needParents: "הוסיפו קודם את ההורים, ואחר כך את ההורים שלהם.",
       },
       siblings: {
@@ -457,8 +457,8 @@ export const ptGhidArbore: G = {
       grandparents: {
         title: "Adiciona os avós",
         text: "Os avós são os pais do teu pai e da tua mãe. O apelido de solteira de uma avó abre muitas vezes um ramo inteiro.",
-        father: "Pais do pai ({name})",
-        mother: "Pais da mãe ({name})",
+        father: "Pais do pai",
+        mother: "Pais da mãe",
         needParents: "Adiciona primeiro os pais e depois os pais deles.",
       },
       siblings: {
@@ -510,8 +510,8 @@ export const elGhidArbore: G = {
       grandparents: {
         title: "Πρόσθεσε τους παππούδες",
         text: "Οι παππούδες είναι οι γονείς του πατέρα και της μητέρας σου. Το πατρικό επώνυμο μιας γιαγιάς ανοίγει συχνά ολόκληρο κλάδο.",
-        father: "Γονείς του πατέρα ({name})",
-        mother: "Γονείς της μητέρας ({name})",
+        father: "Γονείς του πατέρα",
+        mother: "Γονείς της μητέρας",
         needParents: "Πρόσθεσε πρώτα τους γονείς και μετά τους δικούς τους γονείς.",
       },
       siblings: {
@@ -563,8 +563,8 @@ export const svGhidArbore: G = {
       grandparents: {
         title: "Lägg till far- och morföräldrar",
         text: "Far- och morföräldrarna är din pappas och din mammas föräldrar. En mormors flicknamn öppnar ofta en hel gren.",
-        father: "Pappans föräldrar ({name})",
-        mother: "Mammans föräldrar ({name})",
+        father: "Pappans föräldrar",
+        mother: "Mammans föräldrar",
         needParents: "Lägg först till dina föräldrar och sedan deras föräldrar.",
       },
       siblings: {
@@ -616,8 +616,8 @@ export const daGhidArbore: G = {
       grandparents: {
         title: "Tilføj dine bedsteforældre",
         text: "Bedsteforældrene er din fars og din mors forældre. En bedstemors pigenavn åbner ofte en hel gren.",
-        father: "Farens forældre ({name})",
-        mother: "Morens forældre ({name})",
+        father: "Farens forældre",
+        mother: "Morens forældre",
         needParents: "Tilføj først dine forældre og derefter deres forældre.",
       },
       siblings: {
@@ -669,8 +669,8 @@ export const nbGhidArbore: G = {
       grandparents: {
         title: "Legg til besteforeldrene",
         text: "Besteforeldrene er foreldrene til faren og moren din. En bestemors pikenavn åpner ofte en hel gren.",
-        father: "Farens foreldre ({name})",
-        mother: "Morens foreldre ({name})",
+        father: "Farens foreldre",
+        mother: "Morens foreldre",
         needParents: "Legg først til foreldrene dine, deretter foreldrene deres.",
       },
       siblings: {
@@ -722,8 +722,8 @@ export const ukGhidArbore: G = {
       grandparents: {
         title: "Додай бабусь і дідусів",
         text: "Бабусі й дідусі — це батьки твого тата й твоєї мами. Дівоче прізвище бабусі часто відкриває цілу гілку.",
-        father: "Батьки тата ({name})",
-        mother: "Батьки мами ({name})",
+        father: "Батьки тата",
+        mother: "Батьки мами",
         needParents: "Спершу додай батьків, а потім їхніх батьків.",
       },
       siblings: {
@@ -775,8 +775,8 @@ export const srGhidArbore: G = {
       grandparents: {
         title: "Dodaj babe i dede",
         text: "Babe i dede su roditelji tvog oca i tvoje majke. Devojačko prezime bake često otvara celu granu.",
-        father: "Roditelji oca ({name})",
-        mother: "Roditelji majke ({name})",
+        father: "Roditelji oca",
+        mother: "Roditelji majke",
         needParents: "Prvo dodaj roditelje, pa onda njihove roditelje.",
       },
       siblings: {
@@ -828,8 +828,8 @@ export const bgGhidArbore: G = {
       grandparents: {
         title: "Добави бабите и дядовците",
         text: "Бабите и дядовците са родителите на баща ти и на майка ти. Моминското име на една баба често отваря цял клон.",
-        father: "Родителите на бащата ({name})",
-        mother: "Родителите на майката ({name})",
+        father: "Родителите на бащата",
+        mother: "Родителите на майката",
         needParents: "Първо добави родителите, после техните родители.",
       },
       siblings: {
@@ -881,8 +881,8 @@ export const trGhidArbore: G = {
       grandparents: {
         title: "Büyükanne ve büyükbabaları ekle",
         text: "Büyükanne ve büyükbabalar, babanın ve annenin anne babasıdır. Bir büyükannenin kızlık soyadı çoğu zaman koca bir dal açar.",
-        father: "Babanın anne babası ({name})",
-        mother: "Annenin anne babası ({name})",
+        father: "Babanın anne babası",
+        mother: "Annenin anne babası",
         needParents: "Önce anne babanı, sonra onların anne babasını ekle.",
       },
       siblings: {
