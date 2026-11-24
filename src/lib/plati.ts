@@ -233,7 +233,9 @@ export async function applyPayment(db: Db, paid: PaidSession, now = new Date()):
     if (!owner) p = { ...p, userId: "" };
     if (p.treeId && !(await tx.select({ id: tree.id }).from(tree).where(eq(tree.id, p.treeId))).length) p = { ...p, treeId: null };
     const inserted = await tx.insert(payment).values({
-      id: p.id, userId: p.userId || null, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, extra: p.extra ?? null, createdAt: now,
+      id: p.id, userId: p.userId || null, kind: p.kind, treeId: p.treeId, amount: p.amount, currency: p.currency, extra: p.extra ?? null,
+      // Codul folosit (NEAM90, TEST90…) sau id-ul lui din Stripe, ca raportul să deosebească plățile de test; '' = fără cod.
+      promo: p.offer || p.promo || "", createdAt: now,
     }).onConflictDoNothing().returning({ id: payment.id });
     if (!inserted.length) return false;
     if (p.kind === "an" && p.userId) {

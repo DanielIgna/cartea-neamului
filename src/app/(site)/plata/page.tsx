@@ -98,7 +98,14 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   const offerLine = offer ? tc("offerPlata", { percent: String(offer.percent), code: offer.code,
     until: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(offer.expiresAt) }) : null;
 
-  const consent = <label className="check"><input type="checkbox" name="acord" required /> {t("consent")}</label>;
+  // Căsuța acordului (Daniel, 24.11.2026: nimeni nu ajungea la Stripe): mare și ușor de atins pe telefon; dacă omul apasă pe plată
+  // fără ea, sub căsuță apare pe loc „Bifează căsuța ca să poți plăti.” (CSS :user-invalid), nu doar bula mică a browserului.
+  const consent = (
+    <>
+      <label className="check pay-consent"><input type="checkbox" name="acord" required /> <span>{t("consent")}</span></label>
+      <p className="pay-consent-hint" role="alert">{t("errAcord")}</p>
+    </>
+  );
   // Câmpul pentru codul de reducere (fără să arate vreun cod: Daniel îl trimite fiecărui om), pus înaintea butonului de plată al primului an.
   const codeBox = (
     <div className="code-box">

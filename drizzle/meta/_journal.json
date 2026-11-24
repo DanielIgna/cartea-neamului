@@ -316,6 +316,13 @@
       "when": 1795000400000,
       "tag": "0045_surse_publice",
       "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1795000500000,
+      "tag": "0046_plata_cod",
+      "breakpoints": true
     }
   ]
 }
