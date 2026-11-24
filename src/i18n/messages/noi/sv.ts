@@ -2870,7 +2870,7 @@ export const svExtra: DeepPartial<Catalog> = {
     note: "Skrivet för hand, utifrån historiska källor. Bibelcitaten är hämtade ur 1917 års bibelöversättning. Där något bara är tradition säger texten det.",
     humanity: "Mänsklighetens historia",
     genealogies: "Gamla släkttavlor",
-    intro: "Friheten att tro på det du väljer, att samlas med andra och att läsa vad du vill verkar självklar i dag. Så har det inte alltid varit. Från Jerusalem på 100-talet e.Kr. till de kommunistiska fängelserna betalade många människor för sin tro med sin frihet eller sitt liv, och deras historia är i hög grad historien om de friheter vi har i dag. Här är några av dem, epok för epok, och några av de ögonblick då deras böcker nådde vanligt folks språk.",
+    intro: "Friheten att tro på det du väljer, att samlas med andra och att läsa vad du vill verkar självklar i dag. Så har det inte alltid varit. Från Jerusalem under det första århundradet till de kommunistiska fängelserna betalade många människor för sin tro med sin frihet eller sitt liv, och deras historia är i hög grad historien om de friheter vi har i dag. Här är några av dem, epok för epok, och några av de ögonblick då deras böcker nådde vanligt folks språk.",
     promise: {
       text: "Och jag säger dig att du är Petrus, och på denna klippa skall jag bygga min församling, och dödsrikets portar skola icke bliva henne övermäktiga.",
       ref: "Matteus 16:18",
@@ -2905,7 +2905,7 @@ export const svExtra: DeepPartial<Catalog> = {
           },
           w4: {
             name: "Aposteln Andreas",
-            years: "100-talet",
+            years: "första århundradet",
             place: "Scythia Minor (dagens Dobrudzja)",
             text: "En gammal tradition, som nämns av Origenes och Eusebios, säger att Andreas, Petrus bror, sändes för att predika evangeliet i Skytien. Därför ser rumänerna honom som sin apostel. Vi vet inte säkert vart han reste, men vi vet att det fanns kristna i Dobrudzja mycket tidigt.",
           },
@@ -3079,7 +3079,7 @@ export const svExtra: DeepPartial<Catalog> = {
             text: "Valakiets furste avsattes och fördes till Konstantinopel med sina fyra söner och sin rådgivare Ienache. Den 15 augusti 1714 uppmanades de att förneka sin tro för att rädda sig. De vägrade och halshöggs, först sönerna, inför sin fars ögon, sedan fursten själv.",
           },
           w2: {
-            name: "Herrnhuts herrnhutiska bröder",
+            name: "Brödraförsamlingen i Herrnhut",
             years: "1727",
             place: "Sachsen",
             text: "Ättlingar till husiterna, flyktingar på greve Zinzendorfs gods, började en bön som pågick utan avbrott i hundra år och sände missionärer till slavarna i Karibien, till Grönland och till Afrika.",
