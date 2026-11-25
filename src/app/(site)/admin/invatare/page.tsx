@@ -4,6 +4,9 @@ import { db } from "@/db";
 import { automationMark } from "@/db/schema";
 import { requireAdmin } from "@/lib/admin-access";
 import { emailReady } from "@/lib/email";
+import { automationSwitches } from "@/lib/autonomie";
+import { convSettings } from "@/lib/conversie";
+import { DAILY_LIMIT, RULES, RULE_LABEL, activityStats, planActivity } from "@/lib/mesaje-activitate";
 import { SCORE_RULES, TIER_LABEL, ledger, marketingInsights, outcomes, trialLeads, type Window } from "@/lib/invatare";
 import { addRecommendationAction, sendLeadMessage, setRecommendationAction } from "@/app/crestere-actions";
 import { AdminNav, HBars, num } from "@/components/admin/ui";
@@ -12,7 +15,7 @@ import { WeekHeat } from "@/components/admin/charts";
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Învățare și conversii · Admin" };
 
-const TABS = [{ k: "jurnal", label: "Jurnalul recomandărilor" }, { k: "aproape", label: "Aproape de plată" }, { k: "perspective", label: "Perspective de marketing" }] as const;
+const TABS = [{ k: "jurnal", label: "Jurnalul recomandărilor" }, { k: "aproape", label: "Aproape de plată" }, { k: "activitate", label: "Mesaje după activitate" }, { k: "perspective", label: "Perspective de marketing" }] as const;
 const day = (iso: string) => new Intl.DateTimeFormat("ro", { day: "numeric", month: "short", timeZone: "Europe/Bucharest" }).format(new Date(iso));
 const diff = (a: number, b: number) => { const d = b - a; return <b className={d > 0 ? "t-ok" : d < 0 ? "t-bad" : ""}>{d > 0 ? `+${d}` : d}</b>; };
 
@@ -28,7 +31,7 @@ export default async function Invatare({ searchParams }: { searchParams: Promise
     <section className="stack">
       <AdminNav active="invatare" />
       <nav className="actions" aria-label="Părți">{TABS.map((t) => <Link key={t.k} className={`btn${v === t.k ? " primary" : ""}`} href={`/admin/invatare?v=${t.k}`}>{t.label}</Link>)}</nav>
-      {v === "jurnal" ? <Jurnal /> : v === "aproape" ? <Aproape /> : <Perspective />}
+      {v === "jurnal" ? <Jurnal /> : v === "aproape" ? <Aproape /> : v === "activitate" ? <Activitate /> : <Perspective />}
     </section>
   );
 }
@@ -80,7 +83,7 @@ async function Jurnal() {
 }
 
 async function Aproape() {
-  const [leads, sent] = await Promise.all([trialLeads(db),
+  const [leads, conv, sent] = await Promise.all([trialLeads(db), convSettings(db),
     db.select({ ref: automationMark.ref, at: automationMark.at }).from(automationMark).where(sql`${automationMark.automation} = 'aproape-plata' and ${automationMark.at} > now() - interval '7 days'`)]);
   const recent = new Set(sent.map((s) => s.ref.split(":")[0]));
   const count = (t: string) => leads.filter((l) => l.tier === t).length;
@@ -92,7 +95,7 @@ async function Aproape() {
         <div className="stat"><div className="stat-label">La început</div><div className="stat-value">{count("inceput")}</div></div>
       </div>
       <div className="card">
-        <p style={{ marginTop: 0 }}>Doar conturile aflate acum în zilele gratuite, din ce fac ele în cont. Scorul e o sumă de reguli simple (calculat din date):</p>
+        <p style={{ marginTop: 0 }}>Conturile aflate acum în zilele gratuite și cele cărora li s-au terminat de cel mult 30 de zile fără să plătească, din ce fac ele în cont. Scorul e o sumă de reguli simple (calculat din date):</p>
         <ul className="small">{SCORE_RULES.map((r) => <li key={r.label}>{r.label}: <b>+{r.points}</b></li>)}</ul>
         <p className="muted small" style={{ marginBottom: 0 }}>Nu se trimite nimic singur. Mesajul îl citești, îl schimbi dacă vrei și îl trimiți tu; butonul apare doar la cei care au spus „Da” la sfaturile pe email,
           cel mult o dată la 7 zile. Vizitele anonime din Analiză nu se leagă de conturi. {emailReady() ? "" : "Fără RESEND_API_KEY emailul nu pleacă."}</p>
@@ -102,7 +105,7 @@ async function Aproape() {
         <details key={l.id} className="card">
           <summary style={{ cursor: "pointer" }}>
             <b>{l.score}</b> · {l.name} <span className={`pill ${l.tier === "aproape" ? "ok" : l.tier === "interesat" ? "warn" : ""}`}>{TIER_LABEL[l.tier]}</span>{" "}
-            <span className="muted small">{l.daysLeft} {l.daysLeft === 1 ? "zi rămasă" : "zile rămase"} · {l.persons} persoane · {l.invites} invitații · {l.photos} poze · {l.memories} amintiri</span>
+            <span className="muted small">{l.phase === "expirat" ? `zilele gratuite terminate de ${l.endedDaysAgo} ${l.endedDaysAgo === 1 ? "zi" : "zile"}` : `${l.daysLeft} ${l.daysLeft === 1 ? "zi rămasă" : "zile rămase"}`} · {l.persons} persoane · {l.invites} invitații · {l.photos} poze · {l.memories} amintiri</span>
           </summary>
           <div className="chips" style={{ margin: "8px 0" }}>{l.chips.map((c) => <span key={c} className="chip">{c}</span>)}</div>
           {l.news ? (recent.has(l.id) ? <p className="muted small">I-ai scris în ultimele 7 zile.</p> : (
@@ -111,6 +114,10 @@ async function Aproape() {
               <label>Subiect<input name="subject" defaultValue={l.message.subject} maxLength={140} required /></label>
               <label>Mesaj (propus din semnalele de mai sus; schimbă-l cum vrei{l.locale !== "ro" ? `; omul are limba ${l.locale}` : ""})
                 <textarea name="body" rows={5} defaultValue={l.message.body} maxLength={2000} required /></label>
+              {l.offer
+                ? <p className="muted small">Codul lui de reducere: <b>{l.offer.code}</b> (−{l.offer.percent}%){l.offer.used ? ", folosit" : new Date(l.offer.expiresAt) < new Date() ? ", expirat (unul singur pe om)" : `, valabil până pe ${day(l.offer.expiresAt)}`}.</p>
+                : <label style={{ display: "flex", gap: 8, alignItems: "center" }}><input type="checkbox" name="oferta" defaultChecked={l.tier === "aproape" || l.phase === "expirat"} disabled={!process.env.STRIPE_SECRET_KEY} />
+                    Adaugă oferta: −{conv.percent}% la primul an Basic, cod personal valabil {conv.hours} de ore (se aplică singur la plată){process.env.STRIPE_SECRET_KEY ? "" : " · lipsește cheia Stripe"}</label>}
               <button className="btn primary">Aprob și trimit</button>
             </form>
           )) : <p className="muted small">N-a spus „Da” la sfaturile pe email, așa că nu-i scriem. Va primi doar emailul de sfârșit al zilelor gratuite, dacă e pornit.</p>}
@@ -151,6 +158,43 @@ async function Perspective() {
           <HBars data={m.exits.map((e) => ({ label: e.key, count: e.count }))} total={Math.max(1, m.sessions)} label="Pagini de ieșire" />
         </div>
       )}
+    </>
+  );
+}
+
+/** Mesajele după activitate (src/lib/mesaje-activitate.ts): regulile, câte au plecat și cine ar primi ce azi. Nu trimite nimic de aici. */
+async function Activitate() {
+  const [sw, stats, plan] = await Promise.all([automationSwitches(db), activityStats(db), planActivity(db)]);
+  const on = !!sw["mesaje-activitate"];
+  return (
+    <>
+      <div className="card">
+        <p style={{ marginTop: 0 }}>
+          Emailuri după ce face omul în cont, cu reguli simple (fără AI). Pleacă singure doar cât e pornită automatizarea „Email: mesaje după ce face omul” din{" "}
+          <Link href="/admin/autonomie">Autonomie</Link>: acum e <span className={`pill ${on ? "ok" : ""}`}>{on ? "pornită" : "oprită"}</span>.
+          Doar celor care au spus „Da” la sfaturile pe email, fiecare regulă o dată, cel mult un email de marketing pe zi de la noi, cel mult {DAILY_LIMIT} pe zi.
+          {emailReady() ? "" : " Fără RESEND_API_KEY emailul nu pleacă."}
+        </p>
+        <div className="tbl-wrap"><table className="tbl">
+          <thead><tr><th>Mesajul</th><th>Când</th><th>Trimise</th><th>Ultimul</th></tr></thead>
+          <tbody>{RULES.map((r) => (
+            <tr key={r}><td><b>{RULE_LABEL[r].title}</b></td><td className="small">{RULE_LABEL[r].when}</td><td className="tight">{num(stats[r]?.count ?? 0)}</td><td className="tight">{stats[r]?.last ? day(stats[r]!.last!) : "—"}</td></tr>
+          ))}</tbody>
+        </table></div>
+      </div>
+      <div className="card">
+        <h2 style={{ marginTop: 0 }}>Cine ar primi ce, azi ({num(plan.planned.length)})</h2>
+        <p className="muted small" style={{ marginTop: 0 }}>{num(plan.observed)} conturi cu acordul dat; {num(plan.busyToday)} au primit deja azi un email de la noi și sunt lăsate pe mâine.</p>
+        {plan.planned.length === 0 ? <p className="muted">Nimeni nu are azi un mesaj de primit.</p> : (
+          <div className="tbl-wrap"><table className="tbl">
+            <thead><tr><th>Cine</th><th>Mesajul</th><th>Subiectul</th></tr></thead>
+            <tbody>{plan.planned.slice(0, 100).map((p) => (
+              <tr key={p.userId}><td>{p.name}<div className="muted small">{p.facts.persons} persoane · {p.facts.idleDays == null ? "—" : `${p.facts.idleDays} zile de la ultima intrare`}</div></td>
+                <td className="tight">{RULE_LABEL[p.rule].title}</td><td className="small">{p.mail.subject}{p.locale !== "ro" ? <span className="muted"> (în engleză)</span> : null}</td></tr>
+            ))}</tbody>
+          </table></div>
+        )}
+      </div>
     </>
   );
 }
