@@ -11,6 +11,8 @@ import { basicPrice49Once, offerNov18Once, startSalesOnce } from "../src/lib/pla
 import { syncDemo } from "../src/lib/demo-sync";
 import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
+import { readFileSync } from "node:fs";
+import { seedPressOnce } from "../src/lib/crm-import";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -48,4 +50,6 @@ try { console.log(`deploy-db: motorul SEO: ${await startSeoEngineOnce(db)}`); } 
 // Activarea (Daniel, 17.11.2026): emailul de 24 h fără arbore și sfaturile pe email (doar cu bifa omului), pornite o singură dată.
 try { console.log(`deploy-db: activarea: ${await startActivationOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea activării a eșuat", e); }
 try { console.log(`deploy-db: Google: ${await startGoogleOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea anunțurilor Google a eșuat", e); }
+// Redacțiile de presă (Daniel, 25.11.2026): intră o singură dată în CRM, la „Presă”; nu se trimite nimic de aici.
+try { console.log(`deploy-db: presa în CRM: ${await seedPressOnce(db, readFileSync("src/data/crm-presa.csv", "utf8"))}`); } catch (e) { console.error("deploy-db: lista de presă a eșuat", e); }
 process.exit(0);
