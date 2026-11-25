@@ -1,7 +1,9 @@
 ---
 title: Patronimic
+seo: Patronimic: ce înseamnă, exemple și cum îl citești în acte
 description: Patronimicul: nume format din numele tatălui (Ionescu, Petrescu, Toader al lui Ion). Cum s-au născut așa numele de familie.
-updated: 2026-11-18
+updated: 2026-11-25
+published: 2026-11-18
 alt: nume patronimic, nume după tată
 terms: prenume, porecla, nume-de-fata
 related: nume-schimbate-si-variante, porecle-si-nume-in-sat
@@ -17,3 +19,35 @@ Un **patronimic** este un nume făcut din numele tatălui. În română, multe n
 ## Unde și când
 
 Patronimicele sunt frecvente în catagrafiile din Moldova și Țara Românească până la mijlocul secolului al XIX-lea, când numele de familie s-au fixat. În Transilvania numele de familie erau mai stabile mai devreme, dar și acolo apar forme ca „Pop a lui Ion”.
+
+## Terminațiile care arată „fiul lui”
+
+Patronimicele românești se recunosc după terminație. Fiecare e mai frecventă într-o regiune:
+
+- **-escu**: *Ionescu*, *Petrescu*, *Vasilescu*. E tipică pentru Muntenia și Oltenia și a ajuns în toată țara.
+- **-eanu / -anu**: arată mai des un loc (*Ardeleanu*, *Munteanu*).
+- **-iu**: *Vasiliu*, *Gheorghiu*, *Dumitriu*. E frecventă în Moldova, unde corespunde lui -escu.
+- **-ovici / -evici**: *Popovici*, *Petrovici*, *Ivanovici*. E o terminație slavă, întâlnită mai ales în Banat, Bucovina și nordul Moldovei.
+- **-uc / -iuc**: *Romaniuc*, *Petriuc*. E o terminație ucraineană, frecventă în Bucovina și Maramureș.
+- **„a lui” sau „al lui”**, scris ca formă de sine stătătoare: *Ion a Mării*, *Petre al lui Ion*.
+
+## Pas cu pas: cum folosești patronimicul în cercetare
+
+1. Când găsești un strămoș trecut cu formula „X sin Y” sau „X al lui Y”, notează-l pe Y ca **tată**: e o generație în plus în arbore.
+2. Caută-l apoi pe Y în același sat, în actele de cu 20–40 de ani mai vechi.
+3. Dacă numele de familie al copiilor diferă de cel al tatălui, verifică dacă nu e făcut din **prenumele tatălui** (fiul lui Vasile devine Vasilescu sau Vasiliu).
+4. Trece toate formele numelui în arbore, ca rudele să găsească familia indiferent cum o caută.
+
+## Întrebări frecvente
+
+### Ce înseamnă patronimicul?
+
+Patronimicul este numele format din numele tatălui. Cuvântul vine din greacă, de la *pater* (tată) și *onoma* (nume). La români, multe nume de familie sunt patronimice, adică arată că primul purtător era „fiul lui” cineva.
+
+### Românii au patronimic în acte, ca rușii?
+
+Nu. În actele românești de azi nu există un câmp separat pentru patronimic, ca în Rusia sau în Ucraina (de exemplu Ivanovici). În Republica Moldova, în actele din perioada sovietică, patronimicul apare însă trecut după prenume, iar asta te poate ajuta să afli numele tatălui unui bunic.
+
+### Care e diferența dintre patronimic și matronimic?
+
+Matronimicul e numele format din **numele mamei**, ca în *Ion a Mării* (Ion, fiul Mariei). Era dat de obicei când mama era mai cunoscută în sat decât tatăl sau când copilul nu avea tată trecut în acte.

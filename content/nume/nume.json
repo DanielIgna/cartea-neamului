@@ -154,7 +154,10 @@
     "muntenia",
     "oltenia"
    ],
-   "variants": []
+   "variants": [],
+   "story": [
+    "Avram e un prenume vechi, purtat atât la sate, cât și în familiile de preoți. Familiile Avramescu sunt mai ales în sud, iar în Transilvania aceeași rădăcină a dat simplu Avram. Dacă găsești un strămoș Avram în catagrafia din 1838, copiii lui pot apărea mai târziu ca Avramescu."
+   ]
   },
   {
    "slug": "badea",
@@ -201,6 +204,9 @@
    "regions": [],
    "variants": [
     "Bănățean"
+   ],
+   "story": [
+    "Bănățenii erau cunoscuți în Țara Românească și în Transilvania ca oameni veniți din vestul țării, unde administrația austriacă și satele grănicerești au avut o istorie aparte. Un om venit din Banat primea numele Bănățeanu în satul în care se stabilea."
    ]
   },
   {
@@ -240,6 +246,9 @@
    "variants": [
     "Barsan",
     "Bârseanu"
+   ],
+   "story": [
+    "Țara Bârsei, câmpia din jurul Brașovului, a avut sate românești vechi, ca Satulung, Cernatu sau Tohanu, iar mulți oameni de acolo au plecat cu turmele spre alte zone. Un Bârsan stabilit într-un sat nou păstra prin nume amintirea locului din care pornise neamul."
    ]
   },
   {
@@ -262,6 +271,9 @@
    ],
    "variants": [
     "Bejenaru"
+   ],
+   "story": [
+    "Bejenarii erau oamenii care fugeau din calea războaielor sau a dărilor și se așezau în alt sat, adesea peste graniță. În Moldova, multe sate au primit astfel de oameni, iar numele Bejan arată de obicei un strămoș care a venit „în bejenie” din altă parte."
    ]
   },
   {
@@ -377,6 +389,9 @@
    "regions": [],
    "variants": [
     "Bucovinean"
+   ],
+   "story": [
+    "Bucovina a fost sub stăpânire austriacă din 1775 până în 1918, iar oamenii care plecau de acolo în Moldova sau în Țara Românească erau numiți bucovineni. Numele păstrează adesea amintirea unei mutări din secolul al XIX-lea sau de la începutul secolului XX."
    ]
   },
   {
@@ -480,6 +495,9 @@
    "variants": [
     "Câmpean",
     "Campean"
+   ],
+   "story": [
+    "În Transilvania, câmpean îl numea pe cel venit de la câmpie, adică din Câmpia Transilvaniei, zona de dealuri joase dintre Cluj, Bistrița și Târgu Mureș. Familiile Câmpean sunt numeroase mai ales în județele Cluj și Bistrița-Năsăud."
    ]
   },
   {
@@ -642,6 +660,9 @@
    ],
    "variants": [
     "Clucerescu"
+   ],
+   "story": [
+    "Clucerul era unul dintre dregătorii curții domnești din Țara Românească și Moldova, cu grijă de cămări și de aprovizionare. Mai jos, la moșii, exista și un clucer al boierului. Numele Clucer arată de obicei un strămoș care a avut o astfel de slujbă, fără să însemne neapărat că era boier."
    ]
   },
   {
@@ -792,6 +813,9 @@
    "variants": [
     "Crisan",
     "Krisán"
+   ],
+   "story": [
+    "Crișan e cunoscut și ca numele unuia dintre conducătorii răscoalei din 1784, alături de Horea și Cloșca. Numele e frecvent în Bihor, Arad și în Munții Apuseni, iar în registrele maghiare apare ca Krisán."
    ]
   },
   {
@@ -1105,7 +1129,10 @@
     "muntenia",
     "oltenia"
    ],
-   "variants": []
+   "variants": [],
+   "story": [
+    "Dumitrescu e unul dintre cele mai răspândite nume cu -escu din sudul țării. În multe familii, numele a fost luat de fiul unui Dumitru atunci când a mers la școală sau în armată, unde i se cerea un nume de familie scris, diferit de prenumele tatălui."
+   ]
   },
   {
    "slug": "dumitru",
@@ -1133,6 +1160,9 @@
    ],
    "variants": [
     "Dunărean"
+   ],
+   "story": [
+    "Satele de pe malul Dunării aveau o viață legată de apă: pescuit, plutărit, comerț cu porturile. Un om venit de la Dunăre într-un sat de deal sau de munte primea numele Dunăreanu, care arată astăzi locul de unde a pornit familia."
    ]
   },
   {
@@ -1231,7 +1261,10 @@
     "muntenia",
     "oltenia"
    ],
-   "variants": []
+   "variants": [],
+   "story": [
+    "Familia boierească Florescu din Țara Românească a dat mari dregători, dar majoritatea familiilor Florescu de azi se trag din țărani cu prenumele Florea. Numele s-a fixat mai ales în a doua jumătate a secolului al XIX-lea, când actele de stare civilă au cerut un nume de familie stabil."
+   ]
   },
   {
    "slug": "gavrila",
@@ -1242,6 +1275,9 @@
    "variants": [
     "Gavrila",
     "Gabor"
+   ],
+   "story": [
+    "Gavril vine de la Arhanghelul Gavriil, iar în popor a avut multe forme: Gavrilă, Gavrilaș, Găvrilă sau Gabor. În Transilvania, forma maghiară Gábor apare des în registrele de stare civilă dintre 1895 și 1918, chiar și pentru familii românești."
    ]
   },
   {
@@ -1424,6 +1460,9 @@
    "variants": [
     "Hritcu",
     "Grigore"
+   ],
+   "story": [
+    "Formele ucrainene ale prenumelor erau obișnuite în nordul Moldovei și în Bucovina, unde românii și ucrainenii au trăit împreună. Hrițcu poate fi, așadar, atât un nume românesc cu formă ucraineană, cât și un nume ucrainean. Registrele parohiale arată de obicei limba în care se ținea slujba în sat."
    ]
   },
   {
@@ -1437,6 +1476,9 @@
    ],
    "variants": [
     "Huțan"
+   ],
+   "story": [
+    "Huțulii trăiau în satele de munte din nordul Bucovinei, pe Ceremuș și pe Suceava, și erau cunoscuți pentru caii lor mici și rezistenți. Un om venit din aceste locuri spre câmpie putea fi numit Huțan, iar numele a rămas și după ce familia s-a amestecat cu vecinii."
    ]
   },
   {
@@ -1462,7 +1504,10 @@
     "Ignea",
     "Ignat"
    ],
-   "note": "Originea exactă a numelui nu este lămurită cu documente; legătura cu prenumele Ignat este cea mai probabilă, dar nu sigură."
+   "note": "Originea exactă a numelui nu este lămurită cu documente; legătura cu prenumele Ignat este cea mai probabilă, dar nu sigură.",
+   "story": [
+    "Numele Igna se întâlnește mai ales în Transilvania. În registrele maghiare poate apărea ca Igna sau, rar, Ignác, iar în cele latine ca Ignatius. Ca la orice familie, legătura dintre două familii Igna se dovedește doar cu acte, generație cu generație."
+   ]
   },
   {
    "slug": "ignat",
@@ -1787,6 +1832,9 @@
    ],
    "variants": [
     "Marele"
+   ],
+   "story": [
+    "În Maramureș și în nordul Transilvaniei, poreclele erau necesare pentru că în același sat trăiau multe familii cu același nume. „Ion Mare” și „Ion Mic” puteau fi tată și fiu sau doi veri, iar cu timpul porecla a ajuns în registre ca nume de familie."
    ]
   },
   {
@@ -1962,6 +2010,9 @@
    ],
    "variants": [
     "Mocanu"
+   ],
+   "story": [
+    "Mocanii din satele Mărginimii Sibiului, ale Țării Bârsei și ale Branului coborau iarna cu oile până la Dunăre și în Dobrogea. Unii s-au stabilit acolo, iar numele Mocanu sau Mocan îi arată pe urmașii acestor păstori, inclusiv în sate din sudul țării."
    ]
   },
   {
@@ -2057,6 +2108,9 @@
     "Morar",
     "Morariu",
     "Molnár"
+   ],
+   "story": [
+    "Morile de apă erau în fiecare vale, iar morarul era unul dintre oamenii cunoscuți de tot satul, pentru că toată lumea venea la el cu grâul. Uneori moara era a boierului sau a mănăstirii, iar morarul o ținea în arendă, ceea ce se poate vedea în actele moșiei."
    ]
   },
   {
@@ -2084,6 +2138,9 @@
    "variants": [
     "Munteanu",
     "Montyán"
+   ],
+   "story": [
+    "În Transilvania, muntean îl numea pe cel venit din Țara Românească, de peste munți. Legăturile dintre cele două părți ale Carpaților au fost strânse, prin păstori, negustori și căsătorii, iar numele păstrează amintirea unui strămoș care a trecut munții."
    ]
   },
   {
@@ -2149,7 +2206,10 @@
     "Neamț",
     "Nemeș"
    ],
-   "note": "În Moldova, *Neamț* poate arăta și legătura cu ținutul Neamțului."
+   "note": "În Moldova, *Neamț* poate arăta și legătura cu ținutul Neamțului.",
+   "story": [
+    "În Moldova și Țara Românească au venit de-a lungul timpului meșteșugari, mineri și coloniști de limbă germană, iar românii le spuneau tuturor nemți. Un om care lucrase cu ei sau venise dintre ei putea primi numele Neamțu, păstrat apoi de familie chiar dacă după câteva generații era complet românească."
+   ]
   },
   {
    "slug": "neculai",
@@ -2188,6 +2248,9 @@
     "Negrea",
     "Negrescu",
     "Fekete"
+   ],
+   "story": [
+    "În Țara Românească, Negru apare și în tradiția despre Negru Vodă, legendarul întemeietor al țării. La sate însă numele era de obicei porecla unui om brunet. În Transilvania, în actele maghiare, numele poate apărea tradus ca Fekete."
    ]
   },
   {
@@ -2284,6 +2347,9 @@
    ],
    "variants": [
     "Olteanu"
+   ],
+   "story": [
+    "În Transilvania, oltean îl numea de obicei pe cel venit din Țara Oltului, zona Făgărașului, nu pe cel din Oltenia. Țara Oltului avea sate românești vechi, cu oameni care plecau ca păstori sau muncitori în alte părți, unde li se spunea olteni."
    ]
   },
   {
@@ -2297,6 +2363,9 @@
    ],
    "variants": [
     "Oltean"
+   ],
+   "story": [
+    "Oltenii au plecat de-a lungul timpului în număr mare spre București și spre alte orașe, ca negustori și grădinari. Un om venit din Oltenia era numit Olteanu în noul loc, iar familia a păstrat numele chiar și după generații trăite departe de Olt."
    ]
   },
   {
@@ -2442,6 +2511,9 @@
    "variants": [
     "Pasca",
     "Paska"
+   ],
+   "story": [
+    "Pașca se întâlnește mai ales în Maramureș, Sălaj și nordul Transilvaniei. Copiii născuți în jurul sărbătorii Paștelui primeau uneori acest nume, iar de la ei s-a format numele de familie, care în registrele maghiare apare ca Paska."
    ]
   },
   {
@@ -2863,6 +2935,9 @@
     "Szabó",
     "Sabou",
     "Croitoru"
+   ],
+   "story": [
+    "Forma Sabău arată cum a fost auzit și scris în românește cuvântul maghiar szabó. În registrele bisericilor românești numele e scris Sabău sau Săbău, iar în actele civile din 1895–1918 Szabó, așa că o familie poate apărea sub ambele forme în aceeași generație."
    ]
   },
   {
@@ -2922,6 +2997,9 @@
    "variants": [
     "Sasu",
     "Szász"
+   ],
+   "story": [
+    "Sașii erau germanii din sudul Transilvaniei, așezați acolo din secolul al XII-lea. Un român care trăia într-un sat săsesc, lucra la sași sau avea un părinte sas putea fi numit Sas de vecini. Registrele luterane ale sașilor sunt în germană și se păstrează separat de cele românești."
    ]
   },
   {
@@ -2994,6 +3072,9 @@
    "variants": [
     "Somesan",
     "Szamosán"
+   ],
+   "story": [
+    "Valea Someșului leagă Bistrița, Dejul, Gherla, Clujul și Sătmarul, iar oamenii de pe Someș s-au mutat des în satele de pe văile vecine. Numele Someșan e frecvent în nordul Transilvaniei și apare în actele maghiare ca Szamosán."
    ]
   },
   {
@@ -3226,6 +3307,9 @@
     "Toder",
     "Todor",
     "Tódea"
+   ],
+   "story": [
+    "Todea e frecvent în Transilvania, mai ales în zona Mureșului și a Albei, și apare în actele maghiare ca Tódea sau Todea. În familiile mari, mai multe ramuri Todea pot trăi în același sat fără să fie rude apropiate, așa că porecla ramurii și numele bunicilor sunt cheia deosebirii."
    ]
   },
   {
@@ -3310,6 +3394,9 @@
    "variants": [
     "Ungureanu",
     "Magyar"
+   ],
+   "story": [
+    "În Transilvania, Ungur putea fi și numele unui maghiar care s-a integrat într-o familie românească, și porecla unui român care vorbea bine ungurește sau lucrase la unguri. După câteva generații, familiile Ungur sunt de obicei românești, cu registrele la biserica ortodoxă sau greco-catolică a satului."
    ]
   },
   {
@@ -3377,6 +3464,9 @@
    "variants": [
     "Vâlcean",
     "Valceanu"
+   ],
+   "story": [
+    "Vâlcea era un județ de dealuri și munte, cu podgorii, ocne de sare la Ocnele Mari și mănăstiri vechi. Mulți vâlceni au plecat spre câmpie sau spre București, iar numele Vâlceanu îi arăta pe cei veniți de acolo."
    ]
   },
   {
@@ -3414,6 +3504,9 @@
    "variants": [
     "Vargă",
     "Ciubotaru"
+   ],
+   "story": [
+    "În satele din vestul țării, cizmarii erau adesea singurii meșteșugari din sat, iar meseria trecea din tată în fiu. Numele Varga îl poartă azi și familii maghiare, și familii românești, așa că doar registrele parohiale arată din care biserică ținea neamul tău."
    ]
   },
   {
