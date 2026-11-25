@@ -96,7 +96,7 @@ export const PlanSettings = z.object({
   rateGbp: num(0.1, 100, ""),
   rateIls: num(0.1, 100, ""),
   // Abonamentele (Daniel, 25.11.2026): planul se reînnoiește singur, lunar, trimestrial sau anual, până omul oprește reînnoirea
-  // dintr-un clic. Anul e cel mai ieftin (≈ 25–30% sub lunar). 0 = perioada nu se oferă la acel plan (Basic: doar anual, fiindcă
+  // dintr-un clic. Anul e cel mai ieftin (20% sub lunar, Daniel 25.11.2026). 0 = perioada nu se oferă la acel plan (Basic: doar anual, fiindcă
   // la 6 lei pe lună comisionul cardului ar lua o parte prea mare). `subs` oprit = plata anuală o dată, fără reînnoire, ca înainte.
   subs: flag,
   basicMonthLei: num(0, 5000, ""), basicMonthEur: num(0, 1000, ""), basicQuarterLei: num(0, 5000, ""), basicQuarterEur: num(0, 1000, ""),
@@ -125,9 +125,9 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   localCurrency: false, rateUsd: 1.1, rateCad: 1.55, rateGbp: 0.86, rateIls: 4,
   subs: true,
   basicMonthLei: 0, basicMonthEur: 0, basicQuarterLei: 0, basicQuarterEur: 0,
-  familieMonthLei: 16.99, familieMonthEur: 3.49, familieQuarterLei: 45.99, familieQuarterEur: 9.49,
-  premiumMonthLei: 27.99, premiumMonthEur: 5.99, premiumQuarterLei: 75.99, premiumQuarterEur: 15.99,
-  basicRenewLei: 39, basicRenewEur: 8, familieRenewLei: 119, familieRenewEur: 24, premiumRenewLei: 199, premiumRenewEur: 40,
+  familieMonthLei: 15.49, familieMonthEur: 3.12, familieQuarterLei: 41.99, familieQuarterEur: 8.49,
+  premiumMonthLei: 25.9, premiumMonthEur: 5.19, premiumQuarterLei: 69.99, premiumQuarterEur: 13.99,
+  basicRenewLei: 56, basicRenewEur: 12, familieRenewLei: 119, familieRenewEur: 24, premiumRenewLei: 199, premiumRenewEur: 40,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
 const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;
@@ -246,6 +246,35 @@ export async function basicPrice69Once(db: Pick<Db, "insert" | "select">, now = 
       priceLei: was(b.priceLei, 49, 69), priceEur: was(b.priceEur, 10, 14),
       invitePriceLei: was(b.invitePriceLei, 49, 69), invitePriceEur: was(b.invitePriceEur, 10, 14),
       bundleLei: was(b.bundleLei, 79, 99), bundleEur: was(b.bundleEur, 16, 20),
+    };
+    await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  try { revalidateTag(PLANS_TAG); } catch { /* în afara unei cereri Next */ }
+  return "schimbat";
+}
+
+/**
+ * Reducerile de 20% (Daniel, 25.11.2026): „la planul basic as face o reducere de 20% maxim” și „anual -20%, nu până la 27%”.
+ * Reînnoirea Basic 39 lei / 8 € devine 56 lei / 12 € (cel mult 20% sub 69 / 14). Anualul rămâne 149 / 249 lei, iar lunarul scade
+ * cât anualul să fie cu 20% sub 12 luni plătite lunar: Familie 15,49 lei / 3,12 €, Premium 25,90 lei / 5,19 €; trimestrialul,
+ * ≈ 10% sub lunar: 41,99 lei / 8,49 € și 69,99 lei / 13,99 €. O singură dată, doar unde erau valorile vechi.
+ */
+export async function discount20Once(db: Pick<Db, "insert" | "select">, now = new Date()): Promise<"schimbat" | "deja"> {
+  const MARK = "reducere_20_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const [row] = await db.select({ value: appSetting.value }).from(appSetting).where(eq(appSetting.key, KEY));
+  if (row) {
+    const b = await planSettings(db);
+    const was = (v: number, old: number, next: number) => (v === old ? next : v);
+    const value: PlanSettings = {
+      ...b,
+      basicRenewLei: was(b.basicRenewLei, 39, 56), basicRenewEur: was(b.basicRenewEur, 8, 12),
+      familieMonthLei: was(b.familieMonthLei, 16.99, 15.49), familieMonthEur: was(b.familieMonthEur, 3.49, 3.12),
+      familieQuarterLei: was(b.familieQuarterLei, 45.99, 41.99), familieQuarterEur: was(b.familieQuarterEur, 9.49, 8.49),
+      premiumMonthLei: was(b.premiumMonthLei, 27.99, 25.9), premiumMonthEur: was(b.premiumMonthEur, 5.99, 5.19),
+      premiumQuarterLei: was(b.premiumQuarterLei, 75.99, 69.99), premiumQuarterEur: was(b.premiumQuarterEur, 15.99, 13.99),
     };
     await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
   }

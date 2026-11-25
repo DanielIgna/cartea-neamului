@@ -7,7 +7,7 @@ type P = Widen<typeof roPreturi>;
 export const enGBPreturi: P = {
   Preturi: {
     periods: { luna: "Monthly", trimestru: "Quarterly", an: "Yearly" },
-    save: "save ~{percent}%",
+    save: "save {percent}%",
     choose: "Choose {plan}",
     trial: "{days} days free, no card. You only pay if you want to carry on.",
     onlyYearly: "yearly only",
@@ -35,7 +35,7 @@ export const enGBPreturi: P = {
 export const frPreturi: P = {
   Preturi: {
     periods: { luna: "Au mois", trimestru: "Trimestriel", an: "À l’année" },
-    save: "économisez ~{percent} %",
+    save: "économisez {percent} %",
     choose: "Choisir {plan}",
     trial: "{days} jours gratuits, sans carte. Vous ne payez que si vous voulez continuer.",
     onlyYearly: "à l’année uniquement",
@@ -63,7 +63,7 @@ export const frPreturi: P = {
 export const esPreturi: P = {
   Preturi: {
     periods: { luna: "Mensual", trimestru: "Trimestral", an: "Anual" },
-    save: "ahorras ~{percent}%",
+    save: "ahorras {percent}%",
     choose: "Elegir {plan}",
     trial: "{days} días gratis, sin tarjeta. Solo pagas si quieres seguir.",
     onlyYearly: "solo anual",
@@ -91,7 +91,7 @@ export const esPreturi: P = {
 export const nlPreturi: P = {
   Preturi: {
     periods: { luna: "Per maand", trimestru: "Per kwartaal", an: "Per jaar" },
-    save: "bespaar ~{percent}%",
+    save: "bespaar {percent}%",
     choose: "Kies {plan}",
     trial: "{days} dagen gratis, zonder kaart. Je betaalt alleen als je verder wilt.",
     onlyYearly: "alleen per jaar",
@@ -119,7 +119,7 @@ export const nlPreturi: P = {
 export const dePreturi: P = {
   Preturi: {
     periods: { luna: "Monatlich", trimestru: "Vierteljährlich", an: "Jährlich" },
-    save: "spare ~{percent} %",
+    save: "spare {percent} %",
     choose: "{plan} wählen",
     trial: "{days} Tage gratis, ohne Karte. Du zahlst nur, wenn du weitermachen willst.",
     onlyYearly: "nur jährlich",
@@ -147,7 +147,7 @@ export const dePreturi: P = {
 export const itPreturi: P = {
   Preturi: {
     periods: { luna: "Mensile", trimestru: "Trimestrale", an: "Annuale" },
-    save: "risparmi ~{percent}%",
+    save: "risparmi {percent}%",
     choose: "Scegli {plan}",
     trial: "{days} giorni gratis, senza carta. Paghi solo se vuoi continuare.",
     onlyYearly: "solo annuale",
@@ -175,7 +175,7 @@ export const itPreturi: P = {
 export const huPreturi: P = {
   Preturi: {
     periods: { luna: "Havi", trimestru: "Negyedéves", an: "Éves" },
-    save: "~{percent}% megtakarítás",
+    save: "{percent}% megtakarítás",
     choose: "{plan} választása",
     trial: "{days} nap ingyen, kártya nélkül. Csak akkor fizetsz, ha folytatni szeretnéd.",
     onlyYearly: "csak éves",
@@ -203,7 +203,7 @@ export const huPreturi: P = {
 export const hePreturi: P = {
   Preturi: {
     periods: { luna: "חודשי", trimestru: "רבעוני", an: "שנתי" },
-    save: "חיסכון של כ-{percent}%",
+    save: "חיסכון של {percent}%",
     choose: "בחירת {plan}",
     trial: "{days} ימים בחינם, בלי כרטיס. משלמים רק אם רוצים להמשיך.",
     onlyYearly: "שנתי בלבד",
@@ -231,7 +231,7 @@ export const hePreturi: P = {
 export const ptPreturi: P = {
   Preturi: {
     periods: { luna: "Mensal", trimestru: "Trimestral", an: "Anual" },
-    save: "poupas ~{percent}%",
+    save: "poupas {percent}%",
     choose: "Escolher {plan}",
     trial: "{days} dias grátis, sem cartão. Só pagas se quiseres continuar.",
     onlyYearly: "só anual",
@@ -259,7 +259,7 @@ export const ptPreturi: P = {
 export const elPreturi: P = {
   Preturi: {
     periods: { luna: "Μηνιαία", trimestru: "Ανά τρίμηνο", an: "Ετήσια" },
-    save: "κερδίζεις ~{percent}%",
+    save: "κερδίζεις {percent}%",
     choose: "Επίλεξε {plan}",
     trial: "{days} μέρες δωρεάν, χωρίς κάρτα. Πληρώνεις μόνο αν θέλεις να συνεχίσεις.",
     onlyYearly: "μόνο ετήσια",
@@ -287,7 +287,7 @@ export const elPreturi: P = {
 export const svPreturi: P = {
   Preturi: {
     periods: { luna: "Månadsvis", trimestru: "Kvartalsvis", an: "Årsvis" },
-    save: "spara ~{percent} %",
+    save: "spara {percent} %",
     choose: "Välj {plan}",
     trial: "{days} dagar gratis, inget kort. Du betalar bara om du vill fortsätta.",
     onlyYearly: "endast årsvis",
@@ -315,7 +315,7 @@ export const svPreturi: P = {
 export const daPreturi: P = {
   Preturi: {
     periods: { luna: "Månedligt", trimestru: "Kvartalsvis", an: "Årligt" },
-    save: "spar ~{percent} %",
+    save: "spar {percent} %",
     choose: "Vælg {plan}",
     trial: "{days} dage gratis, uden kort. Du betaler kun, hvis du vil fortsætte.",
     onlyYearly: "kun årligt",
@@ -343,7 +343,7 @@ export const daPreturi: P = {
 export const nbPreturi: P = {
   Preturi: {
     periods: { luna: "Månedlig", trimestru: "Kvartalsvis", an: "Årlig" },
-    save: "spar ~{percent} %",
+    save: "spar {percent} %",
     choose: "Velg {plan}",
     trial: "{days} dager gratis, uten kort. Du betaler bare hvis du vil fortsette.",
     onlyYearly: "kun årlig",
@@ -371,7 +371,7 @@ export const nbPreturi: P = {
 export const ukPreturi: P = {
   Preturi: {
     periods: { luna: "Щомісяця", trimestru: "Щокварталу", an: "Щороку" },
-    save: "економія ~{percent}%",
+    save: "економія {percent}%",
     choose: "Обрати {plan}",
     trial: "{days} днів безкоштовно, без картки. Платиш, лише якщо хочеш продовжити.",
     onlyYearly: "лише щороку",
@@ -399,7 +399,7 @@ export const ukPreturi: P = {
 export const srPreturi: P = {
   Preturi: {
     periods: { luna: "Mesečno", trimestru: "Tromesečno", an: "Godišnje" },
-    save: "uštediš ~{percent}%",
+    save: "uštediš {percent}%",
     choose: "Izaberi {plan}",
     trial: "{days} dana besplatno, bez kartice. Plaćaš samo ako želiš da nastaviš.",
     onlyYearly: "samo godišnje",
@@ -427,7 +427,7 @@ export const srPreturi: P = {
 export const bgPreturi: P = {
   Preturi: {
     periods: { luna: "Месечно", trimestru: "На тримесечие", an: "Годишно" },
-    save: "спестяваш ~{percent}%",
+    save: "спестяваш {percent}%",
     choose: "Избери {plan}",
     trial: "{days} дни безплатно, без карта. Плащаш само ако искаш да продължиш.",
     onlyYearly: "само годишно",
@@ -455,7 +455,7 @@ export const bgPreturi: P = {
 export const trPreturi: P = {
   Preturi: {
     periods: { luna: "Aylık", trimestru: "Üç aylık", an: "Yıllık" },
-    save: "~%{percent} tasarruf",
+    save: "%{percent} tasarruf",
     choose: "{plan} seç",
     trial: "{days} gün ücretsiz, kart gerekmez. Yalnızca devam etmek istersen ödersin.",
     onlyYearly: "yalnızca yıllık",

@@ -5,7 +5,7 @@
 export const roPreturi = {
   Preturi: {
     periods: { luna: "Lunar", trimestru: "Trimestrial", an: "Anual" },
-    save: "economisești ~{percent}%",
+    save: "economisești {percent}%",
     choose: "Alege {plan}",
     trial: "{days} zile gratuite, fără card. Plătești doar dacă vrei să continui.",
     onlyYearly: "doar anual",

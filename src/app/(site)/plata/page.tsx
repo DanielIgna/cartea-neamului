@@ -244,12 +244,15 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   ) : null;
 
   // Alegerea perioadei, deasupra planurilor (doar cu abonamentele pornite).
-  const bestSave = Math.max(...TIERS.map((x) => yearSaving(x, s, lei)));
+  const saves = TIERS.map((x) => yearSaving(x, s, lei)).filter((n) => n > 0);
+  const bestSave = saves.length ? Math.max(...saves) : 0;
+  // Aceeași reducere la toate planurile (anual = 20% sub lunar, Daniel 25.11.2026): „economisești 20%”, nu „până la”.
+  const saveTag = saves.length && Math.min(...saves) === bestSave ? tpr("save", { percent: bestSave }) : ts("saveUpTo", { percent: bestSave });
   const periodTabs = subsOn && TIERS.some((x) => periodsFor(x, s).length > 1) ? (
     <nav className="period-tabs" aria-label={ts("periodLabel")}>
       {(["luna", "trimestru", "an"] as const).map((p) => (
         <Link key={p} href={p === "an" ? "/plata#planuri" : `/plata?perioada=${p}#planuri`} aria-current={p === period ? "page" : undefined} scroll={false}>
-          {ts(`periods.${p}`)}{p === "an" && bestSave > 0 && <span className="save">{ts("saveUpTo", { percent: bestSave })}</span>}
+          {ts(`periods.${p}`)}{p === "an" && bestSave > 0 && <span className="save">{saveTag}</span>}
         </Link>
       ))}
     </nav>

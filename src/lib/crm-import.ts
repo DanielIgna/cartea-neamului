@@ -3,9 +3,9 @@
  * Idempotent: același fișier încărcat de două ori nu dublează nimic (organizațiile după email/nume, activitățile după un id stabil
  * din fișier + rând). Întoarce un raport: câte organizații noi, câte activități, câte adrese pe lista „nu contacta”, ce rânduri s-au sărit.
  */
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Db } from "@/db";
-import { appSetting, crmOrganizations } from "@/db/schema";
+import { appSetting, crmApprovals, crmOrganizations } from "@/db/schema";
 import { addActivity, classifyReply, cleanEmail, isReplyKind, setOrgStatus, stableId, suppress, txt, upsertOrg, type OrgType } from "./crm";
 
 export const IMPORT_KINDS = {
@@ -220,4 +220,25 @@ export async function seedShopDraftsOnce(db: Db, drafts: Record<string, { subiec
   }
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
   return `${n} emailuri pentru magazine în Aprobări`;
+}
+
+/**
+ * Emailurile către magazine încă netrimise din Aprobări spuneau „Basic 49 lei”; Basic e 69 lei din 25.11.2026.
+ * O singură dată: doar ciornele în așteptare, doar textul acela; cele trimise rămân cum au plecat.
+ */
+export async function fixShopDraftPricesOnce(db: Db, now = new Date()): Promise<string> {
+  const MARK = "crm_magazine_basic_69_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const rows = await db.select({ id: crmApprovals.id, payload: crmApprovals.payload }).from(crmApprovals)
+    .where(and(eq(crmApprovals.tipActiune, "email_magazin"), eq(crmApprovals.status, "in_asteptare")));
+  let n = 0;
+  for (const r of rows) {
+    const text = r.payload.text ?? "";
+    if (!text.includes("Basic 49 lei")) continue;
+    await db.update(crmApprovals).set({ payload: { ...r.payload, text: text.replaceAll("Basic 49 lei", "Basic 69 lei") } }).where(eq(crmApprovals.id, r.id));
+    n++;
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
+  return `${n} ciorne corectate`;
 }
