@@ -5,7 +5,7 @@ description: Clăcașul: țăranul de pe moșie din Țara Românească și Moldo
 updated: 2026-11-25
 published: 2026-11-18
 alt: clăcași, clacă
-terms: razes, mosnean, catagrafie, iobag, ruman, improprietarire
+terms: razes, mosnean, catagrafie, iobag, ruman, improprietarire, dijma
 related: catagrafiile-din-moldova-si-tara-romaneasca
 ---
 **Clăcașul** era țăranul din Țara Românească și Moldova care trăia pe moșia altuia și datora stăpânului **claca**: un număr de zile de muncă pe an, pe lângă alte dări.
