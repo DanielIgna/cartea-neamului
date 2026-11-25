@@ -39,6 +39,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
           { key: "scoli", href: "/admin/scoli", label: "Școli", icon: "book", hint: "Cererile profesorilor, codurile de reducere pe clasă, conturi și plăți pe fiecare cod", isNew: true, words: "scoli scoala profesor clasa elevi coduri reducere stripe aprobare proiect arbore" },
           { key: "parteneri", href: "/admin/parteneri", label: "City Partners", icon: "map", hint: "Magazine și firme partenere: de la primul contact la activ, vânzări, comision, județe", isNew: true, words: "crm parteneri magazine firme pipeline prospect comision judete recomandare kit afis" },
           { key: "carduri", href: "/admin/carduri", label: "Carduri cadou", icon: "gift", hint: "Loturi tipărite și digitale, vânzări, activări, raport lunar de plată", isNew: true, words: "gift card cadou magazin partener librarie cod qr activare lot comision raft" },
+          { key: "coduri-activare", href: "/admin/coduri-activare", label: "Coduri de activare", icon: "gift", hint: "Coduri pentru cardurile vândute pe Trendyol și alte platforme: generare lot, listă, CSV, anulare", isNew: true, words: "trendyol emag cod activare card cadou lot csv qr anulare platforma marketplace" },
           { key: "adn", href: "/admin/adn", label: "Test ADN", icon: "dna", hint: "Cererile de test și laboratoarele", words: "dna laborator" },
         ],
       },

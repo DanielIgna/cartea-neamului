@@ -25,6 +25,7 @@ import { deEmailuri } from "./emailuri/de";
 import { deGhidArbore } from "./ghid-arbore/altele";
 import { deAbonament } from "./abonament/altele";
 import { dePreturi } from "./preturi/altele";
+import { deCodActivare } from "./cod-activare/altele";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -94,6 +95,7 @@ export const de: Catalog = {
   ...deGhidArbore,
   ...deAbonament,
   ...dePreturi,
+  ...deCodActivare,
   UsageNotice: {
     label: "Wie du die Seite nutzt",
     lead: "Eine Frage, nur einmal.",

@@ -3,6 +3,7 @@ import { daExtra } from "./noi/da";
 import { daGhidArbore } from "./ghid-arbore/altele";
 import { daAbonament } from "./abonament/altele";
 import { daPreturi } from "./preturi/altele";
+import { daCodActivare } from "./cod-activare/altele";
 
 /**
  * Dansk, for rumænere i Danmark og deres børn. Tiltale med „du”. Det, der endnu ikke er oversat, vises på engelsk
@@ -73,6 +74,7 @@ export const da: DeepPartial<Catalog> = {
   ...daGhidArbore,
   ...daAbonament,
   ...daPreturi,
+  ...daCodActivare,
   UsageNotice: {
     label: "Hvordan du bruger webstedet",
     lead: "Ét spørgsmål, kun én gang.",

@@ -25,6 +25,7 @@ import { esEmailuri } from "./emailuri/es";
 import { esGhidArbore } from "./ghid-arbore/altele";
 import { esAbonament } from "./abonament/altele";
 import { esPreturi } from "./preturi/altele";
+import { esCodActivare } from "./cod-activare/altele";
 
 /** Español de España, tuteando (como el rumano del sitio). */
 export const es: Catalog = {
@@ -94,6 +95,7 @@ export const es: Catalog = {
   ...esGhidArbore,
   ...esAbonament,
   ...esPreturi,
+  ...esCodActivare,
   UsageNotice: {
     label: "Cómo usas el sitio",
     lead: "Una pregunta, solo una vez.",

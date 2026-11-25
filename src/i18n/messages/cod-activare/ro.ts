@@ -1,0 +1,43 @@
+/**
+ * Pagina /activare și emailul de după activare (Daniel, 25.11.2026): codurile cardurilor cadou vândute pe alte platforme
+ * (Trendyol…). Fără prețuri, oferte sau butoane de cumpărare. Celelalte limbi sunt în ./altele.ts.
+ */
+export const roCodActivare = {
+  CodActivare: {
+    metaTitle: "Activează codul",
+    title: "Activează cardul cadou",
+    lead: "Scrie codul de pe card. Dacă ai scanat codul QR, codul e deja completat.",
+    label: "Codul de activare",
+    button: "Activează",
+    continue: "Continuă",
+    stepsTitle: "Cum se folosește",
+    step1: "Scrie codul de pe card (are forma CN-FAM-7K4M-Q9XT) sau scanează codul QR.",
+    step2: "Intră în cont sau fă-ți unul nou. Revii singur pe această pagină, cu codul păstrat.",
+    step3: "Apasă „Activează”. Planul pornește pe loc, fără plată și fără card.",
+    help: "Ai nevoie de ajutor? Scrie-ne la {email}.",
+    account: "Planul se pune pe contul {email}.",
+    signedOut: "La „Continuă” intri în cont sau îți faci unul nou, apoi revii aici.",
+    signIn: "Ai deja cont? Intră în cont",
+    ready: "Ești în cont. Apasă „Activează” ca să primești planul.",
+    ok: "Gata! Codul este activat. Ai planul {plan} până pe {date}.",
+    okExtended: "Gata! Codul este activat. Planul {plan} este prelungit până pe {date}.",
+    usedByYou: "Ai activat deja acest cod. Ai planul {plan} până pe {date}.",
+    used: "Acest cod a fost deja folosit.",
+    invalid: "Codul nu este valid. Verifică literele și cifrele: codul are forma CN-FAM-7K4M-Q9XT.",
+    cancelled: "Acest cod a fost anulat. Pentru lămuriri, scrie-ne la {email}.",
+    tooMany: "Prea multe încercări într-o oră. Te rugăm să mai încerci peste puțin timp.",
+    hasSub: "Ai deja un abonament plătit care se reînnoiește automat, așa că nu am folosit codul, ca să nu plătești de două ori. Oprește reînnoirea automată din „Planul meu” (un clic), apoi revino aici: cele {months} luni se adaugă după perioada deja plătită.",
+    myPlan: "Planul meu",
+    toTree: "Mergi la arborele tău",
+    mailSubject: "Codul tău {app} este activat",
+    mailHello: "Bună, {name}!",
+    mailHelloNoName: "Bună!",
+    mailBody: "Codul de activare a fost folosit pe contul tău. Planul este activ, fără plată și fără card.",
+    mailPlan: "Planul",
+    mailUntil: "Valabil până pe",
+    mailCode: "Codul",
+    mailEnd: "La final nu se plătește nimic automat. Arborele și tot ce ai scris rămân în contul tău.",
+    mailButton: "Deschide arborele",
+    mailHelp: "Ai întrebări? Răspunde la acest email sau scrie-ne la {email}.",
+  },
+};

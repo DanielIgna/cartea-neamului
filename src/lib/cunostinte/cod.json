@@ -47,6 +47,7 @@
   "drizzle/0045_surse_publice.sql",
   "drizzle/0046_plata_cod.sql",
   "drizzle/0047_abonamente.sql",
+  "drizzle/0048_coduri_activare.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -117,6 +118,7 @@
   "src/app/(public)/pub/[v]/surse-publice/page.tsx",
   "src/app/(public)/pub/[v]/termeni/page.tsx",
   "src/app/(site)/a/[code]/page.tsx",
+  "src/app/(site)/activare/page.tsx",
   "src/app/(site)/activeaza/page.tsx",
   "src/app/(site)/admin/adn/page.tsx",
   "src/app/(site)/admin/analiza/csv/route.ts",
@@ -130,6 +132,8 @@
   "src/app/(site)/admin/carduri/lot/[id]/tipar/page.tsx",
   "src/app/(site)/admin/carduri/page.tsx",
   "src/app/(site)/admin/carduri/raport.csv/route.ts",
+  "src/app/(site)/admin/coduri-activare/export.csv/route.ts",
+  "src/app/(site)/admin/coduri-activare/page.tsx",
   "src/app/(site)/admin/control/page.tsx",
   "src/app/(site)/admin/conversie/actions.ts",
   "src/app/(site)/admin/conversie/page.tsx",
@@ -307,6 +311,7 @@
   "src/app/carte-actions.ts",
   "src/app/casa-actions.ts",
   "src/app/cod/[cod]/route.ts",
+  "src/app/coduri-activare-actions.ts",
   "src/app/cont-actions.ts",
   "src/app/contact-actions.ts",
   "src/app/crestere-actions.ts",
@@ -636,6 +641,8 @@
   "src/i18n/messages/carte/it.ts",
   "src/i18n/messages/carte/nl.ts",
   "src/i18n/messages/carte/ro.ts",
+  "src/i18n/messages/cod-activare/altele.ts",
+  "src/i18n/messages/cod-activare/ro.ts",
   "src/i18n/messages/contact/de.ts",
   "src/i18n/messages/contact/en-GB.ts",
   "src/i18n/messages/contact/es.ts",
@@ -848,6 +855,9 @@
   "src/lib/carte-model.ts",
   "src/lib/chat.ts",
   "src/lib/cod-link.ts",
+  "src/lib/coduri-activare-email.ts",
+  "src/lib/coduri-activare-proba.ts",
+  "src/lib/coduri-activare.ts",
   "src/lib/consent.ts",
   "src/lib/contact.ts",
   "src/lib/continut/cautare.ts",
@@ -1087,6 +1097,8 @@
   "tests/carte-model.test.ts",
   "tests/chat.test.ts",
   "tests/ciorne.test.ts",
+  "tests/coduri-activare-proba.test.ts",
+  "tests/coduri-activare.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
   "tests/conversie.test.ts",
@@ -1199,6 +1211,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/activare",
+   "kind": "pagina"
+  },
+  {
    "path": "/activeaza",
    "kind": "pagina"
   },
@@ -1252,6 +1268,14 @@
   },
   {
    "path": "/admin/carduri/raport.csv",
+   "kind": "api"
+  },
+  {
+   "path": "/admin/coduri-activare",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/coduri-activare/export.csv",
    "kind": "api"
   },
   {
@@ -1906,6 +1930,8 @@
   "tests/carte-model.test.ts",
   "tests/chat.test.ts",
   "tests/ciorne.test.ts",
+  "tests/coduri-activare-proba.test.ts",
+  "tests/coduri-activare.test.ts",
   "tests/contact.test.ts",
   "tests/continut-public.test.ts",
   "tests/conversie.test.ts",
@@ -2004,5 +2030,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 47
+ "migrations": 48
 }
