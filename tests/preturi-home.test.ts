@@ -45,6 +45,21 @@ describe("prețul tăiat (25.11.2026)", async () => {
     expect(comparePrice("familie", "luna", true, s, false, true)).toBeNull();
     expect(comparePrice("basic", "an", true, s, false, true)).toBeNull();
     expect(comparePrice("familie", "an", true, s, true, true)).toEqual({ kind: "full", was: 149 });
-    expect(comparePrice("basic", "an", true, s, true, false)).toEqual({ kind: "full", was: 10 });
+    expect(comparePrice("basic", "an", true, s, true, false)).toEqual({ kind: "full", was: 14 });
+  });
+});
+
+describe("Basic 69 lei / 14 € (25.11.2026)", () => {
+  it("o singură dată la publicare: Basic, ruda și pachetul; ce era pus altfel în Admin rămâne", async () => {
+    const { createDb } = await import("@/db");
+    const { runMigrations } = await import("@/db/migrate");
+    const { basicPrice69Once, planSettings, savePlanSettings, DEFAULT_SETTINGS } = await import("@/lib/plans");
+    const d = createDb(); await runMigrations(d);
+    await savePlanSettings(d, { ...DEFAULT_SETTINGS, priceLei: 49, priceEur: 10, invitePriceLei: 49, invitePriceEur: 10, bundleLei: 79, bundleEur: 16, basicRenewLei: 39 }, null as unknown as string);
+    expect(await basicPrice69Once(d)).toBe("schimbat");
+    expect(await planSettings(d)).toMatchObject({ priceLei: 69, priceEur: 14, invitePriceLei: 69, invitePriceEur: 14, bundleLei: 99, bundleEur: 20, basicRenewLei: 39 });
+    await savePlanSettings(d, { ...(await planSettings(d)), priceLei: 59 }, null as unknown as string);
+    expect(await basicPrice69Once(d)).toBe("deja");
+    expect((await planSettings(d)).priceLei).toBe(59);
   });
 });

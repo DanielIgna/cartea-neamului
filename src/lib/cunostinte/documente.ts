@@ -52,7 +52,7 @@ export const DOCS: KDoc[] = [
     id: "D01", title: "Plățile: 7 zile gratuite, apoi abonamentul", kind: "decizie", category: "bani", status: "activ", version: "2.0", date: "2026-11-25", reviewEveryDays: 60,
     summary: "Cum se plătește Cartea Neamului: proba gratuită, anul, invitații, cartea PDF și cartea tipărită. Banii intră pe PFA, prin Stripe.",
     rules: [
-      "7 zile gratuite, fără card și fără abonament; apoi planul se plătește lunar, trimestrial sau anual (Basic doar anual: 49 lei / 10 €; Familie 16,99 / 45,99 / 149 lei; Premium 27,99 / 75,99 / 249 lei). Prețurile se schimbă din Admin → Manager control.",
+      "7 zile gratuite, fără card și fără abonament; apoi planul se plătește lunar, trimestrial sau anual (Basic doar anual: 69 lei / 14 €, din 25.11.2026; Familie 16,99 / 45,99 / 149 lei; Premium 27,99 / 75,99 / 249 lei). Prețurile se schimbă din Admin → Manager control.",
       "Fiecare om invitat să scrie are și el 7 zile gratuite, apoi plătește anul ca să scrie mai departe; altfel rămâne doar să vadă.",
       "Cei din beta primesc doar primul an gratuit (nu pentru totdeauna) și cartea PDF gratuită în acel an.",
       "Cartea PDF: produs separat, 39 lei / 8 €, plătit o singură dată. Nu promitem cartea tipărită.",
@@ -83,8 +83,8 @@ export const DOCS: KDoc[] = [
     id: "D03", title: "Planurile Basic, Familie și Premium", kind: "decizie", category: "bani", status: "activ", version: "1.1", date: "2026-11-13", reviewEveryDays: 90,
     summary: "Trei planuri (lunar, trimestrial sau anual; Basic doar anual), cu plafoane diferite; trecerea pe un plan mai mare se plătește pro rata, fără coborâre în mijlocul anului.",
     rules: [
-      "Basic 49 lei / 10 €, Familie 149 lei / 30 € (recomandat, 1 carte PDF pe an), Premium 249 lei / 50 € (PDF pentru toți arborii, 20% la tipar).",
-      "Pachet Basic + carte PDF: 129 lei. Toate prețurile și plafoanele se schimbă din Admin → Manager control.",
+      "Basic 69 lei / 14 € (din 25.11.2026; ruda invitată tot 69), Familie 149 lei / 30 € (recomandat, 1 carte PDF pe an), Premium 249 lei / 50 € (PDF pentru toți arborii, 20% la tipar).",
+      "Pachet Basic + carte PDF: 99 lei / 20 €. Toate prețurile și plafoanele se schimbă din Admin → Manager control.",
       "Anul cadou (/cadou/<cod>) și 30 de zile pentru cine aduce o rudă care plătește.",
       "Testele ADN nu se vând și nu au afiliere; nu se păstrează date genetice.",
     ],

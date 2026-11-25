@@ -109,7 +109,7 @@ export const PlanSettings = z.object({
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
-  on: false, startedAt: null, trialDays: 7, priceLei: 49, priceEur: 10, invitePriceLei: 49, invitePriceEur: 10, bookLei: 39, bookEur: 8,
+  on: false, startedAt: null, trialDays: 7, priceLei: 69, priceEur: 14, invitePriceLei: 69, invitePriceEur: 14, bookLei: 39, bookEur: 8,
   // Cei care au testat site-ul înainte de pornirea plăților au primul an gratuit (alegerea lui Daniel, 2026-11-12).
   betaDays: 365,
   // Cât încape familia apropiată (părinți, bunici, soț/soție, copii, frați, nepoți): în zilele gratuite, un arbore al cuiva
@@ -120,7 +120,7 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   familiePersons: 400, familiePhotos: 800, familieAudio: 80, familieDocs: 150, familieWriters: 8, familieTrees: 2, familieBook: "separat", familiePrint: 0,
   premiumLei: 249, premiumEur: 50,
   premiumPersons: 0, premiumPhotos: 3000, premiumAudio: 250, premiumDocs: 500, premiumWriters: 20, premiumTrees: 5, premiumBook: "separat", premiumPrint: 0,
-  bundleLei: 79, bundleEur: 16, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
+  bundleLei: 99, bundleEur: 20, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
   keepLei: 25, keepEur: 5, keepBookLei: 59, keepBookEur: 12,
   localCurrency: false, rateUsd: 1.1, rateCad: 1.55, rateGbp: 0.86, rateIls: 4,
   subs: true,
@@ -220,6 +220,32 @@ export async function offerNov18Once(db: Pick<Db, "insert" | "select">, now = ne
       basicPrint: 0, familiePrint: 0, premiumPrint: 0, printFromLei: 0, printFromEur: 0,
       bundleLei: was(b.bundleLei, 129, 79), bundleEur: was(b.bundleEur, 25, 16),
       keepBookLei: was(b.keepBookLei, 109, 59), keepBookEur: was(b.keepBookEur, 22, 12),
+    };
+    await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  try { revalidateTag(PLANS_TAG); } catch { /* în afara unei cereri Next */ }
+  return "schimbat";
+}
+
+/**
+ * Basic 69 lei / 14 € pe an (Daniel, 25.11.2026, la fel ca pe Trendyol): și ruda invitată plătește tot atât, iar pachetul
+ * Basic + cartea PDF ajunge la 99 lei / 20 €. Reînnoirea din al doilea an rămâne 39 lei / 8 €; codurile (NEAM90…) se aplică din 69.
+ * O singură dată și doar unde valorile erau cele vechi; abonamentele deja pornite își păstrează prețul din Stripe.
+ */
+export async function basicPrice69Once(db: Pick<Db, "insert" | "select">, now = new Date()): Promise<"schimbat" | "deja"> {
+  const MARK = "basic_69_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const [row] = await db.select({ value: appSetting.value }).from(appSetting).where(eq(appSetting.key, KEY));
+  if (row) {
+    const b = await planSettings(db);
+    const was = (v: number, old: number, next: number) => (v === old ? next : v);
+    const value: PlanSettings = {
+      ...b,
+      priceLei: was(b.priceLei, 49, 69), priceEur: was(b.priceEur, 10, 14),
+      invitePriceLei: was(b.invitePriceLei, 49, 69), invitePriceEur: was(b.invitePriceEur, 10, 14),
+      bundleLei: was(b.bundleLei, 79, 99), bundleEur: was(b.bundleEur, 16, 20),
     };
     await db.insert(appSetting).values({ key: KEY, value, updatedAt: now }).onConflictDoUpdate({ target: appSetting.key, set: { value, updatedAt: now } });
   }

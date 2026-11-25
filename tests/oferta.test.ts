@@ -8,9 +8,9 @@ import { bookAccess } from "@/lib/plati";
 
 /** Schimbarea de ofertă din 18 noiembrie 2026: cartea PDF e un produs separat, plătit. */
 describe("oferta din 18 noiembrie 2026", () => {
-  it("prețurile implicite: Basic 49, Familie 149, Premium 249 lei; cartea PDF 39 lei / 8 €, separată la toate planurile", () => {
+  it("prețurile implicite: Basic 69 (din 25.11.2026), Familie 149, Premium 249 lei; cartea PDF 39 lei / 8 €, separată la toate planurile", () => {
     expect(DEFAULT_SETTINGS).toMatchObject({
-      priceLei: 49, priceEur: 10, familieLei: 149, familieEur: 30, premiumLei: 249, premiumEur: 50, trialDays: 7,
+      priceLei: 69, priceEur: 14, familieLei: 149, familieEur: 30, premiumLei: 249, premiumEur: 50, trialDays: 7,
       bookLei: 39, bookEur: 8, basicBook: "separat", familieBook: "separat", premiumBook: "separat",
       basicPrint: 0, familiePrint: 0, premiumPrint: 0, printFromLei: 0, printFromEur: 0,
     });
@@ -23,7 +23,7 @@ describe("oferta din 18 noiembrie 2026", () => {
       bundleLei: 129, bundleEur: 25, keepBookLei: 110, keepBookEur: 22, printFromLei: 150 }, null as unknown as string);
     expect(await offerNov18Once(d)).toBe("schimbat");
     expect(await planSettings(d)).toMatchObject({ on: true, bookLei: 39, bookEur: 8, basicBook: "separat", familieBook: "separat", premiumBook: "separat",
-      premiumPrint: 0, printFromLei: 0, bundleLei: 79, bundleEur: 16, keepBookLei: 110, keepBookEur: 12, priceLei: 49, familieLei: 149, premiumLei: 249 });
+      premiumPrint: 0, printFromLei: 0, bundleLei: 79, bundleEur: 16, keepBookLei: 110, keepBookEur: 12, priceLei: 69, familieLei: 149, premiumLei: 249 });
     // După aceea hotărăște Admin: cartea pusă „inclusă” la Premium rămâne așa.
     await savePlanSettings(d, { ...(await planSettings(d)), premiumBook: "toti" }, null as unknown as string);
     expect(await offerNov18Once(d)).toBe("deja");
