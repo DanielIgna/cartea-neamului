@@ -3,7 +3,7 @@ title: Cununie
 description: Cununia în registrele parohiale: ce date conține, cum o deosebești de căsătoria civilă și ce îți spune despre familiile mirilor.
 updated: 2026-11-18
 alt: cununii, registrul cununaților
-terms: registru-parohial, act-de-casatorie, nas, nume-de-fata
+terms: registru-parohial, act-de-casatorie, nas, nume-de-fata, strigari
 related: cum-citesti-un-registru-parohial, cum-gasesti-numele-de-fata-al-bunicii
 ---
 **Cununia** este, în registrele parohiale, înregistrarea căsătoriei religioase. Până la starea civilă de stat, ea este singura dovadă scrisă a unei căsătorii.

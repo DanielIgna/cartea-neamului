@@ -3,7 +3,7 @@ title: Iobag
 description: Ce înseamnă iobag: țăranul dependent din Transilvania și Ungaria, legat de moșie. Cum apare în conscripții și urbarii. Explicat pe scurt, pentru arbore.
 updated: 2026-11-18
 alt: iobagi, colonus
-terms: jeler, urbariu, conscriptie, clacas
+terms: jeler, urbariu, conscriptie, clacas, granicer, ruman
 related: urbariile-si-documentele-mosiilor, conscriptiile-din-transilvania
 ---
 **Iobagul** era țăranul dependent din Transilvania și Ungaria, care lucra o sesie (un lot) de pe moșia unui nobil și avea față de el obligații în muncă, produse și bani. În documentele latinești apare ca *colonus*.
