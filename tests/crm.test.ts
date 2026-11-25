@@ -17,7 +17,8 @@ import { accountSource, crmActivities, crmOrganizations, crmSuppression, user } 
 import {
   advanceStatus, allowedRecipients, classifyReply, dedupeKeyOf, isSuppressed, realUserSql, slugify, suppress, unsuppress, upsertOrg,
 } from "@/lib/crm";
-import { importCsv, kindOfFile, parseCsv, parseWhen } from "@/lib/crm-import";
+import { importCsv, kindOfFile, parseCsv, parseWhen, seedPressOnce } from "@/lib/crm-import";
+import { readFileSync } from "node:fs";
 import { ingest, ingestAuthorized } from "@/lib/crm-ingest";
 import { sendEmail } from "@/lib/email";
 
@@ -125,6 +126,18 @@ describe("CRM: importul din CSV", () => {
     // Un email trimis după „nu contacta” (import vechi) nu-l scoate de acolo.
     await importCsv(db, "scoli_trimise", trimise, null, now);
     expect((await orgs()).find((o) => o.emailOficial === "office@lt-gherla.ro")?.status).toBe("nu_contacta");
+  });
+
+  it("lista de presă intră o singură dată, ca „Presă”, fără activități și cu sursa adresei", async () => {
+    const csv = readFileSync("src/data/crm-presa.csv", "utf8");
+    const lines = csv.trim().split("\n").length - 1;
+    const before = (await acts()).length;
+    expect(await seedPressOnce(db, csv, now)).toBe(`${lines} redacții noi, 0 deja în CRM`);
+    expect(await seedPressOnce(db, csv, now)).toBe("deja");
+    const presa = (await orgs()).filter((o) => o.tip === "presa");
+    expect(presa).toHaveLength(lines);
+    expect(presa.every((o) => o.status === "nou" && o.sursaDatelor?.startsWith("https://") && o.emailOficial)).toBe(true);
+    expect((await acts()).length).toBe(before);
   });
 
   it("fără cap de tabel se ia ordinea din cerință", async () => {

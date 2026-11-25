@@ -5,7 +5,7 @@
  */
 import { eq } from "drizzle-orm";
 import type { Db } from "@/db";
-import { crmOrganizations } from "@/db/schema";
+import { appSetting, crmOrganizations } from "@/db/schema";
 import { addActivity, classifyReply, cleanEmail, isReplyKind, setOrgStatus, stableId, suppress, txt, upsertOrg, type OrgType } from "./crm";
 
 export const IMPORT_KINDS = {
@@ -16,6 +16,8 @@ export const IMPORT_KINDS = {
   firme_trimise: { tip: "firma", what: "Firme cărora le-ai scris (firma, email, data, ora)" },
   firme_nu_contacta: { tip: "firma", what: "Firme care nu vor să fie contactate" },
   firme_raspunsuri: { tip: "firma", what: "Răspunsuri de la firme (firma, email, data, raspuns)" },
+  presa_lista: { tip: "presa", what: "Redacții de presă de adăugat (nume, email, site, localitate, tara, sursa)" },
+  asociatii_lista: { tip: "asociatie_diaspora", what: "Asociații ale românilor din străinătate de adăugat (nume, email, site, localitate, tara, sursa)" },
 } as const satisfies Record<string, { tip: OrgType; what: string }>;
 export type ImportKind = keyof typeof IMPORT_KINDS;
 export const isImportKind = (v: unknown): v is ImportKind => typeof v === "string" && v in IMPORT_KINDS;
@@ -56,6 +58,7 @@ const HEAD: Record<string, string[]> = {
   nume: ["scoala", "școala", "școală", "firma", "nume", "organizatie", "organizație", "denumire", "unitate", "unitatea"],
   localitate: ["localitate", "localitatea", "oras", "oraș", "comuna", "comună"],
   judet: ["judet", "județ", "judetul", "județul"],
+  tara: ["tara", "țara", "țară", "country"],
   email: ["email", "e-mail", "mail", "adresa", "adresă email"],
   telefon: ["telefon", "tel", "phone"],
   site: ["site", "website", "web"],
@@ -110,10 +113,12 @@ export async function importCsv(db: Db, kind: ImportKind, text: string, by: stri
     const nume = get(r, "nume") ?? (email ? email.split("@")[1] : null);
     if (!nume) { rep.skipped.push({ row: rowNo, why: "fără nume și fără email" }); continue; }
     if (rawEmail && !email) { rep.skipped.push({ row: rowNo, why: `adresa „${rawEmail.slice(0, 60)}” nu e validă` }); continue; }
-    const org = await upsertOrg(db, { tip, nume, localitate: get(r, "localitate"), judet: get(r, "judet"), emailOficial: email, telefon: get(r, "telefon"), site: get(r, "site"), sursaDatelor: get(r, "sursa") }, now);
+    const org = await upsertOrg(db, { tip, nume, localitate: get(r, "localitate"), judet: get(r, "judet"), tara: get(r, "tara"), emailOficial: email, telefon: get(r, "telefon"), site: get(r, "site"), sursaDatelor: get(r, "sursa") }, now);
     if (org.created) rep.orgsNew++; else rep.orgsSeen++;
     const when = parseWhen(get(r, "data"), get(r, "ora")) ?? now;
     const ext = (what: string) => `import:${kind}:${stableId(email ?? nume, get(r, "data"), get(r, "ora"), what)}`;
+    // „_lista”: doar adaugă organizația (cu sursa adresei), fără activitate și fără să-i schimbe starea.
+    if (kind.endsWith("_lista")) continue;
     if (kind.endsWith("_trimise")) {
       if (await addActivity(db, { tip: "email_trimis", canal: "email", rezumat: "Email de prezentare (import)", at: when, organizationId: org.id, externalId: ext("trimis"), createdBy: by })) rep.activities++;
       await setOrgStatus(db, org.id, "contactat", { now });
@@ -136,4 +141,18 @@ export async function importCsv(db: Db, kind: ImportKind, text: string, by: stri
     }
   }
   return rep;
+}
+
+/**
+ * Lista de redacții (src/data/crm-presa.csv) intră o singură dată în CRM la publicare (Daniel, 25.11.2026: „nu știu unde am
+ * emailurile pentru presă”). Doar adresele generale scrise de redacții pe site-ul lor; coloana „sursa” arată pagina.
+ * Fără nicio trimitere: emailurile pleacă doar din Campanii, după aprobarea lui.
+ */
+export async function seedPressOnce(db: Db, csv: string, now = new Date()): Promise<string> {
+  const MARK = "crm_presa_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const rep = await importCsv(db, "presa_lista", csv, null, now);
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi: rep.orgsNew }, updatedAt: now }).onConflictDoNothing();
+  return `${rep.orgsNew} redacții noi, ${rep.orgsSeen} deja în CRM`;
 }
