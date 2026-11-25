@@ -5,7 +5,7 @@ description: Împroprietărirea a dat țăranilor pământ prin reformele din 18
 updated: 2026-11-25
 published: 2026-11-25
 alt: împroprietăriri, reforma agrară, împroprietărit, împroprietăriți
-terms: clacas, cartea-funciara, cadastru, registrul-agricol
+terms: clacas, cartea-funciara, cadastru, registrul-agricol, pogon, falce
 related: cartea-funciara-si-cadastrul-vechi
 ---
 **Împroprietărirea** înseamnă că statul a dat țăranilor pământ în proprietate, de obicei luat de pe marile moșii. În istoria României au fost trei mari reforme agrare: **1864**, **1921** și **1945**. Fiecare a lăsat liste cu numele celor care au primit pământ, pe sate.
