@@ -3,7 +3,7 @@ title: Scrierea chirilică românească: literele pentru nume și date
 seo: Alfabetul chirilic românesc: litere, cifre și exemple
 description: Alfabetul chirilic românesc pe înțeles: literele care diferă de cele de azi, cum se scriau anii cu litere și cum citești un nume într-un act vechi.
 category: Scris și limbi vechi
-updated: 2026-11-25
+updated: 2026-11-17
 related: cum-citesti-scrisul-de-mana-vechi, registrele-ortodoxe, catagrafiile-din-moldova-si-tara-romaneasca
 terms: chirilica-romaneasca, alfabetul-de-tranzitie, paleografie
 ---
