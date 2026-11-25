@@ -24,7 +24,7 @@ export function loadNames(): Surname[] {
 export const getName = (slug: string) => loadNames().find((n) => n.slug === slug) ?? null;
 
 /** Data ultimei schimbări a fișierului de nume (pentru sitemap); o schimbăm de mână când adăugăm nume. */
-export const NAMES_UPDATED = new Date("2026-11-13T00:00:00Z");
+export const NAMES_UPDATED = new Date("2026-11-25T00:00:00Z");
 
 export const KIND_LABEL: Record<NameKind, string> = {
   functie: "Nume după o funcție sau o slujbă",
