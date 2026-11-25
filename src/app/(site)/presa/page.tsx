@@ -9,7 +9,7 @@ import { loadNames } from "@/lib/continut/nume";
 import { loadCounties } from "@/lib/continut/localitati";
 import { GEN_REGIONS } from "@/lib/genealogie-regiuni";
 import { SITE_URL } from "@/lib/site-url";
-import { LANGUAGE_COUNT } from "@/i18n/locales";
+import { limbiRo } from "@/i18n/locales";
 
 export const metadata: Metadata = publicPageMetadata({ path: page.path, title: page.title, description: page.description });
 
@@ -42,7 +42,7 @@ export default function PressPage() {
           <li><b>{n(terms)}</b> termeni explicați în glosar;</li>
           <li><b>{n(names)}</b> nume de familie românești cu originea și variantele lor;</li>
           <li>pagini pentru toate cele <b>{n(counties)}</b> de județe și pentru <b>{GEN_REGIONS.length}</b> regiuni istorice;</li>
-          <li>platforma e disponibilă în <b>{LANGUAGE_COUNT} de limbi</b>, pentru familiile împrăștiate prin lume.</li>
+          <li>platforma e disponibilă în <b>{limbiRo()}</b>, pentru familiile împrăștiate prin lume.</li>
         </ul>
 
         <h2>Ce face, concret</h2>

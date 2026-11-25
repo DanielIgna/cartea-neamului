@@ -117,6 +117,10 @@ export async function NamePage({ slug }: { slug: string }) {
         <p>{renderEm(t.origin)}</p>
         <p>{t.kindText}</p>
         {t.note && <p className="prose-note">{renderEm(t.note)}</p>}
+        {n.story?.length ? (<>
+          <h2>Povestea numelui {n.name}</h2>
+          {n.story.map((p) => <p key={p.slice(0, 50)}>{renderEm(p)}</p>)}
+        </>) : null}
         <h2>Ce spun datele despre numele {n.name}</h2>
         {nameProfile(n).map((p) => <p key={p.slice(0, 50)}>{renderEm(p)}</p>)}
         <h2>Unde e mai des întâlnit</h2>

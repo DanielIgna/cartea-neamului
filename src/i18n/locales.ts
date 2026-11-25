@@ -13,6 +13,8 @@ export const DEFAULT_LOCALE: Locale = "ro";
  * Orice text care spune numărul limbilor îl ia de aici, ca să nu rămână în urmă când se adaugă o limbă.
  */
 export const LANGUAGE_COUNT = new Set(LOCALES.map((l) => l.split("-")[0])).size;
+/** Numărul limbilor spus corect în română: „18 limbi”, dar „20 de limbi” (de la 20 în sus se pune „de”). */
+export const limbiRo = (n: number = LANGUAGE_COUNT) => `${n}${n % 100 >= 20 || n % 100 === 0 ? " de" : ""} limbi`;
 /**
  * Limbile adăugate pe 19.11.2026 care nu au încă toate textele traduse: ce lipsește se arată în engleză (nu în română), iar
  * paginile publice fără text în ele nu primesc adresă pe acea limbă (vezi NOT_YET_IN din public-pages.ts).
