@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { REGIONS, REGION_SOURCES, isRegion, type RegionKey } from "./regiuni";
+import { REGIONS, REGION_SOURCES, civilByRegion, isRegion, type RegionKey } from "./regiuni";
 
 /**
  * Numele de familie pentru paginile /nume/<slug>, din content/nume/nume.json (scris de mână, păstrat în repo).
@@ -70,7 +70,7 @@ export function nameText(n: Surname) {
   const guides = [...new Set(sources.flatMap((s) => s.guides))].slice(0, 4);
   return {
     origin: n.meaning, kindText: KIND_TEXT[n.kind], note: n.note ?? null, where,
-    civil: sources.map((s) => s.civil),
+    civil: civilByRegion(n.regions),
     tips: [KIND_TIP[n.kind], ...tips],
     guides,
   };
