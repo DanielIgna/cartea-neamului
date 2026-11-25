@@ -18,7 +18,7 @@ export type KinPage = {
 export const TOOLS_HUB = "/unelte";
 export const KIN_CALC = "/unelte/calculator-grad-de-rudenie";
 export const kinPagePath = (p: Pick<KinPage, "slug">) => `/unelte/rudenie/${p.slug}`;
-export const TOOLS_UPDATED = new Date("2026-11-19T00:00:00Z");
+export const TOOLS_UPDATED = new Date("2026-11-25T00:00:00Z");
 
 export const KIN_PAGES: KinPage[] = [
   {
@@ -403,6 +403,179 @@ export const KIN_PAGES: KinPage[] = [
       { q: "Tatăl vitreg e rudă cu mine?", a: "E afin de gradul I: rudă prin căsătoria cu mama ta, nu de sânge." },
     ],
     related: ["cumnat", "socru", "var-primar"],
+  },
+  // Adăugate la 25.11.2026 (planul săptămânal: mai mulți termeni de rudenie, ca „cumnat”).
+  {
+    slug: "bunic", name: "Bunic",
+    title: "Bunicul și bunica: ce grad de rudenie au",
+    description: "Bunicii sunt părinții părinților tăi: rude de sânge de gradul II, în linie dreaptă. Câți bunici ai, cum se numără și ce întrebi la ei.",
+    h1: "Bunicul și bunica: cine sunt și ce grad au",
+    lead: "Bunicii sunt părinții tatălui și ai mamei tale. Fiecare om are patru bunici, iar legea îi socotește rude de sânge de gradul al doilea, în linie dreaptă.",
+    path: ["tata", "tata"], degree: "gradul II, linie dreaptă",
+    body: [
+      { h: "Cum se numără", p: [
+        "În linie dreaptă, gradul e numărul nașterilor dintre două persoane. Bunicul l-a născut pe tatăl tău (1), tatăl tău te-a născut pe tine (2). Gradul II.",
+        "Pentru bunici, tu ești nepotul sau nepoata lor, adică „nepot de bunic”, tot de gradul II. Limba română folosește același cuvânt și pentru copilul fratelui, de aceea în acte se scrie uneori „nepot de fiu” sau „nepot de fiică”.",
+      ] },
+      { h: "Bunicii dinspre tată și dinspre mamă", p: [
+        "Ai doi bunici pe linia tatălui și doi pe linia mamei. În multe familii li se spune după sat sau după casă („bunicii de la țară”, „mamaie de la deal”), iar numele acestea ajută mai târziu, când cauți în registre.",
+        "Bunica are de obicei în acte două nume: cel de fată, pe care l-a avut până la cununie, și cel al bunicului. Numele de fată e cheia spre părinții ei, adică spre străbunicii tăi.",
+      ] },
+      { h: "Ce să-i întrebi pe bunici", p: [
+        "Bunicii sunt cel mai bun izvor pentru arbore: își amintesc numele părinților și ale bunicilor lor, satele, nașii, frații plecați departe și poveștile pe care nu le-a scris nimeni.",
+        "Întreabă-i pe rând: cum îi chema pe părinții lor, câți frați au avut, unde s-au cununat, cine le-au fost nașii. Notează răspunsurile chiar atunci, cu data și locul, și pune-le în arbore lângă fiecare om.",
+        "Fotografiile vechi din casa bunicilor au adesea pe spate nume și ani. Fotografiază-le și pe spate, nu doar fața.",
+      ] },
+    ],
+    faq: [
+      { q: "Bunicul e rudă de gradul 2?", a: "Da. Două nașteri îl despart de tine: a părintelui tău și a ta." },
+      { q: "Câți bunici are un om?", a: "Patru: doi pe linia tatălui, doi pe linia mamei." },
+      { q: "Cum se numesc părinții bunicilor?", a: "Străbunici. Sunt rude de gradul III, în linie dreaptă." },
+      { q: "Soțul a doua al bunicii e bunicul meu?", a: "Nu de sânge. E soțul bunicii tale; în familie i se spune adesea bunic, dar legea nu-l socotește rudă cu tine." },
+    ],
+    related: ["strabunic", "nepot", "unchi"],
+  },
+  {
+    slug: "unchi", name: "Unchi",
+    title: "Unchiul și mătușa: ce grad de rudenie au",
+    description: "Unchiul e fratele tatălui sau al mamei, iar mătușa e sora lor. Sunt rude de sânge de gradul III. Soțul mătușii e unchi doar prin alianță.",
+    h1: "Unchiul și mătușa: cine sunt și ce grad au",
+    lead: "Unchiul e fratele tatălui sau al mamei tale, iar mătușa e sora lor. Sunt rude de sânge de gradul al treilea, în linie colaterală.",
+    path: ["tata", "frate"], degree: "gradul III, linie colaterală",
+    body: [
+      { h: "Cum se numără", p: [
+        "La rudele colaterale numeri treptele până la strămoșul comun și apoi în jos. Strămoșii comuni ai tăi și ai unchiului sunt bunicii tăi. Urci la tatăl tău (1), la bunic (2), apoi cobori la fratele tatălui (3). Gradul III.",
+        "Pentru unchi și mătușă, tu ești nepotul sau nepoata de frate ori de soră, tot rudă de gradul III.",
+      ] },
+      { h: "Unchi de sânge și unchi prin alianță", p: [
+        "Soțul mătușii și soția unchiului nu sunt rude de sânge cu tine. În familie li se spune tot unchi și mătușă, dar legea îi socotește doar afini, rude prin căsătorie. Copiii lor cu mătușa sau cu unchiul tău sunt însă verii tăi primari, rude de sânge de gradul IV.",
+        "În unele zone mătușa se cheamă „tușă” sau „lele”, iar unchiul „bade” sau „nene”. Cuvintele diferă, relația e aceeași.",
+      ] },
+      { h: "Unchii în arbore și în acte", p: [
+        "Unchii și mătușile completează ramura bunicilor: cu cât știi mai mulți frați ai părinților, cu atât arborele arată mai limpede cum s-a împărțit familia, cine a rămas în sat și cine a plecat.",
+        "În actele de botez apar des ca nași ai nepoților, iar la cununii ca martori. Mătușile apar cu numele soțului după căsătorie, deci caută-le și după numele de fată.",
+        "Căsătoria dintre unchi și nepoată sau dintre mătușă și nepot e interzisă de lege, pentru că sunt rude de gradul III.",
+      ] },
+    ],
+    faq: [
+      { q: "Unchiul e rudă de gradul 3?", a: "Da, în linie colaterală: două trepte până la bunici și una în jos, la fratele părintelui." },
+      { q: "Soțul mătușii e unchiul meu?", a: "În vorbire da, dar după lege e doar rudă prin alianță, nu de sânge." },
+      { q: "Ce sunt copiii unchiului pentru mine?", a: "Verii tăi primari, rude de gradul IV." },
+    ],
+    related: ["var-primar", "unchi-mare", "nepot"],
+  },
+  {
+    slug: "rasstrabunic", name: "Răsstrăbunic",
+    title: "Răsstrăbunicul: cine e și ce grad de rudenie are",
+    description: "Răsstrăbunicul (stră-străbunicul) e părintele unui străbunic: rudă de gradul IV, în linie dreaptă. Ai 16 răsstrăbunici. Cum le afli numele.",
+    h1: "Răsstrăbunicul: cine e și ce grad are",
+    lead: "Răsstrăbunicii, numiți și stră-străbunici, sunt părinții străbunicilor tăi. Fiecare om are șaisprezece, iar legea îi socotește rude de gradul al patrulea, în linie dreaptă.",
+    path: ["tata", "tata", "tata", "tata"], degree: "gradul IV, linie dreaptă",
+    body: [
+      { h: "Cum se numără", p: [
+        "Patru nașteri te despart de un răsstrăbunic: a fiului lui (străbunicul tău), a bunicului, a părintelui tău și a ta. Gradul IV, în linie dreaptă.",
+        "Mai departe nu mai există cuvinte obișnuite. Se spune „al cincilea bunic” sau, simplu, „strămoș”, cu numărul de generații.",
+      ] },
+      { h: "Când au trăit", p: [
+        "Cu o generație de aproximativ 25–30 de ani, răsstrăbunicii unui om născut pe la 1990 s-au născut de obicei în a doua jumătate a secolului al XIX-lea. Mulți au trăit încă sub vechile stăpâniri: în Transilvania, Banat și Bucovina sub Austro-Ungaria, în Basarabia sub Rusia.",
+        "Calculatorul de generații arată intervalul probabil pentru anul tău de naștere.",
+      ] },
+      { h: "Unde le găsești numele", p: [
+        "Aproape nimeni nu-și mai amintește numele tuturor celor șaisprezece. Pornește de la actele de cununie ale străbunicilor: ele au de obicei numele părinților mirilor, adică ale răsstrăbunicilor.",
+        "Pentru anii aceia, registrele parohiale și cele de stare civilă se păstrează de obicei la Arhivele Naționale, la serviciul județean. Uneori sunt scrise în maghiară, germană, latină sau cu litere chirilice, iar ghidurile noastre te ajută să le citești.",
+        "Trece în arbore fiecare nume găsit, chiar dacă știi doar prenumele și satul. O ramură cu un singur nume e un început bun.",
+      ] },
+    ],
+    faq: [
+      { q: "Ce e un răsstrăbunic?", a: "Părintele unui străbunic, adică bunicul bunicului tău. I se spune și stră-străbunic." },
+      { q: "Câți răsstrăbunici are un om?", a: "Șaisprezece: numărul strămoșilor se dublează la fiecare generație." },
+      { q: "Ce grad de rudenie are răsstrăbunicul?", a: "Gradul IV, în linie dreaptă." },
+    ],
+    related: ["strabunic", "bunic", "stranepot"],
+  },
+  {
+    slug: "tata-vitreg", name: "Tată vitreg",
+    title: "Tatăl vitreg și mama vitregă: sunt rude cu tine?",
+    description: "Tatăl vitreg e soțul mamei tale, fără să-ți fie tată. Nu e rudă de sânge, ci afin de gradul I. Ce înseamnă asta și cum apare în arbore.",
+    h1: "Tatăl vitreg și mama vitregă: ce fel de rudenie sunt",
+    lead: "Tatăl vitreg e soțul mamei tale, iar mama vitregă e soția tatălui tău, atunci când nu sunt părinții tăi. Nu sunt rude de sânge, ci rude prin alianță de gradul întâi.",
+    path: ["mama", "sot"], degree: "afinitate, gradul I, linie dreaptă",
+    body: [
+      { h: "De ce e afin de gradul I", p: [
+        "Afinitatea leagă un soț de rudele celuilalt soț, în același grad. Tu ești rudă de gradul I cu mama ta, așa că soțul ei e afinul tău de gradul I. La fel, soția tatălui tău e afina ta de gradul I.",
+        "Pentru ei, tu ești fiul vitreg sau fiica vitregă. Legătura vine din căsătorie, nu din naștere.",
+      ] },
+      { h: "Ce schimbă și ce nu", p: [
+        "Afinii nu sunt moștenitori legali. Un copil vitreg moștenește de la părintele vitreg doar dacă acesta îl trece în testament sau dacă l-a adoptat. După adopție, copilul devine rudă cu părintele adoptiv ca un copil născut în familie.",
+        "Dacă mama vitregă are copii din altă căsătorie, ei nu sunt frații tăi după lege, chiar dacă ați crescut împreună. Frații cu care ai un părinte comun sunt însă rude de sânge de gradul II.",
+      ] },
+      { h: "În arbore", p: [
+        "Într-un arbore bun, fiecare copil e legat de părinții lui adevărați, iar căsătoriile sunt trecute separat. Tatăl vitreg apare ca al doilea soț al mamei, cu anii căsătoriei, iar copilul rămâne legat de tatăl lui.",
+        "Mulți oameni au fost crescuți de un tată vitreg sau de o mamă vitregă și au povești frumoase despre ei. Scrie-le la profilul lor: arborele arată și legăturile de inimă, nu doar pe cele de sânge.",
+      ] },
+    ],
+    faq: [
+      { q: "Tatăl vitreg e rudă cu mine?", a: "E afin de gradul I: rudă prin căsătoria cu mama ta, nu de sânge." },
+      { q: "Moștenesc de la tatăl vitreg?", a: "Nu prin lege. Doar dacă te trece în testament sau dacă te-a adoptat." },
+      { q: "Copiii mamei vitrege sunt frații mei?", a: "Nu după lege, dacă nu aveți niciun părinte comun." },
+    ],
+    related: ["frate-vitreg", "fiu-vitreg", "socru"],
+  },
+  {
+    slug: "fiu-vitreg", name: "Fiu vitreg",
+    title: "Fiul vitreg și fiica vitregă: ce rudă îți sunt",
+    description: "Fiul vitreg e copilul soției sau al soțului tău dintr-o altă relație. E afinul tău de gradul I, nu rudă de sânge. Ce înseamnă și ce schimbă.",
+    h1: "Fiul vitreg și fiica vitregă: ce fel de rudenie sunt",
+    lead: "Fiul vitreg sau fiica vitregă e copilul soțului sau al soției tale, născut dintr-o altă relație. Legea îl socotește rudă prin alianță de gradul întâi, nu rudă de sânge.",
+    path: ["sotie", "fiu"], degree: "afinitate, gradul I, linie dreaptă",
+    body: [
+      { h: "De ce e afin de gradul I", p: [
+        "Soția ta e rudă de gradul I cu copilul ei. După lege, rudele unui soț sunt afinii celuilalt în același grad, așa că fiul ei e afinul tău de gradul I, în linie dreaptă.",
+        "Dacă copilul e și al tău, e pur și simplu fiul tău, rudă de sânge de gradul I. Calculatorul nu poate ști asta din drum, de aceea scrie „dacă nu e și fiul tău”.",
+      ] },
+      { h: "Familiile reîntregite", p: [
+        "Familiile cu copii din căsătorii diferite au existat mereu. În satele de altădată, mulți rămâneau văduvi tineri, iar a doua căsătorie aducea în aceeași casă copii din ambele părți. În registre se văd ca frați cu nume de familie diferite.",
+        "Copiii născuți apoi din noua căsătorie sunt frați după un părinte cu fiecare dintre ei, adică rude de sânge de gradul II.",
+      ] },
+      { h: "Adopție, moștenire și arbore", p: [
+        "Un fiu vitreg nu moștenește prin lege de la părintele vitreg. Dacă vrei să-i lași ceva, ai nevoie de testament. Prin adopție, copilul devine rudă cu tine ca un copil născut în familie.",
+        "În arbore, copilul rămâne legat de părinții lui adevărați, iar tu apari ca soțul sau soția mamei ori tatălui lui. Așa se vede limpede cine e rudă cu cine, fără să se piardă nimic din povestea familiei.",
+      ] },
+    ],
+    faq: [
+      { q: "Fiul vitreg e rudă de gradul 1?", a: "E afin de gradul I: rudă prin căsătoria cu părintele lui, nu de sânge." },
+      { q: "Fiul vitreg moștenește?", a: "Nu prin lege. Doar prin testament sau dacă a fost adoptat." },
+      { q: "Ce e fiul vitreg pentru copiii mei?", a: "Dacă are un părinte comun cu ei, e fratele lor după acel părinte. Dacă nu, nu sunt rude după lege." },
+    ],
+    related: ["tata-vitreg", "frate-vitreg", "ginere-si-nora"],
+  },
+  {
+    slug: "var-al-parintelui", name: "Văr al părintelui",
+    title: "Vărul tatălui sau al mamei: ce rudă îți este",
+    description: "Vărul primar al tatălui sau al mamei e rudă de gradul V cu tine. În vorbire i se spune unchi sau văr de-al doilea. Explicat simplu.",
+    h1: "Vărul tatălui sau al mamei: ce rudă îți este",
+    lead: "Vărul primar al tatălui sau al mamei tale e rudă de sânge de gradul al cincilea cu tine. În familie i se spune adesea „unchi” sau „văr”, dar nu e nici unchiul tău, nici vărul tău de-al doilea.",
+    path: ["tata", "tata", "frate", "fiu"], degree: "gradul V, linie colaterală",
+    body: [
+      { h: "Cum se numără", p: [
+        "Strămoșii comuni sunt părinții bunicului tău, adică străbunicii tăi. Urci la tatăl tău (1), la bunic (2), la străbunic (3), apoi cobori la fratele bunicului (4) și la fiul lui (5). Gradul V.",
+        "Pentru el, tu ești „nepot de văr”, copilul vărului său primar. E aceeași legătură, privită din partea cealaltă.",
+      ] },
+      { h: "Cum i se spune în familie", p: [
+        "Pentru că e cu o generație mai mare, mulți îi spun „unchi” sau „mătușă”, din respect. În engleză i se spune „first cousin once removed”, adică văr primar cu o generație diferență.",
+        "Copiii lui sunt însă verii tăi de-al doilea: aveți aceiași străbunici și sunteți pe aceeași generație.",
+      ] },
+      { h: "De ce contează în arbore", p: [
+        "Verii părinților sunt o punte spre ramura străbunicilor. Ei au crescut adesea cu bunicii tăi, și-au cunoscut unchii mari și pot avea fotografii sau acte pe care familia ta nu le mai are.",
+        "Dacă vrei să afli cine erau frații bunicului, cel mai repede ajungi prin copiii lor, adică prin verii tatălui sau ai mamei. Adaugă-i în arbore sub fratele bunicului și invită-i să completeze ce știu.",
+      ] },
+    ],
+    faq: [
+      { q: "Vărul tatălui e vărul meu de-al doilea?", a: "Nu. Vărul de-al doilea e copilul lui, de aceeași generație cu tine. El e rudă de gradul V." },
+      { q: "Ce grad de rudenie are vărul mamei?", a: "Gradul V, în linie colaterală, la fel ca vărul tatălui." },
+      { q: "Ce sunt eu pentru vărul tatălui meu?", a: "Nepot de văr: copilul vărului său primar." },
+    ],
+    related: ["var-primar", "var-de-al-doilea", "nepot-de-var"],
   },
 ];
 
