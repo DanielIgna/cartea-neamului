@@ -38,7 +38,7 @@ export const ro = {
     /** Numele platformei în această limbă (în antet, în titlul paginilor și pe prima pagină). */
     appName: "Cartea Neamului",
     /** Titlul primei pagini, pentru motoarele de căutare și previzualizarea linkului. */
-    homeTitle: "Arbore genealogic online | Cartea Neamului",
+    homeTitle: "Arbore genealogic online gratuit | Cartea Neamului",
     description: "Fă online arborele genealogic al familiei, împreună cu rudele. Păstrezi poze, povești și glasul bunicilor, iar din ele îți poți face cartea neamului în PDF.",
   },
   Layout: {
