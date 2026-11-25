@@ -42,9 +42,9 @@ function bloodName(up: number, down: number, sex: Sex): { name: string; page: st
   const pick = (a: string, b: string, page: string | null = null) => ({ name: m ? a : b, page });
   if (down === 0) {
     if (up === 1) return pick("tată", "mamă");
-    if (up === 2) return pick("bunic", "bunică");
+    if (up === 2) return pick("bunic", "bunică", "bunic");
     if (up === 3) return pick("străbunic", "străbunică", "strabunic");
-    if (up === 4) return pick("răsstrăbunic", "răsstrăbunică");
+    if (up === 4) return pick("răsstrăbunic", "răsstrăbunică", "rasstrabunic");
     return pick(`strămoș (cu ${up} generații în urmă)`, `strămoașă (cu ${up} generații în urmă)`);
   }
   if (up === 0) {
@@ -54,12 +54,12 @@ function bloodName(up: number, down: number, sex: Sex): { name: string; page: st
     return pick(`urmaș (după ${down} generații)`, `urmașă (după ${down} generații)`);
   }
   if (up === 1 && down === 1) return pick("frate", "soră", "frate-vitreg");
-  if (up === 2 && down === 1) return pick("unchi", "mătușă");
+  if (up === 2 && down === 1) return pick("unchi", "mătușă", "unchi");
   if (up === 1 && down === 2) return pick("nepot de frate sau de soră", "nepoată de frate sau de soră", "nepot");
   if (up === 2 && down === 2) return pick("văr primar", "vară primară", "var-primar");
   if (up === 3 && down === 1) return pick("unchi mare (fratele bunicului sau al bunicii)", "mătușă mare (sora bunicului sau a bunicii)", "unchi-mare");
   if (up === 1 && down === 3) return pick("strănepot de frate", "strănepoată de frate");
-  if (up === 3 && down === 2) return pick("văr al părintelui tău", "vară a părintelui tău");
+  if (up === 3 && down === 2) return pick("văr al părintelui tău", "vară a părintelui tău", "var-al-parintelui");
   if (up === 2 && down === 3) return pick("nepot de văr (copilul vărului primar)", "nepoată de văr (copilul vărului primar)", "nepot-de-var");
   if (up === 3 && down === 3) return pick("văr de-al doilea", "vară de-a doua", "var-de-al-doilea");
   if (up === 4 && down === 4) return pick("văr de-al treilea", "vară de-a treia", "var-de-al-treilea");
@@ -72,13 +72,13 @@ function affineName(kind: "of-spouse" | "spouse-of", up: number, down: number, s
   if (kind === "of-spouse") {
     if (up === 1 && down === 0) return { name: m ? "socru" : "soacră", page: "socru" };
     if (up === 1 && down === 1) return { name: m ? "cumnat (fratele soțului sau al soției)" : "cumnată (sora soțului sau a soției)", page: m ? "cumnat" : "cumnata" };
-    if (up === 0 && down === 1) return { name: m ? "fiu vitreg (dacă nu e și fiul tău)" : "fiică vitregă (dacă nu e și fiica ta)", page: null };
+    if (up === 0 && down === 1) return { name: m ? "fiu vitreg (dacă nu e și fiul tău)" : "fiică vitregă (dacă nu e și fiica ta)", page: "fiu-vitreg" };
     return null;
   }
   if (up === 1 && down === 1) return { name: m ? "cumnat (soțul surorii)" : "cumnată (soția fratelui)", page: m ? "cumnat" : "cumnata" };
   if (up === 0 && down === 1) return { name: m ? "ginere" : "noră", page: "ginere-si-nora" };
-  if (up === 1 && down === 0) return { name: m ? "tată vitreg (dacă nu e și tatăl tău)" : "mamă vitregă (dacă nu e și mama ta)", page: null };
-  if (up === 2 && down === 1) return { name: m ? "unchi prin alianță (soțul mătușii)" : "mătușă prin alianță (soția unchiului)", page: null };
+  if (up === 1 && down === 0) return { name: m ? "tată vitreg (dacă nu e și tatăl tău)" : "mamă vitregă (dacă nu e și mama ta)", page: "tata-vitreg" };
+  if (up === 2 && down === 1) return { name: m ? "unchi prin alianță (soțul mătușii)" : "mătușă prin alianță (soția unchiului)", page: "unchi" };
   return null;
 }
 
