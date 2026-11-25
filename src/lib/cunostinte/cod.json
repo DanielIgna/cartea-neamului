@@ -505,6 +505,7 @@
   "src/components/unelte/PrintButton.tsx",
   "src/components/unelte/PrintableTree.tsx",
   "src/components/unelte/ToolPages.tsx",
+  "src/data/crm-presa-mesaje.json",
   "src/data/crm-presa.csv",
   "src/data/places/README.md",
   "src/data/places/judete.json",

@@ -148,10 +148,10 @@ export const volumeValue = (accounts: number, priceLei: number) => {
 /* ---------- Coada de aprobări ---------- */
 
 export type ApprovalPayload = { destinatar?: string; subiect?: string; text?: string; [k: string]: unknown };
-export async function queueApproval(db: Db, o: { tipActiune: string; payload: ApprovalPayload; motiv?: string | null; risc?: Risk; organizationId?: string | null; userId?: string | null; dedupeKey?: string | null }, now = new Date()) {
+export async function queueApproval(db: Db, o: { tipActiune: string; payload: ApprovalPayload; motiv?: string | null; risc?: Risk; organizationId?: string | null; userId?: string | null; dedupeKey?: string | null; hours?: number }, now = new Date()) {
   const r = await db.insert(crmApprovals).values({
     tipActiune: o.tipActiune, payload: o.payload, motiv: o.motiv ?? null, risc: o.risc ?? "MEDIUM", organizationId: o.organizationId ?? null,
-    userId: o.userId ?? null, dedupeKey: o.dedupeKey ?? null, createdAt: now, expiresAt: new Date(now.getTime() + APPROVAL_HOURS * 3600_000),
+    userId: o.userId ?? null, dedupeKey: o.dedupeKey ?? null, createdAt: now, expiresAt: new Date(now.getTime() + (o.hours ?? APPROVAL_HOURS) * 3600_000),
   }).onConflictDoNothing().returning({ id: crmApprovals.id });
   return r[0]?.id ?? null;
 }
@@ -178,7 +178,7 @@ export async function recentDecisions(db: Db, limit = 30) {
  * acum) și îl trece în istoric; dacă destinatarul e pe listă, nu pleacă nimic și aprobarea rămâne „respins” cu motivul.
  */
 export async function decideApproval(db: Db, id: string, decision: "aprobat" | "respins", by: string, edit: { subiect?: string; text?: string } | null = null, now = new Date(),
-  send: (m: { to: string; subject: string; text: string; html: string; tag: string; marketing: boolean }) => Promise<{ ok?: boolean; skipped?: boolean }> = async (m) => (await import("./email")).sendEmail(m)) {
+  send: (m: { to: string; subject: string; text: string; html: string; tag: string; marketing: boolean; replyTo?: string }) => Promise<{ ok?: boolean; skipped?: boolean }> = async (m) => (await import("./email")).sendEmail(m)) {
   const [a] = await db.select().from(crmApprovals).where(eq(crmApprovals.id, id));
   if (!a || a.status !== "in_asteptare") return { ok: false as const, why: "nu mai așteaptă" };
   if (a.expiresAt < now) { await expireApprovals(db, now); return { ok: false as const, why: "a expirat" }; }
@@ -190,7 +190,8 @@ export async function decideApproval(db: Db, id: string, decision: "aprobat" | "
   if (a.tipActiune.startsWith("email") && payload.destinatar) {
     const { escHtml } = await import("./emailuri");
     const r = await send({ to: payload.destinatar, subject: payload.subiect ?? "Cartea Neamului", text: payload.text ?? "",
-      html: (payload.text ?? "").split("\n\n").map((p) => `<p>${escHtml(p).replace(/\n/g, "<br>")}</p>`).join(""), tag: `crm-${a.tipActiune}`, marketing: true });
+      html: (payload.text ?? "").split("\n\n").map((p) => `<p>${escHtml(p).replace(/\n/g, "<br>")}</p>`).join(""), tag: `crm-${a.tipActiune}`, marketing: true,
+      ...(typeof payload.replyTo === "string" && payload.replyTo.includes("@") ? { replyTo: payload.replyTo } : {}) });
     if (!r.ok) {
       const why = r.skipped ? "nu a plecat (destinatarul e pe lista „nu contacta” sau emailul nu e configurat)" : "nu a plecat (eroare la trimitere)";
       await db.update(crmApprovals).set({ status: "respins", payload: { ...payload, eroare: why }, cineAAprobat: by, cand: now }).where(eq(crmApprovals.id, id));
@@ -255,13 +256,14 @@ export async function crmCounts(db: Db, now = new Date()) {
     (select count(*) from crm_organizations) as orgs,
     (select count(*) from crm_organizations where tip = 'scoala') as scoli,
     (select count(*) from crm_organizations where tip = 'firma') as firme,
+    (select count(*) from crm_organizations where tip = 'presa') as presa,
     (select count(*) from crm_organizations where status in ('a_raspuns','interesat','in_discutie')) as calde,
     (select count(*) from crm_organizations where status in ('client','partener')) as clienti,
     (select count(*) from crm_activities where tip = 'email_trimis' and at > ${new Date(now.getTime() - 30 * DAY).toISOString()}) as trimise30,
     (select count(*) from crm_activities where tip = 'raspuns' and at > ${new Date(now.getTime() - 30 * DAY).toISOString()}) as raspunsuri30,
     (select count(*) from crm_approvals where status = 'in_asteptare' and expires_at > ${now.toISOString()}) as aprobari,
     (select count(*) from crm_suppression) as suprimate`);
-  return Object.fromEntries(Object.entries(r ?? {}).map(([k, v]) => [k, n(v)])) as Record<"orgs" | "scoli" | "firme" | "calde" | "clienti" | "trimise30" | "raspunsuri30" | "aprobari" | "suprimate", number>;
+  return Object.fromEntries(Object.entries(r ?? {}).map(([k, v]) => [k, n(v)])) as Record<"orgs" | "scoli" | "firme" | "presa" | "calde" | "clienti" | "trimise30" | "raspunsuri30" | "aprobari" | "suprimate", number>;
 }
 
 /* ---------- Formularul public „Vreau coduri” (/parteneriate) ---------- */
