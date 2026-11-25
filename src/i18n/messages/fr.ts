@@ -24,6 +24,7 @@ import { frSecuritate } from "./securitate/fr";
 import { frEmailuri } from "./emailuri/fr";
 import { frGhidArbore } from "./ghid-arbore/altele";
 import { frAbonament } from "./abonament/altele";
+import { frPreturi } from "./preturi/altele";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -92,6 +93,7 @@ export const fr: Catalog = {
   },
   ...frGhidArbore,
   ...frAbonament,
+  ...frPreturi,
   UsageNotice: {
     label: "Votre utilisation du site",
     lead: "Une question, une seule fois.",

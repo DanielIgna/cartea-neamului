@@ -2,6 +2,7 @@ import type { Catalog, DeepPartial } from "./ro";
 import { ukExtra } from "./noi/uk";
 import { ukGhidArbore } from "./ghid-arbore/altele";
 import { ukAbonament } from "./abonament/altele";
+import { ukPreturi } from "./preturi/altele";
 
 /**
  * Українська, для румунів в Україні (Чернівецька, Одеська області) і їхніх дітей. Звертання на „ти”. Те, що ще не
@@ -71,6 +72,7 @@ export const uk: DeepPartial<Catalog> = {
   },
   ...ukGhidArbore,
   ...ukAbonament,
+  ...ukPreturi,
   UsageNotice: {
     label: "Як ти користуєшся сайтом",
     lead: "Одне запитання, лише один раз.",

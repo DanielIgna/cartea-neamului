@@ -2,6 +2,7 @@ import type { Catalog, DeepPartial } from "./ro";
 import { bgExtra } from "./noi/bg";
 import { bgGhidArbore } from "./ghid-arbore/altele";
 import { bgAbonament } from "./abonament/altele";
+import { bgPreturi } from "./preturi/altele";
 
 /**
  * Български, за румънците и власите в България и за децата им. Обръщение на „ти”. Каквото още не е преведено, се
@@ -71,6 +72,7 @@ export const bg: DeepPartial<Catalog> = {
   },
   ...bgGhidArbore,
   ...bgAbonament,
+  ...bgPreturi,
   UsageNotice: {
     label: "Как използваш сайта",
     lead: "Един въпрос, само веднъж.",

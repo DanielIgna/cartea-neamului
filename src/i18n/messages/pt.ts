@@ -2,6 +2,7 @@ import type { Catalog, DeepPartial } from "./ro";
 import { ptExtra } from "./noi/pt";
 import { ptGhidArbore } from "./ghid-arbore/altele";
 import { ptAbonament } from "./abonament/altele";
+import { ptPreturi } from "./preturi/altele";
 
 /**
  * Português (Portugal), para os romenos em Portugal e os seus filhos. Tratamento por „tu”, como nas outras línguas.
@@ -71,6 +72,7 @@ export const pt: DeepPartial<Catalog> = {
   },
   ...ptGhidArbore,
   ...ptAbonament,
+  ...ptPreturi,
   UsageNotice: {
     label: "Como usas o site",
     lead: "Uma única pergunta, só uma vez.",

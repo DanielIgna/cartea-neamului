@@ -24,6 +24,7 @@ import { itSecuritate } from "./securitate/it";
 import { itEmailuri } from "./emailuri/it";
 import { itGhidArbore } from "./ghid-arbore/altele";
 import { itAbonament } from "./abonament/altele";
+import { itPreturi } from "./preturi/altele";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -92,6 +93,7 @@ export const it: Catalog = {
   },
   ...itGhidArbore,
   ...itAbonament,
+  ...itPreturi,
   UsageNotice: {
     label: "Come usi il sito",
     lead: "Una domanda, una volta sola.",

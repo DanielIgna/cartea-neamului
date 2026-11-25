@@ -24,6 +24,7 @@ import { enGBSecuritate } from "./securitate/en-GB";
 import { enGBEmailuri } from "./emailuri/en-GB";
 import { enGBGhidArbore } from "./ghid-arbore/altele";
 import { enGBAbonament } from "./abonament/altele";
+import { enGBPreturi } from "./preturi/altele";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -92,6 +93,7 @@ export const enGB: Catalog = {
   },
   ...enGBGhidArbore,
   ...enGBAbonament,
+  ...enGBPreturi,
   UsageNotice: {
     label: "How you use the site",
     lead: "One question, just once.",
