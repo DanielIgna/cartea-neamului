@@ -1,6 +1,6 @@
 ---
 title: Registru agricol
-seo: Registrul agricol: ce e, unde îl cauți și ce afli din el
+seo: Registrul agricol (și RAN): ce e și ce afli din el
 description: Registrul agricol: evidența gospodăriilor de la primărie. Ce află un genealogist din el despre familia din a doua jumătate a secolului XX.
 updated: 2026-11-25
 published: 2026-11-18
@@ -11,6 +11,8 @@ related: colectivizarea-si-registrele-agricole
 **Registrul agricol** este evidența ținută de primărie pentru fiecare gospodărie: cine locuia în ea, ce pământ și ce animale avea. Registrele de acest fel au fost folosite pe larg în a doua jumătate a secolului XX și se țin și azi.
 
 Pentru genealogie, arată componența familiei la un moment dat, inclusiv bătrânii și copiii, și schimbările de la un an la altul. Registrele vechi sunt la primărie sau la Arhive, după vârstă. Vezi ghidul [Colectivizarea și registrele agricole](/ghid/colectivizarea-si-registrele-agricole).
+
+Azi primăriile țin registrul agricol și în format electronic, într-un sistem comun pentru toată țara numit **Registrul Agricol Național (RAN)**. RAN cuprinde datele de acum ale gospodăriilor. Registrele vechi, scrise de mână, nu sunt în RAN: ele rămân la primărie sau la Arhivele Naționale, iar acolo le cauți pentru strămoși.
 
 ## Cum apare într-un act
 

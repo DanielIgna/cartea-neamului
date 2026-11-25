@@ -35,7 +35,7 @@ import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { eq, sql } from "drizzle-orm";
 import { person } from "@/db/schema";
 import { safeAccountImage } from "@/lib/tree-data";
-import { isAdminUser } from "@/lib/admin";
+import { isAdminFresh } from "@/lib/admin-access";
 import { consentState } from "@/lib/consent";
 import { isDemo } from "@/lib/demo";
 import UsageBeat from "@/components/UsageBeat";
@@ -81,6 +81,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     }).catch(() => null) : null,
   ]);
   const { theme, cookieSeen, keepSeen } = prefs;
+  // Butonul Admin din meniu: citit ca la paginile de admin (baza de date pentru adresele proprietarilor), nu doar din cookie-ul
+  // sesiunii, care putea să nu-l arate pe telefon deși panoul îl lăsa să intre (Daniel, 25.11.2026).
+  const admin = me ? await isAdminFresh(me).catch(() => false) : false;
   const myPhoto = mine?.photo ?? null;
   const avatar = myPhoto ? `/api/document/${myPhoto}` : safeAccountImage(me?.image);
   // Limba: aleasă pe acest telefon, din cont sau româna. Cine n-a ales încă și are browserul în altă limbă e întrebat o dată.
@@ -102,7 +105,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 {!me && <SignInLink label={t("signIn")} short={t("signInShort")} />}
               </div>
               {/* Pe telefon, cine e intrat în cont are tema și limba în meniul de lângă poză, ca antetul să încapă pe un rând. */}
-              {me && <UserMenu name={me.name} unread={unread} replies={replies} image={avatar} admin={isAdminUser(me)}
+              {me && <UserMenu name={me.name} unread={unread} replies={replies} image={avatar} admin={admin}
                 prefs={<><ThemeSwitch labeled /><LanguagePicker remember={source === "account"} /></>} />}
             </header>
             {ask && suggest && <LanguageSuggest locale={suggest} question={ask.s("question")} hint={ask.s("hint")} accept={ask.s("accept")} stay={ask.ro("stay")} close={ask.s("close")} />}
@@ -116,7 +119,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
             {/* Pe paginile contului: meniul lateral (calculator) și bara de jos (telefon), src/components/AccountNav.tsx. */}
             <div className="acc-wrap">
-              {me && <AccountNav name={me.name} image={avatar} unread={unread} replies={replies} admin={isAdminUser(me)}
+              {me && <AccountNav name={me.name} image={avatar} unread={unread} replies={replies} admin={admin}
                 profile={mine ? `/arbore/${mine.treeId}/persoana/${mine.id}` : null} />}
               <main id="continut">{children}</main>
             </div>
