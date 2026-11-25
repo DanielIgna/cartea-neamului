@@ -41,7 +41,7 @@ export const metadata = { title: "CRM · Admin" };
 
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
-  { key: "firme", label: "Firme" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
+  { key: "firme", label: "Firme" }, { key: "presa", label: "Presă" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
   { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "curatenie", label: "Curățenie" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
@@ -65,7 +65,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       <AdminNav active="crm" />
       {q.ok && <p className="cc-ok" role="status">{q.ok}</p>}
       <div className="stats">
-        <Stat label="Organizații" value={num(counts.orgs)} hint={`${num(counts.scoli)} școli · ${num(counts.firme)} firme`} />
+        <Stat label="Organizații" value={num(counts.orgs)} hint={`${num(counts.scoli)} școli · ${num(counts.firme)} firme · ${num(counts.presa)} presă`} />
         <Stat label="Emailuri trimise (30 z)" value={num(counts.trimise30)} hint={`${num(counts.raspunsuri30)} răspunsuri`} />
         <Stat label="Calde" value={num(counts.calde)} hint={`au răspuns, interesate sau în discuție · ${num(counts.clienti)} clienți/parteneri`} />
         <Stat label="Aprobări în așteptare" value={num(counts.aprobari)} tone={counts.aprobari ? "warn" : "ok"} hint={`${num(counts.suprimate)} pe lista „nu contacta”`} />
@@ -78,6 +78,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "pipeline" && <Pipeline />}
       {tab === "scoli" && <Orgs q={q} fixed="scoala" />}
       {tab === "firme" && <Firms q={q} />}
+      {tab === "presa" && <Orgs q={q} fixed="presa" />}
       {tab === "parteneri" && <Partners />}
       {tab === "profesori" && <Teachers />}
       {tab === "aprobari" && <Approvals />}
@@ -145,9 +146,9 @@ async function Today() {
   );
 }
 
-async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed?: "scoala" | "firma" }) {
+async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed?: "scoala" | "firma" | "presa" }) {
   const list = await orgList(db, { tip: fixed ?? q.tip, status: q.status, judet: q.judet, tara: q.tara, q: q.q, sort: q.sort ?? "prioritate" });
-  const t = fixed === "scoala" ? "scoli" : fixed === "firma" ? "firme" : "organizatii";
+  const t = fixed === "scoala" ? "scoli" : fixed === "firma" ? "firme" : fixed === "presa" ? "presa" : "organizatii";
   return (
     <>
       <div className="card">
@@ -183,6 +184,12 @@ async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed
           </table>
         </div>
         {!list.length && <p className="muted">Nicio organizație aici. Importă listele din tabul Import sau adaugă una mai jos.</p>}
+        {fixed === "presa" && (
+          <p className="muted" style={{ marginBottom: 0 }}>
+            Adresele generale ale redacțiilor, luate de pe site-ul lor (pagina e în „Sursa” din fișa fiecăreia). Le scrii din Campanii; altele le adaugi
+            din Import, cu „Redacții de presă de adăugat”.
+          </p>
+        )}
         {fixed === "scoala" && (
           <p className="muted" style={{ marginBottom: 0 }}>
             Codurile de reducere pe școală sau pe clasă (Stripe) se fac după ce conducerea școlii confirmă. Conturile, arborii și plățile de aici vin de pe
