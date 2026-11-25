@@ -22,6 +22,8 @@ Jugărul a fost folosit în provinciile sub stăpânire habsburgică până la t
 
 ## Cum socotești
 
+![Comparație între măsurile vechi de pământ: falce 1,43 ha, hectar, jugăr 0,58 ha, pogon 0,50 ha](/imagini/masuri-vechi-de-pamant-hectare.svg "Falcea, jugărul și pogonul comparate cu hectarul")
+
 Înmulțește numărul de jugăre cu 0,5755 și ai hectarele. Restul în stânjeni pătrați îl înmulțești cu 3,6 și ai metrii pătrați. Așa afli cât pământ a avut, de fapt, familia: o [sesie](/glosar/sesie) de 20 de jugăre înseamnă cam 11,5 hectare.
 
 ## Întrebări frecvente

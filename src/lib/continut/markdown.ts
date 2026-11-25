@@ -8,7 +8,9 @@ export type Inline = { t: "text" | "b" | "i"; v: string } | { t: "a"; v: string;
 export type Block =
   | { t: "h2" | "h3"; v: string; id: string }
   | { t: "p" | "note"; v: Inline[] }
-  | { t: "ul" | "ol"; items: Inline[][] };
+  | { t: "ul" | "ol"; items: Inline[][] }
+  /** Imagine desenată de noi (`![alt](/imagini/x.svg "legendă")`); v = legenda, numărată ca text. */
+  | { t: "img"; src: string; alt: string; v: string };
 
 export function slugify(s: string): string {
   return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -58,7 +60,10 @@ export function parseBlocks(body: string): Block[] {
     const line = raw.trim();
     if (!line) { flush(); continue; }
     let m: RegExpExecArray | null;
-    if ((m = /^(#{2,3})\s+(.*)$/.exec(line))) {
+    if ((m = /^!\[([^\]]+)\]\((\/[^\s)]+)(?:\s+"([^"]*)")?\)$/.exec(line))) {
+      flush();
+      blocks.push({ t: "img", alt: m[1], src: m[2], v: m[3] ?? "" });
+    } else if ((m = /^(#{2,3})\s+(.*)$/.exec(line))) {
       flush();
       blocks.push({ t: m[1].length === 2 ? "h2" : "h3", v: m[2], id: slugify(m[2]) });
     } else if ((m = /^[-*]\s+(.*)$/.exec(line)) || (m = /^\d+[.)]\s+(.*)$/.exec(line))) {
@@ -84,6 +89,9 @@ export function plainText(blocks: Block[]): string {
   const inl = (v: Inline[]) => v.map((x) => x.v).join("");
   return blocks.map((b) => ("items" in b ? b.items.map(inl).join(" ") : typeof b.v === "string" ? b.v : inl(b.v))).join(" ");
 }
+
+/** Imaginile din text (pentru sitemapul de imagini și datele Article). */
+export const images = (blocks: Block[]) => blocks.flatMap((b) => (b.t === "img" ? [{ src: b.src, alt: b.alt, caption: b.v }] : []));
 
 /** Toate legăturile din text (ca testele să verifice că duc la pagini care există). */
 export function links(blocks: Block[]): string[] {

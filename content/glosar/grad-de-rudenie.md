@@ -13,6 +13,8 @@ related: grade-de-rudenie
 
 Așa se numără și în Codul civil român. Rudele soțului sau soției nu sunt rude de sânge, ci afini; vezi [afinitate](/glosar/afinitate). Exemple și tabel în ghidul [Gradele de rudenie](/ghid/grade-de-rudenie).
 
+![Schema gradelor de rudenie: tata 1, bunic 2, frate 2, unchi 3, văr primar 4, unchi mare 4, vărul părintelui 5, văr de-al doilea 6](/imagini/grade-de-rudenie-schema.svg "Gradul de rudenie față de tine, pentru rudele cele mai des căutate")
+
 ## Cum apare într-un act
 
 Gradul de rudenie apare în acte ca formulă: în certificatele de moștenitor („nepot de frate”), în dispensele de căsătorie din registrele catolice („consanguinitas in 3° gradu”) sau în dosarele de succesiune. O dispensă pentru rudenie îți spune că mirii aveau un strămoș comun, deci două ramuri se unesc.

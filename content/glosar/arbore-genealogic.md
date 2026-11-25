@@ -16,6 +16,8 @@ Formele de desen sunt multe: arbore clasic, evantai, cerc. Indiferent de formă,
 
 ## Model de arbore genealogic de completat cu nume
 
+![Model de arbore genealogic de completat cu nume, pe patru generații: eu, părinți, bunici și străbunici](/imagini/arbore-genealogic-model-de-completat.svg "Model de arbore genealogic de completat: eu, părinții, cei patru bunici și cei opt străbunici")
+
 Cel mai simplu model are patru rânduri, de jos în sus: tu (și frații tăi), părinții, cei patru bunici și cei opt străbunici. La fiecare om scrii numele, anul nașterii și satul sau orașul. La femei scrie și numele de fată, pentru că el duce mai departe, spre părinții lor.
 
 Exemplu pentru un rând de bunici: „Ion Pop (1938, Jucu) și Maria Pop, născută Rus (1941, Bonțida)”. Unde nu știi un nume, lasă locul liber și întreabă familia: bunicii își amintesc de obicei numele părinților și ale bunicilor lor.

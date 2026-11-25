@@ -1600,6 +1600,8 @@ h1.section-label{font-family:var(--body);text-wrap:wrap}
 .prose .lead{font-size:1.1em}
 .prose li{margin:4px 0}
 .prose-note{border-inline-start:3px solid var(--ochre-ink);background:var(--surface-2);padding:10px 14px;border-radius:10px;border-start-start-radius:0;border-end-start-radius:0}
+.prose-figure{margin:18px 0;padding:12px;background:#fffdf8;border:1px solid var(--line,#e6dccb);border-radius:12px}
+.prose-figure figcaption{font-size:.9rem;color:var(--muted,#6b6257);margin-top:8px;text-align:center}
 .toc{background:var(--surface-2);border-radius:12px;padding:12px 16px;margin:12px 0 4px}
 .toc ol{margin:6px 0 0;padding-inline-start:20px}
 .small{font-size:14px}

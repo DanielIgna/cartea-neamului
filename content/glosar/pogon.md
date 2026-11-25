@@ -22,6 +22,8 @@ Pogonul a fost folosit în Țara Românească din vremuri vechi până la trecer
 
 ## Cum socotești
 
+![Comparație între măsurile vechi de pământ: falce 1,43 ha, hectar, jugăr 0,58 ha, pogon 0,50 ha](/imagini/masuri-vechi-de-pamant-hectare.svg "Falcea, jugărul și pogonul comparate cu hectarul")
+
 Înmulțește numărul de pogoane cu 0,5 și ai, aproximativ, hectarele. Pentru un calcul exact, înmulțește cu 0,5012. Un țăran împroprietărit cu 5 pogoane primea deci cam 2,5 hectare.
 
 ## Întrebări frecvente

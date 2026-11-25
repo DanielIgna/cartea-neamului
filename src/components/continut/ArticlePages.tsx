@@ -4,6 +4,7 @@ import { BYLINE, ORG, pageCardUrl } from "@/lib/seo/organizatie";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
+import { images } from "@/lib/continut/markdown";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import CtaArbore from "@/components/continut/CtaArbore";
 import HubSearch from "@/components/continut/HubSearch";
@@ -125,7 +126,7 @@ function entryJsonLd(e: Entry) {
   return {
     "@context": "https://schema.org", "@type": "Article", headline: e.title, description: e.description, url, inLanguage: e.lang === "en" ? "en-US" : "ro",
     mainEntityOfPage: url, datePublished: e.published.toISOString().slice(0, 10), dateModified: e.updated.toISOString().slice(0, 10),
-    wordCount: e.words, image: `${SITE_URL}${pageCardUrl(e.path) ?? "/opengraph-image.png"}`, author: PUBLISHER, publisher: PUBLISHER,
+    wordCount: e.words, image: [`${SITE_URL}${pageCardUrl(e.path) ?? "/opengraph-image.png"}`, ...images(e.blocks).map((x) => `${SITE_URL}${x.src}`)], author: PUBLISHER, publisher: PUBLISHER,
     isPartOf: { "@type": "CollectionPage", name: HUB.ghid.h1, url: canonicalUrl(HUB.ghid.path) },
   };
 }
