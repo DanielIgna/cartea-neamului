@@ -410,6 +410,28 @@ export function periodPrice(t: Tier, p: Period, ownsTree: boolean, s: PlanSettin
   const lei = s[`${t}${k}Lei`], eur = s[`${t}${k}Eur`];
   return lei > 0 && eur > 0 ? { lei, eur } : null;
 }
+/**
+ * Prețul tăiat de lângă preț (Daniel, 25.11.2026), doar unul real, spus ce e (regula Omnibus: nu e un „preț de dinainte”):
+ * cine are prețul de reînnoire vede prețul întreg al anului; altfel, la anual și trimestrial, cât ar costa aceeași perioadă plătită lunar.
+ * null = nimic de tăiat (plata lunară, Basic fără plată lunară, sau prețul nu e mai mic).
+ */
+export function comparePrice(t: Tier, p: Period, ownsTree: boolean, s: PlanSettings, loyal: boolean, lei: boolean):
+  { kind: "full"; was: number } | { kind: "monthly"; was: number; count: number; month: number } | null {
+  const now = periodPrice(t, p, ownsTree, s, loyal);
+  if (!now) return null;
+  const pay = lei ? now.lei : now.eur;
+  if (p === "an" && loyal) {
+    const full = tierPrice(t, ownsTree, s);
+    const was = lei ? full.lei : full.eur;
+    return was > pay ? { kind: "full", was } : null;
+  }
+  if (p === "luna" || !s.subs) return null;
+  const m = periodPrice(t, "luna", ownsTree, s);
+  if (!m) return null;
+  const month = lei ? m.lei : m.eur, count = PERIOD_MONTHS[p];
+  const was = Math.round(month * count * 100) / 100;
+  return was > pay ? { kind: "monthly", was, count, month } : null;
+}
 /** Perioadele oferite la un plan (anul mereu; luna și trimestrul doar cu abonamentele pornite și prețul pus). */
 export const periodsFor = (t: Tier, s: PlanSettings): Period[] => PERIODS.filter((p) => p === "an" || (s.subs && periodPrice(t, p, true, s) !== null));
 /** Cât economisești pe an cu plata anuală față de cea lunară, în procente întregi (0 dacă nu se oferă lunar). */

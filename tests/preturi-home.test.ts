@@ -36,3 +36,15 @@ describe("prețurile de pe prima pagină (25.11.2026)", () => {
     expect(landing).toContain('s.subs ? trialText.slice(0, 2) : trialText');
   });
 });
+
+describe("prețul tăiat (25.11.2026)", async () => {
+  const { comparePrice, DEFAULT_SETTINGS: s } = await import("@/lib/plans");
+  it("spune ce e: aceeași perioadă plătită lunar sau prețul întreg; nimic la lunar", () => {
+    expect(comparePrice("familie", "an", true, s, false, true)).toEqual({ kind: "monthly", was: 203.88, count: 12, month: 16.99 });
+    expect(comparePrice("premium", "trimestru", true, s, false, true)).toEqual({ kind: "monthly", was: 83.97, count: 3, month: 27.99 });
+    expect(comparePrice("familie", "luna", true, s, false, true)).toBeNull();
+    expect(comparePrice("basic", "an", true, s, false, true)).toBeNull();
+    expect(comparePrice("familie", "an", true, s, true, true)).toEqual({ kind: "full", was: 149 });
+    expect(comparePrice("basic", "an", true, s, true, false)).toEqual({ kind: "full", was: 10 });
+  });
+});

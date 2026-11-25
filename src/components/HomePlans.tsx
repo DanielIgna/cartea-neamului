@@ -13,6 +13,8 @@ export type HomePlan = {
   price: Record<Period, string | null>;
   /** Prețul pe an, arătat mic la Lunar și La 3 luni („sau 149 lei pe an”). */
   orYear: string;
+  /** Prețul tăiat pe fiecare perioadă, cu ce e el („12 × 16,99 lei, dacă plătești lunar”); null = nimic de tăiat. */
+  was: Record<Period, { price: string; note: string } | null>;
   /** „Economisești 27% față de plata lunară” (doar la Anual); "" = nu e cazul. */
   save: string;
   /** „Din al doilea an: 119 lei pe an”; "" = același preț. */
@@ -60,6 +62,7 @@ export default function HomePlans({ plans, periods, periodNames, periodLabel, sa
               {x.badge && <span className="lp-plan-badge">{x.badge}</span>}
               <h3>{x.name}</h3>
               <div className="lp-plan-cost">
+                {price && x.was[period] && <p className="price-was"><s>{x.was[period]!.price}</s> <span>{x.was[period]!.note}</span></p>}
                 {price
                   ? <p className="lp-plan-price">{price}</p>
                   : <><p className="lp-plan-price lp-plan-only">{onlyYearly}</p><p className="lp-plan-sub">{x.price.an}</p></>}

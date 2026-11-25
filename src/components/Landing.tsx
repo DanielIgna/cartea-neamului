@@ -10,7 +10,7 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
-import { DEFAULT_SETTINGS, LIMIT_KEYS, PERIODS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice, yearSaving, type Period } from "@/lib/plans";
+import { DEFAULT_SETTINGS, LIMIT_KEYS, PERIODS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice, yearSaving, comparePrice, type Period } from "@/lib/plans";
 import HomePlans, { type HomePlan } from "@/components/HomePlans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
@@ -118,11 +118,16 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
       const v = s.subs || p === "an" ? periodPrice(x, p, true, s) : null;
       return v ? (s.subs ? tsub("price", { price: label(v), per: tsub(`per.${p}`) }) : tp("perYear", { price: label(v) })) : null;
     };
+    const wasAt = (p: Period) => {
+      const w = comparePrice(x, p, true, s, false, lei);
+      return w && w.kind === "monthly" ? { price: money(w.was, locale).label, note: tpr("wasMonthly", { count: w.count, price: money(w.month, locale).label }) } : null;
+    };
     const renew = s.subs ? label(periodPrice(x, "an", true, s, true)!) : year;
     const saving = s.subs ? yearSaving(x, s, lei) : 0;
     return {
       key: x, name, badge: x === "familie" ? tp("recommended") : undefined,
       price: { luna: at("luna"), trimestru: at("trimestru"), an: at("an") },
+      was: { luna: wasAt("luna"), trimestru: wasAt("trimestru"), an: wasAt("an") },
       orYear: tpr("orYear", { price: year }),
       save: saving > 0 ? tsub("saveYear", { percent: saving }) : "",
       renew: renew !== year ? tsub("renewFrom", { price: renew }) : "",

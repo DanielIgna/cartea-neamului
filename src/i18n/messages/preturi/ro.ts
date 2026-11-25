@@ -22,5 +22,7 @@ export const roPreturi = {
     periodLabel: "Cum plătești",
     bannerAfter: "După ele, alegi un plan: de la {month} pe lună sau {year} pe an.",
     payToday: "Plata și planul încep azi. Cele {days} zile gratuite sunt cele de la începutul contului și nu se mai adaugă după plată.",
+    wasMonthly: "{count} × {price}, dacă plătești lunar",
+    wasFull: "prețul întreg; tu plătești prețul de reînnoire",
   },
 };

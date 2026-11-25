@@ -24,6 +24,8 @@ export const enGBPreturi: P = {
     periodLabel: "How you pay",
     bannerAfter: "After that, you choose a plan: from {month} a month or {year} a year.",
     payToday: "The payment and the plan start today. The {days} free days are the ones at the start of your account and are not added on after payment.",
+    wasMonthly: "{count} × {price} if you pay monthly",
+    wasFull: "full price; you pay the renewal price",
   },
 };
 
@@ -47,6 +49,8 @@ export const frPreturi: P = {
     periodLabel: "Comment vous payez",
     bannerAfter: "Ensuite, vous choisissez une formule : à partir de {month} par mois ou {year} par an.",
     payToday: "Le paiement et la formule commencent aujourd’hui. Les {days} jours gratuits sont ceux du début du compte et ne s’ajoutent pas après le paiement.",
+    wasMonthly: "{count} × {price} si vous payez au mois",
+    wasFull: "prix plein ; vous payez le prix de renouvellement",
   },
 };
 
@@ -70,6 +74,8 @@ export const esPreturi: P = {
     periodLabel: "Cómo pagas",
     bannerAfter: "Después eliges un plan: desde {month} al mes o {year} al año.",
     payToday: "El pago y el plan empiezan hoy. Los {days} días gratis son los del comienzo de la cuenta y no se añaden después del pago.",
+    wasMonthly: "{count} × {price} si pagas al mes",
+    wasFull: "precio completo; tú pagas el precio de renovación",
   },
 };
 
@@ -93,6 +99,8 @@ export const nlPreturi: P = {
     periodLabel: "Hoe je betaalt",
     bannerAfter: "Daarna kies je een abonnement: vanaf {month} per maand of {year} per jaar.",
     payToday: "De betaling en het abonnement beginnen vandaag. De {days} gratis dagen zijn die aan het begin van je account en komen er na de betaling niet bij.",
+    wasMonthly: "{count} × {price} als je per maand betaalt",
+    wasFull: "volle prijs; jij betaalt de verlengingsprijs",
   },
 };
 
@@ -116,6 +124,8 @@ export const dePreturi: P = {
     periodLabel: "Wie du zahlst",
     bannerAfter: "Danach wählst du einen Tarif: ab {month} im Monat oder {year} im Jahr.",
     payToday: "Zahlung und Tarif beginnen heute. Die {days} Gratistage sind die zu Beginn deines Kontos und kommen nach der Zahlung nicht dazu.",
+    wasMonthly: "{count} × {price}, wenn du monatlich zahlst",
+    wasFull: "voller Preis; du zahlst den Verlängerungspreis",
   },
 };
 
@@ -139,6 +149,8 @@ export const itPreturi: P = {
     periodLabel: "Come paghi",
     bannerAfter: "Dopo scegli un piano: da {month} al mese o {year} all’anno.",
     payToday: "Il pagamento e il piano iniziano oggi. I {days} giorni gratis sono quelli dell’inizio dell’account e non si aggiungono dopo il pagamento.",
+    wasMonthly: "{count} × {price} se paghi ogni mese",
+    wasFull: "prezzo pieno; tu paghi il prezzo di rinnovo",
   },
 };
 
@@ -162,6 +174,8 @@ export const huPreturi: P = {
     periodLabel: "Hogyan fizetsz",
     bannerAfter: "Utána választasz egy csomagot: havi {month}-tól vagy évi {year}.",
     payToday: "A fizetés és a csomag ma kezdődik. A {days} ingyenes nap a fiók elején volt, és fizetés után nem adódik hozzá.",
+    wasMonthly: "{count} × {price}, ha havonta fizetsz",
+    wasFull: "teljes ár; te a megújítási árat fizeted",
   },
 };
 
@@ -185,6 +199,8 @@ export const hePreturi: P = {
     periodLabel: "איך משלמים",
     bannerAfter: "אחריהם בוחרים תוכנית: החל מ-{month} לחודש או {year} לשנה.",
     payToday: "התשלום והתוכנית מתחילים היום. {days} הימים בחינם הם אלה שבתחילת החשבון, והם לא מתווספים אחרי התשלום.",
+    wasMonthly: "{count} × {price} בתשלום חודשי",
+    wasFull: "המחיר המלא; אתם משלמים את מחיר החידוש",
   },
 };
 
@@ -208,6 +224,8 @@ export const ptPreturi: P = {
     periodLabel: "Como pagas",
     bannerAfter: "Depois escolhes um plano: a partir de {month} por mês ou {year} por ano.",
     payToday: "O pagamento e o plano começam hoje. Os {days} dias grátis são os do início da conta e não se somam depois do pagamento.",
+    wasMonthly: "{count} × {price} se pagares por mês",
+    wasFull: "preço completo; tu pagas o preço de renovação",
   },
 };
 
@@ -231,6 +249,8 @@ export const elPreturi: P = {
     periodLabel: "Πώς πληρώνεις",
     bannerAfter: "Μετά διαλέγεις πρόγραμμα: από {month} τον μήνα ή {year} τον χρόνο.",
     payToday: "Η πληρωμή και το πρόγραμμα ξεκινούν σήμερα. Οι {days} δωρεάν μέρες είναι αυτές στην αρχή του λογαριασμού και δεν προστίθενται μετά την πληρωμή.",
+    wasMonthly: "{count} × {price} αν πληρώνεις μηνιαία",
+    wasFull: "πλήρης τιμή· εσύ πληρώνεις την τιμή ανανέωσης",
   },
 };
 
@@ -254,6 +274,8 @@ export const svPreturi: P = {
     periodLabel: "Hur du betalar",
     bannerAfter: "Därefter väljer du en plan: från {month} i månaden eller {year} per år.",
     payToday: "Betalningen och planen börjar i dag. De {days} gratisdagarna är de i början av kontot och läggs inte till efter betalningen.",
+    wasMonthly: "{count} × {price} om du betalar per månad",
+    wasFull: "fullt pris; du betalar förnyelsepriset",
   },
 };
 
@@ -277,6 +299,8 @@ export const daPreturi: P = {
     periodLabel: "Sådan betaler du",
     bannerAfter: "Derefter vælger du en plan: fra {month} om måneden eller {year} om året.",
     payToday: "Betalingen og planen starter i dag. De {days} gratis dage er dem i starten af kontoen og lægges ikke til efter betalingen.",
+    wasMonthly: "{count} × {price}, hvis du betaler månedligt",
+    wasFull: "fuld pris; du betaler fornyelsesprisen",
   },
 };
 
@@ -300,6 +324,8 @@ export const nbPreturi: P = {
     periodLabel: "Slik betaler du",
     bannerAfter: "Deretter velger du en plan: fra {month} i måneden eller {year} i året.",
     payToday: "Betalingen og planen starter i dag. De {days} gratisdagene er de i starten av kontoen og legges ikke til etter betalingen.",
+    wasMonthly: "{count} × {price} hvis du betaler månedlig",
+    wasFull: "full pris; du betaler fornyelsesprisen",
   },
 };
 
@@ -323,6 +349,8 @@ export const ukPreturi: P = {
     periodLabel: "Як ти платиш",
     bannerAfter: "Після них обираєш план: від {month} на місяць або {year} на рік.",
     payToday: "Оплата і план починаються сьогодні. {days} безкоштовних днів — це дні на початку облікового запису, після оплати вони не додаються.",
+    wasMonthly: "{count} × {price}, якщо платити щомісяця",
+    wasFull: "повна ціна; ти платиш ціну поновлення",
   },
 };
 
@@ -346,6 +374,8 @@ export const srPreturi: P = {
     periodLabel: "Kako plaćaš",
     bannerAfter: "Posle njih biraš plan: od {month} mesečno ili {year} godišnje.",
     payToday: "Plaćanje i plan počinju danas. {days} besplatnih dana su oni s početka naloga i ne dodaju se posle plaćanja.",
+    wasMonthly: "{count} × {price} ako plaćaš mesečno",
+    wasFull: "puna cena; ti plaćaš cenu obnove",
   },
 };
 
@@ -369,6 +399,8 @@ export const bgPreturi: P = {
     periodLabel: "Как плащаш",
     bannerAfter: "След тях избираш план: от {month} на месец или {year} на година.",
     payToday: "Плащането и планът започват днес. {days}-те безплатни дни са тези в началото на профила и не се добавят след плащането.",
+    wasMonthly: "{count} × {price}, ако плащаш месечно",
+    wasFull: "пълна цена; ти плащаш цената за подновяване",
   },
 };
 
@@ -392,6 +424,8 @@ export const trPreturi: P = {
     periodLabel: "Nasıl ödersin",
     bannerAfter: "Sonrasında bir plan seçersin: ayda {month}’den ya da yılda {year}.",
     payToday: "Ödeme ve plan bugün başlar. {days} ücretsiz gün hesabın başındaki günlerdir ve ödemeden sonra eklenmez.",
+    wasMonthly: "aylık ödersen {count} × {price}",
+    wasFull: "tam fiyat; sen yenileme fiyatını ödersin",
   },
 };
 
