@@ -257,13 +257,14 @@ export async function crmCounts(db: Db, now = new Date()) {
     (select count(*) from crm_organizations where tip = 'scoala') as scoli,
     (select count(*) from crm_organizations where tip = 'firma') as firme,
     (select count(*) from crm_organizations where tip = 'presa') as presa,
+    (select count(*) from crm_organizations where tip = 'librarie_magazin') as magazine,
     (select count(*) from crm_organizations where status in ('a_raspuns','interesat','in_discutie')) as calde,
     (select count(*) from crm_organizations where status in ('client','partener')) as clienti,
     (select count(*) from crm_activities where tip = 'email_trimis' and at > ${new Date(now.getTime() - 30 * DAY).toISOString()}) as trimise30,
     (select count(*) from crm_activities where tip = 'raspuns' and at > ${new Date(now.getTime() - 30 * DAY).toISOString()}) as raspunsuri30,
     (select count(*) from crm_approvals where status = 'in_asteptare' and expires_at > ${now.toISOString()}) as aprobari,
     (select count(*) from crm_suppression) as suprimate`);
-  return Object.fromEntries(Object.entries(r ?? {}).map(([k, v]) => [k, n(v)])) as Record<"orgs" | "scoli" | "firme" | "presa" | "calde" | "clienti" | "trimise30" | "raspunsuri30" | "aprobari" | "suprimate", number>;
+  return Object.fromEntries(Object.entries(r ?? {}).map(([k, v]) => [k, n(v)])) as Record<"orgs" | "scoli" | "firme" | "presa" | "magazine" | "calde" | "clienti" | "trimise30" | "raspunsuri30" | "aprobari" | "suprimate", number>;
 }
 
 /* ---------- Formularul public „Vreau coduri” (/parteneriate) ---------- */

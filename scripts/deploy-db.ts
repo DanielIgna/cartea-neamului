@@ -13,7 +13,7 @@ import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { probaOnce } from "../src/lib/coduri-activare-proba";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { readFileSync } from "node:fs";
-import { seedPressDraftsOnce, seedPressOnce } from "../src/lib/crm-import";
+import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce } from "../src/lib/crm-import";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -57,4 +57,8 @@ try { console.log(`deploy-db: Google: ${await startGoogleOnce(db)}`); } catch (e
 // Redacțiile de presă (Daniel, 25.11.2026): intră o singură dată în CRM, la „Presă”; nu se trimite nimic de aici.
 try { console.log(`deploy-db: presa în CRM: ${await seedPressOnce(db, readFileSync("src/data/crm-presa.csv", "utf8"))}`); } catch (e) { console.error("deploy-db: lista de presă a eșuat", e); }
 try { console.log(`deploy-db: emailuri pentru presă: ${await seedPressDraftsOnce(db, JSON.parse(readFileSync("src/data/crm-presa-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: emailurile pentru presă au eșuat", e); }
+// Librăriile și magazinele online pentru cardurile cadou digitale (Daniel, 25.11.2026): o singură dată în CRM → Magazine online,
+// cu câte un email gata în Aprobări. Nu pleacă nimic până nu apasă el „Trimite acum”.
+try { console.log(`deploy-db: magazine în CRM: ${await seedShopsOnce(db, readFileSync("src/data/crm-magazine.csv", "utf8"))}`); } catch (e) { console.error("deploy-db: lista de magazine a eșuat", e); }
+try { console.log(`deploy-db: emailuri pentru magazine: ${await seedShopDraftsOnce(db, JSON.parse(readFileSync("src/data/crm-magazine-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: emailurile pentru magazine au eșuat", e); }
 process.exit(0);
