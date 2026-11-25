@@ -3,7 +3,7 @@ title: Răzeș
 description: Răzeșii: țăranii liberi din Moldova, stăpâni de pământ pe neamuri. Ce acte de proprietate și spițe de neam au păstrat. Explicat pe scurt, pentru arbore.
 updated: 2026-11-18
 alt: răzeși
-terms: mosnean, clacas, spita-neamului, catagrafie
+terms: mosnean, clacas, spita-neamului, catagrafie, mazil
 related: catagrafiile-din-moldova-si-tara-romaneasca, testamente-si-acte-de-mostenire
 ---
 **Răzeșii** erau țăranii liberi din Moldova, care stăpâneau pământ în comun, pe neamuri coborâte dintr-un strămoș, ca [moșnenii](/glosar/mosnean) din Țara Românească.

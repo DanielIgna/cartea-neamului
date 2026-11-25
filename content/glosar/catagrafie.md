@@ -3,7 +3,7 @@ title: Catagrafie
 description: Catagrafiile din Moldova și Țara Românească: listele de locuitori și gospodării de dinainte de recensămintele moderne. Explicat pe scurt, pentru arbore.
 updated: 2026-11-18
 alt: catagrafii, catastih
-terms: conscriptie, recensamant, razes, mosnean, clacas
+terms: conscriptie, recensamant, razes, mosnean, clacas, birnic, mazil
 related: catagrafiile-din-moldova-si-tara-romaneasca, recensamintele-vechi
 ---
 **Catagrafia** (din grecește, „înscriere”) este o listă a locuitorilor și gospodăriilor, făcută în Moldova și Țara Românească în secolele XVIII–XIX, de obicei pentru impozite. Este echivalentul [conscripțiilor](/glosar/conscriptie) din Transilvania.
