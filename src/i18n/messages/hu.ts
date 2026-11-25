@@ -24,6 +24,7 @@ import { huSecuritate } from "./securitate/hu";
 import { huEmailuri } from "./emailuri/hu";
 import { huGhidArbore } from "./ghid-arbore/altele";
 import { huAbonament } from "./abonament/altele";
+import { huPreturi } from "./preturi/altele";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -92,6 +93,7 @@ export const hu: Catalog = {
   },
   ...huGhidArbore,
   ...huAbonament,
+  ...huPreturi,
   UsageNotice: {
     label: "Hogyan használod az oldalt",
     lead: "Egy kérdés, csak egyszer.",

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ConsentGuard from "@/components/ConsentGuard";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { tree, treeMember } from "@/db/schema";
@@ -9,7 +10,7 @@ import { cookies, headers } from "next/headers";
 import { LINK_CODE_COOKIE, cleanLinkCode } from "@/lib/cod-link";
 import { bookAccess, bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyIn, priceFor, quoteYear } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { LIMIT_KEYS, TIERS, isKept, isPeriod, mayKeep, periodPrice, periodsFor, tierBook, tierLimits, tierPrice, tierRank, trialLimits, yearSaving, type Access, type Period, type Tier } from "@/lib/plans";
+import { LIMIT_KEYS, TIERS, isKept, isPeriod, isTier, mayKeep, periodPrice, periodsFor, tierBook, tierLimits, tierPrice, tierRank, trialLimits, yearSaving, type Access, type Period, type Tier } from "@/lib/plans";
 import { isLoyal, nextCharge, subscriptionOf } from "@/lib/abonament";
 import { formatPaid } from "@/lib/emailuri";
 import type { Locale } from "@/i18n/locales";
@@ -40,7 +41,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   // „Dăruiește acum” de pe /cadou-de-sarbatori: planul ales rămâne și după intrarea în cont, iar darul vine primul pe pagină.
   const dar = (TIERS as readonly string[]).includes(str("dar")) ? (str("dar") as Tier) : null;
   const me = await requireUser(dar ? `/plata?dar=${dar}` : "/plata");
-  const [t, tk, tg, ts, locale] = await Promise.all([getT("Plata"), getT("Keep"), getT("GiftPage"), getT("Sub"), getLocale()]);
+  const [t, tk, tg, ts, tpr, locale] = await Promise.all([getT("Plata"), getT("Keep"), getT("GiftPage"), getT("Sub"), getT("Preturi"), getLocale()]);
   const { access, settings: s, ownsTree } = await userAccess(db, me.id);
   const admin = isAdminUser(me);
   const open = s.on || admin;
@@ -74,6 +75,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
   // Abonamentul (src/lib/abonament.ts): perioada aleasă sus (implicit anual), abonamentul omului și dacă a mai avut un an.
   const subsOn = s.subs;
   const period: Period = subsOn && isPeriod(str("perioada")) ? (str("perioada") as Period) : "an";
+  // Planul ales pe prima pagină („Alege Familie”): cardul lui iese în evidență și pagina se oprește la el (#plan-familie).
+  const chosen = isTier(str("plan")) ? str("plan") : null;
   const mine = subsOn ? await subscriptionOf(db, me.id) : null;
   const loyal = subsOn ? await isLoyal(db, me.id, s) : false;
   const subNotice = str("abonament") === "oprit" ? ts("stopped") : str("abonament") === "pornit" ? ts("resumed") : str("gata") === "reinnoire" ? ts("thanksLater")
@@ -157,7 +160,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     const later = subsOn && !!running && tierRank(x) <= tierRank(running.tier) && !thisSub;
     const laterDate = running?.until ? (mine?.stripeSub ? nextCharge(running.until) : running.until) : null;
     return (
-      <div key={x} className={`plan-card${x === "familie" ? " recommended" : ""}${currentTier === x ? " current" : ""}`}>
+      <div key={x} id={`plan-${x}`} className={`plan-card${x === "familie" ? " recommended" : ""}${currentTier === x ? " current" : ""}${chosen === x ? " chosen" : ""}`}>
         {x === "familie" && <span className="plan-badge">{t("recommended")}</span>}
         <h3>{tierName(x)}</h3>
         <p className="plan-price">{subsOn ? ts("price", { price: shown, per: per(pp) }) : t("perYear", { price: shown })}</p>
@@ -198,6 +201,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
             {subsOn && !quote.upgradeFrom ? consentSub : consent}
             <div className="actions"><button className={`btn${x === "familie" || quote.upgradeFrom ? " primary" : ""}`}>{quote.upgradeFrom ? t("upgradeBtn", { plan: tierName(x), price: money(quote.value, locale).label })
               : subsOn ? ts("subscribeBtn", { price: shown, per: per(pp) }) : t("pay", { price: money(quote.value, locale).label })}</button></div>
+            {/* Lângă plată (Daniel, 25.11.2026): planul începe azi, zilele gratuite nu se adaugă după plată (applyPayment pornește de la azi). */}
+            {!running && !quote.upgradeFrom && <p className="muted pay-today">{tpr("payToday", { days: String(s.trialDays) })}</p>}
           </form>
         )}
         {paying && quote.ok && x === "basic" && !quote.upgradeFrom && !later && pp === "an" && bundle > 0 && (!subsOn || bundle > (lei ? first.lei : first.eur)) && (
@@ -282,6 +287,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
 
   return (
     <section className="stack plata">
+      <ConsentGuard />
       <div className="card">
         <h1 style={{ marginTop: 0 }}>{t("title")}</h1>
         {offerLine && <p role="status" className="pay-ok"><b>{offerLine}</b></p>}

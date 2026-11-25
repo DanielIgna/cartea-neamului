@@ -2,6 +2,7 @@ import type { Catalog, DeepPartial } from "./ro";
 import { srExtra } from "./noi/sr";
 import { srGhidArbore } from "./ghid-arbore/altele";
 import { srAbonament } from "./abonament/altele";
+import { srPreturi } from "./preturi/altele";
 
 /**
  * Srpski (latinica), za Rumune i Vlahe u Srbiji (Vojvodina, Timočka krajina) i njihovu decu. Obraćanje sa „ti”.
@@ -71,6 +72,7 @@ export const sr: DeepPartial<Catalog> = {
   },
   ...srGhidArbore,
   ...srAbonament,
+  ...srPreturi,
   UsageNotice: {
     label: "Kako koristiš sajt",
     lead: "Jedno pitanje, samo jednom.",

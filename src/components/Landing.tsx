@@ -10,7 +10,8 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
-import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
+import { DEFAULT_SETTINGS, LIMIT_KEYS, PERIODS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice, yearSaving, type Period } from "@/lib/plans";
+import HomePlans, { type HomePlan } from "@/components/HomePlans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 import { LANGUAGE_COUNT } from "@/i18n/locales";
@@ -88,7 +89,7 @@ const cachedProof = unstable_cache(async () => {
 }, ["home-proof"], { revalidate: 3600 });
 
 export default async function Landing({ deleted }: { deleted: boolean }) {
-  const tsub = await getT("Sub");
+  const [tsub, tpr] = await Promise.all([getT("Sub"), getT("Preturi")]);
   const [t, tc, th, tp, tg, tm, tt, proof, appName, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), getT("Meta"), getT("TryTree"), cachedProof().catch(() => 0), getAppName(), cachedHomeImages(),
     // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
@@ -106,6 +107,47 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
     tiers: { basic: tp("tiers.basic.name"), familie: tp("tiers.familie.name"), premium: tp("tiers.premium.name") },
   });
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
+  // Prețurile de pe prima pagină (25.11.2026): pentru fiecare plan, prețul pe fiecare perioadă, ca schimbarea perioadei să nu mai ceară serverul.
+  const label = (v: { lei: number; eur: number }) => money(lei ? v.lei : v.eur, locale).label;
+  const homePeriods: Period[] = s.subs ? [...PERIODS] : ["an"];
+  const bestSaving = s.subs ? Math.max(...TIERS.map((x) => yearSaving(x, s, lei))) : 0;
+  const homePlans: HomePlan[] = TIERS.map((x) => {
+    const lim = tierLimits(x, s), book = tierBook(x, s), name = tp(`tiers.${x}.name`);
+    const year = label(tierPrice(x, true, s));
+    const at = (p: Period) => {
+      const v = s.subs || p === "an" ? periodPrice(x, p, true, s) : null;
+      return v ? (s.subs ? tsub("price", { price: label(v), per: tsub(`per.${p}`) }) : tp("perYear", { price: label(v) })) : null;
+    };
+    const renew = s.subs ? label(periodPrice(x, "an", true, s, true)!) : year;
+    const saving = s.subs ? yearSaving(x, s, lei) : 0;
+    return {
+      key: x, name, badge: x === "familie" ? tp("recommended") : undefined,
+      price: { luna: at("luna"), trimestru: at("trimestru"), an: at("an") },
+      orYear: tpr("orYear", { price: year }),
+      save: saving > 0 ? tsub("saveYear", { percent: saving }) : "",
+      renew: renew !== year ? tsub("renewFrom", { price: renew }) : "",
+      lead: tp(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label, writers: String(lim.writers ?? "∞"), trees: lim.trees ?? 0 }),
+      limits: [
+        ...LIMIT_KEYS.map((k): [string, string] => [tp(`lim.${k}`), lim[k] === null ? tp("unlimited") : nf.format(lim[k])]),
+        [tp("lim.book"), book === "toti" ? tp("bookAll") : book === "una" ? tp("bookOne") : tp("bookSeparate", { price: label({ lei: s.bookLei, eur: s.bookEur }) })],
+      ],
+      choose: tpr("choose", { plan: name }),
+    };
+  });
+  // Textele de sub carduri, aceleași ca înainte, împărțite pe întrebări (testul din tests/preturi-home.test.ts ține numărul de propoziții).
+  const sentences = (x: string) => x.split(/(?<=[.!?])\s+/);
+  const trialText = sentences(t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs }));
+  const note = sentences(t("plansNote", { keep: label({ lei: s.keepLei, eur: s.keepEur }) }));
+  const days = { days: String(s.trialDays) };
+  const priceQs: { k: string; q: string; a: React.ReactNode }[] = [
+    { k: "trial", q: tpr("qTrial", days), a: (s.subs ? trialText.slice(0, 2) : trialText).join(" ") },
+    ...(s.subs ? [{ k: "after", q: tpr("qAfter", days), a: `${tpr("afterLead")} ${tsub("autoNote", { days: 7 })}` }] : []),
+    { k: "stop", q: tpr("qStop"), a: note.slice(3, 5).join(" ") },
+    { k: "change", q: tpr("qChange"), a: note.slice(1, 3).join(" ") },
+    { k: "family", q: tpr("qFamily"), a: note[0] },
+    { k: "book", q: tpr("qBook"), a: tp("bookNote", { price: label({ lei: s.bookLei, eur: s.bookEur }) }) },
+    { k: "pay", q: tpr("qPay"), a: <>{note.slice(5).join(" ")} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</> },
+  ];
   const cards = [
     { k: "tree", art: <div className="lp-card-fan"><FanChart you={t("visualYou")} /></div> },
     { k: "memories", art: <><Photo img={imgs.memories[0]} alt={t("alt.memories")} sizes="(max-width:640px) 100vw, 300px" /><div className="lp-card-badge"><VoiceArt title={t("voiceTitle")} /></div></> },
@@ -269,7 +311,8 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
         </section>
       )}
 
-      {/* Prețurile: cele trei planuri pe un an, cu plafoanele lor, citite din Admin (Daniel, 13 noiembrie 2026). */}
+      {/* Prețurile (refăcute 25.11.2026, cererea lui Daniel): comutatorul Lunar / La 3 luni / Anual, cardurile cu „Alege planul” care duc
+          la plată cu planul și perioada alese, apoi textele de sub carduri, împărțite în întrebări care se deschid la apăsare. */}
       {sales && (
         <section className="lp-band lp-paper" aria-labelledby="lp-plans" id="preturi">
           <div className="lp-in">
@@ -277,33 +320,21 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
               <p className="lp-eyebrow">{t("plansLabel")}</p>
               <h2 id="lp-plans">{s.subs ? tsub("plansTitle") : t("plansTitle")}</h2>
               {ornament}
-              <p>{t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs })}</p>
+              <p>{s.subs ? tsub("freeNote", { days: String(s.trialDays) }) : t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs })}</p>
             </header>
-            <div className="lp-plans">
-              {TIERS.map((x) => {
-                const p = tierPrice(x, true, s), lim = tierLimits(x, s), book = tierBook(x, s);
-                return (
-                  <article key={x} className={`lp-plan${x === "familie" ? " lp-plan-rec" : ""}`}>
-                    {x === "familie" && <span className="lp-plan-badge">{tp("recommended")}</span>}
-                    <h3>{tp(`tiers.${x}.name`)}</h3>
-                    <p className="lp-plan-price">{tp("perYear", { price: money(lei ? p.lei : p.eur, locale).label })}</p>
-                    {/* Abonamentele (25.11.2026): și pe lună, unde se oferă, și prețul din al doilea an. */}
-                    {s.subs && (() => {
-                      const m = periodPrice(x, "luna", true, s), r = periodPrice(x, "an", true, s, true)!;
-                      const rl = money(lei ? r.lei : r.eur, locale).label;
-                      return <p className="lp-plan-lead">{m ? `${tsub("orMonthly", { price: money(lei ? m.lei : m.eur, locale).label })} ` : ""}{rl !== money(lei ? p.lei : p.eur, locale).label ? tsub("renewFrom", { price: rl }) : ""}</p>;
-                    })()}
-                    <p className="lp-plan-lead">{tp(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label, writers: String(lim.writers ?? "∞"), trees: lim.trees ?? 0 })}</p>
-                    <ul>
-                      {LIMIT_KEYS.map((k) => <li key={k}><span>{tp(`lim.${k}`)}</span><b>{lim[k] === null ? tp("unlimited") : nf.format(lim[k])}</b></li>)}
-                      <li><span>{tp("lim.book")}</span><b>{book === "toti" ? tp("bookAll") : book === "una" ? tp("bookOne") : tp("bookSeparate", { price: money(lei ? s.bookLei : s.bookEur, locale).label })}</b></li>
-                    </ul>
-                  </article>
-                );
-              })}
+            <HomePlans plans={homePlans} periods={homePeriods} periodNames={{ luna: tpr("periods.luna"), trimestru: tpr("periods.trimestru"), an: tpr("periods.an") }}
+              periodLabel={tpr("periodLabel")} saveTag={bestSaving > 0 ? tpr("save", { percent: bestSaving }) : ""} onlyYearly={tpr("onlyYearly")} trial={tpr("trial", { days: String(s.trialDays) })} />
+            <div className="lp-plans-faq">
+              <h3>{tpr("faqTitle")}</h3>
+              <div className="lp-faq-list">
+                {priceQs.map((q) => (
+                  <details key={q.k} className="lp-faq-item">
+                    <summary>{q.q}</summary>
+                    <p>{q.a}</p>
+                  </details>
+                ))}
+              </div>
             </div>
-            <p className="lp-plans-note">{tp("bookNote", { price: money(lei ? s.bookLei : s.bookEur, locale).label })}</p>
-            <p className="lp-plans-note">{t("plansNote", { keep: money(lei ? s.keepLei : s.keepEur, locale).label })} {t("plansTerms")} <Link href="/termeni">{tp("terms")}</Link>.</p>
             <div className="lp-actions lp-plans-actions">
               <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("signUp")}<span aria-hidden="true">→</span></Link>
             </div>

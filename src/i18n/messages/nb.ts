@@ -2,6 +2,7 @@ import type { Catalog, DeepPartial } from "./ro";
 import { nbExtra } from "./noi/nb";
 import { nbGhidArbore } from "./ghid-arbore/altele";
 import { nbAbonament } from "./abonament/altele";
+import { nbPreturi } from "./preturi/altele";
 
 /**
  * Norsk bokmål, for rumenere i Norge og barna deres. Tiltale med „du”. Det som ennå ikke er oversatt, vises på engelsk
@@ -71,6 +72,7 @@ export const nb: DeepPartial<Catalog> = {
   },
   ...nbGhidArbore,
   ...nbAbonament,
+  ...nbPreturi,
   UsageNotice: {
     label: "Hvordan du bruker nettstedet",
     lead: "Ett spørsmål, bare én gang.",

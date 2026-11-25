@@ -24,6 +24,7 @@ import { heSecuritate } from "./securitate/he";
 import { heEmailuri } from "./emailuri/he";
 import { heGhidArbore } from "./ghid-arbore/altele";
 import { heAbonament } from "./abonament/altele";
+import { hePreturi } from "./preturi/altele";
 
 /**
  * עברית, נכתבת מימין לשמאל (הדף מקבל dir="rtl"). פנייה ברבים („התחילו”, „הוסיפו”), כדי לא לבחור מין לקורא.
@@ -96,6 +97,7 @@ export const he: Catalog = {
   },
   ...heGhidArbore,
   ...heAbonament,
+  ...hePreturi,
   UsageNotice: {
     label: "כמה אתם משתמשים באתר",
     lead: "שאלה אחת, פעם אחת בלבד.",
