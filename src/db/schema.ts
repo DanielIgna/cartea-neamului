@@ -282,6 +282,18 @@ export const accountPlan = pgTable("account_plan", {
   tier: text("tier"), // planul anului plătit: basic / familie / premium (src/lib/plans.ts); gol = fără an plătit
   keepUntil: timestamp("keep_until"), // „Păstrarea” plătită (25 lei/an): după anul plătit, familia vede tot online, fără adăugări
   remindedFor: timestamp("reminded_for"), // sfârșitul anului pentru care s-a trimis deja aducerea aminte (o dată pe an)
+  // Abonamentul Stripe (25.11.2026, src/lib/abonament.ts): clientul și abonamentul din Stripe, perioada (luna / trimestru / an),
+  // dacă se mai reînnoiește singur (oprit dintr-un clic = false), suma următoarei plăți, pentru ce dată s-a trimis emailul de
+  // dinainte, dacă oprirea n-a ajuns încă la Stripe (se reîncearcă zilnic) și dacă s-a pus deja prețul de reînnoire.
+  stripeCustomer: text("stripe_customer"),
+  stripeSub: text("stripe_sub"),
+  subPeriod: text("sub_period"),
+  subRenews: boolean("sub_renews").notNull().default(false),
+  subAmount: integer("sub_amount"),
+  subCurrency: text("sub_currency"),
+  subRemindedFor: timestamp("sub_reminded_for"),
+  subCancelPending: boolean("sub_cancel_pending").notNull().default(false),
+  subFixed: boolean("sub_fixed").notNull().default(true),
   setBy: text("set_by").references(() => user.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

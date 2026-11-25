@@ -51,7 +51,7 @@ export const roConversie = {
     planuriButton: "Vezi planurile",
     ultimaziSubject: "Perioada ta gratuită se încheie azi",
     ultimaziIntro: "Azi e ultima zi gratuită în {app}. De mâine arborele rămâne de văzut și îl poți descărca oricând, dar ca să adaugi, să schimbi sau să inviți rude îți trebuie un plan.",
-    ultimaziPrice: "Basic costă {price} pe an. Nu îți luăm bani automat.",
+    ultimaziPrice: "Basic costă {price} pe an. Nimic nu se ia de pe card fără să alegi tu un plan, iar reînnoirea o oprești dintr-un clic.",
     ultimaziButton: "Alege planul și plătește",
     reducereSubject: "{percent}% reducere pentru tine, doar {hours, plural, one {o oră} few {# ore} other {# de ore}}",
     reducereIntro: "Zilele gratuite s-au terminat, dar arborele tău e întreg și te așteaptă.",

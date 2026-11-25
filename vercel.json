@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/crm-dimineata",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/abonamente",
+      "schedule": "0 7 * * *"
     }
   ]
 }

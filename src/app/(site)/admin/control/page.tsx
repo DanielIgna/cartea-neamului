@@ -7,6 +7,7 @@ import { AdminNav, PlanPill, Stat, count, day, eur, lei, num } from "@/component
 import { AccountPlanForm, LimitsForm } from "@/components/admin/PlanForms";
 import { partnerExport } from "@/lib/partners";
 import { dueReminders, reminderMailReady } from "@/lib/extra";
+import { subscriptionCounts } from "@/lib/abonament";
 import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,8 @@ export default async function AdminControl() {
   const [ov, people, pm] = await Promise.all([planOverview(db), peopleList(db), partnerExport(db, "")]);
   const s = ov.settings;
   const [due, mailReady] = [await dueReminders(db, s.reminderDays), reminderMailReady()];
+  // Câți au abonamentul cu reînnoire automată pornit (src/lib/abonament.ts); dacă tabelul nu are încă coloanele, nu se arată.
+  const subs = await subscriptionCounts(db).catch(() => null);
   const biggest = new Map<string, (typeof ov.trees)[number]>();
   for (const t of ov.trees) if (t.ownerId && (biggest.get(t.ownerId)?.persons ?? -1) < t.persons) biggest.set(t.ownerId, t);
   const rows = people
@@ -73,7 +76,9 @@ export default async function AdminControl() {
       <div className="card" id="expira">
         <h3 style={{ marginTop: 0 }}>Expiră în curând</h3>
         <p className="muted" style={{ marginTop: 0, maxWidth: "78ch" }}>
-          Anul nu se reînnoiește singur. Cei al căror an plătit se termină în următoarele {count(s.reminderDays, "zile")} și n-au primit încă aducerea
+          {subs ? <>Abonamente cu reînnoire automată acum: <b>{subs.total}</b> (lunar {subs.luna}, trimestrial {subs.trimestru}, anual {subs.an}); lor le
+          scrie site-ul singur cu 7 zile înainte de plata anuală și trimestrială (/api/cron/abonamente, zilnic). </> : null}
+          Mai jos, cei fără reînnoire automată al căror an plătit se termină în următoarele {count(s.reminderDays, "zile")} și n-au primit încă aducerea
           aminte. {mailReady
             ? "Emailul pleacă singur, o dată pe zi, prin serviciul de email pus în Vercel."
             : "Emailul nu pleacă singur până nu pui un serviciu de email (RESEND_API_KEY, EMAIL_FROM și CRON_SECRET în Vercel, plus o rulare zilnică a adresei /api/cron/aminteste-plata). Până atunci, scrie-le tu cu butonul de lângă nume."}

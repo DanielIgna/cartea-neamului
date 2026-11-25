@@ -45,7 +45,7 @@ export const deConversie: ConversieCatalog = {
     planuriButton: "Tarife ansehen",
     ultimaziSubject: "Deine Gratiszeit endet heute",
     ultimaziIntro: "Heute ist dein letzter Gratistag bei {app}. Ab morgen bleibt der Stammbaum sichtbar und du kannst ihn jederzeit herunterladen, aber zum Hinzufügen, Ändern oder Einladen von Verwandten brauchst du einen Tarif.",
-    ultimaziPrice: "Basic kostet {price} im Jahr. Wir buchen nie automatisch ab.",
+    ultimaziPrice: "Basic kostet {price} pro Jahr. Ohne dass du einen Tarif wählst, wird nichts von deiner Karte abgebucht, und die Verlängerung beendest du mit einem Klick.",
     ultimaziButton: "Tarif wählen und bezahlen",
     reducereSubject: "{percent} % Rabatt für dich, nur {hours, plural, one {# Stunde} other {# Stunden}}",
     reducereIntro: "Deine Gratistage sind vorbei, aber dein Stammbaum ist vollständig und wartet auf dich.",

@@ -197,6 +197,17 @@ export const FUNCTIONS: Fn[] = [
     human: "Prețurile și pornirea vânzărilor le hotărăște Daniel.",
   },
   {
+    key: "abonamente", name: "Abonamente cu reînnoire automată", area: "bani", lifecycle: "live", risk: "ridicat", riskWhy: "Card tras automat; oprirea dintr-un clic și emailul de dinainte trebuie să meargă mereu.",
+    what: "Planurile se plătesc lunar, trimestrial sau anual (Basic doar anual) și se reînnoiesc singure prin Stripe până când omul apasă „Oprește reînnoirea” pe /plata. Din al doilea an anual, prețul de reînnoire e mai mic (Admin → Manager control → Abonamente). Codurile (NEAM90 etc.) doar la Basic, la prima plată anuală; după prima factură abonamentul trece pe prețul de reînnoire, fără cod. Email cu 7 zile înainte de fiecare plată anuală sau trimestrială. Cine a plătit un an o dată poate porni reînnoirea de la capătul anului, fără plată acum. Darurile, Păstrarea și cartea PDF rămân plăți o singură dată.",
+    engine: ["src/lib/abonament.ts", "src/lib/plati.ts", "src/lib/plans.ts"],
+    pages: ["/plata"],
+    api: ["/api/plata/start", "/api/plata/stripe", "/api/plata/abonament", "/api/cron/abonamente"],
+    tables: ["account_plan", "payment"],
+    env: ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "CRON_SECRET"],
+    dashboard: "/admin/control",
+    human: "Daniel adaugă în Stripe evenimentele invoice.paid, customer.subscription.updated și customer.subscription.deleted la webhook și salvează o dată setările portalului de clienți.",
+  },
+  {
     key: "planuri", name: "Planuri, probă și limite", area: "bani", lifecycle: "live", risk: "ridicat", riskWhy: "Hotărăște cine poate scrie și cât; o greșeală blochează oameni care au plătit.",
     what: "Proba de 7 zile, Basic / Familie / Premium, Păstrarea, plafoanele și emailurile de aducere aminte.",
     engine: ["src/lib/plans.ts", "src/lib/plan-cache.ts", "src/lib/plan-names.ts", "src/lib/pastrare.ts", "src/components/AccessBanner.tsx"],

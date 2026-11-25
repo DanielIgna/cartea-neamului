@@ -23,6 +23,7 @@ import { frPastrare } from "./pastrare/fr";
 import { frSecuritate } from "./securitate/fr";
 import { frEmailuri } from "./emailuri/fr";
 import { frGhidArbore } from "./ghid-arbore/altele";
+import { frAbonament } from "./abonament/altele";
 
 /** Français, au vouvoiement. Espaces insécables avant : ; ? ! et à l’intérieur des guillemets « ». */
 export const fr: Catalog = {
@@ -90,6 +91,7 @@ export const fr: Catalog = {
     guides: "Guides",
   },
   ...frGhidArbore,
+  ...frAbonament,
   UsageNotice: {
     label: "Votre utilisation du site",
     lead: "Une question, une seule fois.",
@@ -500,8 +502,8 @@ export const fr: Catalog = {
     bookPaid: "Vous avez payé le livre. Vous pouvez le télécharger depuis la page du livre.",
     bookFree: "Votre compte a le livre PDF sans paiement. Vous pouvez le télécharger depuis la page du livre.",
     bookNote: "Le livre de famille en PDF s’achète à part : {price} pour un arbre. Après le paiement, il est fait à partir de vos données et vous pouvez le refaire et le télécharger pendant 12 mois. Si vous le souhaitez, vous pouvez l’imprimer vous-même, chez vous ou chez un imprimeur.",
-    discountNote: "Les réductions (code de classe ou lien d’une organisation) s’appliquent d’elles-mêmes au paiement, pour la première année seulement ; le renouvellement se fait au prix plein. Une seule réduction par paiement.",
-    linkCode: "Le code de réduction de votre lien est enregistré : s’il est encore valable, il s’applique de lui-même au paiement de la première année.",
+    discountNote: "Les codes de réduction (NEAM90, le code d’une organisation, le code de la classe) ne valent que pour le premier paiement annuel, pour un an ; NEAM90 et les codes saisis ou venus par un lien, seulement avec la formule Basic. Le renouvellement se fait au prix de renouvellement, sans réduction. Une seule réduction par paiement.",
+    linkCode: "Le code de réduction de votre lien est gardé : s’il est encore valable, il s’applique de lui-même au premier paiement annuel de la formule Basic.",
     backToBook: "Retour au livre",
     consent: "Je veux commencer tout de suite et je comprends qu’en recevant le contenu numérique immédiatement, je perds le droit de rétractation de 14 jours.",
     pay: "Payer {price} par carte",
@@ -570,8 +572,8 @@ export const fr: Catalog = {
     codeHint: "Si vous avez reçu un code, saisissez-le ici. La réduction apparaît sur la page de paiement, avant de payer.",
     codeLabel: "Code de réduction",
     errCode: "Ce code de réduction n’est pas valable (erroné, expiré ou déjà utilisé). Vérifiez-le et réessayez.",
-    errCodeYear: "Un code de réduction ne s’utilise que pour le paiement d’une première année entière, pas pour un changement de formule, le pack ou un renouvellement.",
-    errCodePlan: "Le code de réduction ne vaut que pour la formule Basic.",
+    errCodeYear: "Un code de réduction ne peut servir qu’au premier paiement annuel, pas aux paiements mensuels ou trimestriels, à un changement de formule, au pack ou à un renouvellement.",
+    errCodePlan: "Le code de réduction ne vaut que pour la formule Basic, payée à l’année (un an).",
     bookIncludedAll: "Le livre est inclus dans votre formule. Vous pouvez le télécharger depuis la page du livre.",
     bookIncludedText: "Votre formule inclut un livre PDF par an. Vous pouvez le choisir pour l’arbre « {tree} », pour 12 mois.",
     bookIncludedBtn: "Choisir le livre inclus pour cet arbre",

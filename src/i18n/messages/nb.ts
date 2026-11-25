@@ -1,6 +1,7 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { nbExtra } from "./noi/nb";
 import { nbGhidArbore } from "./ghid-arbore/altele";
+import { nbAbonament } from "./abonament/altele";
 
 /**
  * Norsk bokmål, for rumenere i Norge og barna deres. Tiltale med „du”. Det som ennå ikke er oversatt, vises på engelsk
@@ -69,6 +70,7 @@ export const nb: DeepPartial<Catalog> = {
     guides: "Guider",
   },
   ...nbGhidArbore,
+  ...nbAbonament,
   UsageNotice: {
     label: "Hvordan du bruker nettstedet",
     lead: "Ett spørsmål, bare én gang.",
@@ -454,8 +456,8 @@ export const nb: DeepPartial<Catalog> = {
     bookPaid: "Du har betalt for boka. Du kan laste den ned på boksiden.",
     bookFree: "Kontoen din har PDF-boka uten kostnad. Du kan laste den ned på boksiden.",
     bookNote: "Familiens bok som PDF kjøpes separat: {price} for ett tre. Etter betaling lages den av dataene dine, og du kan lage den på nytt og laste den ned i 12 måneder. Hvis du vil, kan du skrive den ut selv, hjemme eller på et trykkeri.",
-    discountNote: "Rabatter (en klassekode eller en organisasjons lenke) trekkes fra automatisk ved betaling, bare for det første året; fornyelsen skjer til full pris. Bare én rabatt gjelder per betaling.",
-    linkCode: "Rabattkoden fra lenken din er lagret: hvis den fortsatt gjelder, trekkes den fra automatisk når du betaler ditt første år.",
+    discountNote: "Rabattkoder (NEAM90, koden til en organisasjon, klassens kode) gjelder bare den første årsbetalingen, i ett år; NEAM90 og innskrevne koder eller lenkekoder bare med planen Basic. Fornyelsen skjer til fornyelsesprisen, uten rabatt. Bare én rabatt gjelder per betaling.",
+    linkCode: "Rabattkoden fra lenken din er lagret: hvis den fortsatt gjelder, brukes den automatisk på den første årsbetalingen for Basic.",
     backToBook: "Tilbake til boka",
     consent: "Jeg vil starte med en gang og forstår at jeg, ved å få det digitale innholdet umiddelbart, mister angreretten på 14 dager.",
     pay: "Betal {price} med kort",
@@ -524,8 +526,8 @@ export const nb: DeepPartial<Catalog> = {
     codeHint: "Hvis du har fått en kode, skriv den her. Du ser rabatten på betalingssiden før du betaler.",
     codeLabel: "Rabattkode",
     errCode: "Denne rabattkoden gjelder ikke (feilskrevet, utløpt eller allerede brukt). Sjekk den og prøv igjen.",
-    errCodeYear: "En rabattkode kan bare brukes når du betaler et helt første år, ikke ved bytte av plan, for pakken eller ved fornyelse.",
-    errCodePlan: "Rabattkoden fungerer bare med planen Basic.",
+    errCodeYear: "En rabattkode kan bare brukes ved den første årsbetalingen, ikke ved månedlige eller kvartalsvise betalinger, planbytte, pakken eller en fornyelse.",
+    errCodePlan: "Rabattkoden gjelder bare planen Basic, betalt per år (ett år).",
     bookIncludedAll: "Boka er inkludert i planen din. Du kan laste den ned på boksiden.",
     bookIncludedText: "Planen din inkluderer én PDF-bok i året. Du kan velge den for treet «{tree}» i 12 måneder.",
     bookIncludedBtn: "Velg den inkluderte boka for dette treet",

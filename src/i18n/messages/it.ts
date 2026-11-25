@@ -23,6 +23,7 @@ import { itPastrare } from "./pastrare/it";
 import { itSecuritate } from "./securitate/it";
 import { itEmailuri } from "./emailuri/it";
 import { itGhidArbore } from "./ghid-arbore/altele";
+import { itAbonament } from "./abonament/altele";
 
 /** Italiano, dando del tu (come il rumeno del sito). */
 export const it: Catalog = {
@@ -90,6 +91,7 @@ export const it: Catalog = {
     guides: "Guide",
   },
   ...itGhidArbore,
+  ...itAbonament,
   UsageNotice: {
     label: "Come usi il sito",
     lead: "Una domanda, una volta sola.",
@@ -500,8 +502,8 @@ export const it: Catalog = {
     bookPaid: "Hai pagato il libro. Puoi scaricarlo dalla pagina del libro.",
     bookFree: "Il tuo account ha il libro PDF senza pagare. Puoi scaricarlo dalla pagina del libro.",
     bookNote: "Il libro della famiglia in PDF si acquista a parte: {price} per un albero. Dopo il pagamento si crea dai vostri dati e puoi rifarlo e scaricarlo per 12 mesi. Se vuoi, puoi stamparlo da solo, a casa o in una tipografia.",
-    discountNote: "Gli sconti (il codice di una classe o il link di un’organizzazione) si applicano da soli al pagamento, solo per il primo anno; il rinnovo è a prezzo pieno. A un pagamento si applica un solo sconto.",
-    linkCode: "Il codice sconto del tuo link è memorizzato: se è ancora valido, si applica da solo al pagamento del primo anno.",
+    discountNote: "I codici sconto (NEAM90, il codice di un’organizzazione, il codice della classe) valgono solo per il primo pagamento annuale, per un anno; NEAM90 e i codici scritti o da link, solo con il piano Basic. Il rinnovo è al prezzo di rinnovo, senza sconto. A un pagamento si applica un solo sconto.",
+    linkCode: "Il codice sconto del tuo link è salvato: se è ancora valido, si applica da solo al primo pagamento annuale del piano Basic.",
     backToBook: "Torna al libro",
     consent: "Voglio iniziare subito e capisco che, ricevendo subito il contenuto digitale, perdo il diritto di recesso di 14 giorni.",
     pay: "Paga {price} con la carta",
@@ -570,8 +572,8 @@ export const it: Catalog = {
     codeHint: "Se hai ricevuto un codice, scrivilo qui. Vedrai lo sconto nella pagina di pagamento, prima di pagare.",
     codeLabel: "Codice sconto",
     errCode: "Il codice sconto non è valido (sbagliato, scaduto o già usato). Controllalo e riprova.",
-    errCodeYear: "Il codice sconto vale solo per il pagamento di un primo anno intero, non per un cambio di piano, il pacchetto o un rinnovo.",
-    errCodePlan: "Il codice sconto vale solo per il piano Basic.",
+    errCodeYear: "Un codice sconto si può usare solo per il primo pagamento annuale, non per pagamenti mensili o trimestrali, per un cambio di piano, per il pacchetto o per un rinnovo.",
+    errCodePlan: "Il codice sconto vale solo per il piano Basic, pagato ogni anno (un anno).",
     bookIncludedAll: "Il libro è incluso nel tuo piano. Puoi scaricarlo dalla pagina del libro.",
     bookIncludedText: "Il tuo piano include un libro PDF all’anno. Puoi sceglierlo per l’albero «{tree}», per 12 mesi.",
     bookIncludedBtn: "Scegli il libro incluso per questo albero",

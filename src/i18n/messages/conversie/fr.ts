@@ -45,7 +45,7 @@ export const frConversie: ConversieCatalog = {
     planuriButton: "Voir les formules",
     ultimaziSubject: "Votre période gratuite se termine aujourd’hui",
     ultimaziIntro: "C’est aujourd’hui votre dernier jour gratuit sur {app}. Dès demain l’arbre reste visible et vous pouvez toujours le télécharger, mais pour ajouter, modifier ou inviter des proches, il faut une formule.",
-    ultimaziPrice: "Basic coûte {price} par an. Aucun prélèvement automatique.",
+    ultimaziPrice: "Basic coûte {price} par an. Rien n’est prélevé sur votre carte sans que vous choisissiez une formule, et le renouvellement s’arrête en un clic.",
     ultimaziButton: "Choisir et payer",
     reducereSubject: "{percent} % de réduction pour vous, seulement {hours, plural, one {# heure} other {# heures}}",
     reducereIntro: "Vos jours gratuits sont terminés, mais votre arbre est intact et vous attend.",

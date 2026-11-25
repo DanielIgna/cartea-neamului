@@ -45,7 +45,7 @@ export const itConversie: ConversieCatalog = {
     planuriButton: "Vedi i piani",
     ultimaziSubject: "Il tuo periodo gratuito finisce oggi",
     ultimaziIntro: "Oggi è il tuo ultimo giorno gratuito su {app}. Da domani l’albero resta visibile e puoi scaricarlo sempre, ma per aggiungere, modificare o invitare i parenti ti serve un piano.",
-    ultimaziPrice: "Basic costa {price} l’anno. Non addebitiamo nulla in automatico.",
+    ultimaziPrice: "Basic costa {price} all’anno. Non si addebita nulla sulla tua carta se non scegli un piano, e il rinnovo si ferma con un clic.",
     ultimaziButton: "Scegli il piano e paga",
     reducereSubject: "{percent}% di sconto per te, solo {hours, plural, one {# ora} other {# ore}}",
     reducereIntro: "I tuoi giorni gratuiti sono finiti, ma il tuo albero è intero e ti aspetta.",

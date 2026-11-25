@@ -45,7 +45,7 @@ export const heConversie: ConversieCatalog = {
     planuriButton: "לתוכניות",
     ultimaziSubject: "התקופה החינמית שלך מסתיימת היום",
     ultimaziIntro: "היום הוא היום החינמי האחרון שלך ב־{app}. ממחר העץ נשאר גלוי ותמיד אפשר להוריד אותו, אבל כדי להוסיף, לערוך או להזמין קרובים צריך תוכנית.",
-    ultimaziPrice: "Basic עולה {price} לשנה. אנחנו אף פעם לא גובים אוטומטית.",
+    ultimaziPrice: "בסיסית עולה {price} לשנה. שום דבר לא נגבה מהכרטיס בלי שתבחרו תוכנית, ואת החידוש עוצרים בלחיצה אחת.",
     ultimaziButton: "בחירת תוכנית ותשלום",
     reducereSubject: "{percent}% הנחה בשבילך, רק {hours} שעות",
     reducereIntro: "הימים החינמיים הסתיימו, אבל העץ שלך שלם ומחכה לך.",

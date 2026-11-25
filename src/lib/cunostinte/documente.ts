@@ -49,19 +49,20 @@ export type KDoc = {
 
 export const DOCS: KDoc[] = [
   {
-    id: "D01", title: "Plățile: 7 zile gratuite, apoi anul plătit", kind: "decizie", category: "bani", status: "activ", version: "1.3", date: "2026-11-13", reviewEveryDays: 60,
+    id: "D01", title: "Plățile: 7 zile gratuite, apoi abonamentul", kind: "decizie", category: "bani", status: "activ", version: "2.0", date: "2026-11-25", reviewEveryDays: 60,
     summary: "Cum se plătește Cartea Neamului: proba gratuită, anul, invitații, cartea PDF și cartea tipărită. Banii intră pe PFA, prin Stripe.",
     rules: [
-      "7 zile gratuite, fără card; apoi un an plătit (Basic 49 lei / 10 €, prețurile se schimbă din Admin → Manager control).",
+      "7 zile gratuite, fără card și fără abonament; apoi planul se plătește lunar, trimestrial sau anual (Basic doar anual: 49 lei / 10 €; Familie 16,99 / 45,99 / 149 lei; Premium 27,99 / 75,99 / 249 lei). Prețurile se schimbă din Admin → Manager control.",
       "Fiecare om invitat să scrie are și el 7 zile gratuite, apoi plătește anul ca să scrie mai departe; altfel rămâne doar să vadă.",
       "Cei din beta primesc doar primul an gratuit (nu pentru totdeauna) și cartea PDF gratuită în acel an.",
-      "Cartea PDF: 99 lei (20 € în celelalte limbi). Cartea tipărită: la cerere, prin Contact.",
-      "Fără reînnoire automată: nimeni nu e taxat fără să apese el „Plătește”.",
+      "Cartea PDF: produs separat, 39 lei / 8 €, plătit o singură dată. Nu promitem cartea tipărită.",
+      "Abonament cu reînnoire automată (din 25.11.2026): oprire dintr-un clic pe /plata, email cu 7 zile înainte de plata anuală sau trimestrială; din al doilea an, preț de reînnoire mai mic (39 / 119 / 199 lei). Cine a plătit înainte un an o dată nu e trecut singur pe abonament.",
+      "Codurile (NEAM90, școli, organizații) doar la Basic, la prima plată anuală, pentru un an.",
       "Exportul datelor și GEDCOM rămân gratuite (lege + Termeni).",
       "Plățile se confirmă doar prin webhook-ul Stripe semnat (/api/plata/stripe), nu din pagina de întoarcere.",
       "Vânzările au fost pornite pe 2026-11-13 la cererea lui Daniel; de atunci comutatorul din Manager control hotărăște.",
     ],
-    source: ["PR #88 (reguli de acces)", "PR #89 (plata cu cardul)", "PR #95 (pornirea vânzărilor)", "PR #102 (Basic 49 lei)", "memoria proiectului: Payments"],
+    source: ["PR #88 (reguli de acces)", "PR #89 (plata cu cardul)", "PR #95 (pornirea vânzărilor)", "PR #102 (Basic 49 lei)", "abonamentele (25.11.2026)", "memoria proiectului: Payments"],
     governs: ["plati", "planuri", "carte"],
     open: ["Revizia avocatului pentru Termeni (prețuri, renunțarea la retragere)", "Vercel Pro înainte de vânzări serioase", "Webhook-ul pe adresa care nu redirecționează (www)"],
   },
@@ -80,7 +81,7 @@ export const DOCS: KDoc[] = [
   },
   {
     id: "D03", title: "Planurile Basic, Familie și Premium", kind: "decizie", category: "bani", status: "activ", version: "1.1", date: "2026-11-13", reviewEveryDays: 90,
-    summary: "Trei planuri anuale, cu plafoane diferite; trecerea pe un plan mai mare se plătește pro rata, fără coborâre în mijlocul anului.",
+    summary: "Trei planuri (lunar, trimestrial sau anual; Basic doar anual), cu plafoane diferite; trecerea pe un plan mai mare se plătește pro rata, fără coborâre în mijlocul anului.",
     rules: [
       "Basic 49 lei / 10 €, Familie 149 lei / 30 € (recomandat, 1 carte PDF pe an), Premium 249 lei / 50 € (PDF pentru toți arborii, 20% la tipar).",
       "Pachet Basic + carte PDF: 129 lei. Toate prețurile și plafoanele se schimbă din Admin → Manager control.",

@@ -46,6 +46,7 @@
   "drizzle/0044_crm_ambasadori.sql",
   "drizzle/0045_surse_publice.sql",
   "drizzle/0046_plata_cod.sql",
+  "drizzle/0047_abonamente.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -275,6 +276,7 @@
   "src/app/api/crm/dezabonare/route.ts",
   "src/app/api/crm/o/route.ts",
   "src/app/api/crm/resend/route.ts",
+  "src/app/api/cron/abonamente/route.ts",
   "src/app/api/cron/aminteste-plata/route.ts",
   "src/app/api/cron/autonomie/route.ts",
   "src/app/api/cron/crm-dimineata/route.ts",
@@ -286,6 +288,7 @@
   "src/app/api/parteneri/[partner]/export/route.ts",
   "src/app/api/parteneri/dezabonare/route.ts",
   "src/app/api/ping/route.ts",
+  "src/app/api/plata/abonament/route.ts",
   "src/app/api/plata/start/route.ts",
   "src/app/api/plata/stripe/route.ts",
   "src/app/api/poza-acasa/[id]/route.ts",
@@ -549,6 +552,8 @@
   "src/i18n/PageIntl.tsx",
   "src/i18n/app-config.d.ts",
   "src/i18n/locales.ts",
+  "src/i18n/messages/abonament/altele.ts",
+  "src/i18n/messages/abonament/ro.ts",
   "src/i18n/messages/activare/de.ts",
   "src/i18n/messages/activare/en-GB.ts",
   "src/i18n/messages/activare/es.ts",
@@ -803,6 +808,7 @@
   "src/i18n/server.ts",
   "src/i18n/static-locale.ts",
   "src/instrumentation.ts",
+  "src/lib/abonament.ts",
   "src/lib/access.ts",
   "src/lib/account.ts",
   "src/lib/activare-shared.ts",
@@ -1052,6 +1058,7 @@
   "src/lib/zona/registru.ts",
   "src/middleware.ts",
   "src/types/pagedjs.d.ts",
+  "tests/abonament.test.ts",
   "tests/account-image.test.ts",
   "tests/account.test.ts",
   "tests/activare.test.ts",
@@ -1439,6 +1446,10 @@
    "kind": "api"
   },
   {
+   "path": "/api/cron/abonamente",
+   "kind": "api"
+  },
+  {
    "path": "/api/cron/aminteste-plata",
    "kind": "api"
   },
@@ -1480,6 +1491,10 @@
   },
   {
    "path": "/api/ping",
+   "kind": "api"
+  },
+  {
+   "path": "/api/plata/abonament",
    "kind": "api"
   },
   {
@@ -1860,6 +1875,7 @@
   }
  ],
  "tests": [
+  "tests/abonament.test.ts",
   "tests/account-image.test.ts",
   "tests/account.test.ts",
   "tests/activare.test.ts",
@@ -1977,5 +1993,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 46
+ "migrations": 47
 }

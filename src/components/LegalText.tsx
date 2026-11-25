@@ -52,6 +52,11 @@ export default async function LegalText({ page, date }: { page: Page; date: Date
   const prices = {
     trialDays: ps.trialDays, trialPersons: ps.trialPersons, priceLei: ps.priceLei, priceEur: ps.priceEur, invitePriceLei: ps.invitePriceLei, invitePriceEur: ps.invitePriceEur,
     bookLei: ps.bookLei, bookEur: ps.bookEur, keepLei: ps.keepLei, keepEur: ps.keepEur, keepBookLei: ps.keepBookLei, keepBookEur: ps.keepBookEur, familieLei: ps.familieLei, familieEur: ps.familieEur, premiumLei: ps.premiumLei, premiumEur: ps.premiumEur,
+    // Abonamentele (25.11.2026): luna, trimestrul și prețul de reînnoire din al doilea an, din Admin.
+    familieMonthLei: ps.familieMonthLei, familieMonthEur: ps.familieMonthEur, premiumMonthLei: ps.premiumMonthLei, premiumMonthEur: ps.premiumMonthEur,
+    familieQuarterLei: ps.familieQuarterLei, familieQuarterEur: ps.familieQuarterEur, premiumQuarterLei: ps.premiumQuarterLei, premiumQuarterEur: ps.premiumQuarterEur,
+    basicRenewLei: ps.basicRenewLei || ps.priceLei, basicRenewEur: ps.basicRenewEur || ps.priceEur, familieRenewLei: ps.familieRenewLei || ps.familieLei,
+    familieRenewEur: ps.familieRenewEur || ps.familieEur, premiumRenewLei: ps.premiumRenewLei || ps.premiumLei, premiumRenewEur: ps.premiumRenewEur || ps.premiumEur,
     // Cartea PDF la fiecare plan, din Admin: „inclusă” sau „separat” (oferta din 18.11.2026).
     basicBook: ps.basicBook === "toti" ? "yes" : "no", familieBook: ps.familieBook === "toti" ? "yes" : "no", premiumBook: ps.premiumBook === "toti" ? "yes" : "no", ...caps,
   };

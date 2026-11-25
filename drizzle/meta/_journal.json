@@ -323,6 +323,13 @@
       "when": 1795000500000,
       "tag": "0046_plata_cod",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1795000600000,
+      "tag": "0047_abonamente",
+      "breakpoints": true
     }
   ]
 }

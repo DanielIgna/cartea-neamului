@@ -17,7 +17,7 @@ import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { and, asc, eq, gt, gte, isNotNull, isNull, ne, sql } from "drizzle-orm";
 import type { Db } from "@/db";
 import { accountPlan, gift, payment, referralBonus, tree, treeMember, user } from "@/db/schema";
-import { isTier, planSettings, tierBook, tierOf, tierPrice, tierRank, type Access, type PlanSettings, type Tier } from "./plans";
+import { isPeriod, isTier, periodEnd, planSettings, RENEW_GRACE_MS, tierBook, tierOf, tierPrice, tierRank, type Access, type Period, type PlanSettings, type Tier } from "./plans";
 
 /**
  * „an” (un an pe un plan), „carte” (cartea PDF a unui arbore), „cadou” (un an dăruit altcuiva, vezi src/lib/extra.ts) și
@@ -125,9 +125,16 @@ export async function createCheckout(o: {
   offer?: { code: string; promoId: string } | null;
   /** Câmpul de cod promoțional pe pagina Stripe (doar adminii, pentru plăți de probă). */
   promoField?: boolean;
+  /**
+   * Abonamentul (25.11.2026, src/lib/abonament.ts): perioada, suma reînnoirilor (unitatea mică), „now” = prima plată acum,
+   * „later” = cardul se ține acum și prima plată e la `trialEnd` (sfârșitul anului deja plătit); clientul Stripe, dacă e știut.
+   * Cu `once`, o linie plătită doar la prima plată (cartea PDF din pachetul Basic + cartea).
+   */
+  sub?: { period: Period; renewAmount: number; start: "now" | "later"; trialEnd?: Date | null; customer?: string | null; description?: string } | null;
+  once?: { name: string; amount: number } | null;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const body = new URLSearchParams({
-    mode: "payment",
+    mode: o.sub ? "subscription" : "payment",
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": o.currency,
     "line_items[0][price_data][unit_amount]": String(o.amount),
@@ -141,6 +148,28 @@ export async function createCheckout(o: {
     "metadata[userId]": o.userId,
     "invoice_creation[enabled]": "true",
   });
+  if (o.sub) {
+    // Abonament: Stripe face singur facturile (fără `invoice_creation`); prima plată e suma de acum, apoi abonamentul trece pe
+    // suma reînnoirii (`fixSubscription`). Cu „later”, nu se ia nimic până la sfârșitul anului deja plătit.
+    const iv = o.sub.period === "an" ? { interval: "year", count: 1 } : { interval: "month", count: o.sub.period === "trimestru" ? 3 : 1 };
+    body.delete("invoice_creation[enabled]");
+    body.set("line_items[0][price_data][recurring][interval]", iv.interval);
+    body.set("line_items[0][price_data][recurring][interval_count]", String(iv.count));
+    if (o.sub.start === "later") body.set("line_items[0][price_data][unit_amount]", String(o.sub.renewAmount));
+    if (o.sub.customer) { body.delete("customer_email"); body.set("customer", o.sub.customer); }
+    for (const [k, v] of Object.entries({ userId: o.userId, tier: o.tier ?? "basic", period: o.sub.period, renewAmount: String(o.sub.renewAmount) })) body.set(`subscription_data[metadata][${k}]`, v);
+    if (o.sub.description) body.set("subscription_data[description]", o.sub.description.slice(0, 500));
+    if (o.sub.start === "later" && o.sub.trialEnd) body.set("subscription_data[trial_end]", String(Math.floor(o.sub.trialEnd.getTime() / 1000)));
+    body.set("metadata[period]", o.sub.period);
+    body.set("metadata[start]", o.sub.start);
+    body.set("metadata[renewAmount]", String(o.sub.renewAmount));
+  }
+  if (o.once && o.once.amount > 0) {
+    body.set("line_items[1][quantity]", "1");
+    body.set("line_items[1][price_data][currency]", o.currency);
+    body.set("line_items[1][price_data][unit_amount]", String(o.once.amount));
+    body.set("line_items[1][price_data][product_data][name]", o.once.name);
+  }
   // Câmpul „Cod promoțional” pe pagina Stripe doar pentru admini (oferta din 18.11.2026): codurile de probă (TEST90) se scriu
   // acolo. Ceilalți nu au câmp liber: reducerile lor (după zilele gratuite, codul clasei, NEAM90 din link) se pun singure.
   if (o.promoField) body.set("allow_promotion_codes", "true");
@@ -150,7 +179,8 @@ export async function createCheckout(o: {
     body.set("custom_text[submit][message]", o.waiver.slice(0, 1200));
     body.set("invoice_creation[invoice_data][description]", o.waiver.slice(0, 1500));
   }
-  if (o.seller) body.set("invoice_creation[invoice_data][footer]", o.seller.slice(0, 5000));
+  if (o.waiver && o.sub) body.delete("invoice_creation[invoice_data][description]");
+  if (o.seller && !o.sub) body.set("invoice_creation[invoice_data][footer]", o.seller.slice(0, 5000));
   if (o.treeId) body.set("metadata[treeId]", o.treeId);
   if (o.tier) body.set("metadata[tier]", o.tier);
   if (o.upgradeFrom) body.set("metadata[upgradeFrom]", o.upgradeFrom);
@@ -195,6 +225,8 @@ export type PaidSession = {
   attr?: Attribution | null;
   /** Codul de reducere de după zilele gratuite (pus de site) sau codul promoțional ales pe pagina Stripe (promo_…). */
   offer?: string | null; promo?: string | null;
+  /** Abonamentul pornit pe pagina de plată (src/lib/abonament.ts): id-ul, clientul, perioada, suma reînnoirii și când se plătește prima dată. */
+  sub?: { id: string; customer: string | null; period: Period; renewAmount: number; start: "now" | "later" } | null;
 };
 
 /**
@@ -212,8 +244,11 @@ export function paidSession(event: unknown): PaidSession | null {
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (!isPayKind(md.kind) || !md.userId || typeof o.id !== "string") return null;
   const disc = (o.discounts as { promotion_code?: string | null }[] | undefined)?.find((d) => typeof d?.promotion_code === "string")?.promotion_code ?? null;
+  const sub = o.mode === "subscription" && typeof o.subscription === "string" && isPeriod(md.period)
+    ? { sub: { id: o.subscription, customer: typeof o.customer === "string" ? o.customer : null, period: md.period, renewAmount: Number(md.renewAmount) || 0, start: md.start === "later" ? "later" as const : "now" as const } }
+    : {};
   const base = { id: o.id, kind: md.kind, userId: md.userId, treeId: md.treeId || null, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? ""), ...withAttr(md),
-    ...(md.offer || disc ? { offer: md.offer || null, promo: disc } : {}) };
+    ...(md.offer || disc ? { offer: md.offer || null, promo: disc } : {}), ...sub };
   if (md.kind === "cadou") return { ...base, tier: isTier(md.tier) ? md.tier : "familie", forName: md.forName || null, note: md.note || null };
   if (md.kind === "pastrare") return md.extra === "carte" ? { ...base, extra: "carte" as const } : base;
   if (md.kind !== "an") return base;
@@ -226,6 +261,8 @@ export function paidSession(event: unknown): PaidSession | null {
  * planul „gratuit mereu” rămâne cum e. Întoarce false dacă plata era deja trecută.
  */
 export async function applyPayment(db: Db, paid: PaidSession, now = new Date()): Promise<boolean> {
+  // Reînnoirea pornită „de la sfârșitul anului”: nu s-a plătit nimic acum, deci nu e plată și nu se adaugă timp (src/lib/abonament.ts).
+  if (paid.sub?.start === "later") return false;
   let p = paid;
   return db.transaction(async (tx) => {
     // Contul poate fi șters între plată și confirmare: plata se păstrează (pentru contabilitate), fără cont și fără an.
@@ -244,7 +281,10 @@ export async function applyPayment(db: Db, paid: PaidSession, now = new Date()):
       const running = cur?.paidUntil && cur.paidUntil > now ? cur.paidUntil : null;
       // Trecerea pe un plan mai scump în timpul anului: s-a plătit doar diferența, deci data de sfârșit nu se mută.
       // Altfel, un an întreg: după anul în curs (același plan) sau de azi.
-      const until = p.upgradeFrom && running ? running : new Date((running ?? now).getTime() + YEAR_DAYS * DAY);
+      // Cu abonament, perioada plătită (o lună, trei, un an) plus o zi și jumătate cât Stripe încasează reînnoirea.
+      const until = p.upgradeFrom && running ? running
+        : p.sub ? new Date(periodEnd(running ?? now, p.sub.period).getTime() + RENEW_GRACE_MS)
+        : new Date((running ?? now).getTime() + YEAR_DAYS * DAY);
       await setYear(tx as unknown as Db, p.userId, tier, until, now);
       await referralOnPayment(tx as unknown as Db, p.userId, now);
     }

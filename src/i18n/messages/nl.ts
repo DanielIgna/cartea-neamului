@@ -23,6 +23,7 @@ import { nlPastrare } from "./pastrare/nl";
 import { nlSecuritate } from "./securitate/nl";
 import { nlEmailuri } from "./emailuri/nl";
 import { nlGhidArbore } from "./ghid-arbore/altele";
+import { nlAbonament } from "./abonament/altele";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -90,6 +91,7 @@ export const nl: Catalog = {
     guides: "Gidsen",
   },
   ...nlGhidArbore,
+  ...nlAbonament,
   UsageNotice: {
     label: "Hoe je de site gebruikt",
     lead: "Eén vraag, maar één keer.",
@@ -500,8 +502,8 @@ export const nl: Catalog = {
     bookPaid: "Je hebt het boek betaald. Je kunt het downloaden op de boekpagina.",
     bookFree: "Je account heeft het pdf-boek zonder te betalen. Je kunt het downloaden op de pagina van het boek.",
     bookNote: "Het familieboek als pdf koop je apart: {price} voor één stamboom. Na betaling wordt het gemaakt uit jullie gegevens en kun je het 12 maanden lang opnieuw maken en downloaden. Als je wilt, kun je het zelf afdrukken, thuis of bij een drukkerij.",
-    discountNote: "Kortingen (een klascode of de link van een organisatie) worden bij de betaling vanzelf toegepast, alleen voor het eerste jaar; verlengen gaat tegen de volle prijs. Per betaling geldt maar één korting.",
-    linkCode: "De kortingscode uit je link is onthouden: als hij nog geldig is, wordt hij vanzelf toegepast bij de betaling van je eerste jaar.",
+    discountNote: "Kortingscodes (NEAM90, de code van een organisatie, de klascode) gelden alleen voor de eerste jaarbetaling, voor één jaar; NEAM90 en ingetypte of link-codes alleen bij Basic. Verlengen gebeurt tegen de verlengingsprijs, zonder korting. Op één betaling komt maar één korting.",
+    linkCode: "De kortingscode uit je link is bewaard: als hij nog geldig is, wordt hij vanzelf toegepast op de eerste jaarbetaling van Basic.",
     backToBook: "Terug naar het boek",
     consent: "Ik wil meteen beginnen en begrijp dat ik, doordat ik de digitale inhoud direct ontvang, het herroepingsrecht van 14 dagen verlies.",
     pay: "Betaal {price} met je kaart",
@@ -570,8 +572,8 @@ export const nl: Catalog = {
     codeHint: "Heb je een code gekregen, vul hem hier in. Je ziet de korting op de betaalpagina, voordat je betaalt.",
     codeLabel: "Kortingscode",
     errCode: "Deze kortingscode is niet geldig (verkeerd getypt, verlopen of al gebruikt). Controleer hem en probeer opnieuw.",
-    errCodeYear: "Een kortingscode geldt alleen bij de betaling van een volledig eerste jaar, niet bij een ander abonnement, het pakket of een verlenging.",
-    errCodePlan: "De kortingscode geldt alleen voor het Basic-abonnement.",
+    errCodeYear: "Een kortingscode geldt alleen voor de eerste jaarbetaling, niet voor maand- of kwartaalbetalingen, een overstap, het pakket of een verlenging.",
+    errCodePlan: "De kortingscode geldt alleen voor Basic, per jaar betaald (één jaar).",
     bookIncludedAll: "Het boek is inbegrepen in je abonnement. Je kunt het downloaden op de boekpagina.",
     bookIncludedText: "Je abonnement bevat één pdf-boek per jaar. Je kunt het kiezen voor de stamboom ‘{tree}’, voor 12 maanden.",
     bookIncludedBtn: "Kies het inbegrepen boek voor deze stamboom",

@@ -107,7 +107,8 @@ export function formatPaid(amountMinor: number, currency: string, locale: Locale
  */
 export async function sendPaymentMail(db: Pick<Db, "select">, paid: PaidSession, now = new Date()): Promise<EmailResult | null> {
   if (!paid.userId) return null;
-  const [u] = await db.select({ name: user.name, email: user.email, locale: user.locale, paidUntil: accountPlan.paidUntil, keepUntil: accountPlan.keepUntil })
+  const [u] = await db.select({ name: user.name, email: user.email, locale: user.locale, paidUntil: accountPlan.paidUntil, keepUntil: accountPlan.keepUntil,
+    renews: accountPlan.subRenews, period: accountPlan.subPeriod, subAmount: accountPlan.subAmount, subCurrency: accountPlan.subCurrency })
     .from(user).leftJoin(accountPlan, eq(accountPlan.userId, user.id)).where(eq(user.id, paid.userId));
   if (!u?.email) return null;
   const l: Locale = isLocale(u.locale) ? u.locale : "ro";
@@ -119,10 +120,15 @@ export async function sendPaymentMail(db: Pick<Db, "select">, paid: PaidSession,
   const rows: [string, string][] = [[t("payWhat"), what], [t("payAmount"), formatPaid(paid.amount, paid.currency, l)], [t("payDate"), date(now)]];
   const until = paid.kind === "an" ? u.paidUntil : paid.kind === "pastrare" ? u.keepUntil : null;
   if (until) rows.push([t("payUntil"), date(until)]);
+  // Abonamentul (src/lib/abonament.ts): când și cât e următoarea plată și unde se oprește reînnoirea.
+  const ts = paid.kind === "an" && u.renews && u.paidUntil ? await getT("Sub", l) : null;
+  if (ts && u.paidUntil) rows.push([ts("payNext"), ts("payNextValue", { date: date(new Date(u.paidUntil.getTime() - 36 * 3_600_000)),
+    amount: u.subAmount && u.subCurrency ? formatPaid(u.subAmount, u.subCurrency, l) : "" })]);
   const { html, text } = renderMail([
     { p: u.name ? t("payHello", { name: u.name }) : t("payHelloNoName") },
     { p: t("payBody") },
     { rows },
+    ...(ts ? [{ p: ts("payStop") }] : []),
     { button: t("payButton"), href: `${SITE_URL}/plata` },
     { p: t("payThanks") },
   ], await footerFor(l));

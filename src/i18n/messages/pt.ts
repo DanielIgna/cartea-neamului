@@ -1,6 +1,7 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { ptExtra } from "./noi/pt";
 import { ptGhidArbore } from "./ghid-arbore/altele";
+import { ptAbonament } from "./abonament/altele";
 
 /**
  * Português (Portugal), para os romenos em Portugal e os seus filhos. Tratamento por „tu”, como nas outras línguas.
@@ -69,6 +70,7 @@ export const pt: DeepPartial<Catalog> = {
     guides: "Guias",
   },
   ...ptGhidArbore,
+  ...ptAbonament,
   UsageNotice: {
     label: "Como usas o site",
     lead: "Uma única pergunta, só uma vez.",
@@ -454,8 +456,8 @@ export const pt: DeepPartial<Catalog> = {
     bookPaid: "Pagaste o livro. Podes descarregá-lo na página do livro.",
     bookFree: "A tua conta tem o livro em PDF sem custo. Podes descarregá-lo na página do livro.",
     bookNote: "O livro da família em PDF compra-se à parte: {price} para uma árvore. Depois de pagares, é feito com os teus dados e podes refazê-lo e descarregá-lo durante 12 meses. Se quiseres, podes imprimi-lo tu, em casa ou numa gráfica.",
-    discountNote: "Os descontos (um código de turma ou o link de uma organização) aplicam-se sozinhos ao pagar, só no primeiro ano; a renovação é ao preço completo. Num pagamento aplica-se um único desconto.",
-    linkCode: "O código de desconto do teu link ficou guardado: se ainda for válido, aplica-se sozinho quando pagares o primeiro ano.",
+    discountNote: "Os códigos de desconto (NEAM90, o código de uma organização, o código da turma) valem só para o primeiro pagamento anual, durante um ano; o NEAM90 e os códigos escritos ou de um link, só com o plano Basic. A renovação é ao preço de renovação, sem desconto. Só se aplica um desconto a um pagamento.",
+    linkCode: "O código de desconto do teu link fica guardado: se ainda for válido, aplica-se sozinho ao primeiro pagamento anual do plano Basic.",
     backToBook: "Voltar ao livro",
     consent: "Quero começar já e entendo que, recebendo o conteúdo digital de imediato, perco o direito de livre resolução de 14 dias.",
     pay: "Pagar {price} com cartão",
@@ -524,8 +526,8 @@ export const pt: DeepPartial<Catalog> = {
     codeHint: "Se recebeste um código, escreve-o aqui. Vês o desconto na página de pagamento, antes de pagares.",
     codeLabel: "Código de desconto",
     errCode: "Este código de desconto não é válido (mal escrito, expirado ou já usado). Verifica-o e tenta outra vez.",
-    errCodeYear: "Um código de desconto só pode ser usado ao pagar um primeiro ano completo, não numa mudança de plano, no pacote ou numa renovação.",
-    errCodePlan: "O código de desconto só funciona com o plano Basic.",
+    errCodeYear: "Um código de desconto só pode ser usado no primeiro pagamento anual, não em pagamentos mensais ou trimestrais, numa mudança de plano, no pacote ou numa renovação.",
+    errCodePlan: "O código de desconto só vale para o plano Basic, pago por ano (um ano).",
     bookIncludedAll: "O livro está incluído no teu plano. Podes descarregá-lo na página do livro.",
     bookIncludedText: "O teu plano inclui um livro em PDF por ano. Podes escolhê-lo para a árvore „{tree}”, durante 12 meses.",
     bookIncludedBtn: "Escolher o livro incluído para esta árvore",
