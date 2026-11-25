@@ -5,7 +5,7 @@ description: Livretul militar: carnetul unui soldat, cu unitatea, gradul și cam
 updated: 2026-11-25
 published: 2026-11-18
 alt: carnet militar, livret
-terms: matricola-militara
+terms: matricola-militara, carnet-de-munca
 related: registrele-militare, documente-de-familie-din-casa
 ---
 **Livretul militar** era carnetul personal al celui care făcea armata: nume, data și locul nașterii, părinți, uneori semnalmente, unitatea, gradul, mutările și campaniile.
