@@ -36,12 +36,14 @@ import { ambassadorDraft, automationStats, crmLimits, reactivationText, replyDra
 import { crmUserSignals, user } from "@/db/schema";
 import { desc, eq, sql } from "drizzle-orm";
 
+import { DE_VERIFICAT, PLATFORME } from "@/lib/crm-platforme";
+
 export const dynamic = "force-dynamic";
 export const metadata = { title: "CRM · Admin" };
 
 const TABS = [
   { key: "azi", label: "Azi" }, { key: "organizatii", label: "Organizații" }, { key: "pipeline", label: "Pipeline" }, { key: "scoli", label: "Școli" },
-  { key: "firme", label: "Firme" }, { key: "presa", label: "Presă" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
+  { key: "firme", label: "Firme" }, { key: "presa", label: "Presă" }, { key: "magazine", label: "Magazine online" }, { key: "parteneri", label: "Parteneri" }, { key: "profesori", label: "Profesori" }, { key: "aprobari", label: "Aprobări" }, { key: "campanii", label: "Campanii" }, { key: "nucontacta", label: "Nu contacta" },
   { key: "rapoarte", label: "Rapoarte" }, { key: "scor", label: "Scor și etape" }, { key: "automatizari", label: "Automatizări" }, { key: "sanatate", label: "Sănătate" }, { key: "curatenie", label: "Curățenie" }, { key: "import", label: "Import" },
 ] as const;
 type Tab = (typeof TABS)[number]["key"];
@@ -65,7 +67,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       <AdminNav active="crm" />
       {q.ok && <p className="cc-ok" role="status">{q.ok}</p>}
       <div className="stats">
-        <Stat label="Organizații" value={num(counts.orgs)} hint={`${num(counts.scoli)} școli · ${num(counts.firme)} firme · ${num(counts.presa)} presă`} />
+        <Stat label="Organizații" value={num(counts.orgs)} hint={`${num(counts.scoli)} școli · ${num(counts.firme)} firme · ${num(counts.presa)} presă · ${num(counts.magazine)} magazine`} />
         <Stat label="Emailuri trimise (30 z)" value={num(counts.trimise30)} hint={`${num(counts.raspunsuri30)} răspunsuri`} />
         <Stat label="Calde" value={num(counts.calde)} hint={`au răspuns, interesate sau în discuție · ${num(counts.clienti)} clienți/parteneri`} />
         <Stat label="Aprobări în așteptare" value={num(counts.aprobari)} tone={counts.aprobari ? "warn" : "ok"} hint={`${num(counts.suprimate)} pe lista „nu contacta”`} />
@@ -79,6 +81,7 @@ export default async function Crm({ searchParams }: { searchParams: Promise<Reco
       {tab === "scoli" && <Orgs q={q} fixed="scoala" />}
       {tab === "firme" && <Firms q={q} />}
       {tab === "presa" && <Orgs q={q} fixed="presa" />}
+      {tab === "magazine" && <><Orgs q={q} fixed="librarie_magazin" /><Platforms /></>}
       {tab === "parteneri" && <Partners />}
       {tab === "profesori" && <Teachers />}
       {tab === "aprobari" && <Approvals />}
@@ -146,9 +149,9 @@ async function Today() {
   );
 }
 
-async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed?: "scoala" | "firma" | "presa" }) {
+async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed?: "scoala" | "firma" | "presa" | "librarie_magazin" }) {
   const list = await orgList(db, { tip: fixed ?? q.tip, status: q.status, judet: q.judet, tara: q.tara, q: q.q, sort: q.sort ?? "prioritate" });
-  const t = fixed === "scoala" ? "scoli" : fixed === "firma" ? "firme" : fixed === "presa" ? "presa" : "organizatii";
+  const t = fixed === "scoala" ? "scoli" : fixed === "firma" ? "firme" : fixed === "presa" ? "presa" : fixed === "librarie_magazin" ? "magazine" : "organizatii";
   return (
     <>
       <div className="card">
@@ -190,6 +193,13 @@ async function Orgs({ q, fixed }: { q: Record<string, string | undefined>; fixed
             din Import, cu „Redacții de presă de adăugat”.
           </p>
         )}
+        {fixed === "librarie_magazin" && (
+          <p className="muted" style={{ marginBottom: 0 }}>
+            Librăriile și magazinele online cărora le propui cardul cadou digital (codurile din Admin → Coduri de activare). Fiecare are un email
+            scris pentru ea în Aprobări: îl citești, completezi discountul dacă vrei și apeși „Trimite acum”. Adresa e cea de pe site-ul lor
+            (pagina e în „Sursa” din fișă). Când unul acceptă, faci un lot de coduri cu sursa lui.
+          </p>
+        )}
         {fixed === "scoala" && (
           <p className="muted" style={{ marginBottom: 0 }}>
             Codurile de reducere pe școală sau pe clasă (Stripe) se fac după ce conducerea școlii confirmă. Conturile, arborii și plățile de aici vin de pe
@@ -219,6 +229,33 @@ function NewOrg({ tip }: { tip?: string }) {
         <div style={{ alignSelf: "end" }}><button className="btn primary">Adaugă</button></div>
       </form>
     </details>
+  );
+}
+
+function Platforms() {
+  const tone = { acum: "ok", "după Crăciun": "warn", nu: "bad" } as const;
+  return (
+    <div className="card">
+      <h2 style={{ marginTop: 0 }}>Platforme cu înscriere ca vânzător</h2>
+      <p className="muted">Aici nu se scrie un email: te înscrii tu ca vânzător. Verificat pe paginile lor în 25.11.2026; recitește condițiile la înscriere.</p>
+      <div className="tbl-wrap">
+        <table className="tbl">
+          <thead><tr><th>Platforma</th><th>Când</th><th>Cum intri</th><th>Cât costă</th><th>De știut</th></tr></thead>
+          <tbody>
+            {PLATFORME.map((p) => (
+              <tr key={p.nume}>
+                <td><a href={p.link} target="_blank" rel="noreferrer"><b>{p.nume}</b></a><small><a href={p.sursa} target="_blank" rel="noreferrer">sursa</a></small></td>
+                <td className="tight"><span className={`pill ${tone[p.prioritate]}`}>{p.prioritate}</span></td>
+                <td>{p.cum}</td>
+                <td>{p.cost}</td>
+                <td>{p.nota}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul className="muted" style={{ marginBottom: 0 }}>{DE_VERIFICAT.map((t) => <li key={t}>{t}</li>)}</ul>
+    </div>
   );
 }
 

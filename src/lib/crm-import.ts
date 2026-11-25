@@ -17,6 +17,7 @@ export const IMPORT_KINDS = {
   firme_nu_contacta: { tip: "firma", what: "Firme care nu vor să fie contactate" },
   firme_raspunsuri: { tip: "firma", what: "Răspunsuri de la firme (firma, email, data, raspuns)" },
   presa_lista: { tip: "presa", what: "Redacții de presă de adăugat (nume, email, site, localitate, tara, sursa)" },
+  magazine_lista: { tip: "librarie_magazin", what: "Librării și magazine online de adăugat (nume, email, telefon, site, localitate, tara, sursa)" },
   asociatii_lista: { tip: "asociatie_diaspora", what: "Asociații ale românilor din străinătate de adăugat (nume, email, site, localitate, tara, sursa)" },
 } as const satisfies Record<string, { tip: OrgType; what: string }>;
 export type ImportKind = keyof typeof IMPORT_KINDS;
@@ -180,4 +181,43 @@ export async function seedPressDraftsOnce(db: Db, drafts: Record<string, { subie
   }
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
   return `${n} emailuri pentru redacții în Aprobări`;
+}
+
+/**
+ * Librăriile și magazinele online pentru cardurile cadou digitale (Daniel, 25.11.2026: „pe ce platforme sau magazine online le-aș
+ * putea pune? librării etc.”, apoi „pregătește-mi în Admin totul, emailuri”). Lista (src/data/crm-magazine.csv) intră o singură
+ * dată în CRM la „Magazine online”; adresele sunt cele scrise de magazine pe site-ul lor (coloana „sursa”). Nimic nu se trimite.
+ */
+export async function seedShopsOnce(db: Db, csv: string, now = new Date()): Promise<string> {
+  const MARK = "crm_magazine_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const rep = await importCsv(db, "magazine_lista", csv, null, now);
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi: rep.orgsNew }, updatedAt: now }).onConflictDoNothing();
+  return `${rep.orgsNew} magazine noi, ${rep.orgsSeen} deja în CRM`;
+}
+
+/**
+ * Câte un email de propunere pentru fiecare magazin (src/data/crm-magazine-mesaje.json), pus o singură dată în CRM → Aprobări.
+ * Pleacă doar când Daniel apasă „Trimite acum”; răspunsurile vin la contact@carteaneamului.ro. Stau 14 zile (până aproape de
+ * Crăciun), apoi expiră.
+ */
+export async function seedShopDraftsOnce(db: Db, drafts: Record<string, { subiect: string; text: string }>, now = new Date()): Promise<string> {
+  const MARK = "crm_magazine_ciorne_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const { queueApproval } = await import("./crm-admin");
+  let n = 0;
+  for (const [email, d] of Object.entries(drafts)) {
+    const [org] = await db.select({ id: crmOrganizations.id, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.emailOficial, email)).limit(1);
+    if (!org) continue;
+    const id = await queueApproval(db, {
+      tipActiune: "email_magazin", risc: "MEDIUM", organizationId: org.id, dedupeKey: `magazin-1:${email}`, hours: 14 * 24,
+      motiv: `Propunere de card cadou digital pentru ${org.nume}. Citește, completează discountul dacă vrei, apoi „Trimite acum”.`,
+      payload: { destinatar: email, subiect: d.subiect, text: d.text, replyTo: "contact@carteaneamului.ro" },
+    }, now);
+    if (id) n++;
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
+  return `${n} emailuri pentru magazine în Aprobări`;
 }
