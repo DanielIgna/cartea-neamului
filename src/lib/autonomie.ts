@@ -800,3 +800,18 @@ export async function startSeoEngineOnce(db: Db, now = new Date()): Promise<stri
   const r = await runAutomation(db, "motor-seo", "manual", null, now);
   return `pornit; primul lot: ${r.note}`;
 }
+
+/**
+ * Vizibilitate în Google (Daniel, 25.11.2026: „automatizează tot ce poți în direcția asta”): o singură dată, la publicare,
+ * pornește „Anunță Google în aceeași zi” (sitemap retrimis și paginile schimbate verificate) și „Strategul SEO” (ideile
+ * săptămânale din Search Console). După aceea comutatoarele din Admin → Autonomie hotărăsc.
+ */
+export async function startGoogleOnce(db: Db, now = new Date()): Promise<string> {
+  const MARK = "google_pornit_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(sql`${appSetting.key} = ${MARK}`);
+  if (seen) return "deja";
+  const sw = await automationSwitches(db);
+  await saveSwitches(db, { ...sw, "google-zilnic": true, "strateg-seo": true }, null, now);
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString() }, updatedAt: now }).onConflictDoNothing();
+  return "pornite: google-zilnic + strateg-seo";
+}
