@@ -30,7 +30,7 @@ type Candidate = { id: string; email: string; createdAt?: Date | string | null; 
  * Admin, citit proaspăt: sesiunea e ținută 5 minute într-un cookie, așa că un proprietar care tocmai și-a confirmat adresa
  * ar aștepta. Pentru adresele proprietarilor întrebăm baza de date.
  */
-async function isAdminFresh(me: Candidate) {
+export async function isAdminFresh(me: Candidate) {
   if (isAdminUser(me)) return true;
   if (!isOwnerEmail(me.email)) return false;
   const [u] = await db.select({ email: user.email, emailVerified: user.emailVerified, createdAt: user.createdAt }).from(user).where(eq(user.id, me.id));

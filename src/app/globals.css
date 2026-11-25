@@ -944,6 +944,8 @@ body:has(.grand){overflow:hidden}
   .seg button,.seg .seg-link{min-height:40px}
   .theme-toggle,.lang-pick,.signin-btn{height:42px}
   .theme-toggle{width:42px}
+  /* În meniul de pe telefon butonul are și text („Treci la tema întunecată”): lățimea lui, pe un rând (Daniel, 25.11.2026). */
+  .theme-toggle.theme-toggle-labeled{width:auto;height:auto;min-height:44px;white-space:nowrap}
   .rel button,.chips a.chip{padding:6px 12px;font-size:14px}
   .gen-select select{min-height:40px}
   .zoom-tools button{min-width:40px;height:38px}
