@@ -1,5 +1,6 @@
 ---
 title: Arbore genealogic
+seo: Arbore genealogic: ce este, tipuri și cum îl faci
 description: Arborele genealogic: cum se desenează legăturile de familie, ce tipuri de arbori există și cum alegi forma potrivită. Explicat pe scurt, pentru arbore.
 updated: 2026-11-18
 alt: arborele familiei, copac genealogic, spiță

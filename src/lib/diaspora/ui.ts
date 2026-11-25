@@ -72,7 +72,7 @@ const en: Ui = {
   countries: "Europe and Israel", america: "United States", canada: "Canada", themes: "Special pages", states: "States", provinces: "Provinces and territories", cities: "Major cities", regions: "Regions",
   history: "How Romanians came here", where: "Where they live", docs: "Romanian documents, requested from here", records: "Local archives and records",
   community: "Communities and associations", steps: "Step by step: your family tree, from far away", related: "See also", otherLangs: "This page in other languages",
-  titleCountry: (w) => `Romanian roots ${w}: records and family tree | Cartea Neamului`,
+  titleCountry: (w) => `Romanians ${w}: history and family roots | Cartea Neamului`,
   descCountry: (w) => `How Romanians settled ${w}, how to request Romanian documents from there, which archives to use and how to build your family tree.`,
   titleRegion: (w) => `Romanian roots ${w}: records and genealogy | Cartea Neamului`,
   titleRegionShort: (w) => `Romanian roots ${w}: records | Cartea Neamului`,

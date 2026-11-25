@@ -1,5 +1,6 @@
 ---
 title: Act de naștere
+seo: Ce este actul de naștere și unde îl găsești pentru bunici
 description: Ce este actul de naștere, ce date conține și unde îl găsești pentru bunici și străbunici: la primărie sau la Arhivele Naționale.
 updated: 2026-11-18
 alt: certificat de naștere, extras de naștere

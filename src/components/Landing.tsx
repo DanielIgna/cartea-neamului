@@ -66,6 +66,15 @@ const START_HUBS: [string, string][] = [
   ["/genealogie", "Genealogie pe regiuni, județe și orașe"], ["/nume", "Nume de familie explicate"], ["/localitati", "Arhive și registre pe județe"],
   ["/ghid", "Toate ghidurile"], ["/glosar", "Glosarul cuvintelor din acte"], ["/surse-publice", "Surse publice de genealogie"], ["/cadouri", "Idei de cadou pentru familie"], ["/unelte", "Unelte gratuite: rudenie, arbore de tipărit"],
 ];
+/**
+ * „Ce caută oamenii”: paginile care apar deja în Google pe primele două pagini (Search Console, 25.11.2026), legate direct
+ * de pe prima pagină, cea mai puternică a site-ului, ca să urce în căutări. Se schimbă după cifrele din raportul de luni.
+ */
+const START_POPULAR: [string, string][] = [
+  ["/unelte/rudenie/cumnat", "Cumnatul: ce rudă e"], ["/glosar/livret-militar", "Livretul militar al bunicului"],
+  ["/glosar/clacas", "Ce era un clăcaș"], ["/glosar/registrul-agricol", "Registrul agricol"],
+  ["/glosar/act-de-nastere", "Actul de naștere al bunicilor"], ["/ghid/scrierea-chirilica-romaneasca", "Alfabetul chirilic din actele vechi"],
+];
 const START_GUIDES = [
   "cum-incepi-arborele-genealogic", "intrebari-pentru-bunici", "cum-ceri-un-act-de-stare-civila",
   "registrele-de-stare-civila", "cum-citesti-un-registru-parohial", "familysearch-pentru-romania",
@@ -246,6 +255,10 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
             <nav className="lp-history" aria-label="Pagini de pornire">
               <h3>Caută după loc și nume</h3>
               <ul>{START_HUBS.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+            </nav>
+            <nav className="lp-history" aria-label="Ce caută oamenii">
+              <h3>Ce caută oamenii</h3>
+              <ul>{START_POPULAR.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
             </nav>
             <nav className="lp-history" aria-label="Primele ghiduri">
               <h3>Primele ghiduri</h3>

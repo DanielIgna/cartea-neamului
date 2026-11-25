@@ -1,5 +1,6 @@
 ---
 title: Registru agricol
+seo: Registrul agricol: ce e, unde îl cauți și ce afli din el
 description: Registrul agricol: evidența gospodăriilor de la primărie. Ce află un genealogist din el despre familia din a doua jumătate a secolului XX.
 updated: 2026-11-18
 alt: registre agricole
