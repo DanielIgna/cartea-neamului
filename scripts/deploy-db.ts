@@ -7,13 +7,13 @@ import { eq } from "drizzle-orm";
 import { db } from "../src/db";
 import { applySchema } from "../src/lib/bootstrap";
 import { tree } from "../src/db/schema";
-import { basicPrice49Once, basicPrice69Once, offerNov18Once, startSalesOnce } from "../src/lib/plans";
+import { basicPrice49Once, basicPrice69Once, discount20Once, offerNov18Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { probaOnce } from "../src/lib/coduri-activare-proba";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { readFileSync } from "node:fs";
-import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce } from "../src/lib/crm-import";
+import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce, fixShopDraftPricesOnce } from "../src/lib/crm-import";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -44,6 +44,7 @@ try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)
 try { console.log(`deploy-db: oferta din 18 noiembrie: ${await offerNov18Once(db)}`); } catch (e) { console.error("deploy-db: oferta din 18 noiembrie a eșuat", e); }
 // Basic 69 lei / 14 € (Daniel, 25.11.2026): o singură dată, după celelalte schimbări de preț; apoi prețul se schimbă din Admin.
 try { console.log(`deploy-db: prețul Basic 69 lei: ${await basicPrice69Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 69 a eșuat", e); }
+try { console.log(`deploy-db: reînnoirea Basic 56 lei: ${await discount20Once(db)}`); } catch (e) { console.error("deploy-db: reînnoirea Basic 56 a eșuat", e); }
 // Carduri cadou (Daniel, 14.11.2026): o singură dată, magazinul „Test Magazin” cu un lot de 5 coduri de verificat.
 try { console.log(`deploy-db: carduri cadou de test: ${await testBatchOnce(db)}`); } catch (e) { console.error("deploy-db: lotul de test a eșuat", e); }
 // Carduri digitale (Daniel, 14.11.2026): o singură dată, un lot digital de 5 carduri pentru „Test Magazin”.
@@ -63,4 +64,5 @@ try { console.log(`deploy-db: emailuri pentru presă: ${await seedPressDraftsOnc
 // cu câte un email gata în Aprobări. Nu pleacă nimic până nu apasă el „Trimite acum”.
 try { console.log(`deploy-db: magazine în CRM: ${await seedShopsOnce(db, readFileSync("src/data/crm-magazine.csv", "utf8"))}`); } catch (e) { console.error("deploy-db: lista de magazine a eșuat", e); }
 try { console.log(`deploy-db: emailuri pentru magazine: ${await seedShopDraftsOnce(db, JSON.parse(readFileSync("src/data/crm-magazine-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: emailurile pentru magazine au eșuat", e); }
+try { console.log(`deploy-db: prețul Basic în emailurile către magazine: ${await fixShopDraftPricesOnce(db)}`); } catch (e) { console.error("deploy-db: corectarea emailurilor către magazine a eșuat", e); }
 process.exit(0);

@@ -43,7 +43,7 @@ export default async function AccessBanner({ userId, locale }: { userId: string;
   const tc = await getT("Conversion");
   const offer = ended ? await activeOffer(db, userId).catch(() => null) : null;
   const fmt = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(d);
-  // Cu abonamentele (Daniel, 25.11.2026): „După ele, alegi un plan: de la 16,99 lei pe lună sau 49 lei pe an.”
+  // Cu abonamentele (Daniel, 25.11.2026): „După ele, alegi un plan: de la 16,99 lei pe lună sau 49 lei pe an.” Prețurile vin din setări (acum 15,49 lei și 69 lei).
   let trialLine: string | null = null;
   let endedLine: React.ReactNode = null;
   if (info.access.kind === "proba" || (ended && !info.access.keptUntil)) {

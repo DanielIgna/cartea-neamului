@@ -133,7 +133,7 @@ export const FUNCTIONS: Fn[] = [
     human: "Daniel hotărăște când se fac.",
   },
   {
-    key: "carte", name: "Cartea de tipărit", area: "poveste", lifecycle: "live", risk: "mediu", riskWhy: "Se vinde (PDF 99 lei); greșelile ajung pe hârtie.",
+    key: "carte", name: "Cartea de tipărit", area: "poveste", lifecycle: "live", risk: "mediu", riskWhy: "Se vinde (PDF 39 lei, Basic + PDF 99 lei); greșelile ajung pe hârtie.",
     what: "Cartea neamului în limba aleasă, cu capitolul „Cu vorbele lor” și coduri QR.",
     engine: ["src/lib/book.ts", "src/lib/book-css.ts", "src/components/BookView.tsx"],
     pages: ["/arbore/[id]/carte"],

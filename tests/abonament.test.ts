@@ -16,22 +16,21 @@ const src = (p: string) => readFileSync(p, "utf8");
 const s = DEFAULT_SETTINGS;
 
 describe("abonamentele: prețurile (25.11.2026)", () => {
-  it("anual e cu 26–32% sub lunar; Basic doar anual; din al doilea an, prețul de reînnoire", () => {
-    expect(periodPrice("familie", "luna", true, s)).toEqual({ lei: 16.99, eur: 3.49 });
-    expect(periodPrice("premium", "trimestru", true, s)).toEqual({ lei: 75.99, eur: 15.99 });
+  it("anual e cu 20% sub lunar (Daniel, 25.11.2026); Basic doar anual; din al doilea an, prețul de reînnoire", () => {
+    expect(periodPrice("familie", "luna", true, s)).toEqual({ lei: 15.49, eur: 3.12 });
+    expect(periodPrice("premium", "trimestru", true, s)).toEqual({ lei: 69.99, eur: 13.99 });
     expect(periodPrice("basic", "luna", true, s)).toBeNull();
     expect(periodsFor("basic", s)).toEqual(["an"]);
     expect(periodsFor("familie", s)).toEqual(["luna", "trimestru", "an"]);
     expect(periodsFor("familie", { ...s, subs: false })).toEqual(["an"]);
     expect(periodPrice("familie", "an", true, s)).toEqual({ lei: 149, eur: 30 });
     expect(periodPrice("familie", "an", true, s, true)).toEqual({ lei: 119, eur: 24 });
-    expect(periodPrice("basic", "an", true, s, true)).toEqual({ lei: 39, eur: 8 });
+    expect(periodPrice("basic", "an", true, s, true)).toEqual({ lei: 56, eur: 12 });
     // Prețul de reînnoire nu poate fi mai mare decât cel întreg; 0 = prețul întreg.
     expect(periodPrice("premium", "an", true, { ...s, premiumRenewLei: 0, premiumRenewEur: 0 }, true)).toEqual({ lei: 249, eur: 50 });
     for (const t of ["familie", "premium"] as const) {
-      const save = yearSaving(t, s, true);
-      expect(save).toBeGreaterThanOrEqual(25);
-      expect(save).toBeLessThanOrEqual(32);
+      expect(yearSaving(t, s, true)).toBe(20);
+      expect(yearSaving(t, s, false)).toBe(20);
     }
     expect(yearSaving("basic", s, true)).toBe(0);
   });

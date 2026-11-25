@@ -40,8 +40,8 @@ describe("prețurile de pe prima pagină (25.11.2026)", () => {
 describe("prețul tăiat (25.11.2026)", async () => {
   const { comparePrice, DEFAULT_SETTINGS: s } = await import("@/lib/plans");
   it("spune ce e: aceeași perioadă plătită lunar sau prețul întreg; nimic la lunar", () => {
-    expect(comparePrice("familie", "an", true, s, false, true)).toEqual({ kind: "monthly", was: 203.88, count: 12, month: 16.99 });
-    expect(comparePrice("premium", "trimestru", true, s, false, true)).toEqual({ kind: "monthly", was: 83.97, count: 3, month: 27.99 });
+    expect(comparePrice("familie", "an", true, s, false, true)).toEqual({ kind: "monthly", was: 185.88, count: 12, month: 15.49 });
+    expect(comparePrice("premium", "trimestru", true, s, false, true)).toEqual({ kind: "monthly", was: 77.7, count: 3, month: 25.9 });
     expect(comparePrice("familie", "luna", true, s, false, true)).toBeNull();
     expect(comparePrice("basic", "an", true, s, false, true)).toBeNull();
     expect(comparePrice("familie", "an", true, s, true, true)).toEqual({ kind: "full", was: 149 });
@@ -61,5 +61,23 @@ describe("Basic 69 lei / 14 € (25.11.2026)", () => {
     await savePlanSettings(d, { ...(await planSettings(d)), priceLei: 59 }, null as unknown as string);
     expect(await basicPrice69Once(d)).toBe("deja");
     expect((await planSettings(d)).priceLei).toBe(59);
+  });
+});
+
+describe("Reînnoirea Basic cu cel mult 20% reducere (25.11.2026)", () => {
+  it("39 lei / 8 € devin 56 lei / 12 €, o singură dată; Familie și Premium rămân", async () => {
+    const { createDb } = await import("@/db");
+    const { runMigrations } = await import("@/db/migrate");
+    const { discount20Once, planSettings, savePlanSettings, DEFAULT_SETTINGS } = await import("@/lib/plans");
+    const d = createDb(); await runMigrations(d);
+    await savePlanSettings(d, { ...DEFAULT_SETTINGS, basicRenewLei: 39, basicRenewEur: 8 }, null as unknown as string);
+    expect(await discount20Once(d)).toBe("schimbat");
+    const s = await planSettings(d);
+    expect(s).toMatchObject({ basicRenewLei: 56, basicRenewEur: 12, familieRenewLei: 119, premiumRenewLei: 199 });
+    expect(1 - s.basicRenewLei / s.priceLei).toBeLessThanOrEqual(0.2);
+    expect(1 - s.basicRenewEur / s.priceEur).toBeLessThanOrEqual(0.2);
+    await savePlanSettings(d, { ...s, basicRenewLei: 60 }, null as unknown as string);
+    expect(await discount20Once(d)).toBe("deja");
+    expect((await planSettings(d)).basicRenewLei).toBe(60);
   });
 });

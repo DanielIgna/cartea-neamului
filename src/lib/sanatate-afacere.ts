@@ -5,7 +5,7 @@
  * aduce fiecare după aceeași formulă.
  *
  * Ținta de bani e cea cerută de Daniel: 1000 de abonamente noi pe lună la prețul Basic (Admin → Manager control). Basic e pe AN,
- * așa că ținta lunară de încasări e 1000 × prețul Basic (49.000 lei la 49 lei), iar ținta de clienți plătitori activi crește
+ * așa că ținta lunară de încasări e 1000 × prețul Basic (69.000 lei la 69 lei), iar ținta de clienți plătitori activi crește
  * cu 1000 pe lună. Restul țintelor (câte conturi, câte vizite) se socotesc înapoi din ea, cu conversia reală când există
  * destule date și cu presupunerea scrisă pe pagină când nu.
  *

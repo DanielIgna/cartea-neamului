@@ -52,11 +52,11 @@ export const DOCS: KDoc[] = [
     id: "D01", title: "Plățile: 7 zile gratuite, apoi abonamentul", kind: "decizie", category: "bani", status: "activ", version: "2.0", date: "2026-11-25", reviewEveryDays: 60,
     summary: "Cum se plătește Cartea Neamului: proba gratuită, anul, invitații, cartea PDF și cartea tipărită. Banii intră pe PFA, prin Stripe.",
     rules: [
-      "7 zile gratuite, fără card și fără abonament; apoi planul se plătește lunar, trimestrial sau anual (Basic doar anual: 69 lei / 14 €, din 25.11.2026; Familie 16,99 / 45,99 / 149 lei; Premium 27,99 / 75,99 / 249 lei). Prețurile se schimbă din Admin → Manager control.",
+      "7 zile gratuite, fără card și fără abonament; apoi planul se plătește lunar, trimestrial sau anual (Basic doar anual: 69 lei / 14 €, din 25.11.2026; Familie 15,49 / 41,99 / 149 lei; Premium 25,90 / 69,99 / 249 lei; anual = 20% sub 12 luni plătite lunar, din 25.11.2026). Prețurile se schimbă din Admin → Manager control.",
       "Fiecare om invitat să scrie are și el 7 zile gratuite, apoi plătește anul ca să scrie mai departe; altfel rămâne doar să vadă.",
       "Cei din beta primesc doar primul an gratuit (nu pentru totdeauna) și cartea PDF gratuită în acel an.",
       "Cartea PDF: produs separat, 39 lei / 8 €, plătit o singură dată. Nu promitem cartea tipărită.",
-      "Abonament cu reînnoire automată (din 25.11.2026): oprire dintr-un clic pe /plata, email cu 7 zile înainte de plata anuală sau trimestrială; din al doilea an, preț de reînnoire mai mic (39 / 119 / 199 lei). Cine a plătit înainte un an o dată nu e trecut singur pe abonament.",
+      "Abonament cu reînnoire automată (din 25.11.2026): oprire dintr-un clic pe /plata, email cu 7 zile înainte de plata anuală sau trimestrială; din al doilea an, preț de reînnoire mai mic (56 / 119 / 199 lei; la Basic cel mult 20% sub prețul întreg). Cine a plătit înainte un an o dată nu e trecut singur pe abonament.",
       "Codurile (NEAM90, școli, organizații) doar la Basic, la prima plată anuală, pentru un an.",
       "Exportul datelor și GEDCOM rămân gratuite (lege + Termeni).",
       "Plățile se confirmă doar prin webhook-ul Stripe semnat (/api/plata/stripe), nu din pagina de întoarcere.",
@@ -83,7 +83,7 @@ export const DOCS: KDoc[] = [
     id: "D03", title: "Planurile Basic, Familie și Premium", kind: "decizie", category: "bani", status: "activ", version: "1.1", date: "2026-11-13", reviewEveryDays: 90,
     summary: "Trei planuri (lunar, trimestrial sau anual; Basic doar anual), cu plafoane diferite; trecerea pe un plan mai mare se plătește pro rata, fără coborâre în mijlocul anului.",
     rules: [
-      "Basic 69 lei / 14 € (din 25.11.2026; ruda invitată tot 69), Familie 149 lei / 30 € (recomandat, 1 carte PDF pe an), Premium 249 lei / 50 € (PDF pentru toți arborii, 20% la tipar).",
+      "Basic 69 lei / 14 € (din 25.11.2026; ruda invitată tot 69), Familie 149 lei / 30 € (recomandat), Premium 249 lei / 50 €; cartea PDF se cumpără separat la toate (39 lei / 8 €), fără tipar promis.",
       "Pachet Basic + carte PDF: 99 lei / 20 €. Toate prețurile și plafoanele se schimbă din Admin → Manager control.",
       "Anul cadou (/cadou/<cod>) și 30 de zile pentru cine aduce o rudă care plătește.",
       "Testele ADN nu se vând și nu au afiliere; nu se păstrează date genetice.",
@@ -98,7 +98,7 @@ export const DOCS: KDoc[] = [
     rules: [
       "Păstrare 25 lei / 5 € pe an: poze și înregistrări întregi pentru familie, arhiva anuală pe email, fără adăugări noi.",
       "Fără Păstrare: arborele text rămâne gratuit, pozele se văd mici, exportul rămâne gratuit.",
-      "Pachet Păstrare + carte PDF: 109 lei.",
+      "Pachet Păstrare + carte PDF: 59 lei / 12 € (keepBookLei, din Admin).",
     ],
     source: ["PR #100", "analiza de costuri: costuri/costuri-gazduire-planuri.md"],
     governs: ["planuri", "documente"],
@@ -309,7 +309,7 @@ export const DOCS: KDoc[] = [
     id: "D25", title: "Clienți fără reclame plătite", kind: "plan", category: "crestere", status: "activ", version: "1.0", date: "2026-11-14", reviewEveryDays: 30,
     summary: "Cum ajungem la 1000 de abonamente noi pe lună fără Google Ads și fără reclame plătite: rudele, Google, Crăciunul, grupurile, comunitatea locală, partenerii, presa și emailurile cu acord.",
     rules: [
-      "Basic e pe an: 1000 de abonamente noi pe lună la 49 lei = 49.000 lei pe lună în medie, 588.000 pe an; ținta realistă pentru primul an e 300–1000 pe lună până în decembrie 2027.",
+      "Basic e pe an: 1000 de abonamente noi pe lună la 69 lei = 69.000 lei pe lună în medie, 828.000 pe an; ținta realistă pentru primul an e 300–1000 pe lună până în decembrie 2027.",
       "Fără reclame plătite. Canalul principal sunt rudele invitate.",
       "Niciun email de marketing fără acordul omului (acordul „news”), cu dezabonare dintr-un clic.",
       "Ton neutru față de parohii, primării și școli; fără limbaj religios.",

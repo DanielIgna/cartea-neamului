@@ -15,7 +15,7 @@ export type HomePlan = {
   orYear: string;
   /** Prețul tăiat pe fiecare perioadă, cu ce e el („12 × 16,99 lei, dacă plătești lunar”); null = nimic de tăiat. */
   was: Record<Period, { price: string; note: string } | null>;
-  /** „Economisești 27% față de plata lunară” (doar la Anual); "" = nu e cazul. */
+  /** „Economisești 20% față de plata lunară” (doar la Anual); "" = nu e cazul. */
   save: string;
   /** „Din al doilea an: 119 lei pe an”; "" = același preț. */
   renew: string;
