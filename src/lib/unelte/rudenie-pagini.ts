@@ -131,8 +131,8 @@ export const KIN_PAGES: KinPage[] = [
   },
   {
     slug: "cumnat", name: "Cumnat",
-    title: "Cumnat: cine e cumnatul și ce grad de rudenie are",
-    description: "Cumnatul e fratele soțului sau al soției, ori soțul surorii tale. E rudenie prin alianță (afinitate), de gradul II. Explicat pe înțeles.",
+    title: "Cumnat: cine e cumnatul tău și ce rudă îți este",
+    description: "Cumnatul e fratele soțului sau al soției tale, ori soțul surorii tale. Nu e rudă de sânge, ci afin de gradul II. Explicat simplu, cu exemple.",
     h1: "Cumnatul: cine e și ce fel de rudenie e",
     lead: "Cumnat îi spui fratelui soțului sau al soției tale, dar și soțului surorii tale. Nu e rudă de sânge, ci rudă prin alianță, de gradul al doilea.",
     path: ["sotie", "frate"], degree: "afinitate, gradul II",
