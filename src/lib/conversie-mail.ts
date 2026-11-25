@@ -12,7 +12,8 @@ import { isDemo } from "./demo";
 import { sendEmail, emailSent, type EmailMessage, type EmailResult } from "./email";
 import { footerFor, renderMail, type MailBlock } from "./emailuri";
 import { ensureInviteCode, firstName, inviteSettings } from "./invitatii";
-import { accessFor, isTier, planSettings, type Access, type PlanSettings } from "./plans";
+import { money } from "./plati";
+import { accessFor, isTier, periodPrice, planSettings, type Access, type PlanSettings } from "./plans";
 import { isPlan } from "./plan-names";
 import { stripeReady } from "./plati";
 import { SITE_URL } from "./site-url";
@@ -51,7 +52,7 @@ export async function buildMail(o: {
   persons: number; daysLeft: number; inviteLink: string | null; inviteDays: number; offer: Offer | null; site?: string;
 }): Promise<BuiltMail> {
   const site = o.site ?? SITE_URL;
-  const [t, app] = await Promise.all([getT("ConversionMail", o.locale), getAppName(o.locale)]);
+  const [t, app, tpr, tsub] = await Promise.all([getT("ConversionMail", o.locale), getAppName(o.locale), getT("Preturi", o.locale), getT("Sub", o.locale)]);
   const tt = t as unknown as (k: string, v?: Record<string, string | number>) => string;
   const link = (path: string) => clickUrl(site, o.mailId, withUtm(path, o.step));
   const basic = priceOf(o.ps, o.locale, "basic");
@@ -71,12 +72,19 @@ export async function buildMail(o: {
     P.push({ button: tt("progresButton"), href: link(o.inviteLink && o.inviteDays > 0 ? "/invitatii" : "/") });
   } else if (o.step === "planuri") {
     subject = tt("planuriSubject", { app });
-    add(["planuriIntro", { daysLeft: Math.max(1, o.daysLeft) }]);
+    // Cu abonamentele (25.11.2026): planul se plătește și lunar sau trimestrial, deci nu „un plan pe un an”.
+    if (o.ps.subs) P.push({ p: tpr("mailPlans") });
+    else add(["planuriIntro", { daysLeft: Math.max(1, o.daysLeft) }]);
+    const monthly = (x: "familie" | "premium") => {
+      const m = o.ps.subs ? periodPrice(x, "luna", true, o.ps) : null;
+      return m ? ` ${tsub("orMonthly", { price: money(o.locale === "ro" ? m.lei : m.eur, o.locale).label })}` : "";
+    };
     P.push({ rows: [
       [tt("planuriBasic"), tt("planuriBasicWhat", { price: basic })],
-      [tt("planuriFamilie"), tt("planuriFamilieWhat", { price: priceOf(o.ps, o.locale, "familie") })],
-      [tt("planuriPremium"), tt("planuriPremiumWhat", { price: priceOf(o.ps, o.locale, "premium") })],
+      [tt("planuriFamilie"), tt("planuriFamilieWhat", { price: priceOf(o.ps, o.locale, "familie") }) + monthly("familie")],
+      [tt("planuriPremium"), tt("planuriPremiumWhat", { price: priceOf(o.ps, o.locale, "premium") }) + monthly("premium")],
     ] });
+    if (o.ps.subs) P.push({ p: tsub("autoNote", { days: 7 }) });
     add("planuriBook", "planuriNote");
     P.push({ button: tt("planuriButton"), href: link("/plata") });
   } else if (o.step === "ultimazi") {

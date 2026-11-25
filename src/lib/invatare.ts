@@ -114,10 +114,10 @@ export const TIER_LABEL: Record<Lead["tier"], string> = { aproape: "Aproape de p
 export function suggestedMessage(name: string, s: Signals, price: number) {
   const first = name.split(" ")[0] || name;
   if (s.endedDaysAgo != null)
-    return { subject: "Arborele tău te așteaptă", body: `Bună, ${first}! Zilele gratuite s-au terminat, dar n-am șters nimic: arborele cu ${s.persons} ${s.persons === 1 ? "persoană" : "persoane"} e tot acolo și îl poți vedea oricând. Ca să scrii mai departe, împreună cu rudele, anul Basic costă ${price} lei, plătit o dată; poți alege și un abonament lunar sau trimestrial la celelalte planuri, oprit dintr-un clic. Dacă ai vreo întrebare, răspunde-mi aici.` };
+    return { subject: "Arborele tău te așteaptă", body: `Bună, ${first}! Zilele gratuite s-au terminat, dar n-am șters nimic: arborele cu ${s.persons} ${s.persons === 1 ? "persoană" : "persoane"} e tot acolo și îl poți vedea oricând. Ca să scrii mai departe, împreună cu rudele, Basic costă ${price} lei pe an, iar Familie și Premium se pot plăti și lunar sau trimestrial; planul se reînnoiește singur și oprești reînnoirea dintr-un clic. Dacă ai vreo întrebare, răspunde-mi aici.` };
   const left = s.daysLeft <= 0 ? "Zilele gratuite s-au terminat" : s.daysLeft === 1 ? "Mai ai o zi gratuită" : `Mai ai ${s.daysLeft} zile gratuite`;
   if (s.persons >= 10 && s.invites >= 1)
-    return { subject: "Arborele vostru crește frumos", body: `Bună, ${first}! Am văzut că arborele are deja ${s.persons} de persoane și că ți-ai chemat rudele. ${left}. Ca să puteți scrie mai departe toți, anul Basic costă ${price} lei, plătit o dată, fără reînnoire automată. Nu se șterge nimic. Dacă ai vreo întrebare, răspunde-mi aici.` };
+    return { subject: "Arborele vostru crește frumos", body: `Bună, ${first}! Am văzut că arborele are deja ${s.persons} de persoane și că ți-ai chemat rudele. ${left}. Ca să puteți scrie mai departe toți, Basic costă ${price} lei pe an, iar Familie și Premium se pot plăti și lunar sau trimestrial; planul se reînnoiește singur și oprești reînnoirea dintr-un clic. Nu se șterge nimic. Dacă ai vreo întrebare, răspunde-mi aici.` };
   if (s.invites === 0)
     return { subject: "Cine din familie știe mai multe?", body: `Bună, ${first}! ${left}. Cel mai repede crește arborele când vin și rudele: trimite-le invitația pe WhatsApp din pagina arborelui, iar ei adaugă ce știu. Dacă te pot ajuta cu ceva, răspunde-mi aici.` };
   if (s.photos < 3)

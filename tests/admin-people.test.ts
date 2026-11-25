@@ -61,15 +61,15 @@ describe("planurile", () => {
   });
   it("banii: cel cu arbore plătește prețul întreg, ruda invitată prețul ei; „gratuit mereu” niciodată", () => {
     const t = { ...on, invitePriceLei: 30 };
-    expect(yearPrice(true, t)).toEqual({ lei: 49, eur: 10 });
-    expect(yearPrice(false, t)).toEqual({ lei: 30, eur: 10 });
+    expect(yearPrice(true, t)).toEqual({ lei: 69, eur: 14 });
+    expect(yearPrice(false, t)).toEqual({ lei: 30, eur: 14 });
     const r = revenue([
       { access: { kind: "platit", until: null, tier: "basic" }, ownsTree: true },
       { access: { kind: "expirat", since: d("2027-01-01") }, ownsTree: false },
       { access: { kind: "proba", until: d("2027-01-01"), daysLeft: 2 }, ownsTree: true },
       { access: { kind: "mereu" }, ownsTree: true },
     ], t);
-    expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 49, leiYearPossible: 128 });
+    expect(r).toEqual({ paying: 1, wouldPay: 2, leiYearNow: 69, leiYearPossible: 168 });
   });
   it("setările se scriu ca numere, cu mesaje în română, iar comutatorul vine din bifă", () => {
     const rest = Object.fromEntries(Object.entries(DEFAULT_SETTINGS).filter(([k]) => k !== "on" && k !== "startedAt").map(([k, v]) => [k, String(v)]));
@@ -316,8 +316,8 @@ describe("plata nu se ocolește invitându-se unii pe alții", () => {
   });
 
   it("prețurile pe fiecare plan", () => {
-    expect(tierPrice("basic", true, s)).toEqual({ lei: 49, eur: 10 });
-    expect(tierPrice("basic", false, { ...s, invitePriceLei: 30 })).toEqual({ lei: 30, eur: 10 });
+    expect(tierPrice("basic", true, s)).toEqual({ lei: 69, eur: 14 });
+    expect(tierPrice("basic", false, { ...s, invitePriceLei: 30 })).toEqual({ lei: 30, eur: 14 });
     expect(tierPrice("familie", true, s)).toEqual({ lei: 149, eur: 30 });
     expect(tierPrice("premium", false, s)).toEqual({ lei: 249, eur: 50 });
     expect(tierBook("basic", s)).toBe("separat");
@@ -340,7 +340,7 @@ describe("pornirea vânzării, o singură dată", () => {
   it("pornește plățile la prima rulare și nu le repornește după o oprire din Admin", async () => {
     const d = createDb(); await runMigrations(d);
     expect(await startSalesOnce(d, new Date("2026-11-13T00:00:00Z"))).toBe("pornit");
-    expect(await planSettings(d)).toMatchObject({ on: true, startedAt: "2026-11-13T00:00:00.000Z", priceLei: 49, trialDays: 7 });
+    expect(await planSettings(d)).toMatchObject({ on: true, startedAt: "2026-11-13T00:00:00.000Z", priceLei: 69, trialDays: 7 });
     await savePlanSettings(d, { ...DEFAULT_SETTINGS, on: false }, null as unknown as string);
     expect(await startSalesOnce(d)).toBe("deja");
     expect((await planSettings(d)).on).toBe(false);

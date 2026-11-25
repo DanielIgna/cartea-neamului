@@ -24,5 +24,8 @@ export const roPreturi = {
     payToday: "Plata și planul încep azi. Cele {days} zile gratuite sunt cele de la începutul contului și nu se mai adaugă după plată.",
     wasMonthly: "{count} × {price}, dacă plătești lunar",
     wasFull: "prețul întreg; tu plătești prețul de reînnoire",
+    endedLead: "<b>Zilele gratuite s-au terminat.</b> Arborele se vede în continuare și nu se pierde nimic.",
+    endedPlan: "Ca să adaugi sau să schimbi ceva, alegi un plan: de la {month} pe lună sau {year} pe an.",
+    mailPlans: "Ca să adaugi și după zilele gratuite, alegi un plan, plătit lunar, trimestrial sau anual:",
   },
 };

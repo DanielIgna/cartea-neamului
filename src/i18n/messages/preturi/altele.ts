@@ -26,6 +26,9 @@ export const enGBPreturi: P = {
     payToday: "The payment and the plan start today. The {days} free days are the ones at the start of your account and are not added on after payment.",
     wasMonthly: "{count} × {price} if you pay monthly",
     wasFull: "full price; you pay the renewal price",
+    endedLead: "<b>Your free days are over.</b> The tree can still be seen and nothing is lost.",
+    endedPlan: "To add or change anything, you choose a plan: from {month} a month or {year} a year.",
+    mailPlans: "To keep adding after the free days, you choose a plan, paid monthly, quarterly or yearly:",
   },
 };
 
@@ -51,6 +54,9 @@ export const frPreturi: P = {
     payToday: "Le paiement et la formule commencent aujourd’hui. Les {days} jours gratuits sont ceux du début du compte et ne s’ajoutent pas après le paiement.",
     wasMonthly: "{count} × {price} si vous payez au mois",
     wasFull: "prix plein ; vous payez le prix de renouvellement",
+    endedLead: "<b>Les jours gratuits sont terminés.</b> L’arbre reste visible et rien n’est perdu.",
+    endedPlan: "Pour ajouter ou modifier quelque chose, vous choisissez une formule : à partir de {month} par mois ou {year} par an.",
+    mailPlans: "Pour continuer à ajouter après les jours gratuits, vous choisissez une formule, payée au mois, au trimestre ou à l’année :",
   },
 };
 
@@ -76,6 +82,9 @@ export const esPreturi: P = {
     payToday: "El pago y el plan empiezan hoy. Los {days} días gratis son los del comienzo de la cuenta y no se añaden después del pago.",
     wasMonthly: "{count} × {price} si pagas al mes",
     wasFull: "precio completo; tú pagas el precio de renovación",
+    endedLead: "<b>Los días gratis han terminado.</b> El árbol se sigue viendo y no se pierde nada.",
+    endedPlan: "Para añadir o cambiar algo, eliges un plan: desde {month} al mes o {year} al año.",
+    mailPlans: "Para seguir añadiendo después de los días gratis, eliges un plan, pagado al mes, al trimestre o al año:",
   },
 };
 
@@ -101,6 +110,9 @@ export const nlPreturi: P = {
     payToday: "De betaling en het abonnement beginnen vandaag. De {days} gratis dagen zijn die aan het begin van je account en komen er na de betaling niet bij.",
     wasMonthly: "{count} × {price} als je per maand betaalt",
     wasFull: "volle prijs; jij betaalt de verlengingsprijs",
+    endedLead: "<b>De gratis dagen zijn voorbij.</b> De stamboom blijft zichtbaar en er gaat niets verloren.",
+    endedPlan: "Om iets toe te voegen of te wijzigen kies je een abonnement: vanaf {month} per maand of {year} per jaar.",
+    mailPlans: "Om na de gratis dagen verder toe te voegen kies je een abonnement, per maand, per kwartaal of per jaar betaald:",
   },
 };
 
@@ -126,6 +138,9 @@ export const dePreturi: P = {
     payToday: "Zahlung und Tarif beginnen heute. Die {days} Gratistage sind die zu Beginn deines Kontos und kommen nach der Zahlung nicht dazu.",
     wasMonthly: "{count} × {price}, wenn du monatlich zahlst",
     wasFull: "voller Preis; du zahlst den Verlängerungspreis",
+    endedLead: "<b>Die Gratistage sind vorbei.</b> Der Stammbaum bleibt sichtbar, und nichts geht verloren.",
+    endedPlan: "Um etwas hinzuzufügen oder zu ändern, wählst du einen Tarif: ab {month} im Monat oder {year} im Jahr.",
+    mailPlans: "Um nach den Gratistagen weiter hinzuzufügen, wählst du einen Tarif, monatlich, vierteljährlich oder jährlich bezahlt:",
   },
 };
 
@@ -151,6 +166,9 @@ export const itPreturi: P = {
     payToday: "Il pagamento e il piano iniziano oggi. I {days} giorni gratis sono quelli dell’inizio dell’account e non si aggiungono dopo il pagamento.",
     wasMonthly: "{count} × {price} se paghi ogni mese",
     wasFull: "prezzo pieno; tu paghi il prezzo di rinnovo",
+    endedLead: "<b>I giorni gratis sono finiti.</b> L’albero resta visibile e non si perde nulla.",
+    endedPlan: "Per aggiungere o modificare qualcosa scegli un piano: da {month} al mese o {year} all’anno.",
+    mailPlans: "Per continuare ad aggiungere dopo i giorni gratis scegli un piano, pagato ogni mese, ogni trimestre o ogni anno:",
   },
 };
 
@@ -176,6 +194,9 @@ export const huPreturi: P = {
     payToday: "A fizetés és a csomag ma kezdődik. A {days} ingyenes nap a fiók elején volt, és fizetés után nem adódik hozzá.",
     wasMonthly: "{count} × {price}, ha havonta fizetsz",
     wasFull: "teljes ár; te a megújítási árat fizeted",
+    endedLead: "<b>Az ingyenes napok lejártak.</b> A családfa továbbra is látható, és semmi sem vész el.",
+    endedPlan: "Ha bővíteni vagy módosítani szeretnél, válassz csomagot: havi {month}-tól vagy évi {year}.",
+    mailPlans: "Ha az ingyenes napok után is bővíteni szeretnél, válassz csomagot havi, negyedéves vagy éves fizetéssel:",
   },
 };
 
@@ -201,6 +222,9 @@ export const hePreturi: P = {
     payToday: "התשלום והתוכנית מתחילים היום. {days} הימים בחינם הם אלה שבתחילת החשבון, והם לא מתווספים אחרי התשלום.",
     wasMonthly: "{count} × {price} בתשלום חודשי",
     wasFull: "המחיר המלא; אתם משלמים את מחיר החידוש",
+    endedLead: "<b>הימים בחינם הסתיימו.</b> העץ עדיין גלוי ושום דבר לא אובד.",
+    endedPlan: "כדי להוסיף או לשנות משהו בוחרים תוכנית: החל מ-{month} לחודש או {year} לשנה.",
+    mailPlans: "כדי להמשיך להוסיף אחרי הימים בחינם, בוחרים תוכנית בתשלום חודשי, רבעוני או שנתי:",
   },
 };
 
@@ -226,6 +250,9 @@ export const ptPreturi: P = {
     payToday: "O pagamento e o plano começam hoje. Os {days} dias grátis são os do início da conta e não se somam depois do pagamento.",
     wasMonthly: "{count} × {price} se pagares por mês",
     wasFull: "preço completo; tu pagas o preço de renovação",
+    endedLead: "<b>Os dias grátis terminaram.</b> A árvore continua visível e nada se perde.",
+    endedPlan: "Para acrescentar ou alterar algo, escolhes um plano: a partir de {month} por mês ou {year} por ano.",
+    mailPlans: "Para continuares a acrescentar depois dos dias grátis, escolhes um plano, pago por mês, por trimestre ou por ano:",
   },
 };
 
@@ -251,6 +278,9 @@ export const elPreturi: P = {
     payToday: "Η πληρωμή και το πρόγραμμα ξεκινούν σήμερα. Οι {days} δωρεάν μέρες είναι αυτές στην αρχή του λογαριασμού και δεν προστίθενται μετά την πληρωμή.",
     wasMonthly: "{count} × {price} αν πληρώνεις μηνιαία",
     wasFull: "πλήρης τιμή· εσύ πληρώνεις την τιμή ανανέωσης",
+    endedLead: "<b>Οι δωρεάν μέρες τελείωσαν.</b> Το δέντρο φαίνεται ακόμα και δεν χάνεται τίποτα.",
+    endedPlan: "Για να προσθέσεις ή να αλλάξεις κάτι, διαλέγεις πρόγραμμα: από {month} τον μήνα ή {year} τον χρόνο.",
+    mailPlans: "Για να συνεχίσεις να προσθέτεις μετά τις δωρεάν μέρες, διαλέγεις πρόγραμμα, με πληρωμή μηνιαία, ανά τρίμηνο ή ετήσια:",
   },
 };
 
@@ -276,6 +306,9 @@ export const svPreturi: P = {
     payToday: "Betalningen och planen börjar i dag. De {days} gratisdagarna är de i början av kontot och läggs inte till efter betalningen.",
     wasMonthly: "{count} × {price} om du betalar per månad",
     wasFull: "fullt pris; du betalar förnyelsepriset",
+    endedLead: "<b>Gratisdagarna är slut.</b> Släktträdet syns fortfarande och inget går förlorat.",
+    endedPlan: "För att lägga till eller ändra något väljer du en plan: från {month} i månaden eller {year} per år.",
+    mailPlans: "För att fortsätta lägga till efter gratisdagarna väljer du en plan, som betalas per månad, kvartal eller år:",
   },
 };
 
@@ -301,6 +334,9 @@ export const daPreturi: P = {
     payToday: "Betalingen og planen starter i dag. De {days} gratis dage er dem i starten af kontoen og lægges ikke til efter betalingen.",
     wasMonthly: "{count} × {price}, hvis du betaler månedligt",
     wasFull: "fuld pris; du betaler fornyelsesprisen",
+    endedLead: "<b>De gratis dage er slut.</b> Stamtræet kan stadig ses, og intet går tabt.",
+    endedPlan: "For at tilføje eller ændre noget vælger du en plan: fra {month} om måneden eller {year} om året.",
+    mailPlans: "For at blive ved med at tilføje efter de gratis dage vælger du en plan, betalt pr. måned, kvartal eller år:",
   },
 };
 
@@ -326,6 +362,9 @@ export const nbPreturi: P = {
     payToday: "Betalingen og planen starter i dag. De {days} gratisdagene er de i starten av kontoen og legges ikke til etter betalingen.",
     wasMonthly: "{count} × {price} hvis du betaler månedlig",
     wasFull: "full pris; du betaler fornyelsesprisen",
+    endedLead: "<b>Gratisdagene er over.</b> Slektstreet vises fortsatt, og ingenting går tapt.",
+    endedPlan: "For å legge til eller endre noe velger du en plan: fra {month} i måneden eller {year} i året.",
+    mailPlans: "For å fortsette å legge til etter gratisdagene velger du en plan, betalt per måned, kvartal eller år:",
   },
 };
 
@@ -351,6 +390,9 @@ export const ukPreturi: P = {
     payToday: "Оплата і план починаються сьогодні. {days} безкоштовних днів — це дні на початку облікового запису, після оплати вони не додаються.",
     wasMonthly: "{count} × {price}, якщо платити щомісяця",
     wasFull: "повна ціна; ти платиш ціну поновлення",
+    endedLead: "<b>Безкоштовні дні закінчилися.</b> Дерево й далі видно, і нічого не втрачено.",
+    endedPlan: "Щоб щось додати чи змінити, обираєш план: від {month} на місяць або {year} на рік.",
+    mailPlans: "Щоб додавати й після безкоштовних днів, обираєш план з оплатою щомісяця, щокварталу або щороку:",
   },
 };
 
@@ -376,6 +418,9 @@ export const srPreturi: P = {
     payToday: "Plaćanje i plan počinju danas. {days} besplatnih dana su oni s početka naloga i ne dodaju se posle plaćanja.",
     wasMonthly: "{count} × {price} ako plaćaš mesečno",
     wasFull: "puna cena; ti plaćaš cenu obnove",
+    endedLead: "<b>Besplatni dani su istekli.</b> Stablo se i dalje vidi i ništa se ne gubi.",
+    endedPlan: "Da bi nešto dodao ili promenio, biraš plan: od {month} mesečno ili {year} godišnje.",
+    mailPlans: "Da bi nastavio da dodaješ posle besplatnih dana, biraš plan koji plaćaš mesečno, tromesečno ili godišnje:",
   },
 };
 
@@ -401,6 +446,9 @@ export const bgPreturi: P = {
     payToday: "Плащането и планът започват днес. {days}-те безплатни дни са тези в началото на профила и не се добавят след плащането.",
     wasMonthly: "{count} × {price}, ако плащаш месечно",
     wasFull: "пълна цена; ти плащаш цената за подновяване",
+    endedLead: "<b>Безплатните дни свършиха.</b> Дървото продължава да се вижда и нищо не се губи.",
+    endedPlan: "За да добавиш или промениш нещо, избираш план: от {month} на месец или {year} на година.",
+    mailPlans: "За да продължиш да добавяш след безплатните дни, избираш план с плащане месечно, на тримесечие или годишно:",
   },
 };
 
@@ -426,6 +474,9 @@ export const trPreturi: P = {
     payToday: "Ödeme ve plan bugün başlar. {days} ücretsiz gün hesabın başındaki günlerdir ve ödemeden sonra eklenmez.",
     wasMonthly: "aylık ödersen {count} × {price}",
     wasFull: "tam fiyat; sen yenileme fiyatını ödersin",
+    endedLead: "<b>Ücretsiz günler bitti.</b> Ağaç görünmeye devam ediyor ve hiçbir şey kaybolmuyor.",
+    endedPlan: "Bir şey eklemek ya da değiştirmek için bir plan seçersin: ayda {month}’den ya da yılda {year}.",
+    mailPlans: "Ücretsiz günlerden sonra da eklemeye devam etmek için aylık, üç aylık ya da yıllık ödenen bir plan seçersin:",
   },
 };
 

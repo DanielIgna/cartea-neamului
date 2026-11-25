@@ -45,20 +45,24 @@ export default async function AccessBanner({ userId, locale }: { userId: string;
   const fmt = (d: Date) => new Intl.DateTimeFormat(locale, { dateStyle: "long", timeStyle: "short", timeZone: "Europe/Bucharest" }).format(d);
   // Cu abonamentele (Daniel, 25.11.2026): „După ele, alegi un plan: de la 16,99 lei pe lună sau 49 lei pe an.”
   let trialLine: string | null = null;
-  if (info.access.kind === "proba") {
+  let endedLine: React.ReactNode = null;
+  if (info.access.kind === "proba" || (ended && !info.access.keptUntil)) {
     const s = await planSettings(db).catch(() => null);
     if (s?.subs) {
       const lei = locale === "ro";
       const v = (p: (typeof PERIODS)[number]) => Math.min(...TIERS.map((x) => { const r = periodPrice(x, p, true, s); return r ? (lei ? r.lei : r.eur) : Infinity; }));
       const [tp, tpr] = await Promise.all([getT("Plata"), getT("Preturi")]);
-      trialLine = `${tp("trial", { days: info.access.daysLeft })} ${tpr("bannerAfter", { month: money(v("luna"), locale).label, year: money(v("an"), locale).label })}`;
+      const prices = { month: money(v("luna"), locale).label, year: money(v("an"), locale).label };
+      if (info.access.kind === "proba") trialLine = `${tp("trial", { days: info.access.daysLeft })} ${tpr("bannerAfter", prices)}`;
+      // „Zilele gratuite s-au terminat”: tot cu prețul lunar și cel anual, nu doar „anul costă”.
+      else endedLine = <>{tpr.rich("endedLead", { b: (c) => <b>{c}</b> })} {tpr("endedPlan", prices)}</>;
     }
   }
   const lastDay = info.access.kind === "proba" && info.access.daysLeft <= 1 && (await convSettings(db)).popup;
   return (
     <div className={`access-banner${ended ? " ended" : ""}`} role="status">
       <p>{ended
-        ? t.rich("ended", { price, b: (c) => <b>{c}</b> })
+        ? endedLine ?? t.rich("ended", { price, b: (c) => <b>{c}</b> })
         : trialLine ?? t("trial", { days: info.access.kind === "proba" ? info.access.daysLeft : 0, price })}
         {ended && <><br /><span className="access-plans">{tc("activateText")}</span></>}
         {offer && <><br /><b>{tc("offerBar", { percent: String(offer.percent), until: fmt(offer.expiresAt), code: offer.code })}</b></>}

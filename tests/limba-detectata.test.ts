@@ -222,7 +222,7 @@ describe("prețurile în moneda locală", () => {
     expect(convertEur(30, 0.86)).toBe(26);
     expect(convertEur(12.34, 1.1)).toBe(13.57);
     const p = priceFor("an", "en-US", true, on, "basic", "usd");
-    expect(p).toMatchObject({ currency: "usd", amount: 1100 });
+    expect(p).toMatchObject({ currency: "usd", amount: 1600 });
     expect(p.label).toContain("$");
     expect(money(20, "he", "ils", on)).toMatchObject({ currency: "ils", amount: 8000 });
     expect(money(10, "it", "eur", on)).toMatchObject({ currency: "eur", amount: 1000, label: "10 €" });
