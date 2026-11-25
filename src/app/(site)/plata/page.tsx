@@ -10,7 +10,7 @@ import { cookies, headers } from "next/headers";
 import { LINK_CODE_COOKIE, cleanLinkCode } from "@/lib/cod-link";
 import { bookAccess, bookIncluded, bookPaid, currencyFor, includedBooksLeft, money as moneyIn, priceFor, quoteYear } from "@/lib/plati";
 import { testAccess, userAccess } from "@/lib/plata";
-import { LIMIT_KEYS, TIERS, isKept, isPeriod, isTier, mayKeep, periodPrice, periodsFor, tierBook, tierLimits, tierPrice, tierRank, trialLimits, yearSaving, type Access, type Period, type Tier } from "@/lib/plans";
+import { LIMIT_KEYS, TIERS, isKept, isPeriod, isTier, mayKeep, periodPrice, periodsFor, tierBook, tierLimits, tierPrice, tierRank, trialLimits, yearSaving, comparePrice, type Access, type Period, type Tier } from "@/lib/plans";
 import { isLoyal, nextCharge, subscriptionOf } from "@/lib/abonament";
 import { formatPaid } from "@/lib/emailuri";
 import type { Locale } from "@/i18n/locales";
@@ -154,6 +154,8 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
     const shown = money(lei ? first.lei : first.eur, locale).label;
     const renewLabel = money(lei ? renew.lei : renew.eur, locale).label;
     const saving = yearSaving(x, s, lei);
+    // Prețul tăiat, spus ce e: prețul întreg (la cine are prețul de reînnoire) sau aceeași perioadă plătită lunar.
+    const was = subsOn ? comparePrice(x, pp, ownsTree, s, loyal, lei) : null;
     // Abonamentul omului e chiar acesta (plan și perioadă), cu reînnoirea pornită.
     const thisSub = !!mine?.stripeSub && mine.renews && mine.tier === x && mine.period === pp;
     // Cu un an (sau o perioadă) în curs, pe același plan ori pe unul mai mic: reînnoirea pornește de la capătul ei, fără plată acum.
@@ -163,6 +165,7 @@ export default async function PlataPage({ searchParams }: { searchParams: Promis
       <div key={x} id={`plan-${x}`} className={`plan-card${x === "familie" ? " recommended" : ""}${currentTier === x ? " current" : ""}${chosen === x ? " chosen" : ""}`}>
         {x === "familie" && <span className="plan-badge">{t("recommended")}</span>}
         <h3>{tierName(x)}</h3>
+        {was && <p className="price-was"><s>{money(was.was, locale).label}</s> <span>{was.kind === "full" ? tpr("wasFull") : tpr("wasMonthly", { count: was.count, price: money(was.month, locale).label })}</span></p>}
         <p className="plan-price">{subsOn ? ts("price", { price: shown, per: per(pp) }) : t("perYear", { price: shown })}</p>
         {subsOn && pp === "an" && saving > 0 && <p className="plan-save">{ts("saveYear", { percent: saving })}</p>}
         {subsOn && pp !== period && <p className="muted plan-renew">{ts("onlyYearly")}</p>}
