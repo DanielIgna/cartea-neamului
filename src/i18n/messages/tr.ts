@@ -1,6 +1,7 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { trExtra } from "./noi/tr";
 import { trGhidArbore } from "./ghid-arbore/altele";
+import { trAbonament } from "./abonament/altele";
 
 /**
  * Türkçe, Türkiye’deki ve Romanya’daki Türk ve Tatar aileleri için. “Sen” diye hitap edilir. Henüz çevrilmeyenler
@@ -69,6 +70,7 @@ export const tr: DeepPartial<Catalog> = {
     guides: "Rehberler",
   },
   ...trGhidArbore,
+  ...trAbonament,
   UsageNotice: {
     label: "Siteyi nasıl kullanıyorsun",
     lead: "Bir soru, sadece bir kez.",
@@ -454,8 +456,8 @@ export const tr: DeepPartial<Catalog> = {
     bookPaid: "Kitabı ödedin. Kitap sayfasından indirebilirsin.",
     bookFree: "Hesabında PDF kitap ücretsiz. Kitap sayfasından indirebilirsin.",
     bookNote: "PDF aile kitabı ayrıca satın alınır: bir ağaç için {price}. Ödemeden sonra verilerinden yapılır ve 12 ay boyunca yeniden yapıp indirebilirsin. İstersen evde ya da bir matbaada kendin yazdırabilirsin.",
-    discountNote: "İndirimler (sınıf kodu ya da bir kuruluşun bağlantısı) ödemede kendiliğinden, sadece ilk yıl için uygulanır; yenileme tam fiyattır. Bir ödemede sadece bir indirim geçerlidir.",
-    linkCode: "Bağlantındaki indirim kodu kaydedildi: hâlâ geçerliyse ilk yılını ödediğinde kendiliğinden uygulanır.",
+    discountNote: "İndirim kodları (NEAM90, bir kuruluşun kodu, sınıf kodu) yalnızca ilk yıllık ödemede, bir yıl için geçerlidir; NEAM90 ve yazılan ya da bağlantıdan gelen kodlar yalnızca Basic planında. Yenileme, indirim olmadan yenileme fiyatıyla yapılır. Bir ödemeye yalnızca bir indirim uygulanır.",
+    linkCode: "Bağlantındaki indirim kodu kaydedildi: hâlâ geçerliyse Basic planının ilk yıllık ödemesine kendiliğinden uygulanır.",
     backToBook: "Kitaba dön",
     consent: "Hemen başlamak istiyorum ve dijital içeriği hemen alarak 14 günlük cayma hakkımı kaybettiğimi anlıyorum.",
     pay: "{price} kartla öde",
@@ -524,8 +526,8 @@ export const tr: DeepPartial<Catalog> = {
     codeHint: "Bir kod aldıysan buraya yaz. Ödemeden önce ödeme sayfasında indirimi görürsün.",
     codeLabel: "İndirim kodu",
     errCode: "Bu indirim kodu geçerli değil (yanlış, süresi dolmuş ya da zaten kullanılmış). Kontrol et ve tekrar dene.",
-    errCodeYear: "İndirim kodu sadece tam bir ilk yıl ödenirken kullanılabilir; plan değişikliği, paket ya da yenileme için değil.",
-    errCodePlan: "İndirim kodu sadece Basic planı için geçerli.",
+    errCodeYear: "İndirim kodu yalnızca ilk yıllık ödemede kullanılabilir; aylık ya da üç aylık ödemelerde, plan değişikliğinde, pakette veya yenilemede kullanılamaz.",
+    errCodePlan: "İndirim kodu yalnızca yıllık ödenen Basic planında geçerlidir (bir yıl).",
     bookIncludedAll: "Kitap planına dahil. Kitap sayfasından indirebilirsin.",
     bookIncludedText: "Planın yılda bir PDF kitap içeriyor. Bunu “{tree}” ağacı için 12 aylığına seçebilirsin.",
     bookIncludedBtn: "Dahil kitabı bu ağaç için seç",

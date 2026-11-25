@@ -81,6 +81,30 @@ export function LimitsForm({ value }: { value: PlanSettings }) {
         {field("keepBookEur", "Păstrare + cartea PDF, €", "", 0.5)}
       </div>
       <fieldset className="tier-fields">
+        <legend><b>Abonamente</b> <small className="muted">reînnoire automată, oprită de om dintr-un clic din /plata (25.11.2026)</small></legend>
+        <label className="check">
+          <input type="checkbox" name="subs" defaultChecked={value.subs} />{" "}
+          <b>Plata cu reînnoire automată (abonament).</b> Pornit: planul se plătește lunar, trimestrial sau anual și se reînnoiește singur,
+          cu email cu 7 zile înainte de plata anuală și trimestrială. Oprit: un an plătit o dată, fără reînnoire (ca înainte). Abonamentele
+          deja pornite merg mai departe oricum.
+        </label>
+        {(["familie", "premium", "basic"] as const).map((t) => (
+          <div className="limits-row" key={t}>
+            {field(`${t}MonthLei`, `${TIER_LABELS[t]} pe lună, lei`, t === "basic" ? "0 = Basic doar anual (comisionul cardului e prea mare la 6 lei)" : "0 = fără plată lunară", 0.01)}
+            {field(`${t}MonthEur`, `${TIER_LABELS[t]} pe lună, €`, "", 0.01)}
+            {field(`${t}QuarterLei`, `${TIER_LABELS[t]} pe 3 luni, lei`, "0 = fără plată trimestrială", 0.01)}
+            {field(`${t}QuarterEur`, `${TIER_LABELS[t]} pe 3 luni, €`, "", 0.01)}
+          </div>
+        ))}
+        <div className="limits-row">
+          {(["basic", "familie", "premium"] as const).flatMap((t) => [
+            field(`${t}RenewLei`, `${TIER_LABELS[t]}: anul din al doilea an, lei`, "reînnoirea de fidelitate; 0 = prețul întreg", 0.5),
+            field(`${t}RenewEur`, `${TIER_LABELS[t]}: anul din al doilea an, €`, "", 0.5),
+          ])}
+        </div>
+        <small className="muted">Prețurile noi se aplică abonamentelor pornite de acum; cele deja pornite își păstrează prețul (așa scrie în Termeni).</small>
+      </fieldset>
+      <fieldset className="tier-fields">
         <legend><b>Moneda locală</b> <small className="muted">pentru cei care nu folosesc site-ul în română</small></legend>
         <label className="check">
           <input type="checkbox" name="localCurrency" defaultChecked={value.localCurrency} />{" "}

@@ -95,6 +95,17 @@ export const PlanSettings = z.object({
   rateCad: num(0.1, 100, ""),
   rateGbp: num(0.1, 100, ""),
   rateIls: num(0.1, 100, ""),
+  // Abonamentele (Daniel, 25.11.2026): planul se reînnoiește singur, lunar, trimestrial sau anual, până omul oprește reînnoirea
+  // dintr-un clic. Anul e cel mai ieftin (≈ 25–30% sub lunar). 0 = perioada nu se oferă la acel plan (Basic: doar anual, fiindcă
+  // la 6 lei pe lună comisionul cardului ar lua o parte prea mare). `subs` oprit = plata anuală o dată, fără reînnoire, ca înainte.
+  subs: flag,
+  basicMonthLei: num(0, 5000, ""), basicMonthEur: num(0, 1000, ""), basicQuarterLei: num(0, 5000, ""), basicQuarterEur: num(0, 1000, ""),
+  familieMonthLei: num(0, 5000, ""), familieMonthEur: num(0, 1000, ""), familieQuarterLei: num(0, 5000, ""), familieQuarterEur: num(0, 1000, ""),
+  premiumMonthLei: num(0, 5000, ""), premiumMonthEur: num(0, 1000, ""), premiumQuarterLei: num(0, 5000, ""), premiumQuarterEur: num(0, 1000, ""),
+  // Reînnoirea de fidelitate: din al doilea an (după ce arborele e făcut), anul costă mai puțin. 0 = prețul întreg.
+  basicRenewLei: num(0, 5000, ""), basicRenewEur: num(0, 1000, ""),
+  familieRenewLei: num(0, 5000, ""), familieRenewEur: num(0, 1000, ""),
+  premiumRenewLei: num(0, 5000, ""), premiumRenewEur: num(0, 1000, ""),
 });
 export type PlanSettings = z.infer<typeof PlanSettings>;
 export const DEFAULT_SETTINGS: PlanSettings = {
@@ -112,6 +123,11 @@ export const DEFAULT_SETTINGS: PlanSettings = {
   bundleLei: 79, bundleEur: 16, printFromLei: 0, printFromEur: 0, referralDays: 30, reminderDays: 14,
   keepLei: 25, keepEur: 5, keepBookLei: 59, keepBookEur: 12,
   localCurrency: false, rateUsd: 1.1, rateCad: 1.55, rateGbp: 0.86, rateIls: 4,
+  subs: true,
+  basicMonthLei: 0, basicMonthEur: 0, basicQuarterLei: 0, basicQuarterEur: 0,
+  familieMonthLei: 16.99, familieMonthEur: 3.49, familieQuarterLei: 45.99, familieQuarterEur: 9.49,
+  premiumMonthLei: 27.99, premiumMonthEur: 5.99, premiumQuarterLei: 75.99, premiumQuarterEur: 15.99,
+  basicRenewLei: 39, basicRenewEur: 8, familieRenewLei: 119, familieRenewEur: 24, premiumRenewLei: 199, premiumRenewEur: 40,
 };
 const capOf = (n: number) => (n > 0 ? n : null);
 const K = { persons: "Persons", photos: "Photos", audio: "Audio", docs: "Docs", writers: "Writers", trees: "Trees" } as const;
@@ -371,6 +387,47 @@ export function tierPrice(t: Tier, ownsTree: boolean, s: PlanSettings): { lei: n
   if (t === "premium") return { lei: s.premiumLei, eur: s.premiumEur };
   return ownsTree ? { lei: s.priceLei, eur: s.priceEur } : { lei: s.invitePriceLei, eur: s.invitePriceEur };
 }
+/** Perioada abonamentului: o lună, trei luni sau un an. */
+export const PERIODS = ["luna", "trimestru", "an"] as const;
+export type Period = (typeof PERIODS)[number];
+export const isPeriod = (v: unknown): v is Period => typeof v === "string" && (PERIODS as readonly string[]).includes(v);
+/** Câte luni ține fiecare perioadă (cum le numără Stripe: luni din calendar). */
+export const PERIOD_MONTHS: Record<Period, number> = { luna: 1, trimestru: 3, an: 12 };
+const PERIOD_KEY = { luna: "Month", trimestru: "Quarter" } as const;
+
+/**
+ * Prețul unei perioade pe un plan: anul (întreg sau, cu `loyal`, cel de reînnoire din al doilea an) ori luna / trimestrul din
+ * Admin. `null` = perioada nu se oferă la planul ăsta (prețul 0 în Admin).
+ */
+export function periodPrice(t: Tier, p: Period, ownsTree: boolean, s: PlanSettings, loyal = false): { lei: number; eur: number } | null {
+  if (p === "an") {
+    const full = tierPrice(t, ownsTree, s);
+    if (!loyal) return full;
+    const rl = s[`${t}RenewLei`], re = s[`${t}RenewEur`];
+    return { lei: rl > 0 ? Math.min(rl, full.lei) : full.lei, eur: re > 0 ? Math.min(re, full.eur) : full.eur };
+  }
+  const k = PERIOD_KEY[p];
+  const lei = s[`${t}${k}Lei`], eur = s[`${t}${k}Eur`];
+  return lei > 0 && eur > 0 ? { lei, eur } : null;
+}
+/** Perioadele oferite la un plan (anul mereu; luna și trimestrul doar cu abonamentele pornite și prețul pus). */
+export const periodsFor = (t: Tier, s: PlanSettings): Period[] => PERIODS.filter((p) => p === "an" || (s.subs && periodPrice(t, p, true, s) !== null));
+/** Cât economisești pe an cu plata anuală față de cea lunară, în procente întregi (0 dacă nu se oferă lunar). */
+export function yearSaving(t: Tier, s: PlanSettings, lei: boolean): number {
+  const m = periodPrice(t, "luna", true, s);
+  if (!m) return 0;
+  const y = tierPrice(t, true, s);
+  const perYear = (lei ? m.lei : m.eur) * 12;
+  return Math.max(0, Math.round((1 - (lei ? y.lei : y.eur) / perYear) * 100));
+}
+/** Sfârșitul unei perioade începute la `from`, plus o zi și jumătate de rezervă cât Stripe încasează reînnoirea. */
+export function periodEnd(from: Date, p: Period) {
+  const d = new Date(from);
+  d.setUTCMonth(d.getUTCMonth() + PERIOD_MONTHS[p]);
+  return d;
+}
+export const RENEW_GRACE_MS = 36 * 3_600_000;
+
 /** Prețul anului Basic pentru un om (cel mai mic: cel arătat în bandă). */
 export const yearPrice = (ownsTree: boolean, s: PlanSettings) => tierPrice("basic", ownsTree, s);
 

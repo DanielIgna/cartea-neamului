@@ -23,6 +23,7 @@ import { enGBPastrare } from "./pastrare/en-GB";
 import { enGBSecuritate } from "./securitate/en-GB";
 import { enGBEmailuri } from "./emailuri/en-GB";
 import { enGBGhidArbore } from "./ghid-arbore/altele";
+import { enGBAbonament } from "./abonament/altele";
 
 /** British English. US English (en-US.ts) is this text with the words that differ put on top. */
 export const enGB: Catalog = {
@@ -90,6 +91,7 @@ export const enGB: Catalog = {
     guides: "Guides",
   },
   ...enGBGhidArbore,
+  ...enGBAbonament,
   UsageNotice: {
     label: "How you use the site",
     lead: "One question, just once.",
@@ -500,8 +502,8 @@ export const enGB: Catalog = {
     bookPaid: "You have paid for the book. You can download it from the book page.",
     bookFree: "Your account has the PDF book at no cost. You can download it from the book page.",
     bookNote: "The family book as a PDF is bought separately: {price} for one tree. After payment it is made from your data and you can remake and download it for 12 months. If you like, you can print it yourself, at home or at a print shop.",
-    discountNote: "Discounts (a class code or an organisation’s link) are applied automatically at payment, for the first year only; renewal is at the full price. Only one discount applies to a payment.",
-    linkCode: "The discount code from your link is saved: if it is still valid, it is applied automatically when you pay for your first year.",
+    discountNote: "Discount codes (NEAM90, an organisation’s code, the class code) work only on the first yearly payment, for one year; NEAM90 and typed or link codes only with the Basic plan. Renewal is at the renewal price, without a discount. Only one discount applies to a payment.",
+    linkCode: "The discount code from your link is saved: if it is still valid, it is applied automatically to your first yearly Basic payment.",
     backToBook: "Back to the book",
     consent: "I want to start straight away and understand that, by receiving the digital content immediately, I lose the 14-day right of withdrawal.",
     pay: "Pay {price} by card",
@@ -570,8 +572,8 @@ export const enGB: Catalog = {
     codeHint: "If you received a code, enter it here. You will see the discount on the payment page before you pay.",
     codeLabel: "Discount code",
     errCode: "This discount code is not valid (mistyped, expired or already used). Please check it and try again.",
-    errCodeYear: "A discount code can only be used when paying for a full first year, not for a plan change, the bundle or a renewal.",
-    errCodePlan: "The discount code only works with the Basic plan.",
+    errCodeYear: "A discount code can only be used on the first yearly payment, not on monthly or quarterly payments, a plan change, the bundle or a renewal.",
+    errCodePlan: "The discount code only works with the Basic plan, paid yearly (one year).",
     bookIncludedAll: "The book is included in your plan. You can download it from the book page.",
     bookIncludedText: "Your plan includes one PDF book per year. You can choose it for the tree “{tree}”, for 12 months.",
     bookIncludedBtn: "Choose the included book for this tree",

@@ -45,7 +45,7 @@ export const nlConversie: ConversieCatalog = {
     planuriButton: "Bekijk de abonnementen",
     ultimaziSubject: "Je gratis periode eindigt vandaag",
     ultimaziIntro: "Vandaag is je laatste gratis dag bij {app}. Vanaf morgen blijft de stamboom zichtbaar en kun je hem altijd downloaden, maar om toe te voegen, te wijzigen of familie uit te nodigen heb je een abonnement nodig.",
-    ultimaziPrice: "Basic kost {price} per jaar. We schrijven nooit automatisch af.",
+    ultimaziPrice: "Basic kost {price} per jaar. Er gaat niets van je kaart zonder dat je een abonnement kiest, en de verlenging stop je met één klik.",
     ultimaziButton: "Kies en betaal",
     reducereSubject: "{percent}% korting voor jou, maar {hours, plural, one {# uur} other {# uur}}",
     reducereIntro: "Je gratis dagen zijn voorbij, maar je stamboom is heel en wacht op je.",

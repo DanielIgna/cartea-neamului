@@ -10,7 +10,7 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
-import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
+import { DEFAULT_SETTINGS, LIMIT_KEYS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 import { LANGUAGE_COUNT } from "@/i18n/locales";
@@ -88,6 +88,7 @@ const cachedProof = unstable_cache(async () => {
 }, ["home-proof"], { revalidate: 3600 });
 
 export default async function Landing({ deleted }: { deleted: boolean }) {
+  const tsub = await getT("Sub");
   const [t, tc, th, tp, tg, tm, tt, proof, appName, imgs, s, locale] = await Promise.all([getT("Landing"), getT("ContactPage"), getT("Church"), getT("Plata"), getT("GiftPage"), getT("Meta"), getT("TryTree"), cachedProof().catch(() => 0), getAppName(), cachedHomeImages(),
     // La construirea fără bază de date (verificarea de pe GitHub) se arată prețurile propuse; o eroare nu rămâne în cache.
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
@@ -138,7 +139,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           {t("brandNote") && <p className="lp-brand">{t("brandNote")}</p>}
           {/* Începutul pe loc (19.11.2026): numele tău, apoi părinții, desenați pe loc în evantai; contul vine după. */}
           <TryTree />
-          {sales && <p className="lp-free">{t("freeNote", { days: String(s.trialDays) })}</p>}
+          {sales && <p className="lp-free">{s.subs ? tsub("freeNote", { days: String(s.trialDays) }) : t("freeNote", { days: String(s.trialDays) })}</p>}
           <p className="lp-signin">{tt("haveAccount")} <Link href="/intrare">{t("signIn")}</Link></p>
           {proof >= PROOF_MIN && <p className="lp-proof">{tt("proof", { count: proof })}</p>}
         </div>
@@ -274,7 +275,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           <div className="lp-in">
             <header className="lp-head">
               <p className="lp-eyebrow">{t("plansLabel")}</p>
-              <h2 id="lp-plans">{t("plansTitle")}</h2>
+              <h2 id="lp-plans">{s.subs ? tsub("plansTitle") : t("plansTitle")}</h2>
               {ornament}
               <p>{t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs })}</p>
             </header>
@@ -286,6 +287,12 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
                     {x === "familie" && <span className="lp-plan-badge">{tp("recommended")}</span>}
                     <h3>{tp(`tiers.${x}.name`)}</h3>
                     <p className="lp-plan-price">{tp("perYear", { price: money(lei ? p.lei : p.eur, locale).label })}</p>
+                    {/* Abonamentele (25.11.2026): și pe lună, unde se oferă, și prețul din al doilea an. */}
+                    {s.subs && (() => {
+                      const m = periodPrice(x, "luna", true, s), r = periodPrice(x, "an", true, s, true)!;
+                      const rl = money(lei ? r.lei : r.eur, locale).label;
+                      return <p className="lp-plan-lead">{m ? `${tsub("orMonthly", { price: money(lei ? m.lei : m.eur, locale).label })} ` : ""}{rl !== money(lei ? p.lei : p.eur, locale).label ? tsub("renewFrom", { price: rl }) : ""}</p>;
+                    })()}
                     <p className="lp-plan-lead">{tp(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label, writers: String(lim.writers ?? "∞"), trees: lim.trees ?? 0 })}</p>
                     <ul>
                       {LIMIT_KEYS.map((k) => <li key={k}><span>{tp(`lim.${k}`)}</span><b>{lim[k] === null ? tp("unlimited") : nf.format(lim[k])}</b></li>)}
@@ -333,7 +340,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
             <Link className="lp-btn lp-btn-gold" href="/intrare?mod=cont-nou">{t("start")}<span aria-hidden="true">→</span></Link>
             <Link className="lp-btn lp-btn-ghost" href="/intrare">{t("signIn")}</Link>
           </div>
-          {sales && <p className="lp-free">{t("freeNote", { days: String(s.trialDays) })}</p>}
+          {sales && <p className="lp-free">{s.subs ? tsub("freeNote", { days: String(s.trialDays) }) : t("freeNote", { days: String(s.trialDays) })}</p>}
           <p className="lp-privacy">{t.rich("privacy", { link: (c) => <Link href="/confidentialitate">{c}</Link> })}</p>
         </div>
       </section>

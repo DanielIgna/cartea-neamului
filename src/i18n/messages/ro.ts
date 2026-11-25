@@ -32,6 +32,7 @@ import { roPastrare } from "./pastrare/ro";
 import { roSecuritate } from "./securitate/ro";
 import { roEmailuri } from "./emailuri/ro";
 import { roGhidArbore } from "./ghid-arbore/ro";
+import { roAbonament } from "./abonament/ro";
 
 export const ro = {
   Meta: {
@@ -100,6 +101,7 @@ export const ro = {
     guides: "Ghiduri",
   },
   ...roGhidArbore,
+  ...roAbonament,
   UsageNotice: {
     label: "Cât folosești site-ul",
     lead: "O întrebare, o singură dată.",
@@ -514,8 +516,8 @@ export const ro = {
     bookPaid: "Ai cartea plătită. O poți descărca din pagina cărții.",
     bookFree: "Contul tău are cartea PDF fără plată. O poți descărca din pagina cărții.",
     bookNote: "Cartea familiei în PDF se cumpără separat: {price} pentru un arbore. După plată o faci din datele voastre și o poți reface și descărca timp de 12 luni. Dacă vrei, o poți tipări și singur, acasă sau la o tipografie.",
-    discountNote: "Reducerile (codul clasei sau linkul unei organizații) se pun singure la plată, doar pentru primul an; reînnoirea e la prețul întreg. La o plată se pune o singură reducere.",
-    linkCode: "Codul de reducere din link e ținut minte: dacă e încă valabil, se pune singur la plata primului an.",
+    discountNote: "Codurile de reducere (NEAM90, codul unei organizații, codul clasei) merg doar la prima plată anuală, pentru un an; NEAM90 și codurile scrise sau din link, doar la planul Basic. Reînnoirea e la prețul de reînnoire, fără reducere. La o plată se pune o singură reducere.",
+    linkCode: "Codul de reducere din link e ținut minte: dacă e încă valabil, se pune singur la prima plată anuală a planului Basic.",
     backToBook: "Înapoi la carte",
     consent: "Vreau să încep imediat și înțeleg că, primind conținutul digital pe loc, pierd dreptul de retragere de 14 zile.",
     pay: "Plătește {price} cu cardul",
@@ -584,8 +586,8 @@ export const ro = {
     codeHint: "Dacă ați primit un cod, scrieți-l aici. Reducerea se vede pe pagina de plată, înainte să plătiți.",
     codeLabel: "Cod de reducere",
     errCode: "Codul de reducere nu e valabil (greșit, expirat sau folosit deja). Verificați-l și încercați din nou.",
-    errCodeYear: "Codul de reducere se poate folosi doar la plata primului an întreg, nu la trecerea pe alt plan, la pachet sau la reînnoire.",
-    errCodePlan: "Codul de reducere merge doar la planul Basic.",
+    errCodeYear: "Codul de reducere se poate folosi doar la prima plată anuală, nu la plata lunară sau trimestrială, la trecerea pe alt plan, la pachet sau la reînnoire.",
+    errCodePlan: "Codul de reducere merge doar la planul Basic, cu plata anuală (un an).",
     bookIncludedAll: "Cartea e inclusă în planul tău. O poți descărca din pagina cărții.",
     bookIncludedText: "Planul tău include o carte PDF pe an. O poți alege pentru arborele „{tree}”, pentru 12 luni.",
     bookIncludedBtn: "Alege cartea inclusă pentru acest arbore",

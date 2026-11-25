@@ -45,7 +45,7 @@ export const huConversie: ConversieCatalog = {
     planuriButton: "Csomagok megtekintése",
     ultimaziSubject: "Az ingyenes időszakod ma véget ér",
     ultimaziIntro: "Ma van az utolsó ingyenes napod a(z) {app} oldalon. Holnaptól a családfa látható marad, és bármikor letöltheted, de a hozzáadáshoz, módosításhoz vagy rokonok meghívásához csomag kell.",
-    ultimaziPrice: "A Basic évi {price}. Soha nem vonunk le automatikusan.",
+    ultimaziPrice: "A Basic évi {price}. Semmit sem vonunk le a kártyádról, amíg nem választasz csomagot, és a megújítást egy kattintással leállíthatod.",
     ultimaziButton: "Csomagválasztás és fizetés",
     reducereSubject: "{percent}% kedvezmény neked, csak {hours} óráig",
     reducereIntro: "Az ingyenes napjaid lejártak, de a családfád egészben megvan, és vár rád.",

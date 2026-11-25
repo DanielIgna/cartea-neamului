@@ -1,6 +1,7 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { srExtra } from "./noi/sr";
 import { srGhidArbore } from "./ghid-arbore/altele";
+import { srAbonament } from "./abonament/altele";
 
 /**
  * Srpski (latinica), za Rumune i Vlahe u Srbiji (Vojvodina, Timočka krajina) i njihovu decu. Obraćanje sa „ti”.
@@ -69,6 +70,7 @@ export const sr: DeepPartial<Catalog> = {
     guides: "Vodiči",
   },
   ...srGhidArbore,
+  ...srAbonament,
   UsageNotice: {
     label: "Kako koristiš sajt",
     lead: "Jedno pitanje, samo jednom.",
@@ -454,8 +456,8 @@ export const sr: DeepPartial<Catalog> = {
     bookPaid: "Platio si knjigu. Možeš da je preuzmeš sa stranice knjige.",
     bookFree: "Tvoj nalog ima knjigu u PDF-u besplatno. Možeš da je preuzmeš sa stranice knjige.",
     bookNote: "Knjiga roda u PDF-u kupuje se posebno: {price} za jedno stablo. Posle plaćanja pravi se od tvojih podataka i možeš da je praviš iznova i preuzimaš tokom 12 meseci. Ako želiš, možeš sam da je odštampaš, kod kuće ili u štampariji.",
-    discountNote: "Popusti (kod razreda ili link neke organizacije) primenjuju se sami pri plaćanju, samo za prvu godinu; produženje je po punoj ceni. Na jedno plaćanje važi samo jedan popust.",
-    linkCode: "Kod za popust iz tvog linka je sačuvan: ako još važi, primeniće se sam kad platiš prvu godinu.",
+    discountNote: "Kodovi za popust (NEAM90, kod organizacije, kod odeljenja) važe samo za prvo godišnje plaćanje, za jednu godinu; NEAM90 i upisani kodovi ili kodovi iz linka samo za plan Basic. Obnova je po ceni obnove, bez popusta. Na jedno plaćanje primenjuje se samo jedan popust.",
+    linkCode: "Kod za popust iz tvog linka je sačuvan: ako još važi, sam će se primeniti na prvo godišnje plaćanje plana Basic.",
     backToBook: "Nazad na knjigu",
     consent: "Želim da počnem odmah i razumem da, dobijanjem digitalnog sadržaja odmah, gubim pravo na odustanak od 14 dana.",
     pay: "Plati {price} karticom",
@@ -524,8 +526,8 @@ export const sr: DeepPartial<Catalog> = {
     codeHint: "Ako si dobio kod, upiši ga ovde. Popust ćeš videti na stranici za plaćanje, pre nego što platiš.",
     codeLabel: "Kod za popust",
     errCode: "Ovaj kod za popust ne važi (pogrešno upisan, istekao ili već iskorišćen). Proveri ga i pokušaj ponovo.",
-    errCodeYear: "Kod za popust može se iskoristiti samo pri plaćanju cele prve godine, ne za promenu plana, paket ili produženje.",
-    errCodePlan: "Kod za popust važi samo za plan Basic.",
+    errCodeYear: "Kod za popust može da se iskoristi samo za prvo godišnje plaćanje, ne za mesečna ili tromesečna plaćanja, promenu plana, paket ili obnovu.",
+    errCodePlan: "Kod za popust važi samo za plan Basic, uz godišnje plaćanje (jedna godina).",
     bookIncludedAll: "Knjiga je uključena u tvoj plan. Možeš da je preuzmeš sa stranice knjige.",
     bookIncludedText: "Tvoj plan uključuje jednu knjigu u PDF-u godišnje. Možeš da je izabereš za stablo „{tree}”, na 12 meseci.",
     bookIncludedBtn: "Izaberi uključenu knjigu za ovo stablo",

@@ -45,7 +45,7 @@ export const enGBConversie: ConversieCatalog = {
     planuriButton: "See the plans",
     ultimaziSubject: "Your free period ends today",
     ultimaziIntro: "Today is your last free day on {app}. From tomorrow the tree stays visible and you can always download it, but to add, edit or invite relatives you need a plan.",
-    ultimaziPrice: "Basic costs {price} a year. We never charge you automatically.",
+    ultimaziPrice: "Basic costs {price} a year. Nothing is taken from your card unless you choose a plan, and you can stop renewal with one click.",
     ultimaziButton: "Choose a plan and pay",
     reducereSubject: "{percent}% off for you, only {hours, plural, one {one hour} other {# hours}}",
     reducereIntro: "Your free days are over, but your tree is whole and waiting for you.",

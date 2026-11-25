@@ -23,6 +23,7 @@ import { huPastrare } from "./pastrare/hu";
 import { huSecuritate } from "./securitate/hu";
 import { huEmailuri } from "./emailuri/hu";
 import { huGhidArbore } from "./ghid-arbore/altele";
+import { huAbonament } from "./abonament/altele";
 
 /** Magyar, tegezve (ahogy az oldal román szövege is). Számok után a főnév egyes számban marad: „5 személy”. */
 export const hu: Catalog = {
@@ -90,6 +91,7 @@ export const hu: Catalog = {
     guides: "Útmutatók",
   },
   ...huGhidArbore,
+  ...huAbonament,
   UsageNotice: {
     label: "Hogyan használod az oldalt",
     lead: "Egy kérdés, csak egyszer.",
@@ -500,8 +502,8 @@ export const hu: Catalog = {
     bookPaid: "A könyvet kifizetted. A könyv oldaláról töltheted le.",
     bookFree: "A fiókodhoz fizetés nélkül jár a PDF-könyv. A könyv oldaláról töltheted le.",
     bookNote: "A család PDF-könyve külön vásárolható: {price} egy családfához. Fizetés után a ti adataitokból készül, és 12 hónapig újrakészítheted és letöltheted. Ha szeretnéd, magad is kinyomtathatod, otthon vagy nyomdában.",
-    discountNote: "A kedvezmények (egy osztálykód vagy egy szervezet linkje) fizetéskor maguktól érvényesülnek, csak az első évre; a megújítás teljes áron történik. Egy fizetésre csak egy kedvezmény jár.",
-    linkCode: "A linkedben kapott kedvezménykódot megjegyeztük: ha még érvényes, az első év fizetésekor magától érvényesül.",
+    discountNote: "A kedvezménykódok (NEAM90, egy szervezet kódja, az osztály kódja) csak az első éves fizetésre jók, egy évre; a NEAM90 és a beírt vagy linkes kódok csak a Basic csomaghoz. A megújítás a megújítási áron történik, kedvezmény nélkül. Egy fizetésre csak egy kedvezmény jár.",
+    linkCode: "A linkedből származó kedvezménykódot megjegyeztük: ha még érvényes, magától érvényesül a Basic csomag első éves fizetésénél.",
     backToBook: "Vissza a könyvhöz",
     consent: "Azonnal kezdeni szeretném, és tudomásul veszem, hogy a digitális tartalom azonnali megkapásával elveszítem a 14 napos elállási jogot.",
     pay: "{price} fizetése kártyával",
@@ -570,8 +572,8 @@ export const hu: Catalog = {
     codeHint: "Ha kaptál kódot, írd be ide. A kedvezményt a fizetési oldalon látod, mielőtt fizetsz.",
     codeLabel: "Kedvezménykód",
     errCode: "A kedvezménykód nem érvényes (elírt, lejárt vagy már felhasznált). Ellenőrizd, és próbáld újra.",
-    errCodeYear: "A kedvezménykód csak egy teljes első év fizetésére használható, csomagváltásra, a csomagajánlatra vagy megújításra nem.",
-    errCodePlan: "A kedvezménykód csak a Basic csomagra érvényes.",
+    errCodeYear: "A kedvezménykód csak az első éves fizetésnél használható, havi vagy negyedéves fizetésnél, csomagváltásnál, a csomagajánlatnál vagy megújításnál nem.",
+    errCodePlan: "A kedvezménykód csak a Basic csomaghoz jó, éves fizetéssel (egy év).",
     bookIncludedAll: "A könyv benne van a csomagodban. A könyv oldaláról töltheted le.",
     bookIncludedText: "A csomagodban évente egy PDF-könyv benne van. Kiválaszthatod a(z) „{tree}” családfához, 12 hónapra.",
     bookIncludedBtn: "A benne foglalt könyv választása ehhez a családfához",

@@ -1,6 +1,7 @@
 import type { Catalog, DeepPartial } from "./ro";
 import { svExtra } from "./noi/sv";
 import { svGhidArbore } from "./ghid-arbore/altele";
+import { svAbonament } from "./abonament/altele";
 
 /**
  * Svenska, för rumäner i Sverige och deras barn. Tilltal med „du”. Det som ännu inte är översatt visas på engelska
@@ -69,6 +70,7 @@ export const sv: DeepPartial<Catalog> = {
     guides: "Guider",
   },
   ...svGhidArbore,
+  ...svAbonament,
   UsageNotice: {
     label: "Hur du använder webbplatsen",
     lead: "En enda fråga, bara en gång.",
@@ -454,8 +456,8 @@ export const sv: DeepPartial<Catalog> = {
     bookPaid: "Du har betalat boken. Du kan ladda ner den på boksidan.",
     bookFree: "Ditt konto har PDF-boken utan kostnad. Du kan ladda ner den på boksidan.",
     bookNote: "Släktens bok som PDF köps separat: {price} för ett träd. Efter betalningen görs den av dina uppgifter och du kan göra om och ladda ner den i 12 månader. Om du vill kan du skriva ut den själv, hemma eller på ett tryckeri.",
-    discountNote: "Rabatter (en klasskod eller en organisations länk) dras av automatiskt vid betalningen, bara för det första året; förnyelsen sker till fullt pris. Bara en rabatt gäller per betalning.",
-    linkCode: "Rabattkoden från din länk är sparad: om den fortfarande gäller dras den av automatiskt när du betalar ditt första år.",
+    discountNote: "Rabattkoder (NEAM90, en organisations kod, klassens kod) gäller bara den första årsbetalningen, i ett år; NEAM90 och inskrivna koder eller länkkoder bara med planen Basic. Förnyelsen sker till förnyelsepriset, utan rabatt. Bara en rabatt gäller per betalning.",
+    linkCode: "Rabattkoden från din länk är sparad: om den fortfarande gäller läggs den automatiskt på den första årsbetalningen för Basic.",
     backToBook: "Tillbaka till boken",
     consent: "Jag vill börja direkt och förstår att jag, genom att få det digitala innehållet omedelbart, förlorar ångerrätten på 14 dagar.",
     pay: "Betala {price} med kort",
@@ -524,8 +526,8 @@ export const sv: DeepPartial<Catalog> = {
     codeHint: "Om du har fått en kod, skriv den här. Du ser rabatten på betalningssidan innan du betalar.",
     codeLabel: "Rabattkod",
     errCode: "Den här rabattkoden gäller inte (felstavad, utgången eller redan använd). Kontrollera den och försök igen.",
-    errCodeYear: "En rabattkod kan bara användas när du betalar ett helt första år, inte vid byte av plan, för paketet eller vid förnyelse.",
-    errCodePlan: "Rabattkoden fungerar bara med planen Basic.",
+    errCodeYear: "En rabattkod kan bara användas vid den första årsbetalningen, inte vid månads- eller kvartalsbetalning, planbyte, paketet eller en förnyelse.",
+    errCodePlan: "Rabattkoden gäller bara planen Basic, betald per år (ett år).",
     bookIncludedAll: "Boken ingår i din plan. Du kan ladda ner den på boksidan.",
     bookIncludedText: "Din plan inkluderar en PDF-bok per år. Du kan välja den för trädet ”{tree}”, i 12 månader.",
     bookIncludedBtn: "Välj den inkluderade boken för det här trädet",

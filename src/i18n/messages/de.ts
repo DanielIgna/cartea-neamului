@@ -23,6 +23,7 @@ import { dePastrare } from "./pastrare/de";
 import { deSecuritate } from "./securitate/de";
 import { deEmailuri } from "./emailuri/de";
 import { deGhidArbore } from "./ghid-arbore/altele";
+import { deAbonament } from "./abonament/altele";
 
 /** Deutsch, mit Du (wie das Rumänische der Seite). */
 export const de: Catalog = {
@@ -90,6 +91,7 @@ export const de: Catalog = {
     guides: "Ratgeber",
   },
   ...deGhidArbore,
+  ...deAbonament,
   UsageNotice: {
     label: "Wie du die Seite nutzt",
     lead: "Eine Frage, nur einmal.",
@@ -500,8 +502,8 @@ export const de: Catalog = {
     bookPaid: "Du hast das Buch bezahlt. Du kannst es auf der Buchseite herunterladen.",
     bookFree: "Dein Konto hat das PDF-Buch ohne Bezahlung. Du kannst es auf der Buchseite herunterladen.",
     bookNote: "Das Familienbuch als PDF gibt es separat: {price} für einen Stammbaum. Nach der Zahlung entsteht es aus euren Daten, und du kannst es 12 Monate lang neu erstellen und herunterladen. Wenn du willst, druckst du es selbst, zu Hause oder in einer Druckerei.",
-    discountNote: "Rabatte (ein Klassencode oder der Link einer Organisation) werden bei der Zahlung automatisch angewendet, nur für das erste Jahr; die Verlängerung kostet den vollen Preis. Pro Zahlung gilt nur ein Rabatt.",
-    linkCode: "Der Rabattcode aus deinem Link ist gespeichert: Wenn er noch gültig ist, wird er bei der Zahlung des ersten Jahres automatisch angewendet.",
+    discountNote: "Rabattcodes (NEAM90, der Code einer Organisation, der Klassencode) gelten nur für die erste Jahreszahlung, für ein Jahr; NEAM90 und eingegebene oder Link-Codes nur für den Tarif Basic. Die Verlängerung erfolgt zum Verlängerungspreis, ohne Rabatt. Pro Zahlung gilt nur ein Rabatt.",
+    linkCode: "Der Rabattcode aus deinem Link ist gespeichert: Wenn er noch gilt, wird er automatisch auf die erste Jahreszahlung des Tarifs Basic angewendet.",
     backToBook: "Zurück zum Buch",
     consent: "Ich möchte sofort beginnen und verstehe, dass ich durch den sofortigen Erhalt der digitalen Inhalte mein 14-tägiges Widerrufsrecht verliere.",
     pay: "{price} mit Karte bezahlen",
@@ -570,8 +572,8 @@ export const de: Catalog = {
     codeHint: "Wenn du einen Code bekommen hast, gib ihn hier ein. Den Rabatt siehst du auf der Zahlungsseite, bevor du bezahlst.",
     codeLabel: "Rabattcode",
     errCode: "Dieser Rabattcode ist nicht gültig (falsch geschrieben, abgelaufen oder schon benutzt). Bitte prüfe ihn und versuche es erneut.",
-    errCodeYear: "Ein Rabattcode gilt nur für die Zahlung eines ganzen ersten Jahres, nicht für einen Tarifwechsel, das Paket oder eine Verlängerung.",
-    errCodePlan: "Der Rabattcode gilt nur für den Basic-Tarif.",
+    errCodeYear: "Ein Rabattcode gilt nur für die erste Jahreszahlung, nicht für monatliche oder vierteljährliche Zahlungen, einen Tarifwechsel, das Paket oder eine Verlängerung.",
+    errCodePlan: "Der Rabattcode gilt nur für den Tarif Basic, jährlich bezahlt (ein Jahr).",
     bookIncludedAll: "Das Buch ist in deinem Tarif inklusive. Du kannst es auf der Buchseite herunterladen.",
     bookIncludedText: "Dein Tarif enthält ein PDF-Buch pro Jahr. Du kannst es für den Stammbaum „{tree}“ wählen, für 12 Monate.",
     bookIncludedBtn: "Inklusives Buch für diesen Stammbaum wählen",

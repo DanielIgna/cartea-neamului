@@ -47,14 +47,15 @@ export async function redeemGift(db: Db, code: string, userId: string, now = new
 
 /**
  * Cei al căror an plătit se termină în următoarele `days` zile și n-au primit încă aducerea aminte pentru anul ăsta.
- * Anul nu se reînnoiește singur: le scriem o dată, ca să se poată întoarce la plată dacă vor.
+ * Cei fără reînnoire automată (fără abonament sau cu reînnoirea oprită): le scriem o dată, ca să se poată întoarce la plată dacă vor.
  */
 export async function dueReminders(db: Pick<Db, "select">, days: number, now = new Date()) {
   if (days <= 0) return [];
   const until = new Date(now.getTime() + days * DAY);
   return db.select({ userId: user.id, name: user.name, email: user.email, locale: user.locale, paidUntil: accountPlan.paidUntil, tier: accountPlan.tier })
     .from(accountPlan).innerJoin(user, eq(user.id, accountPlan.userId))
-    .where(and(gt(accountPlan.paidUntil, now), lte(accountPlan.paidUntil, until), sql`${accountPlan.plan} <> 'mereu'`,
+    // Cine are abonamentul pornit primește alt email, cu 7 zile înainte de plată (src/lib/abonament.ts), nu pe acesta.
+    .where(and(gt(accountPlan.paidUntil, now), lte(accountPlan.paidUntil, until), sql`${accountPlan.plan} <> 'mereu'`, eq(accountPlan.subRenews, false),
       or(isNull(accountPlan.remindedFor), sql`${accountPlan.remindedFor} <> ${accountPlan.paidUntil}`)));
 }
 

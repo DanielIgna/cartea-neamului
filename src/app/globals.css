@@ -2468,3 +2468,12 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
 .fam .kin-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr))}
 .fam-branches{grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));align-items:start}
 @media (max-width:640px){.fam .kin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Abonamentele pe /plata (25.11.2026): alegerea perioadei, economia la anual, prețul din al doilea an și cardul abonamentului. */
+.period-tabs{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:2px 0 4px;padding:4px;border:1px solid var(--line, #ddd);border-radius:999px;background:var(--surface);width:fit-content;max-width:100%;margin-inline:auto}
+.period-tabs a{padding:7px 14px;border-radius:999px;text-decoration:none;color:inherit;font-size:14px;font-weight:600;white-space:nowrap}
+.period-tabs a[aria-current=page]{background:var(--accent);color:#fff}
+.period-tabs .save{font-weight:500;font-size:12px;opacity:.85;margin-inline-start:4px}
+.plan-save{display:inline-block;font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:2px 8px;margin:0;width:fit-content}
+.plan-renew{font-size:13px;margin:0}
+.plata .sub-card .actions{display:flex;flex-wrap:wrap;gap:8px}
+.plata .sub-card form{display:inline}
