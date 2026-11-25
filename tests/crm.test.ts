@@ -17,9 +17,10 @@ import { accountSource, crmActivities, crmOrganizations, crmSuppression, user } 
 import {
   advanceStatus, allowedRecipients, classifyReply, dedupeKeyOf, isSuppressed, realUserSql, slugify, suppress, unsuppress, upsertOrg,
 } from "@/lib/crm";
-import { importCsv, kindOfFile, parseCsv, parseWhen, seedPressOnce } from "@/lib/crm-import";
+import { importCsv, kindOfFile, parseCsv, parseWhen, seedPressDraftsOnce, seedPressOnce } from "@/lib/crm-import";
 import { readFileSync } from "node:fs";
 import { ingest, ingestAuthorized } from "@/lib/crm-ingest";
+import { pendingApprovals } from "@/lib/crm-admin";
 import { sendEmail } from "@/lib/email";
 
 const now = new Date("2026-11-17T10:00:00Z");
@@ -137,6 +138,15 @@ describe("CRM: importul din CSV", () => {
     const presa = (await orgs()).filter((o) => o.tip === "presa");
     expect(presa).toHaveLength(lines);
     expect(presa.every((o) => o.status === "nou" && o.sursaDatelor?.startsWith("https://") && o.emailOficial)).toBe(true);
+    expect((await acts()).length).toBe(before);
+    // Câte un email pentru fiecare redacție, în Aprobări, cu răspunsul la contact@; nimic trimis.
+    const drafts = JSON.parse(readFileSync("src/data/crm-presa-mesaje.json", "utf8"));
+    expect(Object.keys(drafts).sort()).toEqual(presa.map((o) => o.emailOficial).sort());
+    expect(await seedPressDraftsOnce(db, drafts, now)).toBe(`${lines} emailuri pentru redacții în Aprobări`);
+    expect(await seedPressDraftsOnce(db, drafts, now)).toBe("deja");
+    const q = (await pendingApprovals(db, now)).filter(({ a }) => a.tipActiune === "email_presa");
+    expect(q).toHaveLength(lines);
+    expect(q.every(({ a }) => a.payload.replyTo === "contact@carteaneamului.ro" && a.expiresAt.getTime() - now.getTime() === 7 * 24 * 3600_000)).toBe(true);
     expect((await acts()).length).toBe(before);
   });
 
