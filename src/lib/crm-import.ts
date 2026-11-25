@@ -156,3 +156,28 @@ export async function seedPressOnce(db: Db, csv: string, now = new Date()): Prom
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi: rep.orgsNew }, updatedAt: now }).onConflictDoNothing();
   return `${rep.orgsNew} redacții noi, ${rep.orgsSeen} deja în CRM`;
 }
+
+/**
+ * Câte un email scris pentru fiecare redacție (src/data/crm-presa-mesaje.json), pus o singură dată în Admin → CRM → Aprobări
+ * (Daniel, 25.11.2026: „vreau doar să apăs trimite, maxim să editez ceva”). Nu pleacă nimic până nu apasă el „Trimite acum”;
+ * răspunsurile vin la contact@carteaneamului.ro. Stau 7 zile, apoi expiră.
+ */
+export async function seedPressDraftsOnce(db: Db, drafts: Record<string, { subiect: string; text: string }>, now = new Date()): Promise<string> {
+  const MARK = "crm_presa_ciorne_2026_11_25";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const { queueApproval } = await import("./crm-admin");
+  let n = 0;
+  for (const [email, d] of Object.entries(drafts)) {
+    const [org] = await db.select({ id: crmOrganizations.id, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.emailOficial, email)).limit(1);
+    if (!org) continue;
+    const id = await queueApproval(db, {
+      tipActiune: "email_presa", risc: "MEDIUM", organizationId: org.id, dedupeKey: `presa-1:${email}`, hours: 7 * 24,
+      motiv: `Propunere de subiect pentru ${org.nume}, scrisă pentru redacția lor. Citește, schimbă ce vrei, apoi „Trimite acum”.`,
+      payload: { destinatar: email, subiect: d.subiect, text: d.text, replyTo: "contact@carteaneamului.ro" },
+    }, now);
+    if (id) n++;
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
+  return `${n} emailuri pentru redacții în Aprobări`;
+}

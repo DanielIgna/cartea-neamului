@@ -321,10 +321,11 @@ async function Approvals() {
             {a.motiv && <div className="muted">{a.motiv}</div>}
             {a.payload.destinatar && <div>Către: <code>{a.payload.destinatar}</code></div>}
             <label>Subiect<input name="subiect" defaultValue={a.payload.subiect ?? ""} maxLength={300} /></label>
-            <label>Text<textarea name="text" defaultValue={a.payload.text ?? ""} rows={6} /></label>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button className="btn primary" name="decizie" value="aprobat">Aprob (cu modificările de mai sus)</button>
-              <button className="btn" name="decizie" value="respins">Resping</button>
+            <label>Text<textarea name="text" defaultValue={a.payload.text ?? ""} rows={a.tipActiune.startsWith("email") ? 14 : 6} /></label>
+            {/* La emailuri (Daniel, 25.11.2026): „Trimite” trimite chiar acum, cu ce ai schimbat în subiect și text. */}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button className="btn primary" name="decizie" value="aprobat">{a.tipActiune.startsWith("email") ? "Trimite acum" : "Aprob (cu modificările de mai sus)"}</button>
+              <button className="btn" name="decizie" value="respins">{a.tipActiune.startsWith("email") ? "Nu trimite" : "Resping"}</button>
             </div>
           </form>
         ))}
