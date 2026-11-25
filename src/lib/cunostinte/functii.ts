@@ -651,7 +651,8 @@ export const FUNCTIONS: Fn[] = [
   {
     key: "invatare-conversii", name: "Învățare și conversii", area: "admin", lifecycle: "live", risk: "mediu", riskWhy: "Folosește ce fac oamenii în cont; emailul pleacă doar cu acord și după aprobarea ta.",
     what: "Jurnalul recomandărilor cu efectul măsurat, conturile din probă aproape de plată (scor din reguli, mesaj de aprobat) și perspectivele din Analiză.",
-    engine: ["src/lib/invatare.ts"], pages: ["/admin/invatare"], tables: ["consent", "automation_mark", "page_view"], tests: ["tests/crestere.test.ts"],
+    engine: ["src/lib/invatare.ts", "src/lib/mesaje-activitate.ts"], pages: ["/admin/invatare"], tables: ["consent", "automation_mark", "page_view", "conversion_offer"], tests: ["tests/crestere.test.ts", "tests/mesaje-activitate.test.ts"],
+    automations: ["mesaje-activitate"],
     human: "Citește și aprobă fiecare mesaj; bifează „Făcut” în jurnal.",
   },
   {

@@ -44,7 +44,7 @@ const DAY = 86_400_000;
 export type Risk = "singur" | "acord" | "aprobare";
 export const RISK_LABEL: Record<Risk, string> = { singur: "merge singur", acord: "cu acordul tău", aprobare: "cere aprobare" };
 
-export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte", "surse-publice", "strateg-seo", "google-zilnic"] as const;
+export const AUTO_KEYS = ["sanatate", "curatenie", "sitemap", "aminteste-proba", "aminteste-an", "bun-venit", "probleme-vechi", "arhivare", "motor-seo", "conversie", "activare", "crm-scor", "crm-reactivare", "crm-ambasador", "crm-ciorne", "crm-campanii", "crm-gmail", "crm-dimineata", "crm-alerte", "surse-publice", "strateg-seo", "google-zilnic", "mesaje-activitate"] as const;
 export type AutoKey = (typeof AUTO_KEYS)[number];
 export const isAutoKey = (v: unknown): v is AutoKey => typeof v === "string" && (AUTO_KEYS as readonly string[]).includes(v);
 
@@ -84,6 +84,8 @@ export const AUTOMATIONS: AutoDef[] = [
     what: "Îți scrie dimineața, doar ție, ce e de făcut azi în CRM: sarcinile cu termen (și restantele), răspunsurile noi, mesajele de aprobat, organizațiile de sunat, emailurile trimise ieri și plățile venite prin organizații. O dată pe zi și doar dacă e ceva de făcut." },
   { key: "crm-alerte", label: "CRM: alerte pe email", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
     what: "Îți scrie dacă o automatizare CRM a dat eroare de 2 ori la rând, dacă emailurile nelivrate trec de 5% (din cel puțin 20 trimise în 30 de zile) sau dacă s-a încercat o trimitere spre cineva de pe „Nu contacta”. Fiecare alertă o singură dată. Verifică zilnic și după fiecare lot de campanie." },
+  { key: "mesaje-activitate", label: "Email: mesaje după ce face omul", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY",
+    what: "Reguli simple după activitatea din cont: sub 3 persoane în zilele gratuite → „Începe cu părinții și bunicii”; 5+ persoane fără invitații → „Cheamă o rudă”; 10+ persoane cu bunici lipsă → „Completează și bunicii”; 10+ persoane fără poze → „O poză veche”; 3–21 de zile fără intrare → o poveste din arborele lui (cel mai vechi strămoș cu an). Doar celor cu „Da” la sfaturile pe email, fiecare regulă o dată, cel mult un email de marketing pe zi de la noi, cel mult 50 pe zi. Vezi Admin → Învățare și conversii → Mesaje după activitate." },
   { key: "arhivare", label: "Arhiva sigilată", risk: "acord", defaultOn: false, everyDays: 1, needs: "RESEND_API_KEY și regulile pornite din Admin → Arhivă",
     what: "După anul plătit, la arborii fără an, fără Păstrare și cu titularul venit după pornirea regulilor: trimite anunțurile (30/7 zile înainte de arhivă, 90/30/7 înainte de micșorare), apoi mută originalele în arhiva sigilată (cu cartea PDF) sau lasă pozele doar în mic. Câte 150 de fișiere pe zi. Fără email trimis nu face nimic." },
   { key: "motor-seo", label: "Motorul SEO", risk: "acord", defaultOn: false, everyDays: 1, needs: "Search Console legat (pentru verificarea indexării)",
@@ -389,7 +391,18 @@ async function runConversionMail({ db, now }: Ctx): Promise<RunResult> {
   return { status: r.sent ? "ok" : r.failed ? "eroare" : "nimic", observed: r.observed, acted: r.sent, note, details: { byStep: r.byStep, skipped: r.skipped.slice(0, 20) }, verified: r.failed === 0 };
 }
 
+async function runActivityMail({ db, now }: Ctx): Promise<RunResult> {
+  if (!emailReady()) return { status: "sarit", observed: 0, acted: 0, note: "fără RESEND_API_KEY nu pleacă emailuri" };
+  const { runActivityMessages } = await import("./mesaje-activitate");
+  const r = await runActivityMessages(db, { now });
+  const parts = Object.entries(r.byRule).map(([k, c]) => `${c}× ${k}`).join(", ");
+  return { status: r.sent ? "ok" : r.failed ? "eroare" : "nimic", observed: r.observed, acted: r.sent,
+    note: r.due ? `${r.sent} din ${r.due} emailuri trimise${parts ? ` (${parts})` : ""}${r.skipped ? ` · ${r.skipped} oprite („nu contacta”)` : ""}` : `${r.observed} conturi cu acordul dat, niciunul nu are azi un mesaj de primit`,
+    details: r.byRule, verified: r.failed === 0 };
+}
+
 const RUNNERS: Record<AutoKey, (c: Ctx) => Promise<RunResult>> = {
+  "mesaje-activitate": runActivityMail,
   sanatate: (c) => runHealth(c),
   curatenie: runCleanup,
   sitemap: runSitemap,

@@ -87,13 +87,28 @@ export async function sendLeadMessage(form: FormData): Promise<void> {
   const [u] = await db.select({ email: user.email, locale: user.locale }).from(user).where(sql`${user.id} = ${userId}`);
   if (!u) return;
   const tok = unsubscribeToken(userId);
+  // „Adaugă oferta”: codul personal de reducere (același ca în emailurile din gratuit în plătit: o singură dată pe om, procentul și
+  // orele din Admin → Din gratuit în plătit). Se aplică singur la plată, la primul an Basic; fără cheia Stripe nu se face.
+  let offerLine: string | null = null;
+  if (form.get("oferta") === "on" && process.env.STRIPE_SECRET_KEY?.trim()) {
+    const { convSettings, ensureOffer } = await import("@/lib/conversie");
+    const now = new Date();
+    const o = await ensureOffer(db, userId, await convSettings(db), now).catch((e) => { console.error("aproape-plata: oferta", e); return null; });
+    if (o && !o.usedAt && o.expiresAt > now) {
+      const until = o.expiresAt.toLocaleString("ro-RO", { timeZone: "Europe/Bucharest", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+      offerLine = `Pentru tine: −${o.percent}% la primul an Basic, cu codul ${o.code}, valabil până pe ${until}. Se aplică singur când plătești din contul tău.`;
+    }
+  }
   const { html, text } = renderMail([
     ...body.split(/\n\s*\n/).map((p) => ({ p })),
-    { button: "Deschide arborele", href: `${SITE_URL}/?utm_source=email&utm_medium=email&utm_campaign=aproape-plata` },
+    ...(offerLine ? [{ p: offerLine }] : []),
+    offerLine
+      ? { button: "Alege planul", href: `${SITE_URL}/plata?utm_source=email&utm_medium=email&utm_campaign=aproape-plata-oferta` }
+      : { button: "Deschide arborele", href: `${SITE_URL}/?utm_source=email&utm_medium=email&utm_campaign=aproape-plata` },
     { note: "Primești acest email pentru că ai spus „Da” la sfaturile pe email.", link: "Dezabonează-te dintr-un clic", href: `${SITE_URL}/dezabonare?u=${encodeURIComponent(userId)}&t=${tok}` },
   ], await footerFor(isLocale(u.locale) ? u.locale : "ro"));
   const r = await sendEmail({ to: u.email, subject, html, text, tag: "aproape-plata", replyTo: me.email,
     headers: { "List-Unsubscribe": `<${SITE_URL}/api/vesti/dezabonare?u=${encodeURIComponent(userId)}&t=${tok}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" } });
-  if (emailSent(r)) await db.insert(automationMark).values({ automation: "aproape-plata", ref: `${userId}:${new Date().toISOString().slice(0, 10)}` }).onConflictDoNothing();
+  if (emailSent(r)) await db.insert(automationMark).values({ automation: "aproape-plata", ref: `${userId}:${new Date().toISOString().slice(0, 10)}${offerLine ? ":oferta" : ""}` }).onConflictDoNothing();
   revalidatePath("/admin/invatare");
 }

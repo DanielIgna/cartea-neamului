@@ -85,8 +85,12 @@ export async function outcomes(db: Db, items: LedgerItem[], now = new Date()) {
 
 /* ---------- 2. Aproape de plată ---------- */
 
-export type Signals = { persons: number; invites: number; photos: number; memories: number; activeDaysAgo: number | null; daysLeft: number };
-export type Lead = Signals & { id: string; name: string; email: string; locale: string; score: number; tier: "aproape" | "interesat" | "inceput"; chips: string[]; news: boolean; message: { subject: string; body: string } };
+/** `daysLeft` = zile gratuite rămase; 0 și `endedDaysAgo` pus = zilele gratuite s-au terminat de atâtea zile, fără plată. */
+export type Signals = { persons: number; invites: number; photos: number; memories: number; activeDaysAgo: number | null; daysLeft: number; endedDaysAgo?: number | null };
+export type Lead = Signals & { id: string; name: string; email: string; locale: string; score: number; tier: "aproape" | "interesat" | "inceput"; chips: string[]; news: boolean; message: { subject: string; body: string };
+  phase: "proba" | "expirat"; offer: { code: string; percent: number; expiresAt: string; used: boolean } | null };
+/** Cei cu zilele gratuite terminate de cel mult atâtea zile (și fără plată) apar și ei în listă. */
+export const AFTER_TRIAL_DAYS = 30;
 
 /** Scorul 0–100 din semnalele din cont. Pur, ca să se poată testa; regulile se văd și pe pagină. */
 export const SCORE_RULES = [
@@ -95,10 +99,11 @@ export const SCORE_RULES = [
   { label: "cel puțin 3 poze", points: 15 },
   { label: "cel puțin o amintire", points: 15 },
   { label: "a intrat în ultimele 3 zile", points: 10 },
-  { label: "mai are cel mult 2 zile gratuite", points: 10 },
+  { label: "e la capătul zilelor gratuite (cel mult 2 zile rămase sau terminate de cel mult 7 zile)", points: 10 },
 ] as const;
 export function leadScore(s: Signals) {
-  const hits = [s.persons >= 10, s.invites >= 1, s.photos >= 3, s.memories >= 1, s.activeDaysAgo != null && s.activeDaysAgo <= 3, s.daysLeft <= 2];
+  const hits = [s.persons >= 10, s.invites >= 1, s.photos >= 3, s.memories >= 1, s.activeDaysAgo != null && s.activeDaysAgo <= 3,
+    s.endedDaysAgo != null ? s.endedDaysAgo <= 7 : s.daysLeft <= 2];
   const score = SCORE_RULES.reduce((a, r, i) => a + (hits[i] ? r.points : 0), 0);
   const tier: Lead["tier"] = score >= 70 ? "aproape" : score >= 40 ? "interesat" : "inceput";
   return { score, tier, hits };
@@ -108,9 +113,11 @@ export const TIER_LABEL: Record<Lead["tier"], string> = { aproape: "Aproape de p
 /** Mesajul propus, după ce lipsește sau ce merge deja. Doar în română (Daniel îl citește și îl aprobă); se poate schimba. */
 export function suggestedMessage(name: string, s: Signals, price: number) {
   const first = name.split(" ")[0] || name;
+  if (s.endedDaysAgo != null)
+    return { subject: "Arborele tău te așteaptă", body: `Bună, ${first}! Zilele gratuite s-au terminat, dar n-am șters nimic: arborele cu ${s.persons} ${s.persons === 1 ? "persoană" : "persoane"} e tot acolo și îl poți vedea oricând. Ca să scrii mai departe, împreună cu rudele, anul Basic costă ${price} lei, plătit o dată; poți alege și un abonament lunar sau trimestrial la celelalte planuri, oprit dintr-un clic. Dacă ai vreo întrebare, răspunde-mi aici.` };
   const left = s.daysLeft <= 0 ? "Zilele gratuite s-au terminat" : s.daysLeft === 1 ? "Mai ai o zi gratuită" : `Mai ai ${s.daysLeft} zile gratuite`;
   if (s.persons >= 10 && s.invites >= 1)
-    return { subject: "Arborele vostru crește frumos", body: `Bună, ${first}! Am văzut că arborele are deja ${s.persons} de persoane și că ți-ai chemat rudele. ${left}. Ca să puteți scrie mai departe toți, anul Basic costă ${price} lei. Nu se iau bani automat și nu se șterge nimic. Dacă ai vreo întrebare, răspunde-mi aici.` };
+    return { subject: "Arborele vostru crește frumos", body: `Bună, ${first}! Am văzut că arborele are deja ${s.persons} de persoane și că ți-ai chemat rudele. ${left}. Ca să puteți scrie mai departe toți, anul Basic costă ${price} lei, plătit o dată, fără reînnoire automată. Nu se șterge nimic. Dacă ai vreo întrebare, răspunde-mi aici.` };
   if (s.invites === 0)
     return { subject: "Cine din familie știe mai multe?", body: `Bună, ${first}! ${left}. Cel mai repede crește arborele când vin și rudele: trimite-le invitația pe WhatsApp din pagina arborelui, iar ei adaugă ce știu. Dacă te pot ajuta cu ceva, răspunde-mi aici.` };
   if (s.photos < 3)
@@ -121,16 +128,18 @@ export function suggestedMessage(name: string, s: Signals, price: number) {
 export async function trialLeads(db: Db, now = new Date()): Promise<Lead[]> {
   const s = await planSettings(db);
   const [plans, people] = await Promise.all([accountPlans(db), accessPeople(db)]);
-  const trial: { id: string; until: Date }[] = [];
+  const trial: { id: string; until: Date; ended: boolean }[] = [];
   for (const p of people) {
     const ap = plans.get(p.id);
     const a = accessFor({ createdAt: p.createdAt, plan: ap?.plan ?? null, paidUntil: ap?.paidUntil ? new Date(ap.paidUntil) : null, tier: ap?.tier, exempt: p.exempt, freeUntil: p.freeUntil,
       keepUntil: ap?.keepUntil ? new Date(ap.keepUntil) : null }, s, now);
-    if (a.kind === "proba") trial.push({ id: p.id, until: a.until });
+    if (a.kind === "proba") trial.push({ id: p.id, until: a.until, ended: false });
+    // Zilele gratuite terminate de curând, fără să fi plătit vreodată: cei mai buni pentru o ofertă.
+    else if (a.kind === "expirat" && !ap?.paidUntil && now.getTime() - a.since.getTime() <= AFTER_TRIAL_DAYS * DAY) trial.push({ id: p.id, until: a.since, ended: true });
   }
   if (!trial.length) return [];
   const ids = sql.join(trial.map((t) => sql`${t.id}`), sql`, `);
-  const info = await rows<{ id: string; name: string; email: string; locale: string; persons: number; invites: number; photos: number; memories: number; last: string | null; news: boolean }>(db, sql`
+  const info = await rows<{ id: string; name: string; email: string; locale: string; persons: number; invites: number; photos: number; memories: number; last: string | null; news: boolean; offer: unknown }>(db, sql`
     with last_news as (select distinct on (user_id) user_id, granted from consent where purpose = 'news' order by user_id, created_at desc)
     select u.id, u.name, u.email, u.locale,
       (select count(*) from person p join tree t on t.id = p.tree_id where t.owner_id = u.id) as persons,
@@ -138,17 +147,23 @@ export async function trialLeads(db: Db, now = new Date()): Promise<Lead[]> {
       (select count(*) from document d join tree t on t.id = d.tree_id where t.owner_id = u.id and d.kind = 'photo') as photos,
       (select count(*) from memory m where m.author_id = u.id) as memories,
       (select max(updated_at) from session s where s.user_id = u.id) as last,
-      coalesce((select granted from last_news where user_id = u.id), false) as news
-    from "user" u where u.id in (${ids}) and ${realAccountSql("u")}`);
-  const until = new Map(trial.map((t) => [t.id, t.until]));
+      coalesce((select granted from last_news where user_id = u.id), false) as news,
+      (select row_to_json(o) from (select code, percent, expires_at, used_at from conversion_offer where user_id = u.id) o) as offer
+    from "user" u where u.id in (${ids}) and ${realAccountSql("u")}
+      and not exists (select 1 from payment pp where pp.user_id = u.id)`);
+  const until = new Map(trial.map((t) => [t.id, t]));
   return info.map((u) => {
     const last = u.last ? new Date(u.last) : null;
+    const t = until.get(u.id)!;
     const sig: Signals = { persons: n(u.persons), invites: n(u.invites), photos: n(u.photos), memories: n(u.memories),
       activeDaysAgo: last ? Math.floor((now.getTime() - last.getTime()) / DAY) : null,
-      daysLeft: Math.max(0, Math.ceil((until.get(u.id)!.getTime() - now.getTime()) / DAY)) };
+      daysLeft: t.ended ? 0 : Math.max(0, Math.ceil((t.until.getTime() - now.getTime()) / DAY)),
+      endedDaysAgo: t.ended ? Math.max(0, Math.floor((now.getTime() - t.until.getTime()) / DAY)) : null };
+    const o = u.offer as { code: string; percent: number; expires_at: string; used_at: string | null } | null;
     const { score, tier, hits } = leadScore(sig);
     const chips = SCORE_RULES.filter((_, i) => hits[i]).map((r) => r.label);
-    return { ...sig, id: u.id, name: u.name, email: u.email, locale: u.locale, score, tier, chips, news: !!u.news, message: suggestedMessage(u.name, sig, s.priceLei) };
+    return { ...sig, id: u.id, name: u.name, email: u.email, locale: u.locale, score, tier, chips, news: !!u.news, message: suggestedMessage(u.name, sig, s.priceLei),
+      phase: t.ended ? "expirat" as const : "proba" as const, offer: o ? { code: o.code, percent: n(o.percent), expiresAt: new Date(o.expires_at).toISOString(), used: !!o.used_at } : null };
   }).sort((a, b) => b.score - a.score || a.daysLeft - b.daysLeft);
 }
 
