@@ -25,6 +25,8 @@ Pe scurt, dacă tu te-ai născut în jurul anului 1990:
 - generația 7: cam 1810;
 - generația 8: cam 1780.
 
+![Câți strămoși ai pe fiecare generație: 2 părinți, 4 bunici, 8 străbunici, 16 răsstrăbunici, 32 în a cincea generație](/imagini/cati-stramosi-pe-generatie.svg "Numărul strămoșilor se dublează la fiecare generație")
+
 ## Ce acte există pe fiecare perioadă
 
 ### După 1865 (Vechiul Regat) și după 1895 (Transilvania): starea civilă

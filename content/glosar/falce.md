@@ -22,6 +22,8 @@ Falcea a fost folosită în Moldova, inclusiv în Basarabia și Bucovina, până
 
 ## Cum socotești
 
+![Comparație între măsurile vechi de pământ: falce 1,43 ha, hectar, jugăr 0,58 ha, pogon 0,50 ha](/imagini/masuri-vechi-de-pamant-hectare.svg "Falcea, jugărul și pogonul comparate cu hectarul")
+
 Înmulțește numărul de fălci cu 1,43 și ai hectarele. O prăjină fălcească are cam 179 m². Un răzeș cu 3 fălci avea deci în jur de 4,3 hectare.
 
 ## Întrebări frecvente

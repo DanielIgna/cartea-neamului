@@ -3,6 +3,7 @@ import { PUBLIC_PAGES, TRANSLATED_PAGES, pageLocales } from "@/lib/public-pages"
 import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
+import { images } from "@/lib/continut/markdown";
 import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
 import { nameGate, uatGate } from "@/lib/continut/prag";
 import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
@@ -32,6 +33,8 @@ export type SitemapUrl = {
   path: string; lastModified: Date; changeFrequency?: "weekly" | "monthly" | "yearly"; priority?: number;
   /** Aceeași pagină în celelalte limbi (hreflang → adresă), pentru paginile traduse. */
   alternates?: Record<string, string>;
+  /** Imaginile paginii (adrese de pe site), pentru Google Imagini. */
+  images?: string[];
 };
 export type SitemapGroup = { name: string; label: string; urls: SitemapUrl[] };
 
@@ -48,7 +51,10 @@ function collectionGroup(c: "ghid" | "glosar", label: string): SitemapGroup {
     name: c, label,
     urls: [
       { path: `/${c}`, lastModified: lastUpdated(entries), changeFrequency: "weekly", priority: 0.6 },
-      ...entries.map((e): SitemapUrl => ({ path: e.path, lastModified: e.updated, changeFrequency: "monthly", priority: c === "ghid" ? 0.5 : 0.4 })),
+      ...entries.map((e): SitemapUrl => {
+        const img = images(e.blocks).map((x) => x.src);
+        return { path: e.path, lastModified: e.updated, changeFrequency: "monthly", priority: c === "ghid" ? 0.5 : 0.4, ...(img.length ? { images: img } : {}) };
+      }),
     ],
   };
 }
@@ -164,9 +170,11 @@ const iso = (d: Date) => new Date(Math.min(d.getTime(), Date.now())).toISOString
 
 export function urlsetXml(urls: SitemapUrl[]): string {
   const xhtml = urls.some((u) => u.alternates) ? ` xmlns:xhtml="http://www.w3.org/1999/xhtml"` : "";
+  const image = urls.some((u) => u.images?.length) ? ` xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"` : "";
   const links = (u: SitemapUrl) => Object.entries(u.alternates ?? {}).map(([l, p]) => `<xhtml:link rel="alternate" hreflang="${l}" href="${esc(abs(p))}"/>\n`).join("");
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${xhtml}>\n${urls.map((u) =>
-    `<url>\n<loc>${esc(abs(u.path))}</loc>\n${links(u)}<lastmod>${iso(u.lastModified)}</lastmod>\n</url>`).join("\n")}\n</urlset>\n`;
+  const imgs = (u: SitemapUrl) => (u.images ?? []).map((s) => `<image:image><image:loc>${esc(abs(s))}</image:loc></image:image>\n`).join("");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${xhtml}${image}>\n${urls.map((u) =>
+    `<url>\n<loc>${esc(abs(u.path))}</loc>\n${links(u)}${imgs(u)}<lastmod>${iso(u.lastModified)}</lastmod>\n</url>`).join("\n")}\n</urlset>\n`;
 }
 
 /** Grupele de diaspora (câte una pe limbă) intră în index ca un singur fișier, /sitemap-diaspora.xml (Daniel, 17.11.2026). */
