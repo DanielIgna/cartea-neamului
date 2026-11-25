@@ -95,7 +95,8 @@ export async function ackInbound(to: string, locale: string | null | undefined):
 
 /** Suma din Stripe (în bani / cenți), scrisă ca pe site: „50 lei”, „10 €”. */
 export function formatPaid(amountMinor: number, currency: string, locale: Locale) {
-  const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(amountMinor / 100);
+  const d = amountMinor % 100 === 0 ? 0 : 2;
+  const n = new Intl.NumberFormat(locale, { minimumFractionDigits: d, maximumFractionDigits: d }).format(amountMinor / 100);
   const c = currency.toLowerCase();
   return c === "ron" ? `${n} lei` : c === "eur" ? `${n} €` : `${n} ${currency.toUpperCase()}`;
 }

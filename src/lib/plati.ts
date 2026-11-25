@@ -65,10 +65,13 @@ export function money(v: number, locale: string, cur?: Currency, s?: Partial<Pla
   const lei = locale === "ro";
   if (!lei && cur && cur !== "eur" && cur !== "ron") {
     const x = convertEur(v, rateOf(cur, s ?? {}));
-    const label = new Intl.NumberFormat(locale, { style: "currency", currency: cur.toUpperCase(), maximumFractionDigits: Number.isInteger(x) ? 0 : 2 }).format(x);
+    const d = Number.isInteger(x) ? 0 : 2;
+    const label = new Intl.NumberFormat(locale, { style: "currency", currency: cur.toUpperCase(), minimumFractionDigits: d, maximumFractionDigits: d }).format(x);
     return { amount: Math.round(x * 100), currency: cur, label };
   }
-  const n = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(v);
+  // Bani întregi fără zecimale („69 lei”), restul mereu cu două („25,90 lei”, nu „25,9 lei”).
+  const d = Number.isInteger(Math.round(v * 100) / 100) ? 0 : 2;
+  const n = new Intl.NumberFormat(locale, { minimumFractionDigits: d, maximumFractionDigits: d }).format(v);
   return { amount: Math.round(v * 100), currency: lei ? "ron" : "eur", label: lei ? `${n} lei` : `${n} €` };
 }
 
