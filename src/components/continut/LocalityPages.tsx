@@ -12,7 +12,7 @@ import HubSearch from "@/components/continut/HubSearch";
 import { getEntry } from "@/lib/continut/colectii";
 import { countyLabel, countyPath, getCounty, isCapital, loadCounties, seatPath, type County } from "@/lib/continut/localitati";
 import { namesInRegion, type Surname } from "@/lib/continut/nume";
-import { REGIONS, REGION_SOURCES, type RegionKey } from "@/lib/continut/regiuni";
+import { REGIONS, REGION_SOURCES, civilByRegion, type RegionKey } from "@/lib/continut/regiuni";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 import { db } from "@/db";
@@ -89,7 +89,7 @@ export function seatMetadata(slug: string, seat: string): Metadata {
 function sourcesFor(c: County) {
   const groups = [...new Set(c.regions.map((r) => REGIONS[r].group))];
   const s = groups.map((g) => REGION_SOURCES[g]);
-  return { civil: s.map((x) => x.civil), tips: [...new Set(s.flatMap((x) => x.tips))].slice(0, 5), guides: [...new Set(s.flatMap((x) => x.guides))].slice(0, 4) };
+  return { civil: civilByRegion(c.regions), tips: [...new Set(s.flatMap((x) => x.tips))].slice(0, 5), guides: [...new Set(s.flatMap((x) => x.guides))].slice(0, 4) };
 }
 
 function namesFor(c: County, max = 24): Surname[] {

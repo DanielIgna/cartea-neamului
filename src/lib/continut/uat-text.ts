@@ -1,5 +1,5 @@
 import { getCounty, type County } from "./localitati";
-import { REGIONS, REGION_SOURCES } from "./regiuni";
+import { REGIONS, civilByRegion } from "./regiuni";
 import { KIND_NAME, countySeatUat, direction, distanceKm, loadUats, nearestTown, neighbours, rankInCounty, type Uat } from "./uat";
 import { plainPlace } from "@/lib/place-key";
 
@@ -101,7 +101,6 @@ export function uatSameName(u: Uat) {
 export function uatPageText(u: Uat, c: County, stat?: { trees: number; surnames: { name: string }[] } | null) {
   const k = KIND_NAME[u.kind];
   const seat = u.villages.find((v) => v.seat) ?? u.villages[0];
-  const groups = [...new Set(c.regions.map((r) => REGIONS[r].group))].map((g) => REGION_SOURCES[g]);
   const near = neighbours(u, 8);
   const same = uatSameName(u);
   const lines: string[] = [
@@ -111,7 +110,7 @@ export function uatPageText(u: Uat, c: County, stat?: { trees: number; surnames:
     `Acte mai vechi: ${c.archive}, unde ajung registrele după aproximativ un secol; caută după ${u.kind === "c" && u.villages.length > 1 ? `numele satului (${seat.name} sau celelalte)` : `numele ${u.name}`}.`,
     u.villages.length > 2 ? "Registrele bisericești: satele mai mari aveau de obicei parohia lor, iar cele mici erau trecute la parohia unui sat vecin; află mai întâi de ce parohie ținea satul familiei."
       : "Registrele bisericești: află de ce parohie ținea familia și ce confesiune avea; fiecare confesiune își ținea registrele separat.",
-    ...groups.map((g) => g.civil),
+    ...civilByRegion(c.regions),
     ...u.villages.map((v) => `${v.name}${villageWhere(u, v)}`),
     ...(same.uats.length || same.villages ? [`Mai există ${same.uats.length} unități și ${same.villages} sate cu numele ${u.name}: ${same.uats.slice(0, 8).map((x) => `${x.name} (${getCounty(x.countySlug)?.name})`).join(", ")}. Când un act scrie doar „${u.name}”, verifică județul.`] : []),
     ...(stat ? [`${stat.trees} arbori de familie din Cartea Neamului au strămoși de aici.`, ...stat.surnames.map((s) => s.name)] : []),

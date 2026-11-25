@@ -9,7 +9,7 @@ import ShareCard from "@/components/continut/ShareCard";
 import { getEntry } from "@/lib/continut/colectii";
 import { countyPath, getCounty, type County } from "@/lib/continut/localitati";
 import { namesInRegion } from "@/lib/continut/nume";
-import { REGIONS, REGION_SOURCES } from "@/lib/continut/regiuni";
+import { REGIONS, REGION_SOURCES, civilByRegion } from "@/lib/continut/regiuni";
 import { uatGate } from "@/lib/continut/prag";
 import {
   KIND_NAME, countySeatUat, direction, distanceKm, getUat, loadUats, nearestTown, neighbours, rankInCounty, uatPath, uatsOf, type Uat,
@@ -131,7 +131,7 @@ export async function UatPage({ countySlug, slug }: { countySlug: string; slug: 
           <li><b>Acte mai vechi</b>: {c.archive}, unde ajung registrele după aproximativ un secol; caută după {u.kind === "c" && u.villages.length > 1 ? `numele satului (${seatVillage.name} sau celelalte)` : `numele ${u.name}`}. Vezi <Link href="/ghid/cum-ceri-copii-de-la-arhive">cum ceri copii de la Arhive</Link>.</li>
           <li><b>Registrele bisericești</b>: {u.villages.length > 2 ? "satele mai mari aveau de obicei parohia lor, iar cele mici erau trecute la parohia unui sat vecin; află mai întâi de ce parohie ținea satul familiei." : "află de ce parohie ținea familia și ce confesiune avea; fiecare confesiune își ținea registrele separat."}</li>
         </ul>
-        {groups.map((g) => <p key={g.civil}>{g.civil}</p>)}
+        {civilByRegion(c.regions).map((t) => <p key={t}>{t}</p>)}
         {wiki && wiki.lines.length > 0 && (
           <>
             <h2>Oamenii locului, de-a lungul timpului</h2>
