@@ -35,7 +35,7 @@ One of the biggest challenges for Romanian families split between the US, Canada
 Instead of keeping notes in scattered notebooks or private spreadsheets, bring everyone into one shared space:
 
 1. **Build a collaborative family tree.** On Cartea Neamului you start your tree with yourself and your parents, then invite relatives with a simple link they can open on their phone, for example from WhatsApp.
-2. **Let each branch tell its story.** Every relative uses the site in the language they choose (English, Romanian and eight other languages), so a grandmother in Romania and a grandson in Toronto see the same tree with menus and buttons in their own language. The stories themselves stay exactly as each person writes them, so a memory written in Romanian stays in Romanian.
+2. **Let each branch tell its story.** Every relative uses the site in the language they choose (English, Romanian and many other languages, from French and German to Hebrew and Ukrainian), so a grandmother in Romania and a grandson in Toronto see the same tree with menus and buttons in their own language. The stories themselves stay exactly as each person writes them, so a memory written in Romanian stays in Romanian.
 3. **Keep the tree private.** Only the relatives you invite can see it, and you decide who can add or edit people.
 
 ## 3. Record your grandparents' voices before it is too late

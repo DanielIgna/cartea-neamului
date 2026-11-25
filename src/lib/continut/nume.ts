@@ -8,7 +8,9 @@ import { REGIONS, REGION_SOURCES, isRegion, type RegionKey } from "./regiuni";
  * fără nimic inventat: unde nu se știe sigur, fișierul o spune, iar fără regiuni pagina spune „în toată țara”.
  */
 export type NameKind = "functie" | "patronimic" | "prenume" | "loc" | "etnic" | "meserie" | "porecla";
-export type Surname = { slug: string; name: string; kind: NameKind; meaning: string; regions: RegionKey[]; variants: string[]; note?: string };
+export type Surname = { slug: string; name: string; kind: NameKind; meaning: string; regions: RegionKey[]; variants: string[]; note?: string;
+  /** Câteva paragrafe scrise anume pentru acest nume (istorie, cum apare în acte, ce să cauți), fără cifre inventate. */
+  story?: string[] };
 
 export const fold = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 

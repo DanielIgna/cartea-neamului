@@ -83,7 +83,7 @@ export function namePageText(n: Surname): PageText {
   const t = nameText(n);
   const faq = nameFaq(n);
   const paragraphs = [
-    t.origin, t.kindText, t.note ?? "", ...nameProfile(n), t.where, ...nameRecords(n),
+    t.origin, t.kindText, t.note ?? "", ...(n.story ?? []), ...nameProfile(n), t.where, ...nameRecords(n),
     ...(n.variants.length ? [`În acte și în bazele de date, numele ${n.name} poate apărea și ca: ${n.variants.join(", ")}. Caută și forma fără diacritice.`] : []),
     ...t.civil, ...t.tips, ...faq.flatMap((f) => [f.q, f.a]),
   ].filter(Boolean);

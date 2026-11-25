@@ -5,7 +5,7 @@
  */
 
 /** Când s-a schimbat ultima dată conținutul paginilor pentru școli (pentru sitemap). */
-export const SCHOOL_UPDATED = new Date("2026-11-17T12:00:00Z");
+export const SCHOOL_UPDATED = new Date("2026-11-25T08:00:00Z");
 export type Block = { h2: string; p?: string[]; ul?: string[]; ol?: string[] };
 export type Faq = { q: string; a: string };
 export type SchoolPage = {
@@ -121,7 +121,7 @@ export const SCHOOL_PAGES: SchoolPage[] = [
   },
   {
     slug: "clasa-4", path: "/scoala/clasa-4",
-    title: "Arbore genealogic proiect clasa a IV-a: ghid",
+    title: "Model arbore genealogic clasa a 4-a: fișă gratuită",
     description: "Proiectul arbore genealogic de la clasa a IV-a, la Istorie: ce cere programa, fișa gratuită cu străbunici, interviul cu bunicii și cum îl prezinți.",
     h1: "Arbore genealogic – proiect pentru clasa a IV-a",
     lead: "La clasa a IV-a începe Istoria, iar primele lecții pornesc de la trecutul fiecăruia: familia, generațiile, izvoarele (poze, acte, amintiri). Arborele genealogic e proiectul tipic al acestor lecții.",
