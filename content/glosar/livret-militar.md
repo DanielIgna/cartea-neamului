@@ -1,7 +1,7 @@
 ---
 title: Livret militar
-seo: Livret militar: ce afli despre bunicul care a fost soldat
-description: Livretul militar: carnetul unui soldat, cu unitatea, gradul și campaniile. Ce afli din el despre un bunic care a fost în armată.
+seo: Livret militar: ce este, ce scrie în el și unde îl găsești
+description: Livretul militar e carnetul celui care a făcut armata: părinți, unitate, grad, campanii. Ce scrie în el și unde cauți datele unui bunic soldat.
 updated: 2026-11-25
 published: 2026-11-18
 alt: carnet militar, livret

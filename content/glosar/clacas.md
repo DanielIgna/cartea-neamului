@@ -1,7 +1,7 @@
 ---
 title: Clăcaș
-seo: Clăcaș: cine era, ce era claca și cum îl găsești în acte
-description: Clăcașul: țăranul de pe moșie din Țara Românească și Moldova, cu obligația clăcii. Cum apare în catagrafii și ce a schimbat 1864.
+seo: Clăcaș: ce înseamnă, ce era claca și cum îl găsești în acte
+description: Clăcaș înseamnă țăranul care trăia pe moșia altuia și îi datora claca, zile de muncă pe an. Cum apare în catagrafii și ce a schimbat reforma din 1864.
 updated: 2026-11-25
 published: 2026-11-18
 alt: clăcași, clacă

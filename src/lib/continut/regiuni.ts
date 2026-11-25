@@ -59,3 +59,24 @@ export const REGION_SOURCES: Record<Region["group"], { civil: string; tips: stri
     guides: ["registrele-de-stare-civila", "cum-ceri-copii-de-la-arhive", "cum-sunt-organizate-arhivele"],
   },
 };
+
+const GROUP_ALL: Record<Region["group"], RegionKey[]> = {
+  vest: ["transilvania", "banat", "crisana", "maramures"], regat: ["moldova", "muntenia", "oltenia"], bucovina: ["bucovina"], dobrogea: ["dobrogea"],
+};
+const lcFirst = (s: string) => (/^(Aici|Starea) /.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+
+/**
+ * Textul despre starea civilă pentru o listă de regiuni. Când regiunile țin de istorii diferite (de pildă județul Suceava, în
+ * Bucovina și în Moldova), fiecare text spune pentru ce parte e, ca să nu pară că registrele Moldovei sunt și în Bucovina.
+ */
+export function civilByRegion(keys: RegionKey[]): string[] {
+  const groups = [...new Set(keys.map((k) => REGIONS[k].group))];
+  if (groups.length === 1) return [REGION_SOURCES[groups[0]].civil];
+  const gs = groups.length ? groups : (["vest", "regat"] as const);
+  return gs.map((g) => {
+    const own = keys.filter((k) => REGIONS[k].group === g);
+    const names = (own.length ? own : GROUP_ALL[g]).map((k) => REGIONS[k].name);
+    const label = names.length > 1 ? `${names.slice(0, -1).join(", ")} și ${names[names.length - 1]}` : names[0];
+    return `Pentru locurile din ${label}: ${lcFirst(REGION_SOURCES[g].civil)}`;
+  });
+}

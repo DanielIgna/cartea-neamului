@@ -1,7 +1,7 @@
 ---
 title: Patronimic
-seo: Patronimic: ce înseamnă, exemple și cum îl citești în acte
-description: Patronimicul: nume format din numele tatălui (Ionescu, Petrescu, Toader al lui Ion). Cum s-au născut așa numele de familie.
+seo: Patronimic: ce înseamnă, cu exemple de nume românești
+description: Patronimicul e numele format din numele tatălui: Ionescu (al lui Ion), Petrescu, Toader al lui Ion. Ce înseamnă și cum s-au născut așa numele de familie.
 updated: 2026-11-25
 published: 2026-11-18
 alt: nume patronimic, nume după tată

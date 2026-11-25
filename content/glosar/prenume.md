@@ -1,7 +1,7 @@
 ---
 title: Prenume
-seo: Prenume: ce este și cum apare numele de botez în acte vechi
-description: Prenumele în actele vechi: forme populare, forme latinizate sau maghiarizate și obiceiul de a da copiilor numele bunicilor.
+seo: Prenume: ce înseamnă și cum apare numele de botez în acte
+description: Prenumele e numele de botez, cel dat la naștere, diferit de numele de familie. Cum apare în actele vechi: forme populare, latinizate sau maghiarizate.
 updated: 2026-11-25
 published: 2026-11-18
 alt: nume de botez
