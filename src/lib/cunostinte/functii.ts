@@ -250,6 +250,16 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/carduri-cadou.test.ts"],
   },
   {
+    key: "coduri-activare", name: "Coduri de activare (Trendyol și alte platforme)", area: "bani", lifecycle: "live", risk: "ridicat", riskWhy: "Coduri care dau un plan pe 12 luni fără plată; paza e codul de 8 semne aleatoare, folosirea o singură dată și limita de 10 încercări pe oră.",
+    what: "Coduri unice CN-BAS/FAM/PRE-XXXX-XXXX pentru cardurile vândute pe alte platforme: generare pe loturi cu sursă, activare pe /activare (din QR sau tastat, cu cont nou sau intrare și întoarcere cu codul), prelungire peste anul plătit, oprire pentru abonamentele care se reînnoiesc singure, email de confirmare, listă cu filtre, CSV cu linkul de activare, anulare.",
+    engine: ["src/lib/coduri-activare.ts", "src/lib/coduri-activare-email.ts", "src/app/coduri-activare-actions.ts"],
+    pages: ["/activare", "/admin/coduri-activare", "/admin/coduri-activare/export.csv"],
+    tables: ["activation_code", "gift_card_attempt", "account_plan", "audit_log"],
+    metric: { table: "activation_code", label: "coduri" },
+    dashboard: "/admin/coduri-activare",
+    tests: ["tests/coduri-activare.test.ts"],
+  },
+  {
     key: "city-partners", name: "City Partners (CRM parteneri)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Comisioane de plătit și conturi trecute pe parteneri.",
     what: "Magazine și firme de la prospect la activ: etape, filtre, județe, istoric de contact, pași cu termen, alertă 30 de zile, legătura de recomandare /r/<cod>, kit de tipar, raport lunar de plată.",
     engine: ["src/lib/parteneri-crm.ts", "src/app/parteneri-crm-actions.ts"],

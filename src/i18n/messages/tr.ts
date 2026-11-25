@@ -3,6 +3,7 @@ import { trExtra } from "./noi/tr";
 import { trGhidArbore } from "./ghid-arbore/altele";
 import { trAbonament } from "./abonament/altele";
 import { trPreturi } from "./preturi/altele";
+import { trCodActivare } from "./cod-activare/altele";
 
 /**
  * Türkçe, Türkiye’deki ve Romanya’daki Türk ve Tatar aileleri için. “Sen” diye hitap edilir. Henüz çevrilmeyenler
@@ -73,6 +74,7 @@ export const tr: DeepPartial<Catalog> = {
   ...trGhidArbore,
   ...trAbonament,
   ...trPreturi,
+  ...trCodActivare,
   UsageNotice: {
     label: "Siteyi nasıl kullanıyorsun",
     lead: "Bir soru, sadece bir kez.",

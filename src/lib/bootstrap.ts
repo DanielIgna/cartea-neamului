@@ -202,6 +202,13 @@ const ADDITIVE = [
   sql`CREATE TABLE IF NOT EXISTS "archive_hint_dismissal" (
     "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE, "person_id" uuid NOT NULL REFERENCES "person"("id") ON DELETE CASCADE,
     "created_at" timestamp DEFAULT now() NOT NULL, CONSTRAINT "archive_hint_dismissal_pk" PRIMARY KEY ("user_id", "person_id"))`,
+  // Codurile de activare pentru cardurile vândute pe alte platforme (migrația 0048).
+  sql`CREATE TABLE IF NOT EXISTS "activation_code" ("id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL, "cod" text NOT NULL,
+    "plan" text NOT NULL, "durata_luni" integer DEFAULT 12 NOT NULL, "sursa" text NOT NULL, "status" text DEFAULT 'nefolosit' NOT NULL,
+    "lot" text, "created_at" timestamp DEFAULT now() NOT NULL, "created_by" text REFERENCES "user"("id") ON DELETE set null,
+    "used_at" timestamp, "used_by_user_id" text REFERENCES "user"("id") ON DELETE set null, "cancelled_at" timestamp)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "activation_code_cod_idx" ON "activation_code" ("cod")`,
+  sql`CREATE INDEX IF NOT EXISTS "activation_code_status_idx" ON "activation_code" ("status","sursa","created_at")`,
 ];
 
 export async function applySchema(target: Db) {

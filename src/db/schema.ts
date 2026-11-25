@@ -805,6 +805,24 @@ export const giftCardAttempt = pgTable("gift_card_attempt", {
   at: timestamp("at").notNull().defaultNow(),
 }, (t) => [index("gift_card_attempt_idx").on(t.who, t.at)]);
 
+/* ---------- Coduri de activare pentru cardurile vândute pe alte platforme (Trendyol…), Daniel, 25.11.2026 ---------- */
+// Un rând pe cod: CN-FAM-7K4M-Q9XT dă planul pe `durata_luni` luni, o singură dată. Statusul: nefolosit → folosit, sau anulat.
+// Separat de cardurile din magazine (gift_cards): aici nu există magazin, lot tipărit sau marcare „vândut”.
+export const activationCode = pgTable("activation_code", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  cod: text("cod").notNull(),
+  plan: text("plan").notNull(),
+  durataLuni: integer("durata_luni").notNull().default(12),
+  sursa: text("sursa").notNull(),
+  status: text("status").notNull().default("nefolosit"),
+  lot: text("lot"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+  usedAt: timestamp("used_at"),
+  usedByUserId: text("used_by_user_id").references(() => user.id, { onDelete: "set null" }),
+  cancelledAt: timestamp("cancelled_at"),
+}, (t) => [uniqueIndex("activation_code_cod_idx").on(t.cod), index("activation_code_status_idx").on(t.status, t.sursa, t.createdAt)]);
+
 /* ---------- Contul gratuit PropManage, oferit după activarea cardului (Daniel, 2026-11-14) ---------- */
 // Un rând pentru fiecare cerere: omul a bifat acordul și a apăsat „Vreau contul gratuit”. Rândul e și dovada acordului (data,
 // ora, textul exact al bifei, limba). Numele și emailul au plecat la PropManage doar dacă `status` e „trimis”. Dacă omul își

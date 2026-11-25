@@ -25,6 +25,7 @@ import { nlEmailuri } from "./emailuri/nl";
 import { nlGhidArbore } from "./ghid-arbore/altele";
 import { nlAbonament } from "./abonament/altele";
 import { nlPreturi } from "./preturi/altele";
+import { nlCodActivare } from "./cod-activare/altele";
 
 /** Nederlands, met je en jij (zoals het Roemeens van de site tutoyeert). */
 export const nl: Catalog = {
@@ -94,6 +95,7 @@ export const nl: Catalog = {
   ...nlGhidArbore,
   ...nlAbonament,
   ...nlPreturi,
+  ...nlCodActivare,
   UsageNotice: {
     label: "Hoe je de site gebruikt",
     lead: "Eén vraag, maar één keer.",

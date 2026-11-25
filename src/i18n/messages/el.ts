@@ -3,6 +3,7 @@ import { elExtra } from "./noi/el";
 import { elGhidArbore } from "./ghid-arbore/altele";
 import { elAbonament } from "./abonament/altele";
 import { elPreturi } from "./preturi/altele";
+import { elCodActivare } from "./cod-activare/altele";
 
 /**
  * Ελληνικά, για τους Ρουμάνους στην Ελλάδα και την Κύπρο και τα παιδιά τους. Προσφώνηση στον ενικό („εσύ”).
@@ -73,6 +74,7 @@ export const el: DeepPartial<Catalog> = {
   ...elGhidArbore,
   ...elAbonament,
   ...elPreturi,
+  ...elCodActivare,
   UsageNotice: {
     label: "Πώς χρησιμοποιείς τον ιστότοπο",
     lead: "Μία ερώτηση, μόνο μία φορά.",

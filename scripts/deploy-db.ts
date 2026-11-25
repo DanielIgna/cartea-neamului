@@ -10,6 +10,7 @@ import { tree } from "../src/db/schema";
 import { basicPrice49Once, offerNov18Once, startSalesOnce } from "../src/lib/plans";
 import { syncDemo } from "../src/lib/demo-sync";
 import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
+import { probaOnce } from "../src/lib/coduri-activare-proba";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { readFileSync } from "node:fs";
 import { seedPressDraftsOnce, seedPressOnce } from "../src/lib/crm-import";
@@ -45,6 +46,9 @@ try { console.log(`deploy-db: oferta din 18 noiembrie: ${await offerNov18Once(db
 try { console.log(`deploy-db: carduri cadou de test: ${await testBatchOnce(db)}`); } catch (e) { console.error("deploy-db: lotul de test a eșuat", e); }
 // Carduri digitale (Daniel, 14.11.2026): o singură dată, un lot digital de 5 carduri pentru „Test Magazin”.
 try { console.log(`deploy-db: carduri digitale de test: ${await testDigitalOnce(db)}`); } catch (e) { console.error("deploy-db: lotul digital de test a eșuat", e); }
+// Codurile de activare (Daniel, 25.11.2026): o singură dată, proba cerută (un cod pe fiecare plan, activat pe un cont de probă,
+// apoi „deja folosit”), cu codurile anulate și conturile de probă șterse la sfârșit. Rezultatul: Admin → Coduri de activare.
+try { console.log(`deploy-db: proba codurilor de activare: ${await probaOnce(db)}`); } catch (e) { console.error("deploy-db: proba codurilor de activare a eșuat", e); }
 // Motorul SEO (Daniel, 16.11.2026: „continuă” după proba pe 20 de pagini): pornit o singură dată, cu primul lot de 50.
 try { console.log(`deploy-db: motorul SEO: ${await startSeoEngineOnce(db)}`); } catch (e) { console.error("deploy-db: pornirea motorului SEO a eșuat", e); }
 // Activarea (Daniel, 17.11.2026): emailul de 24 h fără arbore și sfaturile pe email (doar cu bifa omului), pornite o singură dată.

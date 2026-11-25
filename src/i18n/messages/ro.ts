@@ -34,6 +34,7 @@ import { roEmailuri } from "./emailuri/ro";
 import { roGhidArbore } from "./ghid-arbore/ro";
 import { roAbonament } from "./abonament/ro";
 import { roPreturi } from "./preturi/ro";
+import { roCodActivare } from "./cod-activare/ro";
 
 export const ro = {
   Meta: {
@@ -104,6 +105,7 @@ export const ro = {
   ...roGhidArbore,
   ...roAbonament,
   ...roPreturi,
+  ...roCodActivare,
   UsageNotice: {
     label: "Cât folosești site-ul",
     lead: "O întrebare, o singură dată.",

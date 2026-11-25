@@ -3,6 +3,7 @@ import { svExtra } from "./noi/sv";
 import { svGhidArbore } from "./ghid-arbore/altele";
 import { svAbonament } from "./abonament/altele";
 import { svPreturi } from "./preturi/altele";
+import { svCodActivare } from "./cod-activare/altele";
 
 /**
  * Svenska, för rumäner i Sverige och deras barn. Tilltal med „du”. Det som ännu inte är översatt visas på engelska
@@ -73,6 +74,7 @@ export const sv: DeepPartial<Catalog> = {
   ...svGhidArbore,
   ...svAbonament,
   ...svPreturi,
+  ...svCodActivare,
   UsageNotice: {
     label: "Hur du använder webbplatsen",
     lead: "En enda fråga, bara en gång.",

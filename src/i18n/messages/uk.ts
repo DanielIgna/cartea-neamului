@@ -3,6 +3,7 @@ import { ukExtra } from "./noi/uk";
 import { ukGhidArbore } from "./ghid-arbore/altele";
 import { ukAbonament } from "./abonament/altele";
 import { ukPreturi } from "./preturi/altele";
+import { ukCodActivare } from "./cod-activare/altele";
 
 /**
  * Українська, для румунів в Україні (Чернівецька, Одеська області) і їхніх дітей. Звертання на „ти”. Те, що ще не
@@ -73,6 +74,7 @@ export const uk: DeepPartial<Catalog> = {
   ...ukGhidArbore,
   ...ukAbonament,
   ...ukPreturi,
+  ...ukCodActivare,
   UsageNotice: {
     label: "Як ти користуєшся сайтом",
     lead: "Одне запитання, лише один раз.",
