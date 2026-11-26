@@ -496,7 +496,7 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "istorie", name: "Istoria umanității și paginile istorice", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Regula de ton (D06) se aplică.",
-    what: "/istoria-umanitatii, seria „Vremuri grele” /istoria-umanitatii/<slug> (Primul Război, gripa spaniolă, anii interbelici, al Doilea Război, crizele 1929–azi, tiparul istoriei; cum au trecut familiile prin ele, întrebări pentru arbore, surse; cine e intrat în cont vede în unele articole și o filă cu versete Cornilescu, care nu apare în pagina publică: src/lib/istorie/file.ts), /genealogii-vechi, /libertatea-de-a-crede.",
+    what: "/istoria-umanitatii, seria „Răscrucile istoriei” /istoria-umanitatii/<slug> (Primul Război, gripa spaniolă, anii interbelici, al Doilea Război, crizele 1929–azi, tiparul istoriei; cum au trecut familiile prin ele, întrebări pentru arbore, surse; cine e intrat în cont vede în unele articole și o filă cu versete Cornilescu, care nu apare în pagina publică: src/lib/istorie/file.ts), /genealogii-vechi, /libertatea-de-a-crede.",
     engine: ["src/lib/firul-vremii.ts", "src/lib/adam-hristos.ts", "src/lib/istoria-bisericii.ts", "src/lib/istorie/articole.ts", "src/lib/istorie/file.ts", "src/components/continut/IstorieArticle.tsx"],
     pages: ["/istoria-umanitatii", "/istoria-umanitatii/primul-razboi-mondial", "/istoria-umanitatii/gripa-spaniola", "/istoria-umanitatii/anii-interbelici", "/istoria-umanitatii/al-doilea-razboi-mondial", "/istoria-umanitatii/crize", "/istoria-umanitatii/tiparul-istoriei",  "/genealogii-vechi", "/libertatea-de-a-crede"],
     tests: ["tests/adam-hristos.test.ts", "tests/istoria-bisericii.test.ts", "tests/crize.test.ts"],

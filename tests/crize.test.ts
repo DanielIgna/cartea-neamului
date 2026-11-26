@@ -10,8 +10,8 @@ import { config } from "@/middleware";
 
 const BIBLIC = /Apocalipsa|Matei 24|antihrist|Eclesiastul|Ioan 1:29|Luca 12|Timotei|Galateni|Mielul/;
 
-/** Seria „Vremuri grele”: filele cu versete doar pentru cei cu cont (Daniel, 2026-11-26). */
-describe("seria Vremuri grele din Istoria umanității", () => {
+/** Seria „Răscrucile istoriei”: filele cu versete doar pentru cei cu cont (Daniel, 2026-11-26). */
+describe("seria de articole din Istoria umanității", () => {
   it("paginile publice n-au nimic biblic; cele pentru cont au fila printre rânduri", async () => {
     // Componentele folosesc JSX clasic la teste (fără transformarea automată a lui Next).
     (globalThis as { React?: typeof React }).React = React;

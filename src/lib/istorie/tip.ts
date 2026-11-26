@@ -1,4 +1,4 @@
-/** Un articol din seria „Vremuri grele” (/istoria-umanitatii/<slug>): text public în Markdown-ul mic din src/lib/continut/markdown.ts. */
+/** Un articol din seria SERIE (src/lib/istorie/articole.ts) (/istoria-umanitatii/<slug>): text public în Markdown-ul mic din src/lib/continut/markdown.ts. */
 export type Articol = {
   slug: string;
   /** Numele scurt, în lista seriei. */

@@ -5,7 +5,7 @@ import CtaArbore from "@/components/continut/CtaArbore";
 import JsonLd from "@/components/JsonLd";
 import Prose from "@/components/continut/Prose";
 import type { Block } from "@/lib/continut/markdown";
-import { ARTICOLE, articolBlocks, articolPath, getArticol } from "@/lib/istorie/articole";
+import { ARTICOLE, SERIE, articolBlocks, articolPath, getArticol } from "@/lib/istorie/articole";
 import { canonicalUrl, publicPageMetadata } from "@/lib/page-metadata";
 import { BYLINE, ORG } from "@/lib/seo/organizatie";
 
@@ -17,7 +17,7 @@ export function istorieMetadata(slug: string): Metadata {
 }
 
 /**
- * Un articol din seria „Vremuri grele” (/istoria-umanitatii/<slug>). `fila` = fila pentru cei cu cont, pusă printre rânduri
+ * Un articol din seria SERIE (/istoria-umanitatii/<slug>). `fila` = fila pentru cei cu cont, pusă printre rânduri
  * (src/lib/istorie/file.ts); paginile publice gata făcute pentru vizitatori și roboți o primesc goală.
  */
 export default function IstorieArticle({ slug, fila }: { slug: string; fila: Block[] | null }) {
@@ -35,7 +35,7 @@ export default function IstorieArticle({ slug, fila }: { slug: string; fila: Blo
       }} />
       <Breadcrumbs items={[{ name: "Istoria umanității", path: "/istoria-umanitatii" }, { name: a.label, path }]} />
       <article className="card prose">
-        <div className="section-label" style={{ marginTop: 0 }}>Istoria umanității · Vremuri grele</div>
+        <div className="section-label" style={{ marginTop: 0 }}>Istoria umanității · {SERIE}</div>
         <h1>{a.h1}</h1>
         <p className="lead">{a.description}</p>
         <p className="muted small">De {BYLINE} · actualizat la {day(a.updated)}</p>
@@ -51,7 +51,7 @@ export default function IstorieArticle({ slug, fila }: { slug: string; fila: Blo
         {hasFila && !fila && <p className="muted small">Cine are cont pe Cartea Neamului găsește în această pagină și o filă în plus. <Link href={`/intrare?next=${encodeURIComponent(path)}`}>Intră în cont</Link></p>}
       </article>
       <div className="card">
-        <h2 style={{ marginTop: 0 }}>Vremuri grele: toată seria</h2>
+        <h2 style={{ marginTop: 0 }}>{SERIE}: toată seria</h2>
         <ul className="hub-list">
           {ARTICOLE.map((x) => (
             <li key={x.slug}>{x.slug === slug ? <b>{x.label}</b> : <Link href={articolPath(x.slug)}>{x.label}</Link>} <span className="muted">{x.short}</span></li>

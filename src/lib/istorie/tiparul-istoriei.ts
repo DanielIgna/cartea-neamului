@@ -1,15 +1,15 @@
 import type { Articol } from "@/lib/istorie/tip";
 
 /**
- * Încheierea seriei „Vremuri grele” (Daniel, 2026-11-26): tiparul care se repetă (criză, refacere, belșug, ademenire, criză)
+ * Încheierea seriei SERIE (src/lib/istorie/articole.ts) (Daniel, 2026-11-26): tiparul care se repetă (criză, refacere, belșug, ademenire, criză)
  * și ce înseamnă pentru familiile noastre. Text public; [[fila]] = fila pentru cei cu cont (Eclesiastul 1:9, firul de la Adam
  * la Hristos și până azi), din src/lib/istorie/file.ts.
  */
 export const TIPARUL_ISTORIEI: Articol = {
   slug: "tiparul-istoriei",
-  label: "Ce a fost va mai fi: tiparul istoriei",
+  label: "Tiparul istoriei: criză, refacere, belșug",
   short: "Criză, refacere, belșug, ademenire, criză: ce se repetă și ce învățăm din viața strămoșilor.",
-  h1: "Ce a fost va mai fi: tiparul care se repetă în istoria familiilor noastre",
+  h1: "Tiparul care se repetă în istoria omenirii și a familiilor noastre",
   title: "Tiparul istoriei: criză, refacere, belșug și iar criză | Cartea Neamului",
   description: "Războaie, pandemii, crize și ani de belșug se repetă de o sută de ani după același tipar. Ce au învățat strămoșii noștri și ce putem învăța noi din arborele familiei.",
   updated: "2026-11-26",

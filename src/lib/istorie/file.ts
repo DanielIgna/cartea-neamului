@@ -2,7 +2,7 @@ import { parseBlocks, type Block } from "@/lib/continut/markdown";
 import { CRIZE_FILA } from "@/lib/istorie/crize-fila";
 
 /**
- * Filele pentru cei intrați în cont din seria „Vremuri grele” (Daniel, 2026-11-26): ce spune Biblia, în textul Cornilescu
+ * Filele pentru cei intrați în cont din seria SERIE (src/lib/istorie/articole.ts) (Daniel, 2026-11-26): ce spune Biblia, în textul Cornilescu
  * (verificat pe bibliaonline.com.br/vdc), atribuit textului biblic și felului în care îl citesc credincioșii. Se importă DOAR
  * din paginile făcute pe loc pentru un cont adevărat (src/app/(site)/istoria-umanitatii/…); paginile publice gata făcute și
  * roboții nu le primesc. Regula de ton: titluri fără limbaj religios, câteva versete, fără îndemnuri la citirea Bibliei.

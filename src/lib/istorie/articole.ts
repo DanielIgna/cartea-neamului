@@ -8,10 +8,13 @@ import { TIPARUL_ISTORIEI } from "@/lib/istorie/tiparul-istoriei";
 import type { Articol } from "@/lib/istorie/tip";
 
 /**
- * Seria „Vremuri grele” din Istoria umanității (Daniel, 2026-11-26): fiecare articol e o pagină publică
+ * Seria SERIE din Istoria umanității (Daniel, 2026-11-26): fiecare articol e o pagină publică
  * /istoria-umanitatii/<slug>, în ordinea vremii. Pentru un articol nou: fișierul lui aici, apoi paginile din
  * src/app/(site)/istoria-umanitatii/<slug> și src/app/(public)/pub/[v]/istoria-umanitatii/<slug>, PUBLIC_PAGES și middleware.
  */
+/** Numele seriei (Daniel, 2026-11-26: nu „Vremuri grele”, ci ceva legat de istoria umanității). */
+export const SERIE = "Răscrucile istoriei";
+
 export const ARTICOLE: Articol[] = [PRIMUL_RAZBOI, GRIPA_SPANIOLA, INTERBELIC, AL_DOILEA_RAZBOI, CRIZE, TIPARUL_ISTORIEI];
 
 export const articolPath = (slug: string) => `/istoria-umanitatii/${slug}`;
