@@ -3,8 +3,8 @@ title: Nume schimbate și variante de scriere în actele vechi
 seo: Variante de scriere a numelor de familie în acte vechi
 description: De ce același nume apare scris diferit în acte (Pop, Pap, Popp), cum s-au schimbat numele de familie și cum cauți toate variantele.
 category: Acte și stare civilă
-updated: 2026-11-17
-related: porecle-si-nume-in-sat, documente-in-maghiara-si-germana, documente-in-latina, cum-verifici-informatiile
+updated: 2026-11-26
+related: porecle-si-nume-in-sat, documente-in-maghiara-si-germana, documente-in-latina, cum-verifici-informatiile, de-unde-vine-numele-tau-de-familie
 terms: patronimic, porecla, prenume, nume-de-fata
 ---
 Dacă nu găsești un strămoș, de multe ori nu el lipsește, ci numele lui e scris altfel decât îl cauți.

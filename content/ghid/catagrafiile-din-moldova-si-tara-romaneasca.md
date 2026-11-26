@@ -3,9 +3,9 @@ title: Catagrafiile din Moldova și Țara Românească
 seo: Catagrafii: liste vechi de locuitori din Moldova și Muntenia
 description: Ce sunt catagrafiile din Moldova și Țara Românească, ce date au despre familii, ce s-a publicat și cum le folosești pentru arbore.
 category: Registre și arhive
-updated: 2026-11-17
-related: recensamintele-vechi, registrele-de-stare-civila, ce-este-spita-neamului
-terms: catagrafie, clacas, razes, mosnean, tinut
+updated: 2026-11-26
+related: recensamintele-vechi, registrele-de-stare-civila, ce-este-spita-neamului, oltenia-si-muntenia-condici-catagrafii, razesi-mosneni-clacasi-iobagi, basarabia-registrele-parohiale
+terms: catagrafie, clacas, razes, mosnean, tinut, birnic, mazil, ruman
 ---
 [Catagrafiile](/glosar/catagrafie) sunt liste ale locuitorilor și gospodăriilor, făcute în Moldova și Țara Românească în secolele XVIII–XIX, de obicei pentru dări. Pentru perioada de dinainte de registrele de stare civilă din anii 1830, sunt adesea singura sursă despre o familie țărănească.
 

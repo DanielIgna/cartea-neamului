@@ -3,9 +3,9 @@ title: Cartea funciară și cadastrul vechi în cercetarea familiei
 seo: Cartea funciară veche: cum afli casa și pământul strămoșilor
 description: Cum folosești cartea funciară și hărțile cadastrale vechi ca să afli unde a stat casa familiei, cine a moștenit pământul și numele femeilor.
 category: Registre și arhive
-updated: 2026-11-17
-related: testamente-si-acte-de-mostenire, urbariile-si-documentele-mosiilor, cum-gasesti-numele-de-fata-al-bunicii
-terms: cartea-funciara, cadastru, certificat-de-mostenitor, foaie-de-zestre
+updated: 2026-11-26
+related: testamente-si-acte-de-mostenire, urbariile-si-documentele-mosiilor, cum-gasesti-numele-de-fata-al-bunicii, harti-vechi-ridicarile-austriece
+terms: cartea-funciara, cadastru, certificat-de-mostenitor, foaie-de-zestre, jugar, stanjen
 ---
 În Transilvania, Banat, Crișana și Maramureș, proprietatea asupra pământului și caselor se ține de mai bine de un secol în [cartea funciară](/glosar/cartea-funciara). Pentru genealogie, ea e o sursă subestimată.
 

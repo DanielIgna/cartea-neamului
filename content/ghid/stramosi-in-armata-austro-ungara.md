@@ -3,9 +3,9 @@ title: Strămoși în armata austro-ungară: listele de pierderi și matricolele
 seo: Strămoși în armata austro-ungară: pierderi și matricole
 description: Cum găsești un strămoș din Transilvania, Banat sau Bucovina din armata austro-ungară: listele de pierderi din 1914–1919, matricolele, regimentul.
 category: Registre și arhive
-updated: 2026-11-18
-related: registrele-militare, listele-eroilor-si-monumentele, documente-in-maghiara-si-germana, cum-citesti-scrisul-de-mana-vechi, cum-datezi-o-fotografie-veche, emigrarea-in-america
-terms: matricola-militara, livret-militar, comitat, conscriptie, cota-arhivistica
+updated: 2026-11-26
+related: registrele-militare, listele-eroilor-si-monumentele, documente-in-maghiara-si-germana, cum-citesti-scrisul-de-mana-vechi, cum-datezi-o-fotografie-veche, emigrarea-in-america, ardealul-de-nord-1940-1944
+terms: matricola-militara, livret-militar, comitat, conscriptie, cota-arhivistica, granicer
 ---
 Până în 1918, bărbații din Transilvania, Banat, Crișana, Maramureș și Bucovina au făcut armata în armata austro-ungară. În Primul Război Mondial, sute de mii au luptat pe fronturile din Galiția, Serbia, Italia și, după 1916, chiar împotriva armatei române. Mulți nu s-au mai întors. Alții au căzut prizonieri în Rusia sau Italia și s-au întors abia după ani.
 

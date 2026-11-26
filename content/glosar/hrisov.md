@@ -2,10 +2,10 @@
 title: Hrisov
 seo: Hrisov: actul domnesc de întărire, explicat simplu
 description: Hrisovul era actul domnului prin care întărea cuiva o moșie sau un privilegiu. Ce afli dintr-un hrisov și unde găsești documentele publicate.
-updated: 2026-11-25
+updated: 2026-11-26
 published: 2026-11-25
 alt: hrisoave, hrisovul, uric, urice, carte domnească
-terms: zapis, mosnean, razes, mazil
+terms: zapis, mosnean, razes, mazil, anul-de-la-facerea-lumii
 related: razesi-mosneni-clacasi-iobagi
 ---
 **Hrisovul** era actul solemn al domnului din Țara Românească sau din Moldova prin care întărea cuiva stăpânirea unei moșii, a unui sat sau a unui privilegiu. În Moldova i se mai spunea **uric**. Era scris de cancelaria domnească, pe pergament sau pe hârtie groasă, și purta pecetea domnului.

@@ -3,8 +3,8 @@ title: Cum verifici informațiile din arbore
 seo: Cum verifici informațiile genealogice: surse și dovezi
 description: Cum deosebești o informație sigură de o presupunere: surse primare și secundare, potrivirea datelor, omonimii și cum notezi îndoielile.
 category: Organizare și unelte
-updated: 2026-11-17
-related: cum-organizezi-cercetarea, cum-incepi-arborele-genealogic, nume-schimbate-si-variante
+updated: 2026-11-26
+related: cum-organizezi-cercetarea, cum-incepi-arborele-genealogic, nume-schimbate-si-variante, greseli-frecvente-arbore-genealogic
 terms: sursa-primara, sursa-secundara, cota-arhivistica, genealogie
 ---
 Un arbore e bun doar cât de bune sunt legăturile din el. O singură legătură greșită („acest Ion Pop e fiul acelui Gheorghe Pop”) duce toate generațiile de mai sus pe o ramură străină.

@@ -3,8 +3,8 @@ title: Cum ceri un act de stare civilă pentru bunici sau străbunici
 seo: Cum ceri un certificat de naștere sau deces pentru bunici
 description: Unde și cum ceri un act de naștere, căsătorie sau deces pentru o rudă: la primărie sau la Arhive, ce acte îți trebuie și ce să scrii în cerere.
 category: Acte și stare civilă
-updated: 2026-11-17
-related: registrele-de-stare-civila, cum-ceri-copii-de-la-arhive, cum-gasesti-numele-de-fata-al-bunicii
+updated: 2026-11-26
+related: registrele-de-stare-civila, cum-ceri-copii-de-la-arhive, cum-gasesti-numele-de-fata-al-bunicii, acte-romanesti-din-strainatate, certificatul-de-nastere-al-bunicului, redobandirea-cetateniei-acte-stramosi
 terms: act-de-nastere, act-de-casatorie, act-de-deces, extras-multilingv, apostila
 ---
 Primul lucru de lămurit e **vârsta actului**: de ea depinde unde îl ceri.
