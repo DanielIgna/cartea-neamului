@@ -2,7 +2,7 @@
 title: Arbore genealogic
 seo: Arbore genealogic: ce este, model de completat și exemplu
 description: Arborele genealogic e desenul familiei tale: părinți, bunici, străbunici. Ce este, cum îl completezi cu nume și unde găsești un model gratuit.
-updated: 2026-11-25
+updated: 2026-11-26
 alt: arborele familiei, copac genealogic, spiță
 terms: genealogie, ascendent, descendent, spita-neamului, gedcom
 related: cum-incepi-arborele-genealogic, ce-este-spita-neamului
@@ -32,3 +32,17 @@ Un arbore genealogic nu e un act, ci o schemă făcută din acte. În arborii ve
 ## Unde și când
 
 Arborii de familie au fost ținuți mai întâi de familiile boierești și nobiliare (spițele de neam din documentele de moșie). Pentru țărani, arborele se reface aproape mereu din registrele parohiale și de stare civilă, din secolul al XVIII-lea încoace.
+
+## Întrebări frecvente
+
+### Cum completezi cu nume arborele genealogic al familiei tale?
+
+Pornești de la tine, jos, apoi treci părinții, cei patru bunici și cei opt străbunici, pe rânduri. La fiecare scrii numele (la femei și numele de fată), anul nașterii și satul sau orașul. Unde nu știi, lași locul liber și întrebi bunicii.
+
+### Câte generații are de obicei un arbore genealogic?
+
+Pentru școală ajung trei sau patru generații: tu, părinții, bunicii și străbunicii. Din amintirile familiei afli de obicei până la străbunici, iar mai departe ajungi cu ajutorul registrelor vechi.
+
+### Care e diferența dintre arbore genealogic și spița neamului?
+
+Arborele genealogic arată toate ramurile, și pe a tatălui, și pe a mamei. [Spița neamului](/glosar/spita-neamului) urmărește de obicei o singură linie, din tată în fiu, de la un strămoș până azi.

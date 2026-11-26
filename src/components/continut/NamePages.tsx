@@ -27,7 +27,7 @@ import { growthSettings } from "@/lib/crestere";
 /** Paginile /nume (hubul) și /nume/<slug>; le folosesc și variantele gata făcute din app/(public)/pub/[v]/nume. */
 const HUB = {
   path: "/nume",
-  title: "Nume de familie românești: originea și semnificația | Cartea Neamului",
+  title: "Nume de familie românești: ce înseamnă și de unde vin | Cartea Neamului",
   description: "Originea, semnificația și răspândirea numelor de familie românești, de la Pop și Popescu la Todea, cu sfaturi de căutare în arhive.",
 };
 

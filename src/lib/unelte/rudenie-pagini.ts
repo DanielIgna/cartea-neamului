@@ -52,7 +52,7 @@ export const KIN_PAGES: KinPage[] = [
   },
   {
     slug: "var-de-al-doilea", name: "Văr de-al doilea",
-    title: "Vărul de-al doilea: cine e și ce grad de rudenie are",
+    title: "Văr de-al doilea: ce înseamnă și ce grad de rudenie are",
     description: "Vărul de-al doilea e copilul vărului primar al părintelui tău. Aveți aceiași străbunici și sunteți rude de gradul VI. Cu exemplu și diferențe.",
     h1: "Vărul de-al doilea: cine e și ce grad are",
     lead: "Vărul de-al doilea e copilul unui văr primar al mamei sau al tatălui tău. Strămoșii comuni sunt străbunicii, iar gradul de rudenie e al șaselea.",
