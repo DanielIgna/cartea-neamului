@@ -3,8 +3,8 @@ title: 40 de întrebări pentru bunici despre familie și viața de altădată
 seo: Întrebări pentru bunici: 40 de idei despre familie
 description: O listă de întrebări pentru bunici, pe teme: părinți și bunici, satul, casa, școala, munca, căsătoria, sărbătorile și vremurile grele.
 category: Primii pași
-updated: 2026-11-17
-related: cum-intervievezi-bunicii, cum-inregistrezi-glasul-bunicilor, cum-scrii-povestea-familiei
+updated: 2026-11-26
+related: cum-intervievezi-bunicii, cum-inregistrezi-glasul-bunicilor, cum-scrii-povestea-familiei, intrebari-pentru-bunici-de-craciun
 terms: porecla, nume-de-fata, nas
 ---
 Nu trebuie să le pui pe toate. Alege câteva pentru fiecare discuție și lasă povestea să curgă. Întrebările de la început ajută arborele; celelalte păstrează viața din spatele numelor. Cum pregătești discuția, în ghidul [Cum intervievezi bunicii](/ghid/cum-intervievezi-bunicii).

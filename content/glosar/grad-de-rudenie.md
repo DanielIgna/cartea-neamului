@@ -1,7 +1,7 @@
 ---
 title: Grad de rudenie
 description: Cum se numără gradele de rudenie: linie dreaptă și colaterală, câte grade sunt între frați, veri primari și unchi. Explicat pe scurt, pentru arbore.
-updated: 2026-11-18
+updated: 2026-11-26
 alt: grade de rudenie, gradul de rudenie
 terms: rudenie-colaterala, ascendent, descendent, afinitate
 related: grade-de-rudenie
@@ -22,3 +22,17 @@ Gradul de rudenie apare în acte ca formulă: în certificatele de moștenitor (
 ## Unde și când
 
 Numărătoarea civilă (Codul civil, art. 406) e aceeași în toată țara. Numărătoarea canonică, folosită în registrele bisericești vechi, e diferită: la catolici, verii primari sunt în gradul al doilea, nu al patrulea.
+
+## Întrebări frecvente
+
+### Cum se calculează gradul de rudenie?
+
+Numeri nașterile dintre cele două persoane. În linie dreaptă (tată, bunic) fiecare generație e un grad. În linie colaterală urci de la prima persoană până la strămoșul comun, apoi cobori până la a doua, și aduni pașii. Poți verifica oricare relație cu [calculatorul de grad de rudenie](/unelte/calculator-grad-de-rudenie).
+
+### Ce grad de rudenie sunt frații și verii primari?
+
+Frații sunt rude de gradul II: urci la părinte (1) și cobori la frate (2). Verii primari sunt rude de gradul IV, pentru că strămoșii comuni sunt bunicii.
+
+### De ce verii primari apar în gradul al doilea în registrele catolice?
+
+Pentru că numărătoarea canonică, folosită în registrele bisericești vechi, numără doar generațiile de pe o singură ramură până la strămoșul comun. Numărătoarea civilă, din Codul civil, le adună pe amândouă.

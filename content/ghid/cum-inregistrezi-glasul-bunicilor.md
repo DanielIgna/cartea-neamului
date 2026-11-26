@@ -3,8 +3,8 @@ title: Cum înregistrezi glasul bunicilor cu telefonul
 seo: Cum înregistrezi amintirile bunicilor cu telefonul
 description: Sfaturi simple ca să înregistrezi cu telefonul poveștile bunicilor: sunet clar, acordul lor, nume de fișiere și păstrarea în siguranță.
 category: Poze, documente și amintiri
-updated: 2026-11-17
-related: cum-intervievezi-bunicii, intrebari-pentru-bunici, cum-scrii-povestea-familiei
+updated: 2026-11-26
+related: cum-intervievezi-bunicii, intrebari-pentru-bunici, cum-scrii-povestea-familiei, colindele-bunicilor
 terms: sursa-secundara
 ---
 Glasul unui bunic, cu felul lui de a vorbi și cu râsul lui, e o amintire pe care nicio poză nu o păstrează. Un telefon obișnuit e de ajuns, dacă ții cont de câteva lucruri.

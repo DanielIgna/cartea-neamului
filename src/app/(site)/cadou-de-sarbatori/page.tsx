@@ -105,6 +105,13 @@ export default async function GiftSeasonPage() {
             <li><Link href="/cadouri/cadou-de-ultim-moment">Cadou de ultim moment, digital, primit imediat</Link></li>
             <li><Link href="/cadouri">Toate ideile: pe ocazii și pe persoane</Link></li>
           </ul>
+          <h2>De făcut împreună, de Crăciun</h2>
+          <ul>
+            <li><Link href="/ghid/intrebari-pentru-bunici-de-craciun">Întrebări pentru bunici de Crăciun: cum era pe vremea lor</Link></li>
+            <li><Link href="/ghid/arborele-familiei-la-masa-de-sarbatori">Arborele familiei la masa de sărbători: un joc pentru toți</Link></li>
+            <li><Link href="/ghid/colindele-bunicilor">Colindele bunicilor: cum le înregistrezi și le păstrezi</Link></li>
+            <li><Link href="/ghid/caietul-cu-retetele-bunicii">Caietul cu rețetele bunicii, cadou pentru familie</Link></li>
+          </ul>
         </nav>
       )}
     </section>

@@ -4,7 +4,7 @@ import { BYLINE, ORG, pageCardUrl } from "@/lib/seo/organizatie";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import JsonLd from "@/components/JsonLd";
-import { images } from "@/lib/continut/markdown";
+import { faqItems, images } from "@/lib/continut/markdown";
 import Breadcrumbs from "@/components/continut/Breadcrumbs";
 import CtaArbore from "@/components/continut/CtaArbore";
 import HubSearch from "@/components/continut/HubSearch";
@@ -151,9 +151,11 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
   const toc = e.blocks.filter((b) => b.t === "h2");
   const minutes = Math.max(1, Math.round(e.words / 200));
   const en = e.lang === "en";
+  const faq = faqItems(e.blocks);
   return (
     <section className="stack content-page" lang={en ? "en" : "ro"}>
       <JsonLd data={entryJsonLd(e)} />
+      {faq.length >= 2 && <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: en ? "en-US" : "ro", mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }} />}
       <Breadcrumbs items={[{ name: h.name, path: h.path }, { name: e.title, path: e.path }]} />
       <article className="card prose">
         <div className="section-label" style={{ marginTop: 0 }}>{c === "ghid" ? (en ? EN.label(e.category) : `Ghid · ${e.category}`) : "Glosar"}</div>

@@ -90,6 +90,28 @@ export function plainText(blocks: Block[]): string {
   return blocks.map((b) => ("items" in b ? b.items.map(inl).join(" ") : typeof b.v === "string" ? b.v : inl(b.v))).join(" ");
 }
 
+/**
+ * Întrebările frecvente din secțiunea „## Întrebări frecvente” (sau „Frequently asked questions”), pentru datele FAQPage:
+ * fiecare `### întrebare` cu textul de sub ea, sau paragrafele care încep cu o întrebare îngroșată („**…?** răspuns”).
+ */
+export function faqItems(blocks: Block[]): { q: string; a: string }[] {
+  const inl = (v: Inline[]) => v.map((x) => x.v).join("").trim();
+  const text = (b: Block) => ("items" in b ? b.items.map(inl).join(" ") : b.t === "p" || b.t === "note" ? inl(b.v) : "");
+  const at = blocks.findIndex((b) => b.t === "h2" && /întrebări frecvente|frequently asked questions/i.test(b.v));
+  if (at < 0) return [];
+  const out: { q: string; a: string }[] = [];
+  let cur: { q: string; a: string[] } | null = null;
+  const push = () => { if (cur && cur.a.length) out.push({ q: cur.q, a: cur.a.join(" ").replace(/\s+/g, " ").trim() }); cur = null; };
+  for (const b of blocks.slice(at + 1)) {
+    if (b.t === "h2") break;
+    if (b.t === "h3") { push(); cur = { q: b.v, a: [] }; continue; }
+    if (b.t === "p" && b.v[0]?.t === "b" && b.v[0].v.trim().endsWith("?")) { push(); cur = { q: b.v[0].v.trim(), a: [inl(b.v.slice(1))].filter(Boolean) }; continue; }
+    if (cur && b.t !== "img") cur.a.push(text(b));
+  }
+  push();
+  return out.filter((x) => x.q.endsWith("?") && x.a.length >= 20);
+}
+
 /** Imaginile din text (pentru sitemapul de imagini și datele Article). */
 export const images = (blocks: Block[]) => blocks.flatMap((b) => (b.t === "img" ? [{ src: b.src, alt: b.alt, caption: b.v }] : []));
 

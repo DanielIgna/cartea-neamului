@@ -1,7 +1,8 @@
 ---
 title: Cuscri
-description: Cine sunt cuscrii: părinții mirelui și ai miresei. De ce cuscria leagă două neamuri și cum apare în actele vechi. Explicat pe scurt, pentru arbore.
-updated: 2026-11-18
+seo: Cuscri: ce înseamnă și cine sunt cuscrii (cuscru, cuscră)
+description: Cuscrii sunt părinții mirelui și ai miresei, unii față de alții. Ce înseamnă cuscru și cuscră, ce rudenie e cuscria și cum o vezi în actele vechi.
+updated: 2026-11-26
 alt: cuscru, cuscră, cuscrie
 terms: afinitate, cununie, nas
 related: grade-de-rudenie, nasii-si-rudenia-spirituala
@@ -19,3 +20,17 @@ Cuscrii nu apar ca atare într-un act, dar îi poți deduce: părinții mirelui 
 ## Unde și când
 
 Legătura dintre cuscri e aceeași în toată țara; legea nu le dă un grad de rudenie. În satele mici, aceleași familii devin cuscri de mai multe ori de-a lungul generațiilor, așa că merită urmărite toate căsătoriile dintre ele.
+
+## Întrebări frecvente
+
+### Ce înseamnă cuscru și cuscră?
+
+Cuscrul e tatăl unuia dintre soți, iar cuscra e mama lui, privite din partea celeilalte familii. Tatăl mirelui îi spune tatălui miresei „cuscre”, iar mamele își spun „cuscră”.
+
+### Cuscrii sunt rude?
+
+Nu, după lege. Codul civil nu dă cuscrilor un grad de rudenie: ei sunt legați doar prin căsătoria copiilor lor. În vorbire și în obiceiuri, însă, cuscria e socotită o legătură puternică între două neamuri.
+
+### Unde apar cuscrii în actele vechi?
+
+În actul de căsătorie, unde sunt trecuți părinții ambilor soți. Uneori un cuscru apare și ca martor la cununie sau ca naș la primul copil, iar asta te ajută să legi cele două familii în registre.
