@@ -38,7 +38,7 @@ export default function LinkPage() {
           <div key={k.id} id={k.id} style={{ marginBottom: 18 }}>
             <h3>{k.cui}</h3>
             <p>{k.deCe} Pagina: <a href={k.path} lang={k.lang}>{SITE_URL.replace(/^https?:\/\//, "")}{k.path}</a></p>
-            <pre style={{ whiteSpace: "pre-wrap", fontSize: 13, userSelect: "all" }}>{snippet(k)}</pre>
+            <pre className="cod-copiat">{snippet(k)}</pre>
             <CopyLink url={snippet(k)} label="Copiază codul" />
           </div>
         ))}
@@ -49,14 +49,14 @@ export default function LinkPage() {
           <div key={b.f} style={{ marginBottom: 14 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`/insigna/${b.f}`} width={250} height={60} alt={b.alt} />
-            <pre style={{ whiteSpace: "pre-wrap", fontSize: 13, userSelect: "all" }}>{badge(b.f, b.alt)}</pre>
+            <pre className="cod-copiat">{badge(b.f, b.alt)}</pre>
             <CopyLink url={badge(b.f, b.alt)} label="Copiază codul" />
           </div>
         ))}
 
         <h2>Cum ne citați</h2>
         <p>Pentru lucrări școlare, monografii sau articole, puteți cita o pagină așa:</p>
-        <pre style={{ whiteSpace: "pre-wrap", fontSize: 13, userSelect: "all" }}>{`Cartea Neamului (${YEAR}). „Titlul paginii”. ${SITE_URL}/ghid/... Accesat la [data].`}</pre>
+        <pre className="cod-copiat">{`Cartea Neamului (${YEAR}). „Titlul paginii”. ${SITE_URL}/ghid/... Accesat la [data].`}</pre>
         <p>Pentru familiile care au un blog există și widgetul gratuit <Link href="/arborele-meu">„Arborele meu”</Link>, iar jurnaliștii găsesc date și sigle pe <Link href="/presa">pagina de presă</Link>.</p>
 
         <h2>Întrebări</h2>

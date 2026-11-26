@@ -563,7 +563,7 @@ export const FUNCTIONS: Fn[] = [
     riskWhy: "Widgetul arată doar cifre (persoane, generații, cel mai vechi an, locuri), fără nume și fără cei în viață; îl pornește doar proprietarul sau un editor.",
     what: "/presa (kit de presă cu cifre din conținut, unghiuri de articol, sigla, contact), /arborele-meu (prezentarea widgetului cu exemplu), /arbore/<id>/widget (pornire, titlu, cod de pus pe blog), /widget/arbore/<cod> (fișa din iframe, singura adresă care se poate pune pe alte site-uri), Admin → SEO → Raport săptămânal (7 zile față de 7, secțiuni, mișcări, de făcut, istoric 26 de săptămâni salvat lunea de ceasul zilnic) și cuvintele țintă noi. /link-spre-noi (26.11.2026): textul și codul HTML gata de copiat pentru școli, biblioteci, primării, asociații, bloguri și site-uri în engleză, insignele din /insigna/ și cum ne citează cineva; bibliotecile și societățile de genealogie au intrat în CRM cu emailuri în Aprobări (seedLinkTargetsOnce).",
     engine: ["src/lib/autoritate.ts", "src/lib/widget-arbore.ts", "src/lib/seo-raport.ts", "src/lib/seo-cuvinte.ts"],
-    pages: ["/presa", "/arborele-meu", "/link-spre-noi", "/arbore/[id]/widget", "/admin/seo"],
+    pages: ["/presa", "/presa/1-decembrie-2026", "/arborele-meu", "/link-spre-noi", "/arbore/[id]/widget", "/admin/seo"],
     api: ["/widget/arbore/[token]", "/api/cron/autonomie"],
     tables: ["app_setting"],
     dashboard: "/admin/seo",

@@ -13,20 +13,24 @@ import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { probaOnce } from "../src/lib/coduri-activare-proba";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { readFileSync } from "node:fs";
-import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce, fixShopDraftPricesOnce, seedLinkTargetsOnce } from "../src/lib/crm-import";
+import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce, fixShopDraftPricesOnce, seedLinkTargetsOnce, seedUnirePressOnce } from "../src/lib/crm-import";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
   console.log("deploy-db: fără DATABASE_URL, nu am ce migra.");
   // Basic 49 lei în loc de 50 (Daniel, 13.11.2026): o singură dată; după aceea prețul se schimbă din Admin.
 try { console.log(`deploy-db: prețul Basic 49 lei: ${await basicPrice49Once(db)}`); } catch (e) { console.error("deploy-db: prețul Basic 49 a eșuat", e); }
+// Comunicatul de 1 Decembrie (Daniel, 26.11.2026): redacții locale noi + câte un email în Aprobări, expiră pe 1 decembrie.
+try { console.log(`deploy-db: comunicatul de 1 Decembrie: ${await seedUnirePressOnce(db, readFileSync("src/data/crm-presa-unire.csv", "utf8"), JSON.parse(readFileSync("src/data/crm-presa-unire-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: comunicatul de 1 Decembrie a eșuat", e); }
 process.exit(0);
 }
 // O variantă de probă (Vercel Preview) nu schimbă niciodată baza: dacă cineva pune DATABASE_URL și pentru Preview, ar putea fi
 // chiar baza reală, iar o ramură nepublicată i-ar schimba structura și datele (24.11.2026).
 if (process.env.VERCEL_ENV === "preview") {
   console.log("deploy-db: variantă de probă, nu schimb baza de date.");
-  process.exit(0);
+  // Comunicatul de 1 Decembrie (Daniel, 26.11.2026): redacții locale noi + câte un email în Aprobări, expiră pe 1 decembrie.
+try { console.log(`deploy-db: comunicatul de 1 Decembrie: ${await seedUnirePressOnce(db, readFileSync("src/data/crm-presa-unire.csv", "utf8"), JSON.parse(readFileSync("src/data/crm-presa-unire-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: comunicatul de 1 Decembrie a eșuat", e); }
+process.exit(0);
 }
 await applySchema(db);
 console.log("deploy-db: migrațiile sunt aplicate.");
@@ -73,4 +77,6 @@ try {
     { kind: "genealogie_lista", text: readFileSync("src/data/crm-linkuri-genealogie.csv", "utf8") },
   ], JSON.parse(readFileSync("src/data/crm-linkuri-mesaje.json", "utf8")))}`);
 } catch (e) { console.error("deploy-db: lista pentru linkuri externe a eșuat", e); }
+// Comunicatul de 1 Decembrie (Daniel, 26.11.2026): redacții locale noi + câte un email în Aprobări, expiră pe 1 decembrie.
+try { console.log(`deploy-db: comunicatul de 1 Decembrie: ${await seedUnirePressOnce(db, readFileSync("src/data/crm-presa-unire.csv", "utf8"), JSON.parse(readFileSync("src/data/crm-presa-unire-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: comunicatul de 1 Decembrie a eșuat", e); }
 process.exit(0);

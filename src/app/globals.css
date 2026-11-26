@@ -2517,3 +2517,4 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
 .plan-renew{font-size:13px;margin:0}
 .plata .sub-card .actions{display:flex;flex-wrap:wrap;gap:8px}
 .plata .sub-card form{display:inline}
+.cod-copiat{margin:8px 0;padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;user-select:all;max-width:100%}
