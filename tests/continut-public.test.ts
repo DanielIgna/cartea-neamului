@@ -59,6 +59,7 @@ describe("ghiduri și glosar: conținutul din content/", () => {
     for (const e of all) {
       for (const href of links(e.blocks)) {
         if (!href.startsWith("/")) { expect(href, e.path).toMatch(/^https:\/\//); continue; }
+        if (href === "/intrare?mod=cont-nou") continue; // îndemnul spre cont nou, cerut în seria despre Marea Unire (26.11.2026)
         expect(known.has(href.split("#")[0]), `${e.path} → ${href}`).toBe(true);
       }
       for (const s of e.related) expect(guides.some((g) => g.slug === s), `${e.path}: ghid ${s}`).toBe(true);
