@@ -15,7 +15,7 @@ import { realAccountSql, realUserIdSql } from "./conturi-test";
 import { fillPaymentCodes, realPaymentSql } from "./plati-test";
 import { groupBy, sessionsOf, summary, uniqueVisitors, type Range } from "./analiza";
 import { localDayHour } from "./vizite";
-import { gscSnapshot, seoSettings } from "./seo";
+import { gscSnapshot, pathOfUrl, seoSettings } from "./seo";
 import { SITE_URL } from "./site-url";
 
 const DAY = 86_400_000;
@@ -108,6 +108,10 @@ async function searchConsole(db: Db, days: number) {
     topPages: [...snap.pages].sort((a, b) => b.impressions - a.impressions).slice(0, 25)
       .map((p) => ({ page: p.keys[0], clicks: p.clicks, impressions: p.impressions, position: Math.round(p.position * 10) / 10 })),
     pagesWithImpressions: snap.pages.length,
+    /** Toate căutările (până la 300) și căile tuturor paginilor văzute în Google: pentru pagini noi și linkuri interne (26.11.2026). */
+    queries: [...snap.queries].sort((a, b) => b.impressions - a.impressions).slice(0, 300)
+      .map((q) => ({ query: q.query, clicks: q.clicks, impressions: q.impressions, position: Math.round(q.position * 10) / 10 })),
+    seenPaths: [...new Set(snap.pages.map((p) => pathOfUrl(p.keys[0])))].sort(),
   };
 }
 
