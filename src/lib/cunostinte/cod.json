@@ -1009,6 +1009,7 @@
   "src/lib/lada-db.ts",
   "src/lib/lada.ts",
   "src/lib/legal.ts",
+  "src/lib/legaturi-populare.ts",
   "src/lib/map-data.ts",
   "src/lib/merge.ts",
   "src/lib/mesaje-activitate.ts",
