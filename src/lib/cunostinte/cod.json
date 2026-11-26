@@ -102,6 +102,7 @@
   "src/app/(public)/pub/[v]/glosar/[slug]/page.tsx",
   "src/app/(public)/pub/[v]/glosar/layout.tsx",
   "src/app/(public)/pub/[v]/glosar/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/crize/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/page.tsx",
   "src/app/(public)/pub/[v]/layout.tsx",
   "src/app/(public)/pub/[v]/libertatea-de-a-crede/page.tsx",
@@ -225,6 +226,7 @@
   "src/app/(site)/invitatie/[token]/not-found.tsx",
   "src/app/(site)/invitatie/[token]/page.tsx",
   "src/app/(site)/invitatii/page.tsx",
+  "src/app/(site)/istoria-umanitatii/crize/page.tsx",
   "src/app/(site)/istoria-umanitatii/page.tsx",
   "src/app/(site)/layout.tsx",
   "src/app/(site)/libertatea-de-a-crede/page.tsx",
@@ -488,6 +490,7 @@
   "src/components/charts.tsx",
   "src/components/continut/ArticlePages.tsx",
   "src/components/continut/Breadcrumbs.tsx",
+  "src/components/continut/CrizeArticle.tsx",
   "src/components/continut/CtaArbore.tsx",
   "src/components/continut/Figura.tsx",
   "src/components/continut/GenealogieOrase.tsx",
@@ -979,6 +982,8 @@
   "src/lib/invitatii.ts",
   "src/lib/invitations.ts",
   "src/lib/istoria-bisericii.ts",
+  "src/lib/istorie/crize-fila.ts",
+  "src/lib/istorie/crize.ts",
   "src/lib/join.ts",
   "src/lib/kin-words.ts",
   "src/lib/kinship.ts",
@@ -1785,6 +1790,10 @@
   },
   {
    "path": "/istoria-umanitatii",
+   "kind": "pagina"
+  },
+  {
+   "path": "/istoria-umanitatii/crize",
    "kind": "pagina"
   },
   {

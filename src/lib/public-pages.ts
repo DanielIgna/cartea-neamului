@@ -8,6 +8,7 @@ import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
 export const PUBLIC_PAGES: { path: string; label: string; priority: number; changeFrequency: "weekly" | "monthly" | "yearly"; roOnly?: boolean }[] = [
   { path: "/", label: "Prima pagină", priority: 1, changeFrequency: "weekly" },
   { path: "/istoria-umanitatii", label: "Istoria umanității", priority: 0.7, changeFrequency: "monthly", roOnly: true },
+  { path: "/istoria-umanitatii/crize", label: "Crizele care au schimbat lumea", priority: 0.6, changeFrequency: "monthly", roOnly: true },
   { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly", roOnly: true },
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
   { path: "/cadou-de-sarbatori", label: "Cadou de sărbători", priority: 0.7, changeFrequency: "monthly" },
