@@ -20,6 +20,7 @@ import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
 import ZonaSugestii from "@/components/ZonaSugestii";
 import FanChart from "@/components/FanChart";
 import TryTree from "@/components/TryTree";
+import { UNIRE_BANNER, UNIRE_SERIES, inUnireSeason } from "@/lib/sezon-unire";
 
 /**
  * Prima pagină pentru cine intră prima dată: bannerul cu o familie de mai multe generații, cele patru generații,
@@ -95,6 +96,8 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
     cachedPlans().catch(() => DEFAULT_SETTINGS), getLocale()]);
   // Prețurile se arată doar cât vânzarea e pornită din Admin; în lei pe română, în euro în celelalte limbi.
   const sales = s.on;
+  // Desenele și legătura despre Marea Unire, doar în zilele dinaintea lui 1 Decembrie (vezi src/lib/sezon-unire.ts).
+  const unire = locale === "ro" && inUnireSeason();
   const lei = locale === "ro";
   const nf = new Intl.NumberFormat(locale);
   const b = (c: React.ReactNode) => <b>{c}</b>;
@@ -169,6 +172,13 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           <Link href={GIFT_PATH}>{tg("bandLink")}<span aria-hidden="true"> →</span></Link>
         </p>
       )}
+      {/* Marea Unire (26.11–3.12 în fiecare an, doar pe română): legătura spre seria despre 1918 și strămoșii care puteau fi la Alba Iulia. */}
+      {unire && (
+        <p className="lp-gift-band">
+          <span>1 Decembrie: au fost strămoșii tăi la Alba Iulia în 1918?</span>{" "}
+          <Link href="/ghid/delegati-alba-iulia-1918">Află cum cauți delegații și citește seria despre Marea Unire<span aria-hidden="true"> →</span></Link>
+        </p>
+      )}
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
       {/* Butonul rotund de WhatsApp, în colț, pentru cine vrea să ne scrie (Daniel, 11 noiembrie 2026). */}
       <a className="wa-float" href={whatsappUrl(tc("waGreeting"))} target="_blank" rel="noopener noreferrer" aria-label={tc("waFloat")} title={tc("waFloat")}>
@@ -177,7 +187,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
 
       {/* Bannerul: familia pe toată lățimea, cu panoul întunecat la mijloc */}
       <section className="lp-band lp-banner">
-        <BannerSlides imgs={imgs.banner.map(({ src, custom }) => ({ src, custom }))} />
+        <BannerSlides imgs={[...(unire ? UNIRE_BANNER.map((src) => ({ src, custom: false })) : []), ...imgs.banner.map(({ src, custom }) => ({ src, custom }))]} />
         <div className="lp-banner-panel">
           {/* Un singur H1: „Arborele genealogic al familiei tale” deasupra, apoi numele, ca înainte la vedere. */}
           <h1 className="lp-h1"><span className="lp-tagline">{t("eyebrow")}</span><span className="sr-only"> – </span><span className="lp-name">{await getAppName()}</span></h1>
@@ -307,6 +317,10 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
             <nav className="lp-history" aria-label="Ce caută oamenii">
               <h3>Ce caută oamenii</h3>
               <ul>{START_POPULAR.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+            </nav>
+            <nav className="lp-history" aria-label="Marea Unire 1918">
+              <h3>Marea Unire 1918 și strămoșii tăi</h3>
+              <ul>{UNIRE_SERIES.map((g) => getEntry("ghid", g)).filter((g) => !!g).map((g) => <li key={g!.path}><Link href={g!.path}>{g!.title}</Link></li>)}</ul>
             </nav>
             <nav className="lp-history" aria-label="Primele ghiduri">
               <h3>Primele ghiduri</h3>

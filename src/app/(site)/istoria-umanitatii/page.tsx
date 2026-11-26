@@ -3,6 +3,8 @@ import FirulVremii from "@/components/FirulVremii";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { ARTICOLE, SERIE, articolPath } from "@/lib/istorie/articole";
+import { getEntry } from "@/lib/continut/colectii";
+import { UNIRE_SERIES } from "@/lib/sezon-unire";
 import PageIntl from "@/i18n/PageIntl";
 import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
 
@@ -22,6 +24,14 @@ export default function IstoriaUmanitatiiPage() {
       <p>Cum s-a ajuns la marile încercări ale ultimului secol și cum au trecut prin ele familiile noastre, cu întrebări pentru propriul arbore.</p>
       <ul className="hub-list">
         {ARTICOLE.map((a) => <li key={a.slug}><Link href={articolPath(a.slug)}>{a.label}</Link> <span className="muted">{a.short}</span></li>)}
+      </ul>
+    </section>
+    {/* Seria despre Marea Unire din 1918 (ghidurile din content/ghid), cu accent pe strămoșii care puteau fi la Alba Iulia. */}
+    <section className="card" lang="ro" style={{ marginTop: 16 }}>
+      <h2 style={{ marginTop: 0 }}>Marea Unire din 1918 și strămoșii tăi</h2>
+      <p>Cum s-a pregătit Unirea, cine au fost delegații de la Alba Iulia și cum afli dacă cineva din neamul tău a fost acolo.</p>
+      <ul className="hub-list">
+        {UNIRE_SERIES.map((g) => getEntry("ghid", g)).filter((g) => !!g).map((g) => <li key={g!.path}><Link href={g!.path}>{g!.title}</Link></li>)}
       </ul>
     </section></>;
 }
