@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { reportAuthorized } from "@/lib/raport-saptamanal";
 import { sitemapGroups } from "@/lib/continut/sitemap";
-import { activeServiceAccount, inspectUrl, listSites, pickSite, seoSettings, type Inspection } from "@/lib/seo";
+import { activeServiceAccount, inspectUrl, listSitemaps, listSites, pickSite, seoSettings, type Inspection } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site-url";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +10,7 @@ export const maxDuration = 60;
 /**
  * Starea în Google a paginilor din sitemap (Daniel, 26.11.2026: „Accesată cu crawlere – nu este indexată”). Search Console nu dă lista
  * raportului prin API, așa că întrebăm pagină cu pagină (URL Inspection, limita e 2.000 pe zi). Cu aceeași cheie ca raportul săptămânal.
+ * `?sitemaps=1` = ce sitemap-uri a citit Google și când (cu fișierele din index).
  * `?grup=ghid|glosar|pagini|…` (implicit toate), `n` (cel mult 80), `de_la` (pentru pagina următoare). Răspunsurile stau 12 ore în memorie.
  */
 const cache = new Map<string, { at: number; r: Inspection }>();
@@ -29,6 +30,11 @@ export async function GET(req: Request) {
   if (!sa) return Response.json({ ok: false, error: "Search Console nu e legat" });
   const site = pickSite(await listSites(sa.account), s.siteUrl ?? null, SITE_URL);
   if (!site) return Response.json({ ok: false, error: "fără acces la proprietate" });
+  if (q.get("sitemaps")) {
+    const top = await listSitemaps(sa.account, site);
+    const children = await Promise.all(top.map((m) => listSitemaps(sa.account, site, m.path).catch(() => [])));
+    return Response.json({ ok: true, sitemaps: top, children: children.flat() }, { headers: { "cache-control": "no-store", "x-robots-tag": "noindex" } });
+  }
   const out: (Inspection & { path: string; grup: string })[] = [];
   for (let i = 0; i < slice.length; i += 5) {
     const batch = slice.slice(i, i + 5);

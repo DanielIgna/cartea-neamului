@@ -193,22 +193,28 @@ export async function searchAnalytics(sa: ServiceAccount, siteUrl: string, p: { 
 }
 
 export type Sitemap = { path: string; lastSubmitted?: string; lastDownloaded?: string; isPending?: boolean; errors?: string; warnings?: string; contents?: { type: string; submitted?: string; indexed?: string }[] };
-export async function listSitemaps(sa: ServiceAccount, siteUrl: string): Promise<Sitemap[]> {
-  const r = await google<{ sitemap?: Sitemap[] }>(sa, `${WM}/sites/${site(siteUrl)}/sitemaps`);
+export async function listSitemaps(sa: ServiceAccount, siteUrl: string, sitemapIndex?: string): Promise<Sitemap[]> {
+  const r = await google<{ sitemap?: Sitemap[] }>(sa, `${WM}/sites/${site(siteUrl)}/sitemaps${sitemapIndex ? `?sitemapIndex=${encodeURIComponent(sitemapIndex)}` : ""}`);
   return r.sitemap ?? [];
 }
 export async function submitSitemap(sa: ServiceAccount, siteUrl: string, feed: string) {
   await google(sa, `${WM}/sites/${site(siteUrl)}/sitemaps/${encodeURIComponent(feed)}`, { method: "PUT" });
 }
 
-export type Inspection = { url: string; verdict: string; coverage: string; lastCrawl: string | null; error?: string };
+export type Inspection = { url: string; verdict: string; coverage: string; lastCrawl: string | null; error?: string;
+  /** Pagina aleasă de Google când o socotește dublură; de unde a aflat de ea (sitemap-uri, pagini care o leagă). */
+  googleCanonical?: string; sitemaps?: string[]; referrers?: string[] };
 /** Dacă Google are pagina în index: „PASS” = indexată. Câteva pagini, deci încape lejer în limita de 2.000 pe zi. */
 export async function inspectUrl(sa: ServiceAccount, siteUrl: string, url: string): Promise<Inspection> {
   try {
-    const r = await google<{ inspectionResult?: { indexStatusResult?: { verdict?: string; coverageState?: string; lastCrawlTime?: string } } }>(
+    const r = await google<{ inspectionResult?: { indexStatusResult?: { verdict?: string; coverageState?: string; lastCrawlTime?: string; googleCanonical?: string; userCanonical?: string; sitemap?: string[]; referringUrls?: string[] } } }>(
       sa, "https://searchconsole.googleapis.com/v1/urlInspection/index:inspect", { body: { inspectionUrl: url, siteUrl, languageCode: "ro" } });
     const s = r.inspectionResult?.indexStatusResult;
-    return { url, verdict: s?.verdict ?? "VERDICT_UNSPECIFIED", coverage: s?.coverageState ?? "", lastCrawl: s?.lastCrawlTime ?? null };
+    return {
+      url, verdict: s?.verdict ?? "VERDICT_UNSPECIFIED", coverage: s?.coverageState ?? "", lastCrawl: s?.lastCrawlTime ?? null,
+      ...(s?.googleCanonical && s.googleCanonical !== (s.userCanonical ?? url) ? { googleCanonical: s.googleCanonical } : {}),
+      ...(s?.sitemap?.length ? { sitemaps: s.sitemap } : {}), ...(s?.referringUrls?.length ? { referrers: s.referringUrls.slice(0, 5) } : {}),
+    };
   } catch (e) {
     return { url, verdict: "EROARE", coverage: "", lastCrawl: null, error: e instanceof Error ? e.message : String(e) };
   }
