@@ -115,12 +115,26 @@ export const LOCALES_ALL = LOCALES;
 /** Textul într-o limbă, cu engleza și apoi româna ca rezervă. */
 export const tx = (t: T | undefined, l: Lang) => t?.[l] ?? t?.en ?? t?.ro ?? "";
 
+/** Descrierea în engleză care răspunde la „how many Romanians in …”, din `size`; null dacă nu e cifra sau nu încape în 160. */
+function howManyEn(c: Country): string | null {
+  const size = c.size?.en;
+  if (!size) return null;
+  const first = size.split(/;|, /)[0].trim();
+  if (!/^(around|over|about|some|tens|hundreds)\b/i.test(first) || !/romanian/i.test(first)) return null;
+  const full = `How many Romanians live ${c.where.en}? ${first.charAt(0).toUpperCase()}${first.slice(1)}. How they came, Romanian documents from there and your family tree.`;
+  return full.length <= 160 ? full : null;
+}
+
 /** Titlul, descrierea și numele scurt ale unei pagini, în limba dată (pentru pagină, metadate și Centrul SEO). */
 export function titleOf(e: Entry, l: Lang) {
   const u = UI[l];
   switch (e.kind) {
     case "hub": return `${u.hubTitle} | Cartea Neamului`;
-    case "country": return u.titleCountry(tx(e.country.where, l));
+    case "country": {
+      // În engleză, căutarea reală e „how many Romanians in Germany” (26.11.2026): titlul spune că pagina răspunde.
+      const w = tx(e.country.where, l);
+      return l === "en" && howManyEn(e.country) ? `Romanians ${w}: how many, history and roots | Cartea Neamului` : u.titleCountry(w);
+    }
     case "region": {
       const t = u.titleRegion(tx(e.region.where, l));
       return fitTitle(t).length <= 60 || !u.titleRegionShort ? t : u.titleRegionShort(tx(e.region.where, l));
@@ -132,7 +146,12 @@ export function descriptionOf(e: Entry, l: Lang) {
   const u = UI[l];
   switch (e.kind) {
     case "hub": return u.hubDescription;
-    case "country": return u.descCountry(tx(e.country.where, l));
+    case "country": {
+      const w = tx(e.country.where, l);
+      const many = l === "en" ? howManyEn(e.country) : null;
+      if (many) return many;
+      return u.descCountry(w);
+    }
     case "region": return u.descRegion(tx(e.region.where, l), tx(e.country.name, l));
     case "theme": return tx(e.theme.description, l);
   }

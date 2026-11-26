@@ -10,6 +10,7 @@ export type TargetKeyword = { keyword: string; path: string; intent: Intent; dem
 export const TARGET_KEYWORDS: TargetKeyword[] = [
   // Unealta în sine
   { keyword: "arbore genealogic online", path: "/", intent: "unealtă", demand: "mare" },
+  { keyword: "carte arbore genealogic", path: "/ghid/carte-cu-arborele-genealogic", intent: "comercial", demand: "medie" },
   { keyword: "arbore genealogic gratuit", path: "/", intent: "unealtă", demand: "mare" },
   { keyword: "cum faci un arbore genealogic", path: "/ghid/cum-incepi-arborele-genealogic", intent: "informativ", demand: "mare" },
   { keyword: "arbore genealogic", path: "/", intent: "unealtă", demand: "mare" },
@@ -50,10 +51,10 @@ export const TARGET_KEYWORDS: TargetKeyword[] = [
   { keyword: "români în germania", path: "/diaspora/germania", intent: "diaspora", demand: "medie" },
   { keyword: "români în anglia", path: "/diaspora/marea-britanie", intent: "diaspora", demand: "medie" },
   { keyword: "români în franța", path: "/diaspora/franta", intent: "diaspora", demand: "nișă" },
-  { keyword: "români din serbia", path: "/ghid/romanii-din-serbia", intent: "diaspora", demand: "nișă" },
-  { keyword: "români din ucraina", path: "/ghid/romanii-din-ucraina", intent: "diaspora", demand: "nișă" },
-  { keyword: "români din ungaria", path: "/ghid/romanii-din-ungaria", intent: "diaspora", demand: "nișă" },
-  { keyword: "arhiva națională a moldovei", path: "/ghid/romanii-din-republica-moldova", intent: "diaspora", demand: "nișă" },
+  { keyword: "români din serbia", path: "/ghid/romanii-din-banatul-sarbesc", intent: "diaspora", demand: "nișă" },
+  { keyword: "români din ucraina", path: "/diaspora/ucraina", intent: "diaspora", demand: "nișă" },
+  { keyword: "români din ungaria", path: "/ghid/romanii-din-ungaria-registre", intent: "diaspora", demand: "nișă" },
+  { keyword: "arhiva națională a moldovei", path: "/ghid/basarabia-registrele-parohiale", intent: "diaspora", demand: "nișă" },
   { keyword: "emigrare în america", path: "/ghid/emigrarea-in-america", intent: "diaspora", demand: "nișă" },
   { keyword: "arbore genealogic din străinătate", path: "/diaspora", intent: "diaspora", demand: "nișă" },
   // Etapa 5 (17.11.2026): cuvintele noilor pagini și ale ghidurilor lungi.

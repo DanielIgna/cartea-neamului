@@ -3,6 +3,7 @@ import { getT, getAppName, getLocale } from "@/i18n/server";
 import { operator } from "@/lib/legal";
 import { FACEBOOK_URL, TIKTOK_URL } from "@/lib/contact";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
+import { POPULAR_LINKS } from "@/lib/legaturi-populare";
 
 /** Subsolul tuturor paginilor (și al celor gata făcute pentru vizitatori): paginile legale, contact, istorie, Facebook, cine vinde. */
 export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
@@ -12,6 +13,12 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
   const ro = (await getLocale()) === "ro";
   return (
     <footer className="site-foot">
+      {/* Ghidurile citite des, ca subsolul să trimită greutatea spre conținut, nu doar spre paginile legale (26.11.2026). */}
+      {ro && (
+        <nav className="foot-popular" aria-label="Citite des">
+          <b>Citite des:</b> {POPULAR_LINKS.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
+        </nav>
+      )}
       <span>© {new Date().getFullYear()} {appName}</span>
       <Link href="/confidentialitate">{t("privacy")}</Link>
       <Link href="/termeni">{t("terms")}</Link>

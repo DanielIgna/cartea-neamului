@@ -26,6 +26,11 @@ export default function IstoriaUmanitatiiPage() {
         {ARTICOLE.map((a) => <li key={a.slug}><Link href={articolPath(a.slug)}>{a.label}</Link> <span className="muted">{a.short}</span></li>)}
       </ul>
     </section>
+    {/* Povestea Nașterii, din toate Evangheliile (Daniel, 26.11.2026): deschisă tuturor. */}
+    <section className="card" lang="ro" style={{ marginTop: 16 }}>
+      <h2 style={{ marginTop: 0 }}>Povestea Crăciunului, din Evanghelii</h2>
+      <p>Nașterea lui Isus, așa cum o spun Matei, Luca și Ioan, cu genealogia care deschide Noul Testament: „Cartea neamului lui Isus Hristos” (Matei 1:1). <Link href="/ghid/nasterea-lui-isus-in-evanghelii">Citește povestea Nașterii</Link></p>
+    </section>
     {/* Seria despre Marea Unire din 1918 (ghidurile din content/ghid), cu accent pe strămoșii care puteau fi la Alba Iulia. */}
     <section className="card" lang="ro" style={{ marginTop: 16 }}>
       <h2 style={{ marginTop: 0 }}>Marea Unire din 1918 și strămoșii tăi</h2>
