@@ -107,6 +107,7 @@ export default async function GiftSeasonPage() {
           </ul>
           <h2>De făcut împreună, de Crăciun</h2>
           <ul>
+            <li><Link href="/ghid/nasterea-lui-isus-in-evanghelii">Povestea Nașterii lui Isus, din toate Evangheliile, de citit în familie</Link></li>
             <li><Link href="/ghid/intrebari-pentru-bunici-de-craciun">Întrebări pentru bunici de Crăciun: cum era pe vremea lor</Link></li>
             <li><Link href="/ghid/arborele-familiei-la-masa-de-sarbatori">Arborele familiei la masa de sărbători: un joc pentru toți</Link></li>
             <li><Link href="/ghid/colindele-bunicilor">Colindele bunicilor: cum le înregistrezi și le păstrezi</Link></li>
