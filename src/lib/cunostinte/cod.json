@@ -102,8 +102,13 @@
   "src/app/(public)/pub/[v]/glosar/[slug]/page.tsx",
   "src/app/(public)/pub/[v]/glosar/layout.tsx",
   "src/app/(public)/pub/[v]/glosar/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/al-doilea-razboi-mondial/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/anii-interbelici/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/crize/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/gripa-spaniola/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/primul-razboi-mondial/page.tsx",
+  "src/app/(public)/pub/[v]/istoria-umanitatii/tiparul-istoriei/page.tsx",
   "src/app/(public)/pub/[v]/layout.tsx",
   "src/app/(public)/pub/[v]/libertatea-de-a-crede/page.tsx",
   "src/app/(public)/pub/[v]/localitati/[judet]/[localitate]/page.tsx",
@@ -226,8 +231,13 @@
   "src/app/(site)/invitatie/[token]/not-found.tsx",
   "src/app/(site)/invitatie/[token]/page.tsx",
   "src/app/(site)/invitatii/page.tsx",
+  "src/app/(site)/istoria-umanitatii/al-doilea-razboi-mondial/page.tsx",
+  "src/app/(site)/istoria-umanitatii/anii-interbelici/page.tsx",
   "src/app/(site)/istoria-umanitatii/crize/page.tsx",
+  "src/app/(site)/istoria-umanitatii/gripa-spaniola/page.tsx",
   "src/app/(site)/istoria-umanitatii/page.tsx",
+  "src/app/(site)/istoria-umanitatii/primul-razboi-mondial/page.tsx",
+  "src/app/(site)/istoria-umanitatii/tiparul-istoriei/page.tsx",
   "src/app/(site)/layout.tsx",
   "src/app/(site)/libertatea-de-a-crede/page.tsx",
   "src/app/(site)/loading.tsx",
@@ -490,12 +500,12 @@
   "src/components/charts.tsx",
   "src/components/continut/ArticlePages.tsx",
   "src/components/continut/Breadcrumbs.tsx",
-  "src/components/continut/CrizeArticle.tsx",
   "src/components/continut/CtaArbore.tsx",
   "src/components/continut/Figura.tsx",
   "src/components/continut/GenealogieOrase.tsx",
   "src/components/continut/GenealogieRegiuni.tsx",
   "src/components/continut/HubSearch.tsx",
+  "src/components/continut/IstorieArticle.tsx",
   "src/components/continut/LocalityPages.tsx",
   "src/components/continut/NamePages.tsx",
   "src/components/continut/Pager.tsx",
@@ -982,8 +992,16 @@
   "src/lib/invitatii.ts",
   "src/lib/invitations.ts",
   "src/lib/istoria-bisericii.ts",
+  "src/lib/istorie/al-doilea-razboi.ts",
+  "src/lib/istorie/articole.ts",
   "src/lib/istorie/crize-fila.ts",
   "src/lib/istorie/crize.ts",
+  "src/lib/istorie/file.ts",
+  "src/lib/istorie/gripa-spaniola.ts",
+  "src/lib/istorie/interbelic.ts",
+  "src/lib/istorie/primul-razboi.ts",
+  "src/lib/istorie/tip.ts",
+  "src/lib/istorie/tiparul-istoriei.ts",
   "src/lib/join.ts",
   "src/lib/kin-words.ts",
   "src/lib/kinship.ts",
@@ -1115,6 +1133,7 @@
   "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
+  "tests/crize.test.ts",
   "tests/crm-admin.test.ts",
   "tests/crm-ambasadori.test.ts",
   "tests/crm-auto.test.ts",
@@ -1793,7 +1812,27 @@
    "kind": "pagina"
   },
   {
+   "path": "/istoria-umanitatii/al-doilea-razboi-mondial",
+   "kind": "pagina"
+  },
+  {
+   "path": "/istoria-umanitatii/anii-interbelici",
+   "kind": "pagina"
+  },
+  {
    "path": "/istoria-umanitatii/crize",
+   "kind": "pagina"
+  },
+  {
+   "path": "/istoria-umanitatii/gripa-spaniola",
+   "kind": "pagina"
+  },
+  {
+   "path": "/istoria-umanitatii/primul-razboi-mondial",
+   "kind": "pagina"
+  },
+  {
+   "path": "/istoria-umanitatii/tiparul-istoriei",
    "kind": "pagina"
   },
   {
@@ -1955,6 +1994,7 @@
   "tests/conversie.test.ts",
   "tests/countries.test.ts",
   "tests/crestere.test.ts",
+  "tests/crize.test.ts",
   "tests/crm-admin.test.ts",
   "tests/crm-ambasadori.test.ts",
   "tests/crm-auto.test.ts",

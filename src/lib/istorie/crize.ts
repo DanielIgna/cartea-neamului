@@ -1,4 +1,4 @@
-import { parseBlocks, type Block } from "@/lib/continut/markdown";
+import type { Articol } from "@/lib/istorie/tip";
 
 /**
  * „Crizele care au schimbat lumea” (/istoria-umanitatii/crize, Daniel, 2026-11-26): marile crize economice și sociale, de la
@@ -6,15 +6,15 @@ import { parseBlocks, type Block } from "@/lib/continut/markdown";
  * cu surse la final. Marcajul [[fila]] arată locul unde, pentru cine e intrat în cont, se adaugă fila din src/lib/istorie/crize-fila.ts
  * (care NU se importă în pagina publică și nu intră în sitemap).
  */
-export const CRIZE = {
-  path: "/istoria-umanitatii/crize",
+export const CRIZE: Articol = {
+  slug: "crize",
+  label: "Crizele care au schimbat lumea",
+  short: "De la 1929 la criza de azi: ce au trăit bunicii și cum s-au descurcat familiile.",
   h1: "Crizele care au schimbat lumea și cum au trecut prin ele familiile noastre",
   title: "Crizele care au schimbat lumea: 1929, 2008 și azi | Cartea Neamului",
   description: "Marea Criză din 1929, foametea din 1946–1947, anii '80, inflația din anii '90, criza din 2008 și scumpirile de azi: ce au trăit bunicii și cum s-au descurcat.",
   updated: "2026-11-26",
-};
-
-const TEXT = `
+  text: `
 Fiecare familie are o poveste despre „anii grei”. Bunicul care și-a pierdut economiile, bunica ce a crescut copiii din grădină și din câteva găini, unchiul plecat la muncă departe. Crizele nu sunt doar cifre din cărțile de istorie: ele au hotărât unde s-au mutat strămoșii noștri, cu cine s-au căsătorit, câți copii au avut și ce meserii au ales.
 
 Pagina aceasta trece prin marile crize ale ultimului secol, cu ochii pe România și pe oamenii obișnuiți: ce s-a întâmplat, cum au trăit familiile și ce soluții au găsit ca să treacă mai departe. La final găsești întrebări bune de pus bătrânilor din familie, ca poveștile lor să rămână în arbore.
@@ -122,9 +122,5 @@ Notează răspunsurile la persoana potrivită din arbore, ca povestea să rămâ
 - [Pachetul de sprijin pentru România din 2009](https://www.imf.org/en/News/Articles/2015/09/14/01/49/pr09148), Fondul Monetar Internațional.
 - [Inflația din octombrie 2026](https://financialintelligence.ro/inflatia-anuala-a-crescut-pentru-a-doua-luna-consecutiv-ajungand-la-69-in-octombrie-motorina-s-a-scumpit-cu-4345-iar-chiriile-cu-3846/), Financial Intelligence, după datele INS.
 - [Scumpirea carburanților în 2026](https://romania.europalibera.org/a/motorina-peste-9-lei-litru-in-unele-benzinarii-scumpirea-combustibililor-continua-in-romania-pe-fondul-razboiului-din-orientul-mijlociu/33704506.html), Europa Liberă.
-`;
-
-const [BEFORE, AFTER] = TEXT.split("\n[[fila]]\n");
-
-/** Textul, în două părți: înainte și după locul filei pentru cei cu cont. */
-export const CRIZE_BLOCKS: { before: Block[]; after: Block[] } = { before: parseBlocks(BEFORE), after: parseBlocks(AFTER ?? "") };
+`,
+};

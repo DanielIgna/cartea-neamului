@@ -1,17 +1,12 @@
-import type { Metadata } from "next";
-import CrizeArticle from "@/components/continut/CrizeArticle";
+import IstorieArticle, { istorieMetadata } from "@/components/continut/IstorieArticle";
 import { currentUser } from "@/lib/access";
-import { CRIZE } from "@/lib/istorie/crize";
-import { CRIZE_FILA } from "@/lib/istorie/crize-fila";
-import { publicPageMetadata } from "@/lib/page-metadata";
+import { FILE } from "@/lib/istorie/file";
 
-export const generateMetadata = (): Metadata => publicPageMetadata({ path: CRIZE.path, title: CRIZE.title, description: CRIZE.description });
+const SLUG = "crize";
+export const generateMetadata = () => istorieMetadata(SLUG);
 
-/**
- * Pagina făcută pe loc (cine are sesiune): fila cu versetele apare doar pentru un cont adevărat, verificat aici. Vizitatorii fără
- * cont și roboții primesc pagina gata făcută din app/(public)/pub/[v]/istoria-umanitatii/crize, fără filă.
- */
-export default async function CrizePage() {
+/** Pagina făcută pe loc (cine are sesiune): fila apare doar pentru un cont adevărat, verificat aici. Vizitatorii fără cont și roboții primesc pagina gata făcută din app/(public)/pub/[v]/istoria-umanitatii/crize, fără filă. */
+export default async function Page() {
   const user = await currentUser();
-  return <CrizeArticle fila={user ? CRIZE_FILA : null} />;
+  return <IstorieArticle slug={SLUG} fila={user ? FILE[SLUG] ?? null : null} />;
 }
