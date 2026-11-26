@@ -3,9 +3,9 @@ title: Acte românești când locuiești în Italia, Spania, Germania sau Anglia
 seo: Certificat duplicat și transcriere din străinătate
 description: Cum ceri din străinătate un certificat de naștere duplicat, cum transcrii actele copiilor și când îți trebuie apostilă: Italia, Spania, Germania, Anglia.
 category: Acte și stare civilă
-updated: 2026-11-19
+updated: 2026-11-26
 cuvant: certificat de nastere duplicat din strainatate
-related: cum-ceri-un-act-de-stare-civila, redobandirea-cetateniei-acte-stramosi, certificatul-de-nastere-al-bunicului, registrele-de-stare-civila, copiii-din-diaspora-si-bunicii-din-romania, documente-de-familie-din-casa
+related: transcrierea-actelor-din-strainatate, cum-ceri-un-act-de-stare-civila, redobandirea-cetateniei-acte-stramosi, certificatul-de-nastere-al-bunicului, registrele-de-stare-civila, copiii-din-diaspora-si-bunicii-din-romania, documente-de-familie-din-casa
 terms: act-de-nastere, act-de-casatorie, extras-multilingv, apostila, stare-civila, registru-de-stare-civila
 ---
 Când locuiești în Italia, Spania, Germania sau Anglia, actele din România devin brusc greu de obținut: certificatul de naștere s-a pierdut la mutare, copilul născut acolo trebuie trecut și în registrele românești, iar autoritățile străine cer un document „cu apostilă” sau „multilingv”. Ghidul de față adună pașii de bază pentru cele mai dese situații.
@@ -56,7 +56,7 @@ Ce înseamnă, pe scurt:
 - Multe consulate primesc cererile de transcriere și le trimit în țară. Programarea se face, de obicei, prin portalul consular al Ministerului Afacerilor Externe.
 - Actul străin trebuie, după caz, **apostilat** și **tradus** cu traducere legalizată. Din Italia, Spania sau Germania, formularul standard UE poate înlocui traducerea și apostila. Din Anglia, apostila rămâne necesară.
 
-La fel se transcrie căsătoria încheiată în străinătate.
+La fel se transcrie căsătoria încheiată în străinătate. Toți pașii, cu actele cerute, sunt în ghidul [Transcrierea certificatului de naștere din străinătate](/ghid/transcrierea-actelor-din-strainatate).
 
 ## 4. Cetățenia: când e doar o formalitate și când e o procedură
 
