@@ -34,7 +34,18 @@ export const LINK_PAGE: AuthorityPage = {
   description: "Text și cod HTML gata de copiat pentru școli, biblioteci, primării, asociații și bloguri: fișe pentru elevi, ghiduri de arhivă și insigne.",
 };
 
-export const AUTHORITY_PAGES = [PRESS_PAGE, WIDGET_PAGE, LINK_PAGE];
+/**
+ * Comunicatul pentru 1 Decembrie (Daniel, 26.11.2026, aprobat): „Cum afli dacă străbunicul tău a fost la Alba Iulia”, pornind de la
+ * seria Marea Unire. Emailurile către redacții din CRM → Aprobări trimit aici.
+ */
+export const UNIRE_RELEASE: AuthorityPage = {
+  path: "/presa/1-decembrie-2026",
+  title: "1 Decembrie: cum afli dacă străbunicul a fost la Alba Iulia",
+  h1: "De 1 Decembrie, află dacă străbunicul tău a fost la Alba Iulia",
+  description: "Comunicat de presă Cartea Neamului: 1.228 de delegați la Alba Iulia în 1918, unde sunt credenționalele lor și cum își caută familiile strămoșii.",
+};
+
+export const AUTHORITY_PAGES = [PRESS_PAGE, WIDGET_PAGE, LINK_PAGE, UNIRE_RELEASE];
 
 /** Un link gata de pus pe alt site: cui i se potrivește, unde duce și ce scrie în el. */
 export type LinkKit = { id: string; cui: string; deCe: string; path: string; ancora: string; descriere: string; lang?: "ro" | "en" };

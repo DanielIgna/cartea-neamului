@@ -55,6 +55,11 @@ export default function PressPage() {
         </ul>
         <p>Datele celor în viață nu apar pe paginile publice; arborele îl văd doar rudele invitate. Primele 7 zile sunt gratuite, apoi există abonamente anuale (prețurile la zi sunt pe <Link href="/#preturi">prima pagină</Link>).</p>
 
+        <h2>Comunicate</h2>
+        <ul>
+          <li><Link href="/presa/1-decembrie-2026">27.11.2026: De 1 Decembrie, află dacă străbunicul tău a fost la Alba Iulia</Link></li>
+        </ul>
+
         <h2>Subiecte pentru un articol</h2>
         {PRESS_ANGLES.map((a) => (
           <div key={a.title}>

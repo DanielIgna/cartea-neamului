@@ -259,6 +259,7 @@
   "src/app/(site)/parteneri/page.tsx",
   "src/app/(site)/parteneriate/page.tsx",
   "src/app/(site)/plata/page.tsx",
+  "src/app/(site)/presa/1-decembrie-2026/page.tsx",
   "src/app/(site)/presa/page.tsx",
   "src/app/(site)/primii-pasi/page.tsx",
   "src/app/(site)/problema/page.tsx",
@@ -533,6 +534,8 @@
   "src/data/crm-magazine-mesaje.json",
   "src/data/crm-magazine.csv",
   "src/data/crm-presa-mesaje.json",
+  "src/data/crm-presa-unire-mesaje.json",
+  "src/data/crm-presa-unire.csv",
   "src/data/crm-presa.csv",
   "src/data/places/README.md",
   "src/data/places/judete.json",
@@ -1906,6 +1909,10 @@
   },
   {
    "path": "/presa",
+   "kind": "pagina"
+  },
+  {
+   "path": "/presa/1-decembrie-2026",
    "kind": "pagina"
   },
   {

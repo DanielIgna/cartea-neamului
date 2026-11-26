@@ -272,3 +272,31 @@ export async function seedLinkTargetsOnce(db: Db, csvs: { kind: "biblioteci_list
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi, ciorne: n }, updatedAt: now }).onConflictDoNothing();
   return `${noi} organizații noi, ${n} emailuri în Aprobări`;
 }
+
+/**
+ * Comunicatul pentru 1 Decembrie (Daniel, 26.11.2026: „da” la comunicatul „Cum afli dacă străbunicul tău a fost la Alba Iulia”).
+ * Redacțiile locale noi (src/data/crm-presa-unire.csv) intră o singură dată la „Presă”, apoi câte un email scris pentru fiecare
+ * redacție (src/data/crm-presa-unire-mesaje.json, inclusiv cele deja în CRM) în Aprobări. Pleacă doar cu „Trimite acum”;
+ * expiră pe 1 decembrie dimineața, când subiectul nu mai e de actualitate.
+ */
+export async function seedUnirePressOnce(db: Db, csv: string, drafts: Record<string, { subiect: string; text: string }>, now = new Date()): Promise<string> {
+  const MARK = "crm_presa_unire_2026_11_27";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  const noi = (await importCsv(db, "presa_lista", csv, null, now)).orgsNew;
+  const hours = Math.max(12, Math.round((Date.UTC(2026, 11, 1, 8) - now.getTime()) / 3_600_000));
+  const { queueApproval } = await import("./crm-admin");
+  let n = 0;
+  for (const [email, d] of Object.entries(drafts)) {
+    const [org] = await db.select({ id: crmOrganizations.id, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.emailOficial, email)).limit(1);
+    if (!org) continue;
+    const id = await queueApproval(db, {
+      tipActiune: "email_presa", risc: "MEDIUM", organizationId: org.id, dedupeKey: `unire-2026:${email}`, hours,
+      motiv: `Comunicatul de 1 Decembrie pentru ${org.nume}, scris pentru redacția lor. De trimis până vineri-sâmbătă. Citește, schimbă ce vrei, apoi „Trimite acum”.`,
+      payload: { destinatar: email, subiect: d.subiect, text: d.text, replyTo: "contact@carteaneamului.ro" },
+    }, now);
+    if (id) n++;
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi, ciorne: n }, updatedAt: now }).onConflictDoNothing();
+  return `${noi} redacții noi, ${n} emailuri de 1 Decembrie în Aprobări`;
+}
