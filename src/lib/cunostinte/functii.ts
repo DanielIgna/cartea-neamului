@@ -496,9 +496,9 @@ export const FUNCTIONS: Fn[] = [
   },
   {
     key: "istorie", name: "Istoria umanității și paginile istorice", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Regula de ton (D06) se aplică.",
-    what: "/istoria-umanitatii, /genealogii-vechi, /libertatea-de-a-crede.",
-    engine: ["src/lib/firul-vremii.ts", "src/lib/adam-hristos.ts", "src/lib/istoria-bisericii.ts"],
-    pages: ["/istoria-umanitatii", "/genealogii-vechi", "/libertatea-de-a-crede"],
+    what: "/istoria-umanitatii, /istoria-umanitatii/crize (crizele care au schimbat lumea, 1918–azi, cum s-au descurcat familiile; cine e intrat în cont vede și o filă cu Matei 24 și Apocalipsa 13, care nu apare în pagina publică), /genealogii-vechi, /libertatea-de-a-crede.",
+    engine: ["src/lib/firul-vremii.ts", "src/lib/adam-hristos.ts", "src/lib/istoria-bisericii.ts", "src/lib/istorie/crize.ts", "src/lib/istorie/crize-fila.ts", "src/components/continut/CrizeArticle.tsx"],
+    pages: ["/istoria-umanitatii", "/istoria-umanitatii/crize", "/genealogii-vechi", "/libertatea-de-a-crede"],
     tests: ["tests/adam-hristos.test.ts", "tests/istoria-bisericii.test.ts"],
   },
   {
