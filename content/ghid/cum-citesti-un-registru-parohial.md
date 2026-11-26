@@ -3,9 +3,9 @@ title: Cum citești un registru parohial vechi
 seo: Cum citești un registru parohial vechi
 description: Cum e organizat un registru parohial vechi, ce înseamnă fiecare rubrică la botez, cununie și înmormântare și cum găsești repede o familie.
 category: Registre și arhive
-updated: 2026-11-17
-related: cum-citesti-scrisul-de-mana-vechi, documente-in-latina, documente-in-maghiara-si-germana, nasii-si-rudenia-spirituala, registrele-ortodoxe, registrele-greco-catolice
-terms: registru-parohial, matricola, botez, cununie, nas, filie, nelegitim
+updated: 2026-11-26
+related: cum-citesti-scrisul-de-mana-vechi, documente-in-latina, documente-in-maghiara-si-germana, nasii-si-rudenia-spirituala, registrele-ortodoxe, registrele-greco-catolice, confesiunea-stramosilor
+terms: registru-parohial, matricola, botez, cununie, nas, filie, nelegitim, strigari
 ---
 Pentru strămoșii de dinaintea stării civile de stat, [registrul parohial](/glosar/registru-parohial) e de obicei singura sursă care îți spune cine erau părinții cuiva. Prima dată pare greu de citit; după câteva pagini, recunoști tiparul.
 

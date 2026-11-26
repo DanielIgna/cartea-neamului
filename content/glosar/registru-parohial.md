@@ -1,9 +1,9 @@
 ---
 title: Registru parohial
 description: Registrul parohial (botezuri, cununii, înmormântări): principala sursă pentru strămoșii de dinaintea stării civile de stat.
-updated: 2026-11-18
+updated: 2026-11-26
 alt: registre parohiale, registre bisericești, mitrici
-terms: matricola, botez, cununie, parohie, protopopiat, filie
+terms: matricola, botez, cununie, parohie, protopopiat, filie, pomelnic, nelegitim
 related: cum-citesti-un-registru-parohial, registrele-ortodoxe, registrele-greco-catolice, registrele-catolice-si-protestante
 ---
 Un **registru parohial** este cartea în care o [parohie](/glosar/parohie) nota evenimentele din viața credincioșilor săi: [botezul](/glosar/botez), [cununia](/glosar/cununie) și înmormântarea. În Transilvania i se spune des [matricolă](/glosar/matricola), în Moldova și Muntenia uneori **mitrică** (din rusescul *metrika*).

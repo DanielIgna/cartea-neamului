@@ -3,8 +3,8 @@ title: Registrele greco-catolice din Transilvania
 seo: Registre greco-catolice vechi: unde le găsești
 description: Registrele parohiale greco-catolice din Transilvania, Banat, Crișana și Maramureș: ce conțin, în ce limbă sunt și unde au ajuns după 1948.
 category: Registre și arhive
-updated: 2026-11-17
-related: cum-citesti-un-registru-parohial, documente-in-latina, documente-in-maghiara-si-germana, registrele-ortodoxe
+updated: 2026-11-26
+related: cum-citesti-un-registru-parohial, documente-in-latina, documente-in-maghiara-si-germana, registrele-ortodoxe, confesiunea-stramosilor, registre-parohiale-online
 terms: matricola, registru-parohial, confesiune, episcopie, protopopiat
 ---
 În Transilvania, Banat, Crișana și Maramureș, o mare parte dintre români au fost **greco-catolici** (uniți) din secolul al XVIII-lea până la mijlocul secolului XX. Pentru acești strămoși, [matricolele](/glosar/matricola) greco-catolice sunt sursa principală înainte de starea civilă din 1895.

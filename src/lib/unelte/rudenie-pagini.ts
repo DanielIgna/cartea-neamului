@@ -80,7 +80,7 @@ export const KIN_PAGES: KinPage[] = [
   },
   {
     slug: "nepot-de-var", name: "Nepot de văr",
-    title: "Nepotul de văr: copilul vărului primar, ce grad are",
+    title: "Copilul vărului meu: ce îmi este și ce grad de rudenie are",
     description: "Copilul vărului tău primar e nepot de văr, cu o generație sub tine, și rudă de gradul V. Cum se numără și de ce nu e văr de-al doilea.",
     h1: "Nepotul de văr: cine e și ce grad are",
     lead: "Copilul vărului sau al verei tale primare e „nepot de văr”. E cu o generație mai tânăr decât tine și e rudă de gradul al cincilea.",

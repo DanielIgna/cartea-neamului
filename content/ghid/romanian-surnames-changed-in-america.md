@@ -3,10 +3,10 @@ title: Romanian Surnames in America and Canada: How Names Changed and How to Fin
 seo: Romanian Surnames in America: How Names Changed
 description: John was once Ioan, and Moldovan became Moldavan. How Romanian names changed in the US and Canada, and how to find your ancestors under every spelling.
 category: Diaspora
-updated: 2026-11-19
+updated: 2026-11-26
 lang: en
 cuvant: romanian surnames america
-related: nume-schimbate-si-variante, emigrarea-in-america, de-unde-vine-numele-tau-de-familie, documente-in-maghiara-si-germana, porecle-si-nume-in-sat, cum-gasesti-numele-de-fata-al-bunicii
+related: nume-schimbate-si-variante, emigrarea-in-america, de-unde-vine-numele-tau-de-familie, documente-in-maghiara-si-germana, porecle-si-nume-in-sat, cum-gasesti-numele-de-fata-al-bunicii, arbore-genealogic-familie-romania-sua-canada, valurile-de-emigrare-in-america-de-nord
 terms: lista-de-pasageri, porecla, patronimic, prenume, nume-de-fata, sursa-primara
 ---
 Many families in the United States and Canada carry a surname that sounds Romanian, but not quite. Your great-grandfather may have been born Ioan Moldovan in a village near Bistrița and died as John Moldavan in Ohio. Somewhere in between, a clerk, a teacher or the family itself changed the spelling.

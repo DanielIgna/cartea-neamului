@@ -310,6 +310,7 @@
   "src/app/api/poza-acasa/[id]/route.ts",
   "src/app/api/problema/[id]/[n]/route.ts",
   "src/app/api/problema/route.ts",
+  "src/app/api/raport/indexare/route.ts",
   "src/app/api/raport/saptamanal/route.ts",
   "src/app/api/stare/route.ts",
   "src/app/api/vesti/dezabonare/route.ts",
@@ -1584,6 +1585,10 @@
   },
   {
    "path": "/api/problema/[id]/[n]",
+   "kind": "api"
+  },
+  {
+   "path": "/api/raport/indexare",
    "kind": "api"
   },
   {

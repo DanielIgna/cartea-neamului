@@ -3,8 +3,8 @@ title: Poreclele din sat și numele de familie
 seo: Poreclele din sat: cum te ajută la arborele genealogic
 description: Cum foloseau satele poreclele ca să deosebească familiile cu același nume, de ce le știu mai bine bătrânii și cum le folosești în cercetare.
 category: Primii pași
-updated: 2026-11-17
-related: nume-schimbate-si-variante, cum-intervievezi-bunicii, intrebari-pentru-bunici
+updated: 2026-11-26
+related: nume-schimbate-si-variante, cum-intervievezi-bunicii, intrebari-pentru-bunici, de-unde-vine-numele-tau-de-familie
 terms: porecla, patronimic, prenume
 ---
 Într-un sat în care jumătate din familii se numeau Pop, nimeni nu spunea „Ion Pop”. Spuneau „Ion a lui Toader”, „Ion Croitorul”, „Ion din Vale” sau o poreclă moștenită de la un străbunic de care nu-și mai aducea nimeni aminte.

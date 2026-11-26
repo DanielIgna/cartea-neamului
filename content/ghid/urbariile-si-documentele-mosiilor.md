@@ -3,9 +3,9 @@ title: Urbariile și documentele moșiilor
 seo: Urbarii și documentele moșiilor: strămoșii iobagi în acte
 description: Cum găsești strămoși țărani în urbarii și în actele moșiilor: liste de iobagi și jeleri, sesii, obligații și cum urmărești familiile.
 category: Registre și arhive
-updated: 2026-11-17
-related: conscriptiile-din-transilvania, cartea-funciara-si-cadastrul-vechi, testamente-si-acte-de-mostenire
-terms: urbariu, iobag, jeler, conscriptie, cartea-funciara
+updated: 2026-11-26
+related: conscriptiile-din-transilvania, cartea-funciara-si-cadastrul-vechi, testamente-si-acte-de-mostenire, razesi-mosneni-clacasi-iobagi
+terms: urbariu, iobag, jeler, conscriptie, cartea-funciara, sesie, dijma, hrisov, zapis
 ---
 Cei mai mulți dintre strămoșii noștri au fost țărani. În Transilvania, înainte de 1848, mulți erau [iobagi](/glosar/iobag) sau [jeleri](/glosar/jeler) pe moșiile nobililor, iar stăpânii țineau evidența lor în [urbarii](/glosar/urbariu) și în alte acte ale moșiei.
 

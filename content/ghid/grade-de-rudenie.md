@@ -1,9 +1,9 @@
 ---
 title: Gradele de rudenie: cum le numeri, cu exemple
-seo: Grade de rudenie: cum se numără, cu tabel și exemple
-description: Cum se numără gradele de rudenie în linie dreaptă și colaterală: frați, veri primari, unchi, nepoți. Exemple simple și diferența față de afini.
+seo: Rude de gradul 1, 2, 3 și 4: cine sunt, cu exemple
+description: Cine sunt rudele de gradul 1, 2, 3 și 4: părinți și copii, frați și bunici, unchi și nepoți, veri primari. Cum numeri gradele, pe înțelesul tuturor.
 category: Primii pași
-updated: 2026-11-17
+updated: 2026-11-26
 related: ce-este-spita-neamului, nasii-si-rudenia-spirituala, cum-incepi-arborele-genealogic
 terms: grad-de-rudenie, rudenie-colaterala, ascendent, descendent, afinitate, cuscri
 ---

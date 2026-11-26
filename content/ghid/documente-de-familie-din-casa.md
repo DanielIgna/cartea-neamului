@@ -3,9 +3,9 @@ title: Documente de familie din casă: ce să cauți și ce îți spun
 seo: Documente de familie vechi: ce cauți în casă pentru arbore
 description: Ce documente vechi de familie merită căutate prin casă (certificate, livrete, scrisori, foi de zestre, poze) și ce informații îți dă fiecare.
 category: Poze, documente și amintiri
-updated: 2026-11-17
+updated: 2026-11-26
 related: cum-pastrezi-pozele-vechi, cum-scanezi-poze-si-documente, cum-incepi-arborele-genealogic, testamente-si-acte-de-mostenire
-terms: livret-militar, foaie-de-zestre, certificat-de-mostenitor, pomelnic, sursa-primara
+terms: livret-militar, foaie-de-zestre, certificat-de-mostenitor, pomelnic, sursa-primara, carnet-de-munca, testament
 ---
 Înainte să mergi la arhivă, caută prin casă: în lada de zestre, în dulapul cu acte, în cărțile vechi, în podul casei părintești. Multe familii păstrează fără să știe documente care pot adăuga o generație întreagă la arbore.
 

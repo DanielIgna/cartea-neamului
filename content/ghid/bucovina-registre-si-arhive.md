@@ -3,8 +3,8 @@ title: Bucovina: registre și arhive de o parte și de alta a graniței
 seo: Bucovina: registre și arhive, în România și Ucraina
 description: Cum cauți strămoși din Bucovina: registrele din perioada austriacă, arhivele de la Suceava și Cernăuți, comunitățile regiunii și ce s-a schimbat după 1940.
 category: Comunități și regiuni
-updated: 2026-11-18
-related: registrele-ortodoxe, registrele-catolice-si-protestante, registrele-evreiesti, documente-in-maghiara-si-germana, scrierea-chirilica-romaneasca, recensamintele-vechi
+updated: 2026-11-26
+related: registrele-ortodoxe, registrele-catolice-si-protestante, registrele-evreiesti, documente-in-maghiara-si-germana, scrierea-chirilica-romaneasca, recensamintele-vechi, romanii-din-banatul-sarbesc, dobrogea-genealogie
 terms: registru-parohial, confesiune, parohie, conscriptie, recensamant, cota-arhivistica
 ---
 Bucovina a avut o istorie aparte. Din 1775 până în 1918 a fost provincie a Imperiului Habsburgic, cu o administrație austriacă ordonată și cu multe comunități care trăiau împreună: români, ucraineni (ruteni), germani, evrei, polonezi, armeni, lipoveni, maghiari. Între 1918 și 1940 a făcut parte din România. Din 1940, respectiv 1944, partea de nord a ajuns la Uniunea Sovietică și e azi în Ucraina, iar partea de sud e județul Suceava.

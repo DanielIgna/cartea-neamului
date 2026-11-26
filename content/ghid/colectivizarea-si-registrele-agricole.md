@@ -3,9 +3,9 @@ title: Colectivizarea și registrele agricole: ce documente au rămas
 seo: Colectivizarea și registrele agricole pentru genealogie
 description: Ce documente despre familie au rămas din perioada colectivizării: registre agricole, cereri de intrare în CAP, liste de cote și acte de proprietate.
 category: Registre și arhive
-updated: 2026-11-17
-related: cartea-funciara-si-cadastrul-vechi, cum-intervievezi-bunicii, cum-ceri-copii-de-la-arhive
-terms: registrul-agricol, cartea-funciara, fond-arhivistic
+updated: 2026-11-26
+related: cartea-funciara-si-cadastrul-vechi, cum-intervievezi-bunicii, cum-ceri-copii-de-la-arhive, deportati-in-baragan-si-siberia
+terms: registrul-agricol, cartea-funciara, fond-arhivistic, improprietarire
 ---
 Colectivizarea agriculturii (1949–1962) a schimbat viața aproape fiecărei familii de la sat. A lăsat și multe documente, care azi ajută la cercetarea familiei.
 

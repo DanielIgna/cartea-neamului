@@ -3,8 +3,8 @@ title: Registrele comunităților evreiești din România
 seo: Registre evreiești vechi din România: unde le cauți
 description: Unde cauți nașterile, căsătoriile și decesele din familiile evreiești din România: registre de comunitate, stare civilă și arhive.
 category: Registre și arhive
-updated: 2026-11-17
-related: registrele-de-stare-civila, documente-in-maghiara-si-germana, emigrarea-in-america
+updated: 2026-11-26
+related: registrele-de-stare-civila, documente-in-maghiara-si-germana, emigrarea-in-america, stramosi-evrei-din-romania
 terms: confesiune, stare-civila, registru-de-stare-civila, arhivele-nationale
 ---
 Familiile evreiești din România au trăit mai ales în orașe și târguri din Moldova, Bucovina, Maramureș, Transilvania și Banat. Sursele pentru ele depind, ca la toți, de regiune și de epocă.

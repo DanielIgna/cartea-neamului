@@ -3,8 +3,8 @@ title: Cum implici familia în arborele genealogic
 seo: Arborele genealogic cu toată familia: cum îi implici
 description: Cum aduni rudele în jurul arborelui: cine completează ce ramură, întâlniri de familie, poze comune și grija pentru datele celor în viață.
 category: Primii pași
-updated: 2026-11-17
-related: cum-incepi-arborele-genealogic, protectia-datelor-in-arbore, cum-scrii-povestea-familiei
+updated: 2026-11-26
+related: cum-incepi-arborele-genealogic, protectia-datelor-in-arbore, cum-scrii-povestea-familiei, arborele-familiei-la-masa-de-sarbatori, copiii-din-diaspora-si-bunicii-din-romania
 terms: descendent, rudenie-colaterala, arbore-genealogic
 ---
 Un arbore făcut de un singur om rămâne de obicei la ce știe el. Când fiecare ramură e completată de cei care o cunosc, arborele crește repede, iar familia se apropie.

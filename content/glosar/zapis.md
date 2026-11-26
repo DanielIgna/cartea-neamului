@@ -2,10 +2,10 @@
 title: Zapis
 seo: Zapis: actul vechi de vânzare a pământului, explicat
 description: Zapisul era actul scris de mână prin care se vindea, se dăruia sau se zălogea un pământ. Ce afli dintr-un zapis vechi și cum îl citești.
-updated: 2026-11-25
+updated: 2026-11-26
 published: 2026-11-25
 alt: zapise, zapisuri, înscris
-terms: hrisov, razes, mosnean, testament
+terms: hrisov, razes, mosnean, testament, anul-de-la-facerea-lumii
 related: documente-de-familie-din-casa
 ---
 **Zapisul** era actul scris de mână prin care oamenii își vindeau, își dăruiau, își schimbau sau își zălogeau pământul, casele și viile. Era un act între particulari, nu al domniei, și îl scria de obicei preotul, dascălul sau un logofăt din sat.

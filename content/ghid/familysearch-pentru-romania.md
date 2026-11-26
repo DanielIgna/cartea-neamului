@@ -3,8 +3,8 @@ title: Cum folosești FamilySearch pentru strămoși din România
 seo: FamilySearch pentru România: cum cauți registrele online
 description: Cum cauți gratuit pe FamilySearch registre parohiale și de stare civilă din România fotografiate: catalogul pe localități și răsfoirea imaginilor.
 category: Organizare și unelte
-updated: 2026-11-18
-related: registrele-de-stare-civila, cum-citesti-un-registru-parohial, cum-organizezi-cercetarea, cum-faci-un-fisier-gedcom
+updated: 2026-11-26
+related: registrele-de-stare-civila, cum-citesti-un-registru-parohial, cum-organizezi-cercetarea, cum-faci-un-fisier-gedcom, registre-parohiale-online, hpdt-registrele-din-transilvania, arbore-genealogic-familie-romania-sua-canada
 terms: registru-de-stare-civila, matricola, registru-parohial
 ---
 FamilySearch este un site gratuit de genealogie care a fotografiat, de-a lungul anilor, multe registre de stare civilă și parohiale din România. Ai nevoie doar de un cont gratuit.

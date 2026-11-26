@@ -3,8 +3,8 @@ title: Conscripțiile din Transilvania: ce sunt și cum le folosești
 seo: Conscripțiile din Transilvania, explicate
 description: Conscripțiile fiscale, urbariale și bisericești din Transilvania în secolele XVIII–XIX: ce conțin, cum le citești și unde le găsești.
 category: Registre și arhive
-updated: 2026-11-17
-related: urbariile-si-documentele-mosiilor, recensamintele-vechi, documente-in-latina, documente-in-maghiara-si-germana
+updated: 2026-11-26
+related: urbariile-si-documentele-mosiilor, recensamintele-vechi, documente-in-latina, documente-in-maghiara-si-germana, sasii-din-transilvania-registre, romanii-din-ungaria-registre
 terms: conscriptie, iobag, jeler, urbariu, comitat, scaun
 ---
 Când registrele parohiale nu mai merg înapoi, [conscripțiile](/glosar/conscriptie) pot arăta că o familie trăia într-un sat la o anumită dată. Sunt liste de capi de familie, făcute de autoritățile habsburgice, de stăpânii de moșii sau de Biserică.
