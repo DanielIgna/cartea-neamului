@@ -32,6 +32,8 @@ Pe 27 august 1916, România a intrat în război alături de Franța, Rusia și 
 
 Armata refăcută a rezistat în vara lui 1917 la Mărăști, Mărășești și Oituz. După ce Rusia a ieșit din război, România a fost silită să încheie o pace grea, la București, în mai 1918. În toamna aceluiași an, Puterile Centrale au pierdut războiul. În 1918, Basarabia (27 martie), Bucovina (28 noiembrie) și Transilvania (1 decembrie) s-au unit cu România.
 
+Despre cei trei pași ai Unirii citește [Basarabia și Bucovina în 1918](/ghid/basarabia-bucovina-1918), iar despre cum afli dacă un strămoș de-al tău a fost la Alba Iulia, [Ce era un delegat la Marea Adunare](/ghid/delegati-alba-iulia-1918).
+
 ## Cum s-au descurcat familiile
 
 - **Femeile au ținut gospodăria.** Cu bărbații pe front, mamele și bunicile au arat, au semănat și au crescut singure copiii. Multe dintre ele au rămas văduve de tinere.
