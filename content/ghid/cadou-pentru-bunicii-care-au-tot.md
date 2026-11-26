@@ -3,8 +3,8 @@ title: Ce cadou dai bunicilor care „au tot”
 seo: Idei de cadouri pentru bunici care au tot ce le trebuie
 description: Bunicii spun că nu le trebuie nimic? Idei de cadou care nu se strică și nu stau în dulap: timp, amintiri, glasul și povestea lor, păstrate pentru nepoți.
 category: Poze, documente și amintiri
-updated: 2026-11-18
-related: intrebari-pentru-bunici, cum-intervievezi-bunicii, cum-inregistrezi-glasul-bunicilor, cum-scanezi-poze-si-documente, cum-scrii-povestea-familiei
+updated: 2026-11-26
+related: intrebari-pentru-bunici, cum-intervievezi-bunicii, cum-inregistrezi-glasul-bunicilor, cum-scanezi-poze-si-documente, cum-scrii-povestea-familiei, caietul-cu-retetele-bunicii
 terms: arbore-genealogic, spita-neamului
 ---
 „Nu ne trebuie nimic, maică, avem de toate.” Aproape fiecare nepot a auzit fraza asta înainte de Crăciun sau de o zi de naștere. Și, de cele mai multe ori, e adevărată: bunicii au casa plină, dulapul plin și puțină răbdare pentru încă un obiect pe care trebuie să-l șteargă de praf.

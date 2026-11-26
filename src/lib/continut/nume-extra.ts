@@ -15,17 +15,21 @@ const listRo = (xs: string[]) => (xs.length <= 1 ? xs.join("") : `${xs.slice(0, 
 const lower = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const plainMeaning = (n: Surname) => n.meaning.replace(/[*_]/g, "");
 
-/** Titlul, ales după felul numelui (fără același tipar pe toate paginile); „| Cartea Neamului” se adaugă după. */
-const TITLE: Record<NameKind, (x: string) => string> = {
-  prenume: (x) => `Numele ${x}: ce înseamnă și din ce prenume vine`,
-  patronimic: (x) => `Numele ${x}: ce înseamnă și al cui fiu arată`,
-  loc: (x) => `Numele ${x}: ce înseamnă și ce loc de origine arată`,
-  meserie: (x) => `Numele ${x}: ce înseamnă și ce meserie ascunde`,
-  functie: (x) => `Numele ${x}: ce înseamnă și ce slujbă arată`,
-  porecla: (x) => `Numele ${x}: ce înseamnă porecla și de unde vine`,
-  etnic: (x) => `Numele ${x}: ce înseamnă, de unde vine, unde îl cauți`,
+/**
+ * Titlul, ales după felul numelui (fără același tipar pe toate paginile); „| Cartea Neamului” se adaugă după.
+ * Numele stă primul, ca în căutare („Covaci ce înseamnă”), urmat de „numele de familie” (26.11.2026: pagini la locul 5–9 fără
+ * clicuri). Dacă iese peste 60 de caractere, rămâne forma scurtă.
+ */
+const TITLE: Record<NameKind, string> = {
+  prenume: "din ce prenume vine", patronimic: "al cui fiu arată", loc: "ce loc de origine arată", meserie: "ce meserie arată",
+  functie: "ce slujbă arată", porecla: "de unde vine porecla", etnic: "de unde vine",
 };
-export const nameTitle = (n: Surname) => `${TITLE[n.kind](n.name)} | Cartea Neamului`;
+const titleOf = (n: Surname) => [
+  `${n.name}: ce înseamnă numele de familie și ${TITLE[n.kind]}`,
+  `${n.name}: ce înseamnă numele și ${TITLE[n.kind]}`,
+  `Numele ${n.name}: ce înseamnă și de unde vine`,
+].find((t) => t.length <= 60) ?? `Numele ${n.name}: ce înseamnă`;
+export const nameTitle = (n: Surname) => `${titleOf(n)} | Cartea Neamului`;
 
 /** Descrierea, cu o variantă și regiunea, între 120 și 155 de caractere (prima formă care încape). */
 export function nameDescription(n: Surname): string {
