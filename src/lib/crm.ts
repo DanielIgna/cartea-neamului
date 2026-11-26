@@ -17,12 +17,12 @@ import { realAccountSql } from "./conturi-test";
 
 /* ---------- Valori permise ---------- */
 
-export const ORG_TYPES = ["scoala", "firma", "asociatie_diaspora", "parohie_sau_arhiva_doar_informativ", "librarie_magazin", "presa", "blog", "primarie", "alt_partener"] as const;
+export const ORG_TYPES = ["scoala", "firma", "asociatie_diaspora", "parohie_sau_arhiva_doar_informativ", "librarie_magazin", "presa", "blog", "primarie", "biblioteca", "site_genealogie", "alt_partener"] as const;
 export type OrgType = (typeof ORG_TYPES)[number];
 export const isOrgType = (v: unknown): v is OrgType => typeof v === "string" && (ORG_TYPES as readonly string[]).includes(v);
 export const ORG_TYPE_LABEL: Record<OrgType, string> = {
   scoala: "Școală", firma: "Firmă", asociatie_diaspora: "Asociație din diaspora", parohie_sau_arhiva_doar_informativ: "Parohie / arhivă (doar informativ)",
-  librarie_magazin: "Librărie / magazin", presa: "Presă", blog: "Blog", primarie: "Primărie", alt_partener: "Alt partener",
+  librarie_magazin: "Librărie / magazin", presa: "Presă", blog: "Blog", primarie: "Primărie", biblioteca: "Bibliotecă", site_genealogie: "Site / societate de genealogie", alt_partener: "Alt partener",
 };
 
 export const ORG_STATUSES = ["nou", "contactat", "a_raspuns", "interesat", "in_discutie", "client", "partener", "nu_contacta", "nelivrat"] as const;

@@ -41,6 +41,7 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       {ro && <Link href="/scoala">Pentru școli</Link>}
       {ro && <Link href="/presa">Presă</Link>}
       {ro && <Link href="/arborele-meu">Widget pentru blog</Link>}
+      {ro && <Link href="/link-spre-noi">Link spre noi</Link>}
       <Link href="/istoria-umanitatii">{th("humanity")}</Link>
       <Link href="/genealogii-vechi">{th("genealogies")}</Link>
       <Link href="/libertatea-de-a-crede">{th("label")}</Link>

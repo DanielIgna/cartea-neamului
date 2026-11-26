@@ -74,7 +74,7 @@ export default function PressPage() {
         <p>Scrieți-ne la <a href={`mailto:${PRESS_EMAIL}`}>{PRESS_EMAIL}</a> sau prin <Link href="/contact">pagina de contact</Link>. Putem pune la dispoziție conturi de probă, capturi de ecran și, cu acordul lor, legătura cu familii care și-au făcut arborele.</p>
 
         <h2>Pentru bloguri și site-uri de familie</h2>
-        <p>Familiile care au un blog pot pune pe el fișa neamului lor, cu widgetul gratuit <Link href="/arborele-meu">„Arborele meu”</Link>. Profesorii găsesc fișe gratuite pe <Link href="/scoala">pagina pentru școli</Link>, iar ghidurile de genealogie sunt la <Link href="/ghid">/ghid</Link>.</p>
+        <p>Familiile care au un blog pot pune pe el fișa neamului lor, cu widgetul gratuit <Link href="/arborele-meu">„Arborele meu”</Link>. Profesorii găsesc fișe gratuite pe <Link href="/scoala">pagina pentru școli</Link>, iar ghidurile de genealogie sunt la <Link href="/ghid">/ghid</Link>. Textul și codul gata de pus pe alt site sunt pe pagina <Link href="/link-spre-noi">„Link spre noi”</Link>.</p>
       </article>
     </section>
   );

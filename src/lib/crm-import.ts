@@ -18,6 +18,8 @@ export const IMPORT_KINDS = {
   firme_raspunsuri: { tip: "firma", what: "Răspunsuri de la firme (firma, email, data, raspuns)" },
   presa_lista: { tip: "presa", what: "Redacții de presă de adăugat (nume, email, site, localitate, tara, sursa)" },
   magazine_lista: { tip: "librarie_magazin", what: "Librării și magazine online de adăugat (nume, email, telefon, site, localitate, tara, sursa)" },
+  biblioteci_lista: { tip: "biblioteca", what: "Biblioteci de adăugat (nume, email, site, localitate, tara, sursa)" },
+  genealogie_lista: { tip: "site_genealogie", what: "Societăți și liste de resurse de genealogie (nume, email, site, localitate, tara, sursa)" },
   asociatii_lista: { tip: "asociatie_diaspora", what: "Asociații ale românilor din străinătate de adăugat (nume, email, site, localitate, tara, sursa)" },
 } as const satisfies Record<string, { tip: OrgType; what: string }>;
 export type ImportKind = keyof typeof IMPORT_KINDS;
@@ -241,4 +243,32 @@ export async function fixShopDraftPricesOnce(db: Db, now = new Date()): Promise<
   }
   await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), ciorne: n }, updatedAt: now }).onConflictDoNothing();
   return `${n} ciorne corectate`;
+}
+
+/**
+ * Primele linkuri externe (Daniel, 26.11.2026: „fă tot ce poți să rezolvi singur linkurile externe”). Bibliotecile județene și
+ * societățile / listele de resurse de genealogie din străinătate intră o singură dată în CRM (src/data/crm-linkuri-*.csv), cu
+ * adresa publică și pagina pe care e scrisă (coloana „sursa”). Pentru fiecare, un email în Aprobări (src/data/crm-linkuri-mesaje.json),
+ * care trimite spre /link-spre-noi sau spre pagina în engleză. Nu pleacă nimic până nu apasă Daniel „Trimite acum”; stau 21 de zile.
+ */
+export async function seedLinkTargetsOnce(db: Db, csvs: { kind: "biblioteci_lista" | "genealogie_lista"; text: string }[], drafts: Record<string, { subiect: string; text: string }>, now = new Date()): Promise<string> {
+  const MARK = "crm_linkuri_2026_11_26";
+  const [seen] = await db.select({ key: appSetting.key }).from(appSetting).where(eq(appSetting.key, MARK));
+  if (seen) return "deja";
+  let noi = 0;
+  for (const c of csvs) noi += (await importCsv(db, c.kind, c.text, null, now)).orgsNew;
+  const { queueApproval } = await import("./crm-admin");
+  let n = 0;
+  for (const [email, d] of Object.entries(drafts)) {
+    const [org] = await db.select({ id: crmOrganizations.id, nume: crmOrganizations.nume }).from(crmOrganizations).where(eq(crmOrganizations.emailOficial, email)).limit(1);
+    if (!org) continue;
+    const id = await queueApproval(db, {
+      tipActiune: "email_linkuri", risc: "MEDIUM", organizationId: org.id, dedupeKey: `linkuri-1:${email}`, hours: 21 * 24,
+      motiv: `Rugăminte pentru un link la resursele ${org.nume}, scrisă pentru ei. Citește, schimbă ce vrei, apoi „Trimite acum”.`,
+      payload: { destinatar: email, subiect: d.subiect, text: d.text, replyTo: "contact@carteaneamului.ro" },
+    }, now);
+    if (id) n++;
+  }
+  await db.insert(appSetting).values({ key: MARK, value: { at: now.toISOString(), noi, ciorne: n }, updatedAt: now }).onConflictDoNothing();
+  return `${noi} organizații noi, ${n} emailuri în Aprobări`;
 }

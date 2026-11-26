@@ -240,6 +240,7 @@
   "src/app/(site)/istoria-umanitatii/tiparul-istoriei/page.tsx",
   "src/app/(site)/layout.tsx",
   "src/app/(site)/libertatea-de-a-crede/page.tsx",
+  "src/app/(site)/link-spre-noi/page.tsx",
   "src/app/(site)/loading.tsx",
   "src/app/(site)/localitati/[judet]/[localitate]/page.tsx",
   "src/app/(site)/localitati/[judet]/page.tsx",
@@ -526,6 +527,9 @@
   "src/components/unelte/PrintButton.tsx",
   "src/components/unelte/PrintableTree.tsx",
   "src/components/unelte/ToolPages.tsx",
+  "src/data/crm-linkuri-biblioteci.csv",
+  "src/data/crm-linkuri-genealogie.csv",
+  "src/data/crm-linkuri-mesaje.json",
   "src/data/crm-magazine-mesaje.json",
   "src/data/crm-magazine.csv",
   "src/data/crm-presa-mesaje.json",
@@ -1846,6 +1850,10 @@
   },
   {
    "path": "/libertatea-de-a-crede",
+   "kind": "pagina"
+  },
+  {
+   "path": "/link-spre-noi",
    "kind": "pagina"
   },
   {
