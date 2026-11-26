@@ -6,7 +6,7 @@ import { ctaTarget } from "@/lib/cta";
 /**
  * Numărarea anonimă a vizitelor (Admin → Analiză, src/lib/vizite.ts): la fiecare pagină deschisă trimite doar adresa paginii,
  * site-ul de unde a venit omul, eticheta de campanie din link (utm_…), lățimea ecranului și limba paginii. Nu pune cookie-uri și
- * nu ține nimic în browser. La clic pe un buton de început („Începe arborele”, „Plătește”) trimite doar adresa butonului. Cine are „Do Not Track” sau „Global Privacy Control” pornit nu e numărat deloc.
+ * nu ține nimic în browser. La clic pe un buton de început („Începe arborele”, „Plătește”) trimite doar adresa butonului, iar la clic pe un desen doar numele desenului. Cine are „Do Not Track” sau „Global Privacy Control” pornit nu e numărat deloc.
  */
 export default function VisitBeacon() {
   const pathname = usePathname();
@@ -36,6 +36,16 @@ export default function VisitBeacon() {
     const nav = navigator as Navigator & { globalPrivacyControl?: boolean; doNotTrack?: string };
     if (nav.globalPrivacyControl || nav.doNotTrack === "1") return;
     const onClick = (e: MouseEvent) => {
+      const fig = (e.target as Element | null)?.closest?.("[data-img]");
+      if (fig) {
+        // Clic pe un desen din ghid sau glosar (Admin → SEO → Imagini): doar numele desenului și pagina.
+        const body = JSON.stringify({ path: window.location.pathname, img: (fig.getAttribute("data-img") ?? "").slice(0, 60) });
+        try {
+          if (!navigator.sendBeacon?.("/api/vizita", new Blob([body], { type: "application/json" })))
+            void fetch("/api/vizita", { method: "POST", body, keepalive: true, headers: { "content-type": "application/json" } }).catch(() => {});
+        } catch { /* nu e nimic de făcut */ }
+        return;
+      }
       const el = (e.target as Element | null)?.closest?.("a[href], [data-cta]");
       if (!el) return;
       const target = el.getAttribute("data-cta") || ctaTarget(el.getAttribute("href"));

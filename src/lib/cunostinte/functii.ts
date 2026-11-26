@@ -462,6 +462,17 @@ export const FUNCTIONS: Fn[] = [
     human: "Daniel leagă Search Console (Admin → SEO → Setări), pornește cele două automatizări din Admin → Autonomie și hotărăște propunerile.",
   },
   {
+    key: "seo-imagini", name: "Desene SEO și măsurarea lor", area: "public", lifecycle: "live", risk: "scazut",
+    riskWhy: "Desene SVG publice, fără fotografii și fără date ale oamenilor; clicul pe desen se numără anonim, ca butoanele de început.",
+    what: "Desene făcute de noi (Daniel, 25–26.11.2026: fără fotografii realiste sau inventate) în ghiduri, glosar și paginile de rudenie: public/imagini/*.svg, cu nume de fișier și text alternativ descriptiv, în markdown ca ![alt](/imagini/x.svg \"legendă\") sau în câmpul `image` din src/lib/unelte/rudenie-pagini.ts; intră în sitemap ca image:image și în JSON-LD. Clicul pe desen îl deschide mare și se numără (conversion.kind = „imagine”, nu intră în Analiză). Admin → SEO → Imagini: afișări și clicuri din Google Imagini (Search Console, tipul „image”) față de perioada de dinainte, paginile cu desene față de cele fără (afișări, clicuri, CTR, loc), fiecare pagină cu desene și clicurile pe desene de pe site.",
+    engine: ["src/lib/seo-imagini.ts", "src/components/continut/Figura.tsx", "src/components/admin/SeoImagini.tsx", "src/lib/continut/markdown.ts"],
+    api: ["/api/vizita", "/sitemap.xml"],
+    tables: ["conversion"],
+    dashboard: "/admin/seo",
+    tests: ["tests/imagini-continut.test.ts", "tests/seo-imagini.test.ts"],
+    env: ["GSC_SERVICE_ACCOUNT_JSON"],
+  },
+  {
     key: "diaspora", name: "Pagini pentru diaspora", area: "public", lifecycle: "live", risk: "scazut", riskWhy: "Texte publice, fără date ale oamenilor; regula de ton (D06) se aplică.",
     what: "/diaspora: 18 țări (istoria emigrației, acte din România cerute din străinătate, arhive locale, comunități), cele 50 de state SUA și 13 provincii canadiene (în Google doar cele cu text propriu), orașe mari și 4 pagini speciale (rădăcini evreiești, moldoveni în Italia și Israel, sași și șvabi, maghiari din Transilvania). Fiecare pagină e scrisă în ro, en și limba țării (it, es, de, fr, he, hu), cu hreflang; în index intră ca un singur fișier, /sitemap-diaspora.xml (fișierele pe limbă /sitemaps/diaspora-<limbă>.xml rămân). Din 17.11.2026 cele 7 țări mari (Italia, Spania, Germania, Marea Britanie, SUA, Canada, Israel) au și ghid propriu, ambasada și consulatele verificate în surse oficiale, particularități și întrebări frecvente (FAQPage), în src/lib/diaspora/extins.ts. Butonul de cont nou poartă ?src=diaspora-<pagină>; Admin → SEO → Diaspora arată afișări, clicuri, poziții și conturi pe țară și oraș. Din 18.11.2026 textele noi (Ucraina cu regiunile Cernăuți și sudul Basarabiei, regiunile europene, articolele despre valurile de emigrare pe țări, în limba țării și în română, plus neerlandeza) se scriu ca ciorne în src/lib/diaspora/ciorne: nu sunt pe site până când cheia lor nu e trecută în ciorne/aprobate.ts; se citesc în Admin → SEO → Ciorne, cu previzualizare pe fiecare limbă la /admin/seo/diaspora/<adresă>?l=<limbă>.",
     engine: ["src/lib/diaspora/index.ts", "src/lib/diaspora/ciorne/index.ts", "src/lib/diaspora/tari.ts", "src/lib/diaspora/america.ts", "src/lib/diaspora/teme.ts", "src/lib/diaspora/ui.ts", "src/lib/diaspora/extins.ts", "src/components/diaspora/DiasporaPages.tsx"],

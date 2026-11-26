@@ -32,6 +32,8 @@ Clăcașii sunt specifici Moldovei și Țării Românești până la reforma agr
 
 Categoria în care apare strămoșul tău spune mult despre cât de înstărită era familia.
 
+![Clăcașii în Țara Românească și Moldova: claca din Regulamentele Organice, legea rurală din 1864 și categoriile fruntași, mijlocași, pălmași](/imagini/clacasi-legea-rurala-1864.svg "De la clacă la împroprietărirea din 1864: fruntași, mijlocași și pălmași după vitele de muncă")
+
 ## Cum îl cauți pe un strămoș clăcaș
 
 1. Află satul familiei înainte de 1864 și pe ce moșie era (a unui boier, a unei mănăstiri sau a statului).

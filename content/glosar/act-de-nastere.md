@@ -14,6 +14,8 @@ related: cum-ceri-un-act-de-stare-civila, registrele-de-stare-civila
 
 Data și locul nașterii, numele copilului, numele părinților, de multe ori vârsta, ocupația și domiciliul lor, iar în actele mai vechi și martorii. În registrele de la sfârșitul secolului al XIX-lea apar uneori și bunicii, mai ales în Transilvania.
 
+![Rubricile unui registru de născuți: data nașterii, numele copilului, sexul, părinții, declarantul, martorii și mențiunile de pe margine](/imagini/act-de-nastere-ce-date-contine.svg "Ce găsești într-un act de naștere vechi și unde îl cauți: primărie, Arhivele Naționale sau registrul parohial")
+
 ## Unde îl cauți
 
 - Pentru nașteri din ultimii aproximativ 100 de ani: la serviciul de stare civilă al primăriei unde s-a făcut înregistrarea.

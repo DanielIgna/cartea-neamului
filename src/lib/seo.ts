@@ -184,9 +184,10 @@ export function periods(days: number, today = new Date()) {
   return { cur: { start: iso(start), end: iso(end) }, prev: { start: iso(prevStart), end: iso(prevEnd) } };
 }
 
-export async function searchAnalytics(sa: ServiceAccount, siteUrl: string, p: { start: string; end: string }, dimensions: ("query" | "page" | "date" | "country" | "device")[], rowLimit = 250): Promise<Row[]> {
+/** `type`: „web” (căutarea obișnuită, implicit) sau „image” (Google Imagini, Admin → SEO → Imagini). */
+export async function searchAnalytics(sa: ServiceAccount, siteUrl: string, p: { start: string; end: string }, dimensions: ("query" | "page" | "date" | "country" | "device")[], rowLimit = 250, type: "web" | "image" = "web"): Promise<Row[]> {
   const r = await google<{ rows?: Row[] }>(sa, `${WM}/sites/${site(siteUrl)}/searchAnalytics/query`, {
-    body: { startDate: p.start, endDate: p.end, dimensions, rowLimit, dataState: "all" },
+    body: { startDate: p.start, endDate: p.end, dimensions, rowLimit, dataState: "all", type },
   });
   return r.rows ?? [];
 }

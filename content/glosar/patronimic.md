@@ -22,6 +22,8 @@ Patronimicele sunt frecvente în catagrafiile din Moldova și Țara Românească
 
 ## Terminațiile care arată „fiul lui”
 
+![Cum s-a format un nume patronimic: Vasile, Ion sin Vasile, Ion Vasilescu, plus terminațiile -escu, -iu, -ovici, -uc pe regiuni](/imagini/patronimic-terminatii-nume-romanesti.svg "Patronimicul: de la „fiul lui Vasile” la Vasilescu sau Vasiliu, cu terminațiile pe regiuni")
+
 Patronimicele românești se recunosc după terminație. Fiecare e mai frecventă într-o regiune:
 
 - **-escu**: *Ionescu*, *Petrescu*, *Vasilescu*. E tipică pentru Muntenia și Oltenia și a ajuns în toată țara.
