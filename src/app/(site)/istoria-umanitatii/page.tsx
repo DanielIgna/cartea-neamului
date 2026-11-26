@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import FirulVremii from "@/components/FirulVremii";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { ARTICOLE, SERIE, articolPath } from "@/lib/istorie/articole";
 import PageIntl from "@/i18n/PageIntl";
 import { publicPageMetadata, webPageJsonLd } from "@/lib/page-metadata";
 
@@ -17,8 +18,10 @@ export const generateMetadata = (): Metadata => publicPageMetadata(SEO);
 export default function IstoriaUmanitatiiPage() {
   return <><JsonLd data={webPageJsonLd(SEO)} /><PageIntl ns={["Charts"]} locale="ro"><FirulVremii /></PageIntl>
     <section className="card" lang="ro" style={{ marginTop: 16 }}>
-      <h2 style={{ marginTop: 0 }}>Crizele care au schimbat lumea</h2>
-      <p>De la Marea Criză din 1929 și foametea din 1946–1947 până la criza din 2008 și scumpirile de azi: ce au trăit bunicii și cum s-au descurcat familiile.</p>
-      <Link className="btn" href="/istoria-umanitatii/crize">Citește despre crizele lumii →</Link>
+      <h2 style={{ marginTop: 0 }}>{SERIE}: războaie, pandemii și crize</h2>
+      <p>Cum s-a ajuns la marile încercări ale ultimului secol și cum au trecut prin ele familiile noastre, cu întrebări pentru propriul arbore.</p>
+      <ul className="hub-list">
+        {ARTICOLE.map((a) => <li key={a.slug}><Link href={articolPath(a.slug)}>{a.label}</Link> <span className="muted">{a.short}</span></li>)}
+      </ul>
     </section></>;
 }
