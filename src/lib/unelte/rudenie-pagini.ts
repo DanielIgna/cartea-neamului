@@ -13,6 +13,8 @@ export type KinPage = {
   body: { h: string; p: string[] }[];
   faq: { q: string; a: string }[];
   related: string[];
+  /** Un desen al relației (public/imagini), arătat după primul paragraf și trecut în sitemap-ul de imagini. */
+  image?: { src: string; alt: string; caption: string };
 };
 
 export const TOOLS_HUB = "/unelte";
@@ -74,6 +76,7 @@ export const KIN_PAGES: KinPage[] = [
       { q: "Ce e vărul de-al treilea?", a: "Copilul unui văr de-al doilea al părintelui tău. Aveți în comun stră-străbunicii și sunteți rude de gradul VIII." },
     ],
     related: ["var-primar", "nepot-de-var", "unchi-mare"],
+    image: { src: "/imagini/var-de-al-doilea-schema.svg", alt: "Schema vărului de-al doilea: străbunicii comuni, bunicul și fratele lui, părinții veri primari, tu și vărul de-al doilea, gradul VI", caption: "Tu și vărul de-al doilea aveți aceiași străbunici: gradul VI" },
   },
   {
     slug: "nepot-de-var", name: "Nepot de văr",
@@ -155,6 +158,7 @@ export const KIN_PAGES: KinPage[] = [
       { q: "Afinitatea se pierde la divorț?", a: "După lege, afinitatea încetează prin desfacerea căsătoriei. În multe familii, oamenii își spun însă cumnați și după aceea." },
     ],
     related: ["cumnata", "socru", "cuscru"],
+    image: { src: "/imagini/cumnat-cumnata-schema.svg", alt: "Schema cumnatului și a cumnatei: fratele și sora soției, soțul surorii tale și soția fratelui tău, afini de gradul II", caption: "Cine îți e cumnat sau cumnată: rude prin alianță de gradul II" },
   },
   {
     slug: "cumnata", name: "Cumnată",
@@ -181,6 +185,7 @@ export const KIN_PAGES: KinPage[] = [
       { q: "Cumnatele sunt rude între ele?", a: "Două femei căsătorite cu doi frați nu sunt afine între ele după lege, deși în vorbire își spun cumnate." },
     ],
     related: ["cumnat", "socru", "cuscru"],
+    image: { src: "/imagini/cumnat-cumnata-schema.svg", alt: "Schema cumnatului și a cumnatei: fratele și sora soției, soțul surorii tale și soția fratelui tău, afini de gradul II", caption: "Cine îți e cumnat sau cumnată: rude prin alianță de gradul II" },
   },
   {
     slug: "cuscru", name: "Cuscru",
@@ -208,6 +213,7 @@ export const KIN_PAGES: KinPage[] = [
       { q: "Ce e cuscria?", a: "Legătura dintre două familii prin căsătoria copiilor lor." },
     ],
     related: ["socru", "ginere-si-nora", "cumnat"],
+    image: { src: "/imagini/cuscri-schema.svg", alt: "Schema cuscrilor: părinții mirelui și părinții miresei sunt cuscri între ei, legați prin căsătoria copiilor", caption: "Cuscrii sunt cele două perechi de părinți ai soților" },
   },
   {
     slug: "socru", name: "Socru",

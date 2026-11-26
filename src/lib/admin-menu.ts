@@ -46,6 +46,7 @@ export const ADMIN_SIDES: Record<AdminSide, { label: string; title: string; sub:
       {
         id: "continut", label: "Site și conținut", items: [
           { key: "seo", href: "/admin/seo", label: "Centrul SEO", icon: "search", hint: "Indexare, pagini, inspector URL, sitemap, alerte, cuvinte cheie", isNew: true, words: "google search console indexare sitemap inspector alerte cuvinte cheie noindex prag clustere" },
+          { key: "seo-imagini", href: "/admin/seo?t=imagini", label: "Imagini SEO", icon: "image", hint: "Google Imagini, pagini cu și fără desene, clicuri pe desene", isNew: true, words: "imagini poze desene google images clicuri sitemap imagini alt ctr" },
           { key: "surse-publice", href: "/admin/surse-publice", label: "Surse publice", icon: "book", hint: "Arhivele din ghidul public și din cardul din arbore: pornit, oprit, ordine, texte", isNew: true, words: "surse arhive hpdt familysearch arhivele nationale setari genealogica cautare stramosi" },
           { key: "texte", href: "/admin/texte", label: "Texte", icon: "text", hint: "Cuvântul de la finalul Călătoriei", words: "epilog calatoria in timp" },
           { key: "poze", href: "/admin/poze", label: "Poze prima pagină", icon: "image", hint: "Banner și galeria de pe home", words: "banner galerie home" },

@@ -36,6 +36,7 @@ import { ownWords } from "@/lib/diaspora/extins";
 import Prose from "@/components/continut/Prose";
 import { currentDay, planDays, planDone, planItemsEurope } from "@/lib/seo/plan-indexare";
 import { IndexPlanCheck } from "@/components/admin/IndexPlanCheck";
+import SeoImagini from "@/components/admin/SeoImagini";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "SEO · Admin" };
@@ -46,7 +47,7 @@ export const metadata = { title: "SEO · Admin" };
  * și conversii, din Analiză). Partea din Google Search Console se aprinde singură după ce cheia e pusă în Setări.
  */
 const TABS = [
-  { key: "prezentare", label: "Prezentare" }, { key: "strateg", label: "Strateg" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" },
+  { key: "prezentare", label: "Prezentare" }, { key: "strateg", label: "Strateg" }, { key: "raport", label: "Raport săptămânal" }, { key: "cuvinte", label: "Cuvinte cheie" }, { key: "pagini", label: "Pagini" }, { key: "imagini", label: "Imagini" },
   { key: "indexare", label: "Indexare" }, { key: "sectiuni", label: "Secțiuni" }, { key: "diaspora", label: "Diaspora" }, { key: "inspector", label: "Inspector URL" },
   { key: "ciorne", label: "Ciorne" }, { key: "motor", label: "Motor" }, { key: "sitemap", label: "Sitemap" }, { key: "alerte", label: "Alerte" }, { key: "setari", label: "Setări" },
 ] as const;
@@ -106,7 +107,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
           {t.label}{t.key === "alerte" && alerts.some((a) => a.level !== "info") ? ` (${alerts.filter((a) => a.level !== "info").length})` : ""}
         </Link>)}
       </nav>
-      {["prezentare", "cuvinte", "pagini", "sectiuni", "diaspora"].includes(tab) && gsc.state === "legat" && (
+      {["prezentare", "cuvinte", "pagini", "imagini", "sectiuni", "diaspora"].includes(tab) && gsc.state === "legat" && (
         <nav className="an-periods" aria-label="Perioada din Google">
           {PERIODS.map((d) => <Link key={d} className="btn" href={href({ zile: d === 28 ? undefined : String(d) })} aria-current={d === days ? "true" : undefined}>{d} zile</Link>)}
           <span className="muted" style={{ alignSelf: "center", fontSize: 14 }}>Google arată datele cu 2–3 zile întârziere.</span>
@@ -118,6 +119,7 @@ export default async function AdminSeo({ searchParams }: { searchParams: Promise
       {tab === "raport" && await WeeklyTab({ s, pages })}
       {tab === "cuvinte" && <Keywords gsc={gsc} watch={s.watch} pages={pages} />}
       {tab === "pagini" && await Pages({ pages, gscPages, sp, href })}
+      {tab === "imagini" && await SeoImagini({ s, gsc, days })}
       {tab === "indexare" && <Indexing pages={pages} href={href} sp={sp} gscPages={gscPages} />}
       {tab === "sectiuni" && await Sections({ pages, gscPages, gscOn: gsc.state === "legat", days })}
       {tab === "diaspora" && await Diaspora({ pages, gscPages, gscOn: gsc.state === "legat", days })}

@@ -64,7 +64,9 @@ const short = (v: string | null | undefined, n: number) => (v ? v.replace(/[^\p{
  * Notează o conversie. Nu aruncă niciodată (nu strică un cont nou sau o plată). `attr` se dă când sursa e deja știută
  * (la plată, din Stripe); altfel se caută după antetele cererii.
  */
-export async function recordConversion(db: Db, kind: ConversionKind, o: {
+/** Clicurile pe desene (Admin → SEO → Imagini) stau în același tabel, cu `kind = 'imagine'`, dar nu sunt conversii: nu intră în Analiză. */
+export type RecordKind = ConversionKind | "imagine";
+export async function recordConversion(db: Db, kind: RecordKind, o: {
   headers?: Headers | null; attr?: Attribution | null; label?: string | null; page?: string | null; amount?: number | null; currency?: string | null;
 }) {
   try {
@@ -119,7 +121,7 @@ export async function conversionsBy(db: Db, r: Range, by: "source" | "landing" |
   const col = sql.raw(`coalesce(${by}, '—')`);
   const list = await rows(db, sql`select ${col} as k, kind, count(*) as c,
       coalesce(sum(amount) filter (where currency = 'ron'), 0) as ron, coalesce(sum(amount) filter (where currency = 'eur'), 0) as eur
-    from conversion where day between ${r.from} and ${r.to} group by 1, 2`);
+    from conversion where day between ${r.from} and ${r.to} and kind <> 'imagine' group by 1, 2`);
   const out = new Map<string, ConvCounts>();
   for (const x of list) {
     const k = String(x.k);
@@ -140,7 +142,7 @@ export function totalOf(m: Map<string, ConvCounts>): ConvCounts {
 
 /** Ce parte din conversii au o sursă găsită (restul: vizita începuse altă zi, Do Not Track etc.). */
 export async function attributedShare(db: Db, r: Range) {
-  const [x] = await rows(db, sql`select count(*) as c, count(*) filter (where attributed) as a from conversion where day between ${r.from} and ${r.to} and kind <> 'cta'`);
+  const [x] = await rows(db, sql`select count(*) as c, count(*) filter (where attributed) as a from conversion where day between ${r.from} and ${r.to} and kind not in ('cta', 'imagine')`);
   return { total: n(x?.c), attributed: n(x?.a) };
 }
 

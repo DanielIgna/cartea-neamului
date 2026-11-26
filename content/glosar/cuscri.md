@@ -10,6 +10,8 @@ related: grade-de-rudenie, nasii-si-rudenia-spirituala
 
 Juridic nu e o rudenie, dar în satul tradițional cuscria lega două neamuri, iar între familiile încuscrite se făceau des și alte căsătorii sau înrudiri prin [nași](/glosar/nas). Dacă vezi aceleași nume de familie revenind ca nași sau martori, e un semn că între ele exista o astfel de legătură. Vezi și [afinitate](/glosar/afinitate).
 
+![Schema cuscrilor: părinții mirelui și părinții miresei sunt cuscri între ei, legați prin căsătoria copiilor](/imagini/cuscri-schema.svg "Cuscrii sunt cele două perechi de părinți ai soților")
+
 ## Cum apare într-un act
 
 Cuscrii nu apar ca atare într-un act, dar îi poți deduce: părinții mirelui și cei ai miresei sunt trecuți în actul de căsătorie. Uneori un cuscru e martor la cununie sau naș la primul copil al tinerilor, ceea ce leagă și mai strâns cele două familii în registre.

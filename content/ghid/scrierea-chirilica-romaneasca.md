@@ -18,6 +18,8 @@ Multe acte românești de dinainte de 1860 sunt scrise cu [alfabetul chirilic ro
 - **ѳ** = f (în cuvinte de origine grecească), **ѵ** = i sau v
 - **ѯ** = cs (x), **ѱ** = ps
 
+![Alfabetul chirilic românesc: literele ш, щ, ц, ж, ч, џ, ъ, ѫ, ꙟ, ѣ, ꙋ, х, ѳ, ѵ, ѯ, ѱ, ѡ cu echivalentul lor în litere latine](/imagini/alfabetul-chirilic-romanesc-litere.svg "Literele chirilice românești care diferă cel mai mult de alfabetul de azi")
+
 Literele **а, в, д, е, з, и, к, л, м, н, о, п, р, с, т** se citesc aproape ca azi (с = s, р = r, в = v, н = n, п = p).
 
 ## Anii, scriși cu litere
@@ -28,6 +30,8 @@ Literele **а, в, д, е, з, и, к, л, м, н, о, п, р, с, т** se cites
 - zeci: **і** 10, **к** 20, **л** 30, **м** 40, **н** 50, **ѯ** 60, **о** 70, **п** 80, **ч** 90
 - sute: **р** 100, **с** 200, **т** 300, **у** 400, **ф** 500, **х** 600, **ѱ** 700, **ѿ** 800, **ц** 900
 - miile se arată cu semnul **҂** înaintea literei: **҂а** = 1000
+
+![Cifrele chirilice: valorile literelor pentru unități, zeci și sute și exemplul anului 1850 scris cu litere](/imagini/cifre-chirilice-anii-in-acte.svg "Cum citești un an scris cu litere chirilice: le aduni valorile")
 
 Un exemplu: **҂аѿн** = 1000 + 800 + 50 = 1850.
 

@@ -26,6 +26,8 @@ Fiecare persoană are dreptul să-și vadă propriul dosar. Pentru o persoană d
 
 Pentru genealogie, chiar și o fișă scurtă poate fi prețioasă: are de obicei data și locul nașterii, părinții și uneori frații.
 
+![Pașii pentru dosarul bunicului la CNSAS: strângi datele, dovedești rudenia, depui cererea, apoi studiezi dosarul](/imagini/dosar-securitate-cnsas-pasi.svg "Cererea la CNSAS pentru dosarul unui bunic, în trei pași")
+
 ## Pasul 1: strânge datele
 
 Înainte de cerere, adună:

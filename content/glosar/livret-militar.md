@@ -22,6 +22,8 @@ Livretele sunt acte personale, păstrate în familie; nu există o colecție pub
 
 ## Ce afli din livretul militar al bunicului
 
+![Livret militar deschis, cu rubricile nume, data și locul nașterii, părinți, semnalmente, unitate, grad, încorporare, lăsare la vatră și campanii](/imagini/livret-militar-ce-scrie-in-el.svg "Ce rubrici are de obicei un livret militar vechi și ce faci după ce l-ai găsit")
+
 Pentru un bunic sau străbunic care a fost soldat, livretul e adesea singurul act care spune **unde a fost** în anii de armată sau de război. Din el afli:
 
 - **unitatea** (regimentul, batalionul, compania), cu care cauți apoi istoricul unității și registrele ei;

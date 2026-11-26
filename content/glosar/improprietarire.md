@@ -12,6 +12,8 @@ related: cartea-funciara-si-cadastrul-vechi
 
 Pentru un arbore, aceste liste sunt prețioase: îți arată capul de familie, satul și, adesea, cât pământ a primit și în ce categorie era.
 
+![Clăcașii în Țara Românească și Moldova: claca din Regulamentele Organice, legea rurală din 1864 și categoriile fruntași, mijlocași, pălmași](/imagini/clacasi-legea-rurala-1864.svg "De la clacă la împroprietărirea din 1864: fruntași, mijlocași și pălmași după vitele de muncă")
+
 ## Cum apare într-un act
 
 O listă de împroprietărire are, pe rânduri, numele, uneori vârsta sau situația familiei și suprafața primită. La reforma din 1921, au avut întâietate veteranii, văduvele și orfanii de război, așa că în dosare apare des „văduvă de război” sau „invalid”. În 1945, listele și procesele-verbale ale comitetelor locale arată cine a primit pământ și de pe ce moșie.

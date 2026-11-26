@@ -21,6 +21,8 @@ const Body = z.object({
   lang: z.string().max(10).nullish(),
   /** Clic pe un buton de început: adresa spre care duce (/intrare, /plata…). Nu e o pagină nouă, ci o conversie. */
   cta: z.string().max(60).nullish(),
+  /** Clic pe un desen din ghid, glosar sau o pagină de rudenie: numele fișierului (Admin → SEO → Imagini). */
+  img: z.string().max(60).nullish(),
 });
 const none = () => new Response(null, { status: 204 });
 
@@ -35,6 +37,11 @@ export async function POST(req: Request) {
   if (me && (isDemo(me.email) || isAdminUser(me))) return none();
   const h = req.headers;
   const d = parsed.data;
+  if (d.img) {
+    const auto = looksAutomated({ ua: h.get("user-agent"), lang: h.get("accept-language"), country: h.get("x-vercel-ip-country"), city: h.get("x-vercel-ip-city") });
+    if (/^[a-z0-9-]{2,60}$/.test(d.img) && !auto) await recordConversion(db, "imagine", { headers: h, label: d.img, page: d.path });
+    return none();
+  }
   if (d.cta) {
     const target = ctaTarget(d.cta) ?? (/^[a-z0-9-]{2,40}$/.test(d.cta) ? d.cta : null);
     const auto = looksAutomated({ ua: h.get("user-agent"), lang: h.get("accept-language"), country: h.get("x-vercel-ip-country"), city: h.get("x-vercel-ip-city") });

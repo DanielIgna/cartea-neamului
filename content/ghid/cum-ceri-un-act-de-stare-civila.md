@@ -9,6 +9,8 @@ terms: act-de-nastere, act-de-casatorie, act-de-deces, extras-multilingv, aposti
 ---
 Primul lucru de lămurit e **vârsta actului**: de ea depinde unde îl ceri.
 
+![Schemă: unde ceri un act de stare civilă după vechimea lui, la primărie, la Arhivele Naționale sau în registrul parohial, și ce scrii în cerere](/imagini/cum-ceri-act-de-stare-civila-schema.svg "Unde ceri actul după vârsta lui și cele șase lucruri de scris în cerere")
+
 ## Acte din ultimii aproximativ 100 de ani: la primărie
 
 Registrele mai noi sunt la serviciul de stare civilă al primăriei unde s-a înregistrat evenimentul (de obicei, unde s-a născut, s-a căsătorit sau a murit omul).

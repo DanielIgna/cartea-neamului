@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Figura from "@/components/continut/Figura";
 import { notFound } from "next/navigation";
 import { ORG } from "@/lib/seo/organizatie";
 import JsonLd from "@/components/JsonLd";
@@ -146,6 +147,7 @@ export function KinPageView({ slug }: { slug: string }) {
       <JsonLd data={{
         "@context": "https://schema.org", "@type": "Article", headline: p.title, description: p.description, url: canonicalUrl(path), inLanguage: "ro",
         dateModified: day(path), author: org, publisher: org, about: { "@type": "DefinedTerm", name: p.name },
+        ...(p.image ? { image: canonicalUrl(p.image.src) } : {}),
       }} />
       <JsonLd data={faqLd(p.faq)} />
       <Breadcrumbs items={[{ name: "Unelte gratuite", path: TOOLS_HUB }, { name: "Calculatorul de rudenie", path: KIN_CALC }, { name: p.name, path }]} />
@@ -153,6 +155,7 @@ export function KinPageView({ slug }: { slug: string }) {
         <div className="section-label" style={{ marginTop: 0 }}>Rudenie · {p.degree}</div>
         <h1>{p.h1}</h1>
         <p className="lead">{p.lead}</p>
+        {p.image && <Figura src={p.image.src} alt={p.image.alt} caption={p.image.caption} />}
         {p.body.map((b) => <div key={b.h}><h2>{b.h}</h2>{b.p.map((x) => <p key={x.slice(0, 40)}>{x}</p>)}</div>)}
         <h2>Întrebări frecvente</h2>
         {p.faq.map((f) => <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>)}

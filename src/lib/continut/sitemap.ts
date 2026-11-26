@@ -128,7 +128,10 @@ export function rawGroups(published: Map<string, Date> = new Map()): SitemapGrou
     {
       // Uneltele gratuite și paginile despre rude (src/lib/unelte).
       name: "unelte", label: "Unelte gratuite",
-      urls: [TOOLS_HUB, ...TOOLS.map(toolPath), ...KIN_PAGES.map(kinPagePath)].map((path): SitemapUrl => ({ path, lastModified: TOOLS_UPDATED })),
+      urls: [
+        ...[TOOLS_HUB, ...TOOLS.map(toolPath)].map((path): SitemapUrl => ({ path, lastModified: TOOLS_UPDATED })),
+        ...KIN_PAGES.map((p): SitemapUrl => ({ path: kinPagePath(p), lastModified: TOOLS_UPDATED, ...(p.image ? { images: [p.image.src] } : {}) })),
+      ],
     },
     {
       // Presă și widgetul gratuit (src/lib/autoritate.ts).
