@@ -13,7 +13,7 @@ import { testBatchOnce, testDigitalOnce } from "../src/lib/carduri-cadou";
 import { probaOnce } from "../src/lib/coduri-activare-proba";
 import { startActivationOnce, startGoogleOnce, startSeoEngineOnce } from "../src/lib/autonomie";
 import { readFileSync } from "node:fs";
-import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce, fixShopDraftPricesOnce } from "../src/lib/crm-import";
+import { seedPressDraftsOnce, seedPressOnce, seedShopDraftsOnce, seedShopsOnce, fixShopDraftPricesOnce, seedLinkTargetsOnce } from "../src/lib/crm-import";
 import { fixIgnaTodea, fixCurtuliMaiden, fixAncaSimona } from "../src/lib/corectura-igna-todea";
 
 if (!process.env.DATABASE_URL) {
@@ -65,4 +65,12 @@ try { console.log(`deploy-db: emailuri pentru presă: ${await seedPressDraftsOnc
 try { console.log(`deploy-db: magazine în CRM: ${await seedShopsOnce(db, readFileSync("src/data/crm-magazine.csv", "utf8"))}`); } catch (e) { console.error("deploy-db: lista de magazine a eșuat", e); }
 try { console.log(`deploy-db: emailuri pentru magazine: ${await seedShopDraftsOnce(db, JSON.parse(readFileSync("src/data/crm-magazine-mesaje.json", "utf8")))}`); } catch (e) { console.error("deploy-db: emailurile pentru magazine au eșuat", e); }
 try { console.log(`deploy-db: prețul Basic în emailurile către magazine: ${await fixShopDraftPricesOnce(db)}`); } catch (e) { console.error("deploy-db: corectarea emailurilor către magazine a eșuat", e); }
+// Primele linkuri externe (Daniel, 26.11.2026): bibliotecile județene și societățile de genealogie intră o singură dată în CRM,
+// cu câte un email în Aprobări. Nimic nu pleacă fără „Trimite acum”.
+try {
+  console.log(`deploy-db: linkuri externe în CRM: ${await seedLinkTargetsOnce(db, [
+    { kind: "biblioteci_lista", text: readFileSync("src/data/crm-linkuri-biblioteci.csv", "utf8") },
+    { kind: "genealogie_lista", text: readFileSync("src/data/crm-linkuri-genealogie.csv", "utf8") },
+  ], JSON.parse(readFileSync("src/data/crm-linkuri-mesaje.json", "utf8")))}`);
+} catch (e) { console.error("deploy-db: lista pentru linkuri externe a eșuat", e); }
 process.exit(0);

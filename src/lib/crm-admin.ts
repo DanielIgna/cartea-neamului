@@ -22,7 +22,7 @@ export const endOfDay = (now: Date) => { const e = new Date(now); e.setUTCHours(
 
 /* ---------- Linkul cu sursă al unei organizații ---------- */
 
-export const SRC_PREFIX: Partial<Record<OrgType, string>> = { scoala: "scoala", firma: "firma", asociatie_diaspora: "asociatie", librarie_magazin: "magazin", presa: "presa", blog: "blog", primarie: "primarie" };
+export const SRC_PREFIX: Partial<Record<OrgType, string>> = { scoala: "scoala", firma: "firma", asociatie_diaspora: "asociatie", librarie_magazin: "magazin", presa: "presa", blog: "blog", primarie: "primarie", biblioteca: "biblioteca", site_genealogie: "genealogie" };
 export const srcOf = (tip: string, slug: string | null) => (slug ? `${SRC_PREFIX[tip as OrgType] ?? "org"}-${slug}`.slice(0, 40) : null);
 
 /** Conturile reale venite pe linkurile ?src= ale organizațiilor: câte, câte cu arbore început, câte plătitoare. */
