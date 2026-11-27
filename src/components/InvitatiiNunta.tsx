@@ -1,14 +1,15 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { localizedPath, type Locale } from "@/i18n/locales";
-import { SHOP_MODELS, SHOP_PATH, fill, modelPath, modelText, shopPrice, shopText, type ShopModel } from "@/lib/invitatii-nunta";
+import { FORMATS, SHOP_PATH, modelPath, modelText, shopPrice, shopText, type ShopModel } from "@/lib/invitatii-nunta";
 import { HOME_LABEL, canonicalUrl } from "@/lib/page-metadata";
 import { SITE_URL } from "@/lib/site-url";
 
 /**
  * Paginile publice ale rubricii „Invitații de nuntă”: lista modelelor și pagina unui model, cu pozele de prezentare (cu semnul
- * „MODEL”, în /public), ce primește clientul, prețul din catalog și butonul de cumpărare (fără cont). Aceleași pentru vizitatori
- * (variantele gata făcute din /pub) și pentru cine e în cont; doar mesajul de eroare vine din adresă, la pagina făcută pe loc.
+ * „MODEL”), ce primește clientul, prețul și butonul de cumpărare (fără cont). Modelele vin din baza de date (doar cele publicate și
+ * scrise în limba paginii). Aceleași pentru vizitatori (variantele gata făcute din /pub) și pentru cine e în cont; doar mesajul de
+ * eroare vine din adresă, la pagina făcută pe loc.
  */
 
 const homeLabel = (l: Locale) => HOME_LABEL[l];
@@ -21,8 +22,11 @@ function crumbsLd(locale: Locale, items: { name: string; path: string }[]) {
   };
 }
 
+/** Textele modelului în limba paginii (paginile primesc doar modele scrise în ea). */
+const textOf = (m: ShopModel, locale: Locale) => modelText(m, locale) ?? modelText(m, "ro")!;
+
 function productLd(m: ShopModel, locale: Locale) {
-  const tm = modelText(m, locale);
+  const tm = textOf(m, locale);
   const p = shopPrice(m, locale);
   return {
     "@type": "Product",
@@ -42,7 +46,7 @@ function productLd(m: ShopModel, locale: Locale) {
 }
 
 /** Lista modelelor (/invitatii-nunta). */
-export function ShopHub({ locale, open }: { locale: Locale; open: boolean }) {
+export function ShopHub({ locale, open, models }: { locale: Locale; open: boolean; models: ShopModel[] }) {
   const t = shopText(locale);
   const ld = {
     "@context": "https://schema.org",
@@ -50,8 +54,8 @@ export function ShopHub({ locale, open }: { locale: Locale; open: boolean }) {
       { "@type": "CollectionPage", "@id": `${own(SHOP_PATH, locale)}#page`, url: own(SHOP_PATH, locale), name: t.hubMetaTitle, description: t.hubMetaDescription, inLanguage: locale,
         isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL } },
       crumbsLd(locale, [{ name: t.label, path: SHOP_PATH }]),
-      { "@type": "ItemList", itemListElement: SHOP_MODELS.map((m, i) => ({ "@type": "ListItem", position: i + 1, url: own(modelPath(m), locale), name: modelText(m, locale).title })) },
-      ...SHOP_MODELS.map((m) => productLd(m, locale)),
+      { "@type": "ItemList", itemListElement: models.map((m, i) => ({ "@type": "ListItem", position: i + 1, url: own(modelPath(m), locale), name: textOf(m, locale).title })) },
+      ...models.map((m) => productLd(m, locale)),
     ],
   };
   return (
@@ -65,16 +69,18 @@ export function ShopHub({ locale, open }: { locale: Locale; open: boolean }) {
       </div>
       {!open ? <div className="card"><p style={{ margin: 0 }}>{t.closed}</p></div> : (
         <>
-          <ul className="shop-grid">
-            {SHOP_MODELS.map((m) => {
-              const tm = modelText(m, locale);
-              const img = m.images.find((i) => i.kind === "mockup") ?? m.images[0];
+          {models.length > 0 && <ul className="shop-grid">
+            {models.map((m) => {
+              const tm = textOf(m, locale);
+              const img = m.images[0];
               return (
                 <li key={m.slug} className="card shop-item">
-                  <Link href={modelPath(m)} className="shop-item-img">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.src} width={img.width} height={img.height} alt={fill(t.imgMockup, { name: tm.name })} loading="lazy" decoding="async" />
-                  </Link>
+                  {img && (
+                    <Link href={modelPath(m)} className="shop-item-img">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={img.src} width={img.width} height={img.height} alt={tm.title} loading="lazy" decoding="async" />
+                    </Link>
+                  )}
                   <h2><Link href={modelPath(m)}>{tm.title}</Link></h2>
                   <p className="muted">{tm.tagline}</p>
                   <p className="shop-price"><b>{shopPrice(m, locale).label}</b></p>
@@ -82,7 +88,7 @@ export function ShopHub({ locale, open }: { locale: Locale; open: boolean }) {
                 </li>
               );
             })}
-          </ul>
+          </ul>}
           <div className="card"><p className="muted" style={{ margin: 0 }}>{t.moreSoon}</p></div>
           <Details locale={locale} />
         </>
@@ -91,14 +97,30 @@ export function ShopHub({ locale, open }: { locale: Locale; open: boolean }) {
   );
 }
 
-/** Ce primești, pașii și licența: aceleași pe listă și pe pagina modelului. */
-function Details({ locale }: { locale: Locale }) {
+/** Limbile invitației, scrise în limba paginii („română, engleză…”). */
+function langNames(codes: string[], locale: Locale) {
+  let dn: Intl.DisplayNames | null = null;
+  try { dn = new Intl.DisplayNames([locale], { type: "language" }); } catch { /* browser vechi */ }
+  return codes.map((c) => dn?.of(c) ?? c).join(", ");
+}
+
+/** Ce primești (cu limbile, formatele și culorile modelului, pe pagina lui), pașii și licența. */
+function Details({ locale, model }: { locale: Locale; model?: ShopModel }) {
   const t = shopText(locale);
+  const tm = model ? textOf(model, locale) : null;
+  const colors = tm?.colors?.split(";").map((c) => c.trim()).filter(Boolean) ?? [];
+  const items = [
+    t.get1,
+    model?.languages.length ? `${t.langsLabel}: ${langNames(model.languages, locale)}.` : null,
+    model?.formats.length ? `${t.formatsLabel}: ${model.formats.map((f) => FORMATS[f] ?? f).join(", ")}.` : null,
+    colors.length ? `${t.colorsLabel}: ${colors.join("; ")}.` : null,
+    t.get4,
+  ].filter((x): x is string => !!x);
   return (
     <>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{t.getTitle}</h2>
-        <ul className="shop-gets">{[t.get1, t.get2, t.get3, t.get4].map((g) => <li key={g}>{g}</li>)}</ul>
+        <ul className="shop-gets">{items.map((g) => <li key={g}>{g}</li>)}</ul>
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{t.stepsTitle}</h2>
@@ -113,7 +135,7 @@ function Details({ locale }: { locale: Locale }) {
 /** Pagina unui model (/invitatii-nunta/<slug>), cu formularul de cumpărare. */
 export function ShopModelPage({ model, locale, open, payReady, error }: { model: ShopModel; locale: Locale; open: boolean; payReady: boolean; error?: string | null }) {
   const t = shopText(locale);
-  const tm = modelText(model, locale);
+  const tm = textOf(model, locale);
   const price = shopPrice(model, locale);
   const ld = {
     "@context": "https://schema.org",
@@ -124,7 +146,6 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
       productLd(model, locale),
     ],
   };
-  const alt = (k: ShopModel["images"][number]["kind"]) => (k === "mockup" ? fill(t.imgMockup, { name: tm.name }) : k === "crem" ? `${tm.name}: ${t.imgCrem}` : `${tm.name}: ${t.imgDark}`);
   const [hero, ...cards] = model.images;
   const err = error === "acord" ? t.errConsent : error === "oprit" ? t.paused : error ? t.errStart : null;
   return (
@@ -136,10 +157,12 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
       {!open ? <div className="card"><h1 style={{ marginTop: 0 }}>{tm.title}</h1><p style={{ margin: 0 }}>{t.closed}</p></div> : (
         <>
           <div className="card shop-model">
-            <figure className="shop-figure">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={hero.src} width={hero.width} height={hero.height} alt={alt(hero.kind)} fetchPriority="high" decoding="async" />
-            </figure>
+            {hero && (
+              <figure className="shop-figure">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={hero.src} width={hero.width} height={hero.height} alt={tm.title} fetchPriority="high" decoding="async" />
+              </figure>
+            )}
             <div className="shop-buy" id="cumpara">
               <div className="section-label" style={{ marginTop: 0 }}>{t.label}</div>
               <h1>{tm.title}</h1>
@@ -158,19 +181,20 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
             </div>
           </div>
           <div className="card">
-            <p>{tm.description}</p>
-            <div className="shop-cards">
-              {cards.map((c) => (
-                <figure key={c.src}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.src} width={c.width} height={c.height} alt={alt(c.kind)} loading="lazy" decoding="async" />
-                  <figcaption className="muted">{c.kind === "crem" ? t.imgCrem : t.imgDark}</figcaption>
-                </figure>
-              ))}
-            </div>
+            {tm.description.split(/\n{2,}/).map((para) => <p key={para}>{para}</p>)}
+            {cards.length > 0 && (
+              <div className="shop-cards">
+                {cards.map((c, i) => (
+                  <figure key={c.src}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={c.src} width={c.width} height={c.height} alt={`${tm.name} (${i + 2}/${model.images.length})`} loading="lazy" decoding="async" />
+                  </figure>
+                ))}
+              </div>
+            )}
             <p className="muted" style={{ marginBottom: 0 }}>{t.previewNote}</p>
           </div>
-          <Details locale={locale} />
+          <Details locale={locale} model={model} />
           <p className="shop-blessing">{t.blessing}</p>
         </>
       )}

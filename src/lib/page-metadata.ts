@@ -39,8 +39,9 @@ export const isTranslatedPath = (path: string) => TRANSLATED.has(path);
  * (/it/contact), româna e fără prefix și e și „x-default”. O pagină netradusă, deschisă în altă limbă, trimite la adresa
  * românească și nu intră în Google (`noindex`), ca să nu fie aceeași pagină de două ori.
  */
-export function languageAlternates(path: string, locale: Locale): Pick<Metadata, "alternates" | "robots"> & { url: string } {
-  const locales: readonly Locale[] = isTranslatedPath(path) ? pageLocales(path) : ["ro"];
+export function languageAlternates(path: string, locale: Locale, only?: readonly Locale[]): Pick<Metadata, "alternates" | "robots"> & { url: string } {
+  // `only`: limbile unei pagini din baza de date (o invitație de nuntă scrisă doar în unele limbi).
+  const locales: readonly Locale[] = only ?? (isTranslatedPath(path) ? pageLocales(path) : ["ro"]);
   if (!locales.includes(locale) || locales.length === 1) {
     const url = canonicalUrl(path);
     return locale === "ro" ? { url, alternates: { canonical: url } } : { url, alternates: { canonical: url }, robots: { index: false, follow: true } };
@@ -55,9 +56,9 @@ export function languageAlternates(path: string, locale: Locale): Pick<Metadata,
  * `locale`: limba paginii când nu e o pagină pregătită dinainte (de pildă /it/contact?src=fb, randată pe loc); fără ea,
  * pagina randată pe loc ar primi adresa canonică românească, deși textul e în italiană.
  */
-export function publicPageMetadata({ path, title: full, description, image, locale: asked }: { path: string; title: string; description: string; image?: { url: string; alt: string }; locale?: Locale }): Metadata {
+export function publicPageMetadata({ path, title: full, description, image, locale: asked, locales }: { path: string; title: string; description: string; image?: { url: string; alt: string }; locale?: Locale; locales?: readonly Locale[] }): Metadata {
   const locale = staticLocaleNow() ?? asked ?? "ro";
-  const { url, ...lang } = languageAlternates(path, locale);
+  const { url, ...lang } = languageAlternates(path, locale, locales);
   const title = fitTitle(full);
   // O pagină cu cardul ei (nume, localitate) îl arată în previzualizarea linkului, în locul pozei comune.
   // Celelalte pagini din sitemap au cardul lor, desenat din titlu și descriere (/api/card?pagina=…); restul, poza comună.

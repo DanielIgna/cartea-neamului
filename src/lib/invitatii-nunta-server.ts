@@ -1,11 +1,12 @@
 /**
  * Vânzarea invitațiilor de nuntă (Daniel, 27.11.2026), fără cont, separat de plățile contului (src/lib/plati.ts rămâne neatins):
  * - /api/invitatii-nunta/start deschide o plată Stripe Checkout (mode payment) cu metadata kind=invitatie-nunta, slug și locale;
- *   prețul vine din catalog (src/lib/invitatii-nunta.ts), nu din formular; Stripe cere emailul;
+ *   prețul vine din baza de date (shop_product, src/lib/invitatii-nunta-produse.ts), nu din formular; Stripe cere emailul;
  * - webhook-ul (/api/plata/stripe) trimite aici evenimentele cu kind=invitatie-nunta, înainte de paidSession();
  * - comanda se scrie în `shop_order` o singură dată pe sesiune, cu hash-ul unui token lung (HMAC din id-ul sesiunii), valabil
  *   30 de zile; clientul primește linkul pe email (Resend), iar /invitatii-nunta/gata?session_id=… îl arată și el;
- * - /api/invitatii-nunta/descarca/<token> verifică tokenul și trimite ZIP-ul din storage-ul privat (magazin/invitatii-nunta/…).
+ * - /api/invitatii-nunta/descarca/<token> verifică tokenul și trimite ZIP-ul modelului din storage-ul privat
+ *   (magazin/invitatii-nunta/<slug>.zip), chiar dacă între timp modelul a fost retras sau arhivat.
  * Rubrica se poate opri din Admin → Invitații de nuntă (app_setting „invitatii_nunta”), fără deploy.
  */
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
@@ -15,7 +16,8 @@ import { appSetting, shopOrder } from "@/db/schema";
 import { isLocale, type Locale } from "@/i18n/locales";
 import { sendEmail, siteInbox, type EmailResult } from "./email";
 import { formatPaid, renderMail } from "./emailuri";
-import { LINK_DAYS, SHOP_DONE_PATH, SHOP_KIND, fill, modelBySlug, modelText, shopPrice, shopText, type ShopModel } from "./invitatii-nunta";
+import { LINK_DAYS, SHOP_DONE_PATH, SHOP_KIND, fill, isModelSlug, modelPath, modelText, shopPrice, shopText, type ShopModel } from "./invitatii-nunta";
+import { modelBySlug } from "./invitatii-nunta-produse";
 import { operator } from "./legal";
 
 const DAY = 86_400_000;
@@ -83,7 +85,7 @@ export async function createShopCheckout(o: {
   model: ShopModel; locale: Locale; origin: string; waiver: string; seller: string;
 }, fetcher: typeof fetch = fetch): Promise<string> {
   const price = shopPrice(o.model, o.locale);
-  const name = modelText(o.model, o.locale).title;
+  const name = (modelText(o.model, o.locale) ?? modelText(o.model, "ro"))?.title ?? o.model.slug;
   const body = new URLSearchParams({
     mode: "payment",
     "line_items[0][quantity]": "1",
@@ -91,7 +93,7 @@ export async function createShopCheckout(o: {
     "line_items[0][price_data][unit_amount]": String(price.amount),
     "line_items[0][price_data][product_data][name]": name,
     success_url: `${o.origin}${SHOP_DONE_PATH}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${o.origin}/invitatii-nunta/${o.model.slug}`,
+    cancel_url: `${o.origin}${modelPath(o.model)}`,
     locale: stripeLocale(o.locale),
     "metadata[kind]": SHOP_KIND,
     "metadata[slug]": o.model.slug,
@@ -130,11 +132,11 @@ export function shopPaidFromSession(o: Record<string, unknown> | undefined | nul
   const md = (o.metadata ?? {}) as Record<string, string>;
   if (md.kind !== SHOP_KIND || typeof o.id !== "string") return null;
   if (o.payment_status !== "paid" && o.payment_status !== "no_payment_required") return null;
-  const model = modelBySlug(md.slug);
+  // Doar forma slugului: comanda se trece și dacă modelul a fost retras între timp (omul a plătit).
   const details = (o.customer_details ?? {}) as { email?: unknown };
   const email = typeof details.email === "string" ? details.email : typeof o.customer_email === "string" ? o.customer_email : "";
-  if (!model || !email) return null;
-  return { id: o.id, email: email.trim().slice(0, 320), slug: model.slug, locale: isLocale(md.locale) ? md.locale : "ro", amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  if (!isModelSlug(md.slug) || !email) return null;
+  return { id: o.id, email: email.trim().slice(0, 320), slug: md.slug, locale: isLocale(md.locale) ? md.locale : "ro", amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
 }
 
 /**
@@ -163,7 +165,8 @@ export async function fetchShopSession(id: string, fetcher: typeof fetch = fetch
 /* ---------- Comanda ---------- */
 
 export type ShopOrderRow = typeof shopOrder.$inferSelect;
-type Mailer = (o: ShopOrderRow, token: string, origin: string) => Promise<EmailResult>;
+type Mailer = (o: ShopOrderRow, token: string, origin: string, model: ShopModel | null) => Promise<EmailResult>;
+const findModel = (db: Pick<Db, "select">, slug: string) => modelBySlug(db, slug).catch(() => null);
 
 /**
  * Trece comanda o singură dată pe sesiune Stripe și trimite emailul cu linkul. Întoarce comanda (nouă sau deja trecută) și tokenul.
@@ -177,7 +180,7 @@ export async function fulfilShopOrder(db: Db, paid: ShopPaid, origin: string, no
   }).onConflictDoNothing().returning();
   const order = inserted[0] ?? (await orderBySession(db, paid.id));
   if (inserted[0]) {
-    const sent = await mailer(inserted[0], token, origin).catch((e) => { console.error("invitatii-nunta email", e instanceof Error ? e.name : "Error"); return { ok: false } as const; });
+    const sent = await mailer(inserted[0], token, origin, await findModel(db, paid.slug)).catch((e) => { console.error("invitatii-nunta email", e instanceof Error ? e.name : "Error"); return { ok: false } as const; });
     if ("ok" in sent && sent.ok) await db.update(shopOrder).set({ emailsSent: 1, lastEmailAt: now }).where(eq(shopOrder.id, paid.id));
   }
   return { created: !!inserted[0], order: order!, token };
@@ -202,17 +205,17 @@ export async function countDownload(db: Db, id: string) {
 }
 
 /** Emailul cu linkul de descărcare, în limba paginii de pe care s-a cumpărat. */
-export async function sendShopMail(o: ShopOrderRow, token: string, origin: string): Promise<EmailResult> {
+export async function sendShopMail(o: ShopOrderRow, token: string, origin: string, model: ShopModel | null): Promise<EmailResult> {
   const locale: Locale = isLocale(o.locale) ? o.locale : "ro";
-  const model = modelBySlug(o.slug);
   const t = shopText(locale);
-  const name = model ? modelText(model, locale).name : o.slug;
+  const tm = model ? modelText(model, locale) ?? modelText(model, "ro") : null;
+  const name = tm?.name ?? o.slug;
   const date = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(o.expiresAt);
   const op = operator();
   const { html, text } = renderMail([
     { p: t.mailHello },
     { p: fill(t.mailBody, { name }) },
-    { rows: [[t.mailWhat, model ? modelText(model, locale).title : o.slug], [t.mailAmount, formatPaid(o.amount, o.currency, locale)]] },
+    { rows: [[t.mailWhat, tm?.title ?? o.slug], [t.mailAmount, formatPaid(o.amount, o.currency, locale)]] },
     { button: t.mailButton, href: downloadUrl(origin, token) },
     { p: fill(t.mailValid, { date }) },
     { p: t.mailHelp },
@@ -232,7 +235,7 @@ export async function resendShopMail(db: Db, sessionId: string, origin: string, 
   if (!o) return "missing";
   if (o.expiresAt.getTime() <= now.getTime()) return "expired";
   if (o.emailsSent >= MAX_EMAILS || (o.lastEmailAt && now.getTime() - o.lastEmailAt.getTime() < RESEND_GAP_MS)) return "limit";
-  const r = await mailer(o, downloadToken(o.id), origin).catch(() => ({ ok: false }) as const);
+  const r = await mailer(o, downloadToken(o.id), origin, await findModel(db, o.slug)).catch(() => ({ ok: false }) as const);
   if (!("ok" in r) || !r.ok) return "error";
   await db.update(shopOrder).set({ emailsSent: o.emailsSent + 1, lastEmailAt: now }).where(eq(shopOrder.id, o.id));
   return "ok";
@@ -244,6 +247,3 @@ export async function recentOrders(db: Pick<Db, "select">, limit = 100) {
     createdAt: shopOrder.createdAt, expiresAt: shopOrder.expiresAt, emailsSent: shopOrder.emailsSent, downloads: shopOrder.downloads })
     .from(shopOrder).orderBy(desc(shopOrder.createdAt)).limit(limit);
 }
-
-/** Prețul arătat, pentru pagini (fără Stripe). */
-export const priceLabel = (m: ShopModel, locale: Locale) => shopPrice(m, locale).label;

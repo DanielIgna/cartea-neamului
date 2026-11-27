@@ -1247,3 +1247,31 @@ export const shopOrder = pgTable("shop_order", {
   downloads: integer("downloads").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
+
+// Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține
+// textele pe limbi ({ ro: { name, title, tagline, description, metaTitle, metaDescription, colors }, "en-GB": … }), româna obligatorie.
+// Prețurile sunt în unitatea mică (bani / cenți). `images`: pozele de prezentare, în ordine (prima e cea principală). ZIP-ul stă
+// privat în storage la `zip_key` (magazin/invitatii-nunta/<slug>.zip). Status: draft (ciornă) / published / archived (are vânzări,
+// nu se mai poate șterge). Vezi src/lib/invitatii-nunta-produse.ts.
+export const shopProduct = pgTable("shop_product", {
+  id: text("id").primaryKey(),
+  slug: text("slug").notNull(),
+  region: text("region").notNull().default(""),
+  status: text("status").notNull().default("draft"),
+  texts: jsonb("texts").notNull().default({}),
+  languages: jsonb("languages").notNull().default([]),
+  formats: jsonb("formats").notNull().default([]),
+  priceRon: integer("price_ron").notNull().default(4500),
+  priceEur: integer("price_eur").notNull().default(900),
+  images: jsonb("images").notNull().default([]),
+  zipKey: text("zip_key"),
+  zipName: text("zip_name"),
+  zipSize: integer("zip_size"),
+  zipFiles: integer("zip_files"),
+  zipVersion: integer("zip_version").notNull().default(0),
+  zipUpdatedAt: timestamp("zip_updated_at"),
+  sort: integer("sort").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  publishedAt: timestamp("published_at"),
+}, (t) => [uniqueIndex("shop_product_slug_idx").on(t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);

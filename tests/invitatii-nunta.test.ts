@@ -1,19 +1,67 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach } from "vitest";
 import { readFileSync } from "node:fs";
+import { eq } from "drizzle-orm";
 import { createDb, type Db } from "@/db";
 import { runMigrations } from "@/db/migrate";
-import { appSetting, payment, shopOrder } from "@/db/schema";
+import { appSetting, payment, shopOrder, shopProduct } from "@/db/schema";
 import { LOCALES } from "@/i18n/locales";
-import { SHOP_DONE_PATH, SHOP_KIND, SHOP_MODELS, SHOP_PATH, modelBySlug, modelText, shopPrice, shopText } from "@/lib/invitatii-nunta";
+import {
+  SHOP_DONE_PATH, SHOP_KIND, SHOP_PATH, isModelPath, isModelSlug, modelLocales, modelText, publishProblems, shopPrice, shopText, slugify, zipKeyFor,
+  type ShopModel,
+} from "@/lib/invitatii-nunta";
 import { SHOP_TEXT } from "@/lib/invitatii-nunta-texte";
 import {
   MAX_EMAILS, createShopCheckout, downloadToken, fulfilShopOrder, hashToken, orderByToken, resendShopMail, setShopOpen, shopEvent,
   shopOpen, shopPaidFromSession, shopPaymentsReady,
 } from "@/lib/invitatii-nunta-server";
+import {
+  adminProducts, arrangeImages, createProduct, deleteProduct, modelBySlug, parseMoney, parseProductForm, productById, publishedModel,
+  publishedModels, salesOf, setProductStatus, updateProduct, type ProductInput,
+} from "@/lib/invitatii-nunta-produse";
+import { CHUNK_BYTES, addProductPhoto, chunkKey, finishZipUpload, inspectZip, photoType, putZipChunk, type Store } from "@/lib/invitatii-nunta-incarcare";
+import { shopSitemapUrls } from "@/lib/invitatii-nunta-sitemap";
+import { sitemapGroups } from "@/lib/continut/sitemap";
 import { paidSession } from "@/lib/plati";
 import { PRIVATE_PREFIXES, PUBLIC_PAGES, pageLocales } from "@/lib/public-pages";
 import { isPublicPath } from "@/lib/public-variant";
 import { hasRealTranslation } from "@/lib/traduceri-reale";
+
+/** Un ZIP mic, făcut de mână (fișiere „stored”, fără compresie), ca în teste să nu trebuiască o bibliotecă. */
+function makeZip(files: { name: string; data: string }[]): Uint8Array {
+  const enc = new TextEncoder();
+  const local: number[] = [], central: number[] = [];
+  const le = (n: number, bytes: number) => Array.from({ length: bytes }, (_, i) => (n >>> (8 * i)) & 0xff);
+  for (const f of files) {
+    const name = enc.encode(f.name), data = enc.encode(f.data);
+    const offset = local.length;
+    local.push(...le(0x04034b50, 4), ...le(20, 2), 0, 0, 0, 0, 0, 0, 0, 0, ...le(0, 4), ...le(data.length, 4), ...le(data.length, 4), ...le(name.length, 2), 0, 0, ...name, ...data);
+    central.push(...le(0x02014b50, 4), ...le(20, 2), ...le(20, 2), 0, 0, 0, 0, 0, 0, 0, 0, ...le(0, 4), ...le(data.length, 4), ...le(data.length, 4),
+      ...le(name.length, 2), 0, 0, 0, 0, 0, 0, 0, 0, ...le(0, 4), ...le(offset, 4), ...name);
+  }
+  const eocd = [...le(0x06054b50, 4), 0, 0, 0, 0, ...le(files.length, 2), ...le(files.length, 2), ...le(central.length, 4), ...le(local.length, 4), 0, 0];
+  return new Uint8Array([...local, ...central, ...eocd]);
+}
+
+/** Storage-ul, în memorie. */
+function memStore() {
+  const files = new Map<string, Uint8Array>();
+  const store: Store = {
+    put: async (k, b) => { files.set(k, b); },
+    get: async (k) => { const b = files.get(k); if (!b) throw new Error("NoSuchKey"); return b; },
+    del: async (keys) => { for (const k of keys) files.delete(k); },
+  };
+  return { files, store };
+}
+
+const form = (o: Record<string, string | string[]>) => {
+  const f = new FormData();
+  for (const [k, v] of Object.entries(o)) for (const x of [v].flat()) f.append(k, x);
+  return f;
+};
+const input = (o: Partial<ProductInput> = {}): ProductInput => ({
+  slug: "bucovina", region: "Bucovina", sort: 0, languages: ["ro", "en"], formats: ["5x7"], priceRon: 4900, priceEur: 1000,
+  texts: { ro: { name: "Bucovina", tagline: "Ouă încondeiate și ii cu altiță.", description: "Motive din Bucovina." } }, ...o,
+});
 
 const SECRET_ENV = "BETTER_AUTH_SECRET";
 let oldSecret: string | undefined;
@@ -26,56 +74,73 @@ const session = (o: Record<string, unknown> = {}) => ({
 });
 const event = (type: string, o: Record<string, unknown> = {}) => ({ type, data: { object: session(o) } });
 
-describe("catalogul și textele", () => {
-  it("prețul vine din catalog: 45 lei în română, 9 € în celelalte limbi", () => {
-    const m = modelBySlug("maramures")!;
-    expect(shopPrice(m, "ro")).toMatchObject({ amount: 4500, currency: "ron", label: "45 lei" });
-    expect(shopPrice(m, "it")).toMatchObject({ amount: 900, currency: "eur", label: "9 €" });
-    expect(shopPrice(m, "en-US")).toMatchObject({ amount: 900, currency: "eur" });
+const MODEL: ShopModel = {
+  id: "maramures", slug: "maramures", region: "Maramureș", status: "published", languages: ["ro"], formats: ["5x7"], priceLei: 45, priceEur: 9,
+  texts: { ro: { name: "Maramureș", tagline: "Poarta", description: "Motive" }, "en-GB": { name: "Maramureș", tagline: "Gate", description: "Motifs" } },
+  images: [{ src: "/invitatii-nunta/maramures-mockup.webp", width: 1400, height: 1120 }], zipKey: zipKeyFor("maramures"), zipName: "x.zip", updatedAt: new Date("2026-11-27T00:00:00Z"),
+};
+
+describe("modelul și textele", () => {
+  it("prețul se socotește din model: lei în română, euro în celelalte limbi", () => {
+    expect(shopPrice(MODEL, "ro")).toMatchObject({ amount: 4500, currency: "ron", label: "45 lei" });
+    expect(shopPrice(MODEL, "it")).toMatchObject({ amount: 900, currency: "eur", label: "9 €" });
+    expect(shopPrice({ priceLei: 49.5, priceEur: 9.5 }, "ro")).toMatchObject({ amount: 4950, label: "49,50 lei" });
   });
-  it("slugurile sunt bune și unice, iar „gata” nu e slug de model", () => {
-    const slugs = SHOP_MODELS.map((m) => m.slug);
-    expect(new Set(slugs).size).toBe(slugs.length);
-    expect(slugs).not.toContain("gata");
-    expect(modelBySlug("../maramures")).toBeNull();
-    expect(modelBySlug(undefined)).toBeNull();
-    for (const m of SHOP_MODELS) expect(m.zipKey.startsWith("magazin/invitatii-nunta/")).toBe(true);
+  it("slugurile: doar litere mici, cifre și cratime; „gata”, „nou”, „poze” sunt rezervate; slugul se face din nume", () => {
+    expect(isModelSlug("tara-hategului")).toBe(true);
+    for (const bad of ["gata", "nou", "poze", "../x", "Ab", "a--b", "", undefined]) expect(isModelSlug(bad), String(bad)).toBe(false);
+    expect(slugify("Țara Hațegului")).toBe("tara-hategului");
+    expect(slugify("  Mărginimea Sibiului! ")).toBe("marginimea-sibiului");
   });
-  it("fiecare limbă are toate textele, fără goluri, pentru fiecare model", () => {
+  it("textele rubricii sunt în toate limbile, fără goluri", () => {
     const keys = Object.keys(SHOP_TEXT.ro).sort();
     for (const [l, t] of Object.entries(SHOP_TEXT)) {
       expect(Object.keys(t).sort(), l).toEqual(keys);
-      for (const [k, v] of Object.entries(t)) if (typeof v === "string") expect(v.trim(), `${l}.${k}`).not.toBe("");
-      for (const m of SHOP_MODELS) expect(t.models[m.slug as keyof typeof t.models]?.title, l).toBeTruthy();
+      for (const [k, v] of Object.entries(t)) expect(String(v).trim(), `${l}.${k}`).not.toBe("");
     }
     for (const l of LOCALES) expect(shopText(l).label).toBeTruthy();
-  });
-  it("româna are diacritice cu virgulă (ș ț), nu cu sedilă", () => {
     expect(JSON.stringify(SHOP_TEXT.ro)).not.toMatch(/[şţŞŢ]/);
-    expect(modelText(SHOP_MODELS[0], "ro").name).toBe("Maramureș");
   });
-  it("pozele de prezentare sunt în /public, iar ZIP-urile nu", () => {
-    for (const m of SHOP_MODELS) for (const i of m.images) expect(readFileSync(`public${i.src}`).length).toBeGreaterThan(1000);
-    expect(SHOP_MODELS.every((m) => !m.zipKey.startsWith("/"))).toBe(true);
+  it("limbile unui model: cele cu text (engleza britanică aduce și pe cea americană); fără text, textul românesc", () => {
+    expect(modelLocales(MODEL, LOCALES)).toEqual(["ro", "en-GB", "en-US"]);
+    expect(modelText(MODEL, "it")).toBeNull();
+    expect(modelText(MODEL, "en-US")?.name).toBe("Maramureș");
+    expect(modelText(MODEL, "ro")).toMatchObject({ title: "Maramureș", metaTitle: "Maramureș", metaDescription: "Poarta" });
   });
 });
 
 describe("SEO și adresele", () => {
-  it("lista și modelele sunt pagini publice în toate limbile; pagina de după plată e privată", () => {
-    const paths = [SHOP_PATH, ...SHOP_MODELS.map((m) => `${SHOP_PATH}/${m.slug}`)];
-    for (const p of paths) {
-      expect(PUBLIC_PAGES.some((x) => x.path === p), p).toBe(true);
-      expect(isPublicPath(p)).toBe(true);
-      expect(pageLocales(p)).toEqual(LOCALES);
+  it("lista e pagină publică în toate limbile; modelele sunt publice prin ruta lor; pagina de după plată e privată", () => {
+    expect(PUBLIC_PAGES.some((x) => x.path === SHOP_PATH)).toBe(true);
+    expect(pageLocales(SHOP_PATH)).toEqual(LOCALES);
+    expect(PUBLIC_PAGES.some((x) => x.path.startsWith(`${SHOP_PATH}/`))).toBe(false);
+    for (const p of [SHOP_PATH, `${SHOP_PATH}/maramures`, `${SHOP_PATH}/tara-hategului`]) {
+      expect(isPublicPath(p), p).toBe(true);
       expect(hasRealTranslation(p, "it")).toBe(true);
     }
+    expect(isModelPath(SHOP_DONE_PATH)).toBe(false);
     expect(isPublicPath(SHOP_DONE_PATH)).toBe(false);
+    expect(isPublicPath(`${SHOP_PATH}/a/b`)).toBe(false);
     expect(PRIVATE_PREFIXES).toContain(SHOP_DONE_PATH);
-    expect(PRIVATE_PREFIXES.some((p) => SHOP_PATH.startsWith(p) || `${SHOP_PATH}/maramures`.startsWith(p))).toBe(false);
+    expect(PRIVATE_PREFIXES.some((p) => `${SHOP_PATH}/maramures`.startsWith(p))).toBe(false);
   });
-  it("middleware-ul prinde adresele noi", () => {
-    const mw = readFileSync("src/middleware.ts", "utf8");
-    expect(mw).toContain('"/invitatii-nunta", "/invitatii-nunta/:slug"');
+  it("middleware-ul prinde adresele", () => {
+    expect(readFileSync("src/middleware.ts", "utf8")).toContain('"/invitatii-nunta", "/invitatii-nunta/:slug"');
+  });
+  it("sitemap: câte o adresă pe limba scrisă, cu hreflang, data din Admin și pozele; în „pagini”", () => {
+    const urls = shopSitemapUrls([MODEL]);
+    expect(urls.map((u) => u.path)).toEqual(["/invitatii-nunta/maramures", "/en/invitatii-nunta/maramures", "/en-us/invitatii-nunta/maramures"]);
+    expect(urls[0].alternates).toMatchObject({ ro: "/invitatii-nunta/maramures", "x-default": "/invitatii-nunta/maramures" });
+    expect(urls[0].lastModified).toEqual(MODEL.updatedAt);
+    expect(urls[0].images).toEqual([MODEL.images[0].src]);
+    const pagini = sitemapGroups(new Map(), urls).find((g) => g.name === "pagini")!;
+    expect(pagini.urls.find((u) => u.path === "/invitatii-nunta/maramures")?.lastModified).toEqual(MODEL.updatedAt);
+    expect(sitemapGroups().flatMap((g) => g.urls).some((u) => u.path.includes("/invitatii-nunta/"))).toBe(false);
+  });
+  it("migrația nu pune Bucovina (nu exista în cod); Maramureș intră ca ciornă, fără ZIP", () => {
+    const sql = readFileSync("drizzle/0050_invitatii_nunta_produse.sql", "utf8");
+    expect(sql).toContain("'maramures', 'maramures', 'Maramureș', 'draft'");
+    expect(sql).not.toMatch(/'bucovina'/);
   });
 });
 
@@ -91,7 +156,7 @@ describe("plata și webhook-ul", () => {
   it("Checkout: mode payment, prețul din catalog, metadata, factura și acordul", async () => {
     let sent: URLSearchParams | null = null;
     const fake = (async (_u: string, init: { body: URLSearchParams }) => { sent = init.body; return new Response(JSON.stringify({ url: "https://checkout.stripe.com/x" })); }) as unknown as typeof fetch;
-    const url = await createShopCheckout({ model: SHOP_MODELS[0], locale: "de", origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA" }, fake);
+    const url = await createShopCheckout({ model: MODEL, locale: "de", origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA" }, fake);
     expect(url).toBe("https://checkout.stripe.com/x");
     const b = sent!;
     expect(b.get("mode")).toBe("payment");
@@ -114,7 +179,9 @@ describe("plata și webhook-ul", () => {
     expect(shopEvent({ type: "invoice.paid", data: { object: {} } })).toBeNull();
     // paidSession() nu ia în seamă o comandă de invitație (tip necunoscut).
     expect(paidSession(event("checkout.session.completed"))).toBeNull();
-    expect(shopPaidFromSession(session({ metadata: { kind: SHOP_KIND, slug: "nu-exista", locale: "ro" } }))).toBeNull();
+    expect(shopPaidFromSession(session({ metadata: { kind: SHOP_KIND, slug: "../x", locale: "ro" } }))).toBeNull();
+    // Un model retras între timp: comanda se trece oricum (omul a plătit).
+    expect(shopPaidFromSession(session({ metadata: { kind: SHOP_KIND, slug: "model-retras", locale: "ro" } }))?.slug).toBe("model-retras");
     expect(shopPaidFromSession(session({ customer_details: {} }))).toBeNull();
   });
   it("tokenul: lung, același pentru aceeași sesiune, diferit pentru alta; în bază doar hash-ul", () => {
@@ -173,5 +240,174 @@ describe("comanda, în baza de date", () => {
     await setShopOpen(db, true, null);
     expect(await shopOpen(db)).toBe(true);
     expect((await db.select().from(appSetting)).some((r) => r.key === "invitatii_nunta")).toBe(true);
+  });
+});
+
+describe("modelele din Admin (shop_product)", () => {
+  let db: Db;
+  const { files, store } = memStore();
+  const remove = async (keys: string[]) => store.del(keys);
+  const noMail = async () => ({ ok: true as const, id: "m" });
+  let id = "";
+  beforeAll(async () => { db = createDb(); await runMigrations(db); });
+
+  it("migrația aduce modelul Maramureș, ca ciornă, cu textele în toate limbile și pozele din /public", async () => {
+    const m = await modelBySlug(db, "maramures");
+    expect(m).toMatchObject({ status: "draft", zipKey: null, priceLei: 45, priceEur: 9, languages: ["ro", "en", "it", "es", "de", "fr", "hu"], formats: ["5x7", "A5"] });
+    expect(modelLocales(m!, LOCALES)).toEqual(LOCALES);
+    expect(modelText(m!, "ro")?.title).toBe("Invitație de nuntă Maramureș, cu motive populare");
+    for (const i of m!.images) expect(readFileSync(`public${i.src}`).length).toBeGreaterThan(1000);
+    expect(await publishedModels(db)).toEqual([]);
+    expect(publishProblems(m!)).toEqual(["Lipsește fișierul ZIP."]);
+  });
+
+  it("formularul: prețuri cu virgulă, limbile goale nu se salvează, una începută cere tot", () => {
+    expect(parseMoney("45", 10_000)).toBe(4500);
+    expect(parseMoney("45,50", 10_000)).toBe(4550);
+    expect(parseMoney("0", 10_000)).toBeNull();
+    expect(parseMoney("-3", 10_000)).toBeNull();
+    const base = { slug: "bucovina", region: "Bucovina", priceRon: "49", priceEur: "10", languages: ["ro", "en", "xx"], formats: ["A5", "Z9"],
+      "t.ro.name": "Bucovina", "t.ro.tagline": "Scurt", "t.ro.description": "Lung" };
+    const ok = parseProductForm(form(base));
+    expect(ok).toMatchObject({ ok: true, value: { slug: "bucovina", priceRon: 4900, priceEur: 1000, languages: ["ro", "en"], formats: ["A5"] } });
+    expect(ok.ok && Object.keys(ok.value.texts)).toEqual(["ro"]);
+    expect(parseProductForm(form({ ...base, "t.it.name": "Bucovina" })).ok).toBe(false);
+    expect(parseProductForm(form({ ...base, "t.ro.description": "" })).ok).toBe(false);
+    expect(parseProductForm(form({ ...base, slug: "gata" })).ok).toBe(false);
+    expect(parseProductForm(form({ ...base, priceRon: "abc" })).ok).toBe(false);
+  });
+
+  it("adăugare: ciornă nouă; slugul trebuie să fie unic", async () => {
+    const r = await createProduct(db, input());
+    expect(r.ok).toBe(true);
+    id = r.ok ? r.id : "";
+    expect((await productById(db, id))?.status).toBe("draft");
+    expect(await createProduct(db, input())).toMatchObject({ ok: false });
+    expect(await updateProduct(db, id, input({ slug: "maramures" }))).toMatchObject({ ok: false });
+  });
+
+  it("publicare: refuzată fără ZIP și fără poză", async () => {
+    const r = await setProductStatus(db, id, "publish");
+    expect(r.ok).toBe(false);
+    expect(!r.ok && r.error).toContain("ZIP");
+    expect(!r.ok && r.error).toContain("poză");
+    expect(await publishedModel(db, "bucovina")).toBeNull();
+  });
+
+  it("upload ZIP: bucățile se lipesc, ZIP-ul se verifică și ajunge la magazin/invitatii-nunta/<slug>.zip, bucățile se șterg", async () => {
+    const zip = makeZip([{ name: "Bucovina/print.pdf", data: "%PDF-1.7 print" }, { name: "Bucovina/editabil.pdf", data: "%PDF-1.7 form" }, { name: "Bucovina/", data: "" }, { name: "citeste.txt", data: "Doamne ajută" }]);
+    expect(inspectZip(zip)).toEqual({ ok: true, files: 3, pdfs: 2 });
+    const upload = "11111111-2222-4333-8444-555555555555";
+    const cut = 40;
+    const parts = Math.ceil(zip.length / cut);
+    for (let n = 0; n < parts; n++) expect((await putZipChunk(store, id, upload, n, zip.subarray(n * cut, (n + 1) * cut))).ok).toBe(true);
+    expect([...files.keys()].filter((k) => k.includes("_incarcari"))).toHaveLength(parts);
+    const r = await finishZipUpload(db, store, { productId: id, uploadId: upload, parts, size: zip.length });
+    expect(r).toMatchObject({ ok: true, files: 3, pdfs: 2 });
+    expect(files.get("magazin/invitatii-nunta/bucovina.zip")).toEqual(zip);
+    expect([...files.keys()].some((k) => k.includes("_incarcari"))).toBe(false);
+    const p = await productById(db, id);
+    expect(p).toMatchObject({ zipKey: "magazin/invitatii-nunta/bucovina.zip", zipName: "invitatie-nunta-bucovina.zip" });
+    expect(p!.row).toMatchObject({ zipVersion: 1, zipFiles: 3, zipSize: zip.length });
+  });
+
+  it("upload ZIP: un fișier care nu e ZIP sau e tăiat nu-l înlocuiește pe cel bun; bucăți greșite sunt refuzate", async () => {
+    const good = files.get("magazin/invitatii-nunta/bucovina.zip");
+    const upload = "aaaaaaaa-2222-4333-8444-555555555555";
+    const notZip = new TextEncoder().encode("%PDF-1.7 nu e zip");
+    await putZipChunk(store, id, upload, 0, notZip);
+    expect(await finishZipUpload(db, store, { productId: id, uploadId: upload, parts: 1, size: notZip.length })).toMatchObject({ ok: false });
+    const cutZip = makeZip([{ name: "a.pdf", data: "x".repeat(50) }]).subarray(0, 60);
+    await putZipChunk(store, id, upload, 0, cutZip);
+    expect(await finishZipUpload(db, store, { productId: id, uploadId: upload, parts: 1, size: cutZip.length })).toMatchObject({ ok: false });
+    // O bucată lipsă.
+    expect(await finishZipUpload(db, store, { productId: id, uploadId: upload, parts: 2, size: 100 })).toMatchObject({ ok: false });
+    expect(files.get("magazin/invitatii-nunta/bucovina.zip")).toBe(good);
+    expect((await putZipChunk(store, id, "nu-e-uuid", 0, notZip)).ok).toBe(false);
+    expect((await putZipChunk(store, id, upload, -1, notZip)).ok).toBe(false);
+    expect((await putZipChunk(store, id, upload, 0, new Uint8Array(CHUNK_BYTES + 1))).ok).toBe(false);
+    expect(chunkKey(id, upload, 3)).toBe(`magazin/invitatii-nunta/_incarcari/${id}/${upload}/0003`);
+  });
+
+  it("pozele: doar JPG/PNG/WebP adevărate; se adaugă la sfârșit, se reordonează, prima e cea principală", async () => {
+    const webp = new Uint8Array([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50, 1, 2, 3]);
+    const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]);
+    expect(photoType(webp)).toBe("webp");
+    expect(photoType(new TextEncoder().encode("<svg>"))).toBeNull();
+    expect(await addProductPhoto(db, store, { productId: id, body: new TextEncoder().encode("<svg onload=x>"), width: 800, height: 600 })).toMatchObject({ ok: false });
+    const a = await addProductPhoto(db, store, { productId: id, body: webp, width: 1200, height: 900 });
+    const b = await addProductPhoto(db, store, { productId: id, body: png, width: 800, height: 1100 });
+    expect(a.ok && b.ok).toBe(true);
+    let p = (await productById(db, id))!;
+    expect(p.images.map((i) => i.src)).toEqual([a.ok && a.src, b.ok && b.src]);
+    expect(p.images[0].src).toMatch(/^\/poze-invitatii\/bucovina-[0-9a-f]{8}\.webp$/);
+    expect(files.has(p.images[0].key!)).toBe(true);
+    expect((await arrangeImages(db, id, [p.images[1].src, p.images[0].src], remove)).ok).toBe(true);
+    p = (await productById(db, id))!;
+    expect(p.images[0].src).toBe(b.ok && b.src);
+  });
+
+  it("publicare: cu ZIP, poză și texte, modelul apare pe site și în sitemap; slugul nu se mai schimbă", async () => {
+    expect(await setProductStatus(db, id, "publish")).toMatchObject({ ok: true });
+    expect((await publishedModels(db)).map((m) => m.slug)).toEqual(["bucovina"]);
+    expect(shopSitemapUrls(await publishedModels(db)).map((u) => u.path)).toEqual(["/invitatii-nunta/bucovina"]);
+    expect(await updateProduct(db, id, input({ slug: "bucovina-2" }))).toMatchObject({ ok: false });
+    // Un model publicat nu poate rămâne fără textele în română.
+    expect(await updateProduct(db, id, input({ texts: {} }))).toMatchObject({ ok: false });
+  });
+
+  it("checkout: prețul se ia din baza de date (schimbat din Admin), nu din formular", async () => {
+    expect((await updateProduct(db, id, input({ priceRon: 5500, priceEur: 1150 }))).ok).toBe(true);
+    const model = (await publishedModel(db, "bucovina"))!;
+    const sent: URLSearchParams[] = [];
+    const fake = (async (_u: string, init: { body: URLSearchParams }) => { sent.push(init.body); return new Response(JSON.stringify({ url: "https://checkout.stripe.com/x" })); }) as unknown as typeof fetch;
+    await createShopCheckout({ model, locale: "ro", origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA" }, fake);
+    await createShopCheckout({ model, locale: "it", origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA" }, fake);
+    expect(sent[0].get("line_items[0][price_data][unit_amount]")).toBe("5500");
+    expect(sent[0].get("line_items[0][price_data][currency]")).toBe("ron");
+    expect(sent[0].get("line_items[0][price_data][product_data][name]")).toBe("Bucovina");
+    expect(sent[1].get("line_items[0][price_data][unit_amount]")).toBe("1150");
+    expect(sent[1].get("metadata[slug]")).toBe("bucovina");
+    expect(sent[1].get("cancel_url")).toBe("https://carteaneamului.ro/invitatii-nunta/bucovina");
+  });
+
+  it("descărcarea după plată: tokenul deschide comanda, iar modelul dă ZIP-ul privat din storage", async () => {
+    const paid = shopPaidFromSession(session({ id: "cs_test_bucovina_000001", amount_total: 5500, metadata: { kind: SHOP_KIND, slug: "bucovina", locale: "ro" } }))!;
+    const { token } = await fulfilShopOrder(db, paid, "https://carteaneamului.ro", new Date(), noMail);
+    const found = await orderByToken(db, token);
+    expect(found?.expired).toBe(false);
+    const m = await modelBySlug(db, found!.order.slug);
+    expect(await store.get(m!.zipKey!)).toEqual(files.get("magazin/invitatii-nunta/bucovina.zip"));
+    expect(await salesOf(db, "bucovina")).toBe(1);
+    expect((await adminProducts(db)).find((p) => p.slug === "bucovina")?.sales).toBe(1);
+  });
+
+  it("model retras: dispare de pe site și din sitemap și nu se mai poate cumpăra, dar linkurile plătite merg", async () => {
+    expect(await setProductStatus(db, id, "retract")).toMatchObject({ ok: true });
+    expect(await publishedModel(db, "bucovina")).toBeNull();
+    expect(await publishedModels(db)).toEqual([]);
+    expect(shopSitemapUrls(await publishedModels(db))).toEqual([]);
+    const found = await orderByToken(db, downloadToken("cs_test_bucovina_000001"));
+    expect(found?.expired).toBe(false);
+    expect((await modelBySlug(db, found!.order.slug))?.zipKey).toBe("magazin/invitatii-nunta/bucovina.zip");
+    // O plată venită după retragere (sesiune deschisă înainte) se trece și ea.
+    const late = shopPaidFromSession(session({ id: "cs_test_bucovina_000002", metadata: { kind: SHOP_KIND, slug: "bucovina", locale: "ro" } }))!;
+    expect((await fulfilShopOrder(db, late, "https://x", new Date(), noMail)).created).toBe(true);
+  });
+
+  it("ștergerea: cu vânzări doar arhivare; fără vânzări, cu slugul scris, se șterg și fișierele", async () => {
+    expect(await deleteProduct(db, id, "bucovina", remove)).toMatchObject({ ok: false });
+    expect(await setProductStatus(db, id, "archive")).toMatchObject({ ok: true });
+    expect((await productById(db, id))?.status).toBe("archived");
+    const r = await createProduct(db, input({ slug: "oltenia", texts: { ro: { name: "Oltenia", tagline: "a", description: "b" } } }));
+    const oid = r.ok ? r.id : "";
+    await addProductPhoto(db, store, { productId: oid, body: new Uint8Array([0xff, 0xd8, 0xff, 1]), width: 500, height: 500 });
+    const key = (await productById(db, oid))!.images[0].key!;
+    expect(files.has(key)).toBe(true);
+    expect(await deleteProduct(db, oid, "olten", remove)).toMatchObject({ ok: false });
+    expect(await deleteProduct(db, oid, "oltenia", remove)).toMatchObject({ ok: true });
+    expect(await productById(db, oid)).toBeNull();
+    expect(files.has(key)).toBe(false);
+    expect((await db.select().from(shopProduct).where(eq(shopProduct.slug, "maramures"))).length).toBe(1);
   });
 });

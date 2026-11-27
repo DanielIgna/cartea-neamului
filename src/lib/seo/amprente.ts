@@ -17,7 +17,7 @@ import { KIN_PAGES, kinPagePath } from "@/lib/unelte/rudenie-pagini";
 import { TOOLS, toolPath } from "@/lib/unelte/unelte";
 import { grandparentQuestions } from "@/lib/unelte/intrebari";
 import { entries as diasporaEntries } from "@/lib/diaspora";
-import { SHOP_MODELS, SHOP_PATH } from "@/lib/invitatii-nunta";
+import { SHOP_PATH } from "@/lib/invitatii-nunta";
 import { SHOP_TEXT } from "@/lib/invitatii-nunta-texte";
 
 /**
@@ -94,9 +94,8 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
   for (const e of diasporaEntries()) records.set(e.path, e);
   for (const t of TOOLS) records.set(toolPath(t), t.slug === "intrebari-pentru-bunici-pdf" ? { t, q: grandparentQuestions() } : t);
   for (const p of KIN_PAGES) records.set(kinPagePath(p), p);
-  // Invitațiile de nuntă: catalogul și textele (în toate limbile; textele nu vin din cataloagele i18n).
-  records.set(SHOP_PATH, { m: SHOP_MODELS, t: SHOP_TEXT });
-  for (const m of SHOP_MODELS) records.set(`${SHOP_PATH}/${m.slug}`, { m, t: Object.values(SHOP_TEXT).map((x) => [x, x.models[m.slug as keyof typeof x.models]]) });
+  // Invitațiile de nuntă: textele listei (în toate limbile; nu vin din cataloagele i18n). Modelele sunt în baza de date, cu data lor.
+  records.set(SHOP_PATH, { t: SHOP_TEXT });
 
   const hubs: Record<string, string[]> = {
     "/ghid": [...records.keys()].filter((k) => k.startsWith("/ghid/")),

@@ -2543,3 +2543,29 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
 .shop-gets,.shop-steps{margin:0;padding-inline-start:1.2em;display:grid;gap:6px}
 .shop-blessing{text-align:center;font-style:italic;color:var(--muted);margin:8px 0}
 @media (max-width:760px){.shop-model{grid-template-columns:1fr}.shop-cards{gap:10px}}
+/* Admin → Invitații de nuntă (formularul modelului, ZIP-ul, pozele) */
+.shopadm-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.shopadm-actions{display:flex;flex-wrap:wrap;gap:8px}
+.shopadm-form .field{display:grid;gap:4px;font-size:14px;margin-bottom:12px}
+.shopadm-form .field label{font-weight:700}
+.shopadm-form .field input,.shopadm-form .field textarea{width:100%;font:inherit}
+.shopadm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 16px}
+.shopadm-checks{border:0;padding:0;margin:8px 0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.shopadm-checks legend{font-weight:700;font-size:14px;margin-bottom:6px}
+.shopadm-checks label{display:flex;gap:6px;align-items:center;font-size:14px}
+.shopadm-lang{border-top:1px solid var(--line);padding:8px 0}
+.shopadm-lang summary{cursor:pointer;font-weight:700}
+.shopadm-lang[open] summary{margin-bottom:10px}
+.shopadm-progress{position:relative;height:26px;border-radius:999px;background:var(--line);overflow:hidden;margin-top:12px}
+.shopadm-progress span{position:absolute;inset:0 auto 0 0;background:var(--accent);transition:width .2s}
+.shopadm-progress b{position:relative;display:block;text-align:center;line-height:26px;font-size:13px}
+.shopadm-photos{list-style:none;padding:0;margin:0 0 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.shopadm-photos li{position:relative;border:1px solid var(--line);border-radius:10px;padding:6px;cursor:grab;background:var(--surface)}
+.shopadm-photos li.dragging{opacity:.4}
+.shopadm-photos li:first-child{border-color:var(--accent);border-width:2px}
+.shopadm-photos img{display:block;width:100%;height:150px;object-fit:contain}
+.shopadm-photos .pill{position:absolute;top:10px;left:10px}
+.shopadm-photo-tools{display:flex;gap:4px;justify-content:center;margin-top:6px}
+.shopadm-photo-tools .btn{padding:4px 8px;font-size:13px;min-height:0}
+.shopadm-danger{border-color:var(--red)}
+.shopadm-delete{border-color:var(--red);color:var(--red)}

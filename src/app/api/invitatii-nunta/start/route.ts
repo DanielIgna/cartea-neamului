@@ -1,17 +1,18 @@
 import { db } from "@/db";
 import { isLocale, localizedPath, type Locale } from "@/i18n/locales";
-import { modelBySlug, modelPath } from "@/lib/invitatii-nunta";
+import { modelPath } from "@/lib/invitatii-nunta";
+import { publishedModel } from "@/lib/invitatii-nunta-produse";
 import { createShopCheckout, shopOpen, shopPaymentsReady, shopWaiver } from "@/lib/invitatii-nunta-server";
 import { siteOrigin } from "@/lib/site";
 
 /**
- * „Cumpără și descarcă” de pe /invitatii-nunta/<model>: fără cont. Prețul se ia din catalog după model și limba paginii
- * (45 lei pe română, 9 € în celelalte), nu din formular. Fără bifa pentru acces imediat, omul se întoarce pe pagină.
+ * „Cumpără și descarcă” de pe /invitatii-nunta/<model>: fără cont. Prețul se ia din baza de date (modelul publicat, scris din
+ * Admin) după limba paginii (lei pe română, euro în celelalte), niciodată din formular; un model retras nu se mai poate cumpăra. Fără bifa pentru acces imediat, omul se întoarce pe pagină.
  */
 export async function POST(req: Request) {
   const origin = await siteOrigin();
   const form = await req.formData();
-  const model = modelBySlug(form.get("slug"));
+  const model = await publishedModel(db, form.get("slug"));
   const l = form.get("locale");
   const locale: Locale = isLocale(l) ? l : "ro";
   if (!model) return Response.redirect(`${origin}${localizedPath("/invitatii-nunta", locale)}`, 303);

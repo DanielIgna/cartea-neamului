@@ -4,7 +4,7 @@ import type { Locale } from "@/i18n/locales";
  * Textele rubricii „Invitații de nuntă” (/invitatii-nunta), în toate limbile site-ului: paginile publice, pagina de după
  * plată și emailul cu linkul de descărcare. Ton cald și creștin, fără nimic despre unelte. Cuvintele căutate de diaspora sunt
  * în titluri și descrieri („Romanian folk wedding invitation”, „invito nozze tradizionale romeno”, „rumänische
- * Hochzeitseinladung”…). Un model nou își pune textele la `models.<slug>` în fiecare limbă (TypeScript cere toate cheile).
+ * Hochzeitseinladung”…). Textele fiecărui model (nume, descrieri, titlu SEO) stau în baza de date (shop_product), scrise din Admin.
  * Engleza americană o folosește pe cea britanică.
  */
 const ro = {
@@ -23,9 +23,11 @@ const ro = {
   closed: "Rubrica „Invitații de nuntă” este închisă momentan. Revino în curând.",
   previewNote: "Pozele de aici au semnul „MODEL”; fișierele pe care le primești nu îl au. Numele, datele și telefoanele din model sunt închipuite.",
   getTitle: "Ce primești",
+  langsLabel: "Limbile invitației",
+  formatsLabel: "Formate",
+  colorsLabel: "Variante de culoare",
+  detailsLabel: "Detalii",
   get1: "Un fișier ZIP cu PDF-ul de printat și PDF-ul editabil, pe care îl completezi gratuit în Adobe Acrobat Reader.",
-  get2: "Două variante de culoare și două formate: 5×7 inch și A5.",
-  get3: "Șapte limbi: română, engleză, italiană, spaniolă, germană, franceză și maghiară, fiecare simplă sau bilingvă cu româna (româna sus, traducerea dedesubt).",
   get4: "Diacriticele rămân corecte după completare și salvare: ă, â, î, ș, ț.",
   stepsTitle: "Cum funcționează",
   step1: "Bifezi acordul și apeși „Cumpără și descarcă”. Plătești cu cardul; emailul îl scrii pe pagina de plată.",
@@ -56,19 +58,6 @@ const ro = {
   mailHelp: "PDF-ul editabil se completează în Adobe Acrobat Reader (gratuit), pe calculator sau pe telefon. Pentru tipar, folosește PDF-ul de printat.",
   mailWhat: "Ce ai cumpărat",
   mailAmount: "Suma",
-  imgMockup: "{name}: cele două variante de culoare",
-  imgCrem: "Varianta roșu-negru pe crem",
-  imgDark: "Varianta întunecată, cu accente aurii",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Invitație de nuntă Maramureș, cu motive populare",
-      metaTitle: "Invitație de nuntă tradițională Maramureș, PDF editabil",
-      metaDescription: "Invitație de nuntă cu motive maramureșene: poarta cu rozeta, biserica de lemn și cusături în roșu și negru. PDF editabil și de printat, 5×7 și A5, în 7 limbi.",
-      tagline: "Poarta maramureșeană, biserica de lemn și cusăturile în roșu și negru.",
-      description: "Motivele sunt desenate după cusăturile vechi pe grilă: romburi, stele cu opt colțuri, colții lupului și funia. Sus stă poarta maramureșeană cu rozeta soarelui sau biserica de lemn cu turla înaltă. Două variante: roșu-negru pe crem și întunecată, cu benzi ca la zadie și accente aurii.",
-    },
-  },
 };
 
 export type ShopText = typeof ro;
@@ -89,9 +78,11 @@ const enGB: ShopText = {
   closed: "The wedding invitations section is closed for now. Please come back soon.",
   previewNote: "The pictures here carry a “MODEL” mark; the files you receive do not. Names, dates and phone numbers in the sample are fictional.",
   getTitle: "What you get",
+  langsLabel: "Invitation languages",
+  formatsLabel: "Formats",
+  colorsLabel: "Colour versions",
+  detailsLabel: "Details",
   get1: "A ZIP file with the print PDF and the editable PDF, which you fill in for free in Adobe Acrobat Reader.",
-  get2: "Two colour versions and two sizes: 5×7 inch and A5.",
-  get3: "Seven languages: Romanian, English, Italian, Spanish, German, French and Hungarian, each single or bilingual with Romanian (Romanian on top, the translation below).",
   get4: "Romanian letters stay correct after filling in and saving: ă, â, î, ș, ț.",
   stepsTitle: "How it works",
   step1: "Tick the agreement and press “Buy and download”. Pay by card; you enter your email on the payment page.",
@@ -122,19 +113,6 @@ const enGB: ShopText = {
   mailHelp: "Fill in the editable PDF in Adobe Acrobat Reader (free), on a computer or phone. For printing, use the print PDF.",
   mailWhat: "What you bought",
   mailAmount: "Amount",
-  imgMockup: "{name}: the two colour versions",
-  imgCrem: "Red and black on cream",
-  imgDark: "Dark version with golden accents",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Maramureș wedding invitation with Romanian folk motifs",
-      metaTitle: "Romanian folk wedding invitation Maramureș, editable PDF",
-      metaDescription: "Traditional Romanian wedding invitation template from Maramureș: carved gate, wooden church and red-and-black cross-stitch. Editable and print PDF, 5×7 and A5, 7 languages.",
-      tagline: "The carved Maramureș gate, the wooden church and red-and-black cross-stitch.",
-      description: "The motifs follow old counted-thread stitches: diamonds, eight-pointed stars, the wolf’s teeth and the twisted rope. At the top stands the Maramureș gate with its sun rosette, or the wooden church with its tall spire. Two versions: red and black on cream, and a dark one with apron-like stripes and golden accents.",
-    },
-  },
 };
 
 const fr: ShopText = {
@@ -153,9 +131,11 @@ const fr: ShopText = {
   closed: "La rubrique des faire-part de mariage est fermée pour le moment. Revenez bientôt.",
   previewNote: "Les images portent la mention « MODEL » ; les fichiers que vous recevez ne l’ont pas. Les noms, dates et téléphones du modèle sont fictifs.",
   getTitle: "Ce que vous recevez",
+  langsLabel: "Langues du faire-part",
+  formatsLabel: "Formats",
+  colorsLabel: "Variantes de couleur",
+  detailsLabel: "Détails",
   get1: "Un fichier ZIP avec le PDF à imprimer et le PDF modifiable, à remplir gratuitement dans Adobe Acrobat Reader.",
-  get2: "Deux variantes de couleur et deux formats : 5×7 pouces et A5.",
-  get3: "Sept langues : roumain, anglais, italien, espagnol, allemand, français et hongrois, chacune seule ou bilingue avec le roumain (le roumain en haut, la traduction en dessous).",
   get4: "Les lettres roumaines restent correctes après saisie et enregistrement : ă, â, î, ș, ț.",
   stepsTitle: "Comment ça marche",
   step1: "Cochez l’accord et appuyez sur « Acheter et télécharger ». Vous payez par carte ; l’e-mail se saisit sur la page de paiement.",
@@ -186,19 +166,6 @@ const fr: ShopText = {
   mailHelp: "Le PDF modifiable se remplit dans Adobe Acrobat Reader (gratuit), sur ordinateur ou téléphone. Pour l’impression, utilisez le PDF à imprimer.",
   mailWhat: "Votre achat",
   mailAmount: "Montant",
-  imgMockup: "{name} : les deux variantes de couleur",
-  imgCrem: "Rouge et noir sur crème",
-  imgDark: "Variante sombre aux accents dorés",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Faire-part de mariage Maramureș, motifs populaires roumains",
-      metaTitle: "Faire-part de mariage roumain Maramureș, PDF modifiable",
-      metaDescription: "Faire-part de mariage traditionnel roumain du Maramureș : portail sculpté, église en bois et point de croix rouge et noir. PDF modifiable et à imprimer, 5×7 et A5, 7 langues.",
-      tagline: "Le portail du Maramureș, l’église en bois et le point de croix rouge et noir.",
-      description: "Les motifs suivent les anciennes broderies au point compté : losanges, étoiles à huit branches, dents de loup et corde torsadée. En haut se dresse le portail du Maramureș avec sa rosace solaire, ou l’église en bois au clocher élancé. Deux variantes : rouge et noir sur crème, et une sombre aux bandes de tablier et accents dorés.",
-    },
-  },
 };
 
 const es: ShopText = {
@@ -217,9 +184,11 @@ const es: ShopText = {
   closed: "La sección de invitaciones de boda está cerrada por ahora. Vuelve pronto.",
   previewNote: "Las imágenes llevan la marca «MODEL»; los archivos que recibes no la tienen. Los nombres, fechas y teléfonos del modelo son ficticios.",
   getTitle: "Qué recibes",
+  langsLabel: "Idiomas de la invitación",
+  formatsLabel: "Formatos",
+  colorsLabel: "Variantes de color",
+  detailsLabel: "Detalles",
   get1: "Un archivo ZIP con el PDF para imprimir y el PDF editable, que rellenas gratis en Adobe Acrobat Reader.",
-  get2: "Dos variantes de color y dos formatos: 5×7 pulgadas y A5.",
-  get3: "Siete idiomas: rumano, inglés, italiano, español, alemán, francés y húngaro, cada uno simple o bilingüe con el rumano (el rumano arriba, la traducción debajo).",
   get4: "Las letras rumanas quedan correctas al rellenar y guardar: ă, â, î, ș, ț.",
   stepsTitle: "Cómo funciona",
   step1: "Marca el acuerdo y pulsa «Comprar y descargar». Pagas con tarjeta; el correo lo escribes en la página de pago.",
@@ -250,19 +219,6 @@ const es: ShopText = {
   mailHelp: "El PDF editable se rellena en Adobe Acrobat Reader (gratis), en el ordenador o en el móvil. Para imprimir, usa el PDF para imprimir.",
   mailWhat: "Lo que has comprado",
   mailAmount: "Importe",
-  imgMockup: "{name}: las dos variantes de color",
-  imgCrem: "Rojo y negro sobre crema",
-  imgDark: "Variante oscura con detalles dorados",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Invitación de boda Maramureș, con motivos populares rumanos",
-      metaTitle: "Invitación de boda tradicional rumana Maramureș, PDF editable",
-      metaDescription: "Invitación de boda tradicional rumana de Maramureș: portón tallado, iglesia de madera y punto de cruz rojo y negro. PDF editable y para imprimir, 5×7 y A5, 7 idiomas.",
-      tagline: "El portón de Maramureș, la iglesia de madera y el punto de cruz rojo y negro.",
-      description: "Los motivos siguen los antiguos bordados de hilo contado: rombos, estrellas de ocho puntas, dientes de lobo y la cuerda trenzada. Arriba se alza el portón de Maramureș con su roseta solar o la iglesia de madera con su alta torre. Dos variantes: rojo y negro sobre crema, y una oscura con franjas de delantal y detalles dorados.",
-    },
-  },
 };
 
 const nl: ShopText = {
@@ -281,9 +237,11 @@ const nl: ShopText = {
   closed: "De rubriek trouwkaarten is op dit moment gesloten. Kom snel terug.",
   previewNote: "De afbeeldingen dragen het teken “MODEL”; de bestanden die je ontvangt niet. Namen, data en telefoonnummers in het voorbeeld zijn verzonnen.",
   getTitle: "Wat je krijgt",
+  langsLabel: "Talen van de uitnodiging",
+  formatsLabel: "Formaten",
+  colorsLabel: "Kleurvarianten",
+  detailsLabel: "Details",
   get1: "Een ZIP-bestand met de print-pdf en de invulbare pdf, die je gratis invult in Adobe Acrobat Reader.",
-  get2: "Twee kleurvarianten en twee formaten: 5×7 inch en A5.",
-  get3: "Zeven talen: Roemeens, Engels, Italiaans, Spaans, Duits, Frans en Hongaars, elk enkel of tweetalig met Roemeens (Roemeens boven, de vertaling eronder).",
   get4: "Roemeense letters blijven juist na invullen en opslaan: ă, â, î, ș, ț.",
   stepsTitle: "Zo werkt het",
   step1: "Vink de toestemming aan en druk op “Kopen en downloaden”. Je betaalt met je kaart; je e-mailadres vul je in op de betaalpagina.",
@@ -314,19 +272,6 @@ const nl: ShopText = {
   mailHelp: "De invulbare pdf vul je in met Adobe Acrobat Reader (gratis), op computer of telefoon. Gebruik voor het drukken de print-pdf.",
   mailWhat: "Wat je kocht",
   mailAmount: "Bedrag",
-  imgMockup: "{name}: de twee kleurvarianten",
-  imgCrem: "Rood en zwart op crème",
-  imgDark: "Donkere variant met gouden accenten",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Trouwkaart Maramureș met Roemeense volksmotieven",
-      metaTitle: "Roemeense trouwkaart Maramureș, invulbare pdf",
-      metaDescription: "Traditionele Roemeense trouwkaart uit Maramureș: gesneden poort, houten kerk en rood-zwart kruissteekwerk. Invulbare en print-pdf, 5×7 en A5, 7 talen.",
-      tagline: "De poort van Maramureș, de houten kerk en rood-zwart kruissteekwerk.",
-      description: "De motieven volgen oud telwerkborduursel: ruiten, achtpuntige sterren, wolfstanden en het gedraaide touw. Bovenaan staat de poort van Maramureș met de zonnerozet, of de houten kerk met de hoge toren. Twee varianten: rood en zwart op crème, en een donkere met schortbanden en gouden accenten.",
-    },
-  },
 };
 
 const de: ShopText = {
@@ -345,9 +290,11 @@ const de: ShopText = {
   closed: "Der Bereich Hochzeitseinladungen ist derzeit geschlossen. Schau bald wieder vorbei.",
   previewNote: "Die Bilder tragen das Zeichen „MODEL“; die Dateien, die du erhältst, nicht. Namen, Daten und Telefonnummern im Muster sind erfunden.",
   getTitle: "Was du bekommst",
+  langsLabel: "Sprachen der Einladung",
+  formatsLabel: "Formate",
+  colorsLabel: "Farbvarianten",
+  detailsLabel: "Details",
   get1: "Eine ZIP-Datei mit dem Druck-PDF und dem ausfüllbaren PDF, das du kostenlos in Adobe Acrobat Reader ausfüllst.",
-  get2: "Zwei Farbvarianten und zwei Formate: 5×7 Zoll und A5.",
-  get3: "Sieben Sprachen: Rumänisch, Englisch, Italienisch, Spanisch, Deutsch, Französisch und Ungarisch, jeweils einsprachig oder zweisprachig mit Rumänisch (Rumänisch oben, die Übersetzung darunter).",
   get4: "Rumänische Buchstaben bleiben nach dem Ausfüllen und Speichern richtig: ă, â, î, ș, ț.",
   stepsTitle: "So funktioniert es",
   step1: "Hake die Zustimmung an und drücke „Kaufen und herunterladen“. Du zahlst mit Karte; die E-Mail gibst du auf der Zahlungsseite ein.",
@@ -378,19 +325,6 @@ const de: ShopText = {
   mailHelp: "Das ausfüllbare PDF füllst du in Adobe Acrobat Reader (kostenlos) aus, am Computer oder Handy. Zum Drucken nimm das Druck-PDF.",
   mailWhat: "Was du gekauft hast",
   mailAmount: "Betrag",
-  imgMockup: "{name}: die zwei Farbvarianten",
-  imgCrem: "Rot und Schwarz auf Creme",
-  imgDark: "Dunkle Variante mit goldenen Akzenten",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Hochzeitseinladung Maramureș mit rumänischen Volksmotiven",
-      metaTitle: "Rumänische Hochzeitseinladung Maramureș, ausfüllbares PDF",
-      metaDescription: "Traditionelle rumänische Hochzeitseinladung aus der Maramureș: geschnitztes Tor, Holzkirche und rot-schwarzer Kreuzstich. Ausfüllbares und Druck-PDF, 5×7 und A5, 7 Sprachen.",
-      tagline: "Das Tor der Maramureș, die Holzkirche und rot-schwarzer Kreuzstich.",
-      description: "Die Motive folgen alten Zählstickereien: Rauten, achtzackige Sterne, Wolfszähne und das gedrehte Seil. Oben steht das Maramureș-Tor mit der Sonnenrosette oder die Holzkirche mit dem hohen Turm. Zwei Varianten: Rot und Schwarz auf Creme sowie eine dunkle mit Schürzenstreifen und goldenen Akzenten.",
-    },
-  },
 };
 
 const it: ShopText = {
@@ -409,9 +343,11 @@ const it: ShopText = {
   closed: "La sezione degli inviti di nozze è chiusa per ora. Torna presto.",
   previewNote: "Le immagini hanno la scritta «MODEL»; i file che ricevi no. Nomi, date e telefoni del modello sono inventati.",
   getTitle: "Cosa ricevi",
+  langsLabel: "Lingue dell’invito",
+  formatsLabel: "Formati",
+  colorsLabel: "Varianti di colore",
+  detailsLabel: "Dettagli",
   get1: "Un file ZIP con il PDF da stampare e il PDF modificabile, da compilare gratis in Adobe Acrobat Reader.",
-  get2: "Due varianti di colore e due formati: 5×7 pollici e A5.",
-  get3: "Sette lingue: romeno, inglese, italiano, spagnolo, tedesco, francese e ungherese, ognuna singola o bilingue con il romeno (il romeno sopra, la traduzione sotto).",
   get4: "Le lettere romene restano corrette dopo la compilazione e il salvataggio: ă, â, î, ș, ț.",
   stepsTitle: "Come funziona",
   step1: "Spunta il consenso e premi «Acquista e scarica». Paghi con carta; l’email la scrivi nella pagina di pagamento.",
@@ -442,19 +378,6 @@ const it: ShopText = {
   mailHelp: "Il PDF modificabile si compila con Adobe Acrobat Reader (gratuito), su computer o telefono. Per la stampa usa il PDF da stampare.",
   mailWhat: "Cosa hai acquistato",
   mailAmount: "Importo",
-  imgMockup: "{name}: le due varianti di colore",
-  imgCrem: "Rosso e nero su crema",
-  imgDark: "Variante scura con dettagli dorati",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Invito di nozze Maramureș con motivi popolari romeni",
-      metaTitle: "Invito nozze tradizionale romeno Maramureș, PDF modificabile",
-      metaDescription: "Invito di nozze tradizionale romeno del Maramureș: portale intagliato, chiesa di legno e punto croce rosso e nero. PDF modificabile e da stampare, 5×7 e A5, 7 lingue.",
-      tagline: "Il portale del Maramureș, la chiesa di legno e il punto croce rosso e nero.",
-      description: "I motivi seguono gli antichi ricami a fili contati: rombi, stelle a otto punte, denti di lupo e la corda ritorta. In alto c’è il portale del Maramureș con la rosetta del sole, oppure la chiesa di legno con l’alto campanile. Due varianti: rosso e nero su crema, e una scura con bande da grembiule e dettagli dorati.",
-    },
-  },
 };
 
 const hu: ShopText = {
@@ -473,9 +396,11 @@ const hu: ShopText = {
   closed: "Az esküvői meghívók rovat jelenleg zárva van. Nézz vissza hamarosan.",
   previewNote: "A képeken „MODEL” jelzés van; a kapott fájlokon nincs. A mintában szereplő nevek, dátumok és telefonszámok kitaláltak.",
   getTitle: "Mit kapsz",
+  langsLabel: "A meghívó nyelvei",
+  formatsLabel: "Formátumok",
+  colorsLabel: "Színváltozatok",
+  detailsLabel: "Részletek",
   get1: "Egy ZIP-fájlt a nyomtatható és a kitölthető PDF-fel, amelyet ingyen töltesz ki az Adobe Acrobat Readerben.",
-  get2: "Két színváltozat és két méret: 5×7 hüvelyk és A5.",
-  get3: "Hét nyelv: román, angol, olasz, spanyol, német, francia és magyar, mindegyik egynyelvű vagy románnal kétnyelvű (felül román, alatta a fordítás).",
   get4: "A román betűk kitöltés és mentés után is helyesek maradnak: ă, â, î, ș, ț.",
   stepsTitle: "Hogyan működik",
   step1: "Jelöld be a hozzájárulást, és nyomd meg a „Megveszem és letöltöm” gombot. Kártyával fizetsz; az e-mail-címet a fizetési oldalon adod meg.",
@@ -506,19 +431,6 @@ const hu: ShopText = {
   mailHelp: "A kitölthető PDF-et az Adobe Acrobat Readerben (ingyenes) töltheted ki, számítógépen vagy telefonon. Nyomtatáshoz a nyomtatható PDF-et használd.",
   mailWhat: "Amit vásároltál",
   mailAmount: "Összeg",
-  imgMockup: "{name}: a két színváltozat",
-  imgCrem: "Piros és fekete krémszínen",
-  imgDark: "Sötét változat arany díszekkel",
-  models: {
-    maramures: {
-      name: "Máramaros",
-      title: "Máramarosi esküvői meghívó román népi motívumokkal",
-      metaTitle: "Hagyományos máramarosi esküvői meghívó, kitölthető PDF",
-      metaDescription: "Hagyományos esküvői meghívó máramarosi motívumokkal: faragott kapu, fatemplom és piros-fekete keresztszemes minta. Kitölthető és nyomtatható PDF, 5×7 és A5, 7 nyelven.",
-      tagline: "A máramarosi kapu, a fatemplom és a piros-fekete keresztszemes minta.",
-      description: "A motívumok a régi, szálszámolásos hímzéseket követik: rombuszok, nyolcágú csillagok, farkasfog és sodrott kötél. Felül a máramarosi kapu áll a napozettával, vagy a fatemplom a magas tornyával. Két változat: piros és fekete krémszínen, valamint egy sötét, kötényszerű sávokkal és arany díszekkel.",
-    },
-  },
 };
 
 const he: ShopText = {
@@ -537,9 +449,11 @@ const he: ShopText = {
   closed: "מדור ההזמנות לחתונה סגור כרגע. חזרו בקרוב.",
   previewNote: "בתמונות כאן מופיע הסימן „MODEL”; בקבצים שתקבלו הוא לא מופיע. השמות, התאריכים והטלפונים בדוגמה בדויים.",
   getTitle: "מה מקבלים",
+  langsLabel: "שפות ההזמנה",
+  formatsLabel: "פורמטים",
+  colorsLabel: "גרסאות צבע",
+  detailsLabel: "פרטים",
   get1: "קובץ ZIP עם PDF להדפסה ו-PDF למילוי, שממלאים בחינם ב-Adobe Acrobat Reader.",
-  get2: "שתי גרסאות צבע ושני גדלים: ‎5×7 אינץ׳ ו-A5.",
-  get3: "שבע שפות: רומנית, אנגלית, איטלקית, ספרדית, גרמנית, צרפתית והונגרית, כל אחת לבד או דו-לשונית עם רומנית (רומנית למעלה, התרגום מתחת).",
   get4: "האותיות הרומניות נשארות נכונות אחרי מילוי ושמירה: ă, â, î, ș, ț.",
   stepsTitle: "איך זה עובד",
   step1: "מסמנים את ההסכמה ולוחצים „לקנות ולהוריד”. משלמים בכרטיס; את המייל כותבים בעמוד התשלום.",
@@ -570,19 +484,6 @@ const he: ShopText = {
   mailHelp: "את ה-PDF למילוי ממלאים ב-Adobe Acrobat Reader (חינם), במחשב או בטלפון. להדפסה השתמשו ב-PDF להדפסה.",
   mailWhat: "מה קניתם",
   mailAmount: "סכום",
-  imgMockup: "{name}: שתי גרסאות הצבע",
-  imgCrem: "אדום ושחור על רקע שמנת",
-  imgDark: "גרסה כהה עם נגיעות זהב",
-  models: {
-    maramures: {
-      name: "מרמורש",
-      title: "הזמנה לחתונה מרמורש עם מוטיבים עממיים רומניים",
-      metaTitle: "הזמנה לחתונה רומנית מסורתית מרמורש, PDF למילוי",
-      metaDescription: "הזמנה לחתונה בסגנון רומני מסורתי ממרמורש: שער מגולף, כנסיית עץ ורקמת צלב באדום ושחור. PDF למילוי ולהדפסה, ‎5×7 ו-A5, ב-7 שפות.",
-      tagline: "השער של מרמורש, כנסיית העץ ורקמת הצלב באדום ושחור.",
-      description: "המוטיבים עוקבים אחרי רקמות עתיקות בספירת חוטים: מעוינים, כוכבים בעלי שמונה קצוות, שיני הזאב והחבל השזור. למעלה ניצב שער מרמורש עם רוזטת השמש, או כנסיית העץ עם הצריח הגבוה. שתי גרסאות: אדום ושחור על רקע שמנת, וגרסה כהה עם פסים כמו בסינר ונגיעות זהב.",
-    },
-  },
 };
 
 const pt: ShopText = {
@@ -601,9 +502,11 @@ const pt: ShopText = {
   closed: "A secção de convites de casamento está fechada por agora. Volta em breve.",
   previewNote: "As imagens têm a marca «MODEL»; os ficheiros que recebes não a têm. Os nomes, datas e telefones do modelo são fictícios.",
   getTitle: "O que recebes",
+  langsLabel: "Idiomas do convite",
+  formatsLabel: "Formatos",
+  colorsLabel: "Variantes de cor",
+  detailsLabel: "Detalhes",
   get1: "Um ficheiro ZIP com o PDF para imprimir e o PDF editável, que preenches gratuitamente no Adobe Acrobat Reader.",
-  get2: "Duas variantes de cor e dois formatos: 5×7 polegadas e A5.",
-  get3: "Sete línguas: romeno, inglês, italiano, espanhol, alemão, francês e húngaro, cada uma simples ou bilingue com o romeno (o romeno em cima, a tradução por baixo).",
   get4: "As letras romenas ficam corretas depois de preencher e guardar: ă, â, î, ș, ț.",
   stepsTitle: "Como funciona",
   step1: "Marca o acordo e carrega em «Comprar e transferir». Pagas com cartão; o e-mail escreves na página de pagamento.",
@@ -634,19 +537,6 @@ const pt: ShopText = {
   mailHelp: "O PDF editável preenche-se no Adobe Acrobat Reader (gratuito), no computador ou no telemóvel. Para imprimir, usa o PDF para imprimir.",
   mailWhat: "O que compraste",
   mailAmount: "Montante",
-  imgMockup: "{name}: as duas variantes de cor",
-  imgCrem: "Vermelho e preto sobre creme",
-  imgDark: "Variante escura com detalhes dourados",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Convite de casamento Maramureș com motivos populares romenos",
-      metaTitle: "Convite de casamento romeno Maramureș, PDF editável",
-      metaDescription: "Convite de casamento tradicional romeno de Maramureș: portão esculpido, igreja de madeira e ponto de cruz vermelho e preto. PDF editável e para imprimir, 5×7 e A5, 7 línguas.",
-      tagline: "O portão de Maramureș, a igreja de madeira e o ponto de cruz vermelho e preto.",
-      description: "Os motivos seguem os antigos bordados de fio contado: losangos, estrelas de oito pontas, dentes de lobo e a corda torcida. Em cima ergue-se o portão de Maramureș com a roseta solar, ou a igreja de madeira com a torre alta. Duas variantes: vermelho e preto sobre creme, e uma escura com faixas de avental e detalhes dourados.",
-    },
-  },
 };
 
 const el: ShopText = {
@@ -665,9 +555,11 @@ const el: ShopText = {
   closed: "Η ενότητα με τις προσκλήσεις γάμου είναι προς το παρόν κλειστή. Ελάτε ξανά σύντομα.",
   previewNote: "Οι εικόνες έχουν την ένδειξη «MODEL»· τα αρχεία που λαμβάνετε όχι. Τα ονόματα, οι ημερομηνίες και τα τηλέφωνα του δείγματος είναι φανταστικά.",
   getTitle: "Τι λαμβάνετε",
+  langsLabel: "Γλώσσες της πρόσκλησης",
+  formatsLabel: "Μορφές",
+  colorsLabel: "Χρωματικές εκδοχές",
+  detailsLabel: "Λεπτομέρειες",
   get1: "Ένα αρχείο ZIP με το PDF για εκτύπωση και το επεξεργάσιμο PDF, που το συμπληρώνετε δωρεάν στο Adobe Acrobat Reader.",
-  get2: "Δύο χρωματικές εκδοχές και δύο μεγέθη: 5×7 ίντσες και A5.",
-  get3: "Επτά γλώσσες: ρουμανικά, αγγλικά, ιταλικά, ισπανικά, γερμανικά, γαλλικά και ουγγρικά, η καθεμία μόνη ή δίγλωσση με ρουμανικά (τα ρουμανικά πάνω, η μετάφραση από κάτω).",
   get4: "Τα ρουμανικά γράμματα μένουν σωστά μετά τη συμπλήρωση και την αποθήκευση: ă, â, î, ș, ț.",
   stepsTitle: "Πώς λειτουργεί",
   step1: "Τσεκάρετε τη συναίνεση και πατάτε «Αγορά και λήψη». Πληρώνετε με κάρτα· το email το γράφετε στη σελίδα πληρωμής.",
@@ -698,19 +590,6 @@ const el: ShopText = {
   mailHelp: "Το επεξεργάσιμο PDF συμπληρώνεται στο Adobe Acrobat Reader (δωρεάν), σε υπολογιστή ή κινητό. Για εκτύπωση χρησιμοποιήστε το PDF για εκτύπωση.",
   mailWhat: "Τι αγοράσατε",
   mailAmount: "Ποσό",
-  imgMockup: "{name}: οι δύο χρωματικές εκδοχές",
-  imgCrem: "Κόκκινο και μαύρο σε κρεμ",
-  imgDark: "Σκούρα εκδοχή με χρυσές λεπτομέρειες",
-  models: {
-    maramures: {
-      name: "Μαραμούρες",
-      title: "Πρόσκληση γάμου Μαραμούρες με ρουμανικά λαϊκά μοτίβα",
-      metaTitle: "Ρουμανική πρόσκληση γάμου Μαραμούρες, επεξεργάσιμο PDF",
-      metaDescription: "Παραδοσιακή ρουμανική πρόσκληση γάμου από το Μαραμούρες: σκαλιστή πύλη, ξύλινη εκκλησία και κόκκινο-μαύρο σταυροβελονιά. Επεξεργάσιμο PDF και PDF εκτύπωσης, 5×7 και A5, 7 γλώσσες.",
-      tagline: "Η πύλη του Μαραμούρες, η ξύλινη εκκλησία και η κόκκινη-μαύρη σταυροβελονιά.",
-      description: "Τα μοτίβα ακολουθούν παλιά κεντήματα μετρητής κλωστής: ρόμβους, οκτάκτινα αστέρια, δόντια του λύκου και το στριφτό σχοινί. Πάνω στέκει η πύλη του Μαραμούρες με τη ροζέτα του ήλιου ή η ξύλινη εκκλησία με το ψηλό καμπαναριό. Δύο εκδοχές: κόκκινο και μαύρο σε κρεμ, και μια σκούρα με λωρίδες ποδιάς και χρυσές λεπτομέρειες.",
-    },
-  },
 };
 
 const sv: ShopText = {
@@ -729,9 +608,11 @@ const sv: ShopText = {
   closed: "Avdelningen för bröllopsinbjudningar är stängd just nu. Kom tillbaka snart.",
   previewNote: "Bilderna har märket ”MODEL”; filerna du får har det inte. Namn, datum och telefonnummer i exemplet är påhittade.",
   getTitle: "Det här får du",
+  langsLabel: "Inbjudans språk",
+  formatsLabel: "Format",
+  colorsLabel: "Färgvarianter",
+  detailsLabel: "Detaljer",
   get1: "En ZIP-fil med utskrifts-pdf:en och den ifyllbara pdf:en, som du fyller i gratis i Adobe Acrobat Reader.",
-  get2: "Två färgvarianter och två format: 5×7 tum och A5.",
-  get3: "Sju språk: rumänska, engelska, italienska, spanska, tyska, franska och ungerska, vart och ett enspråkigt eller tvåspråkigt med rumänska (rumänskan överst, översättningen under).",
   get4: "De rumänska bokstäverna blir rätt även efter ifyllning och sparande: ă, â, î, ș, ț.",
   stepsTitle: "Så fungerar det",
   step1: "Kryssa i samtycket och tryck på ”Köp och ladda ner”. Du betalar med kort; e-postadressen skriver du på betalsidan.",
@@ -762,19 +643,6 @@ const sv: ShopText = {
   mailHelp: "Den ifyllbara pdf:en fyller du i med Adobe Acrobat Reader (gratis), på dator eller mobil. För tryck använder du utskrifts-pdf:en.",
   mailWhat: "Det här köpte du",
   mailAmount: "Belopp",
-  imgMockup: "{name}: de två färgvarianterna",
-  imgCrem: "Rött och svart på krämvitt",
-  imgDark: "Mörk variant med gyllene detaljer",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Bröllopsinbjudan Maramureș med rumänska folkmotiv",
-      metaTitle: "Rumänsk bröllopsinbjudan Maramureș, ifyllbar pdf",
-      metaDescription: "Traditionell rumänsk bröllopsinbjudan från Maramureș: snidad port, träkyrka och korsstygn i rött och svart. Ifyllbar pdf och utskrifts-pdf, 5×7 och A5, 7 språk.",
-      tagline: "Porten från Maramureș, träkyrkan och korsstygn i rött och svart.",
-      description: "Motiven följer gamla räknade broderier: romber, åttauddiga stjärnor, vargtänder och det tvinnade repet. Överst står Maramureș-porten med solrosetten, eller träkyrkan med det höga tornet. Två varianter: rött och svart på krämvitt, och en mörk med förklädesränder och gyllene detaljer.",
-    },
-  },
 };
 
 const da: ShopText = {
@@ -793,9 +661,11 @@ const da: ShopText = {
   closed: "Afdelingen med bryllupsinvitationer er lukket lige nu. Kom snart tilbage.",
   previewNote: "Billederne har mærket “MODEL”; de filer, du får, har det ikke. Navne, datoer og telefonnumre i eksemplet er opdigtede.",
   getTitle: "Det får du",
+  langsLabel: "Invitationens sprog",
+  formatsLabel: "Formater",
+  colorsLabel: "Farvevarianter",
+  detailsLabel: "Detaljer",
   get1: "En ZIP-fil med pdf’en til print og den udfyldbare pdf, som du udfylder gratis i Adobe Acrobat Reader.",
-  get2: "To farvevarianter og to formater: 5×7 tommer og A5.",
-  get3: "Syv sprog: rumænsk, engelsk, italiensk, spansk, tysk, fransk og ungarsk, hver for sig eller tosproget med rumænsk (rumænsk øverst, oversættelsen nedenunder).",
   get4: "De rumænske bogstaver forbliver korrekte efter udfyldning og gemning: ă, â, î, ș, ț.",
   stepsTitle: "Sådan fungerer det",
   step1: "Sæt flueben ved samtykket, og tryk på “Køb og download”. Du betaler med kort; din e-mail skriver du på betalingssiden.",
@@ -826,19 +696,6 @@ const da: ShopText = {
   mailHelp: "Den udfyldbare pdf udfylder du i Adobe Acrobat Reader (gratis), på computer eller mobil. Til tryk bruger du pdf’en til print.",
   mailWhat: "Det har du købt",
   mailAmount: "Beløb",
-  imgMockup: "{name}: de to farvevarianter",
-  imgCrem: "Rødt og sort på creme",
-  imgDark: "Mørk variant med gyldne detaljer",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Bryllupsinvitation Maramureș med rumænske folkemotiver",
-      metaTitle: "Rumænsk bryllupsinvitation Maramureș, udfyldbar pdf",
-      metaDescription: "Traditionel rumænsk bryllupsinvitation fra Maramureș: udskåret port, trækirke og korssting i rødt og sort. Udfyldbar pdf og pdf til print, 5×7 og A5, 7 sprog.",
-      tagline: "Porten fra Maramureș, trækirken og korssting i rødt og sort.",
-      description: "Motiverne følger gamle tællebroderier: ruder, ottetakkede stjerner, ulvetænder og det snoede reb. Øverst står Maramureș-porten med solrosetten eller trækirken med det høje tårn. To varianter: rødt og sort på creme og en mørk med forklædestriber og gyldne detaljer.",
-    },
-  },
 };
 
 const nb: ShopText = {
@@ -857,9 +714,11 @@ const nb: ShopText = {
   closed: "Avdelingen for bryllupsinvitasjoner er stengt akkurat nå. Kom tilbake snart.",
   previewNote: "Bildene har merket «MODEL»; filene du får, har det ikke. Navn, datoer og telefonnumre i eksempelet er oppdiktet.",
   getTitle: "Dette får du",
+  langsLabel: "Invitasjonens språk",
+  formatsLabel: "Formater",
+  colorsLabel: "Fargevarianter",
+  detailsLabel: "Detaljer",
   get1: "En ZIP-fil med pdf-en for utskrift og den utfyllbare pdf-en, som du fyller ut gratis i Adobe Acrobat Reader.",
-  get2: "To fargevarianter og to formater: 5×7 tommer og A5.",
-  get3: "Sju språk: rumensk, engelsk, italiensk, spansk, tysk, fransk og ungarsk, hvert for seg eller tospråklig med rumensk (rumensk øverst, oversettelsen under).",
   get4: "De rumenske bokstavene blir riktige også etter utfylling og lagring: ă, â, î, ș, ț.",
   stepsTitle: "Slik fungerer det",
   step1: "Kryss av for samtykket og trykk «Kjøp og last ned». Du betaler med kort; e-posten skriver du på betalingssiden.",
@@ -890,19 +749,6 @@ const nb: ShopText = {
   mailHelp: "Den utfyllbare pdf-en fyller du ut i Adobe Acrobat Reader (gratis), på datamaskin eller mobil. Til trykk bruker du pdf-en for utskrift.",
   mailWhat: "Dette kjøpte du",
   mailAmount: "Beløp",
-  imgMockup: "{name}: de to fargevariantene",
-  imgCrem: "Rødt og svart på krem",
-  imgDark: "Mørk variant med gylne detaljer",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Bryllupsinvitasjon Maramureș med rumenske folkemotiver",
-      metaTitle: "Rumensk bryllupsinvitasjon Maramureș, utfyllbar pdf",
-      metaDescription: "Tradisjonell rumensk bryllupsinvitasjon fra Maramureș: utskåret port, trekirke og korssting i rødt og svart. Utfyllbar pdf og pdf for utskrift, 5×7 og A5, 7 språk.",
-      tagline: "Porten fra Maramureș, trekirken og korssting i rødt og svart.",
-      description: "Motivene følger gamle tellebroderier: ruter, åttetaggede stjerner, ulvetenner og det tvunnede tauet. Øverst står Maramureș-porten med solrosetten, eller trekirken med det høye tårnet. To varianter: rødt og svart på krem, og en mørk med forklestriper og gylne detaljer.",
-    },
-  },
 };
 
 const uk: ShopText = {
@@ -921,9 +767,11 @@ const uk: ShopText = {
   closed: "Розділ весільних запрошень зараз закрито. Поверніться згодом.",
   previewNote: "На зображеннях є позначка «MODEL»; у файлах, які ви отримаєте, її немає. Імена, дати й телефони у зразку вигадані.",
   getTitle: "Що ви отримуєте",
+  langsLabel: "Мови запрошення",
+  formatsLabel: "Формати",
+  colorsLabel: "Кольорові варіанти",
+  detailsLabel: "Подробиці",
   get1: "ZIP-файл із PDF для друку та PDF для заповнення, яке ви безкоштовно заповнюєте в Adobe Acrobat Reader.",
-  get2: "Два варіанти кольору та два формати: 5×7 дюймів і A5.",
-  get3: "Сім мов: румунська, англійська, італійська, іспанська, німецька, французька й угорська, кожна окремо або двомовно з румунською (румунська вгорі, переклад нижче).",
   get4: "Румунські літери залишаються правильними після заповнення та збереження: ă, â, î, ș, ț.",
   stepsTitle: "Як це працює",
   step1: "Позначте згоду й натисніть «Купити й завантажити». Оплата карткою; електронну пошту ви вводите на сторінці оплати.",
@@ -954,19 +802,6 @@ const uk: ShopText = {
   mailHelp: "PDF для заповнення заповнюється в Adobe Acrobat Reader (безкоштовно), на комп’ютері чи телефоні. Для друку використовуйте PDF для друку.",
   mailWhat: "Що ви купили",
   mailAmount: "Сума",
-  imgMockup: "{name}: два варіанти кольору",
-  imgCrem: "Червоне й чорне на кремовому",
-  imgDark: "Темний варіант із золотими акцентами",
-  models: {
-    maramures: {
-      name: "Марамуреш",
-      title: "Весільне запрошення Марамуреш з румунськими народними мотивами",
-      metaTitle: "Румунське весільне запрошення Марамуреш, PDF для заповнення",
-      metaDescription: "Традиційне румунське весільне запрошення з Марамурешу: різьблена брама, дерев’яна церква й червоно-чорна вишивка хрестиком. PDF для заповнення й друку, 5×7 і A5, 7 мов.",
-      tagline: "Марамуреська брама, дерев’яна церква й червоно-чорна вишивка хрестиком.",
-      description: "Мотиви повторюють давню лічильну вишивку: ромби, восьмипроменеві зірки, вовчі зуби й кручену мотузку. Угорі стоїть марамуреська брама з сонячною розетою або дерев’яна церква з високою вежею. Два варіанти: червоне й чорне на кремовому та темний, зі смугами, як на запасці, і золотими акцентами.",
-    },
-  },
 };
 
 const sr: ShopText = {
@@ -985,9 +820,11 @@ const sr: ShopText = {
   closed: "Rubrika sa pozivnicama za venčanje je trenutno zatvorena. Vrati se uskoro.",
   previewNote: "Slike nose oznaku „MODEL”; fajlovi koje dobijaš je nemaju. Imena, datumi i telefoni u primeru su izmišljeni.",
   getTitle: "Šta dobijaš",
+  langsLabel: "Jezici pozivnice",
+  formatsLabel: "Formati",
+  colorsLabel: "Varijante boja",
+  detailsLabel: "Detalji",
   get1: "ZIP fajl sa PDF-om za štampu i PDF-om za popunjavanje, koji besplatno popunjavaš u programu Adobe Acrobat Reader.",
-  get2: "Dve varijante boja i dva formata: 5×7 inča i A5.",
-  get3: "Sedam jezika: rumunski, engleski, italijanski, španski, nemački, francuski i mađarski, svaki zasebno ili dvojezično sa rumunskim (rumunski gore, prevod ispod).",
   get4: "Rumunska slova ostaju ispravna posle popunjavanja i čuvanja: ă, â, î, ș, ț.",
   stepsTitle: "Kako funkcioniše",
   step1: "Označi saglasnost i pritisni „Kupi i preuzmi”. Plaćaš karticom; imejl upisuješ na stranici za plaćanje.",
@@ -1018,19 +855,6 @@ const sr: ShopText = {
   mailHelp: "PDF za popunjavanje popunjava se u programu Adobe Acrobat Reader (besplatno), na računaru ili telefonu. Za štampu koristi PDF za štampu.",
   mailWhat: "Šta si kupio",
   mailAmount: "Iznos",
-  imgMockup: "{name}: dve varijante boja",
-  imgCrem: "Crveno i crno na krem podlozi",
-  imgDark: "Tamna varijanta sa zlatnim detaljima",
-  models: {
-    maramures: {
-      name: "Maramureš",
-      title: "Pozivnica za venčanje Maramureš sa rumunskim narodnim motivima",
-      metaTitle: "Rumunska pozivnica za venčanje Maramureš, PDF za popunjavanje",
-      metaDescription: "Tradicionalna rumunska pozivnica za venčanje iz Maramureša: rezbarena kapija, drvena crkva i crveno-crni vez krstićima. PDF za popunjavanje i štampu, 5×7 i A5, 7 jezika.",
-      tagline: "Maramureška kapija, drvena crkva i crveno-crni vez krstićima.",
-      description: "Motivi prate stare vezove po brojanim nitima: rombove, osmokrake zvezde, vučje zube i uvijeno uže. Gore stoji maramureška kapija sa sunčevom rozetom ili drvena crkva sa visokim tornjem. Dve varijante: crveno i crno na krem podlozi i tamna, sa prugama kao na pregači i zlatnim detaljima.",
-    },
-  },
 };
 
 const bg: ShopText = {
@@ -1049,9 +873,11 @@ const bg: ShopText = {
   closed: "Рубриката със сватбени покани засега е затворена. Върнете се скоро.",
   previewNote: "Изображенията носят знака „MODEL“; файловете, които получавате, нямат. Имената, датите и телефоните в примера са измислени.",
   getTitle: "Какво получавате",
+  langsLabel: "Езици на поканата",
+  formatsLabel: "Формати",
+  colorsLabel: "Цветни варианти",
+  detailsLabel: "Подробности",
   get1: "ZIP файл с PDF за печат и PDF за попълване, който попълвате безплатно в Adobe Acrobat Reader.",
-  get2: "Два цветови варианта и два формата: 5×7 инча и A5.",
-  get3: "Седем езика: румънски, английски, италиански, испански, немски, френски и унгарски, всеки поотделно или двуезично с румънски (румънският горе, преводът отдолу).",
   get4: "Румънските букви остават правилни след попълване и запазване: ă, â, î, ș, ț.",
   stepsTitle: "Как работи",
   step1: "Отбележете съгласието и натиснете „Купи и изтегли“. Плащате с карта; имейла пишете на страницата за плащане.",
@@ -1082,19 +908,6 @@ const bg: ShopText = {
   mailHelp: "PDF за попълване се попълва в Adobe Acrobat Reader (безплатно), на компютър или телефон. За печат използвайте PDF за печат.",
   mailWhat: "Какво купихте",
   mailAmount: "Сума",
-  imgMockup: "{name}: двата цветови варианта",
-  imgCrem: "Червено и черно върху кремаво",
-  imgDark: "Тъмен вариант със златни акценти",
-  models: {
-    maramures: {
-      name: "Марамуреш",
-      title: "Сватбена покана Марамуреш с румънски народни мотиви",
-      metaTitle: "Румънска сватбена покана Марамуреш, PDF за попълване",
-      metaDescription: "Традиционна румънска сватбена покана от Марамуреш: резбована порта, дървена църква и червено-черен кръстат бод. PDF за попълване и печат, 5×7 и A5, 7 езика.",
-      tagline: "Марамурешката порта, дървената църква и червено-черният кръстат бод.",
-      description: "Мотивите следват старите шевици по броене на нишки: ромбове, осемлъчни звезди, вълчи зъби и усуканото въже. Горе стои марамурешката порта със слънчевата розета или дървената църква с високата кула. Два варианта: червено и черно върху кремаво и тъмен, с ивици като на престилка и златни акценти.",
-    },
-  },
 };
 
 const tr: ShopText = {
@@ -1113,9 +926,11 @@ const tr: ShopText = {
   closed: "Düğün davetiyeleri bölümü şu an kapalı. Yakında tekrar uğra.",
   previewNote: "Buradaki görsellerde “MODEL” işareti var; sana gelen dosyalarda yok. Örnekteki adlar, tarihler ve telefonlar hayalidir.",
   getTitle: "Neler alırsın",
+  langsLabel: "Davetiyenin dilleri",
+  formatsLabel: "Formatlar",
+  colorsLabel: "Renk seçenekleri",
+  detailsLabel: "Ayrıntılar",
   get1: "Baskı PDF’i ve Adobe Acrobat Reader’da ücretsiz doldurduğun doldurulabilir PDF’in bulunduğu bir ZIP dosyası.",
-  get2: "İki renk seçeneği ve iki boyut: 5×7 inç ve A5.",
-  get3: "Yedi dil: Romence, İngilizce, İtalyanca, İspanyolca, Almanca, Fransızca ve Macarca; her biri tek başına ya da Romence ile iki dilli (üstte Romence, altında çeviri).",
   get4: "Romence harfler doldurup kaydettikten sonra da doğru kalır: ă, â, î, ș, ț.",
   stepsTitle: "Nasıl çalışır",
   step1: "Onayı işaretle ve “Satın al ve indir”e bas. Kartla ödersin; e-postanı ödeme sayfasında yazarsın.",
@@ -1146,19 +961,6 @@ const tr: ShopText = {
   mailHelp: "Doldurulabilir PDF, bilgisayarda ya da telefonda Adobe Acrobat Reader’da (ücretsiz) doldurulur. Baskı için baskı PDF’ini kullan.",
   mailWhat: "Satın aldığın",
   mailAmount: "Tutar",
-  imgMockup: "{name}: iki renk seçeneği",
-  imgCrem: "Krem üzerine kırmızı ve siyah",
-  imgDark: "Altın ayrıntılı koyu seçenek",
-  models: {
-    maramures: {
-      name: "Maramureș",
-      title: "Romen halk motifli Maramureș düğün davetiyesi",
-      metaTitle: "Geleneksel Romen düğün davetiyesi Maramureș, doldurulabilir PDF",
-      metaDescription: "Maramureș’ten geleneksel Romen düğün davetiyesi: oymalı kapı, ahşap kilise ve kırmızı-siyah kanaviçe. Doldurulabilir ve baskı PDF’i, 5×7 ve A5, 7 dil.",
-      tagline: "Maramureș kapısı, ahşap kilise ve kırmızı-siyah kanaviçe.",
-      description: "Motifler eski sayma işlemelerini izler: eşkenar dörtgenler, sekiz köşeli yıldızlar, kurt dişleri ve burgulu ip. Üstte güneş rozetli Maramureș kapısı ya da yüksek kuleli ahşap kilise durur. İki seçenek: krem üzerine kırmızı ve siyah ile önlük şeritli, altın ayrıntılı koyu bir seçenek.",
-    },
-  },
 };
 
 export const SHOP_TEXT: Record<Exclude<Locale, "en-US">, ShopText> = { ro, "en-GB": enGB, fr, es, nl, de, it, hu, he, pt, el, sv, da, nb, uk, sr, bg, tr };

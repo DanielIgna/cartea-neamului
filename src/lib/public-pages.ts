@@ -1,5 +1,5 @@
 import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
-import { SHOP_MODELS, SHOP_PATH } from "@/lib/invitatii-nunta";
+import { SHOP_PATH } from "@/lib/invitatii-nunta";
 
 /**
  * Paginile publice pe care le vrem în Google: din ele se fac sitemap.xml, robots.txt și lista din Admin → SEO.
@@ -18,9 +18,9 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly", roOnly: true },
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
   { path: "/cadou-de-sarbatori", label: "Cadou de sărbători", priority: 0.7, changeFrequency: "monthly" },
-  // Invitații de nuntă (Daniel, 27.11.2026): lista și câte o pagină pe model, în toate limbile (src/lib/invitatii-nunta.ts).
+  // Invitații de nuntă (Daniel, 27.11.2026): lista, în toate limbile. Paginile modelelor vin din baza de date (publicate din Admin)
+  // și intră în sitemap de acolo (src/lib/invitatii-nunta-sitemap.ts).
   { path: SHOP_PATH, label: "Invitații de nuntă", priority: 0.7, changeFrequency: "weekly" },
-  ...SHOP_MODELS.map((m) => ({ path: `${SHOP_PATH}/${m.slug}`, label: `Invitație de nuntă: ${m.slug}`, priority: 0.6, changeFrequency: "monthly" as const })),
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
   { path: "/surse-publice", label: "Unde îți cauți strămoșii gratuit (surse publice)", priority: 0.7, changeFrequency: "monthly", roOnly: true },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { db } from "@/db";
 import { isLocale, type Locale } from "@/i18n/locales";
 import { getLocale } from "@/i18n/server";
-import { SHOP_PATH, fill, modelBySlug, modelText, shopText } from "@/lib/invitatii-nunta";
+import { SHOP_PATH, fill, modelText, shopText } from "@/lib/invitatii-nunta";
+import { modelBySlug } from "@/lib/invitatii-nunta-produse";
 import { downloadToken, downloadUrl, fetchShopSession, fulfilShopOrder, orderBySession, MAX_EMAILS } from "@/lib/invitatii-nunta-server";
 import { PRIVATE_ROBOTS } from "@/lib/page-metadata";
 import { siteOrigin } from "@/lib/site";
@@ -45,7 +46,8 @@ export default async function ShopDonePage({ searchParams }: Props) {
       </section>
     );
   }
-  const model = modelBySlug(order.slug);
+  const model = await modelBySlug(db, order.slug).catch(() => null);
+  const tm = model ? modelText(model, locale) ?? modelText(model, "ro") : null;
   const expired = order.expiresAt.getTime() <= Date.now();
   const date = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(order.expiresAt);
   const href = downloadUrl(await siteOrigin(), downloadToken(order.id));
@@ -53,7 +55,7 @@ export default async function ShopDonePage({ searchParams }: Props) {
   return (
     <section className="stack shop" style={{ maxWidth: 720, margin: "0 auto" }}>
       <div className="card shop-done">
-        <div className="section-label" style={{ marginTop: 0 }}>{model ? modelText(model, locale).title : t.label}</div>
+        <div className="section-label" style={{ marginTop: 0 }}>{tm?.title ?? t.label}</div>
         <h1>{t.doneTitle}</h1>
         {expired ? <p>{t.expired} <Link href="/contact">→</Link></p> : (
           <>

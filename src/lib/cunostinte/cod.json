@@ -49,6 +49,7 @@
   "drizzle/0047_abonamente.sql",
   "drizzle/0048_coduri_activare.sql",
   "drizzle/0049_invitatii_nunta.sql",
+  "drizzle/0050_invitatii_nunta_produse.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -75,7 +76,6 @@
   "scripts/fise-scoala-docx.py",
   "scripts/fise-scoala.cjs",
   "scripts/harta-cod.ts",
-  "scripts/incarca-invitatie-nunta.ts",
   "scripts/istorie-locala-md.ts",
   "scripts/masoara-viteza.ts",
   "scripts/migrate.ts",
@@ -159,6 +159,8 @@
   "src/app/(site)/admin/email/page.tsx",
   "src/app/(site)/admin/infra/page.tsx",
   "src/app/(site)/admin/invatare/page.tsx",
+  "src/app/(site)/admin/invitatii-nunta/[id]/page.tsx",
+  "src/app/(site)/admin/invitatii-nunta/nou/page.tsx",
   "src/app/(site)/admin/invitatii-nunta/page.tsx",
   "src/app/(site)/admin/invitatii/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
@@ -289,6 +291,8 @@
   "src/app/api/admin/crm/gmail/callback/route.ts",
   "src/app/api/admin/crm/gmail/start/route.ts",
   "src/app/api/admin/crm/ingest/route.ts",
+  "src/app/api/admin/invitatii-nunta/poze/route.ts",
+  "src/app/api/admin/invitatii-nunta/zip/route.ts",
   "src/app/api/admin/poze/route.ts",
   "src/app/api/admin/propunere/[id]/route.ts",
   "src/app/api/arbore/[id]/documente/route.ts",
@@ -364,6 +368,7 @@
   "src/app/parteneri-actions.ts",
   "src/app/parteneri-crm-actions.ts",
   "src/app/pornire-actions.ts",
+  "src/app/poze-invitatii/[file]/route.ts",
   "src/app/probleme-actions.ts",
   "src/app/propmanage-actions.ts",
   "src/app/r/[cod]/route.ts",
@@ -500,6 +505,9 @@
   "src/components/admin/CunostinteHead.tsx",
   "src/components/admin/HomeImageSlot.tsx",
   "src/components/admin/IndexPlanCheck.tsx",
+  "src/components/admin/InvitatieFisiere.tsx",
+  "src/components/admin/InvitatieForm.tsx",
+  "src/components/admin/InvitatieStare.tsx",
   "src/components/admin/InviteSettingsForm.tsx",
   "src/components/admin/IstoricForms.tsx",
   "src/components/admin/OwnerRecovery.tsx",
@@ -1013,8 +1021,12 @@
   "src/lib/incepe-draft.ts",
   "src/lib/invatare.ts",
   "src/lib/invita-ramura.ts",
+  "src/lib/invitatii-nunta-admin.ts",
+  "src/lib/invitatii-nunta-incarcare.ts",
   "src/lib/invitatii-nunta-meta.ts",
+  "src/lib/invitatii-nunta-produse.ts",
   "src/lib/invitatii-nunta-server.ts",
+  "src/lib/invitatii-nunta-sitemap.ts",
   "src/lib/invitatii-nunta-texte.ts",
   "src/lib/invitatii-nunta.ts",
   "src/lib/invitatii.ts",
@@ -1406,6 +1418,14 @@
    "kind": "pagina"
   },
   {
+   "path": "/admin/invitatii-nunta/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/invitatii-nunta/nou",
+   "kind": "pagina"
+  },
+  {
    "path": "/admin/istoric",
    "kind": "pagina"
   },
@@ -1495,6 +1515,14 @@
   },
   {
    "path": "/api/admin/crm/ingest",
+   "kind": "api"
+  },
+  {
+   "path": "/api/admin/invitatii-nunta/poze",
+   "kind": "api"
+  },
+  {
+   "path": "/api/admin/invitatii-nunta/zip",
    "kind": "api"
   },
   {
@@ -1958,6 +1986,10 @@
    "kind": "pagina"
   },
   {
+   "path": "/poze-invitatii/[file]",
+   "kind": "api"
+  },
+  {
    "path": "/presa",
    "kind": "pagina"
   },
@@ -2169,5 +2201,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 49
+ "migrations": 50
 }

@@ -97,15 +97,17 @@ function diasporaGroups(): SitemapGroup[] {
  * `published`: comunele publicate de motorul SEO (adresa → data ultimei schimbări), citite din bază de rutele sitemap-ului.
  * Fără el (teste, Centrul SEO), comunele nu apar: intră doar cele publicate.
  */
-export function sitemapGroups(published: Map<string, Date> = new Map()): SitemapGroup[] {
-  // Comunele publicate de motorul SEO au data lor din bază; restul, data din src/data/seo-versiuni.json.
-  return rawGroups(published).map((g) => ({ ...g, urls: g.urls.map((u) => (published.has(u.path) ? u : { ...u, lastModified: lastmodOf(u.path, u.lastModified) })) }));
+export function sitemapGroups(published: Map<string, Date> = new Map(), shop: SitemapUrl[] = []): SitemapGroup[] {
+  // Comunele publicate de motorul SEO și modelele de invitații au data lor din bază; restul, data din src/data/seo-versiuni.json.
+  const own = new Set(shop.map((u) => u.path));
+  return rawGroups(published, shop).map((g) => ({ ...g, urls: g.urls.map((u) => (published.has(u.path) || own.has(u.path) ? u : { ...u, lastModified: lastmodOf(u.path, u.lastModified) })) }));
 }
 
 /** Grupele, cu datele de rezervă (fără src/data/seo-versiuni.json); scripts/seo-versiuni.ts pornește de la ele. */
-export function rawGroups(published: Map<string, Date> = new Map()): SitemapGroup[] {
+export function rawGroups(published: Map<string, Date> = new Map(), shop: SitemapUrl[] = []): SitemapGroup[] {
   return [
-    { name: "pagini", label: "Paginile principale", urls: PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency, priority: p.priority })) },
+    // `shop`: modelele de invitații de nuntă publicate din Admin (src/lib/invitatii-nunta-sitemap.ts), citite din bază de rutele sitemap-ului.
+    { name: "pagini", label: "Paginile principale", urls: [...PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency, priority: p.priority })), ...shop] },
     collectionGroup("ghid", "Ghiduri"),
     collectionGroup("glosar", "Glosar"),
     {
