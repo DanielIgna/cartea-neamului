@@ -19,7 +19,7 @@ export const huPastrare: PastrareCatalog = {
     "bannerOffer": "A mások által feltöltött fotók most csak kicsiben látszanak. Ha azt szeretnéd, hogy a család nagyban lássa őket és hallgassa a hangokat, a Megőrzés évi {price}.",
     "mailNote": "\n\nHa már nem szeretnél hozzáadni, de szeretnéd, hogy a család továbbra is mindent lásson (nagy fotók, hangok), ott a Megőrzés: évi {price}.",
     "noticeLead": "Újdonság: a Megőrzés.",
-    "notice": "A kifizetett év után évi {price} áron a család mindent lát és hallgat online, új hozzáadások nélkül. Nélküle sem törlődik semmi: a családfa látható marad, csak a mások fotói látszanak kicsiben, a saját feltöltéseidet pedig bármikor ingyen letöltheted. Frissítettük a Feltételeket.",
+    "notice": "Amikor lejár a kifizetett év, évi {price} áron online tarthatod a családfát. A család továbbra is láthatja és hallgathatja, csak újat nem lehet hozzáadni. Megőrzés nélkül sem törlődik semmi: a családfa látható marad, a mások által feltöltött fotók kisebben jelennek meg, a saját fájljaidat pedig bármikor ingyen letöltheted. Frissítettük a Feltételeket.",
     "noticeMore": "A Megőrzés megtekintése",
     "noticeOk": "Értem"
   },

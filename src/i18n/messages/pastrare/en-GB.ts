@@ -18,8 +18,8 @@ export const enGBPastrare: PastrareCatalog = {
     "banner": "You have Keepsake until {date}: the family can see and listen to everything, with no new additions.",
     "bannerOffer": "Photos uploaded by others are now shown small only. For the family to see them full size and listen to the voices, Keepsake costs {price} a year.",
     "mailNote": "\n\nIf you no longer want to add things but want the family to keep seeing everything (full-size photos, voices), there is Keepsake: {price} a year.",
-    "noticeLead": "What’s new: Keepsake.",
-    "notice": "After your paid year, for {price} a year, the family can see and listen to everything online, with no new additions. Without it nothing is deleted: the tree stays visible, only photos uploaded by others are shown small, and what you uploaded can always be downloaded for free. We have updated the Terms.",
+    "noticeLead": "New: Keepsake.",
+    "notice": "When your paid year ends, you can keep the tree online for just {price} a year. The family can still see it and listen to it; only new additions stop. Without Keepsake nothing is deleted: the tree stays visible, photos uploaded by others are shown smaller, and you can download your own files at any time, for free. We have updated the Terms.",
     "noticeMore": "See Keepsake",
     "noticeOk": "Got it"
   },

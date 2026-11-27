@@ -19,7 +19,7 @@ export const nlPastrare: PastrareCatalog = {
     "bannerOffer": "Foto’s die anderen uploadden zie je nu alleen klein. Wil je dat de familie ze groot ziet en de stemmen hoort, dan kost Bewaren {price} per jaar.",
     "mailNote": "\n\nWil je niets meer toevoegen, maar wil je dat de familie alles blijft zien (grote foto’s, stemmen)? Dan is er Bewaren: {price} per jaar.",
     "noticeLead": "Nieuw: Bewaren.",
-    "notice": "Na je betaalde jaar ziet en hoort de familie voor {price} per jaar alles online, zonder nieuwe toevoegingen. Zonder Bewaren wordt niets verwijderd: de stamboom blijft zichtbaar, alleen foto’s van anderen zie je klein, en wat je zelf uploadde download je altijd gratis. We hebben de Voorwaarden bijgewerkt.",
+    "notice": "Als je betaalde jaar afloopt, kun je de stamboom voor maar {price} per jaar online houden. De familie kan hem blijven bekijken en beluisteren; alleen nieuwe toevoegingen stoppen. Zonder Bewaren wordt niets verwijderd: de stamboom blijft zichtbaar, foto’s van anderen worden kleiner getoond en je eigen bestanden download je altijd gratis. We hebben de Voorwaarden bijgewerkt.",
     "noticeMore": "Bekijk Bewaren",
     "noticeOk": "Begrepen"
   },

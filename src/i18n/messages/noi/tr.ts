@@ -545,7 +545,7 @@ export const trExtra: DeepPartial<Catalog> = {
     bannerOffer: "Başkalarının yüklediği fotoğraflar artık sadece küçük gösteriliyor. Ailenin onları tam boyutta görmesi ve sesleri dinlemesi için Saklama yılda {price}.",
     mailNote: "\n\nArtık bir şey eklemek istemiyor ama ailenin her şeyi (tam boyutlu fotoğraflar, sesler) görmeye devam etmesini istiyorsan Saklama var: yılda {price}.",
     noticeLead: "Yeni: Saklama.",
-    notice: "Ödenmiş yılından sonra, yılda {price} karşılığında aile her şeyi çevrimiçi görebilir ve dinleyebilir, yeni ekleme olmadan. Bu olmadan hiçbir şey silinmez: ağaç görünür kalır, sadece başkalarının yüklediği fotoğraflar küçük gösterilir ve kendi yüklediklerini her zaman ücretsiz indirebilirsin. Koşulları güncelledik.",
+    notice: "Ödediğin yıl bittiğinde, ağacı yılda yalnızca {price} karşılığında çevrimiçi tutabilirsin. Aile onu görmeye ve dinlemeye devam eder; yalnızca yeni eklemeler durur. Saklama olmadan hiçbir şey silinmez: ağaç görünür kalır, başkalarının yüklediği fotoğraflar daha küçük görünür ve kendi dosyalarını her zaman ücretsiz indirebilirsin. Koşulları güncelledik.",
     noticeMore: "Saklama’yı gör",
     noticeOk: "Anladım",
   },

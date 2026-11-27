@@ -545,7 +545,7 @@ export const daExtra: DeepPartial<Catalog> = {
     bannerOffer: "Fotos uploadet af andre vises nu kun i lille størrelse. Skal familien se dem i fuld størrelse og høre stemmerne, koster Bevar {price} om året.",
     mailNote: "\n\nHvis du ikke længere vil tilføje noget, men vil have familien til at blive ved med at se alt (fotos i fuld størrelse, stemmer), findes Bevar: {price} om året.",
     noticeLead: "Nyhed: Bevar.",
-    notice: "Efter dit betalte år kan familien for {price} om året se og lytte til alt online, uden nye tilføjelser. Uden det slettes intet: træet er synligt, kun fotos uploadet af andre vises små, og det, du har uploadet, kan altid downloades gratis. Vi har opdateret Vilkårene.",
+    notice: "Når dit betalte år slutter, kan du beholde træet online for kun {price} om året. Familien kan stadig se og lytte til det; kun nye tilføjelser stopper. Uden Bevar slettes intet: træet er stadig synligt, fotos uploadet af andre vises mindre, og dine egne filer kan du altid downloade gratis. Vi har opdateret Vilkårene.",
     noticeMore: "Se Bevar",
     noticeOk: "Forstået",
   },

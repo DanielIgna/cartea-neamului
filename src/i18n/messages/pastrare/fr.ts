@@ -19,7 +19,7 @@ export const frPastrare: PastrareCatalog = {
     "bannerOffer": "Les photos ajoutées par d’autres ne s’affichent plus qu’en petit. Pour que la famille les voie en grand et écoute les voix, la Conservation coûte {price} par an.",
     "mailNote": "\n\nSi vous ne voulez plus rien ajouter mais souhaitez que la famille continue à tout voir (photos en grand, voix), il existe la Conservation : {price} par an.",
     "noticeLead": "Nouveau : la Conservation.",
-    "notice": "Après votre année payée, pour {price} par an, la famille voit et écoute tout en ligne, sans nouveaux ajouts. Sans elle, rien n’est supprimé : l’arbre reste visible, seules les photos ajoutées par d’autres s’affichent en petit, et ce que vous avez ajouté se télécharge toujours gratuitement. Nous avons mis à jour les Conditions.",
+    "notice": "Quand votre année payée se termine, vous pouvez garder l’arbre en ligne pour seulement {price} par an. La famille peut toujours le voir et l’écouter ; seuls les nouveaux ajouts s’arrêtent. Sans la Conservation, rien n’est supprimé : l’arbre reste visible, les photos ajoutées par d’autres s’affichent en plus petit et vous pouvez télécharger vos propres fichiers à tout moment, gratuitement. Nous avons mis à jour les Conditions.",
     "noticeMore": "Voir la Conservation",
     "noticeOk": "J’ai compris"
   },

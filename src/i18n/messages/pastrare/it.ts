@@ -19,7 +19,7 @@ export const itPastrare: PastrareCatalog = {
     "bannerOffer": "Le foto caricate da altri ora si vedono solo in piccolo. Perché la famiglia le veda grandi e ascolti le voci, la Conservazione costa {price} all’anno.",
     "mailNote": "\n\nSe non vuoi più aggiungere nulla ma vuoi che la famiglia continui a vedere tutto (foto grandi, voci), c’è la Conservazione: {price} all’anno.",
     "noticeLead": "Novità: la Conservazione.",
-    "notice": "Dopo l’anno pagato, per {price} all’anno, la famiglia vede e ascolta tutto online, senza nuove aggiunte. Senza di essa non si cancella nulla: l’albero resta visibile, solo le foto caricate da altri si vedono in piccolo e ciò che hai caricato tu lo scarichi sempre gratis. Abbiamo aggiornato i Termini.",
+    "notice": "Quando finisce l’anno pagato, puoi tenere l’albero online a soli {price} all’anno. La famiglia può continuare a vederlo e ascoltarlo; si fermano solo le nuove aggiunte. Senza la Conservazione non si cancella nulla: l’albero resta visibile, le foto caricate da altri si vedono più piccole e i tuoi file li scarichi quando vuoi, gratis. Abbiamo aggiornato i Termini.",
     "noticeMore": "Vedi la Conservazione",
     "noticeOk": "Ho capito"
   },
