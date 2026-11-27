@@ -16,6 +16,11 @@ async function admin() {
   return (await adminReady(me)) ? me : null;
 }
 const s = (f: FormData, k: string) => String(f.get(k) ?? "");
+/**
+ * Formularele cu două butoane (name/value, de pildă „Trimite acum” / „Nu trimite”) țin id-ul în „rid”, nu în „id”: un câmp numit
+ * „id” acoperă form.id în browser, iar React pierde atunci valoarea butonului apăsat (Daniel, 27.11.2026, Aprobări).
+ */
+const rid = (f: FormData) => String(f.get("rid") ?? f.get("id") ?? "");
 const back = (path: string, msg?: string) => redirect(msg ? `${path}${path.includes("?") ? "&" : "?"}ok=${encodeURIComponent(msg)}` : path);
 
 /* ---------- Import ---------- */
@@ -122,10 +127,10 @@ export async function updateDealAction(form: FormData) {
 export async function decideAction(form: FormData) {
   const me = await admin();
   if (!me) return;
-  await crmAudit(db, me.id, "aprobare decisă", form.get("id") as string | null, formDiff(form));
+  await crmAudit(db, me.id, "aprobare decisă", rid(form), formDiff(form));
   const d = s(form, "decizie");
   if (d !== "aprobat" && d !== "respins") return;
-  const r = await decideApproval(db, s(form, "id"), d, me.id, { subiect: txt(form.get("subiect"), 300) ?? undefined, text: txt(form.get("text"), 8000) ?? undefined });
+  const r = await decideApproval(db, rid(form), d, me.id, { subiect: txt(form.get("subiect"), 300) ?? undefined, text: txt(form.get("text"), 8000) ?? undefined });
   revalidatePath("/admin/crm");
   back("/admin/crm?t=aprobari", r.ok ? (d === "aprobat" ? "Aprobat." : "Respins.") : `Nu s-a putut: ${r.why}.`);
 }
@@ -237,9 +242,9 @@ export async function newCampaignAction(form: FormData) {
 export async function campaignStatusAction(form: FormData) {
   const me = await admin();
   if (!me) return;
-  await crmAudit(db, me.id, "stare campanie", form.get("id") as string | null, formDiff(form));
+  await crmAudit(db, me.id, "stare campanie", rid(form), formDiff(form));
   const { isCampaignStatus, setCampaignStatus } = await import("@/lib/crm-campanii");
-  const id = s(form, "id"), st = s(form, "status");
+  const id = rid(form), st = s(form, "status");
   if (!/^[0-9a-f-]{36}$/i.test(id) || !isCampaignStatus(st)) return;
   await setCampaignStatus(db, id, st);
   revalidatePath("/admin/crm");
@@ -348,8 +353,8 @@ export async function newTaskAction(form: FormData) {
 export async function closeTaskAction(form: FormData) {
   const me = await admin();
   if (!me) return;
-  await crmAudit(db, me.id, "sarcină închisă", form.get("id") as string | null, formDiff(form));
-  const id = s(form, "id");
+  await crmAudit(db, me.id, "sarcină închisă", rid(form), formDiff(form));
+  const id = rid(form);
   if (!/^[0-9a-f-]{36}$/i.test(id)) return;
   const { closeTask } = await import("@/lib/crm-sarcini");
   const st = s(form, "status") === "anulata" ? "anulata" : "facuta";

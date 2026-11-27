@@ -117,7 +117,7 @@ export default async function OrgPage({ params, searchParams }: { params: Promis
                   <td>{t.titlu}{t.sursa !== "manual" && <small> automat</small>}</td>
                   <td className="tight">{t.status === "deschisa" ? (
                     <form action={closeTaskAction} style={{ display: "flex", gap: 6 }}>
-                      <input type="hidden" name="id" value={t.id} /><input type="hidden" name="back" value={`/admin/crm/org/${org.id}`} />
+                      <input type="hidden" name="rid" value={t.id} /><input type="hidden" name="back" value={`/admin/crm/org/${org.id}`} />
                       <button className="btn primary" name="status" value="facuta">Făcut</button><button className="btn" name="status" value="anulata">Anulează</button>
                     </form>
                   ) : <span className="pill">{t.status === "facuta" ? "făcută" : "anulată"}</span>}</td>

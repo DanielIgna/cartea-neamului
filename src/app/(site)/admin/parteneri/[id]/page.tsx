@@ -67,7 +67,7 @@ export default async function PartnerCard({ params, searchParams }: { params: Pr
           <p className="muted"><small>Pagina partenerului și vânzarea merg doar în etapele „Agreat” și „Activ”.</small></p>
           {p.urmatorulPas && (
             <form action={stepDoneAction} className="crm-inline">
-              <input type="hidden" name="id" value={p.id} /><input type="hidden" name="pas" value={p.urmatorulPas} />
+              <input type="hidden" name="rid" value={p.id} /><input type="hidden" name="pas" value={p.urmatorulPas} />
               <span>Următorul pas: <b>{p.urmatorulPas}</b>{p.urmatorulPasLa ? ` (${when(p.urmatorulPasLa).split(",")[0]})` : ""}</span>
               <button className="btn" name="amana" value="0">Făcut</button><button className="btn" name="amana" value="1">Amână 7 zile</button>
             </form>

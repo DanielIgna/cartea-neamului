@@ -13,7 +13,7 @@ export function DocForm({ id, status, note }: { id: string; status: string; note
   const [s, action, pending] = useActionState<DocActionState, FormData>(updateDoc, null);
   return (
     <form action={action} className="kc-docform">
-      <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="rid" value={id} />
       <label>Stare
         <select name="status" defaultValue={status}>
           <option value="activ">Activ</option>

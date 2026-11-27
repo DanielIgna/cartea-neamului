@@ -28,7 +28,7 @@ export async function toggleGrowth(form: FormData): Promise<void> {
 export async function markCalendarItem(form: FormData): Promise<void> {
   const me = await admin();
   if (!me) return;
-  const id = String(form.get("id") ?? "").slice(0, 120);
+  const id = String(form.get("rid") ?? form.get("id") ?? "").slice(0, 120);
   const st = String(form.get("status") ?? "");
   if (!id) return;
   await markCalendar(db, id, st === "facut" || st === "sarit" ? (st as CalStatus) : null, me.id);
@@ -63,7 +63,7 @@ export async function setRecommendationAction(form: FormData): Promise<void> {
   if (st !== "facuta" && st !== "respinsa" && st !== "propusa") return;
   const { setRecommendation } = await import("@/lib/invatare");
   const note = form.get("note");
-  await setRecommendation(db, String(form.get("id") ?? ""), st, note == null ? null : String(note), me.id);
+  await setRecommendation(db, String(form.get("rid") ?? form.get("id") ?? ""), st, note == null ? null : String(note), me.id);
   revalidatePath("/admin/invatare");
 }
 

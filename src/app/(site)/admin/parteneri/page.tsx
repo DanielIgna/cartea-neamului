@@ -80,7 +80,7 @@ export default async function CityPartners({ searchParams }: { searchParams: Pro
                 <div><Link href={`/admin/parteneri/${p.id}`}><b>{p.numeMagazin}</b></Link> · {p.urmatorulPas ?? "pasul următor"} <small className={p.urmatorulPasLa! < new Date(Date.now() - 86_400_000) ? "err" : "muted"}>({day(p.urmatorulPasLa!)})</small>
                   {p.telefon && <> · <a href={`tel:${p.telefon}`}>{p.telefon}</a></>}</div>
                 <form action={stepDoneAction} className="crm-inline">
-                  <input type="hidden" name="id" value={p.id} /><input type="hidden" name="back" value="lista" /><input type="hidden" name="pas" value={p.urmatorulPas ?? ""} />
+                  <input type="hidden" name="rid" value={p.id} /><input type="hidden" name="back" value="lista" /><input type="hidden" name="pas" value={p.urmatorulPas ?? ""} />
                   <button className="btn" name="amana" value="0">Făcut</button>
                   <button className="btn" name="amana" value="1">Amână 7 zile</button>
                 </form>
