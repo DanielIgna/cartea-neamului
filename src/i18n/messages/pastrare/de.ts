@@ -19,7 +19,7 @@ export const dePastrare: PastrareCatalog = {
     "bannerOffer": "Fotos, die andere hochgeladen haben, erscheinen jetzt nur klein. Damit die Familie sie groß sieht und die Stimmen hört, kostet Aufbewahren {price} pro Jahr.",
     "mailNote": "\n\nWenn du nichts mehr hinzufügen möchtest, aber die Familie weiterhin alles sehen soll (große Fotos, Stimmen), gibt es Aufbewahren: {price} pro Jahr.",
     "noticeLead": "Neu: Aufbewahren.",
-    "notice": "Nach deinem bezahlten Jahr sieht und hört die Familie für {price} pro Jahr alles online, ohne neue Einträge. Ohne Aufbewahren wird nichts gelöscht: Der Stammbaum bleibt sichtbar, nur Fotos anderer erscheinen klein, und was du hochgeladen hast, lädst du jederzeit kostenlos herunter. Wir haben die Bedingungen aktualisiert.",
+    "notice": "Wenn dein bezahltes Jahr endet, kannst du den Stammbaum für nur {price} pro Jahr online behalten. Die Familie kann ihn weiter ansehen und anhören, nur Neues kommt nicht mehr hinzu. Ohne Aufbewahren wird nichts gelöscht: Der Stammbaum bleibt sichtbar, Fotos anderer werden kleiner angezeigt, und deine eigenen Dateien lädst du jederzeit kostenlos herunter. Wir haben die Bedingungen aktualisiert.",
     "noticeMore": "Aufbewahren ansehen",
     "noticeOk": "Verstanden"
   },

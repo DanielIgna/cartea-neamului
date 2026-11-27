@@ -545,7 +545,7 @@ export const svExtra: DeepPartial<Catalog> = {
     bannerOffer: "Foton som andra laddat upp visas nu bara i liten storlek. För att familjen ska se dem i full storlek och höra rösterna kostar Bevara {price} per år.",
     mailNote: "\n\nOm du inte längre vill lägga till saker men vill att familjen ska fortsätta se allt (foton i full storlek, röster), finns Bevara: {price} per år.",
     noticeLead: "Nytt: Bevara.",
-    notice: "Efter ditt betalda år kan familjen, för {price} per år, se och lyssna på allt online, utan nya tillägg. Utan det raderas ingenting: trädet syns, bara foton som andra laddat upp visas små, och det du laddat upp kan alltid laddas ner gratis. Vi har uppdaterat Villkoren.",
+    notice: "När ditt betalda år tar slut kan du behålla trädet online för bara {price} per år. Familjen kan fortfarande se och lyssna på det; bara nya tillägg upphör. Utan Bevara raderas ingenting: trädet syns, foton som andra laddat upp visas mindre och dina egna filer kan du alltid ladda ner gratis. Vi har uppdaterat Villkoren.",
     noticeMore: "Se Bevara",
     noticeOk: "Jag förstår",
   },

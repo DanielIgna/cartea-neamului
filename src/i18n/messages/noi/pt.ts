@@ -545,7 +545,7 @@ export const ptExtra: DeepPartial<Catalog> = {
     bannerOffer: "As fotografias carregadas por outros aparecem agora só em tamanho pequeno. Para a família as ver em tamanho real e ouvir as vozes, Conservar custa {price} por ano.",
     mailNote: "\n\nSe já não queres acrescentar coisas mas queres que a família continue a ver tudo (fotografias em tamanho real, vozes), existe Conservar: {price} por ano.",
     noticeLead: "Novidade: Conservar.",
-    notice: "Depois do teu ano pago, por {price} por ano, a família pode ver e ouvir tudo online, sem acrescentos novos. Sem isso nada é apagado: a árvore continua visível, só as fotografias carregadas por outros aparecem pequenas, e o que carregaste podes sempre descarregar de graça. Atualizámos os Termos.",
+    notice: "Quando o teu ano pago termina, podes manter a árvore online por apenas {price} por ano. A família continua a poder vê-la e ouvi-la; só deixam de se acrescentar coisas novas. Sem Conservar nada é apagado: a árvore continua visível, as fotografias carregadas por outros aparecem mais pequenas e os teus ficheiros podes descarregá-los sempre, de graça. Atualizámos os Termos.",
     noticeMore: "Ver Conservar",
     noticeOk: "Percebi",
   },

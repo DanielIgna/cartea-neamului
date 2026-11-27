@@ -545,7 +545,7 @@ export const srExtra: DeepPartial<Catalog> = {
     bannerOffer: "Fotografije koje su postavili drugi sada se prikazuju samo male. Da bi ih porodica videla u punoj veličini i slušala glasove, Čuvanje košta {price} godišnje.",
     mailNote: "\n\nAko više ne želiš da dodaješ, ali želiš da porodica i dalje vidi sve (fotografije u punoj veličini, glasove), postoji Čuvanje: {price} godišnje.",
     noticeLead: "Novo: Čuvanje.",
-    notice: "Posle tvoje plaćene godine, za {price} godišnje, porodica može da gleda i sluša sve onlajn, bez novih dodavanja. Bez toga ništa se ne briše: stablo ostaje vidljivo, samo se fotografije koje su postavili drugi prikazuju male, a ono što si ti postavio uvek možeš besplatno da preuzmeš. Ažurirali smo Uslove.",
+    notice: "Kada istekne tvoja plaćena godina, stablo možeš da zadržiš onlajn za samo {price} godišnje. Porodica i dalje može da ga gleda i sluša; samo se ne dodaje ništa novo. Bez Čuvanja ništa se ne briše: stablo ostaje vidljivo, fotografije koje su postavili drugi prikazuju se manje, a svoje fajlove uvek možeš besplatno da preuzmeš. Ažurirali smo Uslove.",
     noticeMore: "Pogledaj Čuvanje",
     noticeOk: "Razumem",
   },
