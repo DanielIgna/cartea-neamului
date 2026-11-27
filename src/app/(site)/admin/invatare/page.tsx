@@ -69,7 +69,7 @@ async function Jurnal() {
               </div>
             )}
             <form action={setRecommendationAction} className="actions" style={{ marginTop: 6, alignItems: "center" }}>
-              <input type="hidden" name="id" value={it.id} />
+              <input type="hidden" name="rid" value={it.id} />
               <input name="note" defaultValue={it.note ?? ""} maxLength={300} placeholder="Notă (ce ai făcut exact)" style={{ flex: 1, minWidth: 200 }} />
               {it.status !== "facuta" && <button className="btn primary" name="status" value="facuta">Făcut</button>}
               {it.status === "propusa" && <button className="btn" name="status" value="respinsa">Nu o fac</button>}

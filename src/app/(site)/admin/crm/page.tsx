@@ -353,7 +353,7 @@ async function Approvals() {
         {!pending.length && <p className="muted" style={{ margin: 0 }}>Nimic de aprobat.</p>}
         {pending.map(({ a, orgNume }) => (
           <form key={a.id} action={decideAction} className="form" style={{ border: "1px solid var(--line)", borderRadius: 10, padding: 12, display: "grid", gap: 8 }}>
-            <input type="hidden" name="id" value={a.id} />
+            <input type="hidden" name="rid" value={a.id} />
             <div><span className={`pill ${a.risc === "HIGH" ? "bad" : "warn"}`}>{a.risc}</span> <b>{a.tipActiune}</b>{orgNume ? ` · ${orgNume}` : ""} <small className="muted">expiră {day(a.expiresAt.toISOString(), true)}</small></div>
             {a.motiv && <div className="muted">{a.motiv}</div>}
             {a.payload.destinatar && <div>Către: <code>{a.payload.destinatar}</code></div>}
@@ -548,7 +548,7 @@ async function Campaigns() {
                   <td className="n">{num(c.raspunsuri)}</td><td className="n">{num(c.nelivrate)}</td><td className="n">{num(c.dezabonate)}</td><td className="n">{num(c.ramase)}</td>
                   <td className="tight">
                     <form action={campaignStatusAction} style={{ display: "inline" }}>
-                      <input type="hidden" name="id" value={c.id} />
+                      <input type="hidden" name="rid" value={c.id} />
                       {c.status === "pornita" ? <button className="btn" name="status" value="oprita">Oprește</button>
                         : c.status !== "terminata" ? <button className="btn primary" name="status" value="pornita">Pornește</button> : null}
                     </form>

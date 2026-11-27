@@ -40,7 +40,7 @@ export default async function Calendar() {
             <p style={{ margin: "4px 0", whiteSpace: "pre-wrap" }}>{it.text}</p>
             <p className="small" style={{ margin: "4px 0", wordBreak: "break-all" }}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></p>
             <form action={markCalendarItem} className="actions" style={{ marginTop: 6 }}>
-              <input type="hidden" name="id" value={it.id} />
+              <input type="hidden" name="rid" value={it.id} />
               {st ? <button className="btn" name="status" value="">Înapoi la „de făcut”</button> : <>
                 <button className="btn primary" name="status" value="facut">Făcut</button>
                 <button className="btn" name="status" value="sarit">Sar peste</button>

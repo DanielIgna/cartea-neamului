@@ -60,7 +60,7 @@ export async function deleteContactAction(form: FormData) {
 /** Pasul următor e făcut: îl șterge din aducerile aminte (sau îl amână cu 7 zile). */
 export async function stepDoneAction(form: FormData) {
   await admin();
-  const id = String(form.get("id") ?? "");
+  const id = String(form.get("rid") ?? form.get("id") ?? "");
   if (!UUID.test(id)) go(BASE);
   const later = form.get("amana") === "1";
   const pas = later ? String(form.get("pas") ?? "") || null : null;

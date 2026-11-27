@@ -109,6 +109,18 @@ describe("CRM admin: coada de aprobări", () => {
     expect(String(a.payload.eroare)).toContain("nu contacta");
   });
 
+  it("la o eroare de trimitere rămâne în așteptare, cu textul editat păstrat", async () => {
+    const id = (await queueApproval(db, { tipActiune: "email_presa", payload: { destinatar: "redactie@ziar.ro", subiect: "S", text: "Ciornă" }, dedupeKey: "eroare" }, now))!;
+    const r = await decideApproval(db, id, "aprobat", null as unknown as string, { text: "Textul meu schimbat" }, now, async () => ({ ok: false }));
+    expect(r.ok).toBe(false);
+    const [a] = await db.select().from(crmApprovals).where(eq(crmApprovals.id, id));
+    expect(a.status).toBe("in_asteptare");
+    expect(a.payload.text).toBe("Textul meu schimbat");
+    const send = vi.fn(async () => ({ ok: true }));
+    expect(await decideApproval(db, id, "aprobat", null as unknown as string, null, now, send)).toEqual({ ok: true, why: "aprobat" });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ text: "Textul meu schimbat" }));
+  });
+
   it("după 72 de ore expiră", async () => {
     const id = (await queueApproval(db, { tipActiune: "email-x", payload: { destinatar: "a@b.ro" } }, now))!;
     expect(await expireApprovals(db, new Date(now.getTime() + 71 * 3600_000))).toBe(0);

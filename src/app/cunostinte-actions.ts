@@ -16,7 +16,7 @@ const STATUSES: DocStatus[] = ["activ", "revizuire", "ciorna", "arhivat"];
 export async function updateDoc(_: DocActionState, form: FormData): Promise<DocActionState> {
   const me = await currentUser();
   if (!me || !(await founderReady(me))) return { error: "Nu ai voie aici." };
-  const id = String(form.get("id") ?? "");
+  const id = String(form.get("rid") ?? form.get("id") ?? "");
   const doc = docById(id);
   if (!doc) return { error: "Document necunoscut." };
   const status = String(form.get("status") ?? "");
