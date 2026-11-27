@@ -17,7 +17,7 @@ import { list, parseBlocks, parseFrontmatter, plainText, type Block } from "./ma
  *   lang        – (ghid) „en” pentru ghidurile în engleză pentru SUA și Canada (Daniel, 19.11.2026); implicit „ro”
  */
 /** Limba unui ghid: româna, engleza (SUA, Canada, diaspora) și, din 27.11.2026, italiana și spaniola (copiii românilor din Italia și Spania). */
-export type GuideLang = "ro" | "en" | "it" | "es";
+export type GuideLang = "ro" | "en" | "it" | "es" | "de" | "fr" | "he";
 
 export type Collection = "ghid" | "glosar";
 export type Entry = {
@@ -51,7 +51,7 @@ export function loadCollection(c: Collection): Entry[] {
       title: data.title ?? slug, seoTitle: seoTitle(c, data.title ?? slug, data.seo), description: data.description ?? "",
       updated, published: data.published ? new Date(`${data.published}T00:00:00Z`) : updated,
       related: list(data.related), terms: list(data.terms), alt: list(data.alt), category: data.category ?? "Altele",
-      blocks, words: plainText(blocks).split(/\s+/).filter(Boolean).length, lang: (["en", "it", "es"] as const).find((l) => l === data.lang) ?? "ro",
+      blocks, words: plainText(blocks).split(/\s+/).filter(Boolean).length, lang: (["en", "it", "es", "de", "fr", "he"] as const).find((l) => l === data.lang) ?? "ro",
     };
   });
   entries.sort((a, b) => a.title.localeCompare(b.title, "ro"));
