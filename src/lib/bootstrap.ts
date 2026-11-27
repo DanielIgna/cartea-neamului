@@ -224,7 +224,8 @@ const ADDITIVE = [
   sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_to_name" text`,
   sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_from" text`,
   sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_note" text`,
-  // Anunțurile închise, ținute pe cont (migrația 0052).
+  // Anunțurile închise, ținute pe cont, și codul comenzilor din magazin (migrația 0052).
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "promo" text`,
   sql`CREATE TABLE IF NOT EXISTS "notice_dismissal" ("user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE, "notice" text NOT NULL, "at" timestamp DEFAULT now() NOT NULL, "times" integer DEFAULT 1 NOT NULL, CONSTRAINT "notice_dismissal_pk" PRIMARY KEY("user_id","notice"))`,
 ];
 

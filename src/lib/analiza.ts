@@ -1,3 +1,4 @@
+import { SALES, SALE_KIND, testPaymentSql } from "./plati-test";
 import { sql, type SQL } from "drizzle-orm";
 import { realAccountSql } from "./conturi-test";
 import type { Db } from "@/db";
@@ -176,16 +177,25 @@ export const JUDETE_GRID: Record<string, [number, number]> = {
 };
 export const judetName = (code: string | null) => (code && JUDETE[code]) || (code ? code : "Necunoscut");
 
+const isTrue = (v: unknown) => v === true || v === "t" || v === "true" || v === 1;
+
 /** Conturile, arborii și plățile din interval (din baza de date, nu din vizite). Contul de probă nu intră. */
 export async function business(db: Db, r: Range) {
   const [u] = await rows(db, sql`select count(*) as c from "user" u where ${realAccountSql("u")} and ${localDay(sql`created_at`)} between ${r.from} and ${r.to}`);
   const [t] = await rows(db, sql`select count(*) as c from tree t join "user" u on u.id = t.owner_id where ${realAccountSql("u")} and ${localDay(sql`t.created_at`)} between ${r.from} and ${r.to}`);
-  const pay = await rows(db, sql`select currency, count(*) as c, sum(amount) as s from payment where ${localDay(sql`created_at`)} between ${r.from} and ${r.to} group by currency`);
+  // Toate vânzările: plățile contului și comenzile din magazin (invitațiile); cele de test se numără separat (src/lib/plati-test.ts).
+  const pay = await rows(db, sql`select p.kind, p.currency, ${testPaymentSql("p")} as test, count(*) as c, sum(p.amount) as s
+    from ${SALES} p where ${localDay(sql`p.created_at`)} between ${r.from} and ${r.to} group by 1, 2, 3`);
+  const real = pay.filter((x) => !isTrue(x.test));
+  const kinds = new Map<string, number>();
+  for (const x of pay) kinds.set(String(x.kind), (kinds.get(String(x.kind)) ?? 0) + n(x.c));
   return {
     accounts: n(u?.c), trees: n(t?.c),
     payments: pay.reduce((a, x) => a + n(x.c), 0),
-    lei: pay.filter((x) => x.currency === "ron").reduce((a, x) => a + n(x.s) / 100, 0),
-    eur: pay.filter((x) => x.currency === "eur").reduce((a, x) => a + n(x.s) / 100, 0),
+    tests: pay.filter((x) => isTrue(x.test)).reduce((a, x) => a + n(x.c), 0),
+    byKind: [...kinds].map(([kind, count]) => ({ kind, label: SALE_KIND[kind] ?? kind, count })),
+    lei: real.filter((x) => x.currency === "ron").reduce((a, x) => a + n(x.s) / 100, 0),
+    eur: real.filter((x) => x.currency === "eur").reduce((a, x) => a + n(x.s) / 100, 0),
   };
 }
 

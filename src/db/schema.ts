@@ -1251,6 +1251,8 @@ export const shopOrder = pgTable("shop_order", {
   giftToName: text("gift_to_name"),
   giftFrom: text("gift_from"),
   giftNote: text("gift_note"),
+  // Codul de reducere (TESTINV90…); '' = fără cod; null = neverificat încă (src/lib/plati-test.ts).
+  promo: text("promo"),
 }, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
 
 // Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține

@@ -25,6 +25,16 @@ export function testPaymentSql(p = "p"): SQL {
   return sql`(${a}.id like 'cs_test_%' or upper(coalesce(${a}.promo, '')) like ${`${TEST_CODE_PREFIX}%`})`;
 }
 
+/**
+ * Toate vânzările, ca un singur tabel: plățile contului (`payment`) și comenzile din magazin fără cont (`shop_order`, kind „invitatie”).
+ * Coloanele: id, user_id, kind, amount, currency, promo, created_at. Se folosește ca `from ${SALES} p`.
+ */
+export const SALES = sql`(select id, user_id, kind, amount, currency, promo, created_at from payment
+  union all select id, null::text as user_id, 'invitatie' as kind, amount, currency, promo, created_at from shop_order)`;
+
+/** Numele pe înțeles al felului de plată, pentru rapoarte. */
+export const SALE_KIND: Record<string, string> = { an: "plan", carte: "carte PDF", cadou: "an dăruit", pastrare: "Păstrare", invitatie: "invitație de nuntă" };
+
 /** O plată adevărată, cu bani: nu e de test și nu e o carte inclusă (sumă 0). */
 export function realPaymentSql(p = "p"): SQL {
   return sql`(${sql.raw(p)}.amount > 0 and not ${testPaymentSql(p)})`;
@@ -49,17 +59,20 @@ export function codeOfSession(s: StripeSession): string {
 export async function fillPaymentCodes(db: Db, fetcher: typeof fetch = fetch, limit = 30): Promise<number> {
   const key = process.env.STRIPE_SECRET_KEY?.trim();
   if (!key) return 0;
-  const r = await db.execute(sql`select id from payment where id like 'cs_%' and amount > 0
-    and (promo is null or promo like 'promo_%') order by created_at desc limit ${limit}`);
+  const r = await db.execute(sql`select id, 'payment' as t from payment where id like 'cs_%' and amount > 0
+    and (promo is null or promo like 'promo_%')
+    union all select id, 'shop_order' as t from shop_order where id like 'cs_%' and amount > 0 and (promo is null or promo like 'promo_%')
+    limit ${limit}`);
   let done = 0;
-  for (const row of (r.rows ?? []) as { id: string }[]) {
+  for (const row of (r.rows ?? []) as { id: string; t: string }[]) {
     try {
       const res = await fetcher(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(row.id)}?expand[]=discounts.promotion_code`, {
         headers: { authorization: `Bearer ${key}` },
       });
       if (!res.ok) continue;
       const code = codeOfSession((await res.json()) as StripeSession);
-      await db.execute(sql`update payment set promo = ${code} where id = ${row.id}`);
+      if (row.t === "shop_order") await db.execute(sql`update shop_order set promo = ${code} where id = ${row.id}`);
+      else await db.execute(sql`update payment set promo = ${code} where id = ${row.id}`);
       done++;
     } catch {
       /* rămâne pentru data viitoare */
