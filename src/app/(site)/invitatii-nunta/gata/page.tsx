@@ -59,7 +59,7 @@ export default async function ShopDonePage({ searchParams }: Props) {
         <h1>{t.doneTitle}</h1>
         {expired ? <p>{t.expired} <Link href="/contact">→</Link></p> : (
           <>
-            <p>{fill(t.doneLead, { email: order.email })}</p>
+            <p>{order.buyerEmail ? fill(t.doneGift, { email: order.email, buyer: order.buyerEmail }) : fill(t.doneLead, { email: order.email })}</p>
             <p><a className="btn primary" href={href} rel="nofollow">{t.download}</a></p>
             <p className="muted">{fill(t.validUntil, { date })}</p>
             <p className="muted">{t.mailHelp}</p>

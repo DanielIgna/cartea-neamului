@@ -50,6 +50,7 @@
   "drizzle/0048_coduri_activare.sql",
   "drizzle/0049_invitatii_nunta.sql",
   "drizzle/0050_invitatii_nunta_produse.sql",
+  "drizzle/0051_invitatii_nunta_cadou.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -2212,5 +2213,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 50
+ "migrations": 51
 }

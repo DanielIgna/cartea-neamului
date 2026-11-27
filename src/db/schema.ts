@@ -1246,6 +1246,11 @@ export const shopOrder = pgTable("shop_order", {
   lastEmailAt: timestamp("last_email_at"),
   downloads: integer("downloads").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  // Cadoul (27.11.2026): `email` e destinatarul, `buyerEmail` cel care a plătit (null = același); numele și mesajul intră în email.
+  buyerEmail: text("buyer_email"),
+  giftToName: text("gift_to_name"),
+  giftFrom: text("gift_from"),
+  giftNote: text("gift_note"),
 }, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
 
 // Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține
