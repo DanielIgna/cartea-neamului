@@ -93,9 +93,11 @@ export async function deleteObjects(keys: (string | null | undefined)[]) {
 }
 
 /** Link temporar (implicit 10 minute) către un obiect privat, fără să expunem cheile. */
-export function presignedGetUrl(key: string, expiresIn = 600) {
+export function presignedGetUrl(key: string, expiresIn = 600, downloadName?: string) {
   const { c, Bucket } = target(key);
-  return getSignedUrl(c, new GetObjectCommand({ Bucket, Key: key }), { expiresIn });
+  // Cu `downloadName`, browserul salvează fișierul cu acest nume, în loc să-l deschidă (invitațiile de nuntă, ZIP-ul).
+  const disposition = downloadName ? { ResponseContentDisposition: `attachment; filename="${downloadName.replace(/[^\w.-]+/g, "_")}"` } : {};
+  return getSignedUrl(c, new GetObjectCommand({ Bucket, Key: key, ...disposition }), { expiresIn });
 }
 
 /** Cheia obiectului: grupată pe arbore, cu un id unic ca să nu suprascriem niciodată un fișier. */

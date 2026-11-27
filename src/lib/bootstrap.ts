@@ -209,6 +209,16 @@ const ADDITIVE = [
     "used_at" timestamp, "used_by_user_id" text REFERENCES "user"("id") ON DELETE set null, "cancelled_at" timestamp)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "activation_code_cod_idx" ON "activation_code" ("cod")`,
   sql`CREATE INDEX IF NOT EXISTS "activation_code_status_idx" ON "activation_code" ("status","sursa","created_at")`,
+  // Invitațiile de nuntă, comenzile fără cont (migrația 0049).
+  sql`CREATE TABLE IF NOT EXISTS "shop_order" ("id" text PRIMARY KEY NOT NULL, "email" text NOT NULL, "slug" text NOT NULL, "locale" text NOT NULL,
+    "amount" integer NOT NULL, "currency" text NOT NULL, "token_hash" text NOT NULL, "expires_at" timestamp NOT NULL,
+    "emails_sent" integer DEFAULT 0 NOT NULL, "last_email_at" timestamp, "downloads" integer DEFAULT 0 NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "shop_order_token_idx" ON "shop_order" ("token_hash")`,
+  sql`CREATE INDEX IF NOT EXISTS "shop_order_created_idx" ON "shop_order" ("created_at")`,
+  // Modelele invitațiilor, scrise din Admin (migrația 0050; modelul Maramureș se adaugă doar prin migrație sau din Admin).
+  sql`CREATE TABLE IF NOT EXISTS "shop_product" ( "id" text PRIMARY KEY NOT NULL, "slug" text NOT NULL, "region" text DEFAULT '' NOT NULL, "status" text DEFAULT 'draft' NOT NULL, "texts" jsonb DEFAULT '{}'::jsonb NOT NULL, "languages" jsonb DEFAULT '[]'::jsonb NOT NULL, "formats" jsonb DEFAULT '[]'::jsonb NOT NULL, "price_ron" integer DEFAULT 4500 NOT NULL, "price_eur" integer DEFAULT 900 NOT NULL, "images" jsonb DEFAULT '[]'::jsonb NOT NULL, "zip_key" text, "zip_name" text, "zip_size" integer, "zip_files" integer, "zip_version" integer DEFAULT 0 NOT NULL, "zip_updated_at" timestamp, "sort" integer DEFAULT 0 NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL, "published_at" timestamp)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "shop_product_slug_idx" ON "shop_product" ("slug")`,
+  sql`CREATE INDEX IF NOT EXISTS "shop_product_status_idx" ON "shop_product" ("status","sort")`,
 ];
 
 export async function applySchema(target: Db) {

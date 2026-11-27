@@ -260,6 +260,16 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/coduri-activare.test.ts"],
   },
   {
+    key: "invitatii-nunta", name: "Invitații de nuntă (fără cont)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Fișiere plătite livrate prin link: paza e tokenul lung (HMAC din sesiunea Stripe, doar hash-ul în bază), valabil 30 de zile, și storage-ul privat.",
+    what: "Invitații de nuntă digitale cu motive populare pe regiuni (primul model: Maramureș): pagini publice în toate limbile, plata Stripe fără cont (45 lei / 9 €), comanda în shop_order, emailul cu linkul de descărcare, pagina de după plată cu retrimitere, ZIP-ul din storage privat, comutator în Admin. Modelele stau în shop_product și se administrează din Admin → Invitații de nuntă: listă cu vânzări, adăugare și editare (texte pe limbi, prețuri, limbi, formate, SEO), ZIP-ul urcat pe bucăți de 4 MB cu bară de progres și verificat pe server, pozele micșorate în browser și ordonate prin tragere, Publică / Retrage / Arhivează, ștergere cu confirmare doar fără vânzări.",
+    engine: ["src/lib/invitatii-nunta.ts", "src/lib/invitatii-nunta-texte.ts", "src/lib/invitatii-nunta-server.ts", "src/lib/invitatii-nunta-produse.ts", "src/lib/invitatii-nunta-incarcare.ts", "src/lib/invitatii-nunta-sitemap.ts", "src/app/invitatii-nunta-actions.ts"],
+    pages: ["/invitatii-nunta", "/invitatii-nunta/[slug]", "/invitatii-nunta/gata", "/api/invitatii-nunta/start", "/api/invitatii-nunta/descarca/[token]", "/api/invitatii-nunta/retrimite", "/poze-invitatii/[file]", "/admin/invitatii-nunta", "/admin/invitatii-nunta/nou", "/admin/invitatii-nunta/[id]", "/api/admin/invitatii-nunta/zip", "/api/admin/invitatii-nunta/poze"],
+    tables: ["shop_product", "shop_order", "app_setting"],
+    metric: { table: "shop_order", label: "comenzi" },
+    dashboard: "/admin/invitatii-nunta",
+    tests: ["tests/invitatii-nunta.test.ts"],
+  },
+  {
     key: "city-partners", name: "City Partners (CRM parteneri)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Comisioane de plătit și conturi trecute pe parteneri.",
     what: "Magazine și firme de la prospect la activ: etape, filtre, județe, istoric de contact, pași cu termen, alertă 30 de zile, legătura de recomandare /r/<cod>, kit de tipar, raport lunar de plată.",
     engine: ["src/lib/parteneri-crm.ts", "src/app/parteneri-crm-actions.ts"],

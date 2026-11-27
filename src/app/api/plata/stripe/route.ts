@@ -9,6 +9,8 @@ import { afterPayment } from "@/lib/conversie";
 import { afterCrmPayment } from "@/lib/crm-bani";
 import { fixSubscription, linkSubscription, renewalPaid, subAfterUpgrade, subscriptionChanged } from "@/lib/abonament";
 import { planSettings } from "@/lib/plans";
+import { fulfilShopOrder, shopEvent } from "@/lib/invitatii-nunta-server";
+import { siteOrigin } from "@/lib/site";
 
 /**
  * Confirmarea plăților trimisă de Stripe (în Stripe: Developers → Webhooks → adresa https://carteaneamului.ro/api/plata/stripe,
@@ -24,6 +26,12 @@ export async function POST(req: Request) {
   }
   let event: unknown;
   try { event = JSON.parse(body); } catch { return new Response("JSON greșit", { status: 400 }); }
+  // Invitațiile de nuntă (src/lib/invitatii-nunta-server.ts): comenzi fără cont, cu tabelul lor; nu ajung la plățile contului.
+  const shop = shopEvent(event);
+  if (shop) {
+    if (shop.paid) await fulfilShopOrder(db, shop.paid, await siteOrigin());
+    return Response.json({ ok: true });
+  }
   // Contestări la bancă și avertismente de fraudă de la Stripe Radar (dacă sunt bifate în Stripe → Webhooks): în Admin → Securitate.
   const alert = stripeAlert(event);
   if (alert) {

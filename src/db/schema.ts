@@ -1228,3 +1228,50 @@ export const archiveHintDismissal = pgTable("archive_hint_dismissal", {
   personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [primaryKey({ name: "archive_hint_dismissal_pk", columns: [t.userId, t.personId] })]);
+
+/* ---------- Invitații de nuntă (Daniel, 2026-11-27) ---------- */
+// O comandă din rubrica /invitatii-nunta, plătită fără cont: cheia e id-ul sesiunii Stripe (o confirmare primită de două ori se
+// trece o singură dată). Separat de `payment` (plățile contului). Tokenul de descărcare nu se ține: doar hash-ul lui (SHA-256),
+// iar linkul e valabil până la `expires_at` (30 de zile). Vezi src/lib/invitatii-nunta-server.ts.
+export const shopOrder = pgTable("shop_order", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  slug: text("slug").notNull(),
+  locale: text("locale").notNull(),
+  amount: integer("amount").notNull(), // în bani (lei × 100) sau cenți
+  currency: text("currency").notNull(), // ron / eur
+  tokenHash: text("token_hash").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  emailsSent: integer("emails_sent").notNull().default(0),
+  lastEmailAt: timestamp("last_email_at"),
+  downloads: integer("downloads").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
+
+// Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține
+// textele pe limbi ({ ro: { name, title, tagline, description, metaTitle, metaDescription, colors }, "en-GB": … }), româna obligatorie.
+// Prețurile sunt în unitatea mică (bani / cenți). `images`: pozele de prezentare, în ordine (prima e cea principală). ZIP-ul stă
+// privat în storage la `zip_key` (magazin/invitatii-nunta/<slug>.zip). Status: draft (ciornă) / published / archived (are vânzări,
+// nu se mai poate șterge). Vezi src/lib/invitatii-nunta-produse.ts.
+export const shopProduct = pgTable("shop_product", {
+  id: text("id").primaryKey(),
+  slug: text("slug").notNull(),
+  region: text("region").notNull().default(""),
+  status: text("status").notNull().default("draft"),
+  texts: jsonb("texts").notNull().default({}),
+  languages: jsonb("languages").notNull().default([]),
+  formats: jsonb("formats").notNull().default([]),
+  priceRon: integer("price_ron").notNull().default(4500),
+  priceEur: integer("price_eur").notNull().default(900),
+  images: jsonb("images").notNull().default([]),
+  zipKey: text("zip_key"),
+  zipName: text("zip_name"),
+  zipSize: integer("zip_size"),
+  zipFiles: integer("zip_files"),
+  zipVersion: integer("zip_version").notNull().default(0),
+  zipUpdatedAt: timestamp("zip_updated_at"),
+  sort: integer("sort").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  publishedAt: timestamp("published_at"),
+}, (t) => [uniqueIndex("shop_product_slug_idx").on(t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);

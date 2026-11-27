@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SHOP_PATH } from "@/lib/invitatii-nunta";
 import { readFileSync } from "node:fs";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
 import { sectionOf } from "@/lib/public-sections";
@@ -18,7 +19,10 @@ describe("paginile publice gata făcute", () => {
     const src = readFileSync("src/middleware.ts", "utf8");
     const list = src.slice(src.indexOf("matcher:"));
     const matcher = [...list.matchAll(/"(\/[^"]*)"/g)].map((m) => m[1]).filter((p) => !p.startsWith("/pub") && !p.startsWith("/:lang(") && !sectionOf(p.replace(/:\w+/g, "x")));
-    expect(new Set(matcher)).toEqual(new Set(PUBLIC_PAGES.map((p) => p.path)));
+    // Modelele de invitații de nuntă vin din baza de date: o singură rută dinamică (/invitatii-nunta/:slug), cu varianta ei.
+    expect(matcher).toContain(`${SHOP_PATH}/:slug`);
+    expect(() => readFileSync(`src/app/(public)/pub/[v]${SHOP_PATH}/[slug]/page.tsx`)).not.toThrow();
+    expect(new Set(matcher.filter((p) => p !== `${SHOP_PATH}/:slug`))).toEqual(new Set(PUBLIC_PAGES.map((p) => p.path)));
     for (const p of PUBLIC_PAGES) {
       const file = `src/app/(public)/pub/[v]${p.path === "/" ? "" : p.path}/page.tsx`;
       expect(() => readFileSync(file), file).not.toThrow();

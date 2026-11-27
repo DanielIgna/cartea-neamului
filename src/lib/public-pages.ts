@@ -1,4 +1,5 @@
 import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
+import { SHOP_PATH } from "@/lib/invitatii-nunta";
 
 /**
  * Paginile publice pe care le vrem în Google: din ele se fac sitemap.xml, robots.txt și lista din Admin → SEO.
@@ -17,6 +18,9 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: "/genealogii-vechi", label: "Genealogii vechi", priority: 0.6, changeFrequency: "monthly", roOnly: true },
   { path: "/libertatea-de-a-crede", label: "Libertatea de a crede", priority: 0.6, changeFrequency: "monthly" },
   { path: "/cadou-de-sarbatori", label: "Cadou de sărbători", priority: 0.7, changeFrequency: "monthly" },
+  // Invitații de nuntă (Daniel, 27.11.2026): lista, în toate limbile. Paginile modelelor vin din baza de date (publicate din Admin)
+  // și intră în sitemap de acolo (src/lib/invitatii-nunta-sitemap.ts).
+  { path: SHOP_PATH, label: "Invitații de nuntă", priority: 0.7, changeFrequency: "weekly" },
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
   { path: "/surse-publice", label: "Unde îți cauți strămoșii gratuit (surse publice)", priority: 0.7, changeFrequency: "monthly", roOnly: true },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },
@@ -26,7 +30,7 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
 ];
 
 /** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
-export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/", "/widget/"];
+export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/", "/widget/", "/invitatii-nunta/gata", "/api/invitatii-nunta/"];
 
 /** Paginile din PUBLIC_PAGES care au text în limbile site-ului (toate sau, pentru limbile noi, cele din pageLocales). */
 export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);

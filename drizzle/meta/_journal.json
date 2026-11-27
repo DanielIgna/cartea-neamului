@@ -337,6 +337,20 @@
       "when": 1795000700000,
       "tag": "0048_coduri_activare",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1795000800000,
+      "tag": "0049_invitatii_nunta",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1795000900000,
+      "tag": "0050_invitatii_nunta_produse",
+      "breakpoints": true
     }
   ]
 }

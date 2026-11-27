@@ -48,6 +48,8 @@
   "drizzle/0046_plata_cod.sql",
   "drizzle/0047_abonamente.sql",
   "drizzle/0048_coduri_activare.sql",
+  "drizzle/0049_invitatii_nunta.sql",
+  "drizzle/0050_invitatii_nunta_produse.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -102,6 +104,8 @@
   "src/app/(public)/pub/[v]/glosar/[slug]/page.tsx",
   "src/app/(public)/pub/[v]/glosar/layout.tsx",
   "src/app/(public)/pub/[v]/glosar/page.tsx",
+  "src/app/(public)/pub/[v]/invitatii-nunta/[slug]/page.tsx",
+  "src/app/(public)/pub/[v]/invitatii-nunta/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/al-doilea-razboi-mondial/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/anii-interbelici/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/crize/page.tsx",
@@ -155,6 +159,9 @@
   "src/app/(site)/admin/email/page.tsx",
   "src/app/(site)/admin/infra/page.tsx",
   "src/app/(site)/admin/invatare/page.tsx",
+  "src/app/(site)/admin/invitatii-nunta/[id]/page.tsx",
+  "src/app/(site)/admin/invitatii-nunta/nou/page.tsx",
+  "src/app/(site)/admin/invitatii-nunta/page.tsx",
   "src/app/(site)/admin/invitatii/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
   "src/app/(site)/admin/layout.tsx",
@@ -230,6 +237,9 @@
   "src/app/(site)/invitat/[cod]/page.tsx",
   "src/app/(site)/invitatie/[token]/not-found.tsx",
   "src/app/(site)/invitatie/[token]/page.tsx",
+  "src/app/(site)/invitatii-nunta/[slug]/page.tsx",
+  "src/app/(site)/invitatii-nunta/gata/page.tsx",
+  "src/app/(site)/invitatii-nunta/page.tsx",
   "src/app/(site)/invitatii/page.tsx",
   "src/app/(site)/istoria-umanitatii/al-doilea-razboi-mondial/page.tsx",
   "src/app/(site)/istoria-umanitatii/anii-interbelici/page.tsx",
@@ -281,6 +291,8 @@
   "src/app/api/admin/crm/gmail/callback/route.ts",
   "src/app/api/admin/crm/gmail/start/route.ts",
   "src/app/api/admin/crm/ingest/route.ts",
+  "src/app/api/admin/invitatii-nunta/poze/route.ts",
+  "src/app/api/admin/invitatii-nunta/zip/route.ts",
   "src/app/api/admin/poze/route.ts",
   "src/app/api/admin/propunere/[id]/route.ts",
   "src/app/api/arbore/[id]/documente/route.ts",
@@ -303,6 +315,9 @@
   "src/app/api/document/[docId]/route.ts",
   "src/app/api/folosire/route.ts",
   "src/app/api/indexnow/cheie/route.ts",
+  "src/app/api/invitatii-nunta/descarca/[token]/route.ts",
+  "src/app/api/invitatii-nunta/retrimite/route.ts",
+  "src/app/api/invitatii-nunta/start/route.ts",
   "src/app/api/parteneri/[partner]/export/route.ts",
   "src/app/api/parteneri/dezabonare/route.ts",
   "src/app/api/ping/route.ts",
@@ -342,6 +357,7 @@
   "src/app/i/[cod]/route.ts",
   "src/app/icon.svg",
   "src/app/invitatii-actions.ts",
+  "src/app/invitatii-nunta-actions.ts",
   "src/app/join-actions.ts",
   "src/app/lada-actions.ts",
   "src/app/limba-actions.ts",
@@ -352,6 +368,7 @@
   "src/app/parteneri-actions.ts",
   "src/app/parteneri-crm-actions.ts",
   "src/app/pornire-actions.ts",
+  "src/app/poze-invitatii/[file]/route.ts",
   "src/app/probleme-actions.ts",
   "src/app/propmanage-actions.ts",
   "src/app/r/[cod]/route.ts",
@@ -408,6 +425,7 @@
   "src/components/HomePlans.tsx",
   "src/components/InfoSource.tsx",
   "src/components/InstallApp.tsx",
+  "src/components/InvitatiiNunta.tsx",
   "src/components/InvitePanel.tsx",
   "src/components/InviteShare.tsx",
   "src/components/JoinTree.tsx",
@@ -487,6 +505,9 @@
   "src/components/admin/CunostinteHead.tsx",
   "src/components/admin/HomeImageSlot.tsx",
   "src/components/admin/IndexPlanCheck.tsx",
+  "src/components/admin/InvitatieFisiere.tsx",
+  "src/components/admin/InvitatieForm.tsx",
+  "src/components/admin/InvitatieStare.tsx",
   "src/components/admin/InviteSettingsForm.tsx",
   "src/components/admin/IstoricForms.tsx",
   "src/components/admin/OwnerRecovery.tsx",
@@ -1000,6 +1021,14 @@
   "src/lib/incepe-draft.ts",
   "src/lib/invatare.ts",
   "src/lib/invita-ramura.ts",
+  "src/lib/invitatii-nunta-admin.ts",
+  "src/lib/invitatii-nunta-incarcare.ts",
+  "src/lib/invitatii-nunta-meta.ts",
+  "src/lib/invitatii-nunta-produse.ts",
+  "src/lib/invitatii-nunta-server.ts",
+  "src/lib/invitatii-nunta-sitemap.ts",
+  "src/lib/invitatii-nunta-texte.ts",
+  "src/lib/invitatii-nunta.ts",
   "src/lib/invitatii.ts",
   "src/lib/invitations.ts",
   "src/lib/istoria-bisericii.ts",
@@ -1182,6 +1211,7 @@
   "tests/imagini-continut.test.ts",
   "tests/incepe-acasa.test.ts",
   "tests/indexnow.test.ts",
+  "tests/invitatii-nunta.test.ts",
   "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",
@@ -1384,6 +1414,18 @@
    "kind": "pagina"
   },
   {
+   "path": "/admin/invitatii-nunta",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/invitatii-nunta/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/invitatii-nunta/nou",
+   "kind": "pagina"
+  },
+  {
    "path": "/admin/istoric",
    "kind": "pagina"
   },
@@ -1476,6 +1518,14 @@
    "kind": "api"
   },
   {
+   "path": "/api/admin/invitatii-nunta/poze",
+   "kind": "api"
+  },
+  {
+   "path": "/api/admin/invitatii-nunta/zip",
+   "kind": "api"
+  },
+  {
    "path": "/api/admin/poze",
    "kind": "api"
   },
@@ -1561,6 +1611,18 @@
   },
   {
    "path": "/api/indexnow/cheie",
+   "kind": "api"
+  },
+  {
+   "path": "/api/invitatii-nunta/descarca/[token]",
+   "kind": "api"
+  },
+  {
+   "path": "/api/invitatii-nunta/retrimite",
+   "kind": "api"
+  },
+  {
+   "path": "/api/invitatii-nunta/start",
    "kind": "api"
   },
   {
@@ -1828,6 +1890,18 @@
    "kind": "pagina"
   },
   {
+   "path": "/invitatii-nunta",
+   "kind": "pagina"
+  },
+  {
+   "path": "/invitatii-nunta/[slug]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/invitatii-nunta/gata",
+   "kind": "pagina"
+  },
+  {
    "path": "/istoria-umanitatii",
    "kind": "pagina"
   },
@@ -1910,6 +1984,10 @@
   {
    "path": "/plata",
    "kind": "pagina"
+  },
+  {
+   "path": "/poze-invitatii/[file]",
+   "kind": "api"
   },
   {
    "path": "/presa",
@@ -2058,6 +2136,7 @@
   "tests/imagini-continut.test.ts",
   "tests/incepe-acasa.test.ts",
   "tests/indexnow.test.ts",
+  "tests/invitatii-nunta.test.ts",
   "tests/invitatii.test.ts",
   "tests/invitations.test.ts",
   "tests/istoria-bisericii.test.ts",
@@ -2122,5 +2201,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 48
+ "migrations": 50
 }

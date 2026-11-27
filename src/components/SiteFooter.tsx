@@ -4,13 +4,15 @@ import { operator } from "@/lib/legal";
 import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "@/lib/contact";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { POPULAR_LINKS } from "@/lib/legaturi-populare";
+import { SHOP_PATH, shopText } from "@/lib/invitatii-nunta";
 
 /** Subsolul tuturor paginilor (și al celor gata făcute pentru vizitatori): paginile legale, contact, istorie, Facebook, cine vinde. */
 export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
   const [t, tp, tc, th, tr, appName] = await Promise.all([getT("Layout"), getT("Partners"), getT("ContactPage"), getT("Church"), getT("Resources"), getAppName()]);
   const [tg, ta] = await Promise.all([getT("GiftPage"), getT("Archives")]);
   const seller = operator();
-  const ro = (await getLocale()) === "ro";
+  const locale = await getLocale();
+  const ro = locale === "ro";
   return (
     <footer className="site-foot">
       {/* Ghidurile citite des, ca subsolul să trimită greutatea spre conținut, nu doar spre paginile legale (26.11.2026). */}
@@ -28,6 +30,8 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       <Link href="/resurse-genealogie">{tr("footer")}</Link>
       <Link href="/surse-publice">{ta("footer")}</Link>
       {giftSeason() && <Link href={GIFT_PATH}>{tg("footer")}</Link>}
+      {/* Invitațiile de nuntă (27.11.2026): un link discret, în toate limbile. */}
+      <Link href={SHOP_PATH}>{shopText(locale).footer}</Link>
       <Link href="/ghid">{t("guides")}</Link>
       <Link href="/glosar">{t("glossary")}</Link>
       <Link href="/nume">{t("surnames")}</Link>

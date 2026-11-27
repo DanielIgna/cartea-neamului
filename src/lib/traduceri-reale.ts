@@ -3,6 +3,7 @@ import { PUBLIC_PAGES, pageLocales } from "@/lib/public-pages";
 import { sectionOf } from "@/lib/public-sections";
 import { DIASPORA_LANGS } from "@/lib/diaspora/limbi-generat";
 import { LANG_OF } from "@/lib/diaspora/tipuri";
+import { isModelPath } from "@/lib/invitatii-nunta";
 
 /**
  * În ce limbi are o pagină publică text adevărat (planul SEO, 18.11.2026, punctul 4). Fișier fără importuri de pe server:
@@ -13,9 +14,14 @@ import { LANG_OF } from "@/lib/diaspora/tipuri";
  */
 const PAGES = new Map(PUBLIC_PAGES.map((p) => [p.path, new Set<Locale>(pageLocales(p.path))]));
 
+const ALL: ReadonlySet<Locale> = new Set(LOCALES);
+
 export function realLocales(path: string): ReadonlySet<Locale> {
   const page = PAGES.get(path);
   if (page) return page;
+  // Un model de invitație are adresă în toate limbile (middleware-ul nu citește baza); în limbile fără text, pagina arată textul
+  // românesc, cu adresa canonică românească și noindex (src/lib/invitatii-nunta-meta.ts).
+  if (isModelPath(path)) return ALL;
   if (sectionOf(path) === "diaspora") {
     const langs = DIASPORA_LANGS[path]?.split(" ") ?? ["ro"];
     return new Set(LOCALES.filter((l) => l === "ro" ? langs.includes("ro") : !!LANG_OF[l] && langs.includes(LANG_OF[l]!)));
