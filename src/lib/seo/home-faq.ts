@@ -4,7 +4,7 @@ import { tierPrice } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { SITE_URL } from "@/lib/site-url";
 import { LANGUAGE_COUNT, limbiRo, localizedPath } from "@/i18n/locales";
-import { FACEBOOK_URL, TIKTOK_URL } from "@/lib/contact";
+import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "@/lib/contact";
 
 /**
  * Întrebările frecvente de pe prima pagină (Daniel, 18.11.2026, SEO pentru SUA și Canada), în română și engleză: aceleași
@@ -70,7 +70,7 @@ export function homeJsonLd(locale: Locale, s: PlanSettings, description: string,
       { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Cartea Neamului", alternateName: names.app === "Cartea Neamului" ? undefined : names.app, url: SITE_URL, inLanguage: locale, description, publisher: { "@id": `${SITE_URL}/#organization` },
         // Caseta de căutare din rezultatele Google trimite la /cauta (src/lib/continut/cautare.ts).
         potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/cauta?q={search_term_string}` }, "query-input": "required name=search_term_string" } },
-      { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/apple-icon.png`, sameAs: [FACEBOOK_URL, TIKTOK_URL] },
+      { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/apple-icon.png`, sameAs: [FACEBOOK_URL, TIKTOK_URL, INSTAGRAM_URL] },
       {
         "@type": "WebApplication", "@id": `${SITE_URL}/#app`, name: names.app, url: home, description,
         applicationCategory: "LifestyleApplication", operatingSystem: "Web, Android, iOS", browserRequirements: "Requires a modern web browser",

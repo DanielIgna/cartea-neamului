@@ -14,6 +14,8 @@ const WHATSAPP_DEFAULT = "40790541342";
 export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61596217751674";
 /** Contul de TikTok (cerut de Daniel, 24 noiembrie 2026): în subsol, lângă Facebook, și în datele Organization (sameAs). */
 export const TIKTOK_URL = "https://www.tiktok.com/@carteaneamului.ro";
+/** Contul de Instagram (cerut de Daniel, 27 noiembrie 2026): în subsol, lângă TikTok, și în datele Organization (sameAs). */
+export const INSTAGRAM_URL = "https://www.instagram.com/carteaneamului/";
 
 export function contactInbox(): string {
   return process.env.CONTACT_INBOX?.trim() || INBOX_DEFAULT;
