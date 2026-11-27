@@ -358,6 +358,13 @@
       "when": 1795001000000,
       "tag": "0051_invitatii_nunta_cadou",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1795002000000,
+      "tag": "0052_anunt_inchis",
+      "breakpoints": true
     }
   ]
 }

@@ -1280,3 +1280,12 @@ export const shopProduct = pgTable("shop_product", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   publishedAt: timestamp("published_at"),
 }, (t) => [uniqueIndex("shop_product_slug_idx").on(t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);
+
+/* ---------- Anunțuri închise cu „Am înțeles”, ținute pe cont (Daniel, 2026-11-27) ---------- */
+// Pentru fiecare om și fiecare anunț: când l-a închis ultima dată și de câte ori (src/lib/anunt-pastrare.ts).
+export const noticeDismissal = pgTable("notice_dismissal", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  notice: text("notice").notNull(),
+  at: timestamp("at").notNull().defaultNow(),
+  times: integer("times").notNull().default(1),
+}, (t) => [primaryKey({ name: "notice_dismissal_pk", columns: [t.userId, t.notice] })]);
