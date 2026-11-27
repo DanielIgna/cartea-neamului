@@ -3,7 +3,7 @@ title: Scrierea chirilică românească: literele pentru nume și date
 seo: Alfabetul chirilic românesc: litere, cifre și exemple
 description: Alfabetul chirilic românesc pe înțeles: literele care diferă de cele de azi, cum se scriau anii cu litere și cum citești un nume într-un act vechi.
 category: Scris și limbi vechi
-updated: 2026-11-17
+updated: 2026-11-27
 related: cum-citesti-scrisul-de-mana-vechi, registrele-ortodoxe, catagrafiile-din-moldova-si-tara-romaneasca
 terms: chirilica-romaneasca, alfabetul-de-tranzitie, paleografie
 ---
@@ -21,6 +21,22 @@ Multe acte românești de dinainte de 1860 sunt scrise cu [alfabetul chirilic ro
 ![Alfabetul chirilic românesc: literele ш, щ, ц, ж, ч, џ, ъ, ѫ, ꙟ, ѣ, ꙋ, х, ѳ, ѵ, ѯ, ѱ, ѡ cu echivalentul lor în litere latine](/imagini/alfabetul-chirilic-romanesc-litere.svg "Literele chirilice românești care diferă cel mai mult de alfabetul de azi")
 
 Literele **а, в, д, е, з, и, к, л, м, н, о, п, р, с, т** se citesc aproape ca azi (с = s, р = r, в = v, н = n, п = p).
+
+## Tot alfabetul chirilic românesc, literă cu literă
+
+Alfabetul folosit pentru română avea în jur de 40 de litere; numărul exact diferă de la o epocă la alta și de la o tipografie la alta. Pentru acte îți ajunge lista de mai jos, în ordinea obișnuită, cu litera latină de azi:
+
+- **А а** = a, **Б б** = b, **В в** = v, **Г г** = g (gh înainte de *e*, *i*), **Д д** = d
+- **Є є** (sau **Е е**) = e, **Ж ж** = j, **Ѕ ѕ** = dz, **З з** = z
+- **И и**, **І і** = i, **К к** = c (k), **Л л** = l, **М м** = m, **Н н** = n
+- **О о** = o, **П п** = p, **Р р** = r, **С с** = s, **Т т** = t
+- **Ꙋ ꙋ** (sau **У у**) = u, **Ф ф** = f, **Х х** = h, **Ѡ ѡ** = o, **Ѿ ѿ** = ot
+- **Ц ц** = ț, **Ч ч** = c (în *ce*, *ci*), **Ш ш** = ș, **Щ щ** = șt
+- **Ъ ъ** = ă, **Ь ь** = i scurt la sfârșit de cuvânt (sau nu se citește), **Ѣ ѣ** = ea
+- **Ю ю** = iu, **Ꙗ ꙗ** și **Ѧ ѧ** = ia, **Ѫ ѫ** = î sau â, **Ꙟ ꙟ** = în, îm
+- **Ѯ ѯ** = cs (x), **Ѱ ѱ** = ps, **Ѳ ѳ** = f, **Ѵ ѵ** = i sau v, **Џ џ** = g (în *ge*, *gi*)
+
+Câteva exemple ca să le vezi împreună: **Іѡан** = Ioan, **Георге** = Gheorghe, **Марїа** = Maria, **Попеску** = Popescu, **Бꙋкꙋрещи** = București.
 
 ## Anii, scriși cu litere
 
@@ -72,7 +88,11 @@ Ai un act de botez din 1842 dintr-un sat din Vâlcea, scris cu alfabetul de tran
 
 **Există unelte care transcriu automat?** Unele programe recunosc tiparul, dar pentru scrisul de mână vechi rezultatele sunt slabe. Ochiul tău, cu răbdare, e de obicei mai bun.
 
-**Unde găsesc un tabel cu alfabetul?** În manualele de paleografie românească, în biblioteci, și în multe materiale publicate de arhive.
+**Unde găsesc un tabel cu alfabetul?** Mai sus, în secțiunea „Tot alfabetul chirilic românesc”, ai toate literele cu echivalentul lor de azi. Pentru scrisul de mână, caută și manualele de paleografie românească din biblioteci și materialele publicate de arhive.
+
+**Câte litere avea alfabetul chirilic românesc?** În jur de 40. Unele, ca *ѯ*, *ѱ* sau *ѳ*, apar rar și mai ales în cuvinte de origine grecească sau ca cifre.
+
+**Până când s-a scris româna cu litere chirilice?** În Țara Românească și Moldova, până la trecerea oficială la alfabetul latin, în 1860–1862. În Republica Moldova, româna s-a scris din nou cu chirilice între 1940 și 1989.
 
 ## Pe scurt
 
