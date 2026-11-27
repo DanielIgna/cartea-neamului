@@ -1810,6 +1810,7 @@ export const nbExtra: DeepPartial<Catalog> = {
     hideSiblings: "Fold sammen søsknene",
     couple: "Familien til {a} og {b}{count, plural, =0 {} one {: # barn} other {: # barn}}",
     spouseOf: "Mann/kone: {name}",
+    generationRuler: "Generasjon",
     bornAsShort: "{surname} ({sex, select, F {født} other {født}} {birth})",
     zoomGroup: "Diagrammets størrelse",
     zoomOut: "Zoom ut",

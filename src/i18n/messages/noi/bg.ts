@@ -1810,6 +1810,7 @@ export const bgExtra: DeepPartial<Catalog> = {
     hideSiblings: "Сгънете братята и сестрите",
     couple: "Семейството на {a} и {b}{count, plural, =0 {} one {: # дете} other {: # деца}}",
     spouseOf: "Съпруг/съпруга: {name}",
+    generationRuler: "Поколение",
     bornAsShort: "{surname} ({sex, select, F {родена} other {роден}} {birth})",
     zoomGroup: "Размер на схемата",
     zoomOut: "Намали",

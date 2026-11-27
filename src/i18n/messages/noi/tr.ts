@@ -1810,6 +1810,7 @@ export const trExtra: DeepPartial<Catalog> = {
     hideSiblings: "Kardeşleri katla",
     couple: "{a} ve {b} ailesi{count, plural, =0 {} one {: # çocuk} other {: # çocuk}}",
     spouseOf: "Eş: {name}",
+    generationRuler: "Kuşak",
     bornAsShort: "{surname} ({sex, select, F {kızlık soyadı} other {doğum soyadı}} {birth})",
     zoomGroup: "Şema boyutu",
     zoomOut: "Uzaklaştır",

@@ -164,6 +164,7 @@ export const deArbore: ArboreCatalog = {
     hideSiblings: "Geschwister einklappen",
     couple: "Die Familie von {a} und {b}{count, plural, =0 {} one {: # Kind} other {: # Kinder}}",
     spouseOf: "Ehepartner: {name}",
+    generationRuler: "Generation",
     bornAsShort: "{surname} (geb. {birth})",
     zoomGroup: "Größe der Zeichnung",
     zoomOut: "Verkleinern",

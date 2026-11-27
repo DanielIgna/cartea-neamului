@@ -15,10 +15,12 @@ const clamp = (z: number) => Math.min(MAX, Math.max(MIN, z));
  * ciupit cu două degete (pe telefon și pe trackpad) și tras cu mouse-ul ca să te miști prin desen.
  * Desenele sunt SVG, deci rămân clare la orice mărime: schimbăm doar lățimea lor, înălțimea vine din proporții.
  */
-export default function ZoomBox({ children, resetKey, boxRef, full, onFull, startZoom }: {
+export default function ZoomBox({ children, resetKey, boxRef, full, onFull, startZoom, boxClass }: {
   children: ReactNode; resetKey: string; boxRef?: RefObject<HTMLDivElement | null>; full: boolean; onFull: (on: boolean) => void;
   /** Pentru desene foarte late (axa anilor): pornește cel puțin de la mărimea asta și lasă desenul să se deruleze pe lățime. */
   startZoom?: number;
+  /** O clasă în plus pe fereastra desenului (de pildă fondul de pergament al Copacului). */
+  boxClass?: string;
 }) {
   const t = useTranslations("Charts");
   const own = useRef<HTMLDivElement>(null);
@@ -241,7 +243,7 @@ export default function ZoomBox({ children, resetKey, boxRef, full, onFull, star
           {!full && <span className="only-touch zt-label">{t("fullScreen")}</span>}
         </button>
       </div>
-      <div ref={box} className="chartbox zoomable">
+      <div ref={box} className={boxClass ? `chartbox zoomable ${boxClass}` : "chartbox zoomable"}>
         <div ref={inner} className={zoomed ? "zoom-inner zoomed" : "zoom-inner"}
           style={zoomed ? ({ "--zw": `${Math.round(natW.current * zoom)}px` } as React.CSSProperties) : undefined}>
           {children}

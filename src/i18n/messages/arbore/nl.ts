@@ -164,6 +164,7 @@ export const nlArbore: ArboreCatalog = {
     hideSiblings: "Broers en zussen inklappen",
     couple: "Het gezin van {a} en {b}{count, plural, =0 {} one {: # kind} other {: # kinderen}}",
     spouseOf: "Echtgenoot/echtgenote: {name}",
+    generationRuler: "Generatie",
     bornAsShort: "{surname} (geb. {birth})",
     zoomGroup: "Grootte van de tekening",
     zoomOut: "Uitzoomen",

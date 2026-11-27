@@ -164,6 +164,7 @@ export const itArbore: ArboreCatalog = {
     hideSiblings: "Chiudi i fratelli",
     couple: "La famiglia di {a} e {b}{count, plural, =0 {} one {: # figlio} other {: # figli}}",
     spouseOf: "Coniuge: {name}",
+    generationRuler: "Generazione",
     bornAsShort: "{surname} ({sex, select, M {nato} F {nata} other {nato/a}} {birth})",
     zoomGroup: "Dimensione del disegno",
     zoomOut: "Rimpicciolisci",

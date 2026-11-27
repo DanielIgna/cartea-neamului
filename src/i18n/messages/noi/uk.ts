@@ -1810,6 +1810,7 @@ export const ukExtra: DeepPartial<Catalog> = {
     hideSiblings: "Згорнути братів і сестер",
     couple: "Родина {a} і {b}{count, plural, =0 {} one {: # дитина} few {: # дитини} many {: # дітей} other {: # дитини}}",
     spouseOf: "Чоловік/дружина: {name}",
+    generationRuler: "Покоління",
     bornAsShort: "{surname} ({sex, select, F {дів.} other {нар.}} {birth})",
     zoomGroup: "Розмір схеми",
     zoomOut: "Зменшити",

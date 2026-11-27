@@ -1810,6 +1810,7 @@ export const daExtra: DeepPartial<Catalog> = {
     hideSiblings: "Fold søskende sammen",
     couple: "{a}s og {b}s familie{count, plural, =0 {} one {: # barn} other {: # børn}}",
     spouseOf: "Mand/kone: {name}",
+    generationRuler: "Generation",
     bornAsShort: "{surname} ({sex, select, F {født} other {født}} {birth})",
     zoomGroup: "Diagrammets størrelse",
     zoomOut: "Zoom ud",

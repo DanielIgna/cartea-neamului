@@ -167,6 +167,7 @@ export const heArbore: ArboreCatalog = {
     hideSiblings: "קיפול האחים",
     couple: "משפחת {a} ו{b}{count, plural, =0 {} one {: ילד אחד} other {: # ילדים}}",
     spouseOf: "בן/בת זוג: {name}",
+    generationRuler: "דור",
     bornAsShort: "{surname} ({sex, select, M {נ׳} F {נ׳} other {נ׳}} {birth})",
     zoomGroup: "גודל השרטוט",
     zoomOut: "הקטנה",

@@ -1810,6 +1810,7 @@ export const svExtra: DeepPartial<Catalog> = {
     hideSiblings: "Fäll ihop syskonen",
     couple: "{a}s och {b}s familj{count, plural, =0 {} one {: # barn} other {: # barn}}",
     spouseOf: "Make/maka: {name}",
+    generationRuler: "Generation",
     bornAsShort: "{surname} ({sex, select, F {född} other {född}} {birth})",
     zoomGroup: "Diagrammets storlek",
     zoomOut: "Zooma ut",
