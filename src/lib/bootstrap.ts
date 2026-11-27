@@ -219,6 +219,11 @@ const ADDITIVE = [
   sql`CREATE TABLE IF NOT EXISTS "shop_product" ( "id" text PRIMARY KEY NOT NULL, "slug" text NOT NULL, "region" text DEFAULT '' NOT NULL, "status" text DEFAULT 'draft' NOT NULL, "texts" jsonb DEFAULT '{}'::jsonb NOT NULL, "languages" jsonb DEFAULT '[]'::jsonb NOT NULL, "formats" jsonb DEFAULT '[]'::jsonb NOT NULL, "price_ron" integer DEFAULT 4500 NOT NULL, "price_eur" integer DEFAULT 900 NOT NULL, "images" jsonb DEFAULT '[]'::jsonb NOT NULL, "zip_key" text, "zip_name" text, "zip_size" integer, "zip_files" integer, "zip_version" integer DEFAULT 0 NOT NULL, "zip_updated_at" timestamp, "sort" integer DEFAULT 0 NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL, "updated_at" timestamp DEFAULT now() NOT NULL, "published_at" timestamp)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "shop_product_slug_idx" ON "shop_product" ("slug")`,
   sql`CREATE INDEX IF NOT EXISTS "shop_product_status_idx" ON "shop_product" ("status","sort")`,
+  // Invitația dăruită și emailul cumpărătorului (migrația 0051).
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "buyer_email" text`,
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_to_name" text`,
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_from" text`,
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "gift_note" text`,
 ];
 
 export async function applySchema(target: Db) {

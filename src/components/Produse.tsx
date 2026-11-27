@@ -81,7 +81,7 @@ export default async function Produse({ locale, models, s }: { locale: Locale; m
       {cards && (
         <section className="card prod-plans" aria-labelledby="prod-plans" id="planuri">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="prod-plans-img" src="/produse/arbore.webp" width={1280} height={640} alt="" loading="lazy" decoding="async" />
+          <img className="prod-plans-img" src="/produse/arbore.webp" width={1600} height={800} alt="" loading="lazy" decoding="async" />
           <span className="pill">{t.withAccount}</span>
           <h2 id="prod-plans">{t.plansTitle}</h2>
           <p className="muted">{t.plansText}</p>

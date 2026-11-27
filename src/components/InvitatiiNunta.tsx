@@ -149,7 +149,7 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
     ],
   };
   const [hero, ...cards] = model.images;
-  const err = error === "acord" ? t.errConsent : error === "oprit" ? t.paused : error ? t.errStart : null;
+  const err = error === "acord" ? t.errConsent : error === "email" ? t.errEmail : error === "cadou" ? t.errGiftEmail : error === "oprit" ? t.paused : error ? t.errStart : null;
   return (
     <section className="stack shop" style={{ maxWidth: 960, margin: "0 auto" }}>
       {open && <JsonLd data={ld} />}
@@ -177,6 +177,22 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
                 <form method="post" action="/api/invitatii-nunta/start" className="shop-form">
                   <input type="hidden" name="slug" value={model.slug} />
                   <input type="hidden" name="locale" value={locale} />
+                  <div className="field shop-email">
+                    <label htmlFor="shop-email">{t.emailLabel}</label>
+                    <input id="shop-email" type="email" name="email" required maxLength={254} autoComplete="email" inputMode="email" />
+                    <small className="muted">{t.emailHint}</small>
+                  </div>
+                  <label className="check shop-gift-toggle"><input type="checkbox" name="cadou" /> <span>{t.giftToggle}</span></label>
+                  <fieldset className="shop-gift">
+                    <div className="field"><label htmlFor="gift-to">{t.giftToLabel}</label>
+                      <input id="gift-to" type="email" name="cadou_email" maxLength={254} autoComplete="off" inputMode="email" /></div>
+                    <div className="field"><label htmlFor="gift-name">{t.giftToNameLabel}</label>
+                      <input id="gift-name" name="cadou_nume" maxLength={80} autoComplete="off" /></div>
+                    <div className="field"><label htmlFor="gift-from">{t.giftFromLabel}</label>
+                      <input id="gift-from" name="cadou_de_la" maxLength={80} autoComplete="name" /></div>
+                    <div className="field"><label htmlFor="gift-note">{t.giftNoteLabel}</label>
+                      <textarea id="gift-note" name="cadou_mesaj" maxLength={300} rows={3} /></div>
+                  </fieldset>
                   <label className="check pay-consent"><input type="checkbox" name="acord" required /> <span>{t.consent}</span></label>
                   <button type="submit" className="btn primary">{t.buy}</button>
                   <p className="muted shop-note">{t.payNote}</p>

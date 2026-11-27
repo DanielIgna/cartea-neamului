@@ -11,7 +11,7 @@ import {
 } from "@/lib/invitatii-nunta";
 import { SHOP_TEXT } from "@/lib/invitatii-nunta-texte";
 import {
-  MAX_EMAILS, createShopCheckout, downloadToken, fulfilShopOrder, hashToken, orderByToken, resendShopMail, setShopOpen, shopEvent,
+  MAX_EMAILS, createShopCheckout, downloadToken, fulfilShopOrder, hashToken, orderByToken, parseShopBuyer, resendShopMail, setShopOpen, shopEvent,
   shopOpen, shopPaidFromSession, shopPaymentsReady,
 } from "@/lib/invitatii-nunta-server";
 import {
@@ -431,6 +431,58 @@ describe("modelele din Admin (shop_product)", () => {
     expect(await productById(db, oid)).toBeNull();
     expect(files.has(key)).toBe(false);
     expect((await db.select().from(shopProduct).where(eq(shopProduct.slug, "maramures"))).length).toBe(1);
+  });
+});
+
+describe("emailul de pe pagină și invitația cumpărată pentru altcineva", () => {
+  const form = (o: Record<string, string>) => { const f = new FormData(); for (const [k, v] of Object.entries(o)) f.set(k, v); return f; };
+  it("emailul e obligatoriu și valid; darul cere emailul destinatarului", () => {
+    expect(parseShopBuyer(form({}))).toEqual({ ok: false, error: "email" });
+    expect(parseShopBuyer(form({ email: "nu-e-email" }))).toEqual({ ok: false, error: "email" });
+    expect(parseShopBuyer(form({ email: " Mire@Exemplu.ro " }))).toEqual({ ok: true, buyer: { email: "mire@exemplu.ro", gift: null } });
+    expect(parseShopBuyer(form({ email: "a@b.ro", cadou: "on" }))).toEqual({ ok: false, error: "cadou" });
+    // fără bifă, câmpurile darului nu contează
+    expect(parseShopBuyer(form({ email: "a@b.ro", cadou_email: "x@y.ro" }))).toEqual({ ok: true, buyer: { email: "a@b.ro", gift: null } });
+    const r = parseShopBuyer(form({ email: "nas@b.ro", cadou: "on", cadou_email: "Mireasa@Y.ro", cadou_nume: "Ana\nși Ion", cadou_de_la: "Nașii", cadou_mesaj: "Casă de piatră!" }));
+    expect(r).toEqual({ ok: true, buyer: { email: "nas@b.ro", gift: { to: "mireasa@y.ro", toName: "Ana și Ion", from: "Nașii", note: "Casă de piatră!" } } });
+  });
+  it("Checkout: customer_email precompletat și darul în metadata", async () => {
+    let sent: URLSearchParams | null = null;
+    const fake = (async (_u: string, init: { body: URLSearchParams }) => { sent = init.body; return new Response(JSON.stringify({ url: "https://checkout.stripe.com/x" })); }) as unknown as typeof fetch;
+    await createShopCheckout({ model: MODEL, locale: "ro", origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA",
+      buyer: { email: "nas@b.ro", gift: { to: "mireasa@y.ro", toName: "Ana", from: "Nașii", note: "Casă de piatră" } } }, fake);
+    expect(sent!.get("customer_email")).toBe("nas@b.ro");
+    expect(sent!.get("metadata[email]")).toBe("nas@b.ro");
+    expect(sent!.get("metadata[gift_to]")).toBe("mireasa@y.ro");
+    expect(sent!.get("metadata[gift_note]")).toBe("Casă de piatră");
+  });
+  it("sesiunea: emailul de pe pagină are întâietate; la dar, linkul pleacă la destinatar", () => {
+    const p = shopPaidFromSession(session({ customer_details: { email: "link@stripe.com" }, metadata: { kind: SHOP_KIND, slug: "maramures", locale: "ro", email: "mire@exemplu.ro" } }))!;
+    expect(p.email).toBe("mire@exemplu.ro");
+    expect(p.buyerEmail).toBeUndefined();
+    const g = shopPaidFromSession(session({ metadata: { kind: SHOP_KIND, slug: "maramures", locale: "ro", email: "nas@b.ro", gift_to: "mireasa@y.ro", gift_name: "Ana", gift_from: "Nașii", gift_note: "Casă de piatră" } }))!;
+    expect(g).toMatchObject({ email: "mireasa@y.ro", buyerEmail: "nas@b.ro", giftToName: "Ana", giftFrom: "Nașii", giftNote: "Casă de piatră" });
+  });
+  it("la dar: emailul cu linkul la destinatar și confirmarea la cumpărător, o singură dată", async () => {
+    const db = createDb(); await runMigrations(db);
+    const to: string[] = [], buyers: string[] = [];
+    const mailer = async (o: { email: string }) => { to.push(o.email); return { ok: true as const, id: "m" }; };
+    const buyerMailer = async (o: { buyerEmail: string | null }) => { buyers.push(o.buyerEmail!); return { ok: true as const, id: "b" }; };
+    const paid = shopPaidFromSession(session({ id: "cs_test_cadou_a1B2c3D4e5", metadata: { kind: SHOP_KIND, slug: "maramures", locale: "ro", email: "nas@b.ro", gift_to: "mireasa@y.ro", gift_note: "Casă de piatră" } }))!;
+    await fulfilShopOrder(db, paid, "https://carteaneamului.ro", new Date(), mailer, buyerMailer);
+    await fulfilShopOrder(db, paid, "https://carteaneamului.ro", new Date(), mailer, buyerMailer);
+    expect(to).toEqual(["mireasa@y.ro"]);
+    expect(buyers).toEqual(["nas@b.ro"]);
+    const [row] = await db.select().from(shopOrder);
+    expect(row).toMatchObject({ email: "mireasa@y.ro", buyerEmail: "nas@b.ro", giftNote: "Casă de piatră", giftFrom: null });
+  });
+  it("textele noi există în toate limbile", () => {
+    for (const l of LOCALES) {
+      const t = shopText(l);
+      for (const k of ["emailLabel", "errEmail", "giftToggle", "giftToLabel", "mailGiftSubject", "mailGiftBody", "mailBuyerBody", "doneGift"] as const) expect(t[k], `${l}.${k}`).toBeTruthy();
+      expect(t.mailGiftBody).toContain("{from}");
+      expect(t.doneGift).toContain("{buyer}");
+    }
   });
 });
 

@@ -81,8 +81,26 @@ const stripeLocale = (l: string) => (l.startsWith("en") ? "en" : l === "nb" ? "n
  * Deschide pagina de plată Stripe pentru un model și dă adresa ei. Factura, acordul pentru acces imediat și datele PFA, ca la
  * plățile existente (createCheckout), dar fără cont: Stripe cere emailul clientului.
  */
+/** Ce scrie omul pe pagină: emailul lui (obligatoriu) și, dacă o cumpără pentru altcineva, emailul, numele și mesajul darului. */
+export type ShopBuyer = { email: string; gift?: { to: string; toName: string; from: string; note: string } | null };
+
+const EMAIL_RE = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:]{2,}$/;
+export const isShopEmail = (v: unknown): v is string => typeof v === "string" && v.length <= 254 && EMAIL_RE.test(v);
+const clean = (v: unknown, max: number) => (typeof v === "string" ? v.replace(/[\u0000-\u001f\u007f]+/g, " ").replace(/\s+/g, " ").trim().slice(0, max) : "");
+
+/** Formularul de pe pagina modelului → cumpărătorul, sau ce lipsește („email” / „cadou”). */
+export function parseShopBuyer(form: FormData): { ok: true; buyer: ShopBuyer } | { ok: false; error: "email" | "cadou" } {
+  const email = clean(form.get("email"), 254).toLowerCase();
+  if (!isShopEmail(email)) return { ok: false, error: "email" };
+  if (form.get("cadou") !== "on") return { ok: true, buyer: { email, gift: null } };
+  const to = clean(form.get("cadou_email"), 254).toLowerCase();
+  if (!isShopEmail(to)) return { ok: false, error: "cadou" };
+  if (to === email) return { ok: true, buyer: { email, gift: null } };
+  return { ok: true, buyer: { email, gift: { to, toName: clean(form.get("cadou_nume"), 80), from: clean(form.get("cadou_de_la"), 80), note: clean(form.get("cadou_mesaj"), 300) } } };
+}
+
 export async function createShopCheckout(o: {
-  model: ShopModel; locale: Locale; origin: string; waiver: string; seller: string;
+  model: ShopModel; locale: Locale; origin: string; waiver: string; seller: string; buyer?: ShopBuyer;
 }, fetcher: typeof fetch = fetch, env: Record<string, string | undefined> = process.env): Promise<string> {
   const price = shopPrice(o.model, o.locale);
   const name = (modelText(o.model, o.locale) ?? modelText(o.model, "ro"))?.title ?? o.model.slug;
@@ -108,6 +126,13 @@ export async function createShopCheckout(o: {
     "metadata[kind]": SHOP_KIND,
     "metadata[slug]": o.model.slug,
     "metadata[locale]": o.locale,
+    // Emailul scris pe pagină (Daniel, 27.11.2026): Stripe îl arată pe pagina de plată și trimite acolo chitanța; linkul pleacă la el
+    // sau, la o invitație cumpărată pentru altcineva, la emailul acela, cu numele și mesajul darului.
+    ...(o.buyer ? { customer_email: o.buyer.email, "metadata[email]": o.buyer.email } : {}),
+    ...(o.buyer?.gift ? {
+      "metadata[gift_to]": o.buyer.gift.to, "metadata[gift_name]": o.buyer.gift.toName,
+      "metadata[gift_from]": o.buyer.gift.from, "metadata[gift_note]": o.buyer.gift.note,
+    } : {}),
     "invoice_creation[enabled]": "true",
     // Confirmarea pe suport durabil a renunțării la retragere (OUG 34/2014): sub butonul de plată și în factură; în subsol, vânzătorul.
     "custom_text[submit][message]": o.waiver.slice(0, 1200),
@@ -134,7 +159,11 @@ export function shopWaiver(locale: Locale, origin: string) {
   };
 }
 
-export type ShopPaid = { id: string; email: string; slug: string; locale: Locale; amount: number; currency: string };
+export type ShopPaid = {
+  id: string; email: string; slug: string; locale: Locale; amount: number; currency: string;
+  /** Doar la o invitație cumpărată pentru altcineva: cine a plătit și ce a scris pentru darul lui. `email` e atunci destinatarul. */
+  buyerEmail?: string | null; giftToName?: string | null; giftFrom?: string | null; giftNote?: string | null;
+};
 
 /** O sesiune Checkout (din webhook sau citită din Stripe) → comanda plătită, dacă e a rubricii și e plătită. */
 export function shopPaidFromSession(o: Record<string, unknown> | undefined | null): ShopPaid | null {
@@ -145,8 +174,14 @@ export function shopPaidFromSession(o: Record<string, unknown> | undefined | nul
   // Doar forma slugului: comanda se trece și dacă modelul a fost retras între timp (omul a plătit).
   const details = (o.customer_details ?? {}) as { email?: unknown };
   const email = typeof details.email === "string" ? details.email : typeof o.customer_email === "string" ? o.customer_email : "";
-  if (!isModelSlug(md.slug) || !email) return null;
-  return { id: o.id, email: email.trim().slice(0, 320), slug: md.slug, locale: isLocale(md.locale) ? md.locale : "ro", amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  // Emailul scris pe pagină are întâietate (la Stripe Link, cel din pagina de plată poate fi al contului Link).
+  const buyer = isShopEmail(md.email) ? md.email : email.trim().slice(0, 320);
+  if (!isModelSlug(md.slug) || !buyer) return null;
+  const base = { id: o.id, slug: md.slug, locale: isLocale(md.locale) ? md.locale : "ro" as Locale, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  if (isShopEmail(md.gift_to) && md.gift_to !== buyer) {
+    return { ...base, email: md.gift_to, buyerEmail: buyer, giftToName: clean(md.gift_name, 80) || null, giftFrom: clean(md.gift_from, 80) || null, giftNote: clean(md.gift_note, 300) || null };
+  }
+  return { ...base, email: buyer };
 }
 
 /**
@@ -182,16 +217,19 @@ const findModel = (db: Pick<Db, "select">, slug: string) => modelBySlug(db, slug
  * Trece comanda o singură dată pe sesiune Stripe și trimite emailul cu linkul. Întoarce comanda (nouă sau deja trecută) și tokenul.
  * O greșeală la email nu strică comanda: pagina de după plată arată linkul oricum și are butonul de retrimitere.
  */
-export async function fulfilShopOrder(db: Db, paid: ShopPaid, origin: string, now = new Date(), mailer: Mailer = sendShopMail) {
+export async function fulfilShopOrder(db: Db, paid: ShopPaid, origin: string, now = new Date(), mailer: Mailer = sendShopMail, buyerMailer: Mailer = sendBuyerMail) {
   const token = downloadToken(paid.id);
   const inserted = await db.insert(shopOrder).values({
     id: paid.id, email: paid.email, slug: paid.slug, locale: paid.locale, amount: paid.amount, currency: paid.currency,
+    buyerEmail: paid.buyerEmail ?? null, giftToName: paid.giftToName ?? null, giftFrom: paid.giftFrom ?? null, giftNote: paid.giftNote ?? null,
     tokenHash: hashToken(token), expiresAt: new Date(now.getTime() + LINK_DAYS * DAY), createdAt: now,
   }).onConflictDoNothing().returning();
   const order = inserted[0] ?? (await orderBySession(db, paid.id));
   if (inserted[0]) {
     const sent = await mailer(inserted[0], token, origin, await findModel(db, paid.slug)).catch((e) => { console.error("invitatii-nunta email", e instanceof Error ? e.name : "Error"); return { ok: false } as const; });
     if ("ok" in sent && sent.ok) await db.update(shopOrder).set({ emailsSent: 1, lastEmailAt: now }).where(eq(shopOrder.id, paid.id));
+    // La un dar, cel care a plătit primește și el un rând: unde a plecat linkul, cu linkul, dacă vrea să-l trimită și el.
+    if (inserted[0].buyerEmail) await buyerMailer(inserted[0], token, origin, await findModel(db, paid.slug)).catch((e) => console.error("invitatii-nunta email cumparator", e instanceof Error ? e.name : "Error"));
   }
   return { created: !!inserted[0], order: order!, token };
 }
@@ -222,17 +260,41 @@ export async function sendShopMail(o: ShopOrderRow, token: string, origin: strin
   const name = tm?.name ?? o.slug;
   const date = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "Europe/Bucharest" }).format(o.expiresAt);
   const op = operator();
+  const gift = !!o.buyerEmail;
   const { html, text } = renderMail([
-    { p: t.mailHello },
-    { p: fill(t.mailBody, { name }) },
+    ...(gift ? [
+      { p: o.giftToName ? fill(t.mailGiftHello, { name: o.giftToName }) : t.mailHello },
+      { p: fill(t.mailGiftBody, { from: o.giftFrom || t.giftSomeone, name }) },
+      ...(o.giftNote ? [{ p: t.mailGiftNote }, { p: `„${o.giftNote}”` }] : []),
+    ] : [
+      { p: t.mailHello },
+      { p: fill(t.mailBody, { name }) },
+    ]),
     { rows: [[t.mailWhat, tm?.title ?? o.slug], [t.mailAmount, formatPaid(o.amount, o.currency, locale)]] },
     { button: t.mailButton, href: downloadUrl(origin, token) },
     { p: fill(t.mailValid, { date }) },
     { p: t.mailHelp },
     { p: t.blessing },
   ], `${op.name}, CUI ${op.cui}`);
-  return sendEmail({ to: o.email, subject: fill(t.mailSubject, { name }), html, text, replyTo: siteInbox(),
+  return sendEmail({ to: o.email, subject: fill(gift ? t.mailGiftSubject : t.mailSubject, { name }), html, text, replyTo: siteInbox(),
     idempotencyKey: `invitatie-nunta/${o.id}/${o.emailsSent}`, tag: "invitatie-nunta" });
+}
+
+/** La un dar: confirmarea pentru cel care a plătit (unde a plecat linkul, plus linkul). Chitanța o trimite Stripe. */
+export async function sendBuyerMail(o: ShopOrderRow, token: string, origin: string, model: ShopModel | null): Promise<EmailResult> {
+  const locale: Locale = isLocale(o.locale) ? o.locale : "ro";
+  const t = shopText(locale);
+  const tm = model ? modelText(model, locale) ?? modelText(model, "ro") : null;
+  const name = tm?.name ?? o.slug;
+  const op = operator();
+  const { html, text } = renderMail([
+    { p: t.mailHello },
+    { p: fill(t.mailBuyerBody, { email: o.email }) },
+    { button: t.mailButton, href: downloadUrl(origin, token) },
+    { p: t.blessing },
+  ], `${op.name}, CUI ${op.cui}`);
+  return sendEmail({ to: o.buyerEmail!, subject: fill(t.mailBuyerSubject, { name }), html, text, replyTo: siteInbox(),
+    idempotencyKey: `invitatie-nunta/${o.id}/cumparator`, tag: "invitatie-nunta" });
 }
 
 /** Cel mult atâtea emailuri pe comandă, la cel puțin un minut unul de altul. */

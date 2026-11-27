@@ -2621,7 +2621,17 @@ dialog.zoom::backdrop{background:#0d0906e6}
 .prod-plans>h2{margin:4px 0 0;font-size:24px}
 .prod-plans>.pill{align-self:flex-start}
 .prod-plans>p{margin:0 0 14px}
-.prod-plans-img{display:block;width:100%;height:220px;object-fit:cover;border-radius:12px;margin-bottom:6px}
+.prod-plans-img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:12px;margin-bottom:6px;border:1px solid var(--line)}
 .prod-plans .lp-period{margin-bottom:28px}
 .prod-plans .lp-plan{color:var(--ink)}
-@media (max-width:640px){.prod-plans-img{height:160px}.prod-plans .lp-plan{padding:24px 16px 20px}}
+@media (max-width:640px){.prod-plans .lp-plan{padding:24px 16px 20px}}
+/* Invitații: emailul cumpărătorului și invitația cumpărată pentru altcineva (câmpurile apar doar după bifă) */
+.shop-email{display:flex;flex-direction:column;gap:4px}
+.shop-email input,.shop-gift input,.shop-gift textarea{width:100%;font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.shop-email small{font-size:13.5px}
+.shop-form label.shop-gift-toggle{display:flex;gap:10px;align-items:center;font-size:15px;cursor:pointer}
+.shop-form label.shop-gift-toggle input{width:20px;height:20px;margin:0;accent-color:var(--accent)}
+.shop-gift{display:none;flex-direction:column;gap:10px;margin:0;padding:12px;border:1px dashed var(--accent);border-radius:10px;background:var(--accent-soft)}
+.shop-form:has(.shop-gift-toggle input:checked) .shop-gift{display:flex}
+.shop-gift .field{display:flex;flex-direction:column;gap:4px}
+.shop-gift label{font-size:14.5px}
