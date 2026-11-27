@@ -1,14 +1,14 @@
 ---
 title: Chirilica românească
 description: Alfabetul chirilic românesc: cum se scria româna până în secolul al XIX-lea și ce înseamnă pentru citirea actelor vechi.
-updated: 2026-11-18
+updated: 2026-11-27
 alt: alfabetul chirilic, slove
 terms: alfabetul-de-tranzitie, paleografie
 related: scrierea-chirilica-romaneasca, cum-citesti-scrisul-de-mana-vechi
 ---
 Până în secolul al XIX-lea, româna s-a scris de obicei cu **alfabetul chirilic**, adaptat sunetelor ei (literele se numeau „slove”). Registrele parohiale ortodoxe, catagrafiile și actele de proprietate din Moldova și Țara Românească sunt adesea scrise așa.
 
-Între chirilică și alfabetul latin a existat o perioadă cu [alfabetul de tranziție](/glosar/alfabetul-de-tranzitie), un amestec de litere. Alfabetul latin a devenit oficial în Țara Românească și Moldova între 1860 și 1862. Ghidul [Scrierea chirilică românească](/ghid/scrierea-chirilica-romaneasca) arată literele care îți trebuie pentru nume și date.
+Între chirilică și alfabetul latin a existat o perioadă cu [alfabetul de tranziție](/glosar/alfabetul-de-tranzitie), un amestec de litere. Alfabetul latin a devenit oficial în Țara Românească și Moldova între 1860 și 1862. Ghidul [Scrierea chirilică românească](/ghid/scrierea-chirilica-romaneasca) are tot alfabetul, literă cu literă, cu echivalentul de azi, plus cifrele scrise cu litere și exemple de nume.
 
 ![Alfabetul chirilic românesc: literele ш, щ, ц, ж, ч, џ, ъ, ѫ, ꙟ, ѣ, ꙋ, х, ѳ, ѵ, ѯ, ѱ, ѡ cu echivalentul lor în litere latine](/imagini/alfabetul-chirilic-romanesc-litere.svg "Literele chirilice românești care diferă cel mai mult de alfabetul de azi")
 

@@ -42,4 +42,6 @@ export const APROBATE = new Set<string>([
   // Minoritățile din România (aceeași aprobare): aromânii, turcii și tătarii, romii, lipovenii, ucrainenii, sârbii, slovacii, bulgarii.
   "tema:aromani", "tema:turci-si-tatari-din-dobrogea", "tema:romi", "tema:rusi-lipoveni", "tema:ucraineni-din-romania",
   "tema:sarbi-din-romania", "tema:slovaci-din-romania", "tema:bulgari-din-romania",
+  // Daniel, 27.11.2026: „indexare și pe Australia și Noua Zeelandă” (aprobare permanentă pentru paginile SEO).
+  "tara:australia", "tara:noua-zeelanda",
 ]);

@@ -20,7 +20,7 @@ export type KinPage = {
 export const TOOLS_HUB = "/unelte";
 export const KIN_CALC = "/unelte/calculator-grad-de-rudenie";
 export const kinPagePath = (p: Pick<KinPage, "slug">) => `/unelte/rudenie/${p.slug}`;
-export const TOOLS_UPDATED = new Date("2026-11-25T00:00:00Z");
+export const TOOLS_UPDATED = new Date("2026-11-27T00:00:00Z");
 
 export const KIN_PAGES: KinPage[] = [
   {
@@ -151,11 +151,22 @@ export const KIN_PAGES: KinPage[] = [
         "În arbore, cumnații apar prin căsătorii: fratele soției pe ramura ei, soțul surorii lângă sora ta. Nu le crea o legătură separată, ci adaugă căsătoria potrivită, iar relația reiese singură.",
         "Copiii cumnatului sunt nepoții soției tale de frate. Pentru tine sunt nepoți prin alianță, dar copiii tăi și ai lor sunt veri primari, rude de sânge de gradul IV.",
       ] },
+      { h: "Cumnat, cuscru, socru: cum nu le încurci", p: [
+        "Cumnatul e de aceeași generație cu tine: fratele soției sau soțul surorii. Socrul e părintele soției, deci cu o generație mai sus. Cuscrul nu e rudă cu tine deloc: e părintele soțului sau al soției copilului tău, iar legătura e între cele două familii.",
+        "Pentru copiii tăi, cumnatul tău e unchi: fratele mamei sau soțul mătușii. De aceea, în multe familii, același om e „cumnat” pentru un părinte și „nenea” sau „unchiul” pentru copii.",
+      ] },
+      { h: "De unde vine cuvântul și cum se spune în alte limbi", p: [
+        "„Cumnat” vine din latinescul cognatus, care însemna rudă. În celelalte limbi romanice cuvântul a luat alte drumuri: cognato în italiană, cuñado în spaniolă, cunhado în portugheză, iar în franceză beau-frère.",
+        "Pentru copiii crescuți în străinătate: în engleză cumnatul e brother-in-law, în germană Schwager. Când le arăți arborele, spune-le și cuvântul din limba lor, ca să înțeleagă cine e fiecare.",
+      ] },
     ],
     faq: [
       { q: "Cumnatul e rudă de sânge?", a: "Nu. E rudă prin alianță (afin), legătură creată prin căsătorie." },
       { q: "Ce grad de afinitate are cumnatul?", a: "Gradul II, același grad pe care îl are fratele cu soțul sau soția ta." },
       { q: "Afinitatea se pierde la divorț?", a: "După lege, afinitatea încetează prin desfacerea căsătoriei. În multe familii, oamenii își spun însă cumnați și după aceea." },
+      { q: "Cumnatul moștenește?", a: "Nu din lege. Moștenitorii legali sunt soțul supraviețuitor și rudele de sânge până la gradul IV; afinii, deci și cumnații, nu moștenesc decât prin testament." },
+      { q: "Ce îi este cumnatul meu copilului meu?", a: "Unchi: fratele mamei sau al tatălui, ori soțul mătușii. Copiii lui și ai tăi sunt veri primari." },
+      { q: "Cum se spune cumnat în engleză?", a: "Brother-in-law. Cumnata e sister-in-law, socrul father-in-law, iar soacra mother-in-law." },
     ],
     related: ["cumnata", "socru", "cuscru"],
     image: { src: "/imagini/cumnat-cumnata-schema.svg", alt: "Schema cumnatului și a cumnatei: fratele și sora soției, soțul surorii tale și soția fratelui tău, afini de gradul II", caption: "Cine îți e cumnat sau cumnată: rude prin alianță de gradul II" },

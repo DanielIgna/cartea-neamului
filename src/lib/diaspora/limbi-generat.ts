@@ -27,6 +27,8 @@ export const DIASPORA_LANGS: Record<string, string> = {
   "/diaspora/bulgaria": "bg ro en",
   "/diaspora/turcia": "tr ro en",
   "/diaspora/luxemburg": "ro en",
+  "/diaspora/australia": "en ro",
+  "/diaspora/noua-zeelanda": "en ro",
   "/diaspora/radacini-evreiesti": "en he ro",
   "/diaspora/moldoveni-in-italia-si-israel": "ro it he en",
   "/diaspora/sasi-si-svabi": "de ro en",

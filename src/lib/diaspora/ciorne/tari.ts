@@ -1,5 +1,6 @@
 import type { Country } from "../tipuri";
 import { NEIGHBOUR_COUNTRIES } from "./tari-vecini";
+import { OCEANIA_COUNTRIES } from "./tari-oceania";
 
 /**
  * Ciornă (Daniel, 18.11.2026): românii din Ucraina, din regiunea Cernăuți (nordul Bucovinei, ținutul Herța, nordul
@@ -72,4 +73,5 @@ export const DRAFT_COUNTRIES: Country[] = [
     ],
   },
   ...NEIGHBOUR_COUNTRIES,
+  ...OCEANIA_COUNTRIES,
 ];

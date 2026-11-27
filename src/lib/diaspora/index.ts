@@ -125,6 +125,20 @@ function howManyEn(c: Country): string | null {
   return full.length <= 160 ? full : null;
 }
 
+/**
+ * La fel în română: căutarea reală e „câți români sunt în Germania / Spania” (Search Console, 17–23.11.2026), iar pagina
+ * răspunde din `size`. null când nu avem o cifră sigură sau descrierea nu încape în 160 de caractere.
+ */
+function howManyRo(c: Country): string | null {
+  const size = c.size?.ro;
+  if (!size) return null;
+  const first = size.split(/;|, /)[0].trim();
+  if (!/^(în jur de|peste|aproape|circa|zeci|sute|câteva)\b/i.test(first) || !/român/i.test(first)) return null;
+  const head = `Câți români sunt ${c.where.ro}? ${first.charAt(0).toUpperCase()}${first.slice(1)}.`;
+  const tails = [" Cum au ajuns acolo, ce acte din România ceri de acolo și cum faci arborele familiei.", " Cum au ajuns acolo, actele din România și arborele familiei.", " Istoria lor și arborele familiei."];
+  return tails.map((t) => head + t).find((d) => d.length >= 120 && d.length <= 155) ?? null;
+}
+
 /** Titlul, descrierea și numele scurt ale unei pagini, în limba dată (pentru pagină, metadate și Centrul SEO). */
 export function titleOf(e: Entry, l: Lang) {
   const u = UI[l];
@@ -133,7 +147,9 @@ export function titleOf(e: Entry, l: Lang) {
     case "country": {
       // În engleză, căutarea reală e „how many Romanians in Germany” (26.11.2026): titlul spune că pagina răspunde.
       const w = tx(e.country.where, l);
-      return l === "en" && howManyEn(e.country) ? `Romanians ${w}: how many, history and roots | Cartea Neamului` : u.titleCountry(w);
+      if (l === "en" && howManyEn(e.country)) return `Romanians ${w}: how many, history and roots | Cartea Neamului`;
+      if (l === "ro" && howManyRo(e.country)) return `Câți români sunt ${w}: istorie și rădăcini | Cartea Neamului`;
+      return u.titleCountry(w);
     }
     case "region": {
       const t = u.titleRegion(tx(e.region.where, l));
@@ -148,7 +164,7 @@ export function descriptionOf(e: Entry, l: Lang) {
     case "hub": return u.hubDescription;
     case "country": {
       const w = tx(e.country.where, l);
-      const many = l === "en" ? howManyEn(e.country) : null;
+      const many = l === "en" ? howManyEn(e.country) : l === "ro" ? howManyRo(e.country) : null;
       if (many) return many;
       return u.descCountry(w);
     }

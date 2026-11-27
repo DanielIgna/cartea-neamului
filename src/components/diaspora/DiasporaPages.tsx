@@ -196,7 +196,9 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
   const u = UI[l];
   const country = (c: Country) => entryOf(countryPath(c));
   const region = (r: Region) => entryOf(regionPath(r));
-  const europe = COUNTRIES.filter((c) => c.code !== "US" && c.code !== "CA");
+  const OCEANIA = ["AU", "NZ"];
+  const europe = COUNTRIES.filter((c) => c.code !== "US" && c.code !== "CA" && !OCEANIA.includes(c.code));
+  const oceania = COUNTRIES.filter((c) => OCEANIA.includes(c.code));
   const us = COUNTRIES.find((c) => c.code === "US")!, ca = COUNTRIES.find((c) => c.code === "CA")!;
   const list = (rs: Region[]) => (
     <ul className="hub-list hub-cols">
@@ -215,6 +217,14 @@ function Hub({ l, href }: { l: Lang; href: Href }) {
           {europe.map((c) => <li key={c.slug}><span aria-hidden>{c.flag} </span><Link href={href(country(c))}>{tx(c.name, l)}</Link></li>)}
         </ul>
       </div>
+      {oceania.length > 0 && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>{oceania.map((c) => tx(c.name, l)).join(" · ")}</h2>
+          <ul className="hub-list hub-cols">
+            {oceania.map((c) => <li key={c.slug}><span aria-hidden>{c.flag} </span><Link href={href(country(c))}>{tx(c.name, l)}</Link></li>)}
+          </ul>
+        </div>
+      )}
       <div className="card">
         <h2 style={{ marginTop: 0 }}>{u.cities}</h2>
         {(["it", "es", "de", "gb", "fr", "at", "be", "ie", "pt", "gr", "cy", "il", "nl", "ua"] as const).map((k) => {
