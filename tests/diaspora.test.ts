@@ -30,7 +30,8 @@ describe("diaspora: conținut", () => {
       // Daniel, 19.11.2026: valurile de emigrare pe țări (ciornele aprobate).
       ...["italia", "spania", "germania", "austria", "marea-britanie", "franta", "olanda", "belgia", "irlanda"].map((c) => `istoria-romanilor-din-${c}`),
       // Daniel, 19.11.2026: minoritățile din România.
-      "aromani", "turci-si-tatari-din-dobrogea", "romi", "rusi-lipoveni", "ucraineni-din-romania", "sarbi-din-romania", "slovaci-din-romania", "bulgari-din-romania"]);
+      "aromani", "turci-si-tatari-din-dobrogea", "romi", "rusi-lipoveni", "ucraineni-din-romania", "sarbi-din-romania", "slovaci-din-romania", "bulgari-din-romania",
+      "romani-in-asia", "romani-in-brazilia", "romani-in-argentina", "romani-in-emirate-si-qatar"]);
     for (const t of THEMES) for (const l of t.langs) {
       expect(t.name[l] && t.description[l], `${t.slug} ${l}`).toBeTruthy();
       expect(t.body[l]?.length, `${t.slug} ${l} corp`).toBeGreaterThanOrEqual(3);

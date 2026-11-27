@@ -44,4 +44,6 @@ export const APROBATE = new Set<string>([
   "tema:sarbi-din-romania", "tema:slovaci-din-romania", "tema:bulgari-din-romania",
   // Daniel, 27.11.2026: „indexare și pe Australia și Noua Zeelandă” (aprobare permanentă pentru paginile SEO).
   "tara:australia", "tara:noua-zeelanda",
+  // Daniel, 27.11.2026: „da” la „Români în Asia” și „da adauga le” la Brazilia, Argentina, Emirate și Qatar.
+  "tema:romani-in-asia", "tema:romani-in-brazilia", "tema:romani-in-argentina", "tema:romani-in-emirate-si-qatar",
 ]);
