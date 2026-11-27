@@ -483,5 +483,13 @@ describe("emailul de pe pagină și invitația cumpărată pentru altcineva", ()
       expect(t.mailGiftBody).toContain("{from}");
       expect(t.doneGift).toContain("{buyer}");
     }
+describe("pozele mari: textele se pot citi pe server", () => {
+  it("zoomText are text în toate limbile, iar paginile de pe server nu iau valori din componenta „use client”", async () => {
+    const { zoomText } = await import("@/lib/poze-mari-texte");
+    for (const l of LOCALES) expect(zoomText(l).open, l).toBeTruthy();
+    // Un export obișnuit dintr-un fișier „use client” e undefined pe server (pagina modelului dădea 500): doar componenta implicită.
+    const src = readFileSync("src/components/InvitatiiNunta.tsx", "utf8");
+    expect(src).not.toMatch(/import\s+PozeMari\s*,\s*\{/);
+    expect(readFileSync("src/lib/poze-mari-texte.ts", "utf8")).not.toContain("use client");
   });
 });
