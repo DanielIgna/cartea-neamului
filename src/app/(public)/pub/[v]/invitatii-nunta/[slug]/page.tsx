@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { getLocale } from "@/i18n/server";
 import { ShopModelPage } from "@/components/InvitatiiNunta";
-import { modelMetadata } from "@/app/(site)/invitatii-nunta/[slug]/page";
+import { modelMetadata } from "@/lib/invitatii-nunta-meta";
 import { SHOP_MODELS, modelBySlug } from "@/lib/invitatii-nunta";
 import { shopOpen, shopPaymentsReady } from "@/lib/invitatii-nunta-server";
 import { readVariant } from "@/lib/public-variant-server";

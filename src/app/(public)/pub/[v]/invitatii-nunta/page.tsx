@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import InvitatiiNuntaPage, { hubMetadata } from "@/app/(site)/invitatii-nunta/page";
+import InvitatiiNuntaPage from "@/app/(site)/invitatii-nunta/page";
+import { hubMetadata } from "@/lib/invitatii-nunta-meta";
 import { readVariant, type VariantParams } from "@/lib/public-variant-server";
 export const dynamic = "force-static";
 export const revalidate = 600;
