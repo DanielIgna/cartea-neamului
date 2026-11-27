@@ -161,6 +161,8 @@ export function shopWaiver(locale: Locale, origin: string) {
 
 export type ShopPaid = {
   id: string; email: string; slug: string; locale: Locale; amount: number; currency: string;
+  /** Codul de reducere: id-ul Stripe (promo_…) până îl traduce fillPaymentCodes; "" = fără. */
+  promo?: string;
   /** Doar la o invitație cumpărată pentru altcineva: cine a plătit și ce a scris pentru darul lui. `email` e atunci destinatarul. */
   buyerEmail?: string | null; giftToName?: string | null; giftFrom?: string | null; giftNote?: string | null;
 };
@@ -177,7 +179,9 @@ export function shopPaidFromSession(o: Record<string, unknown> | undefined | nul
   // Emailul scris pe pagină are întâietate (la Stripe Link, cel din pagina de plată poate fi al contului Link).
   const buyer = isShopEmail(md.email) ? md.email : email.trim().slice(0, 320);
   if (!isModelSlug(md.slug) || !buyer) return null;
-  const base = { id: o.id, slug: md.slug, locale: isLocale(md.locale) ? md.locale : "ro" as Locale, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? "") };
+  // Codul folosit: Stripe trimite doar id-ul (promo_…); îl traduce în cod fillPaymentCodes. '' = fără reducere.
+  const disc = (o.discounts as { promotion_code?: unknown }[] | undefined)?.find((d) => typeof d?.promotion_code === "string")?.promotion_code as string | undefined;
+  const base = { id: o.id, slug: md.slug, locale: isLocale(md.locale) ? md.locale : "ro" as Locale, amount: Number(o.amount_total ?? 0), currency: String(o.currency ?? ""), promo: disc ?? "" };
   if (isShopEmail(md.gift_to) && md.gift_to !== buyer) {
     return { ...base, email: md.gift_to, buyerEmail: buyer, giftToName: clean(md.gift_name, 80) || null, giftFrom: clean(md.gift_from, 80) || null, giftNote: clean(md.gift_note, 300) || null };
   }
@@ -222,7 +226,7 @@ export async function fulfilShopOrder(db: Db, paid: ShopPaid, origin: string, no
   const inserted = await db.insert(shopOrder).values({
     id: paid.id, email: paid.email, slug: paid.slug, locale: paid.locale, amount: paid.amount, currency: paid.currency,
     buyerEmail: paid.buyerEmail ?? null, giftToName: paid.giftToName ?? null, giftFrom: paid.giftFrom ?? null, giftNote: paid.giftNote ?? null,
-    tokenHash: hashToken(token), expiresAt: new Date(now.getTime() + LINK_DAYS * DAY), createdAt: now,
+    promo: paid.promo ?? null, tokenHash: hashToken(token), expiresAt: new Date(now.getTime() + LINK_DAYS * DAY), createdAt: now,
   }).onConflictDoNothing().returning();
   const order = inserted[0] ?? (await orderBySession(db, paid.id));
   if (inserted[0]) {

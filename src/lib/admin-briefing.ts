@@ -1,3 +1,4 @@
+import { SALES, testPaymentSql } from "./plati-test";
 import { sql, type SQL } from "drizzle-orm";
 import type { Db } from "@/db";
 import { ENV_KEYS, envSet } from "./admin";
@@ -54,8 +55,8 @@ export async function adminBriefing(db: Db) {
     securityOverviewOnce(db).catch(() => null),
     seoSettings(db).catch(() => null),
     planSettings(db),
-    rows(db, sql`select currency, count(*) as c, coalesce(sum(amount), 0) as amount from payment where created_at > now() - interval '7 days' group by currency`).catch(() => []),
-    rows(db, sql`select max(created_at) as at, count(*) as total from payment`).catch(() => []),
+    rows(db, sql`select p.currency, count(*) as c, coalesce(sum(p.amount), 0) as amount from ${SALES} p where p.created_at > now() - interval '7 days' and not ${testPaymentSql("p")} group by 1`).catch(() => []),
+    rows(db, sql`select max(p.created_at) as at, count(*) as total from ${SALES} p`).catch(() => []),
     rows(db, sql`select count(*) as c from drizzle.__drizzle_migrations`).catch(() => null),
   ]);
   const pay7 = { count: 0, lei: 0, eur: 0 };

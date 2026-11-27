@@ -1251,6 +1251,8 @@ export const shopOrder = pgTable("shop_order", {
   giftToName: text("gift_to_name"),
   giftFrom: text("gift_from"),
   giftNote: text("gift_note"),
+  // Codul de reducere (TESTINV90…); '' = fără cod; null = neverificat încă (src/lib/plati-test.ts).
+  promo: text("promo"),
 }, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
 
 // Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține
@@ -1280,3 +1282,12 @@ export const shopProduct = pgTable("shop_product", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   publishedAt: timestamp("published_at"),
 }, (t) => [uniqueIndex("shop_product_slug_idx").on(t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);
+
+/* ---------- Anunțuri închise cu „Am înțeles”, ținute pe cont (Daniel, 2026-11-27) ---------- */
+// Pentru fiecare om și fiecare anunț: când l-a închis ultima dată și de câte ori (src/lib/anunt-pastrare.ts).
+export const noticeDismissal = pgTable("notice_dismissal", {
+  userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+  notice: text("notice").notNull(),
+  at: timestamp("at").notNull().defaultNow(),
+  times: integer("times").notNull().default(1),
+}, (t) => [primaryKey({ name: "notice_dismissal_pk", columns: [t.userId, t.notice] })]);

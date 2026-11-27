@@ -1,3 +1,4 @@
+import { fillPaymentCodes } from "@/lib/plati-test";
 import Link from "next/link";
 import { db } from "@/db";
 import { requireAdmin } from "@/lib/admin-access";
@@ -53,6 +54,8 @@ export default async function Analiza({ searchParams }: { searchParams: Promise<
   const period: PeriodKey | "pers" = custom ? "pers" : isPeriod(sp.p) ? sp.p : "30z";
   const tab: Tab = TABS.some((t) => t.key === sp.t) ? (sp.t as Tab) : "prezentare";
   const { cur, prev } = custom ?? rangeOf(period as PeriodKey);
+  // Codurile plăților noi (TEST…), ca cele de test să se vadă ca test; doar pentru plățile încă neverificate, deci rar.
+  await fillPaymentCodes(db, fetch, 10).catch(() => 0);
   const [sessions, prevSessions, uv, prevUv, biz, prevBiz, funnel] = await Promise.all([
     sessionsOf(db, cur), sessionsOf(db, prev), uniqueVisitors(db, cur), uniqueVisitors(db, prev), business(db, cur), business(db, prev), accountFunnel(db, cur),
   ]);
@@ -119,6 +122,7 @@ async function Overview(o: {
   const series = await trafficSeries(db, o.cur, o.sessions);
   const notes = observations({ visitors: o.uv.visitors, prevVisitors: o.prevUv.visitors, sum: o.sum, prevSum: o.prevSum, sources: o.sources, accounts: o.biz.accounts, prevAccounts: o.prevAccounts, funnel: o.funnel, heat: o.heat, days: o.cur.days });
   const money = [o.biz.lei ? lei(o.biz.lei) : "", o.biz.eur ? `${o.biz.eur} €` : ""].filter(Boolean).join(" + ");
+  const payHint = [money, o.biz.byKind.map((k) => `${num(k.count)} × ${k.label}`).join(", "), o.biz.tests ? `${num(o.biz.tests)} de test, nu intră în bani` : ""].filter(Boolean).join(" · ");
   return (
     <>
       <div className="stats">
@@ -127,7 +131,7 @@ async function Overview(o: {
         <Stat label="Pagini văzute" value={num(o.uv.views)} hint={`${o.sum.pagesPerSession} pe sesiune`} />
         <Stat label="Conturi create" value={num(o.biz.accounts)} hint={<Trend cur={o.biz.accounts} prev={o.prevBiz.accounts} />} />
         <Stat label="Arbori porniți" value={num(o.biz.trees)} hint={<Trend cur={o.biz.trees} prev={o.prevBiz.trees} />} />
-        <Stat label="Plăți" value={num(o.biz.payments)} hint={money || "nicio plată"} />
+        <Stat label="Plăți" value={num(o.biz.payments)} hint={payHint || "nicio plată"} />
         <Stat label="Bounce" value={`${o.sum.bounceRate}%`} hint={<Trend cur={o.sum.bounceRate} prev={o.prevSum.bounceRate} invert />} tone={o.sum.sessions >= 20 && o.sum.bounceRate >= 70 ? "warn" : undefined} />
         <Stat label="Durata medie" value={durationLabel(o.sum.avgSecs)} hint="la sesiunile cu mai multe pagini" />
       </div>

@@ -12,7 +12,7 @@ import { sql } from "drizzle-orm";
 import { timingSafeEqual } from "node:crypto";
 import type { Db } from "@/db";
 import { realAccountSql, realUserIdSql } from "./conturi-test";
-import { fillPaymentCodes, realPaymentSql } from "./plati-test";
+import { SALES, fillPaymentCodes, realPaymentSql } from "./plati-test";
 import { groupBy, sessionsOf, summary, uniqueVisitors, type Range } from "./analiza";
 import { localDayHour } from "./vizite";
 import { gscSnapshot, pathOfUrl, seoSettings } from "./seo";
@@ -62,11 +62,11 @@ async function accounts(db: Db, r: Range) {
 /** Plățile reale din interval, pe fel (an / carte / păstrare…), plan și monedă. */
 async function payments(db: Db, r: Range) {
   const list = await rows(db, sql`select p.kind, coalesce(ap.tier, '') as tier, p.currency, count(*) as c, sum(p.amount) as s
-    from payment p left join account_plan ap on ap.user_id = p.user_id
+    from ${SALES} p left join account_plan ap on ap.user_id = p.user_id
     where ${localDay("p.created_at")} between ${r.from} and ${r.to} and ${realPaymentSql("p")}
       and (p.user_id is null or (${realUserIdSql("p.user_id")} and ${notFree("p.user_id")}))
     group by 1, 2, 3 order by 4 desc`);
-  const [ex] = await rows(db, sql`select count(*) as c from payment p where ${localDay("p.created_at")} between ${r.from} and ${r.to} and p.amount > 0`);
+  const [ex] = await rows(db, sql`select count(*) as c from ${SALES} p where ${localDay("p.created_at")} between ${r.from} and ${r.to} and p.amount > 0`);
   const count = list.reduce((a, x) => a + num(x.c), 0);
   return {
     count,

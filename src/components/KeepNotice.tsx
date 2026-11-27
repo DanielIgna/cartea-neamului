@@ -1,19 +1,19 @@
 "use client";
 import { useState } from "react";
-
-/** Cookie-ul care ține minte că omul a văzut anunțul despre „Păstrare” (o singură dată, pe fiecare telefon sau calculator). */
-export const KEEP_NOTICE_COOKIE = "cn-pastrare-anunt";
+import { closeKeepNotice } from "@/app/anunt-actions";
+import { KEEP_NOTICE_COOKIE } from "@/lib/anunt-pastrare";
 
 /**
  * Anunțul pentru cei care aveau deja cont când a apărut „Păstrarea” (2026-11-13): ce e nou și că s-au schimbat Termenii.
- * „Am înțeles” pune cookie-ul pentru un an, ca anunțul să nu mai apară.
+ * „Am înțeles” se ține pe cont (src/lib/anunt-pastrare.ts); cookie-ul de o săptămână doar ascunde banda până se încarcă pagina următoare.
  */
 export default function KeepNotice({ lead, text, more, terms, ok }: { lead: string; text: string; more: string; terms: string; ok: string }) {
   const [gone, setGone] = useState(false);
   if (gone) return null;
   const close = () => {
-    document.cookie = `${KEEP_NOTICE_COOKIE}=1; path=/; max-age=31536000; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
+    document.cookie = `${KEEP_NOTICE_COOKIE}=1; path=/; max-age=604800; samesite=lax${location.protocol === "https:" ? "; secure" : ""}`;
     setGone(true);
+    void closeKeepNotice();
   };
   return (
     <aside className="cookie-notice" aria-label={lead}>

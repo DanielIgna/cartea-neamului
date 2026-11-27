@@ -30,7 +30,8 @@ import ShopLink from "@/components/ShopLink";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
 import UserNotices from "@/components/UserNotices";
-import KeepNotice, { KEEP_NOTICE_COOKIE } from "@/components/KeepNotice";
+import KeepNotice from "@/components/KeepNotice";
+import { KEEP_NOTICE_COOKIE, keepNoticeState, showKeepNotice } from "@/lib/anunt-pastrare";
 import { planSettings } from "@/lib/plans";
 import { COOKIE_NOTICE_COOKIE } from "@/lib/legal";
 import { eq, sql } from "drizzle-orm";
@@ -118,7 +119,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {news === "ask" && usage?.at && cookieSeen && !(ask && suggest) && <NewsNotice afterTree />}
             {me && <AccessBanner userId={me.id} locale={locale} />}
             {me && <UserNotices userId={me.id} />}
-            {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.createdAt, locale)}
+            {me && !keepSeen && cookieSeen && !(ask && suggest) && !(usage && !usage.at) && await keepNotice(me.id, me.createdAt, locale)}
             {/* Pe paginile contului: meniul lateral (calculator) și bara de jos (telefon), src/components/AccountNav.tsx. */}
             <div className="acc-wrap">
               {me && <AccountNav name={me.name} image={avatar} unread={unread} replies={replies} admin={admin}
@@ -137,11 +138,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 }
 
 /**
- * Anunțul despre „Păstrare” (2026-11-13), o singură dată, doar pentru cei care aveau deja cont și doar când plățile sunt pornite.
- * Nu vine peste celelalte anunțuri: așteaptă pagina următoare.
+ * Anunțul despre „Păstrare”, doar când plățile sunt pornite. Când apare, vezi showKeepNotice (src/lib/anunt-pastrare.ts):
+ * o dată pentru conturile vechi, apoi rar în ultima lună a anului plătit. Nu vine peste celelalte anunțuri: așteaptă pagina următoare.
  */
-async function keepNotice(createdAt: Date, locale: string) {
-  if (createdAt >= new Date("2026-11-14T00:00:00Z")) return null;
+async function keepNotice(userId: string, createdAt: Date, locale: string) {
+  const st = await keepNoticeState(db, userId);
+  if (!showKeepNotice({ createdAt, paidUntil: st.paidUntil, dismissed: st.dismissed, now: new Date() })) return null;
   const s = await planSettings(db).catch(() => null);
   const price = s && (locale === "ro" ? s.keepLei : s.keepEur);
   if (!s?.on || !price) return null;
