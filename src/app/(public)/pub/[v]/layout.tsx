@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ShopLink from "@/components/ShopLink";
 import { dirOf, localizedPath } from "@/i18n/locales";
 // Fonturile vin din pachete npm (fără descărcare de la Google la build, care pica intermitent pe Vercel).
 import "@fontsource/alegreya/500.css";
@@ -58,6 +59,7 @@ export default async function PublicLayout({ children, params }: { children: Rea
           <div className="wrap">
             <header className="top">
               <div className="brand"><Link href={localizedPath("/", v.locale)} className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
+              <ShopLink locale={v.locale} />
               <div className="prefs">
                 <ThemeSwitch />
                 <LanguagePicker />

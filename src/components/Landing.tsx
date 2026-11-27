@@ -14,7 +14,8 @@ import { DEFAULT_SETTINGS, LIMIT_KEYS, PERIODS, PLANS_TAG, TIERS, periodPrice, p
 import HomePlans, { type HomePlan } from "@/components/HomePlans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
-import { LANGUAGE_COUNT } from "@/i18n/locales";
+import { LANGUAGE_COUNT, localizedPath } from "@/i18n/locales";
+import { PRODUCTS_PATH, shopPageText } from "@/lib/produse-texte";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { FAQ_TITLE, faqLang, homeFaq, homeJsonLd } from "@/lib/seo/home-faq";
 import ZonaSugestii from "@/components/ZonaSugestii";
@@ -179,6 +180,11 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
           <Link href="/ghid/delegati-alba-iulia-1918">Află cum cauți delegații și citește seria despre Marea Unire<span aria-hidden="true"> →</span></Link>
         </p>
       )}
+      {/* Magazinul (Daniel, 27.11.2026): invitațiile de nuntă fără cont și restul produselor, pe telefon și pe calculator. */}
+      <p className="lp-gift-band lp-shop-band">
+        <span>{shopPageText(locale).homeBand}</span>{" "}
+        <Link href={localizedPath(PRODUCTS_PATH, locale)}>{shopPageText(locale).homeLink}<span aria-hidden="true"> →</span></Link>
+      </p>
       {deleted && <p className="notice lp-in" role="status">{t("deleted")}</p>}
       {/* Butonul rotund de WhatsApp, în colț, pentru cine vrea să ne scrie (Daniel, 11 noiembrie 2026). */}
       <a className="wa-float" href={whatsappUrl(tc("waGreeting"))} target="_blank" rel="noopener noreferrer" aria-label={tc("waFloat")} title={tc("waFloat")}>

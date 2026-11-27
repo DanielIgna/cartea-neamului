@@ -26,6 +26,7 @@ import ThemeSwitch from "@/components/ThemeSwitch";
 import { PwaSetup } from "@/components/InstallApp";
 import { THEME_COOKIE, parseTheme } from "@/lib/theme";
 import { cookies } from "next/headers";
+import ShopLink from "@/components/ShopLink";
 import CookieNotice from "@/components/CookieNotice";
 import AccessBanner from "@/components/AccessBanner";
 import UserNotices from "@/components/UserNotices";
@@ -99,6 +100,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="wrap">
             <header className="top">
               <div className="brand"><Link href="/" className="brand-link"><Logo /><span className="brand-name">{appName}</span></Link></div>
+              <ShopLink locale={locale} />
               <div className={me ? "prefs prefs-wide" : "prefs"}>
                 <ThemeSwitch />
                 <LanguagePicker remember={source === "account"} />
