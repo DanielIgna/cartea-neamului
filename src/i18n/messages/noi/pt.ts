@@ -1810,6 +1810,7 @@ export const ptExtra: DeepPartial<Catalog> = {
     hideSiblings: "Recolher os irmãos",
     couple: "A família de {a} e {b}{count, plural, =0 {} one {: # filho} other {: # filhos}}",
     spouseOf: "Marido/mulher: {name}",
+    generationRuler: "Geração",
     bornAsShort: "{surname} ({sex, select, F {nascida} other {nascido}} {birth})",
     zoomGroup: "Tamanho do gráfico",
     zoomOut: "Afastar",

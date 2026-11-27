@@ -167,6 +167,7 @@ export const huArbore: ArboreCatalog = {
     hideSiblings: "Testvérek becsukása",
     couple: "{a} és {b} családja{count, plural, =0 {} other {: # gyermek}}",
     spouseOf: "Házastárs: {name}",
+    generationRuler: "Generáció",
     bornAsShort: "{surname} (szül. {birth})",
     zoomGroup: "A rajz mérete",
     zoomOut: "Kicsinyítés",

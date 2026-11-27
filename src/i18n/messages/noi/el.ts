@@ -1810,6 +1810,7 @@ export const elExtra: DeepPartial<Catalog> = {
     hideSiblings: "Μάζεμα αδελφών",
     couple: "Η οικογένεια: {a} και {b}{count, plural, =0 {} one {: # παιδί} other {: # παιδιά}}",
     spouseOf: "Σύζυγος: {name}",
+    generationRuler: "Γενιά",
     bornAsShort: "{surname} ({sex, select, F {το γένος} other {γεννημένος}} {birth})",
     zoomGroup: "Μέγεθος διαγράμματος",
     zoomOut: "Σμίκρυνση",

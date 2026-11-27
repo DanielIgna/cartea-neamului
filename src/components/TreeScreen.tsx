@@ -383,7 +383,7 @@ export default function TreeScreen(props: Props) {
           </div>
           {view === "360" ? (
             <Tree360 seeds={seeds360.seeds} links={seeds360.links} people={people} selectedId={selectedId} egoPath={egoPath} onSelectPerson={(id) => setSel({ id })} onCenter={center} originOf={originOf} />
-          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}|${allBranches}`} full={full} onFull={setFull} startZoom={view === "desc" ? 1 : undefined}>
+          ) : <ZoomBox boxRef={box} resetKey={`${view}|${fanDir}|${generations}|${centerId}|${trunkId}|${twinKey}|${shownSide}|${allBranches}`} full={full} onFull={setFull} startZoom={view === "desc" ? 1 : view === "tree" ? 0.8 : undefined} boxClass={view === "tree" ? "copac-bg" : undefined}>
             {view === "fan" && fanDir === "up" && <FanChart {...chartProps} side={shownSide} />}
             {view === "fan" && fanDir === "down" && <DescendantFan {...lineageProps} />}
             {view === "classic" && <ClassicTree {...chartProps} side={shownSide} />}

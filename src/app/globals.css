@@ -2625,3 +2625,57 @@ dialog.zoom::backdrop{background:#0d0906e6}
 .prod-plans .lp-period{margin-bottom:28px}
 .prod-plans .lp-plan{color:var(--ink)}
 @media (max-width:640px){.prod-plans-img{height:160px}.prod-plans .lp-plan{padding:24px 16px 20px}}
+
+/* ---------- Copacul, moștenire caldă (Daniel, 2026-11-27): pergament, medalioane și plăcuțe; desenul în CopacArt.tsx ---------- */
+.chartbox.copac-bg{background-color:#F4E9D4;background-image:radial-gradient(ellipse at 50% 45%,#f7eedd 0%,#F4E9D4 55%,#E8D5B5 120%),repeating-linear-gradient(90deg,#e8d5b51a 0 2px,transparent 2px 7px),repeating-linear-gradient(0deg,#ffffff14 0 1px,transparent 1px 5px);border-color:#C9A86C;color:#3A2A1A}
+.cp-stage{position:relative;width:max-content;margin:0 auto;--k:1}
+.cp-stage>svg{display:block}
+.zoom-inner.zoomed > .cp-stage > svg{width:var(--zw)!important;max-width:none!important;height:auto!important}
+.cp-stage .cp-base{font-family:"Cormorant Garamond","EB Garamond",var(--display)}
+.cp-ruler text{font-family:"Source Sans 3",var(--body)}
+.cp-layer{position:absolute;left:0;top:0;transform-origin:0 0;transform:scale(var(--k));pointer-events:none}
+.cp-layer button{pointer-events:auto;position:absolute;font:inherit;color:#3A2A1A;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cp-node{display:flex;flex-direction:column;align-items:center;border:0;background:none;padding:0;transition:transform .2s,opacity .2s}
+.cp-node:focus-visible{outline:none}
+/* Linia directă: medalion rotund cu inel auriu, plăcuță dedesubt */
+.cp-direct{transform:translate(-50%,-48px);gap:0;min-width:56px}
+.cp-med{width:58px;height:58px;border-radius:50%;background:#FBF6EB;border:3px solid #C9A86C;box-shadow:0 2px 6px rgba(58,42,26,.18),inset 0 0 0 2px #fbf6eb,inset 0 0 0 3px #e3cc9c;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  font-family:"Cormorant Garamond","EB Garamond",var(--display);font-size:22px;font-weight:600;color:#3A2A1A;letter-spacing:.5px;position:relative;z-index:1}
+.cp-med img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.cp-plate{margin-top:-4px;width:max-content;max-width:118px;background:#FBF6EB;border:1px solid #C9A86C;border-radius:8px;padding:5px 10px 4px;box-shadow:0 1px 3px rgba(58,42,26,.14);display:flex;flex-direction:column;align-items:center;text-align:center;line-height:1.15}
+.cp-plate b{font-family:"Source Serif 4",var(--display);font-weight:600;font-size:14px;color:#3A2A1A;overflow-wrap:break-word}
+.cp-plate small,.cp-pill small{font-family:"Source Serif 4",var(--display);font-weight:500;font-size:12.5px;color:#6B5340;line-height:1.2}
+.cp-plate small.cp-kids,.cp-pill small.cp-kids{font-family:"Source Sans 3",var(--body);font-size:11px;font-weight:600;color:#6E7F52}
+.cp-direct.cp-spouse .cp-med{width:50px;height:50px;border:2px dashed #C9A86C;box-shadow:0 2px 5px rgba(58,42,26,.12);font-size:19px}
+.cp-direct.cp-spouse{transform:translate(-50%,-44px)}
+.cp-direct.cp-spouse .cp-plate{border:1.5px dashed #C9A86C;max-width:108px}
+.cp-direct.cp-ego .cp-med{border-width:3.5px;box-shadow:0 0 0 4px #c9a86c40,0 2px 10px rgba(201,168,108,.55)}
+.cp-node.cp-sel .cp-med,.cp-node:focus-visible .cp-med{box-shadow:0 0 0 4px #C9A86C,0 2px 10px rgba(58,42,26,.3)}
+.cp-node.cp-sel .cp-plate,.cp-node:focus-visible .cp-plate{border-color:#8B5E3C;box-shadow:0 0 0 2px #C9A86C}
+.cp-direct:hover .cp-med{transform:scale(1.04)}
+.cp-med{transition:transform .2s,box-shadow .2s}
+/* Frații, verii și soții lor: pastile pe ramuri */
+.cp-pill{transform:translate(-50%,-50%);width:max-content;min-width:44px;min-height:34px;max-width:100px;border-radius:999px;background:#FBF6EB;border:1px solid #8A9A6B;padding:5px 12px;box-shadow:0 1px 3px rgba(58,42,26,.14);text-align:center;line-height:1.15}
+.cp-pill b{font-family:"Source Serif 4",var(--display);font-weight:600;font-size:13px;color:#3A2A1A;overflow-wrap:break-word}
+.cp-pill .cp-full{display:flex;flex-direction:column;align-items:center}
+.cp-pill .cp-ini{display:none;font-family:"Cormorant Garamond",var(--display);font-weight:600;font-size:17px}
+.cp-pill.cp-spouse{border:1.5px dashed #C9A86C}
+.cp-pill.cp-ego{border:2px solid #C9A86C}
+.cp-pill.cp-sel,.cp-pill:focus-visible{box-shadow:0 0 0 3px #C9A86C;border-color:#8B5E3C}
+.cp-pill:hover{border-color:#6E7F52;background:#fffaf0}
+.cp-pill small.cp-yr{display:none;font-size:11px}
+.cp-pill small.cp-sur{font-size:11px}
+.cp-stage[data-zoom="near"] .cp-pill small.cp-yr{display:block}
+.cp-stage[data-zoom="far"] .cp-pill .cp-full{display:none}
+.cp-stage[data-zoom="far"] .cp-pill .cp-ini{display:block}
+.cp-stage[data-zoom="far"] .cp-pill{min-width:40px;padding:6px 8px}
+/* „+N”: cerc închis la culoare; „−” deschis */
+.cp-badge{transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;border:2px solid #C9A86C;background:#4A2F1F;color:#FBF6EB!important;font-family:"Source Sans 3",var(--body);font-weight:700;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;padding:0;box-shadow:0 2px 5px rgba(58,42,26,.25)}
+.cp-badge small{font-size:8.5px;font-weight:600;opacity:.85;margin-top:1px}
+.cp-badge:not(.cp-less):not(.cp-fold){width:40px;height:40px;font-size:14px}
+.cp-badge.cp-less{width:24px;height:24px;background:#FBF6EB;color:#6B5340!important;border:1px solid #C9A86C;font-size:15px}
+.cp-badge:hover{filter:brightness(1.15)}
+.cp-badge:focus-visible{outline:3px solid #C9A86C;outline-offset:2px}
+@media (pointer:coarse){.cp-badge.cp-less{width:30px;height:30px}}
+@media (max-width:700px){.cp-ruler{display:none}}
+@media (prefers-reduced-motion:reduce){.cp-node,.cp-med{transition:none}}

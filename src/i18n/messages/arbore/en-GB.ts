@@ -164,6 +164,7 @@ export const enGBArbore: ArboreCatalog = {
     hideSiblings: "Fold the siblings",
     couple: "The family of {a} and {b}{count, plural, =0 {} one {: # child} other {: # children}}",
     spouseOf: "Husband/wife: {name}",
+    generationRuler: "Generation",
     bornAsShort: "{surname} ({sex, select, F {née} other {born}} {birth})",
     zoomGroup: "Chart size",
     zoomOut: "Zoom out",

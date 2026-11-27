@@ -1810,6 +1810,7 @@ export const srExtra: DeepPartial<Catalog> = {
     hideSiblings: "Skupi braću i sestre",
     couple: "Porodica: {a} i {b}{count, plural, =0 {} one {: # dete} few {: # deteta} other {: # dece}}",
     spouseOf: "Muž/žena: {name}",
+    generationRuler: "Generacija",
     bornAsShort: "{surname} ({sex, select, F {rođena} other {rođen}} {birth})",
     zoomGroup: "Veličina dijagrama",
     zoomOut: "Umanji",

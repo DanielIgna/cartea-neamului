@@ -167,6 +167,7 @@ export const roArbore = {
     hideSiblings: "Strânge frații",
     couple: "Familia {a} și {b}{count, plural, =0 {} one {: # copil} few {: # copii} other {: # de copii}}",
     spouseOf: "Soț/soție: {name}",
+    generationRuler: "Generația",
     bornAsShort: "{surname} ({sex, select, M {n.} F {n.} other {n.}} {birth})",
     zoomGroup: "Mărimea desenului",
     zoomOut: "Micșorează",
