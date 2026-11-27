@@ -483,6 +483,9 @@ describe("emailul de pe pagină și invitația cumpărată pentru altcineva", ()
       expect(t.mailGiftBody).toContain("{from}");
       expect(t.doneGift).toContain("{buyer}");
     }
+  });
+});
+
 describe("pozele mari: textele se pot citi pe server", () => {
   it("zoomText are text în toate limbile, iar paginile de pe server nu iau valori din componenta „use client”", async () => {
     const { zoomText } = await import("@/lib/poze-mari-texte");
