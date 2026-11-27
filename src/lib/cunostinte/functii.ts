@@ -260,6 +260,16 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/coduri-activare.test.ts"],
   },
   {
+    key: "invitatii-nunta", name: "Invitații de nuntă (fără cont)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Fișiere plătite livrate prin link: paza e tokenul lung (HMAC din sesiunea Stripe, doar hash-ul în bază), valabil 30 de zile, și storage-ul privat.",
+    what: "Invitații de nuntă digitale cu motive populare pe regiuni (primul model: Maramureș): pagini publice în toate limbile, plata Stripe fără cont (45 lei / 9 €), comanda în shop_order, emailul cu linkul de descărcare, pagina de după plată cu retrimitere, ZIP-ul din storage privat, comutator în Admin.",
+    engine: ["src/lib/invitatii-nunta.ts", "src/lib/invitatii-nunta-texte.ts", "src/lib/invitatii-nunta-server.ts", "src/app/invitatii-nunta-actions.ts", "scripts/incarca-invitatie-nunta.ts"],
+    pages: ["/invitatii-nunta", "/invitatii-nunta/[slug]", "/invitatii-nunta/gata", "/api/invitatii-nunta/start", "/api/invitatii-nunta/descarca/[token]", "/api/invitatii-nunta/retrimite", "/admin/invitatii-nunta"],
+    tables: ["shop_order", "app_setting"],
+    metric: { table: "shop_order", label: "comenzi" },
+    dashboard: "/admin/invitatii-nunta",
+    tests: ["tests/invitatii-nunta.test.ts"],
+  },
+  {
     key: "city-partners", name: "City Partners (CRM parteneri)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Comisioane de plătit și conturi trecute pe parteneri.",
     what: "Magazine și firme de la prospect la activ: etape, filtre, județe, istoric de contact, pași cu termen, alertă 30 de zile, legătura de recomandare /r/<cod>, kit de tipar, raport lunar de plată.",
     engine: ["src/lib/parteneri-crm.ts", "src/app/parteneri-crm-actions.ts"],

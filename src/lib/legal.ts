@@ -10,7 +10,7 @@
 // 16 noiembrie 2026: §5 spune ce se închide după zilele gratuite (fără să se șteargă nimic) și reducerea trimisă o singură dată.
 // 18 noiembrie 2026: oferta nouă (cartea PDF separată, fără tipar); la prânz, §5: GEDCOM oricând, o perioadă gratuită pe email,
 // reducerile de școală și din link doar la primul an, fără cumul.
-export const TERMS_DATE = new Date("2026-11-25T08:00:00Z");
+export const TERMS_DATE = new Date("2026-11-27T18:00:00Z");
 /**
  * Ultima schimbare a Politicii de confidențialitate (25 noiembrie: abonamentul, adică clientul și abonamentul din Stripe, cardul ținut de Stripe și emailul de dinainte de plată; 18 noiembrie, prânz: amprenta emailului păstrată după ștergerea contului, ca zilele
  * gratuite să se dea o dată pe email, și cookie-ul cn-cod; 16 noiembrie, prânz: de unde vine fiecare cont nou, cookie-urile de analiză

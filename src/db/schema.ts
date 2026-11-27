@@ -1228,3 +1228,22 @@ export const archiveHintDismissal = pgTable("archive_hint_dismissal", {
   personId: uuid("person_id").notNull().references(() => person.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (t) => [primaryKey({ name: "archive_hint_dismissal_pk", columns: [t.userId, t.personId] })]);
+
+/* ---------- Invitații de nuntă (Daniel, 2026-11-27) ---------- */
+// O comandă din rubrica /invitatii-nunta, plătită fără cont: cheia e id-ul sesiunii Stripe (o confirmare primită de două ori se
+// trece o singură dată). Separat de `payment` (plățile contului). Tokenul de descărcare nu se ține: doar hash-ul lui (SHA-256),
+// iar linkul e valabil până la `expires_at` (30 de zile). Vezi src/lib/invitatii-nunta-server.ts.
+export const shopOrder = pgTable("shop_order", {
+  id: text("id").primaryKey(),
+  email: text("email").notNull(),
+  slug: text("slug").notNull(),
+  locale: text("locale").notNull(),
+  amount: integer("amount").notNull(), // în bani (lei × 100) sau cenți
+  currency: text("currency").notNull(), // ron / eur
+  tokenHash: text("token_hash").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  emailsSent: integer("emails_sent").notNull().default(0),
+  lastEmailAt: timestamp("last_email_at"),
+  downloads: integer("downloads").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);

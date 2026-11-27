@@ -75,7 +75,7 @@ export function publicPageMetadata({ path, title: full, description, image, loca
 export const PRIVATE_ROBOTS: Metadata["robots"] = { index: false, follow: false };
 
 /** „Acasă” în fiecare limbă, pentru firul de navigare (BreadcrumbList) al paginilor simple. */
-const HOME_LABEL: Record<Locale, string> = {
+export const HOME_LABEL: Record<Locale, string> = {
   ro: "Acasă", "en-GB": "Home", "en-US": "Home", fr: "Accueil", es: "Inicio", nl: "Home", de: "Startseite", it: "Home", hu: "Kezdőlap", he: "דף הבית",
   pt: "Início", el: "Αρχική", sv: "Start", da: "Forside", nb: "Forside", uk: "Головна", sr: "Početna", bg: "Начало", tr: "Ana sayfa",
 };

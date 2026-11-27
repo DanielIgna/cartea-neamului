@@ -209,6 +209,12 @@ const ADDITIVE = [
     "used_at" timestamp, "used_by_user_id" text REFERENCES "user"("id") ON DELETE set null, "cancelled_at" timestamp)`,
   sql`CREATE UNIQUE INDEX IF NOT EXISTS "activation_code_cod_idx" ON "activation_code" ("cod")`,
   sql`CREATE INDEX IF NOT EXISTS "activation_code_status_idx" ON "activation_code" ("status","sursa","created_at")`,
+  // Invitațiile de nuntă, comenzile fără cont (migrația 0049).
+  sql`CREATE TABLE IF NOT EXISTS "shop_order" ("id" text PRIMARY KEY NOT NULL, "email" text NOT NULL, "slug" text NOT NULL, "locale" text NOT NULL,
+    "amount" integer NOT NULL, "currency" text NOT NULL, "token_hash" text NOT NULL, "expires_at" timestamp NOT NULL,
+    "emails_sent" integer DEFAULT 0 NOT NULL, "last_email_at" timestamp, "downloads" integer DEFAULT 0 NOT NULL, "created_at" timestamp DEFAULT now() NOT NULL)`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "shop_order_token_idx" ON "shop_order" ("token_hash")`,
+  sql`CREATE INDEX IF NOT EXISTS "shop_order_created_idx" ON "shop_order" ("created_at")`,
 ];
 
 export async function applySchema(target: Db) {
