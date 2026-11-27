@@ -5,7 +5,7 @@ description: Cum îi apropii pe copiii crescuți în Italia, Spania sau SUA de b
 category: Diaspora
 updated: 2026-11-19
 cuvant: copii diaspora bunici romania
-related: intrebari-pentru-bunici, cum-inregistrezi-glasul-bunicilor, cum-implici-familia, cum-intervievezi-bunicii, reuniune-de-familie, cum-scrii-povestea-familiei
+related: figli-nati-in-italia-documenti-romeni, hijos-nacidos-en-espana-documentos-rumanos, intrebari-pentru-bunici, cum-inregistrezi-glasul-bunicilor, cum-implici-familia, cum-intervievezi-bunicii, reuniune-de-familie, cum-scrii-povestea-familiei
 terms: arbore-genealogic, spita-neamului, porecla, nume-de-fata
 ---
 Mulți copii români cresc azi în altă țară: în Italia, Spania, Germania, Marea Britanie, Franța, SUA sau Canada. Vorbesc limba școlii mai bine decât româna, își văd bunicii o dată pe an, vara, și știu despre satul familiei doar că „acolo e la bunica”. Pentru bunici, distanța doare. Pentru copii, rămâne un gol pe care îl simt abia mai târziu, când întreabă: „de unde suntem noi, de fapt?”.
