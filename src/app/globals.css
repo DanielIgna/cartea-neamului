@@ -2569,3 +2569,34 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
 .shopadm-photo-tools .btn{padding:4px 8px;font-size:13px;min-height:0}
 .shopadm-danger{border-color:var(--red)}
 .shopadm-delete{border-color:var(--red);color:var(--red)}
+/* „Magazin” în antet (src/components/ShopLink.tsx) și pagina /produse (Daniel, 27.11.2026). */
+.shop-link{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);
+  color:var(--ink);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap;flex:none}
+.shop-link svg{color:var(--accent)}
+.shop-link:hover{border-color:var(--accent)}
+@media (pointer:coarse){.shop-link{height:42px}}
+@media (max-width:640px){
+  .shop-link{flex-direction:column;justify-content:center;gap:1px;height:auto;min-height:44px;min-width:48px;padding:2px 6px;border-radius:12px;font-size:11px;line-height:1.1}
+  .shop-link svg{width:19px;height:19px}
+}
+.lp-shop-band{background:var(--accent-soft, #f3e6cf);color:var(--ink);border-bottom:1px solid var(--line)}
+.lp-shop-band a{color:var(--accent)}
+.prod-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.prod-item{display:flex;flex-direction:column;gap:6px;margin:0}
+.prod-item h2{margin:4px 0 0;font-size:21px;line-height:1.25}
+.prod-item h2 a{color:inherit;text-decoration:none}
+.prod-item h2 a:hover{text-decoration:underline}
+.prod-item p{margin:0}
+.prod-item .pill{align-self:flex-start}
+.prod-img{display:block;margin:-4px -4px 4px;border-radius:10px;overflow:hidden;background:var(--surface-2)}
+.prod-img img{display:block;width:100%;height:190px;object-fit:cover}
+.prod-extra{font-size:14px}
+.prod-price{font-size:17px}
+.prod-cta{margin-top:auto !important;padding-top:6px}
+.prod-invitatii{border-color:var(--accent)}
+@media (max-width:640px){.prod-grid{grid-template-columns:1fr}.prod-img img{height:170px}}
+@media (max-width:420px){
+  .shop-link{min-width:44px;padding:2px 3px;font-size:10.5px;letter-spacing:-.1px}
+  header.top:has(.shop-link){gap:6px}
+}
+@media (max-width:640px){header.top:has(.signin-btn):has(.shop-link) .brand .brand-name{font-size:clamp(15px, 4.3vw, 22px)}}

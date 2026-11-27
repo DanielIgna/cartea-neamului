@@ -30,6 +30,8 @@ function refreshShop(id?: string) {
   revalidatePath("/invitatii-nunta/[slug]", "page");
   revalidatePath("/pub/[v]/invitatii-nunta", "page");
   revalidatePath("/pub/[v]/invitatii-nunta/[slug]", "page");
+  revalidatePath("/produse");
+  revalidatePath("/pub/[v]/produse", "page");
   revalidatePath("/sitemap.xml");
   revalidatePath("/sitemaps/pagini.xml");
 }

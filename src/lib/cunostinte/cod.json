@@ -124,6 +124,7 @@
   "src/app/(public)/pub/[v]/nume/page.tsx",
   "src/app/(public)/pub/[v]/page.tsx",
   "src/app/(public)/pub/[v]/parteneri/page.tsx",
+  "src/app/(public)/pub/[v]/produse/page.tsx",
   "src/app/(public)/pub/[v]/resurse-genealogie/page.tsx",
   "src/app/(public)/pub/[v]/surse-publice/page.tsx",
   "src/app/(public)/pub/[v]/termeni/page.tsx",
@@ -273,6 +274,7 @@
   "src/app/(site)/presa/page.tsx",
   "src/app/(site)/primii-pasi/page.tsx",
   "src/app/(site)/problema/page.tsx",
+  "src/app/(site)/produse/page.tsx",
   "src/app/(site)/resurse-genealogie/page.tsx",
   "src/app/(site)/scoala/[slug]/page.tsx",
   "src/app/(site)/scoala/fisa/[slug]/page.tsx",
@@ -456,6 +458,7 @@
   "src/components/PhotoPick.tsx",
   "src/components/PrintButton.tsx",
   "src/components/ProblemForm.tsx",
+  "src/components/Produse.tsx",
   "src/components/ProfileAlbum.tsx",
   "src/components/ProfileRelatives.tsx",
   "src/components/PropManageOffer.tsx",
@@ -463,6 +466,7 @@
   "src/components/RaisedBy.tsx",
   "src/components/SecuritySettings.tsx",
   "src/components/ShareTreeForm.tsx",
+  "src/components/ShopLink.tsx",
   "src/components/SiblingsParents.tsx",
   "src/components/SignInLink.tsx",
   "src/components/SiteFooter.tsx",
@@ -1076,6 +1080,7 @@
   "src/lib/preview-db.ts",
   "src/lib/proba-email.ts",
   "src/lib/probleme.ts",
+  "src/lib/produse-texte.ts",
   "src/lib/propmanage-cont.ts",
   "src/lib/propmanage-texte.ts",
   "src/lib/public-pages.ts",
@@ -2003,6 +2008,10 @@
   },
   {
    "path": "/problema",
+   "kind": "pagina"
+  },
+  {
+   "path": "/produse",
    "kind": "pagina"
   },
   {

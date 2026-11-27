@@ -21,6 +21,8 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   // Invitații de nuntă (Daniel, 27.11.2026): lista, în toate limbile. Paginile modelelor vin din baza de date (publicate din Admin)
   // și intră în sitemap de acolo (src/lib/invitatii-nunta-sitemap.ts).
   { path: SHOP_PATH, label: "Invitații de nuntă", priority: 0.7, changeFrequency: "weekly" },
+  // Magazinul (Daniel, 27.11.2026): toate produsele și serviciile, cu linkul „Magazin” din antet.
+  { path: "/produse", label: "Produse și servicii", priority: 0.7, changeFrequency: "weekly" },
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
   { path: "/surse-publice", label: "Unde îți cauți strămoșii gratuit (surse publice)", priority: 0.7, changeFrequency: "monthly", roOnly: true },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },
