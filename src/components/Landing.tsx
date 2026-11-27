@@ -10,8 +10,9 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 import { HOME_IMAGES_TAG, homeImages, type HomeImage } from "@/lib/home-images";
 import BannerSlides from "@/components/BannerSlides";
-import { DEFAULT_SETTINGS, LIMIT_KEYS, PERIODS, PLANS_TAG, TIERS, periodPrice, planSettings, tierBook, tierLimits, tierPrice, yearSaving, comparePrice, type Period } from "@/lib/plans";
-import HomePlans, { type HomePlan } from "@/components/HomePlans";
+import { DEFAULT_SETTINGS, PLANS_TAG, planSettings, tierPrice } from "@/lib/plans";
+import HomePlans from "@/components/HomePlans";
+import { homePlanCards } from "@/lib/home-plans";
 import { money } from "@/lib/plati";
 import { getLocale } from "@/i18n/server";
 import { LANGUAGE_COUNT, localizedPath } from "@/i18n/locales";
@@ -100,7 +101,6 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
   // Desenele și legătura despre Marea Unire, doar în zilele dinaintea lui 1 Decembrie (vezi src/lib/sezon-unire.ts).
   const unire = locale === "ro" && inUnireSeason();
   const lei = locale === "ro";
-  const nf = new Intl.NumberFormat(locale);
   const b = (c: React.ReactNode) => <b>{c}</b>;
   const em = (c: React.ReactNode) => <em>{c}</em>;
   // Întrebările frecvente (română și engleză) se văd pe pagină și intră în datele pentru Google, cu prețurile din Admin.
@@ -111,38 +111,9 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
     tiers: { basic: tp("tiers.basic.name"), familie: tp("tiers.familie.name"), premium: tp("tiers.premium.name") },
   });
   const ornament = <span className="lp-ornament" aria-hidden="true"><i /><b /><i /></span>;
-  // Prețurile de pe prima pagină (25.11.2026): pentru fiecare plan, prețul pe fiecare perioadă, ca schimbarea perioadei să nu mai ceară serverul.
+  // Prețurile de pe prima pagină (25.11.2026): aceleași carduri ca în magazin (src/lib/home-plans.ts).
   const label = (v: { lei: number; eur: number }) => money(lei ? v.lei : v.eur, locale).label;
-  const homePeriods: Period[] = s.subs ? [...PERIODS] : ["an"];
-  const bestSaving = s.subs ? Math.max(...TIERS.map((x) => yearSaving(x, s, lei))) : 0;
-  const homePlans: HomePlan[] = TIERS.map((x) => {
-    const lim = tierLimits(x, s), book = tierBook(x, s), name = tp(`tiers.${x}.name`);
-    const year = label(tierPrice(x, true, s));
-    const at = (p: Period) => {
-      const v = s.subs || p === "an" ? periodPrice(x, p, true, s) : null;
-      return v ? (s.subs ? tsub("price", { price: label(v), per: tsub(`per.${p}`) }) : tp("perYear", { price: label(v) })) : null;
-    };
-    const wasAt = (p: Period) => {
-      const w = comparePrice(x, p, true, s, false, lei);
-      return w && w.kind === "monthly" ? { price: money(w.was, locale).label, note: tpr("wasMonthly", { count: w.count, price: money(w.month, locale).label }) } : null;
-    };
-    const renew = s.subs ? label(periodPrice(x, "an", true, s, true)!) : year;
-    const saving = s.subs ? yearSaving(x, s, lei) : 0;
-    return {
-      key: x, name, badge: x === "familie" ? tp("recommended") : undefined,
-      price: { luna: at("luna"), trimestru: at("trimestru"), an: at("an") },
-      was: { luna: wasAt("luna"), trimestru: wasAt("trimestru"), an: wasAt("an") },
-      orYear: tpr("orYear", { price: year }),
-      save: saving > 0 ? tsub("saveYear", { percent: saving }) : "",
-      renew: renew !== year ? tsub("renewFrom", { price: renew }) : "",
-      lead: tp(`tiers.${x}.lead`, { days: String(s.trialDays), price: money(lei ? s.invitePriceLei : s.invitePriceEur, locale).label, writers: String(lim.writers ?? "∞"), trees: lim.trees ?? 0 }),
-      limits: [
-        ...LIMIT_KEYS.map((k): [string, string] => [tp(`lim.${k}`), lim[k] === null ? tp("unlimited") : nf.format(lim[k])]),
-        [tp("lim.book"), book === "toti" ? tp("bookAll") : book === "una" ? tp("bookOne") : tp("bookSeparate", { price: label({ lei: s.bookLei, eur: s.bookEur }) })],
-      ],
-      choose: tpr("choose", { plan: name }),
-    };
-  });
+  const { plans: homePlans, periods: homePeriods, props: planProps } = await homePlanCards(s, locale);
   // Textele de sub carduri, aceleași ca înainte, împărțite pe întrebări (testul din tests/preturi-home.test.ts ține numărul de propoziții).
   const sentences = (x: string) => x.split(/(?<=[.!?])\s+/);
   const trialText = sentences(t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs }));
@@ -347,8 +318,7 @@ export default async function Landing({ deleted }: { deleted: boolean }) {
               {ornament}
               <p>{s.subs ? tsub("freeNote", { days: String(s.trialDays) }) : t("plansText", { days: String(s.trialDays), persons: s.trialPersons, photos: s.trialPhotos, audio: s.trialAudio, docs: s.trialDocs })}</p>
             </header>
-            <HomePlans plans={homePlans} periods={homePeriods} periodNames={{ luna: tpr("periods.luna"), trimestru: tpr("periods.trimestru"), an: tpr("periods.an") }}
-              periodLabel={tpr("periodLabel")} saveTag={bestSaving > 0 ? tpr("save", { percent: bestSaving }) : ""} onlyYearly={tpr("onlyYearly")} trial={tpr("trial", { days: String(s.trialDays) })} />
+            <HomePlans plans={homePlans} periods={homePeriods} {...planProps} />
             <div className="lp-plans-faq">
               <h3>{tpr("faqTitle")}</h3>
               <div className="lp-faq-list">

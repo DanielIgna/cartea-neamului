@@ -3,6 +3,8 @@ import JsonLd from "@/components/JsonLd";
 import { localizedPath, type Locale } from "@/i18n/locales";
 import { SHOP_PATH, fill, modelPath, modelText, shopPrice, type ShopModel } from "@/lib/invitatii-nunta";
 import { HOME_LABEL, canonicalUrl } from "@/lib/page-metadata";
+import HomePlans from "@/components/HomePlans";
+import { homePlanCards } from "@/lib/home-plans";
 import { tierPrice, type PlanSettings } from "@/lib/plans";
 import { money } from "@/lib/plati";
 import { PRODUCTS_PATH, shopPageText } from "@/lib/produse-texte";
@@ -15,11 +17,13 @@ type Item = { key: string; title: string; text: string; price?: string; extra?: 
  * și cu semnul „Fără cont” / „Cu cont”. Invitațiile de nuntă (fără cont) vin din baza de date; restul ține de arbore și duce la
  * paginile care există deja (plata, darul). Planurile apar doar cât timp vânzările sunt pornite.
  */
-export default function Produse({ locale, models, s }: { locale: Locale; models: ShopModel[]; s: PlanSettings }) {
+export default async function Produse({ locale, models, s }: { locale: Locale; models: ShopModel[]; s: PlanSettings }) {
   const t = shopPageText(locale);
   const lei = locale === "ro";
   const fmt = (p: { lei: number; eur: number }) => money(lei ? p.lei : p.eur, locale).label;
   const items: Item[] = [];
+  /** Pozele cardurilor fără poze proprii (public/produse/*.webp, 1280×640): capturi din platformă (copacul, cartea PDF generată, cardul cadou cu codul ascuns, Filmul vieții), nu imagini de stoc. */
+  const art = (k: string) => ({ src: `/produse/${k}.webp`, width: 1280, height: 640 });
   if (models.length) {
     const cheapest = models.reduce((a, m) => (shopPrice(m, locale).value < shopPrice(a, locale).value ? m : a));
     const names = models.map((m) => (modelText(m, locale) ?? modelText(m, "ro"))?.name ?? m.slug).join(", ");
@@ -28,15 +32,16 @@ export default function Produse({ locale, models, s }: { locale: Locale; models:
       extra: fill(t.invModels, { names }), href: SHOP_PATH, cta: t.see, noAccount: true, img: models[0].images[0],
     });
   }
+  const cards = s.on ? await homePlanCards(s, locale) : null;
   if (s.on) {
     const year = (k: "basic" | "familie" | "premium") => fmt(tierPrice(k, true, s));
+    // Darul se poate face pe oricare plan (Basic, Familie, Premium), pe un an.
+    const tiers = fill(t.plansPrices, { basic: year("basic"), familie: year("familie"), premium: year("premium") });
     items.push(
-      { key: "planuri", title: t.plansTitle, text: t.plansText, price: fill(t.plansPrices, { basic: year("basic"), familie: year("familie"), premium: year("premium") }),
-        href: "/plata", cta: t.trial, noAccount: false },
-      { key: "carte", title: t.bookTitle, text: t.bookText, price: fmt({ lei: s.bookLei, eur: s.bookEur }), href: "/plata", cta: t.see, noAccount: false },
-      { key: "cadou", title: t.giftTitle, text: t.giftText, price: fmt(tierPrice("basic", true, s)), href: "/cadou-de-sarbatori", cta: t.see, noAccount: false },
+      { key: "carte", title: t.bookTitle, text: t.bookText, price: fmt({ lei: s.bookLei, eur: s.bookEur }), href: "/plata", cta: t.see, noAccount: false, img: art("carte") },
+      { key: "cadou", title: t.giftTitle, text: t.giftText, price: fill(t.from, { price: fmt(tierPrice("basic", true, s)) }), extra: tiers, href: "/cadou-de-sarbatori", cta: t.see, noAccount: false, img: art("cadou") },
     );
-    if (s.keepLei > 0) items.push({ key: "pastrare", title: t.keepTitle, text: t.keepText, price: fill(t.perYear, { price: fmt({ lei: s.keepLei, eur: s.keepEur }) }), href: "/plata", cta: t.see, noAccount: false });
+    if (s.keepLei > 0) items.push({ key: "pastrare", title: t.keepTitle, text: t.keepText, price: fill(t.perYear, { price: fmt({ lei: s.keepLei, eur: s.keepEur }) }), href: "/plata", cta: t.see, noAccount: false, img: art("pastrare") });
   }
   const own = canonicalUrl(localizedPath(PRODUCTS_PATH, locale));
   const ld = {
@@ -73,6 +78,16 @@ export default function Produse({ locale, models, s }: { locale: Locale; models:
           </li>
         ))}
       </ul>
+      {cards && (
+        <section className="card prod-plans" aria-labelledby="prod-plans" id="planuri">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="prod-plans-img" src="/produse/arbore.webp" width={1280} height={640} alt="" loading="lazy" decoding="async" />
+          <span className="pill">{t.withAccount}</span>
+          <h2 id="prod-plans">{t.plansTitle}</h2>
+          <p className="muted">{t.plansText}</p>
+          <HomePlans plans={cards.plans} periods={cards.periods} {...cards.props} />
+        </section>
+      )}
     </section>
   );
 }

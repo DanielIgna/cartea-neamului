@@ -1,5 +1,6 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import PozeMari, { ZOOM_TEXT } from "@/components/PozeMari";
 import { localizedPath, type Locale } from "@/i18n/locales";
 import { FORMATS, SHOP_PATH, modelPath, modelText, shopPrice, shopText, type ShopModel } from "@/lib/invitatii-nunta";
 import { HOME_LABEL, canonicalUrl } from "@/lib/page-metadata";
@@ -159,8 +160,10 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
           <div className="card shop-model">
             {hero && (
               <figure className="shop-figure">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={hero.src} width={hero.width} height={hero.height} alt={tm.title} fetchPriority="high" decoding="async" />
+                <button type="button" className="shop-zoom" data-zoom="0" aria-label={`${ZOOM_TEXT[locale].open}: ${tm.title}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={hero.src} width={hero.width} height={hero.height} alt={tm.title} fetchPriority="high" decoding="async" />
+                </button>
               </figure>
             )}
             <div className="shop-buy" id="cumpara">
@@ -186,8 +189,10 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
               <div className="shop-cards">
                 {cards.map((c, i) => (
                   <figure key={c.src}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={c.src} width={c.width} height={c.height} alt={`${tm.name} (${i + 2}/${model.images.length})`} loading="lazy" decoding="async" />
+                    <button type="button" className="shop-zoom" data-zoom={i + 1} aria-label={`${ZOOM_TEXT[locale].open}: ${tm.name} (${i + 2}/${model.images.length})`}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={c.src} width={c.width} height={c.height} alt={`${tm.name} (${i + 2}/${model.images.length})`} loading="lazy" decoding="async" />
+                    </button>
                   </figure>
                 ))}
               </div>
@@ -195,6 +200,7 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
             <p className="muted" style={{ marginBottom: 0 }}>{t.previewNote}</p>
           </div>
           <Details locale={locale} model={model} />
+          {model.images.length > 0 && <PozeMari images={model.images.map(({ src, width, height }) => ({ src, width, height }))} alt={tm.title} locale={locale} />}
           <p className="shop-blessing">{t.blessing}</p>
         </>
       )}
