@@ -2600,3 +2600,28 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
   header.top:has(.shop-link){gap:6px}
 }
 @media (max-width:640px){header.top:has(.signin-btn):has(.shop-link) .brand .brand-name{font-size:clamp(15px, 4.3vw, 22px)}}
+/* Pozele mari ale invitațiilor (clic pe poză): PozeMari.tsx */
+.shop-zoom{display:block;width:100%;padding:0;border:0;background:none;border-radius:10px;cursor:zoom-in;position:relative}
+.shop-zoom::after{content:"";position:absolute;inset-inline-end:10px;bottom:10px;width:34px;height:34px;border-radius:50%;background:#1f1408b3 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='M15 15l5 5M10.5 8v5M8 10.5h5'/%3E%3C/svg%3E") center/18px no-repeat;opacity:.85;transition:opacity .15s,transform .15s}
+.shop-zoom:hover::after,.shop-zoom:focus-visible::after{opacity:1;transform:scale(1.08)}
+html.zoom-open{overflow:hidden}
+dialog.zoom{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;background:#0d0906f2;color:#fff;overscroll-behavior:contain}
+dialog.zoom::backdrop{background:#0d0906e6}
+.zoom-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:56px 64px 48px;touch-action:pan-y pinch-zoom}
+.zoom-stage img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:6px;box-shadow:0 20px 60px #000a;user-select:none}
+.zoom-btn{position:absolute;display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;border:1px solid #ffffff40;background:#00000080;color:#fff;font-size:30px;line-height:1;cursor:pointer;padding:0 0 3px}
+.zoom-btn:hover,.zoom-btn:focus-visible{background:#000000c0;border-color:#fff}
+.zoom-close{top:12px;right:12px}
+.zoom-prev{left:12px;top:50%;transform:translateY(-50%)}
+.zoom-next{right:12px;top:50%;transform:translateY(-50%)}
+.zoom-count{position:absolute;bottom:12px;left:0;right:0;text-align:center;margin:0;font-size:15px;color:#ffffffcc}
+@media (max-width:640px){.zoom-stage{padding:60px 8px 52px}.zoom-prev,.zoom-next{top:auto;bottom:6px;transform:none;width:44px;height:44px}.zoom-count{bottom:18px}}
+/* Magazinul: planurile Basic / Familie / Premium, cu aceleași carduri ca pe prima pagină (HomePlans), în culorile paginii */
+.prod-plans{--l-ink:var(--ink);--l-muted:var(--muted);--l-line:var(--line);--l-card:var(--surface);--l-gold:var(--accent);--lp-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;padding-bottom:26px}
+.prod-plans>h2{margin:4px 0 0;font-size:24px}
+.prod-plans>.pill{align-self:flex-start}
+.prod-plans>p{margin:0 0 14px}
+.prod-plans-img{display:block;width:100%;height:220px;object-fit:cover;border-radius:12px;margin-bottom:6px}
+.prod-plans .lp-period{margin-bottom:28px}
+.prod-plans .lp-plan{color:var(--ink)}
+@media (max-width:640px){.prod-plans-img{height:160px}.prod-plans .lp-plan{padding:24px 16px 20px}}
