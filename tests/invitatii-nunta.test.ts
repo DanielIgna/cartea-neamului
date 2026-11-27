@@ -171,6 +171,28 @@ describe("plata și webhook-ul", () => {
     expect(b.has("customer_email")).toBe(false);
     expect(b.has("client_reference_id")).toBe(false);
   });
+  it("coduri de reducere doar la invitații: produsul fix din Stripe (STRIPE_INVITATII_PRODUCT), prețul din bază, modelul în metadata", async () => {
+    const sent: URLSearchParams[] = [];
+    const fake = (async (_u: string, init: { body: URLSearchParams }) => { sent.push(init.body); return new Response(JSON.stringify({ url: "https://checkout.stripe.com/x" })); }) as unknown as typeof fetch;
+    const o = { model: MODEL, locale: "ro" as const, origin: "https://carteaneamului.ro", waiver: "Acord", seller: "PFA" };
+    await createShopCheckout(o, fake, { STRIPE_INVITATII_PRODUCT: "prod_TestInvitatie123" });
+    const b = sent[0];
+    expect(b.get("allow_promotion_codes")).toBe("true");
+    expect(b.get("line_items[0][price_data][product]")).toBe("prod_TestInvitatie123");
+    expect(b.has("line_items[0][price_data][product_data][name]")).toBe(false);
+    expect(b.get("line_items[0][price_data][unit_amount]")).toBe("4500");
+    expect(b.get("line_items[0][price_data][currency]")).toBe("ron");
+    expect(b.get("metadata[model]")).toBe("Maramureș");
+    expect(b.get("payment_intent_data[description]")).toBe("Maramureș");
+    expect(b.get("metadata[kind]")).toBe(SHOP_KIND);
+    // Fără variabilă (sau cu o valoare greșită): numele pe linie, ca înainte; codurile tot merg.
+    await createShopCheckout(o, fake, { STRIPE_INVITATII_PRODUCT: "nu-e-produs" });
+    expect(sent[1].has("line_items[0][price_data][product]")).toBe(false);
+    expect(sent[1].get("line_items[0][price_data][product_data][name]")).toBe("Maramureș");
+  });
+  it("plățile contului (/plata) rămân neschimbate: nu folosesc produsul invitațiilor", () => {
+    expect(readFileSync("src/lib/plati.ts", "utf8")).not.toContain("STRIPE_INVITATII_PRODUCT");
+  });
   it("evenimentele rubricii sunt recunoscute; plățile contului merg mai departe neschimbate", () => {
     expect(shopEvent(event("checkout.session.completed"))?.paid).toMatchObject({ email: "mire@exemplu.ro", slug: "maramures", locale: "ro", amount: 4500 });
     expect(shopEvent(event("checkout.session.completed", { payment_status: "unpaid" }))).toEqual({ paid: null });

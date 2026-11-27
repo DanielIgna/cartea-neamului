@@ -83,15 +83,25 @@ const stripeLocale = (l: string) => (l.startsWith("en") ? "en" : l === "nb" ? "n
  */
 export async function createShopCheckout(o: {
   model: ShopModel; locale: Locale; origin: string; waiver: string; seller: string;
-}, fetcher: typeof fetch = fetch): Promise<string> {
+}, fetcher: typeof fetch = fetch, env: Record<string, string | undefined> = process.env): Promise<string> {
   const price = shopPrice(o.model, o.locale);
   const name = (modelText(o.model, o.locale) ?? modelText(o.model, "ro"))?.title ?? o.model.slug;
+  // Produsul fix „Invitație de nuntă” din Stripe (Daniel, 27.11.2026): codurile de reducere create în Stripe doar pentru el merg
+  // doar la invitații, nu și la plățile contului (/plata, cartea PDF), care nu primesc allow_promotion_codes. Prețul rămâne cel
+  // din baza de date; modelul (Maramureș, Bucovina…) stă în metadata și în descrierea plății. Fără variabilă, ca înainte: numele pe linie.
+  const product = env.STRIPE_INVITATII_PRODUCT?.trim();
+  const item: Record<string, string> = product && /^prod_[A-Za-z0-9]+$/.test(product)
+    ? { "line_items[0][price_data][product]": product }
+    : { "line_items[0][price_data][product_data][name]": name };
   const body = new URLSearchParams({
     mode: "payment",
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": price.currency,
     "line_items[0][price_data][unit_amount]": String(price.amount),
-    "line_items[0][price_data][product_data][name]": name,
+    ...item,
+    allow_promotion_codes: "true",
+    "metadata[model]": name.slice(0, 450),
+    "payment_intent_data[description]": name.slice(0, 900),
     success_url: `${o.origin}${SHOP_DONE_PATH}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${o.origin}${modelPath(o.model)}`,
     locale: stripeLocale(o.locale),
