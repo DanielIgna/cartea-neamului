@@ -40,7 +40,7 @@ const HUB = {
   },
 } as const;
 
-const DAY = (d: Date, lang: GuideLang = "ro") => d.toLocaleDateString({ ro: "ro-RO", en: "en-US", it: "it-IT", es: "es-ES" }[lang], { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const DAY = (d: Date, lang: GuideLang = "ro") => d.toLocaleDateString({ ro: "ro-RO", en: "en-US", it: "it-IT", es: "es-ES", de: "de-DE", fr: "fr-FR", he: "he-IL" }[lang], { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
 /** Etichetele paginii unui ghid în engleză (ghidurile pentru SUA și Canada, 19.11.2026); restul ghidurilor sunt în română. */
 const EN = {
@@ -62,10 +62,29 @@ const ES: typeof EN = {
   toc: "Índice", terms: "Términos rumanos en esta guía", related: "Guías relacionadas", all: "← Todas las guías",
   ctaTitle: "Empieza el árbol de tu familia", ctaText: "Los primeros 7 días son gratis, sin tarjeta. Añade a tus padres y abuelos: los parientes en España y en Rumanía pueden completar lo que saben.",
 };
-const LABELS: Record<Exclude<GuideLang, "ro">, typeof EN> = { en: EN, it: IT, es: ES };
-const HTML_LANG: Record<GuideLang, string> = { ro: "ro", en: "en-US", it: "it", es: "es" };
-const OG: Record<Exclude<GuideLang, "ro">, string> = { en: "en_US", it: "it_IT", es: "es_ES" };
-const ZONE_LOCALE: Record<GuideLang, "ro" | "en-US" | "it" | "es"> = { ro: "ro", en: "en-US", it: "it", es: "es" };
+/** Germană, franceză și ebraică (Daniel, 27.11.2026: „da fa-le”): familiile de români din Germania, Franța, Belgia, Elveția și Israel. */
+const DE: typeof EN = {
+  label: (cat: string) => `Ratgeber · ${cat === "Diaspora" ? "Rumänische Wurzeln" : cat}`,
+  byline: (d: string, m: number) => `Vom Team von Cartea Neamului · aktualisiert am ${d} · etwa ${m} ${m === 1 ? "Minute" : "Minuten"} Lesezeit`,
+  toc: "Inhalt", terms: "Rumänische Begriffe in diesem Ratgeber", related: "Verwandte Ratgeber", all: "← Alle Ratgeber",
+  ctaTitle: "Beginne den Stammbaum deiner Familie", ctaText: "Die ersten 7 Tage sind kostenlos, ohne Karte. Füge Eltern und Großeltern hinzu: Verwandte in Deutschland und in Rumänien ergänzen, was sie wissen.",
+};
+const FR: typeof EN = {
+  label: (cat: string) => `Guide · ${cat === "Diaspora" ? "Racines roumaines" : cat}`,
+  byline: (d: string, m: number) => `Par l'équipe de Cartea Neamului · mis à jour le ${d} · environ ${m} ${m === 1 ? "minute" : "minutes"} de lecture`,
+  toc: "Sommaire", terms: "Termes roumains de ce guide", related: "Guides liés", all: "← Tous les guides",
+  ctaTitle: "Commencez l'arbre de votre famille", ctaText: "Les 7 premiers jours sont gratuits, sans carte. Ajoutez vos parents et grands-parents : la famille en France et en Roumanie complète ce qu'elle sait.",
+};
+const HE: typeof EN = {
+  label: (cat: string) => `מדריך · ${cat === "Diaspora" ? "שורשים ברומניה" : cat}`,
+  byline: (d: string, m: number) => `מאת צוות Cartea Neamului · עודכן ב-${d} · כ-${m} דקות קריאה`,
+  toc: "תוכן העניינים", terms: "מונחים ברומנית במדריך", related: "מדריכים נוספים", all: "→ כל המדריכים",
+  ctaTitle: "התחילו את אילן היוחסין של המשפחה", ctaText: "7 הימים הראשונים בחינם, בלי כרטיס אשראי. הוסיפו הורים, סבים וסבתות, והמשפחה בישראל וברומניה תשלים את מה שהיא יודעת.",
+};
+const LABELS: Record<Exclude<GuideLang, "ro">, typeof EN> = { en: EN, it: IT, es: ES, de: DE, fr: FR, he: HE };
+const HTML_LANG: Record<GuideLang, string> = { ro: "ro", en: "en-US", it: "it", es: "es", de: "de", fr: "fr", he: "he" };
+const OG: Record<Exclude<GuideLang, "ro">, string> = { en: "en_US", it: "it_IT", es: "es_ES", de: "de_DE", fr: "fr_FR", he: "he_IL" };
+const ZONE_LOCALE: Record<GuideLang, "ro" | "en-US" | "it" | "es" | "de" | "fr" | "he"> = { ro: "ro", en: "en-US", it: "it", es: "es", de: "de", fr: "fr", he: "he" };
 
 const PUBLISHER = ORG;
 
@@ -171,7 +190,7 @@ export function EntryPage({ c, slug }: { c: Collection; slug: string }) {
   const L = e.lang === "ro" ? null : LABELS[e.lang];
   const faq = faqItems(e.blocks);
   return (
-    <section className="stack content-page" lang={HTML_LANG[e.lang]}>
+    <section className="stack content-page" lang={HTML_LANG[e.lang]} dir={e.lang === "he" ? "rtl" : undefined}>
       <JsonLd data={entryJsonLd(e)} />
       {faq.length >= 2 && <JsonLd data={{ "@context": "https://schema.org", "@type": "FAQPage", inLanguage: HTML_LANG[e.lang], mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }} />}
       <Breadcrumbs items={[{ name: h.name, path: h.path }, { name: e.title, path: e.path }]} />
