@@ -5,7 +5,7 @@ description: Cum ceri din străinătate un certificat de naștere duplicat, cum 
 category: Acte și stare civilă
 updated: 2026-11-26
 cuvant: certificat de nastere duplicat din strainatate
-related: transcrierea-actelor-din-strainatate, cum-ceri-un-act-de-stare-civila, redobandirea-cetateniei-acte-stramosi, certificatul-de-nastere-al-bunicului, registrele-de-stare-civila, copiii-din-diaspora-si-bunicii-din-romania, documente-de-familie-din-casa
+related: figli-nati-in-italia-documenti-romeni, hijos-nacidos-en-espana-documentos-rumanos, transcrierea-actelor-din-strainatate, cum-ceri-un-act-de-stare-civila, redobandirea-cetateniei-acte-stramosi, certificatul-de-nastere-al-bunicului, registrele-de-stare-civila, copiii-din-diaspora-si-bunicii-din-romania, documente-de-familie-din-casa
 terms: act-de-nastere, act-de-casatorie, extras-multilingv, apostila, stare-civila, registru-de-stare-civila
 ---
 Când locuiești în Italia, Spania, Germania sau Anglia, actele din România devin brusc greu de obținut: certificatul de naștere s-a pierdut la mutare, copilul născut acolo trebuie trecut și în registrele românești, iar autoritățile străine cer un document „cu apostilă” sau „multilingv”. Ghidul de față adună pașii de bază pentru cele mai dese situații.
