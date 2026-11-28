@@ -1,7 +1,7 @@
 import type { Db } from "@/db";
 import { LOCALES, localizedPath, withRegionalHreflang } from "@/i18n/locales";
 import type { SitemapUrl } from "@/lib/continut/sitemap";
-import { modelLocales, modelPath, type ShopModel } from "./invitatii-nunta";
+import { CATEGORY_KEYS, modelLocales, modelPath, type ShopModel } from "./invitatii-nunta";
 import { publishedModels } from "./invitatii-nunta-produse";
 import { shopOpen } from "./invitatii-nunta-server";
 
@@ -22,8 +22,14 @@ export function shopSitemapUrls(models: ShopModel[]): SitemapUrl[] {
   });
 }
 
-/** Pentru rutele sitemap-ului: adresele modelelor, sau nimic dacă rubrica e oprită ori baza nu se poate citi. */
+/**
+ * Pentru rutele sitemap-ului: adresele produselor publicate din toate categoriile (invitații, accesorii nuntă, jurnale), fără
+ * categoriile oprite din Admin; nimic dacă baza nu se poate citi.
+ */
 export async function shopSitemap(db: Db): Promise<SitemapUrl[]> {
-  if (!(await shopOpen(db))) return [];
-  return shopSitemapUrls(await publishedModels(db));
+  const out: SitemapUrl[] = [];
+  for (const c of CATEGORY_KEYS) {
+    if (await shopOpen(db, c)) out.push(...shopSitemapUrls(await publishedModels(db, c)));
+  }
+  return out;
 }

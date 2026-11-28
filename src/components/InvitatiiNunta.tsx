@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import JsonLd from "@/components/JsonLd";
 import PozeMari from "@/components/PozeMari";
 import { zoomText } from "@/lib/poze-mari-texte";
@@ -135,7 +136,11 @@ function Details({ locale, model }: { locale: Locale; model?: ShopModel }) {
 }
 
 /** Pagina unui model (/invitatii-nunta/<slug>), cu formularul de cumpărare. */
-export function ShopModelPage({ model, locale, open, payReady, error }: { model: ShopModel; locale: Locale; open: boolean; payReady: boolean; error?: string | null }) {
+export function ShopModelPage({ model, locale, open, payReady, error, extra }: {
+  model: ShopModel; locale: Locale; open: boolean; payReady: boolean; error?: string | null;
+  /** Blocul „Completează setul” (accesoriile din aceeași regiune), pus de rută dacă există (28.11.2026). */
+  extra?: ReactNode;
+}) {
   const t = shopText(locale);
   const tm = textOf(model, locale);
   const price = shopPrice(model, locale);
@@ -216,6 +221,7 @@ export function ShopModelPage({ model, locale, open, payReady, error }: { model:
             )}
             <p className="muted" style={{ marginBottom: 0 }}>{t.previewNote}</p>
           </div>
+          {extra}
           <Details locale={locale} model={model} />
           {model.images.length > 0 && <PozeMari images={model.images.map(({ src, width, height }) => ({ src, width, height }))} alt={tm.title} locale={locale} />}
           <p className="shop-blessing">{t.blessing}</p>

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { localizedPath, type Locale } from "@/i18n/locales";
-import { SHOP_PATH, fill, modelPath, modelText, shopPrice, type ShopModel } from "@/lib/invitatii-nunta";
+import { SHOP_CATEGORIES, SHOP_PATH, fill, modelPath, modelText, shopPrice, type ShopModel } from "@/lib/invitatii-nunta";
+import { categoryText } from "@/lib/magazin-texte";
 import { HOME_LABEL, canonicalUrl } from "@/lib/page-metadata";
 import HomePlans from "@/components/HomePlans";
 import { homePlanCards } from "@/lib/home-plans";
@@ -17,7 +18,11 @@ type Item = { key: string; title: string; text: string; price?: string; extra?: 
  * și cu semnul „Fără cont” / „Cu cont”. Invitațiile de nuntă (fără cont) vin din baza de date; restul ține de arbore și duce la
  * paginile care există deja (plata, darul). Planurile apar doar cât timp vânzările sunt pornite.
  */
-export default async function Produse({ locale, models, s }: { locale: Locale; models: ShopModel[]; s: PlanSettings }) {
+export default async function Produse({ locale, models, s, more = {} }: {
+  locale: Locale; models: ShopModel[]; s: PlanSettings;
+  /** Categoriile noi (28.11.2026): accesoriile de nuntă și jurnalele publicate, câte un card fiecare. */
+  more?: { accesorii?: ShopModel[]; jurnal?: ShopModel[] };
+}) {
   const t = shopPageText(locale);
   const lei = locale === "ro";
   const fmt = (p: { lei: number; eur: number }) => money(lei ? p.lei : p.eur, locale).label;
@@ -32,6 +37,18 @@ export default async function Produse({ locale, models, s }: { locale: Locale; m
       extra: fill(t.invModels, { names }), href: SHOP_PATH, cta: t.see, noAccount: true, img: models[0].images[0],
     });
   }
+  for (const c of ["accesorii", "jurnal"] as const) {
+    const list = more[c] ?? [];
+    if (!list.length) continue;
+    const ct = categoryText(c, locale);
+    const cheapest = list.reduce((a, m) => (shopPrice(m, locale).value < shopPrice(a, locale).value ? m : a));
+    const names = list.map((m) => (modelText(m, locale) ?? modelText(m, "ro"))?.name ?? m.slug).join(", ");
+    items.push({
+      key: c, title: ct.prodTitle, text: ct.prodText, price: fill(t.from, { price: shopPrice(cheapest, locale).label }),
+      extra: names, href: SHOP_CATEGORIES[c].path, cta: t.see, noAccount: true, img: list[0].images[0],
+    });
+  }
+  const all = [...models, ...(more.accesorii ?? []), ...(more.jurnal ?? [])];
   const cards = s.on ? await homePlanCards(s, locale) : null;
   if (s.on) {
     const year = (k: "basic" | "familie" | "premium") => fmt(tierPrice(k, true, s));
@@ -49,7 +66,7 @@ export default async function Produse({ locale, models, s }: { locale: Locale; m
     "@graph": [
       { "@type": "CollectionPage", "@id": `${own}#page`, url: own, name: t.metaTitle, description: t.metaDescription, inLanguage: locale, isPartOf: { "@type": "WebSite", name: "Cartea Neamului", url: SITE_URL } },
       { "@type": "BreadcrumbList", itemListElement: [{ name: HOME_LABEL[locale], path: "/" }, { name: t.title, path: PRODUCTS_PATH }].map((x, i) => ({ "@type": "ListItem", position: i + 1, name: x.name, item: canonicalUrl(localizedPath(x.path, locale)) })) },
-      ...(models.length ? [{ "@type": "ItemList", itemListElement: models.map((m, i) => ({ "@type": "ListItem", position: i + 1, url: canonicalUrl(localizedPath(modelPath(m), locale)) })) }] : []),
+      ...(all.length ? [{ "@type": "ItemList", itemListElement: all.map((m, i) => ({ "@type": "ListItem", position: i + 1, url: canonicalUrl(localizedPath(modelPath(m), locale)) })) }] : []),
     ],
   };
   return (

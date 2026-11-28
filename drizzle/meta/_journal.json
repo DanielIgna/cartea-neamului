@@ -365,6 +365,13 @@
       "when": 1795002000000,
       "tag": "0052_anunt_inchis",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1795003000000,
+      "tag": "0053_magazin_categorii",
+      "breakpoints": true
     }
   ]
 }

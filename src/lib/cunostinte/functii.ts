@@ -270,6 +270,16 @@ export const FUNCTIONS: Fn[] = [
     tests: ["tests/invitatii-nunta.test.ts"],
   },
   {
+    key: "magazin-accesorii-jurnale", name: "Accesorii nuntă și Jurnale de familie (fără cont)", area: "bani", lifecycle: "implementat", risk: "mediu", riskWhy: "Aceeași livrare plătită prin link ca la invitații; codurile de reducere ale invitațiilor nu trebuie să ajungă aici.",
+    what: "Două categorii noi în magazin, în același tabel cu invitațiile (shop_product.category = accesorii / jurnal, slug unic pe categorie): „Accesorii nuntă” pe regiuni (/accesorii-nunta/<regiune>: meniu, carduri de loc, save the date, mulțumire, numere de masă) cu blocul „Completează setul” lângă invitația din aceeași regiune, și „Jurnale de familie” (/jurnale/<slug>, PDF sau ZIP, de pildă „Bunico, povestește-mi”). Pagini în toate limbile cu schema Product, sitemap, carduri în /produse, aceeași plată Stripe fără cont (fără câmp de cod: codurile invitațiilor nu se aplică), același email, aceeași pagină de după plată și descărcare (/api/magazin/descarca/<token>). Admin → Accesorii nuntă și Admin → Jurnale de familie: comutator, produse, fișier, poze, texte pe limbi, „Ce conține”, comenzi.",
+    engine: ["src/lib/invitatii-nunta.ts", "src/lib/magazin-texte.ts", "src/lib/invitatii-nunta-server.ts", "src/lib/invitatii-nunta-produse.ts", "src/lib/invitatii-nunta-incarcare.ts", "src/components/MagazinDigital.tsx", "src/components/MagazinPagini.tsx", "src/components/admin/MagazinAdmin.tsx"],
+    pages: ["/accesorii-nunta", "/accesorii-nunta/[slug]", "/accesorii-nunta/gata", "/jurnale", "/jurnale/[slug]", "/jurnale/gata", "/api/magazin/start", "/api/magazin/descarca/[token]", "/api/magazin/retrimite", "/admin/accesorii-nunta", "/admin/accesorii-nunta/nou", "/admin/accesorii-nunta/[id]", "/admin/jurnale", "/admin/jurnale/nou", "/admin/jurnale/[id]"],
+    tables: ["shop_product", "shop_order", "app_setting"],
+    metric: { table: "shop_order", label: "comenzi" },
+    dashboard: "/admin/accesorii-nunta",
+    tests: ["tests/magazin-categorii.test.ts"],
+  },
+  {
     key: "city-partners", name: "City Partners (CRM parteneri)", area: "bani", lifecycle: "live", risk: "mediu", riskWhy: "Comisioane de plătit și conturi trecute pe parteneri.",
     what: "Magazine și firme de la prospect la activ: etape, filtre, județe, istoric de contact, pași cu termen, alertă 30 de zile, legătura de recomandare /r/<cod>, kit de tipar, raport lunar de plată.",
     engine: ["src/lib/parteneri-crm.ts", "src/app/parteneri-crm-actions.ts"],

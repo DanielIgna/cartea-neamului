@@ -19,6 +19,7 @@ import { grandparentQuestions } from "@/lib/unelte/intrebari";
 import { entries as diasporaEntries } from "@/lib/diaspora";
 import { SHOP_PATH } from "@/lib/invitatii-nunta";
 import { SHOP_TEXT } from "@/lib/invitatii-nunta-texte";
+import { CATEGORY_TEXT } from "@/lib/magazin-texte";
 
 /**
  * Amprenta conținutului fiecărei adrese din sitemap (doar pentru scripts/seo-versiuni.ts și teste, nu pe site): un hash din
@@ -68,7 +69,7 @@ type Resolver = (p: string) => string | null;
 
 /** Adresele pentru care amprenta n-ar avea de unde citi conținutul (nici regulă de secțiune, nici fișier de pagină): pentru teste. */
 export function unknownSources(paths: string[]): string[] {
-  const known = [/^\/(ghid|glosar|nume|localitati|scoala|cadouri|unelte|genealogie|diaspora|invitatii-nunta)\/.+$/];
+  const known = [/^\/(ghid|glosar|nume|localitati|scoala|cadouri|unelte|genealogie|diaspora|invitatii-nunta|accesorii-nunta|jurnale)\/.+$/];
   return paths.map((f) => splitLocalePath(f).path).filter((p) => !known.some((re) => re.test(p)) && !existsSync(path.join(SITE, routeFileOf(p))));
 }
 
@@ -96,6 +97,9 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
   for (const p of KIN_PAGES) records.set(kinPagePath(p), p);
   // Invitațiile de nuntă: textele listei (în toate limbile; nu vin din cataloagele i18n). Modelele sunt în baza de date, cu data lor.
   records.set(SHOP_PATH, { t: SHOP_TEXT });
+  // Accesorii nuntă și jurnale de familie (28.11.2026): textele listelor, la fel.
+  records.set("/accesorii-nunta", { t: SHOP_TEXT, c: CATEGORY_TEXT.accesorii, g: CATEGORY_TEXT.generic });
+  records.set("/jurnale", { t: SHOP_TEXT, c: CATEGORY_TEXT.jurnal, g: CATEGORY_TEXT.generic });
 
   const hubs: Record<string, string[]> = {
     "/ghid": [...records.keys()].filter((k) => k.startsWith("/ghid/")),
@@ -121,6 +125,8 @@ export async function contentFingerprints(paths: string[]): Promise<Map<string, 
     [/^\/diaspora\/[^/]+\/[^/]+$/, "diaspora/[a]/[b]/page.tsx"],
     [/^\/diaspora\/[^/]+$/, "diaspora/[a]/page.tsx"],
     [/^\/invitatii-nunta\/[^/]+$/, "invitatii-nunta/[slug]/page.tsx"],
+    [/^\/accesorii-nunta\/[^/]+$/, "accesorii-nunta/[slug]/page.tsx"],
+    [/^\/jurnale\/[^/]+$/, "jurnale/[slug]/page.tsx"],
   ];
 
   const resolve: Resolver = (p) => {

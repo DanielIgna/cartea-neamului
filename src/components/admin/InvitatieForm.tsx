@@ -1,13 +1,13 @@
 "use client";
 import { useActionState, useState } from "react";
 import { saveProductAction, type SaveState } from "@/app/invitatii-nunta-actions";
-import { FORMATS, INVITATION_LANGS, slugify, type ProductText, type ShopModel, type TextLocale } from "@/lib/invitatii-nunta";
+import { INVITATION_LANGS, SHOP_CATEGORIES, slugify, type ProductText, type ShopCategory, type ShopModel, type TextLocale } from "@/lib/invitatii-nunta";
 
 type Field = { k: keyof ProductText; label: string; hint?: string; long?: boolean; rows?: number; max: number };
 const FIELDS: Field[] = [
   { k: "name", label: "Numele modelului", hint: "De pildă „Maramureș”.", max: 80 },
   { k: "title", label: "Titlul paginii (H1)", hint: "Gol = numele. De pildă „Invitație de nuntă Maramureș, cu motive populare”.", max: 140 },
-  { k: "tagline", label: "Descrierea scurtă", hint: "O frază, sub titlu și pe lista modelelor.", long: true, rows: 2, max: 300 },
+  { k: "tagline", label: "Descrierea scurtă", hint: "O frază, sub titlu și pe listă (cel mult 300 de semne).", long: true, rows: 2, max: 300 },
   { k: "description", label: "Descrierea lungă", hint: "Un rând gol între paragrafe.", long: true, rows: 6, max: 5000 },
   { k: "colors", label: "Variantele de culoare", hint: "Separate prin „;”. De pildă: roșu-negru pe crem; întunecată, cu accente aurii.", max: 300 },
   { k: "metaTitle", label: "Titlul pentru Google (SEO)", hint: "Cel mult ~60 de semne. Gol = titlul paginii.", max: 80 },
@@ -19,8 +19,13 @@ const money = (n: number) => String(n).replace(".", ",");
 /**
  * Formularul unui model din Admin → Invitații de nuntă: numele (slugul se face singur din el, până îl schimbi de mână), regiunea,
  * prețurile, limbile și formatele invitației, apoi textele în română (obligatorii) și, dacă vrei, în celelalte limbi ale site-ului.
+ * Același formular pentru Accesorii nuntă și Jurnale de familie (28.11.2026), cu formatele și „Ce conține” ale categoriei.
  */
-export default function InvitatieForm({ model, locales, slugLocked }: { model?: ShopModel & { sort?: number }; locales: { code: TextLocale; name: string }[]; slugLocked?: boolean }) {
+export default function InvitatieForm({ model, locales, slugLocked, category = "invitatie" }: {
+  model?: ShopModel & { sort?: number }; locales: { code: TextLocale; name: string }[]; slugLocked?: boolean; category?: ShopCategory;
+}) {
+  const cat = SHOP_CATEGORIES[category];
+  const what = category === "invitatie" ? "modelul" : category === "accesorii" ? "setul" : "jurnalul";
   const [state, action, pending] = useActionState<SaveState, FormData>(saveProductAction, null);
   const [name, setName] = useState(model?.texts.ro?.name ?? "");
   const [slug, setSlug] = useState(model?.slug ?? "");
@@ -44,6 +49,7 @@ export default function InvitatieForm({ model, locales, slugLocked }: { model?: 
   return (
     <form action={action} className="stack shopadm-form">
       {model && <input type="hidden" name="rid" value={model.id} />}
+      {category !== "invitatie" && <input type="hidden" name="category" value={category} />}
       {state?.error && <p className="err" role="alert">{state.error}</p>}
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Date de bază</h2>
@@ -52,11 +58,12 @@ export default function InvitatieForm({ model, locales, slugLocked }: { model?: 
             <label htmlFor="slug">Slug (adresa paginii) *</label>
             <input id="slug" name="slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" maxLength={60} value={slug} readOnly={slugLocked}
               onChange={(e) => { setSlugTouched(true); setSlug(e.target.value.toLowerCase()); }} />
-            <small className="muted">{slugLocked ? "Nu se mai schimbă: modelul are deja fișier ZIP sau vânzări." : `carteaneamului.ro/invitatii-nunta/${slug || "…"}`}</small>
+            <small className="muted">{slugLocked ? `Nu se mai schimbă: ${what} are deja fișier sau vânzări.` : `carteaneamului.ro${cat.path}/${slug || "…"}`}{category === "accesorii" && !slugLocked ? " · pune numele regiunii, de pildă „maramures”" : ""}</small>
           </div>
           <div className="field">
-            <label htmlFor="region">Regiunea</label>
-            <input id="region" name="region" maxLength={80} defaultValue={model?.region ?? ""} placeholder="Bucovina" />
+            <label htmlFor="region">Regiunea{category === "jurnal" ? " (opțional)" : ""}</label>
+            <input id="region" name="region" maxLength={80} defaultValue={model?.region ?? ""} placeholder={category === "jurnal" ? "" : "Bucovina"} />
+            {category !== "jurnal" && <small className="muted">Scrisă la fel la invitație și la setul de accesorii (de pildă „Maramureș”), ca să apară „Completează setul” lângă invitație.</small>}
           </div>
           <div className="field">
             <label htmlFor="priceRon">Preț în lei (pagina în română) *</label>
@@ -73,17 +80,25 @@ export default function InvitatieForm({ model, locales, slugLocked }: { model?: 
           </div>
         </div>
         <fieldset className="shopadm-checks">
-          <legend>Limbile din fișierele invitației</legend>
+          <legend>Limbile din fișiere</legend>
           {INVITATION_LANGS.map((l) => (
-            <label key={l} className="check"><input type="checkbox" name="languages" value={l} defaultChecked={model ? model.languages.includes(l) : true} /> {LANG_RO[l]}</label>
+            <label key={l} className="check"><input type="checkbox" name="languages" value={l} defaultChecked={model ? model.languages.includes(l) : category === "jurnal" ? l === "ro" || l === "en" : true} /> {LANG_RO[l]}</label>
           ))}
         </fieldset>
         <fieldset className="shopadm-checks">
           <legend>Formatele</legend>
-          {Object.entries(FORMATS).map(([k, label]) => (
-            <label key={k} className="check"><input type="checkbox" name="formats" value={k} defaultChecked={model ? model.formats.includes(k) : k === "5x7" || k === "A5"} /> {label}</label>
+          {Object.entries(cat.formats).map(([k, label]) => (
+            <label key={k} className="check"><input type="checkbox" name="formats" value={k} defaultChecked={model ? model.formats.includes(k) : category === "invitatie" ? k === "5x7" || k === "A5" : k === "A5" || k === "A4"} /> {label}</label>
           ))}
         </fieldset>
+        {Object.keys(cat.parts).length > 0 && (
+          <fieldset className="shopadm-checks">
+            <legend>{category === "jurnal" ? "Variantele din fișier" : "Ce conține setul"}</legend>
+            {Object.entries(cat.parts).map(([k, label]) => (
+              <label key={k} className="check"><input type="checkbox" name="parts" value={k} defaultChecked={model ? (model.parts ?? []).includes(k) : true} /> {label}</label>
+            ))}
+          </fieldset>
+        )}
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Textele în română</h2>
@@ -91,7 +106,7 @@ export default function InvitatieForm({ model, locales, slugLocked }: { model?: 
       </div>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Celelalte limbi (opțional)</h2>
-        <p className="muted">O limbă completată primește pagina ei (de pildă /it/invitatii-nunta/{slug || "…"}) și intră în Google în limba aceea. O limbă lăsată goală arată textul românesc și nu intră în Google.</p>
+        <p className="muted">O limbă completată primește pagina ei (de pildă /it{cat.path}/{slug || "…"}) și intră în Google în limba aceea. O limbă lăsată goală arată textul românesc și nu intră în Google.</p>
         {locales.filter((l) => l.code !== "ro").map((l) => (
           <details key={l.code} className="shopadm-lang">
             <summary>{l.name}{model?.texts[l.code]?.name ? " ✓" : ""}</summary>
@@ -99,7 +114,7 @@ export default function InvitatieForm({ model, locales, slugLocked }: { model?: 
           </details>
         ))}
       </div>
-      <p><button type="submit" className="btn primary" disabled={pending}>{pending ? "Se salvează…" : model ? "Salvează schimbările" : "Creează modelul (ciornă)"}</button></p>
+      <p><button type="submit" className="btn primary" disabled={pending}>{pending ? "Se salvează…" : model ? "Salvează schimbările" : `Creează ${what} (ciornă)`}</button></p>
     </form>
   );
 }

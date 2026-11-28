@@ -4,6 +4,8 @@ import { currentUser } from "@/lib/access";
 import { adminReady } from "@/lib/admin-access";
 import { addProductPhoto, storageStore } from "@/lib/invitatii-nunta-incarcare";
 import { storageConfigured } from "@/lib/storage";
+import { productById } from "@/lib/invitatii-nunta-produse";
+import { SHOP_CATEGORIES } from "@/lib/invitatii-nunta";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +20,6 @@ export async function POST(req: Request) {
   const id = String(form.get("id") ?? "");
   const r = await addProductPhoto(db, storageStore, { productId: id, body: new Uint8Array(await file.arrayBuffer()), width: Number(form.get("width")), height: Number(form.get("height")) });
   if (!r.ok) return Response.json({ error: r.error }, { status: 400 });
-  revalidatePath(`/admin/invitatii-nunta/${id}`);
+  revalidatePath(`${SHOP_CATEGORIES[(await productById(db, id))?.category ?? "invitatie"].admin}/${id}`);
   return Response.json(r);
 }

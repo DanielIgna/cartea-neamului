@@ -29,7 +29,11 @@ function sendChunk(url: string, body: Blob, onProgress: (sent: number) => void):
  * Urcarea ZIP-ului unui model: fișierul se taie în bucăți de 4 MB, trimise pe rând (fiecare încercată de 3 ori), cu bara de
  * progres; la sfârșit serverul le lipește, verifică ZIP-ul și abia apoi înlocuiește fișierul vechi.
  */
-export function ZipUpload({ id, current }: { id: string; current: { name: string; size: number | null; files: number | null; at: string | null; version: number } | null }) {
+export function ZipUpload({ id, current, pdf = false }: {
+  id: string; current: { name: string; size: number | null; files: number | null; at: string | null; version: number } | null;
+  /** Jurnalele (28.11.2026): se poate urca și un singur PDF, nu doar un ZIP. */
+  pdf?: boolean;
+}) {
   const router = useRouter();
   const input = useRef<HTMLInputElement>(null);
   const [pct, setPct] = useState<number | null>(null);
@@ -37,7 +41,7 @@ export function ZipUpload({ id, current }: { id: string; current: { name: string
 
   async function upload(file: File) {
     setMsg(null);
-    if (!/\.zip$/i.test(file.name)) { setMsg({ error: "Alege un fișier .zip." }); return; }
+    if (!(pdf ? /\.(zip|pdf)$/i : /\.zip$/i).test(file.name)) { setMsg({ error: pdf ? "Alege un fișier .zip sau .pdf." : "Alege un fișier .zip." }); return; }
     if (file.size > MAX_ZIP) { setMsg({ error: `Fișierul are ${mb(file.size)}; cel mult ${mb(MAX_ZIP)}.` }); return; }
     const upload = crypto.randomUUID();
     const parts = Math.ceil(file.size / CHUNK);
@@ -59,7 +63,9 @@ export function ZipUpload({ id, current }: { id: string; current: { name: string
       const b = await res.json().catch(() => ({}));
       if (!res.ok) { setMsg({ error: b.error ?? "Fișierul nu s-a putut verifica." }); return; }
       setPct(100);
-      setMsg({ ok: `Gata: ZIP valid, ${b.files} fișiere (${b.pdfs} PDF), ${mb(file.size)}. De acum îl primesc cumpărătorii.` });
+      setMsg({ ok: b.kind === "pdf"
+        ? `Gata: PDF valid${b.pages ? `, ${b.pages} pagini` : ""}, ${mb(file.size)}. De acum îl primesc cumpărătorii.`
+        : `Gata: ZIP valid, ${b.files} fișiere (${b.pdfs} PDF), ${mb(file.size)}. De acum îl primesc cumpărătorii.` });
       router.refresh();
     } catch {
       setMsg({ error: "Urcarea s-a întrerupt. Încearcă din nou." });
@@ -71,18 +77,18 @@ export function ZipUpload({ id, current }: { id: string; current: { name: string
 
   return (
     <div className="card">
-      <h2 style={{ marginTop: 0 }}>Fișierul ZIP (privat)</h2>
+      <h2 style={{ marginTop: 0 }}>{pdf ? "Fișierul de vânzare: ZIP sau PDF (privat)" : "Fișierul ZIP (privat)"}</h2>
       {current ? (
         <p>Acum: <b>{current.name}</b>{current.size ? `, ${mb(current.size)}` : ""}{current.files ? `, ${current.files} fișiere` : ""}{current.at ? `, urcat ${current.at}` : ""} (versiunea {current.version}).</p>
-      ) : <p><b>Încă nu are ZIP.</b> Fără el, modelul nu se poate publica.</p>}
+      ) : <p><b>{pdf ? "Încă nu are fișier." : "Încă nu are ZIP."}</b> Fără el, nu se poate publica.</p>}
       <p className="muted">Fișierul nu e niciodată public: clienții îl primesc doar prin linkul de după plată. Un ZIP nou îl înlocuiește pe cel vechi pentru cumpărările de acum înainte; linkurile trimise deja (cele 30 de zile) merg mai departe și dau fișierul nou.</p>
       <label className="btn">
-        {current ? "Înlocuiește ZIP-ul" : "Urcă ZIP-ul"}
-        <input ref={input} type="file" accept=".zip,application/zip" hidden disabled={pct !== null} onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); }} />
+        {current ? (pdf ? "Înlocuiește fișierul" : "Înlocuiește ZIP-ul") : (pdf ? "Urcă ZIP-ul sau PDF-ul" : "Urcă ZIP-ul")}
+        <input ref={input} type="file" accept={pdf ? ".zip,.pdf,application/zip,application/pdf" : ".zip,application/zip"} hidden disabled={pct !== null} onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); }} />
       </label>
       {pct !== null && (
         <div className="shopadm-progress" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
-          <span style={{ width: `${pct}%` }} /><b>{pct < 97 ? `${pct}%` : pct < 100 ? "Se verifică ZIP-ul…" : "100%"}</b>
+          <span style={{ width: `${pct}%` }} /><b>{pct < 97 ? `${pct}%` : pct < 100 ? "Se verifică fișierul…" : "100%"}</b>
         </div>
       )}
       {msg?.error && <p className="err" role="alert">{msg.error}</p>}

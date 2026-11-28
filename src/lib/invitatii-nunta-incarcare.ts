@@ -8,7 +8,7 @@
 import { randomUUID } from "node:crypto";
 import type { Db } from "@/db";
 import { deleteObjects, getObjectBytes, putObject } from "./storage";
-import { PHOTO_PREFIX, PHOTO_ROUTE, SHOP_STORAGE } from "./invitatii-nunta";
+import { PHOTO_PREFIX, PHOTO_ROUTE, SHOP_CATEGORIES, SHOP_STORAGE, productFileKey } from "./invitatii-nunta";
 import { addImage, productById, setProductZip } from "./invitatii-nunta-produse";
 
 export const CHUNK_BYTES = 4 * 1024 * 1024;
@@ -91,8 +91,22 @@ export function inspectZip(b: Uint8Array): { ok: true; files: number; pdfs: numb
   return { ok: true, files, pdfs };
 }
 
-/** Numele fișierului primit de client: invitatie-nunta-<slug>.zip. */
-export const zipDownloadName = (slug: string) => `invitatie-nunta-${slug}.zip`;
+/** Numele fișierului primit de client: invitatie-nunta-<slug>.zip (accesorii-nunta-<slug>.zip, jurnal-<slug>.pdf…). */
+export const zipDownloadName = (slug: string, category: keyof typeof SHOP_CATEGORIES = "invitatie", ext: "zip" | "pdf" = "zip") =>
+  `${SHOP_CATEGORIES[category].fileName(slug)}.${ext}`;
+
+/**
+ * E un PDF întreg? Începe cu „%PDF-” și are „%%EOF” în ultimii 2 KB (un fișier tăiat la urcare nu îl are). Întoarce și câte
+ * pagini are, numărate grosier după „/Type /Page” (doar pentru Admin).
+ */
+export function inspectPdf(b: Uint8Array): { ok: true; pages: number } | { ok: false; error: string } {
+  const head = new TextDecoder("latin1").decode(b.subarray(0, 8));
+  if (!head.startsWith("%PDF-")) return { ok: false, error: "Fișierul nu e un PDF și nici un ZIP." };
+  const tail = new TextDecoder("latin1").decode(b.subarray(Math.max(0, b.length - 2048)));
+  if (!tail.includes("%%EOF")) return { ok: false, error: "PDF-ul e tăiat: îi lipsește sfârșitul. Încearcă din nou." };
+  const pages = (new TextDecoder("latin1").decode(b).match(/\/Type\s*\/Page(?![a-z])/g) ?? []).length;
+  return { ok: true, pages };
+}
 
 /**
  * Lipește bucățile, verifică ZIP-ul și îl pune în locul celui vechi. Bucățile se șterg oricum, și la reușită și la greșeală.
@@ -115,12 +129,19 @@ export async function finishZipUpload(db: Db, store: Store, o: { productId: stri
       at += part.length;
     }
     if (at !== o.size) return { ok: false as const, error: "Fișierul n-a ajuns întreg. Încearcă din nou." };
-    const z = inspectZip(all);
+    const cat = p.category ?? "invitatie";
+    // La jurnale merge și un singur PDF, nu doar un ZIP (Daniel, 28.11.2026: „e un PDF descărcabil”).
+    const isPdf = SHOP_CATEGORIES[cat].file === "zip-pdf" && all[0] === 0x25 && all[1] === 0x50;
+    const z = isPdf ? inspectPdf(all) : inspectZip(all);
     if (!z.ok) return z;
-    const key = p.zipKey ?? `${SHOP_STORAGE}/${p.slug}.zip`;
-    await store.put(key, all, "application/zip");
-    await setProductZip(db, p.id, { name: zipDownloadName(p.slug), size: o.size, files: z.files }, now);
-    return { ok: true as const, files: z.files, pdfs: z.pdfs, size: o.size };
+    const ext = isPdf ? "pdf" : "zip";
+    const key = p.zipKey?.endsWith(`.${ext}`) ? p.zipKey : productFileKey(cat, p.slug, ext);
+    await store.put(key, all, isPdf ? "application/pdf" : "application/zip");
+    const files = "files" in z ? z.files : 1;
+    await setProductZip(db, p.id, { name: zipDownloadName(p.slug, cat, ext), size: o.size, files, key }, now);
+    // Fișierul vechi de alt fel (un ZIP înlocuit cu un PDF) nu mai trebuie.
+    if (p.zipKey && p.zipKey !== key) await store.del([p.zipKey]).catch(() => {});
+    return { ok: true as const, files, pdfs: "pdfs" in z ? z.pdfs : 1, size: o.size, kind: ext, ...("pages" in z ? { pages: z.pages } : {}) };
   } catch (e) {
     console.error("invitatii-nunta zip", e instanceof Error ? e.name : "Error");
     return { ok: false as const, error: "O bucată din fișier lipsește. Încearcă din nou." };
