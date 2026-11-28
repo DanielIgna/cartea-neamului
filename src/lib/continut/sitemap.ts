@@ -4,6 +4,7 @@ import { PRIVACY_DATE, TERMS_DATE } from "@/lib/legal";
 import { SITE_URL } from "@/lib/site-url";
 import { lastUpdated, loadCollection } from "@/lib/continut/colectii";
 import { images } from "@/lib/continut/markdown";
+import { LOGO_PNG } from "@/lib/seo/organizatie";
 import { NAMES_UPDATED, loadNames } from "@/lib/continut/nume";
 import { nameGate, uatGate } from "@/lib/continut/prag";
 import { UATS_UPDATED, loadUats, uatPath } from "@/lib/continut/uat";
@@ -107,7 +108,7 @@ export function sitemapGroups(published: Map<string, Date> = new Map(), shop: Si
 export function rawGroups(published: Map<string, Date> = new Map(), shop: SitemapUrl[] = []): SitemapGroup[] {
   return [
     // `shop`: modelele de invitații de nuntă publicate din Admin (src/lib/invitatii-nunta-sitemap.ts), citite din bază de rutele sitemap-ului.
-    { name: "pagini", label: "Paginile principale", urls: [...PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency, priority: p.priority })), ...shop] },
+    { name: "pagini", label: "Paginile principale", urls: [...PUBLIC_PAGES.map((p) => ({ path: p.path, lastModified: LAST_MODIFIED[p.path] ?? PAGES_FALLBACK, changeFrequency: p.changeFrequency, priority: p.priority, ...(p.path === "/" ? { images: [LOGO_PNG] } : {}) })), ...shop] },
     collectionGroup("ghid", "Ghiduri"),
     collectionGroup("glosar", "Glosar"),
     {
@@ -138,7 +139,7 @@ export function rawGroups(published: Map<string, Date> = new Map(), shop: Sitema
     {
       // Presă și widgetul gratuit (src/lib/autoritate.ts).
       name: "autoritate", label: "Presă și widget",
-      urls: AUTHORITY_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: AUTHORITY_UPDATED, changeFrequency: "monthly", priority: 0.5 })),
+      urls: AUTHORITY_PAGES.map((p): SitemapUrl => ({ path: p.path, lastModified: AUTHORITY_UPDATED, changeFrequency: "monthly", priority: 0.5, ...(p.path === "/presa" ? { images: [LOGO_PNG] } : {}) })),
     },
     languagesGroup(),
     {

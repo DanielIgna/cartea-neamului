@@ -26,7 +26,7 @@ export default function PressPage() {
   return (
     <section className="stack content-page" lang="ro">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "AboutPage", name: page.h1, description: page.description, url: canonicalUrl(page.path), inLanguage: "ro",
-        about: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/icons/icon-512.png`, email: PRESS_EMAIL, foundingDate: "2026", foundingLocation: "Cluj-Napoca" } }} />
+        about: { "@type": "Organization", name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/sigla/cartea-neamului-logo.png`, email: PRESS_EMAIL, foundingDate: "2026", foundingLocation: "Cluj-Napoca" } }} />
       <Breadcrumbs items={[{ name: "Presă", path: page.path }]} />
       <article className="card prose">
         <h1>{page.h1}</h1>
@@ -70,9 +70,14 @@ export default function PressPage() {
 
         <h2>Sigla și imagini</h2>
         <p>Puteți folosi sigla și numele Cartea Neamului în articole despre platformă, fără să le modificați.</p>
+        <figure style={{ margin: "12px 0" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- imaginea exactă a siglei, ca Google să o indexeze cu numele */}
+          <img src="/sigla/cartea-neamului-logo.png" alt="Sigla Cartea Neamului" width={160} height={160} loading="lazy" style={{ borderRadius: 24 }} />
+          <figcaption>Sigla Cartea Neamului: o carte deschisă din care cresc generațiile, spița tatălui în albastru și a mamei în ocru.</figcaption>
+        </figure>
         <p style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <a className="btn" href="/logo.svg" download>Sigla (SVG)</a>
-          <a className="btn" href="/icons/icon-512.png" download>Sigla pătrată (PNG, 512 px)</a>
+          <a className="btn" href="/sigla/cartea-neamului-logo.png" download>Sigla pătrată (PNG, 512 px)</a>
         </p>
 
         <h2>Contact pentru presă</h2>

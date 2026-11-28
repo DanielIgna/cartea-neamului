@@ -8,8 +8,25 @@ import { versionEntries } from "@/lib/seo/versiuni";
  */
 export const ORG = {
   "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL,
-  logo: { "@type": "ImageObject", url: `${SITE_URL}/icons/icon-512.png`, width: 512, height: 512 },
+  logo: { "@type": "ImageObject", "@id": `${SITE_URL}/#logo`, url: `${SITE_URL}/sigla/cartea-neamului-logo.png`, contentUrl: `${SITE_URL}/sigla/cartea-neamului-logo.png`, width: 512, height: 512, caption: "Cartea Neamului" },
 } as const;
+
+/** Sigla pătrată de 512×512 (aceeași imagine pe care o folosește Daniel ca poză de profil în alte locuri) și varianta vectorială. */
+export const LOGO_PNG = "/sigla/cartea-neamului-logo.png";
+export const LOGO_SVG = "/icon.svg";
+
+/**
+ * Organizația completă de pe prima pagină (Daniel, 28.11.2026): numele „Cartea Neamului”, adresa site-ului, sigla PNG 512×512
+ * și sigla SVG, ca Google să lege imaginea siglei de nume și în căutarea de imagini. Aceeași entitate (@id) ca ORG.
+ */
+export function orgFull(sameAs: string[]) {
+  return {
+    ...ORG,
+    alternateName: "carteaneamului.ro",
+    image: [ORG.logo, { "@type": "ImageObject", url: `${SITE_URL}${LOGO_SVG}`, contentUrl: `${SITE_URL}${LOGO_SVG}`, encodingFormat: "image/svg+xml", caption: "Cartea Neamului" }],
+    sameAs,
+  };
+}
 /** Semnătura vizibilă a ghidurilor. */
 export const BYLINE = "echipa Cartea Neamului";
 
