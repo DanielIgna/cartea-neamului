@@ -1,3 +1,4 @@
+import { orgFull } from "@/lib/seo/organizatie";
 import type { Locale } from "@/i18n/locales";
 import type { PlanSettings } from "@/lib/plans";
 import { tierPrice } from "@/lib/plans";
@@ -70,7 +71,7 @@ export function homeJsonLd(locale: Locale, s: PlanSettings, description: string,
       { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Cartea Neamului", alternateName: names.app === "Cartea Neamului" ? undefined : names.app, url: SITE_URL, inLanguage: locale, description, publisher: { "@id": `${SITE_URL}/#organization` },
         // Caseta de căutare din rezultatele Google trimite la /cauta (src/lib/continut/cautare.ts).
         potentialAction: { "@type": "SearchAction", target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/cauta?q={search_term_string}` }, "query-input": "required name=search_term_string" } },
-      { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: "Cartea Neamului", url: SITE_URL, logo: `${SITE_URL}/apple-icon.png`, sameAs: [FACEBOOK_URL, TIKTOK_URL, INSTAGRAM_URL] },
+      orgFull([FACEBOOK_URL, TIKTOK_URL, INSTAGRAM_URL]),
       {
         "@type": "WebApplication", "@id": `${SITE_URL}/#app`, name: names.app, url: home, description,
         applicationCategory: "LifestyleApplication", operatingSystem: "Web, Android, iOS", browserRequirements: "Requires a modern web browser",

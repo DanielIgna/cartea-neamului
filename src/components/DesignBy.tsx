@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { localizedPath, type Locale } from "@/i18n/locales";
 import { canonicalUrl, webPageJsonLd } from "@/lib/page-metadata";
-import { ORG } from "@/lib/seo/organizatie";
+import { ORG, orgFull } from "@/lib/seo/organizatie";
 import { SITE_URL } from "@/lib/site-url";
 import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "@/lib/contact";
 import { SHOP_PATH } from "@/lib/invitatii-nunta";
@@ -111,7 +111,7 @@ export function designJsonLd(locale: Locale) {
     "@type": "Brand", "@id": `${SITE_URL}/#brand`, name: "Cartea Neamului", alternateName: "The Book of Your Family",
     url: SITE_URL, logo: ORG.logo.url, description: t.metaDescription,
   };
-  const org = { ...ORG, sameAs: [FACEBOOK_URL, TIKTOK_URL, INSTAGRAM_URL], brand: { "@id": brand["@id"] } };
+  const org = { ...orgFull([FACEBOOK_URL, TIKTOK_URL, INSTAGRAM_URL]), brand: { "@id": brand["@id"] } };
   const graph = page["@graph"] as Record<string, unknown>[];
   const webPage = { ...graph[0], about: { "@id": brand["@id"] }, publisher: { "@id": ORG["@id"] }, image: t.images.map((i) => canonicalUrl(i.src)) };
   return { "@context": "https://schema.org", "@graph": [webPage, ...graph.slice(1), org, brand] };
