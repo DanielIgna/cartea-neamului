@@ -18,7 +18,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /** „Produse și servicii”: magazinul site-ului (linkul „Magazin” din antet). */
 export default async function ProdusePage() {
-  const [locale, s, open] = await Promise.all([getLocale(), publicPlanSettings(), shopOpen(db)]);
-  const models = open ? await publishedModels(db) : [];
-  return <Produse locale={locale} models={models} s={s} />;
+  const [locale, s, open, openAcc, openJur] = await Promise.all([getLocale(), publicPlanSettings(), shopOpen(db), shopOpen(db, "accesorii"), shopOpen(db, "jurnal")]);
+  const [models, accesorii, jurnal] = await Promise.all([
+    open ? publishedModels(db) : [], openAcc ? publishedModels(db, "accesorii") : [], openJur ? publishedModels(db, "jurnal") : [],
+  ]);
+  return <Produse locale={locale} models={models} s={s} more={{ accesorii, jurnal }} />;
 }

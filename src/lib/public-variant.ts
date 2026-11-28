@@ -1,7 +1,7 @@
 import { LOCALES, NEW_LOCALES, type Locale } from "@/i18n/locales";
 import { PUBLIC_PAGES } from "@/lib/public-pages";
 import { sectionOf } from "@/lib/public-sections";
-import { isModelPath } from "@/lib/invitatii-nunta";
+import { isCategoryProductPath, isModelPath } from "@/lib/invitatii-nunta";
 
 /**
  * Paginile publice, pentru vizitatorii fără cont, se servesc gata făcute din cache: câte o variantă pentru fiecare limbă,
@@ -42,7 +42,7 @@ export const PUBLIC_PATHS = new Set(PUBLIC_PAGES.map((p) => p.path));
 
 /** Paginile servite gata făcute: cele din PUBLIC_PAGES și cele din secțiunile publice (ghiduri, glosar…). */
 // Paginile modelelor de invitații de nuntă (/invitatii-nunta/<slug>) vin din baza de date; pagina dă 404 pentru un slug nepublicat.
-export const isPublicPath = (pathname: string) => PUBLIC_PATHS.has(pathname) || sectionOf(pathname) !== null || isModelPath(pathname);
+export const isPublicPath = (pathname: string) => PUBLIC_PATHS.has(pathname) || sectionOf(pathname) !== null || isModelPath(pathname) || isCategoryProductPath(pathname);
 
 /** Varianta făcută la publicare pentru paginile din secțiuni (cea pe care o primesc Google și vizitatorii noi în română). */
 export const BUILD_VARIANT = variantKey({ locale: "ro", theme: "auto", cookieSeen: false });

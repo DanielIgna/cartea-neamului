@@ -13,8 +13,8 @@ import type { Db } from "@/db";
 import { shopOrder, shopProduct } from "@/db/schema";
 import { LOCALES } from "@/i18n/locales";
 import {
-  FORMATS, INVITATION_LANGS, isModelSlug, publishProblems, zipKeyFor,
-  type ProductStatus, type ProductText, type ShopImage, type ShopModel, type TextLocale,
+  INVITATION_LANGS, SHOP_CATEGORIES, categoryOf, isCategory, isModelSlug, productFileKey, publishProblems, regionKey,
+  type ProductStatus, type ProductText, type ShopCategory, type ShopImage, type ShopModel, type TextLocale,
 } from "./invitatii-nunta";
 
 type Row = typeof shopProduct.$inferSelect;
@@ -27,7 +27,7 @@ const STATUSES: ProductStatus[] = ["draft", "published", "archived"];
 
 export function toModel(r: Row): ShopModel {
   return {
-    id: r.id, slug: r.slug, region: r.region,
+    id: r.id, category: categoryOf(r.category), parts: Array.isArray(r.parts) ? (r.parts as string[]) : [], slug: r.slug, region: r.region,
     status: STATUSES.includes(r.status as ProductStatus) ? (r.status as ProductStatus) : "draft",
     texts: (r.texts ?? {}) as ShopModel["texts"],
     languages: Array.isArray(r.languages) ? (r.languages as string[]) : [],
@@ -40,10 +40,13 @@ export function toModel(r: Row): ShopModel {
 
 /* ---------- Citirea (paginile publice, plata, emailul) ---------- */
 
-/** Modelele publicate, în ordinea din Admin. Dacă baza nu se poate citi (o copie de probă fără bază), lista e goală. */
-export async function publishedModels(db: Reader): Promise<ShopModel[]> {
+/**
+ * Modelele publicate ale unei categorii (implicit invitațiile), în ordinea din Admin. Dacă baza nu se poate citi (o copie de
+ * probă fără bază), lista e goală.
+ */
+export async function publishedModels(db: Reader, category: ShopCategory = "invitatie"): Promise<ShopModel[]> {
   try {
-    const rows = await db.select().from(shopProduct).where(eq(shopProduct.status, "published")).orderBy(asc(shopProduct.sort), asc(shopProduct.publishedAt));
+    const rows = await db.select().from(shopProduct).where(and(eq(shopProduct.status, "published"), eq(shopProduct.category, category))).orderBy(asc(shopProduct.sort), asc(shopProduct.publishedAt));
     return rows.map(toModel);
   } catch (e) {
     console.error("invitatii-nunta modele", e instanceof Error ? e.name : "Error");
@@ -51,14 +54,15 @@ export async function publishedModels(db: Reader): Promise<ShopModel[]> {
   }
 }
 
-/** Un model după slug, în orice stare (pentru comenzile deja plătite) sau doar publicat. */
-export async function modelBySlug(db: Reader, slug: unknown, o: { published?: boolean } = {}): Promise<ShopModel | null> {
+/** Un model după slug (în categoria lui, implicit invitațiile), în orice stare (pentru comenzile deja plătite) sau doar publicat. */
+export async function modelBySlug(db: Reader, slug: unknown, o: { published?: boolean; category?: ShopCategory } = {}): Promise<ShopModel | null> {
   if (!isModelSlug(slug)) return null;
-  const [r] = await db.select().from(shopProduct).where(o.published ? and(eq(shopProduct.slug, slug), eq(shopProduct.status, "published")) : eq(shopProduct.slug, slug));
+  const where = and(eq(shopProduct.slug, slug), eq(shopProduct.category, o.category ?? "invitatie"), ...(o.published ? [eq(shopProduct.status, "published")] : []));
+  const [r] = await db.select().from(shopProduct).where(where);
   return r ? toModel(r) : null;
 }
 
-export const publishedModel = (db: Reader, slug: unknown) => modelBySlug(db, slug, { published: true }).catch(() => null);
+export const publishedModel = (db: Reader, slug: unknown, category: ShopCategory = "invitatie") => modelBySlug(db, slug, { published: true, category }).catch(() => null);
 
 export async function productById(db: Reader, id: string): Promise<(ShopModel & { row: Row }) | null> {
   if (!/^[\w-]{1,80}$/.test(id)) return null;
@@ -66,16 +70,16 @@ export async function productById(db: Reader, id: string): Promise<(ShopModel & 
   return r ? { ...toModel(r), row: r } : null;
 }
 
-/** Câte comenzi are un model (după slug). */
-export async function salesOf(db: Reader, slug: string): Promise<number> {
-  const [r] = await db.select({ n: count() }).from(shopOrder).where(eq(shopOrder.slug, slug));
+/** Câte comenzi are un model (după slug, în categoria lui). */
+export async function salesOf(db: Reader, slug: string, category: ShopCategory = "invitatie"): Promise<number> {
+  const [r] = await db.select({ n: count() }).from(shopOrder).where(and(eq(shopOrder.slug, slug), eq(shopOrder.category, category)));
   return Number(r?.n ?? 0);
 }
 
-/** Lista din Admin: toate modelele, cu numărul de vânzări. */
-export async function adminProducts(db: Reader) {
-  const rows = await db.select().from(shopProduct).orderBy(asc(shopProduct.sort), asc(shopProduct.createdAt));
-  const sales = await db.select({ slug: shopOrder.slug, n: count() }).from(shopOrder).groupBy(shopOrder.slug);
+/** Lista din Admin: toate modelele unei categorii, cu numărul de vânzări. */
+export async function adminProducts(db: Reader, category: ShopCategory = "invitatie") {
+  const rows = await db.select().from(shopProduct).where(eq(shopProduct.category, category)).orderBy(asc(shopProduct.sort), asc(shopProduct.createdAt));
+  const sales = await db.select({ slug: shopOrder.slug, n: count() }).from(shopOrder).where(eq(shopOrder.category, category)).groupBy(shopOrder.slug);
   const by = new Map(sales.map((s) => [s.slug, Number(s.n)]));
   return rows.map((r) => ({ ...toModel(r), row: r, sales: by.get(r.slug) ?? 0 }));
 }
@@ -83,6 +87,10 @@ export async function adminProducts(db: Reader) {
 /* ---------- Formularul din Admin ---------- */
 
 export type ProductInput = {
+  /** Lipsă = invitație. */
+  category?: ShopCategory;
+  /** Ce conține produsul (accesorii, jurnale). */
+  parts?: string[];
   slug: string; region: string; sort: number;
   texts: Partial<Record<TextLocale, ProductText>>;
   languages: string[]; formats: string[];
@@ -112,6 +120,10 @@ const str = (form: FormData, k: string) => {
  * limbă se salvează doar dacă are ceva scris, și atunci cere aceleași trei.
  */
 export function parseProductForm(form: FormData): { ok: true; value: ProductInput } | { ok: false; error: string } {
+  const rawCat = form.get("category");
+  if (rawCat !== null && !isCategory(rawCat)) return { ok: false, error: "Categoria nu e bună." };
+  const category = categoryOf(rawCat);
+  const cat = SHOP_CATEGORIES[category];
   const slug = str(form, "slug").toLowerCase();
   if (!isModelSlug(slug)) return { ok: false, error: "Slugul poate avea doar litere mici fără diacritice, cifre și cratime (de pildă „tara-hategului”), și nu poate fi „gata”, „nou” sau „poze”." };
   const region = str(form, "region").slice(0, 80);
@@ -129,23 +141,27 @@ export function parseProductForm(form: FormData): { ok: true; value: ProductInpu
     texts[l] = Object.fromEntries(FIELDS.filter((f) => t[f]).map((f) => [f, t[f]])) as ProductText;
   }
   const languages = INVITATION_LANGS.filter((l) => form.getAll("languages").includes(l));
-  const formats = Object.keys(FORMATS).filter((f) => form.getAll("formats").includes(f));
+  const formats = Object.keys(cat.formats).filter((f) => form.getAll("formats").includes(f));
+  const parts = Object.keys(cat.parts).filter((f) => form.getAll("parts").includes(f));
   const sort = Math.max(0, Math.min(9999, Math.round(Number(str(form, "sort") || "0")) || 0));
-  return { ok: true, value: { slug, region, sort, texts, languages, formats, priceRon, priceEur } };
+  // Invitațiile rămân exact ca înainte (fără categorie și părți în date); categoriile noi le au.
+  const extra = category === "invitatie" ? {} : { category, parts };
+  return { ok: true, value: { ...extra, slug, region, sort, texts, languages, formats, priceRon, priceEur } };
 }
 
 /* ---------- Scrierea ---------- */
 
 type Result = { ok: true; id: string } | { ok: false; error: string };
 
-async function slugTaken(db: Reader, slug: string, exceptId?: string) {
-  const [r] = await db.select({ id: shopProduct.id }).from(shopProduct).where(exceptId ? and(eq(shopProduct.slug, slug), ne(shopProduct.id, exceptId)) : eq(shopProduct.slug, slug));
+async function slugTaken(db: Reader, slug: string, category: ShopCategory, exceptId?: string) {
+  const same = and(eq(shopProduct.slug, slug), eq(shopProduct.category, category));
+  const [r] = await db.select({ id: shopProduct.id }).from(shopProduct).where(exceptId ? and(same, ne(shopProduct.id, exceptId)) : same);
   return !!r;
 }
 
 /** Un model nou, ca ciornă. */
 export async function createProduct(db: Db, v: ProductInput, now = new Date()): Promise<Result> {
-  if (await slugTaken(db, v.slug)) return { ok: false, error: `Slugul „${v.slug}” e deja folosit de alt model.` };
+  if (await slugTaken(db, v.slug, v.category ?? "invitatie")) return { ok: false, error: `Slugul „${v.slug}” e deja folosit de alt model.` };
   const id = randomUUID();
   await db.insert(shopProduct).values({ id, ...v, status: "draft", createdAt: now, updatedAt: now });
   return { ok: true, id };
@@ -158,9 +174,12 @@ export async function createProduct(db: Db, v: ProductInput, now = new Date()): 
 export async function updateProduct(db: Db, id: string, v: ProductInput, now = new Date()): Promise<Result> {
   const p = await productById(db, id);
   if (!p) return { ok: false, error: "Modelul nu există." };
+  // Categoria nu se schimbă din formular: un produs rămâne în categoria în care a fost creat.
+  const cat = p.category ?? "invitatie";
+  if ((v.category ?? "invitatie") !== cat) return { ok: false, error: "Produsul e în altă categorie." };
   if (v.slug !== p.slug) {
-    if (p.zipKey || (await salesOf(db, p.slug)) > 0) return { ok: false, error: "Slugul nu se mai poate schimba: modelul are deja fișier ZIP sau vânzări." };
-    if (await slugTaken(db, v.slug, id)) return { ok: false, error: `Slugul „${v.slug}” e deja folosit de alt model.` };
+    if (p.zipKey || (await salesOf(db, p.slug, cat)) > 0) return { ok: false, error: "Slugul nu se mai poate schimba: modelul are deja fișier ZIP sau vânzări." };
+    if (await slugTaken(db, v.slug, cat, id)) return { ok: false, error: `Slugul „${v.slug}” e deja folosit de alt model.` };
   }
   if (p.status === "published" && publishProblems({ ...p, texts: v.texts, priceLei: v.priceRon / 100, priceEur: v.priceEur / 100 }).length) {
     return { ok: false, error: "Modelul e publicat: păstrează numele și descrierile în română (sau retrage-l întâi)." };
@@ -194,7 +213,7 @@ export async function deleteProduct(db: Db, id: string, confirm: string, remove:
   const p = await productById(db, id);
   if (!p) return { ok: false, error: "Modelul nu există." };
   if (confirm.trim() !== p.slug) return { ok: false, error: `Ca să ștergi, scrie exact slugul modelului: ${p.slug}` };
-  if ((await salesOf(db, p.slug)) > 0) return { ok: false, error: "Modelul are vânzări, deci nu se șterge: arhivează-l (linkurile clienților merg mai departe)." };
+  if ((await salesOf(db, p.slug, p.category)) > 0) return { ok: false, error: "Modelul are vânzări, deci nu se șterge: arhivează-l (linkurile clienților merg mai departe)." };
   await db.delete(shopProduct).where(eq(shopProduct.id, id));
   await remove([p.zipKey, ...p.images.map((i) => i.key)].filter((k): k is string => !!k)).catch(() => {});
   return { ok: true, id };
@@ -226,13 +245,29 @@ export async function arrangeImages(db: Db, id: string, order: string[], remove:
   return { ok: true, id };
 }
 
-/** ZIP-ul nou al unui model (după verificare): aceeași cheie, versiunea crește; comenzile viitoare și linkurile active îl primesc. */
-export async function setProductZip(db: Db, id: string, z: { name: string; size: number; files: number }, now = new Date()) {
+/**
+ * Fișierul nou al unui model (după verificare): aceeași cheie, versiunea crește; comenzile viitoare și linkurile active îl primesc.
+ * `key` doar când fișierul își schimbă felul (la jurnale, un PDF în locul unui ZIP sau invers).
+ */
+export async function setProductZip(db: Db, id: string, z: { name: string; size: number; files: number; key?: string }, now = new Date()) {
   const p = await productById(db, id);
   if (!p) return null;
-  const key = p.zipKey ?? zipKeyFor(p.slug);
+  const key = z.key ?? p.zipKey ?? productFileKey(p.category ?? "invitatie", p.slug);
   await db.update(shopProduct).set({
     zipKey: key, zipName: z.name, zipSize: z.size, zipFiles: z.files, zipVersion: sql`${shopProduct.zipVersion} + 1`, zipUpdatedAt: now, updatedAt: now,
   }).where(eq(shopProduct.id, id));
   return key;
+}
+
+/* ---------- Același set, pe regiuni (Daniel, 28.11.2026) ---------- */
+
+/**
+ * Produsul publicat dintr-o altă categorie care e din aceeași regiune (după regiune, sau după slug dacă regiunea e goală):
+ * setul de accesorii pentru o invitație („Completează setul”) sau invitația pentru un set. Fără potrivire sau fără bază: null.
+ */
+export async function sameRegion(db: Reader, m: Pick<ShopModel, "region" | "slug">, category: ShopCategory): Promise<ShopModel | null> {
+  const key = regionKey(m);
+  if (!key) return null;
+  const list = await publishedModels(db, category);
+  return list.find((x) => regionKey(x) === key) ?? null;
 }

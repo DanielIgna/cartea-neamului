@@ -227,6 +227,12 @@ const ADDITIVE = [
   // Anunțurile închise, ținute pe cont, și codul comenzilor din magazin (migrația 0052).
   sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "promo" text`,
   sql`CREATE TABLE IF NOT EXISTS "notice_dismissal" ("user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE, "notice" text NOT NULL, "at" timestamp DEFAULT now() NOT NULL, "times" integer DEFAULT 1 NOT NULL, CONSTRAINT "notice_dismissal_pk" PRIMARY KEY("user_id","notice"))`,
+  // Categoriile noi ale magazinului: accesorii nuntă și jurnale de familie (migrația 0053).
+  sql`ALTER TABLE "shop_product" ADD COLUMN IF NOT EXISTS "category" text DEFAULT 'invitatie' NOT NULL`,
+  sql`ALTER TABLE "shop_product" ADD COLUMN IF NOT EXISTS "parts" jsonb DEFAULT '[]'::jsonb NOT NULL`,
+  sql`DROP INDEX IF EXISTS "shop_product_slug_idx"`,
+  sql`CREATE UNIQUE INDEX IF NOT EXISTS "shop_product_cat_slug_idx" ON "shop_product" ("category","slug")`,
+  sql`ALTER TABLE "shop_order" ADD COLUMN IF NOT EXISTS "category" text DEFAULT 'invitatie' NOT NULL`,
 ];
 
 export async function applySchema(target: Db) {

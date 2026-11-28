@@ -26,14 +26,15 @@ export function testPaymentSql(p = "p"): SQL {
 }
 
 /**
- * Toate vânzările, ca un singur tabel: plățile contului (`payment`) și comenzile din magazin fără cont (`shop_order`, kind „invitatie”).
+ * Toate vânzările, ca un singur tabel: plățile contului (`payment`) și comenzile din magazin fără cont (`shop_order`, kind = categoria:
+ * „invitatie”, „accesorii” sau „jurnal”, din 28.11.2026).
  * Coloanele: id, user_id, kind, amount, currency, promo, created_at. Se folosește ca `from ${SALES} p`.
  */
 export const SALES = sql`(select id, user_id, kind, amount, currency, promo, created_at from payment
-  union all select id, null::text as user_id, 'invitatie' as kind, amount, currency, promo, created_at from shop_order)`;
+  union all select id, null::text as user_id, coalesce(category, 'invitatie') as kind, amount, currency, promo, created_at from shop_order)`;
 
 /** Numele pe înțeles al felului de plată, pentru rapoarte. */
-export const SALE_KIND: Record<string, string> = { an: "plan", carte: "carte PDF", cadou: "an dăruit", pastrare: "Păstrare", invitatie: "invitație de nuntă" };
+export const SALE_KIND: Record<string, string> = { an: "plan", carte: "carte PDF", cadou: "an dăruit", pastrare: "Păstrare", invitatie: "invitație de nuntă", accesorii: "accesorii nuntă", jurnal: "jurnal de familie" };
 
 /** O plată adevărată, cu bani: nu e de test și nu e o carte inclusă (sumă 0). */
 export function realPaymentSql(p = "p"): SQL {

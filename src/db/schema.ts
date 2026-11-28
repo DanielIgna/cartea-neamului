@@ -1253,6 +1253,8 @@ export const shopOrder = pgTable("shop_order", {
   giftNote: text("gift_note"),
   // Codul de reducere (TESTINV90…); '' = fără cod; null = neverificat încă (src/lib/plati-test.ts).
   promo: text("promo"),
+  // Categoria produsului (28.11.2026): invitatie / accesorii / jurnal (src/lib/invitatii-nunta.ts, SHOP_CATEGORIES).
+  category: text("category").notNull().default("invitatie"),
 }, (t) => [uniqueIndex("shop_order_token_idx").on(t.tokenHash), index("shop_order_created_idx").on(t.createdAt)]);
 
 // Invitații de nuntă (Daniel, 27.11.2026, etapa a doua): modelele, scrise din Admin → Invitații de nuntă, nu din cod. `texts` ține
@@ -1281,7 +1283,11 @@ export const shopProduct = pgTable("shop_product", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
   publishedAt: timestamp("published_at"),
-}, (t) => [uniqueIndex("shop_product_slug_idx").on(t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);
+  // Categoriile magazinului (Daniel, 28.11.2026, migrația 0053): invitatie / accesorii (accesorii nuntă) / jurnal (jurnale de
+  // familie); slugul e unic pe categorie. `parts`: ce conține produsul (meniu, carduri de loc… sau varianta pentru bunica / bunic).
+  category: text("category").notNull().default("invitatie"),
+  parts: jsonb("parts").notNull().default([]),
+}, (t) => [uniqueIndex("shop_product_cat_slug_idx").on(t.category, t.slug), index("shop_product_status_idx").on(t.status, t.sort)]);
 
 /* ---------- Anunțuri închise cu „Am înțeles”, ținute pe cont (Daniel, 2026-11-27) ---------- */
 // Pentru fiecare om și fiecare anunț: când l-a închis ultima dată și de câte ori (src/lib/anunt-pastrare.ts).

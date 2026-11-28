@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { getLocale } from "@/i18n/server";
 import { ShopModelPage } from "@/components/InvitatiiNunta";
+import { CompleteSet } from "@/components/MagazinDigital";
 import { modelMetadata } from "@/lib/invitatii-nunta-meta";
 import { shopOpen, shopPaymentsReady } from "@/lib/invitatii-nunta-server";
-import { publishedModel } from "@/lib/invitatii-nunta-produse";
+import { publishedModel, sameRegion } from "@/lib/invitatii-nunta-produse";
 import { readVariant } from "@/lib/public-variant-server";
 export const dynamic = "force-static";
 export const revalidate = 600;
@@ -28,5 +29,8 @@ export default async function PublicInvitatieModel({ params }: Props) {
   await readVariant({ params });
   const model = await publishedModel(db, (await params).slug);
   if (!model) notFound();
-  return <ShopModelPage model={model} locale={await getLocale()} open={await shopOpen(db)} payReady={shopPaymentsReady()} />;
+  const locale = await getLocale();
+  const set = (await shopOpen(db, "accesorii")) ? await sameRegion(db, model, "accesorii").catch(() => null) : null;
+  return <ShopModelPage model={model} locale={locale} open={await shopOpen(db)} payReady={shopPaymentsReady()}
+    extra={set ? <CompleteSet accessory={set} locale={locale} /> : null} />;
 }

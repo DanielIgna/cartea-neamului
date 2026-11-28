@@ -2543,6 +2543,10 @@ main:has(.tree-page) > .card,main:has(.tree-page) > .notice{border-radius:22px}
 .shop-gets,.shop-steps{margin:0;padding-inline-start:1.2em;display:grid;gap:6px}
 .shop-blessing{text-align:center;font-style:italic;color:var(--muted);margin:8px 0}
 @media (max-width:760px){.shop-model{grid-template-columns:1fr}.shop-cards{gap:10px}}
+/* „Completează setul” (28.11.2026): cardul spre setul de accesorii / invitația din aceeași regiune. */
+.shop-set{display:grid;grid-template-columns:minmax(0,220px) 1fr;gap:20px;align-items:center;border:1px solid var(--accent,#b0472f)}
+.shop-set-img img{display:block;width:100%;height:auto;border-radius:10px}
+@media (max-width:600px){.shop-set{grid-template-columns:1fr}}
 /* Admin → Invitații de nuntă (formularul modelului, ZIP-ul, pozele) */
 .shopadm-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
 .shopadm-actions{display:flex;flex-wrap:wrap;gap:8px}

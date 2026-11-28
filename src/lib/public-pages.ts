@@ -21,6 +21,9 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   // Invitații de nuntă (Daniel, 27.11.2026): lista, în toate limbile. Paginile modelelor vin din baza de date (publicate din Admin)
   // și intră în sitemap de acolo (src/lib/invitatii-nunta-sitemap.ts).
   { path: SHOP_PATH, label: "Invitații de nuntă", priority: 0.7, changeFrequency: "weekly" },
+  // Categoriile noi ale magazinului (Daniel, 28.11.2026): listele, în toate limbile; produsele vin din baza de date, ca invitațiile.
+  { path: "/accesorii-nunta", label: "Accesorii nuntă", priority: 0.6, changeFrequency: "weekly" },
+  { path: "/jurnale", label: "Jurnale de familie", priority: 0.6, changeFrequency: "weekly" },
   // Magazinul (Daniel, 27.11.2026): toate produsele și serviciile, cu linkul „Magazin” din antet.
   { path: "/produse", label: "Produse și servicii", priority: 0.7, changeFrequency: "weekly" },
   // „Design by Cartea Neamului” (Daniel, 28.11.2026): pentru cine caută numele după un produs „designed by Cartea Neamului”.
@@ -35,7 +38,7 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
 ];
 
 /** Părțile private: arborii, invitațiile, mesajele, datele cuiva, intrarea în cont, plata și panoul de admin nu au ce căuta în Google. */
-export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/", "/widget/", "/invitatii-nunta/gata", "/api/invitatii-nunta/"];
+export const PRIVATE_PREFIXES = ["/admin", "/api/", "/invitatie/", "/arbore/", "/arbore-nou", "/primii-pasi", "/scoala-cod/", "/cod/", "/scoala/fisa/", "/datele-mele", "/mesaje", "/a/", "/intrare", "/intrare/eroare", "/plata", "/parteneri/dezabonare", "/dezabonare", "/cadou/", "/activeaza", "/magazin/", "/card/", "/card-imagine/", "/r/", "/widget/", "/invitatii-nunta/gata", "/api/invitatii-nunta/", "/accesorii-nunta/gata", "/jurnale/gata", "/api/magazin/"];
 
 /** Paginile din PUBLIC_PAGES care au text în limbile site-ului (toate sau, pentru limbile noi, cele din pageLocales). */
 export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);

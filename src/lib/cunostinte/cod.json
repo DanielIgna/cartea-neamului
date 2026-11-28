@@ -52,6 +52,7 @@
   "drizzle/0050_invitatii_nunta_produse.sql",
   "drizzle/0051_invitatii_nunta_cadou.sql",
   "drizzle/0052_anunt_inchis.sql",
+  "drizzle/0053_magazin_categorii.sql",
   "drizzle/meta/0000_snapshot.json",
   "drizzle/meta/0001_snapshot.json",
   "drizzle/meta/0002_snapshot.json",
@@ -89,6 +90,8 @@
   "scripts/seo-legaturi.ts",
   "scripts/seo-versiuni.ts",
   "scripts/test-incarcare.ts",
+  "src/app/(public)/pub/[v]/accesorii-nunta/[slug]/page.tsx",
+  "src/app/(public)/pub/[v]/accesorii-nunta/page.tsx",
   "src/app/(public)/pub/[v]/cadou-de-sarbatori/page.tsx",
   "src/app/(public)/pub/[v]/confidentialitate/page.tsx",
   "src/app/(public)/pub/[v]/contact/page.tsx",
@@ -116,6 +119,8 @@
   "src/app/(public)/pub/[v]/istoria-umanitatii/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/primul-razboi-mondial/page.tsx",
   "src/app/(public)/pub/[v]/istoria-umanitatii/tiparul-istoriei/page.tsx",
+  "src/app/(public)/pub/[v]/jurnale/[slug]/page.tsx",
+  "src/app/(public)/pub/[v]/jurnale/page.tsx",
   "src/app/(public)/pub/[v]/layout.tsx",
   "src/app/(public)/pub/[v]/libertatea-de-a-crede/page.tsx",
   "src/app/(public)/pub/[v]/localitati/[judet]/[localitate]/page.tsx",
@@ -132,8 +137,14 @@
   "src/app/(public)/pub/[v]/surse-publice/page.tsx",
   "src/app/(public)/pub/[v]/termeni/page.tsx",
   "src/app/(site)/a/[code]/page.tsx",
+  "src/app/(site)/accesorii-nunta/[slug]/page.tsx",
+  "src/app/(site)/accesorii-nunta/gata/page.tsx",
+  "src/app/(site)/accesorii-nunta/page.tsx",
   "src/app/(site)/activare/page.tsx",
   "src/app/(site)/activeaza/page.tsx",
+  "src/app/(site)/admin/accesorii-nunta/[id]/page.tsx",
+  "src/app/(site)/admin/accesorii-nunta/nou/page.tsx",
+  "src/app/(site)/admin/accesorii-nunta/page.tsx",
   "src/app/(site)/admin/adn/page.tsx",
   "src/app/(site)/admin/analiza/csv/route.ts",
   "src/app/(site)/admin/analiza/page.tsx",
@@ -168,6 +179,9 @@
   "src/app/(site)/admin/invitatii-nunta/page.tsx",
   "src/app/(site)/admin/invitatii/page.tsx",
   "src/app/(site)/admin/istoric/page.tsx",
+  "src/app/(site)/admin/jurnale/[id]/page.tsx",
+  "src/app/(site)/admin/jurnale/nou/page.tsx",
+  "src/app/(site)/admin/jurnale/page.tsx",
   "src/app/(site)/admin/layout.tsx",
   "src/app/(site)/admin/linkuri/page.tsx",
   "src/app/(site)/admin/loading.tsx",
@@ -253,6 +267,9 @@
   "src/app/(site)/istoria-umanitatii/page.tsx",
   "src/app/(site)/istoria-umanitatii/primul-razboi-mondial/page.tsx",
   "src/app/(site)/istoria-umanitatii/tiparul-istoriei/page.tsx",
+  "src/app/(site)/jurnale/[slug]/page.tsx",
+  "src/app/(site)/jurnale/gata/page.tsx",
+  "src/app/(site)/jurnale/page.tsx",
   "src/app/(site)/layout.tsx",
   "src/app/(site)/libertatea-de-a-crede/page.tsx",
   "src/app/(site)/link-spre-noi/page.tsx",
@@ -325,6 +342,9 @@
   "src/app/api/invitatii-nunta/descarca/[token]/route.ts",
   "src/app/api/invitatii-nunta/retrimite/route.ts",
   "src/app/api/invitatii-nunta/start/route.ts",
+  "src/app/api/magazin/descarca/[token]/route.ts",
+  "src/app/api/magazin/retrimite/route.ts",
+  "src/app/api/magazin/start/route.ts",
   "src/app/api/parteneri/[partner]/export/route.ts",
   "src/app/api/parteneri/dezabonare/route.ts",
   "src/app/api/ping/route.ts",
@@ -450,6 +470,8 @@
   "src/components/LinkAnswer.tsx",
   "src/components/LiveTree.tsx",
   "src/components/Logo.tsx",
+  "src/components/MagazinDigital.tsx",
+  "src/components/MagazinPagini.tsx",
   "src/components/MemoryBox.tsx",
   "src/components/MemoryForm.tsx",
   "src/components/MyDataTools.tsx",
@@ -522,6 +544,7 @@
   "src/components/admin/InvitatieStare.tsx",
   "src/components/admin/InviteSettingsForm.tsx",
   "src/components/admin/IstoricForms.tsx",
+  "src/components/admin/MagazinAdmin.tsx",
   "src/components/admin/OwnerRecovery.tsx",
   "src/components/admin/PlanForms.tsx",
   "src/components/admin/ProblemActions.tsx",
@@ -1063,6 +1086,7 @@
   "src/lib/lada.ts",
   "src/lib/legal.ts",
   "src/lib/legaturi-populare.ts",
+  "src/lib/magazin-texte.ts",
   "src/lib/map-data.ts",
   "src/lib/merge.ts",
   "src/lib/mesaje-activitate.ts",
@@ -1239,6 +1263,7 @@
   "tests/limba-detectata.test.ts",
   "tests/localitati-statistici.test.ts",
   "tests/localitati.test.ts",
+  "tests/magazin-categorii.test.ts",
   "tests/merge.test.ts",
   "tests/mesaje-activitate.test.ts",
   "tests/motor-seo.test.ts",
@@ -1308,6 +1333,18 @@
    "kind": "pagina"
   },
   {
+   "path": "/accesorii-nunta",
+   "kind": "pagina"
+  },
+  {
+   "path": "/accesorii-nunta/[slug]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/accesorii-nunta/gata",
+   "kind": "pagina"
+  },
+  {
    "path": "/activare",
    "kind": "pagina"
   },
@@ -1317,6 +1354,18 @@
   },
   {
    "path": "/admin",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/accesorii-nunta",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/accesorii-nunta/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/accesorii-nunta/nou",
    "kind": "pagina"
   },
   {
@@ -1445,6 +1494,18 @@
   },
   {
    "path": "/admin/istoric",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/jurnale",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/jurnale/[id]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/admin/jurnale/nou",
    "kind": "pagina"
   },
   {
@@ -1641,6 +1702,18 @@
   },
   {
    "path": "/api/invitatii-nunta/start",
+   "kind": "api"
+  },
+  {
+   "path": "/api/magazin/descarca/[token]",
+   "kind": "api"
+  },
+  {
+   "path": "/api/magazin/retrimite",
+   "kind": "api"
+  },
+  {
+   "path": "/api/magazin/start",
    "kind": "api"
   },
   {
@@ -1952,6 +2025,18 @@
    "kind": "pagina"
   },
   {
+   "path": "/jurnale",
+   "kind": "pagina"
+  },
+  {
+   "path": "/jurnale/[slug]",
+   "kind": "pagina"
+  },
+  {
+   "path": "/jurnale/gata",
+   "kind": "pagina"
+  },
+  {
    "path": "/libertatea-de-a-crede",
    "kind": "pagina"
   },
@@ -2174,6 +2259,7 @@
   "tests/limba-detectata.test.ts",
   "tests/localitati-statistici.test.ts",
   "tests/localitati.test.ts",
+  "tests/magazin-categorii.test.ts",
   "tests/merge.test.ts",
   "tests/mesaje-activitate.test.ts",
   "tests/motor-seo.test.ts",
@@ -2229,5 +2315,5 @@
   "tests/vremuri.test.ts",
   "tests/zona.test.ts"
  ],
- "migrations": 52
+ "migrations": 53
 }
