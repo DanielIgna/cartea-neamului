@@ -5,6 +5,8 @@ import { FACEBOOK_URL, INSTAGRAM_URL, TIKTOK_URL } from "@/lib/contact";
 import { GIFT_PATH, giftSeason } from "@/lib/cadou-sarbatori";
 import { POPULAR_LINKS } from "@/lib/legaturi-populare";
 import { SHOP_PATH, shopText } from "@/lib/invitatii-nunta";
+import { localizedPath } from "@/i18n/locales";
+import { DESIGN_PATH } from "@/components/DesignBy";
 
 /** Subsolul tuturor paginilor (și al celor gata făcute pentru vizitatori): paginile legale, contact, istorie, Facebook, cine vinde. */
 export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
@@ -32,6 +34,8 @@ export default async function SiteFooter({ signedIn }: { signedIn: boolean }) {
       {giftSeason() && <Link href={GIFT_PATH}>{tg("footer")}</Link>}
       {/* Invitațiile de nuntă (27.11.2026): un link discret, în toate limbile. */}
       <Link href={SHOP_PATH}>{shopText(locale).footer}</Link>
+      {/* Pagina mărcii (Daniel, 28.11.2026): același nume în toate limbile; în engleză duce la /en/…, altfel la cea românească. */}
+      <Link href={locale === "en-GB" || locale === "en-US" ? localizedPath(DESIGN_PATH, locale) : DESIGN_PATH}>Design by Cartea Neamului</Link>
       <Link href="/ghid">{t("guides")}</Link>
       <Link href="/glosar">{t("glossary")}</Link>
       <Link href="/nume">{t("surnames")}</Link>

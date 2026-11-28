@@ -92,6 +92,7 @@
   "src/app/(public)/pub/[v]/cadou-de-sarbatori/page.tsx",
   "src/app/(public)/pub/[v]/confidentialitate/page.tsx",
   "src/app/(public)/pub/[v]/contact/page.tsx",
+  "src/app/(public)/pub/[v]/design-by-cartea-neamului/page.tsx",
   "src/app/(public)/pub/[v]/diaspora/[a]/[b]/page.tsx",
   "src/app/(public)/pub/[v]/diaspora/[a]/page.tsx",
   "src/app/(public)/pub/[v]/diaspora/page.tsx",
@@ -216,6 +217,7 @@
   "src/app/(site)/confidentialitate/page.tsx",
   "src/app/(site)/contact/page.tsx",
   "src/app/(site)/datele-mele/page.tsx",
+  "src/app/(site)/design-by-cartea-neamului/page.tsx",
   "src/app/(site)/dezabonare-organizatie/page.tsx",
   "src/app/(site)/dezabonare/page.tsx",
   "src/app/(site)/diaspora/[a]/[b]/page.tsx",
@@ -419,6 +421,7 @@
   "src/components/CookieNotice.tsx",
   "src/components/CopacArt.tsx",
   "src/components/DeletePerson.tsx",
+  "src/components/DesignBy.tsx",
   "src/components/DnaForm.tsx",
   "src/components/DraftNote.tsx",
   "src/components/Duplicates.tsx",
@@ -1814,6 +1817,10 @@
   },
   {
    "path": "/datele-mele",
+   "kind": "pagina"
+  },
+  {
+   "path": "/design-by-cartea-neamului",
    "kind": "pagina"
   },
   {
