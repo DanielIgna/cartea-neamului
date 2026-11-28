@@ -23,6 +23,9 @@ export const PUBLIC_PAGES: { path: string; label: string; priority: number; chan
   { path: SHOP_PATH, label: "Invitații de nuntă", priority: 0.7, changeFrequency: "weekly" },
   // Magazinul (Daniel, 27.11.2026): toate produsele și serviciile, cu linkul „Magazin” din antet.
   { path: "/produse", label: "Produse și servicii", priority: 0.7, changeFrequency: "weekly" },
+  // „Design by Cartea Neamului” (Daniel, 28.11.2026): pentru cine caută numele după un produs „designed by Cartea Neamului”.
+  // Doar în română și engleză (vezi NOT_YET_TRANSLATED mai jos).
+  { path: "/design-by-cartea-neamului", label: "Design by Cartea Neamului", priority: 0.6, changeFrequency: "monthly" },
   { path: "/resurse-genealogie", label: "Resurse gratuite pentru genealogie", priority: 0.6, changeFrequency: "monthly" },
   { path: "/surse-publice", label: "Unde îți cauți strămoșii gratuit (surse publice)", priority: 0.7, changeFrequency: "monthly", roOnly: true },
   { path: "/contact", label: "Contact", priority: 0.4, changeFrequency: "yearly" },
@@ -42,6 +45,8 @@ export const TRANSLATED_PAGES = PUBLIC_PAGES.filter((p) => !p.roOnly);
  * au adresă proprie, nu intră în sitemap, iar /pt/termeni trimite la /termeni. Se scoate pagina de aici când e tradusă.
  */
 const NOT_YET_TRANSLATED: Record<string, readonly Locale[]> = {
+  // Scrisă doar în română și engleză (Daniel, 28.11.2026).
+  "/design-by-cartea-neamului": LOCALES.filter((l) => l !== "ro" && l !== "en-GB" && l !== "en-US"),
 };
 
 /** Limbile în care o pagină publică are text adevărat (româna mereu). */
